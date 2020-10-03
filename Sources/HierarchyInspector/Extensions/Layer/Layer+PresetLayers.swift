@@ -1,6 +1,6 @@
 //
 //  Layer+PresetLayers.swift
-//  
+//  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
 //
@@ -11,7 +11,7 @@ import WebKit
 
 // MARK: - Preset Layers
 
-// TODO: add documentation
+#warning("TODO: add documentation")
 public extension HierarchyInspector.Layer {
     
     static let allViews           : HierarchyInspector.Layer = .layer(name: "All views")            { _ in true }

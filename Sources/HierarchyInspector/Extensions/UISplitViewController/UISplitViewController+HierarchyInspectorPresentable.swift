@@ -1,6 +1,6 @@
 //
 //  UISplitViewController+HierarchyInspectableProtocol.swift
-//  
+//  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
 //
@@ -10,13 +10,19 @@ import UIKit
 // MARK: - HierarchyInspectorPresentable
 
 extension UISplitViewController: HierarchyInspectorPresentable {
-    public var hierarchyInspectorViews: [HierarchyInspector.Layer : [HierarchyInspectorView]] {
-        get {
-            hierarchyInspectableViewControllers.first?.hierarchyInspectorViews ?? [:]
+    public var hierarchyInspectorManager: HierarchyInspector.Manager {
+        guard
+            let existingManager = Self.currentHierarchyInspectorManager,
+            existingManager.hostViewController === self
+        else {
+            
+            let newManager = HierarchyInspector.Manager(host: self)
+            Self.currentHierarchyInspectorManager = newManager
+            
+            return newManager
         }
-        set {
-            hierarchyInspectableViewControllers.first?.hierarchyInspectorViews = newValue
-        }
+        
+        return existingManager
     }
     
     public var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
@@ -28,16 +34,20 @@ extension UISplitViewController: HierarchyInspectorPresentable {
         
         return Array(allLayers)
     }
-    
-    private var hierarchyInspectableViewControllers: [HierarchyInspectableProtocol] {
-        viewControllers.compactMap { $0 as? HierarchyInspectableProtocol }
-    }
+}
 
-    // TODO: code smell. split into other protocol to remove empty assessors
-    public var hierarchyInspectorSnapshot: HierarchyInspector.ViewHierarchySnapshot? {
-        get {
-            nil
+private extension UISplitViewController {
+    static var currentHierarchyInspectorManager: HierarchyInspector.Manager? {
+        didSet {
+            guard let previousManager = oldValue else {
+                return
+            }
+
+            previousManager.removeAllLayers()
         }
-        set {}
+    }
+    
+    var hierarchyInspectableViewControllers: [HierarchyInspectableProtocol] {
+        viewControllers.compactMap { $0 as? HierarchyInspectableProtocol }
     }
 }

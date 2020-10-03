@@ -1,6 +1,6 @@
 //
 //  HighlightView.swift
-//  
+//  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
 //
@@ -10,7 +10,11 @@ import UIKit
 class HighlightView: View {
     // MARK: - Properties
     
-    let name: String
+    var name: String {
+        didSet {
+            label.text = name
+        }
+    }
     
     let colorScheme: ColorScheme
     

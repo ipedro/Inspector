@@ -7,12 +7,14 @@
 
 import UIKit
 
-public protocol HierarchyLayerManagerProtocol: UIViewController {
-    func installLayer(_ layer: HierarchyInspector.Layer, in viewHierarchy: [UIView])
+public protocol HierarchyLayerManagerProtocol: NSObject {
+//    func installLayer(_ layer: HierarchyInspector.Layer, in viewHierarchy: [UIView])
+    func installLayer(_ layer: HierarchyInspector.Layer)
     
     func removeLayer(_ layer: HierarchyInspector.Layer)
     
-    func installAllLayers(in viewHierarchy: [UIView])
+//    func installAllLayers(in viewHierarchy: [UIView])
+    func installAllLayers()
     
     func removeAllLayers()
 }

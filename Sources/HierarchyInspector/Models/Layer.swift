@@ -63,7 +63,8 @@ extension HierarchyInspector.Layer {
     
     static let wireframes = HierarchyInspector.Layer(name: "Wireframes", showLabels: false) { _ in true }
     
-    #if DEBUG // TODO: should remove if clause?
+    #if DEBUG
+    #warning("// TODO: investigate if this `if` clause makes sense")
     static let internalViews = HierarchyInspector.Layer(name: "Internal views", showLabels: true, allowsInternalViews: true) { $0.isSystemView }
     #endif
     

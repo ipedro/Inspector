@@ -1,6 +1,6 @@
 //
 //  HierarchyInspectableProtocol+ActionSheetPresentation.swift
-//  
+//  HierarchyInspector
 //
 //  Created by Pedro Almeida on 03.10.20.
 //
@@ -8,6 +8,7 @@
 import UIKit
 
 public protocol HierarchyInspectorPresentable: HierarchyInspectableProtocol {
+    var canPresentHierarchyInspector: Bool { get }
     
     func presentHierarchyInspector(animated: Bool)
     
@@ -16,18 +17,7 @@ public protocol HierarchyInspectorPresentable: HierarchyInspectableProtocol {
 public extension HierarchyInspectorPresentable {
     
     func presentHierarchyInspector(animated: Bool) {
-        
-        var presentingViewController: HierarchyInspectorPresentable {
-            for controller in containerViewControllers {
-                if let controller = controller as? HierarchyInspectorPresentable {
-                    return controller
-                }
-            }
-            
-            return self
-        }
-        
-        presentingViewController.presentHierarchyInspector(animated: animated, inspecting: false)
+        presentHierarchyInspector(animated: animated, inspecting: false)
     }
     
 }
@@ -35,12 +25,8 @@ public extension HierarchyInspectorPresentable {
 // MARK: - ActionSheet Presentation
 
 extension HierarchyInspectorPresentable {
-    var canPresentHierarchyInspector: Bool {
+    public var canPresentHierarchyInspector: Bool {
         presentingViewController is UIAlertController == false
-    }
-    
-    var containerViewControllers: [UIViewController?] {
-        [tabBarController, navigationController, splitViewController]
     }
     
     func presentHierarchyInspector(animated: Bool, inspecting: Bool) {
@@ -48,12 +34,18 @@ extension HierarchyInspectorPresentable {
             return
         }
         
+        guard let topViewController = hierarchyInspectorManager.viewControllerHierarchy.first else {
+            return
+        }
+        
         let start = Date()
         
-        performAsyncOperation {
-            let alertController = self.makeAlertController(for: self.view, inspectingSelf: inspecting)
+        hierarchyInspectorManager.async(operation: "Calculating hierarchy") {
+            guard let alertController = self.makeAlertController(for: topViewController.hierarchyInspectorManager, in: topViewController, inspecting: inspecting) else {
+                return
+            }
             
-            self.present(alertController, animated: true) {
+            topViewController.present(alertController, animated: true) {
                 let elaspedTime = Date().timeIntervalSince(start)
                 
                 print("Presented Hierarchy Inspector in \(elaspedTime) seconds")
@@ -62,12 +54,14 @@ extension HierarchyInspectorPresentable {
     }
     
     // TODO: break up method. create structures or fabricator
-    private func makeAlertController(for view: UIView, inspectingSelf: Bool = false) -> UIAlertController {
-        let inspectableViewHierarchy = view.inspectableViewHierarchy
+    private func makeAlertController(for manager: HierarchyInspector.Manager, in hostViewController: HierarchyInspectableProtocol, inspecting: Bool) -> UIAlertController? {
+        guard let hostViewController = manager.hostViewController else {
+            return nil
+        }
         
         let alertController = UIAlertController(
             title: Texts.hierarchyInspector,
-            message: "\(inspectableViewHierarchy.count) inspectable views in \(view.className)",
+            message: "\(manager.inspectableViewHierarchy.count) inspectable views in \(hostViewController.view.className)",
             preferredStyle: .alert
         ).then {
             if #available(iOS 13.0, *) {
@@ -77,118 +71,25 @@ extension HierarchyInspectorPresentable {
             }
         }
         
-        let removeHierarchyViewsIfNeeded: (UIAlertAction) -> Void = { _ in
-            if self is UIAlertController {
-                return
-            }
-            
-            alertController.hierarchyInspectorViews.removeAll()
-        }
-        
+        // Close button
         alertController.addAction(
-            UIAlertAction(title: Texts.closeInspector, style: .cancel, handler: removeHierarchyViewsIfNeeded)
+            UIAlertAction(title: Texts.closeInspector, style: .cancel, handler: nil)
         )
         
-        func toggleLayerAction(for layer: HierarchyInspector.Layer) -> UIAlertAction {
-            let layerIsPresenting = hierarchyInspectorViews[layer]?.isEmpty == false
-            
-            let filteredViewHierarchy = layer.filter(viewHierarchy: inspectableViewHierarchy)
-            
-            switch (layerIsPresenting, filteredViewHierarchy.isEmpty) {
-            case (true, _):
-                return UIAlertAction(title: layer.selectedAlertAction, style: .default) { [weak self] action in
-                    removeHierarchyViewsIfNeeded(action)
-                    
-                    self?.removeLayer(layer)
-                }
-                
-            case (false, true):
-                let alert = UIAlertAction(title: layer.emptyText, style: .default, handler: nil)
-                alert.isEnabled = false
-                
-                return alert
-                
-            case (false, false):
-                return UIAlertAction(title: layer.unselectedAlertAction, style: .default) { [weak self] action in
-                    removeHierarchyViewsIfNeeded(action)
-                    
-                    self?.create(layer: layer, filteredViewHierarchy: filteredViewHierarchy)
-                }
-            }
-        }
+        // Layers count
+        let availableLayersCount = manager.availableLayers.count
+        alertController.addAction(.separator(availableLayersCount == .zero ? "No Layers" : "\(availableLayersCount) Layers"))
         
-        let availableLayers: [HierarchyInspector.Layer] = {
-            var array = hierarchyInspectorLayers.isEmpty ? [.allViews] : hierarchyInspectorLayers
-            
-            array.append(.wireframes)
-            
-            #if DEBUG
-            array.append(.internalViews)
-            #endif
-            
-            return array
-        }()
+        // Manager actions
+        let managerActions = manager.availableActions.compactMap { $0.alertAction }
+        managerActions.forEach { alertController.addAction($0) }
         
-        alertController.addAction(.separator(availableLayers.isEmpty ? "No Layers" : "\(availableLayers.count) Layers"))
-        
-        availableLayers.forEach { layer in
-            alertController.addAction(toggleLayerAction(for: layer))
-        }
-        
-        let actions: [UIAlertAction] = {
-            var actions = [UIAlertAction]()
-            
-            if hierarchyInspectorViews.keys.isEmpty == false {
-                actions.append(
-                    UIAlertAction(title: Texts.hideAllLayers, style: .default) { [weak self] action in
-                        removeHierarchyViewsIfNeeded(action)
-                        
-                        self?.removeAllLayers()
-                    }
-                )
-            }
-            
-            if hierarchyInspectorLayers.isEmpty == false, hierarchyInspectorViews.keys.count < populatedHierarchyInspectorLayers.count {
-                actions.append(
-                    UIAlertAction(title: Texts.showAllLayers, style: .default) { [weak self] action in
-                        removeHierarchyViewsIfNeeded(action)
-                        
-                        self?.installAllLayers(in: inspectableViewHierarchy)
-                    }
-                )
-            }
-            
-            #if DEBUG
-            
-            if self is UIAlertController == false {
-                actions.append(
-                    UIAlertAction(
-                        title: inspectingSelf ? Texts.stopInspecting : Texts.inspect("Hierarchy Inspector"),
-                        style: .default
-                    ) { [weak self] action in
-                        removeHierarchyViewsIfNeeded(action)
-                        
-                        self?.presentHierarchyInspector(animated: true, inspecting: !inspectingSelf)
-                    }
-                )
-            }
-            #endif
-            
-            return actions
-        }()
-        
-        if actions.isEmpty == false {
-            alertController.addAction(.separator("Actions"))
-            
-            actions.forEach { alertController.addAction($0) }
-        }
-        
-        if inspectingSelf {
-            UIAlertController.sharedHierarchyInspectorViews.removeAll()
-            
-            alertController.installAllLayers(in: alertController.view.inspectableViewHierarchy)
+        // Alert controller inspection
+        if inspecting {
+            alertController.hierarchyInspectorManager.installAllLayers()
         }
         
         return alertController
     }
+    
 }

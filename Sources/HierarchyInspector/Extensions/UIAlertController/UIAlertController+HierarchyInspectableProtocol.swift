@@ -1,6 +1,6 @@
 //
 //  UIAlertController+HierarchyInspectableProtocol.swift
-//  
+//  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
 //
@@ -10,37 +10,21 @@ import UIKit
 // MARK: - HierarchyInspectorPresentable
 
 extension UIAlertController: HierarchyInspectorPresentable {
-    
-    public var hierarchyInspectorSnapshot: HierarchyInspector.ViewHierarchySnapshot? {
-        get {
-            nil
-        }
-        set {
-            // TODO: fix me
-        }
-    }
-    
-    static var sharedHierarchyInspectorViews: [HierarchyInspector.Layer: [HierarchyInspectorView]] = [:] {
-        didSet {
-            guard oldValue.isEmpty == false, sharedHierarchyInspectorViews.isEmpty else {
-                return
-            }
+    public var hierarchyInspectorManager: HierarchyInspector.Manager {
+        guard
+            let existingManager = Self.currentHierarchyInspectorManager,
+            existingManager.hostViewController === self
+        else {
             
-            for views in oldValue.values {
-                views.forEach { $0.removeFromSuperview() }
-            }
+            let newManager = HierarchyInspector.Manager(host: self)
+            Self.currentHierarchyInspectorManager = newManager
+            
+            return newManager
         }
+        
+        return existingManager
     }
-    
-    public var hierarchyInspectorViews: [HierarchyInspector.Layer: [HierarchyInspectorView]] {
-        get {
-            Self.sharedHierarchyInspectorViews
-        }
-        set {
-            Self.sharedHierarchyInspectorViews = newValue
-        }
-    }
-    
+
     public var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
         [
             .layer(name: "Alert controller") { element -> Bool in
@@ -68,5 +52,17 @@ extension UIAlertController: HierarchyInspectorPresentable {
                 return labels.isEmpty
             }
         ]
+    }
+}
+
+private extension UIAlertController {
+    static var currentHierarchyInspectorManager: HierarchyInspector.Manager? {
+        didSet {
+            guard let previousManager = oldValue else {
+                return
+            }
+
+            previousManager.removeAllLayers()
+        }
     }
 }

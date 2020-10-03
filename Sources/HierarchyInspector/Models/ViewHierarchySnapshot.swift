@@ -1,6 +1,6 @@
 //
 //  ViewHierarchySnapshot.swift
-//  
+//  HierarchyInspector
 //
 //  Created by Pedro Almeida on 03.10.20.
 //
@@ -9,11 +9,11 @@ import Foundation
 
 extension HierarchyInspector {
     
-    public struct ViewHierarchySnapshot {
+    struct ViewHierarchySnapshot {
         
         // MARK: - Properties
         
-        public static var cacheExpirationTimeInSeconds: Double = 60
+        static var cacheExpirationTimeInSeconds: Double = 60
         
         let populatedHirerchyLayers: [Layer]
         

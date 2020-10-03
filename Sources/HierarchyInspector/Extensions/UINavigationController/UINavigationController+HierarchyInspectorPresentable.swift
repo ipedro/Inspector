@@ -1,6 +1,6 @@
 //
 //  UINavigationController+HierarchyInspectableProtocol.swift
-//  
+//  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
 //
@@ -10,26 +10,19 @@ import UIKit
 // MARK: - HierarchyInspectorPresentable
 
 extension UINavigationController: HierarchyInspectorPresentable {
-    
-    private var hierarchyInspectableTopViewController: HierarchyInspectableProtocol? {
-        topViewController as? HierarchyInspectableProtocol
-    }
-    
-    // TODO: code smell. split into other protocol to remove empty assessors
-    public var hierarchyInspectorSnapshot: HierarchyInspector.ViewHierarchySnapshot? {
-        get {
-            nil
+    public var hierarchyInspectorManager: HierarchyInspector.Manager {
+        guard
+            let existingManager = Self.currentHierarchyInspectorManager,
+            existingManager.hostViewController === self
+        else {
+            
+            let newManager = HierarchyInspector.Manager(host: self)
+            Self.currentHierarchyInspectorManager = newManager
+            
+            return newManager
         }
-        set {}
-    }
-    
-    public var hierarchyInspectorViews: [HierarchyInspector.Layer: [HierarchyInspectorView]] {
-        get {
-            hierarchyInspectableTopViewController?.hierarchyInspectorViews ?? [:]
-        }
-        set {
-            hierarchyInspectableTopViewController?.hierarchyInspectorViews = newValue
-        }
+        
+        return existingManager
     }
     
     public var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
@@ -38,5 +31,21 @@ extension UINavigationController: HierarchyInspectorPresentable {
     
     public var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme {
         hierarchyInspectableTopViewController?.hierarchyInspectorColorScheme ?? .default
+    }
+}
+
+private extension UINavigationController {
+    static var currentHierarchyInspectorManager: HierarchyInspector.Manager? {
+        didSet {
+            guard let previousManager = oldValue else {
+                return
+            }
+
+            previousManager.removeAllLayers()
+        }
+    }
+    
+    var hierarchyInspectableTopViewController: HierarchyInspectableProtocol? {
+        topViewController as? HierarchyInspectableProtocol
     }
 }

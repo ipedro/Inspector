@@ -1,6 +1,6 @@
 //
 //  LoaderView.swift
-//  
+//  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
 //
@@ -15,6 +15,8 @@ final class LoaderView: InternalView {
     private lazy var contentView = InternalView(frame: frame)
     
     private lazy var colorScheme: ColorScheme = .colorScheme { _ in .systemBlue }
+    
+    private lazy var highlightView = HighlightView(frame: bounds, name: elementName, colorScheme: colorScheme)
     
     // MARK: - Init
     
@@ -38,6 +40,12 @@ final class LoaderView: InternalView {
         
     }
     
+    override var accessibilityIdentifier: String? {
+        didSet {
+            highlightView.name = elementName
+        }
+    }
+    
     func addInspectorViews() {
         rawViewHierarchy.forEach { element in
             element.layer.cornerRadius = 6
@@ -47,9 +55,7 @@ final class LoaderView: InternalView {
             element.installView(inspectorView, position: .bottom)
         }
         
-        let inspectorView = HighlightView(frame: bounds, name: className, colorScheme: colorScheme)
-        
-        installView(inspectorView, position: .top)
+        installView(highlightView, position: .top)
         
     }
 }

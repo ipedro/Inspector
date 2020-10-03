@@ -11,7 +11,7 @@ import HierarchyInspector
 class ViewController: UIViewController, HierarchyInspectorPresentable {
     // MARK: - HierarchyInspectorPresentable
     
-    var hierarchyInspectorViews: [HierarchyInspector.Layer: [HierarchyInspectorView]] = [:]
+    private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(host: self)
     
     var hierarchyInspectorLayers: [HierarchyInspector.Layer] = [
         .controls - .buttons,
@@ -33,8 +33,6 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
         }
     }
     
-    var hierarchyInspectorSnapshot: HierarchyInspector.ViewHierarchySnapshot?
-    
     // MARK: - Components
     
     private lazy var refreshControl = UIRefreshControl()
@@ -46,6 +44,10 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
     @IBOutlet var inspectBarButton: Button!
     
     @IBOutlet var inspectButton: Button!
+    
+    @IBOutlet var datePickerSegmentedControl: UISegmentedControl!
+    
+    @IBOutlet var datePicker: UIDatePicker!
     
     // MARK: - Life cycle
     override func viewDidLoad() {
@@ -59,16 +61,61 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
         scrollView.refreshControl = refreshControl
         
         inspectBarButton.alpha = 0
+        
+        if #available(iOS 13.4, *) {
+            setupSegmentedControl()
+        } else {
+            datePickerSegmentedControl.removeSegment(at: 1, animated: false)
+        }
     }
     
+    func setupSegmentedControl() {
+        datePickerSegmentedControl.removeAllSegments()
+        
+        UIDatePickerStyle.allCases.forEach { style in
+            var title: String {
+                switch style {
+                case .automatic:
+                    return "Automatic"
+                    
+                case .wheels:
+                    return "Wheels"
+                    
+                case .compact:
+                    return "Compact"
+                    
+                case .inline:
+                    return "Inline"
+                    
+                @unknown default:
+                    return "Unknown style"
+                }
+            }
+            
+            datePickerSegmentedControl.insertSegment(withTitle: title, at: datePickerSegmentedControl.numberOfSegments, animated: false)
+        }
+        
+        datePickerSegmentedControl.selectedSegmentIndex = 0
+        datePicker.preferredDatePickerStyle = .automatic
+    }
+        
     // MARK: - Actions
 
+    @IBAction func changeDatePickerStyle(_ sender: UISegmentedControl) {
+        guard let style = UIDatePickerStyle(rawValue: sender.selectedSegmentIndex) else {
+            return
+        }
+        
+        datePicker.preferredDatePickerStyle = style
+        
+    }
+    
     @IBAction func presentInspector(_ sender: Any) {
         presentHierarchyInspector(animated: true)
     }
     
     @IBAction func slider(_ sender: UISlider) {
-        let angle = sender.value * .pi
+        let angle = (sender.value - 1) * .pi
         
         activityIndicator.transform = CGAffineTransform(rotationAngle: CGFloat(angle))
     }
@@ -82,6 +129,22 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
 
 extension ViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        inspectBarButton.alpha = min(1, max(0, (scrollView.contentOffset.y - inspectButton.frame.maxY - (inspectButton.frame.height / 2)) / 100))
+        let delta = (scrollView.contentOffset.y - inspectButton.frame.midY) / 100
+        
+        let alpha = min(1, max(0, delta))
+        
+        inspectBarButton.alpha = pow(alpha, 4)
     }
+}
+
+extension UIDatePickerStyle: CaseIterable {
+    public static var allCases: [UIDatePickerStyle] {
+        if #available(iOS 14.0, *) {
+            return [.automatic, .wheels, .compact, .inline]
+        } else {
+            return [.automatic, .wheels, .compact]
+        }
+    }
+    
+    public typealias AllCases = [UIDatePickerStyle]
 }

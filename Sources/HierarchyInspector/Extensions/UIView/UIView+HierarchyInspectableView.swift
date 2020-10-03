@@ -1,6 +1,6 @@
 //
 //  UIView+HierarchyInspectableView.swift
-//  
+//  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
 //
