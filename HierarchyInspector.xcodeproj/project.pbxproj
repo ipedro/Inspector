@@ -29,7 +29,9 @@
 		EB2D96F525280AC100A5795B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB2D96F325280AC100A5795B /* LaunchScreen.storyboard */; };
 		EB2D971125280B8800A5795B /* HierarchyInspector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */; };
 		EB2D971225280B8800A5795B /* HierarchyInspector.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = "HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable copy.swift */; };
+		EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift */; };
+		EBA245AC252878B700D4AFD9 /* ColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245AB252878B700D4AFD9 /* ColorScheme.swift */; };
+		EBA245B225287B4300D4AFD9 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245B125287B4300D4AFD9 /* Button.swift */; };
 		OBJ_100 /* LoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_47 /* LoaderView.swift */; };
 		OBJ_101 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_48 /* View.swift */; };
 		OBJ_102 /* WireframeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_49 /* WireframeView.swift */; };
@@ -120,7 +122,9 @@
 		EB2D96F125280AC100A5795B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EB2D96F425280AC100A5795B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EB2D96F625280AC100A5795B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable copy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+HierarchyInspectorPresentable copy.swift"; sourceTree = "<group>"; };
+		EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+HierarchyInspectorPresentable.swift"; sourceTree = "<group>"; };
+		EBA245AB252878B700D4AFD9 /* ColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorScheme.swift; sourceTree = "<group>"; };
+		EBA245B125287B4300D4AFD9 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		"HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = HierarchyInspector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"HierarchyInspector::HierarchyInspectorTests::Product" /* HierarchyInspectorTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = HierarchyInspectorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* Array+Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Layer.swift"; sourceTree = "<group>"; };
@@ -199,6 +203,7 @@
 				EB2D96E825280AC000A5795B /* AppDelegate.swift */,
 				EB2D96EA25280AC000A5795B /* SceneDelegate.swift */,
 				EB2D96EC25280AC000A5795B /* ViewController.swift */,
+				EBA245B125287B4300D4AFD9 /* Button.swift */,
 				EB2D96EE25280AC000A5795B /* Main.storyboard */,
 				EB2D96F125280AC100A5795B /* Assets.xcassets */,
 				EB2D96F325280AC100A5795B /* LaunchScreen.storyboard */,
@@ -214,10 +219,83 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		EBA245C32528817A00D4AFD9 /* Layer */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_13 /* Layer+AdditiveArithmetic.swift */,
+				OBJ_14 /* Layer+AlertControllerActionable.swift */,
+				OBJ_15 /* Layer+CustomStringConvertible.swift */,
+				OBJ_16 /* Layer+Hashable.swift */,
+				OBJ_17 /* Layer+KeyCommandable.swift */,
+				OBJ_18 /* Layer+PresetLayers.swift */,
+			);
+			path = Layer;
+			sourceTree = "<group>";
+		};
+		EBA245C82528818D00D4AFD9 /* UIView */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_22 /* UIView+Convenience.swift */,
+				OBJ_23 /* UIView+HierarchyInspectableView.swift */,
+				OBJ_24 /* UIView+LoaderViewPresentable.swift */,
+			);
+			path = UIView;
+			sourceTree = "<group>";
+		};
+		EBA245CD2528819500D4AFD9 /* HierarchyInspectableProtocol */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_11 /* HierarchyInspectableProtocol+InternalLayerManagement.swift */,
+				OBJ_12 /* HierarchyInspectableProtocol+LayerManagerProtocol.swift */,
+			);
+			path = HierarchyInspectableProtocol;
+			sourceTree = "<group>";
+		};
+		EBA245D2252881A100D4AFD9 /* Array */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_10 /* Array+Layer.swift */,
+			);
+			path = Array;
+			sourceTree = "<group>";
+		};
+		EBA245D7252881A500D4AFD9 /* UIAlertAction */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_19 /* UIAlertAction+Convenience.swift */,
+			);
+			path = UIAlertAction;
+			sourceTree = "<group>";
+		};
+		EBA245DC252881AC00D4AFD9 /* UIAlertController */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_20 /* UIAlertController+HierarchyInspectableProtocol.swift */,
+			);
+			path = UIAlertController;
+			sourceTree = "<group>";
+		};
+		EBA245E1252881B400D4AFD9 /* UINavigationController */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_21 /* UINavigationController+HierarchyInspectorPresentable.swift */,
+			);
+			path = UINavigationController;
+			sourceTree = "<group>";
+		};
+		EBA245E6252881BA00D4AFD9 /* UITabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift */,
+			);
+			path = UITabBarController;
+			sourceTree = "<group>";
+		};
 		OBJ_26 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				OBJ_27 /* Appearance.swift */,
+				EBA245AB252878B700D4AFD9 /* ColorScheme.swift */,
 				OBJ_28 /* KeyCommands.swift */,
 				OBJ_29 /* Layer.swift */,
 				OBJ_30 /* Texts.swift */,
@@ -231,9 +309,9 @@
 			children = (
 				OBJ_33 /* AlertControllerActionable.swift */,
 				OBJ_34 /* Create.swift */,
-				OBJ_35 /* HierarchyInspectorKeyCommandActionable.swift */,
 				OBJ_36 /* HierarchyInspectableProtocol.swift */,
 				OBJ_37 /* HierarchyInspectableView.swift */,
+				OBJ_35 /* HierarchyInspectorKeyCommandActionable.swift */,
 				OBJ_38 /* HierarchyInspectorLayerManagerProtocol.swift */,
 				OBJ_39 /* HierarchyInspectorPresentable.swift */,
 				OBJ_40 /* HierarchyInspectorView.swift */,
@@ -321,22 +399,14 @@
 		OBJ_9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_10 /* Array+Layer.swift */,
-				OBJ_11 /* HierarchyInspectableProtocol+InternalLayerManagement.swift */,
-				OBJ_12 /* HierarchyInspectableProtocol+LayerManagerProtocol.swift */,
-				OBJ_13 /* Layer+AdditiveArithmetic.swift */,
-				OBJ_14 /* Layer+AlertControllerActionable.swift */,
-				OBJ_15 /* Layer+CustomStringConvertible.swift */,
-				OBJ_16 /* Layer+Hashable.swift */,
-				OBJ_17 /* Layer+KeyCommandable.swift */,
-				OBJ_18 /* Layer+PresetLayers.swift */,
-				OBJ_19 /* UIAlertAction+Convenience.swift */,
-				OBJ_20 /* UIAlertController+HierarchyInspectableProtocol.swift */,
-				OBJ_21 /* UINavigationController+HierarchyInspectorPresentable.swift */,
-				EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable copy.swift */,
-				OBJ_22 /* UIView+Convenience.swift */,
-				OBJ_23 /* UIView+HierarchyInspectableView.swift */,
-				OBJ_24 /* UIView+LoaderViewPresentable.swift */,
+				EBA245D2252881A100D4AFD9 /* Array */,
+				EBA245CD2528819500D4AFD9 /* HierarchyInspectableProtocol */,
+				EBA245C32528817A00D4AFD9 /* Layer */,
+				EBA245D7252881A500D4AFD9 /* UIAlertAction */,
+				EBA245DC252881AC00D4AFD9 /* UIAlertController */,
+				EBA245E1252881B400D4AFD9 /* UINavigationController */,
+				EBA245E6252881BA00D4AFD9 /* UITabBarController */,
+				EBA245C82528818D00D4AFD9 /* UIView */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -469,6 +539,7 @@
 				EB2D96ED25280AC000A5795B /* ViewController.swift in Sources */,
 				EB2D96E925280AC000A5795B /* AppDelegate.swift in Sources */,
 				EB2D96EB25280AC000A5795B /* SceneDelegate.swift in Sources */,
+				EBA245B225287B4300D4AFD9 /* Button.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -494,6 +565,7 @@
 			buildActionMask = 0;
 			files = (
 				OBJ_66 /* Array+Layer.swift in Sources */,
+				EBA245AC252878B700D4AFD9 /* ColorScheme.swift in Sources */,
 				OBJ_67 /* HierarchyInspectableProtocol+InternalLayerManagement.swift in Sources */,
 				OBJ_68 /* HierarchyInspectableProtocol+LayerManagerProtocol.swift in Sources */,
 				OBJ_69 /* Layer+AdditiveArithmetic.swift in Sources */,
@@ -522,7 +594,7 @@
 				OBJ_92 /* HierarchyInspectorLayerManagerProtocol.swift in Sources */,
 				OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */,
 				OBJ_94 /* HierarchyInspectorView.swift in Sources */,
-				EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable copy.swift in Sources */,
+				EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift in Sources */,
 				OBJ_95 /* KeyCommandable.swift in Sources */,
 				OBJ_96 /* LoaderViewPresentable.swift in Sources */,
 				OBJ_97 /* EmptyView.swift in Sources */,
@@ -626,7 +698,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = HierarchyInspectorExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -688,7 +760,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = HierarchyInspectorExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -707,7 +779,9 @@
 			buildSettings = {
 				LD = /usr/bin/true;
 				OTHER_SWIFT_FLAGS = "-swift-version 5 -I $(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2 -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -package-description-version 5.2.0";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -716,7 +790,9 @@
 			buildSettings = {
 				LD = /usr/bin/true;
 				OTHER_SWIFT_FLAGS = "-swift-version 5 -I $(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2 -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -package-description-version 5.2.0";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -846,7 +922,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.1.0;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
@@ -877,7 +953,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.1.0;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
