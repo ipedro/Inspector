@@ -36,4 +36,7 @@ extension UINavigationController: HierarchyInspectorPresentable {
         hierarchyInspectableTopViewController?.hierarchyInspectorLayers ?? []
     }
     
+    public var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme {
+        hierarchyInspectableTopViewController?.hierarchyInspectorColorScheme ?? .default
+    }
 }

@@ -10,16 +10,27 @@ import HierarchyInspector
 
 class ViewController: UIViewController, HierarchyInspectorPresentable {
     
-    var hierarchyInspectorViews: [HierarchyInspector.Layer : [View]] = [:]
+    var hierarchyInspectorViews: [HierarchyInspector.Layer: [HierarchyInspectorView]] = [:]
     
     var hierarchyInspectorLayers: [HierarchyInspector.Layer] = [
-        .controls,
-        .containerViews,
-        .stackViews,
-        .textViews + .textFields, .textInputs,
+        .controls - .buttons,
+        .buttons,
+        .stackViews + .containerViews,
+        .textViews + .textFields,
         .staticTexts,
-        .activityIndicators
+        .activityIndicators,
+        .maps
     ]
+    
+    var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme = .colorScheme { view in
+        switch view {
+        case is Button:
+            return .systemYellow
+            
+        default:
+            return HierarchyInspector.ColorScheme.default.color(for: view)
+        }
+    }
     
     var hierarchyInspectorSnapshot: HierarchyInspector.ViewHierarchySnapshot?
     

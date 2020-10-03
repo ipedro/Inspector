@@ -22,9 +22,7 @@ public protocol HierarchyInspectableProtocol: HierarchyLayerManagerProtocol {
 // MARK: - Default Values
 
 public extension HierarchyInspectableProtocol {
-    var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme {
-        HierarchyInspector.defaultColorScheme
-    }
+    var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme { .default }
 }
 
 // MARK: - Internal Helpers

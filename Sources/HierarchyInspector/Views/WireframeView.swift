@@ -10,8 +10,8 @@ import UIKit
 final class WireframeView: View {
     override init(
         frame: CGRect,
-        color: UIColor = HierarchyInspector.configuration.appearane.wireframeLayerColor,
-        borderWidth: CGFloat = HierarchyInspector.configuration.appearane.wireframeLayerBorderWidth
+        color: UIColor = HierarchyInspector.configuration.appearance.wireframeLayerColor,
+        borderWidth: CGFloat = HierarchyInspector.configuration.appearance.wireframeLayerBorderWidth
     ) {
         super.init(frame: frame, color: color, borderWidth: borderWidth)
     }

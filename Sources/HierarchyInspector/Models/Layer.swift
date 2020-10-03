@@ -10,6 +10,7 @@ import UIKit
 extension HierarchyInspector {
     
     public struct Layer {
+        public typealias Filter = (UIView) -> Bool
         
         // MARK: - Properties
         
@@ -27,11 +28,8 @@ extension HierarchyInspector {
         
         // MARK: - Init
         
-        public init(name: String, filter: @escaping Filter) {
-            self.name = name
-            self.showLabels = true
-            self.allowsInternalViews = false
-            self.filter = filter
+        public static func layer(name: String, filter: @escaping Filter) -> Self {
+            self.init(name: name, showLabels: true, allowsInternalViews: false, filter: filter)
         }
         
         init(name: String, showLabels: Bool, allowsInternalViews: Bool = false, filter: @escaping Filter) {

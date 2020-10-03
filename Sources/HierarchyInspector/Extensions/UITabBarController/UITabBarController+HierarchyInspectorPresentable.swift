@@ -11,7 +11,7 @@ import UIKit
 
 extension UITabBarController: HierarchyInspectorPresentable {
     
-    private var hierarchyInspectableTopViewController: HierarchyInspectableProtocol? {
+    private var hierarchyInspectableSelectedViewController: HierarchyInspectableProtocol? {
         selectedViewController as? HierarchyInspectableProtocol
     }
     
@@ -25,15 +25,18 @@ extension UITabBarController: HierarchyInspectorPresentable {
     
     public var hierarchyInspectorViews: [HierarchyInspector.Layer: [HierarchyInspectorView]] {
         get {
-            hierarchyInspectableTopViewController?.hierarchyInspectorViews ?? [:]
+            hierarchyInspectableSelectedViewController?.hierarchyInspectorViews ?? [:]
         }
         set {
-            hierarchyInspectableTopViewController?.hierarchyInspectorViews = newValue
+            hierarchyInspectableSelectedViewController?.hierarchyInspectorViews = newValue
         }
     }
     
     public var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
-        hierarchyInspectableTopViewController?.hierarchyInspectorLayers ?? []
+        hierarchyInspectableSelectedViewController?.hierarchyInspectorLayers ?? []
     }
     
+    public var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme {
+        hierarchyInspectableSelectedViewController?.hierarchyInspectorColorScheme ?? .default
+    }
 }

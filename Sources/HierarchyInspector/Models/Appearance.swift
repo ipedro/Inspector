@@ -11,7 +11,7 @@ public extension HierarchyInspector {
     
     struct Configuration {
         
-        public var appearane = Appearance()
+        public var appearance = Appearance()
         
         public var keyCommands = KeyCommands()
     }

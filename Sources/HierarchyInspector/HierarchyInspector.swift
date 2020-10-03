@@ -9,26 +9,8 @@ import UIKit
 
 typealias ColorScheme = HierarchyInspector.ColorScheme
 
-typealias Filter = HierarchyInspector.Filter
-
 public enum HierarchyInspector {
     
-    public typealias Filter = (UIView) -> Bool
+    public static var configuration = Configuration()
     
-    public typealias ColorScheme = (UIView) -> UIColor
-    
-    static var configuration = Configuration()
-    
-    public static let defaultColorScheme: ColorScheme = {
-        switch $0 {
-        case let control as UIControl:
-            return control.isEnabled ? .systemPurple : .systemGray
-            
-        case is UIStackView:
-            return .systemBlue
-            
-        default:
-            return .systemTeal
-        }
-    }
 }

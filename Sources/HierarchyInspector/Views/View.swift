@@ -32,6 +32,10 @@ class View: UIImageView, HierarchyInspectorView {
         
         isUserInteractionEnabled = false
         
+        if #available(iOS 13.0, *) {
+            layer.cornerCurve = .continuous
+        }
+        
         layer.borderWidth = borderWidth
         
         layer.borderColor = color.withAlphaComponent(0.5).cgColor

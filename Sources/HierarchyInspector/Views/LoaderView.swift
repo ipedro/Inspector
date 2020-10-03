@@ -14,7 +14,7 @@ final class LoaderView: InternalView {
     
     private lazy var contentView = InternalView(frame: frame)
     
-    private lazy var colorScheme: ColorScheme = { _ in .systemBlue }
+    private lazy var colorScheme: ColorScheme = .colorScheme { _ in .systemBlue }
     
     // MARK: - Init
     

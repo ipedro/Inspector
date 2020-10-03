@@ -43,17 +43,17 @@ extension UIAlertController: HierarchyInspectorPresentable {
     
     public var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
         [
-            HierarchyInspector.Layer(name: "Hierarchy Inspector") { element -> Bool in
+            .layer(name: "Alert controller") { element -> Bool in
                 let denyList = [
                     Texts.closeInspector,
                     Texts.stopInspecting,
                     Texts.hierarchyInspector
                 ]
-                
+
                 if let label = element as? UILabel, let text = label.text {
                     return denyList.contains(text) == false
                 }
-                
+
                 let labels = element.subviews.filter {
                     guard
                         let label = $0 as? UILabel,
@@ -61,10 +61,10 @@ extension UIAlertController: HierarchyInspectorPresentable {
                     else {
                         return false
                     }
-                    
+
                     return denyList.contains(text)
                 }
-                
+
                 return labels.isEmpty
             }
         ]

@@ -37,8 +37,14 @@ class HighlightView: View {
     // MARK: - Components
     
     private lazy var label = UILabel().then {
+        
+        if #available(iOS 13.0, *) {
+            $0.textColor = .systemBackground
+        } else {
+            $0.textColor = .white
+        }
+        
         $0.font = .preferredFont(forTextStyle: .caption1)
-        $0.textColor = .white
         $0.textAlignment = .center
         $0.numberOfLines = 1
         $0.adjustsFontSizeToFitWidth = true
@@ -72,7 +78,7 @@ class HighlightView: View {
     
     // MARK: - Init
     
-    init(frame: CGRect, name: String, colorScheme: @escaping ColorScheme, borderWidth: CGFloat = 1) {
+    init(frame: CGRect, name: String, colorScheme: ColorScheme, borderWidth: CGFloat = 1) {
         self.name = name
         self.colorScheme = colorScheme
         
@@ -129,7 +135,7 @@ class HighlightView: View {
             return
         }
         
-        color = colorScheme(superview)
+        color = colorScheme.color(for: superview)
     }
     
 }

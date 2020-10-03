@@ -7,17 +7,17 @@
 
 import Foundation
 
-struct Texts {
+enum Texts {
     
     static let hierarchyInspector = "🧬\nHierarchy Inspector"
     
-    static let stopInspecting = "👋 Stop inspecting me"
+    static let stopInspecting = "Stop inspecting me"
     
-    static func inspect(_ name: String) -> String { "🧬 Inspect \(name)..." }
+    static func inspect(_ name: String) -> String { "Inspect \(name)..." }
     
-    static let showAllLayers = "☑️ Show all layers"
+    static let showAllLayers = "Show all layers"
     
-    static let hideAllLayers = "✅ Hide all layers"
+    static let hideAllLayers = "Hide all layers"
     
     static let closeInspector = "Close"
     
