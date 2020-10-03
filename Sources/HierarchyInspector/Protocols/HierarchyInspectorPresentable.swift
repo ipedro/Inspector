@@ -9,17 +9,11 @@ import UIKit
 
 public protocol HierarchyInspectorPresentable: HierarchyInspectableProtocol {
     
-    var hierarchyInspectorLayerKeyModifiers: UIKeyModifierFlags? { get }
-    
     func presentHierarchyInspector(animated: Bool)
     
 }
 
 public extension HierarchyInspectorPresentable {
-    
-    var hierarchyInspectorLayerKeyModifiers: UIKeyModifierFlags? {
-        [.control]
-    }
     
     func presentHierarchyInspector(animated: Bool) {
         presentHierarchyInspector(animated: animated, inspecting: false)
@@ -64,7 +58,13 @@ extension HierarchyInspectorPresentable {
             title: Texts.hierarchyInspector,
             message: "\(inspectableViewHierarchy.count) inspectable views in \(view.className)",
             preferredStyle: .alert
-        )
+        ).then {
+            if #available(iOS 13.0, *) {
+                $0.view.tintColor = .label
+            } else {
+                $0.view.tintColor = .darkText
+            }
+        }
         
         let removeHierarchyViewsIfNeeded: (UIAlertAction) -> Void = { _ in
             if self is UIAlertController {
@@ -148,17 +148,21 @@ extension HierarchyInspectorPresentable {
             }
             
             #if DEBUG
-            if let navigationController = navigationController {
-                actions.append(
-                    UIAlertAction(
-                        title: Texts.inspect(String(describing: navigationController.classForCoder)),
-                        style: .default
-                    ) { action in
-                        removeHierarchyViewsIfNeeded(action)
-                        
-                        navigationController.presentHierarchyInspector(animated: true)
-                    }
-                )
+            let navigationControllers = [tabBarController, navigationController, splitViewController]
+            
+            for controller in navigationControllers {
+                if let controller = controller as? HierarchyInspectorPresentable {
+                    actions.append(
+                        UIAlertAction(
+                            title: Texts.inspect(String(describing: controller.classForCoder)),
+                            style: .default
+                        ) { action in
+                            removeHierarchyViewsIfNeeded(action)
+                            
+                            controller.presentHierarchyInspector(animated: true)
+                        }
+                    )
+                }
             }
             
             if self is UIAlertController == false {

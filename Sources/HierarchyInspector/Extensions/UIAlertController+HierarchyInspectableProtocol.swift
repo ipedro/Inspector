@@ -20,7 +20,7 @@ extension UIAlertController: HierarchyInspectorPresentable {
         }
     }
     
-    static var sharedHierarchyInspectorViews: [HierarchyInspector.Layer: [View]] = [:] {
+    static var sharedHierarchyInspectorViews: [HierarchyInspector.Layer: [HierarchyInspectorView]] = [:] {
         didSet {
             guard oldValue.isEmpty == false, sharedHierarchyInspectorViews.isEmpty else {
                 return
@@ -32,7 +32,7 @@ extension UIAlertController: HierarchyInspectorPresentable {
         }
     }
     
-    public var hierarchyInspectorViews: [HierarchyInspector.Layer: [View]] {
+    public var hierarchyInspectorViews: [HierarchyInspector.Layer: [HierarchyInspectorView]] {
         get {
             Self.sharedHierarchyInspectorViews
         }

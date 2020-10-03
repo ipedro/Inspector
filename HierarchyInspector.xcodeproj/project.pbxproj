@@ -1,0 +1,958 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		"HierarchyInspector::HierarchyInspectorPackageTests::ProductTarget" /* HierarchyInspectorPackageTests */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = OBJ_120 /* Build configuration list for PBXAggregateTarget "HierarchyInspectorPackageTests" */;
+			buildPhases = (
+			);
+			dependencies = (
+				OBJ_123 /* PBXTargetDependency */,
+			);
+			name = HierarchyInspectorPackageTests;
+			productName = HierarchyInspectorPackageTests;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		EB2D96E925280AC000A5795B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D96E825280AC000A5795B /* AppDelegate.swift */; };
+		EB2D96EB25280AC000A5795B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D96EA25280AC000A5795B /* SceneDelegate.swift */; };
+		EB2D96ED25280AC000A5795B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D96EC25280AC000A5795B /* ViewController.swift */; };
+		EB2D96F025280AC000A5795B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB2D96EE25280AC000A5795B /* Main.storyboard */; };
+		EB2D96F225280AC100A5795B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB2D96F125280AC100A5795B /* Assets.xcassets */; };
+		EB2D96F525280AC100A5795B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB2D96F325280AC100A5795B /* LaunchScreen.storyboard */; };
+		EB2D971125280B8800A5795B /* HierarchyInspector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */; };
+		EB2D971225280B8800A5795B /* HierarchyInspector.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = "HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable copy.swift */; };
+		OBJ_100 /* LoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_47 /* LoaderView.swift */; };
+		OBJ_101 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_48 /* View.swift */; };
+		OBJ_102 /* WireframeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_49 /* WireframeView.swift */; };
+		OBJ_118 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
+		OBJ_129 /* HierarchyInspectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_54 /* HierarchyInspectorTests.swift */; };
+		OBJ_130 /* XCTestManifests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_55 /* XCTestManifests.swift */; };
+		OBJ_132 /* HierarchyInspector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */; };
+		OBJ_66 /* Array+Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* Array+Layer.swift */; };
+		OBJ_67 /* HierarchyInspectableProtocol+InternalLayerManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* HierarchyInspectableProtocol+InternalLayerManagement.swift */; };
+		OBJ_68 /* HierarchyInspectableProtocol+LayerManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* HierarchyInspectableProtocol+LayerManagerProtocol.swift */; };
+		OBJ_69 /* Layer+AdditiveArithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* Layer+AdditiveArithmetic.swift */; };
+		OBJ_70 /* Layer+AlertControllerActionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* Layer+AlertControllerActionable.swift */; };
+		OBJ_71 /* Layer+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* Layer+CustomStringConvertible.swift */; };
+		OBJ_72 /* Layer+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* Layer+Hashable.swift */; };
+		OBJ_73 /* Layer+KeyCommandable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* Layer+KeyCommandable.swift */; };
+		OBJ_74 /* Layer+PresetLayers.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* Layer+PresetLayers.swift */; };
+		OBJ_75 /* UIAlertAction+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_19 /* UIAlertAction+Convenience.swift */; };
+		OBJ_76 /* UIAlertController+HierarchyInspectableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* UIAlertController+HierarchyInspectableProtocol.swift */; };
+		OBJ_77 /* UINavigationController+HierarchyInspectorPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_21 /* UINavigationController+HierarchyInspectorPresentable.swift */; };
+		OBJ_78 /* UIView+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_22 /* UIView+Convenience.swift */; };
+		OBJ_79 /* UIView+HierarchyInspectableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_23 /* UIView+HierarchyInspectableView.swift */; };
+		OBJ_80 /* UIView+LoaderViewPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_24 /* UIView+LoaderViewPresentable.swift */; };
+		OBJ_81 /* HierarchyInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_25 /* HierarchyInspector.swift */; };
+		OBJ_82 /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_27 /* Appearance.swift */; };
+		OBJ_83 /* KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_28 /* KeyCommands.swift */; };
+		OBJ_84 /* Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_29 /* Layer.swift */; };
+		OBJ_85 /* Texts.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_30 /* Texts.swift */; };
+		OBJ_86 /* ViewHierarchySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_31 /* ViewHierarchySnapshot.swift */; };
+		OBJ_87 /* AlertControllerActionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_33 /* AlertControllerActionable.swift */; };
+		OBJ_88 /* Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_34 /* Create.swift */; };
+		OBJ_89 /* HierarchyInspectorKeyCommandActionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_35 /* HierarchyInspectorKeyCommandActionable.swift */; };
+		OBJ_90 /* HierarchyInspectableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_36 /* HierarchyInspectableProtocol.swift */; };
+		OBJ_91 /* HierarchyInspectableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_37 /* HierarchyInspectableView.swift */; };
+		OBJ_92 /* HierarchyInspectorLayerManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_38 /* HierarchyInspectorLayerManagerProtocol.swift */; };
+		OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_39 /* HierarchyInspectorPresentable.swift */; };
+		OBJ_94 /* HierarchyInspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_40 /* HierarchyInspectorView.swift */; };
+		OBJ_95 /* KeyCommandable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_41 /* KeyCommandable.swift */; };
+		OBJ_96 /* LoaderViewPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_42 /* LoaderViewPresentable.swift */; };
+		OBJ_97 /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_44 /* EmptyView.swift */; };
+		OBJ_98 /* HighlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_45 /* HighlightView.swift */; };
+		OBJ_99 /* InternalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_46 /* InternalView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EB2D971325280B8800A5795B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "HierarchyInspector::HierarchyInspector";
+			remoteInfo = HierarchyInspector;
+		};
+		EB4EBBB8252808C1008CCB81 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "HierarchyInspector::HierarchyInspector";
+			remoteInfo = HierarchyInspector;
+		};
+		EB4EBBBC252808C2008CCB81 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "HierarchyInspector::HierarchyInspectorTests";
+			remoteInfo = HierarchyInspectorTests;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EB2D971525280B8900A5795B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				EB2D971225280B8800A5795B /* HierarchyInspector.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		EB2D96E625280AC000A5795B /* HierarchyInspectorExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HierarchyInspectorExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB2D96E825280AC000A5795B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		EB2D96EA25280AC000A5795B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		EB2D96EC25280AC000A5795B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		EB2D96EF25280AC000A5795B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		EB2D96F125280AC100A5795B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EB2D96F425280AC100A5795B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		EB2D96F625280AC100A5795B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable copy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+HierarchyInspectorPresentable copy.swift"; sourceTree = "<group>"; };
+		"HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = HierarchyInspector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"HierarchyInspector::HierarchyInspectorTests::Product" /* HierarchyInspectorTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = HierarchyInspectorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_10 /* Array+Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Layer.swift"; sourceTree = "<group>"; };
+		OBJ_11 /* HierarchyInspectableProtocol+InternalLayerManagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HierarchyInspectableProtocol+InternalLayerManagement.swift"; sourceTree = "<group>"; };
+		OBJ_12 /* HierarchyInspectableProtocol+LayerManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HierarchyInspectableProtocol+LayerManagerProtocol.swift"; sourceTree = "<group>"; };
+		OBJ_13 /* Layer+AdditiveArithmetic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Layer+AdditiveArithmetic.swift"; sourceTree = "<group>"; };
+		OBJ_14 /* Layer+AlertControllerActionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Layer+AlertControllerActionable.swift"; sourceTree = "<group>"; };
+		OBJ_15 /* Layer+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Layer+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		OBJ_16 /* Layer+Hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Layer+Hashable.swift"; sourceTree = "<group>"; };
+		OBJ_17 /* Layer+KeyCommandable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Layer+KeyCommandable.swift"; sourceTree = "<group>"; };
+		OBJ_18 /* Layer+PresetLayers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Layer+PresetLayers.swift"; sourceTree = "<group>"; };
+		OBJ_19 /* UIAlertAction+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertAction+Convenience.swift"; sourceTree = "<group>"; };
+		OBJ_20 /* UIAlertController+HierarchyInspectableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+HierarchyInspectableProtocol.swift"; sourceTree = "<group>"; };
+		OBJ_21 /* UINavigationController+HierarchyInspectorPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+HierarchyInspectorPresentable.swift"; sourceTree = "<group>"; };
+		OBJ_22 /* UIView+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Convenience.swift"; sourceTree = "<group>"; };
+		OBJ_23 /* UIView+HierarchyInspectableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+HierarchyInspectableView.swift"; sourceTree = "<group>"; };
+		OBJ_24 /* UIView+LoaderViewPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+LoaderViewPresentable.swift"; sourceTree = "<group>"; };
+		OBJ_25 /* HierarchyInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspector.swift; sourceTree = "<group>"; };
+		OBJ_27 /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
+		OBJ_28 /* KeyCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCommands.swift; sourceTree = "<group>"; };
+		OBJ_29 /* Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layer.swift; sourceTree = "<group>"; };
+		OBJ_30 /* Texts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texts.swift; sourceTree = "<group>"; };
+		OBJ_31 /* ViewHierarchySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchySnapshot.swift; sourceTree = "<group>"; };
+		OBJ_33 /* AlertControllerActionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertControllerActionable.swift; sourceTree = "<group>"; };
+		OBJ_34 /* Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Create.swift; sourceTree = "<group>"; };
+		OBJ_35 /* HierarchyInspectorKeyCommandActionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectorKeyCommandActionable.swift; sourceTree = "<group>"; };
+		OBJ_36 /* HierarchyInspectableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectableProtocol.swift; sourceTree = "<group>"; };
+		OBJ_37 /* HierarchyInspectableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectableView.swift; sourceTree = "<group>"; };
+		OBJ_38 /* HierarchyInspectorLayerManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectorLayerManagerProtocol.swift; sourceTree = "<group>"; };
+		OBJ_39 /* HierarchyInspectorPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectorPresentable.swift; sourceTree = "<group>"; };
+		OBJ_40 /* HierarchyInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectorView.swift; sourceTree = "<group>"; };
+		OBJ_41 /* KeyCommandable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCommandable.swift; sourceTree = "<group>"; };
+		OBJ_42 /* LoaderViewPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderViewPresentable.swift; sourceTree = "<group>"; };
+		OBJ_44 /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
+		OBJ_45 /* HighlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightView.swift; sourceTree = "<group>"; };
+		OBJ_46 /* InternalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalView.swift; sourceTree = "<group>"; };
+		OBJ_47 /* LoaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderView.swift; sourceTree = "<group>"; };
+		OBJ_48 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		OBJ_49 /* WireframeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WireframeView.swift; sourceTree = "<group>"; };
+		OBJ_54 /* HierarchyInspectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectorTests.swift; sourceTree = "<group>"; };
+		OBJ_55 /* XCTestManifests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTestManifests.swift; sourceTree = "<group>"; };
+		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		OBJ_60 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EB2D96E325280AC000A5795B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB2D971125280B8800A5795B /* HierarchyInspector.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_103 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_131 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_132 /* HierarchyInspector.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EB2D96E725280AC000A5795B /* HierarchyInspectorExample */ = {
+			isa = PBXGroup;
+			children = (
+				EB2D96E825280AC000A5795B /* AppDelegate.swift */,
+				EB2D96EA25280AC000A5795B /* SceneDelegate.swift */,
+				EB2D96EC25280AC000A5795B /* ViewController.swift */,
+				EB2D96EE25280AC000A5795B /* Main.storyboard */,
+				EB2D96F125280AC100A5795B /* Assets.xcassets */,
+				EB2D96F325280AC100A5795B /* LaunchScreen.storyboard */,
+				EB2D96F625280AC100A5795B /* Info.plist */,
+			);
+			path = HierarchyInspectorExample;
+			sourceTree = "<group>";
+		};
+		EB2D971025280B8800A5795B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		OBJ_26 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_27 /* Appearance.swift */,
+				OBJ_28 /* KeyCommands.swift */,
+				OBJ_29 /* Layer.swift */,
+				OBJ_30 /* Texts.swift */,
+				OBJ_31 /* ViewHierarchySnapshot.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		OBJ_32 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_33 /* AlertControllerActionable.swift */,
+				OBJ_34 /* Create.swift */,
+				OBJ_35 /* HierarchyInspectorKeyCommandActionable.swift */,
+				OBJ_36 /* HierarchyInspectableProtocol.swift */,
+				OBJ_37 /* HierarchyInspectableView.swift */,
+				OBJ_38 /* HierarchyInspectorLayerManagerProtocol.swift */,
+				OBJ_39 /* HierarchyInspectorPresentable.swift */,
+				OBJ_40 /* HierarchyInspectorView.swift */,
+				OBJ_41 /* KeyCommandable.swift */,
+				OBJ_42 /* LoaderViewPresentable.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		OBJ_43 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_44 /* EmptyView.swift */,
+				OBJ_45 /* HighlightView.swift */,
+				OBJ_46 /* InternalView.swift */,
+				OBJ_47 /* LoaderView.swift */,
+				OBJ_48 /* View.swift */,
+				OBJ_49 /* WireframeView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		OBJ_5 = {
+			isa = PBXGroup;
+			children = (
+				OBJ_6 /* Package.swift */,
+				OBJ_7 /* Sources */,
+				OBJ_52 /* Tests */,
+				EB2D96E725280AC000A5795B /* HierarchyInspectorExample */,
+				OBJ_56 /* Products */,
+				OBJ_60 /* README.md */,
+				EB2D971025280B8800A5795B /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		OBJ_52 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_53 /* HierarchyInspectorTests */,
+			);
+			name = Tests;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_53 /* HierarchyInspectorTests */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_54 /* HierarchyInspectorTests.swift */,
+				OBJ_55 /* XCTestManifests.swift */,
+			);
+			name = HierarchyInspectorTests;
+			path = Tests/HierarchyInspectorTests;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_56 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				"HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */,
+				"HierarchyInspector::HierarchyInspectorTests::Product" /* HierarchyInspectorTests.xctest */,
+				EB2D96E625280AC000A5795B /* HierarchyInspectorExample.app */,
+			);
+			name = Products;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		OBJ_7 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_8 /* HierarchyInspector */,
+			);
+			name = Sources;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_8 /* HierarchyInspector */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_25 /* HierarchyInspector.swift */,
+				OBJ_9 /* Extensions */,
+				OBJ_26 /* Models */,
+				OBJ_32 /* Protocols */,
+				OBJ_43 /* Views */,
+			);
+			name = HierarchyInspector;
+			path = Sources/HierarchyInspector;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_9 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_10 /* Array+Layer.swift */,
+				OBJ_11 /* HierarchyInspectableProtocol+InternalLayerManagement.swift */,
+				OBJ_12 /* HierarchyInspectableProtocol+LayerManagerProtocol.swift */,
+				OBJ_13 /* Layer+AdditiveArithmetic.swift */,
+				OBJ_14 /* Layer+AlertControllerActionable.swift */,
+				OBJ_15 /* Layer+CustomStringConvertible.swift */,
+				OBJ_16 /* Layer+Hashable.swift */,
+				OBJ_17 /* Layer+KeyCommandable.swift */,
+				OBJ_18 /* Layer+PresetLayers.swift */,
+				OBJ_19 /* UIAlertAction+Convenience.swift */,
+				OBJ_20 /* UIAlertController+HierarchyInspectableProtocol.swift */,
+				OBJ_21 /* UINavigationController+HierarchyInspectorPresentable.swift */,
+				EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable copy.swift */,
+				OBJ_22 /* UIView+Convenience.swift */,
+				OBJ_23 /* UIView+HierarchyInspectableView.swift */,
+				OBJ_24 /* UIView+LoaderViewPresentable.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EB2D96E525280AC000A5795B /* HierarchyInspectorExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EB2D96F725280AC100A5795B /* Build configuration list for PBXNativeTarget "HierarchyInspectorExample" */;
+			buildPhases = (
+				EB2D96E225280AC000A5795B /* Sources */,
+				EB2D96E325280AC000A5795B /* Frameworks */,
+				EB2D96E425280AC000A5795B /* Resources */,
+				EB2D971525280B8900A5795B /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EB2D971425280B8800A5795B /* PBXTargetDependency */,
+			);
+			name = HierarchyInspectorExample;
+			productName = HierarchyInspectorExample;
+			productReference = EB2D96E625280AC000A5795B /* HierarchyInspectorExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		"HierarchyInspector::HierarchyInspector" /* HierarchyInspector */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_62 /* Build configuration list for PBXNativeTarget "HierarchyInspector" */;
+			buildPhases = (
+				OBJ_65 /* Sources */,
+				OBJ_103 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HierarchyInspector;
+			productName = HierarchyInspector;
+			productReference = "HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		"HierarchyInspector::HierarchyInspectorTests" /* HierarchyInspectorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_125 /* Build configuration list for PBXNativeTarget "HierarchyInspectorTests" */;
+			buildPhases = (
+				OBJ_128 /* Sources */,
+				OBJ_131 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				OBJ_133 /* PBXTargetDependency */,
+			);
+			name = HierarchyInspectorTests;
+			productName = HierarchyInspectorTests;
+			productReference = "HierarchyInspector::HierarchyInspectorTests::Product" /* HierarchyInspectorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		"HierarchyInspector::SwiftPMPackageDescription" /* HierarchyInspectorPackageDescription */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_114 /* Build configuration list for PBXNativeTarget "HierarchyInspectorPackageDescription" */;
+			buildPhases = (
+				OBJ_117 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HierarchyInspectorPackageDescription;
+			productName = HierarchyInspectorPackageDescription;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		OBJ_1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftMigration = 9999;
+				LastSwiftUpdateCheck = 1200;
+				LastUpgradeCheck = 9999;
+				TargetAttributes = {
+					EB2D96E525280AC000A5795B = {
+						CreatedOnToolsVersion = 12.0.1;
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "HierarchyInspector" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = OBJ_5;
+			productRefGroup = OBJ_56 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				"HierarchyInspector::HierarchyInspector" /* HierarchyInspector */,
+				"HierarchyInspector::SwiftPMPackageDescription" /* HierarchyInspectorPackageDescription */,
+				"HierarchyInspector::HierarchyInspectorPackageTests::ProductTarget" /* HierarchyInspectorPackageTests */,
+				"HierarchyInspector::HierarchyInspectorTests" /* HierarchyInspectorTests */,
+				EB2D96E525280AC000A5795B /* HierarchyInspectorExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EB2D96E425280AC000A5795B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB2D96F525280AC100A5795B /* LaunchScreen.storyboard in Resources */,
+				EB2D96F225280AC100A5795B /* Assets.xcassets in Resources */,
+				EB2D96F025280AC000A5795B /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EB2D96E225280AC000A5795B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB2D96ED25280AC000A5795B /* ViewController.swift in Sources */,
+				EB2D96E925280AC000A5795B /* AppDelegate.swift in Sources */,
+				EB2D96EB25280AC000A5795B /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_117 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_118 /* Package.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_128 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_129 /* HierarchyInspectorTests.swift in Sources */,
+				OBJ_130 /* XCTestManifests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_65 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_66 /* Array+Layer.swift in Sources */,
+				OBJ_67 /* HierarchyInspectableProtocol+InternalLayerManagement.swift in Sources */,
+				OBJ_68 /* HierarchyInspectableProtocol+LayerManagerProtocol.swift in Sources */,
+				OBJ_69 /* Layer+AdditiveArithmetic.swift in Sources */,
+				OBJ_70 /* Layer+AlertControllerActionable.swift in Sources */,
+				OBJ_71 /* Layer+CustomStringConvertible.swift in Sources */,
+				OBJ_72 /* Layer+Hashable.swift in Sources */,
+				OBJ_73 /* Layer+KeyCommandable.swift in Sources */,
+				OBJ_74 /* Layer+PresetLayers.swift in Sources */,
+				OBJ_75 /* UIAlertAction+Convenience.swift in Sources */,
+				OBJ_76 /* UIAlertController+HierarchyInspectableProtocol.swift in Sources */,
+				OBJ_77 /* UINavigationController+HierarchyInspectorPresentable.swift in Sources */,
+				OBJ_78 /* UIView+Convenience.swift in Sources */,
+				OBJ_79 /* UIView+HierarchyInspectableView.swift in Sources */,
+				OBJ_80 /* UIView+LoaderViewPresentable.swift in Sources */,
+				OBJ_81 /* HierarchyInspector.swift in Sources */,
+				OBJ_82 /* Appearance.swift in Sources */,
+				OBJ_83 /* KeyCommands.swift in Sources */,
+				OBJ_84 /* Layer.swift in Sources */,
+				OBJ_85 /* Texts.swift in Sources */,
+				OBJ_86 /* ViewHierarchySnapshot.swift in Sources */,
+				OBJ_87 /* AlertControllerActionable.swift in Sources */,
+				OBJ_88 /* Create.swift in Sources */,
+				OBJ_89 /* HierarchyInspectorKeyCommandActionable.swift in Sources */,
+				OBJ_90 /* HierarchyInspectableProtocol.swift in Sources */,
+				OBJ_91 /* HierarchyInspectableView.swift in Sources */,
+				OBJ_92 /* HierarchyInspectorLayerManagerProtocol.swift in Sources */,
+				OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */,
+				OBJ_94 /* HierarchyInspectorView.swift in Sources */,
+				EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable copy.swift in Sources */,
+				OBJ_95 /* KeyCommandable.swift in Sources */,
+				OBJ_96 /* LoaderViewPresentable.swift in Sources */,
+				OBJ_97 /* EmptyView.swift in Sources */,
+				OBJ_98 /* HighlightView.swift in Sources */,
+				OBJ_99 /* InternalView.swift in Sources */,
+				OBJ_100 /* LoaderView.swift in Sources */,
+				OBJ_101 /* View.swift in Sources */,
+				OBJ_102 /* WireframeView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EB2D971425280B8800A5795B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "HierarchyInspector::HierarchyInspector" /* HierarchyInspector */;
+			targetProxy = EB2D971325280B8800A5795B /* PBXContainerItemProxy */;
+		};
+		OBJ_123 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "HierarchyInspector::HierarchyInspectorTests" /* HierarchyInspectorTests */;
+			targetProxy = EB4EBBBC252808C2008CCB81 /* PBXContainerItemProxy */;
+		};
+		OBJ_133 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "HierarchyInspector::HierarchyInspector" /* HierarchyInspector */;
+			targetProxy = EB4EBBB8252808C1008CCB81 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		EB2D96EE25280AC000A5795B /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EB2D96EF25280AC000A5795B /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		EB2D96F325280AC100A5795B /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EB2D96F425280AC100A5795B /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		EB2D96F825280AC100A5795B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = HierarchyInspectorExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = am.pedro.HierarchyInspectorExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EB2D96F925280AC100A5795B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = HierarchyInspectorExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = am.pedro.HierarchyInspectorExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		OBJ_115 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				LD = /usr/bin/true;
+				OTHER_SWIFT_FLAGS = "-swift-version 5 -I $(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2 -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -package-description-version 5.2.0";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		OBJ_116 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				LD = /usr/bin/true;
+				OTHER_SWIFT_FLAGS = "-swift-version 5 -I $(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2 -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -package-description-version 5.2.0";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		OBJ_121 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		OBJ_122 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		OBJ_126 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = HierarchyInspector.xcodeproj/HierarchyInspectorTests_Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 5.0;
+				TARGET_NAME = HierarchyInspectorTests;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		OBJ_127 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = HierarchyInspector.xcodeproj/HierarchyInspectorTests_Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 5.0;
+				TARGET_NAME = HierarchyInspectorTests;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+		OBJ_3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"SWIFT_PACKAGE=1",
+					"DEBUG=1",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) SWIFT_PACKAGE DEBUG";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				USE_HEADERMAP = NO;
+			};
+			name = Debug;
+		};
+		OBJ_4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"SWIFT_PACKAGE=1",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) SWIFT_PACKAGE";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				USE_HEADERMAP = NO;
+			};
+			name = Release;
+		};
+		OBJ_63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = HierarchyInspector.xcodeproj/HierarchyInspector_Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MARKETING_VERSION = 0.1;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = am.pedro.HierarchyInspector;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGET_NAME = HierarchyInspector;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		OBJ_64 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = HierarchyInspector.xcodeproj/HierarchyInspector_Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MARKETING_VERSION = 0.1;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = am.pedro.HierarchyInspector;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGET_NAME = HierarchyInspector;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EB2D96F725280AC100A5795B /* Build configuration list for PBXNativeTarget "HierarchyInspectorExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EB2D96F825280AC100A5795B /* Debug */,
+				EB2D96F925280AC100A5795B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_114 /* Build configuration list for PBXNativeTarget "HierarchyInspectorPackageDescription" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_115 /* Debug */,
+				OBJ_116 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_120 /* Build configuration list for PBXAggregateTarget "HierarchyInspectorPackageTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_121 /* Debug */,
+				OBJ_122 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_125 /* Build configuration list for PBXNativeTarget "HierarchyInspectorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_126 /* Debug */,
+				OBJ_127 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_2 /* Build configuration list for PBXProject "HierarchyInspector" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_3 /* Debug */,
+				OBJ_4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_62 /* Build configuration list for PBXNativeTarget "HierarchyInspector" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_63 /* Debug */,
+				OBJ_64 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = OBJ_1 /* Project object */;
+}

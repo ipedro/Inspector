@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol KeyCommandActionable: HierarchyInspectableProtocol {
+public protocol HierarchyInspectorKeyCommandPresentable: HierarchyInspectorPresentable {
     
     var toggleHirearchyInspectorLayerKeyCommandAction: Selector? { get }
     
@@ -20,7 +20,7 @@ public protocol KeyCommandActionable: HierarchyInspectableProtocol {
 
 // MARK: - KeyCommands
 
-extension KeyCommandActionable {
+extension HierarchyInspectorKeyCommandPresentable {
     
     public var hierarchyInspectorKeyModifierFlags: UIKeyModifierFlags? {
         [.control]

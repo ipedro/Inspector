@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class View: UIImageView, InspectorViewProtocol {
+class View: UIImageView, HierarchyInspectorView {
     // MARK: - Properties
     
     var color: UIColor {

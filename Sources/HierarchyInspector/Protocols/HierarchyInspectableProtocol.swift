@@ -9,7 +9,7 @@ import UIKit
 
 public protocol HierarchyInspectableProtocol: HierarchyLayerManagerProtocol {
     
-    var hierarchyInspectorViews: [HierarchyInspector.Layer: [View]] { get set }
+    var hierarchyInspectorViews: [HierarchyInspector.Layer: [HierarchyInspectorView]] { get set }
     
     var hierarchyInspectorLayers: [HierarchyInspector.Layer] { get }
     

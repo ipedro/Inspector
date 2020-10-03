@@ -1,5 +1,5 @@
 //
-//  UINavigationController+HierarchyInspectableProtocol.swift
+//  UITabBarController+HierarchyInspectableProtocol.swift
 //  
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -9,10 +9,10 @@ import UIKit
 
 // MARK: - HierarchyInspectorPresentable
 
-extension UINavigationController: HierarchyInspectorPresentable {
+extension UITabBarController: HierarchyInspectorPresentable {
     
     private var hierarchyInspectableTopViewController: HierarchyInspectableProtocol? {
-        topViewController as? HierarchyInspectableProtocol
+        selectedViewController as? HierarchyInspectableProtocol
     }
     
     // TODO: code smell. split into other protocol to remove empty assessors

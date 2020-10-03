@@ -13,38 +13,47 @@ enum ViewPosition {
 
 enum ViewConstraints {
     case centerXY
-    case margins(horizontal: CGFloat = 0, vertical: CGFloat = 0)
+    case margins(horizontal: CGFloat = .zero, vertical: CGFloat = .zero)
 }
 
 extension UIView {
 
-    func installView(_ view: UIView, constraints: ViewConstraints = .margins(), position: ViewPosition = .top) {
+    func installView(_ view: UIView, constraints constraintOptions: ViewConstraints = .margins(), position: ViewPosition = .top) {
         switch position {
         case .top:
             addSubview(view)
             
         case .bottom:
-            insertSubview(view, at: 0)
+            insertSubview(view, at: .zero)
+        }
+        
+        let constraints: [NSLayoutConstraint]
+        
+        switch constraintOptions {
+        case .centerXY:
+            constraints = [
+                view.centerXAnchor.constraint(equalTo: centerXAnchor),
+                view.centerYAnchor.constraint(equalTo: centerYAnchor)
+            ]
+        
+        case .margins(.zero, .zero):
+            view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            return
+            
+        case let .margins(horizontal, vertical):
+            constraints = [
+                view.leadingAnchor.constraint(equalTo: leadingAnchor, constant: horizontal),
+                view.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -horizontal),
+                view.topAnchor.constraint(equalTo: topAnchor, constant: vertical),
+                view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -vertical)
+            ]
         }
         
         view.translatesAutoresizingMaskIntoConstraints = false
         
-        switch constraints {
-        case .centerXY:
-            NSLayoutConstraint.activate([
-                centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                centerYAnchor.constraint(equalTo: view.centerYAnchor)
-            ])
-            
-        case let .margins(horizontal, vertical):
-            NSLayoutConstraint.activate([
-                leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: horizontal),
-                trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -horizontal),
-                topAnchor.constraint(equalTo: view.topAnchor, constant: vertical),
-                bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -vertical)
-            ])
-        }
+        constraints.forEach { $0.priority = .defaultLow }
         
+        NSLayoutConstraint.activate(constraints)
     }
     
     /**
