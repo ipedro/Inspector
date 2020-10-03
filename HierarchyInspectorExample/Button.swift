@@ -13,7 +13,7 @@ final class Button: UIButton {
         
         layer.cornerCurve = .continuous
         
-        layer.cornerRadius = 14
+        layer.cornerRadius = frame.height / 3
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

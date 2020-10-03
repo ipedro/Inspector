@@ -21,15 +21,15 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="SAS-7K-iyc">
                                 <rect key="frame" x="0.0" y="148.5" width="414" height="664.5"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="lP5-3a-gfG">
-                                        <rect key="frame" x="30" y="40" width="354" height="1176"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="lP5-3a-gfG">
+                                        <rect key="frame" x="30" y="80" width="354" height="1470"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" pointerInteraction="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bmx-Wi-bnN" customClass="Button" customModule="HierarchyInspectorExample" customModuleProvider="target">
-                                                <rect key="frame" x="73.5" y="0.0" width="207" height="47"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="354" height="47"/>
                                                 <color key="backgroundColor" name="AccentColor"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="22"/>
                                                 <inset key="contentEdgeInsets" minX="20" minY="10" maxX="20" maxY="10"/>
-                                                <state key="normal" title="Inspect Hierarchy">
+                                                <state key="normal" title="🔍 Inspect Hierarchy">
                                                     <color key="titleColor" systemColor="systemBackgroundColor"/>
                                                 </state>
                                                 <state key="highlighted">
@@ -39,63 +39,79 @@
                                                     <action selector="presentInspector:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Us4-aa-1LF"/>
                                                 </connections>
                                             </button>
-                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="gp4-7X-RIQ">
-                                                <rect key="frame" x="-2" y="87" width="358" height="31"/>
-                                            </slider>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="NNN-1F-at6">
-                                                <rect key="frame" x="1" y="157" width="352.5" height="302"/>
-                                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="3mM-H5-FNd">
+                                                <rect key="frame" x="0.0" y="87" width="354" height="37"/>
+                                                <subviews>
+                                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="gp4-7X-RIQ">
+                                                        <rect key="frame" x="-2" y="0.0" width="318" height="38"/>
+                                                        <connections>
+                                                            <action selector="slider:" destination="BYZ-38-t0r" eventType="valueChanged" id="CTe-n5-yPd"/>
+                                                        </connections>
+                                                    </slider>
+                                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="IzO-Ib-DQu">
+                                                        <rect key="frame" x="354" y="0.0" width="0.0" height="37"/>
+                                                        <color key="tintColor" systemColor="labelColor"/>
+                                                        <color key="color" systemColor="systemPurpleColor"/>
+                                                    </activityIndicatorView>
+                                                </subviews>
+                                            </stackView>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NNN-1F-at6">
+                                                <rect key="frame" x="0.0" y="164" width="354" height="302"/>
+                                                <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
                                                 <color key="textColor" systemColor="labelColor"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lorem ipsum dolor sit er elit lamet" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="73c-Xy-UWQ">
-                                                <rect key="frame" x="48.5" y="499" width="257.5" height="20.5"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="73c-Xy-UWQ">
+                                                <rect key="frame" x="0.0" y="506" width="354" height="284.5"/>
+                                                <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Juj-gq-NVu">
-                                                <rect key="frame" x="0.0" y="559.5" width="354" height="28.5"/>
+                                                <rect key="frame" x="0.0" y="830.5" width="354" height="28.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="IzO-Ib-DQu">
-                                                <rect key="frame" x="158.5" y="628" width="37" height="37"/>
-                                                <color key="tintColor" systemColor="labelColor"/>
-                                                <color key="color" systemColor="systemPurpleColor"/>
-                                            </activityIndicatorView>
                                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="P52-4f-6lf">
-                                                <rect key="frame" x="111.5" y="705" width="131" height="32"/>
+                                                <rect key="frame" x="0.0" y="899" width="354" height="32"/>
                                                 <segments>
                                                     <segment title="First"/>
                                                     <segment title="Second"/>
                                                 </segments>
                                             </segmentedControl>
                                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="hQ1-am-2yh">
-                                                <rect key="frame" x="0.0" y="776" width="354" height="400"/>
+                                                <rect key="frame" x="0.0" y="970" width="354" height="500"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="400" id="ejb-MB-Bos"/>
+                                                    <constraint firstAttribute="height" constant="500" id="ejb-MB-Bos"/>
                                                 </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.clipsToBounds" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="24"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
                                             </mapView>
                                         </subviews>
                                         <constraints>
                                             <constraint firstItem="hQ1-am-2yh" firstAttribute="width" secondItem="lP5-3a-gfG" secondAttribute="width" id="5GA-m4-Wcr"/>
-                                            <constraint firstItem="gp4-7X-RIQ" firstAttribute="width" secondItem="lP5-3a-gfG" secondAttribute="width" id="E0F-Ex-wA9"/>
-                                            <constraint firstItem="Juj-gq-NVu" firstAttribute="width" secondItem="lP5-3a-gfG" secondAttribute="width" id="Hjh-B3-ce2"/>
                                         </constraints>
                                     </stackView>
                                 </subviews>
                                 <viewLayoutGuide key="safeArea" id="cKx-l3-Yrh"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="lP5-3a-gfG" secondAttribute="trailing" id="9DC-Xq-mxJ"/>
-                                    <constraint firstItem="5up-NG-7DP" firstAttribute="bottom" secondItem="lP5-3a-gfG" secondAttribute="bottom" constant="20" id="CUx-RD-Ul9"/>
-                                    <constraint firstItem="lP5-3a-gfG" firstAttribute="top" secondItem="5up-NG-7DP" secondAttribute="top" constant="40" id="h8B-RT-Tpg"/>
+                                    <constraint firstItem="5up-NG-7DP" firstAttribute="bottom" secondItem="lP5-3a-gfG" secondAttribute="bottom" constant="40" id="CUx-RD-Ul9"/>
+                                    <constraint firstItem="lP5-3a-gfG" firstAttribute="top" secondItem="SAS-7K-iyc" secondAttribute="top" constant="80" id="h8B-RT-Tpg"/>
                                     <constraint firstItem="lP5-3a-gfG" firstAttribute="centerX" secondItem="SAS-7K-iyc" secondAttribute="centerX" id="mK7-DH-GfT"/>
                                     <constraint firstItem="lP5-3a-gfG" firstAttribute="leading" secondItem="5up-NG-7DP" secondAttribute="leading" constant="30" id="vCR-HM-Tmu"/>
                                 </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="5up-NG-7DP"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="rvK-73-DzP"/>
+                                <connections>
+                                    <outlet property="delegate" destination="8bC-Xf-vdC" id="8ci-83-5vC"/>
+                                </connections>
                             </scrollView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -108,12 +124,26 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="🧬 Hierarchy Inspector" id="lPw-0c-guy">
-                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="0hG-a4-PZl">
-                            <connections>
-                                <action selector="presentInspector:" destination="BYZ-38-t0r" id="W6N-P5-xqY"/>
-                            </connections>
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="JZf-2w-S1S">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="rjK-Zh-gDA" customClass="Button" customModule="HierarchyInspectorExample" customModuleProvider="target">
+                                <rect key="frame" x="286" y="6" width="108" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" name="AccentColor"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                                <inset key="contentEdgeInsets" minX="10" minY="5" maxX="10" maxY="5"/>
+                                <state key="normal" title="🔍 Inspect"/>
+                                <connections>
+                                    <action selector="presentInspector:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Fec-FG-0J6"/>
+                                </connections>
+                            </button>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="activityIndicator" destination="IzO-Ib-DQu" id="lXr-09-qJ4"/>
+                        <outlet property="inspectBarButton" destination="rjK-Zh-gDA" id="6Oj-OG-4iq"/>
+                        <outlet property="inspectButton" destination="bmx-Wi-bnN" id="zbj-22-Skx"/>
+                        <outlet property="scrollView" destination="SAS-7K-iyc" id="Lac-y8-eJ1"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

@@ -16,7 +16,18 @@ public protocol HierarchyInspectorPresentable: HierarchyInspectableProtocol {
 public extension HierarchyInspectorPresentable {
     
     func presentHierarchyInspector(animated: Bool) {
-        presentHierarchyInspector(animated: animated, inspecting: false)
+        
+        var presentingViewController: HierarchyInspectorPresentable {
+            for controller in containerViewControllers {
+                if let controller = controller as? HierarchyInspectorPresentable {
+                    return controller
+                }
+            }
+            
+            return self
+        }
+        
+        presentingViewController.presentHierarchyInspector(animated: animated, inspecting: false)
     }
     
 }
@@ -25,11 +36,11 @@ public extension HierarchyInspectorPresentable {
 
 extension HierarchyInspectorPresentable {
     var canPresentHierarchyInspector: Bool {
-        #if DEBUG
-        return presentingViewController is UIAlertController == false
-        #else
-        return self is UIAlertController
-        #endif
+        presentingViewController is UIAlertController == false
+    }
+    
+    var containerViewControllers: [UIViewController?] {
+        [tabBarController, navigationController, splitViewController]
     }
     
     func presentHierarchyInspector(animated: Bool, inspecting: Bool) {
@@ -148,22 +159,6 @@ extension HierarchyInspectorPresentable {
             }
             
             #if DEBUG
-            let navigationControllers = [tabBarController, navigationController, splitViewController]
-            
-            for controller in navigationControllers {
-                if let controller = controller as? HierarchyInspectorPresentable {
-                    actions.append(
-                        UIAlertAction(
-                            title: Texts.inspect(String(describing: controller.classForCoder)),
-                            style: .default
-                        ) { action in
-                            removeHierarchyViewsIfNeeded(action)
-                            
-                            controller.presentHierarchyInspector(animated: true)
-                        }
-                    )
-                }
-            }
             
             if self is UIAlertController == false {
                 actions.append(

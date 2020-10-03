@@ -32,6 +32,7 @@
 		EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift */; };
 		EBA245AC252878B700D4AFD9 /* ColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245AB252878B700D4AFD9 /* ColorScheme.swift */; };
 		EBA245B225287B4300D4AFD9 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245B125287B4300D4AFD9 /* Button.swift */; };
+		EBA245F12528894400D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245F02528892E00D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift */; };
 		OBJ_100 /* LoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_47 /* LoaderView.swift */; };
 		OBJ_101 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_48 /* View.swift */; };
 		OBJ_102 /* WireframeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_49 /* WireframeView.swift */; };
@@ -125,6 +126,7 @@
 		EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+HierarchyInspectorPresentable.swift"; sourceTree = "<group>"; };
 		EBA245AB252878B700D4AFD9 /* ColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorScheme.swift; sourceTree = "<group>"; };
 		EBA245B125287B4300D4AFD9 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+		EBA245F02528892E00D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISplitViewController+HierarchyInspectorPresentable.swift"; sourceTree = "<group>"; };
 		"HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = HierarchyInspector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"HierarchyInspector::HierarchyInspectorTests::Product" /* HierarchyInspectorTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = HierarchyInspectorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* Array+Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Layer.swift"; sourceTree = "<group>"; };
@@ -291,6 +293,14 @@
 			path = UITabBarController;
 			sourceTree = "<group>";
 		};
+		EBA245EF2528892500D4AFD9 /* UISplitViewController */ = {
+			isa = PBXGroup;
+			children = (
+				EBA245F02528892E00D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift */,
+			);
+			path = UISplitViewController;
+			sourceTree = "<group>";
+		};
 		OBJ_26 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -399,6 +409,7 @@
 		OBJ_9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				EBA245EF2528892500D4AFD9 /* UISplitViewController */,
 				EBA245D2252881A100D4AFD9 /* Array */,
 				EBA245CD2528819500D4AFD9 /* HierarchyInspectableProtocol */,
 				EBA245C32528817A00D4AFD9 /* Layer */,
@@ -567,6 +578,7 @@
 				OBJ_66 /* Array+Layer.swift in Sources */,
 				EBA245AC252878B700D4AFD9 /* ColorScheme.swift in Sources */,
 				OBJ_67 /* HierarchyInspectableProtocol+InternalLayerManagement.swift in Sources */,
+				EBA245F12528894400D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift in Sources */,
 				OBJ_68 /* HierarchyInspectableProtocol+LayerManagerProtocol.swift in Sources */,
 				OBJ_69 /* Layer+AdditiveArithmetic.swift in Sources */,
 				OBJ_70 /* Layer+AlertControllerActionable.swift in Sources */,
