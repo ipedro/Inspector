@@ -60,8 +60,6 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
         
         scrollView.refreshControl = refreshControl
         
-        inspectBarButton.alpha = 0
-        
         if #available(iOS 13.4, *) {
             setupSegmentedControl()
         } else {
@@ -128,12 +126,32 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
 }
 
 extension ViewController: UIScrollViewDelegate {
+    var inspectButtonFrame: CGRect {
+        inspectButton.convert(inspectButton.bounds, to: scrollView)
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let delta = (scrollView.contentOffset.y - inspectButton.frame.midY) / 100
+        var inspectBarButtonAlpha: CGFloat {
+            let scrollRange = inspectButtonFrame.minY ... inspectButtonFrame.maxY
+            
+            guard scrollView.contentOffset.y >= scrollRange.lowerBound else {
+                return 0
+            }
+            
+            guard scrollView.contentOffset.y <= scrollRange.upperBound else {
+                return 1
+            }
+            
+            let delta = (scrollView.contentOffset.y - scrollRange.lowerBound) / (scrollRange.upperBound - scrollRange.lowerBound)
+            let normalizedDelta = min(1, max(0, delta))
+            let alpha = pow(normalizedDelta, 4)
+            
+            print("scroll delta: \(delta)\t|\t normalized delta: \(normalizedDelta)\t|\t alpha: \(alpha)")
+            
+            return alpha
+        }
         
-        let alpha = min(1, max(0, delta))
-        
-        inspectBarButton.alpha = pow(alpha, 4)
+        inspectBarButton.alpha = inspectBarButtonAlpha
     }
 }
 
