@@ -17,9 +17,13 @@ enum Texts {
     
     static let showAllLayers = "Show all layers"
     
-    static let hideAllLayers = "Hide all layers"
+    static let hideVisibleLayers = "Hide visible layers"
     
     static let closeInspector = "Close"
     
     static let openHierarchyInspector = "Open Hierarchy Inspector..."
+    
+    static let noLayers = "No Layers"
+    
+    static func layers(_ count: Int) -> String { "\(count) Layers" }
 }

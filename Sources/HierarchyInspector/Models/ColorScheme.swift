@@ -8,6 +8,7 @@
 import UIKit
 
 extension HierarchyInspector {
+    
     public struct ColorScheme {
         public static let `default` = ColorScheme { view in
             switch view {
@@ -18,7 +19,7 @@ extension HierarchyInspector {
                 return .systemBlue
                 
             default:
-                return .systemTeal
+                return view.isUserInteractionEnabled ? .systemTeal : .systemGray
             }
         }
         

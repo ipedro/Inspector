@@ -1,5 +1,5 @@
 //
-//  Button.swift
+//  CustomButton.swift
 //  HierarchyInspectorExample
 //
 //  Created by Pedro Almeida on 03.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class Button: UIButton {
+final class CustomButton: UIButton {
     override func layoutSubviews() {
         super.layoutSubviews()
         

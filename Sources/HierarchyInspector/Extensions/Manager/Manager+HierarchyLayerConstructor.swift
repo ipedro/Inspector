@@ -12,7 +12,7 @@ import UIKit
 extension HierarchyInspector.Manager: HierarchyLayerConstructor {
     
     func isShowingLayer(_ layer: HierarchyInspector.Layer) -> Bool {
-        inspectorViewsForLayers[layer]?.isEmpty == false
+        activeLayers.contains(layer)
     }
     
     // MARK: - Create
@@ -33,7 +33,7 @@ extension HierarchyInspector.Manager: HierarchyLayerConstructor {
         }
         
         guard filteredViewHierarchy.isEmpty == false else {
-            let inspectorView = EmptyView(frame: hostViewController.view.frame, name: layer.emptyText)
+            let inspectorView = EmptyView(frame: hostViewController.view.frame, name: layer.emptyActionTitle)
 
             insert(inspectorView, for: layer, in: hostViewController.view, onTop: true)
             return true

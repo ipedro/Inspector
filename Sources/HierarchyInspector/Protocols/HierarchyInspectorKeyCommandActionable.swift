@@ -9,9 +9,7 @@ import UIKit
 
 public protocol HierarchyInspectorKeyCommandPresentable: HierarchyInspectorPresentable {
     
-    var toggleHirearchyInspectorLayerKeyCommandAction: Selector? { get }
-    
-    var presentHirearchyInspectorKeyCommandAction: Selector? { get }
+    var presentHirearchyInspectorKeyCommandSelector: Selector? { get }
     
     var hierarchyInspectorKeyCommands: [UIKeyCommand] { get }
     
@@ -26,113 +24,168 @@ extension HierarchyInspectorKeyCommandPresentable {
         [.control]
     }
     
-    #warning("FIXME: hierarchyInspectorKeyCommands")
-    public var hierarchyInspectorKeyCommands: [UIKeyCommand] {
-        return []
+    public var hierarchyInspectorPresentationKeyModifierFlags: UIKeyModifierFlags? {
+        guard var modifierFlags = hierarchyInspectorKeyModifierFlags else {
+            return nil
+        }
         
-//        guard let modifierFlags = hierarchyInspectorKeyModifierFlags else {
-//            return []
-//        }
-//
-//        let start = Date()
-//
-//        defer {
-//            print("[Hierarchy Inspector] \(String(describing: classForCoder)): calculated KeyCommands in \(Date().timeIntervalSince(start)) seconds")
-//        }
-//
-//        var keyCommands = [UIKeyCommand]()
-//
-//        if let showInspectorAction = presentHirearchyInspectorKeyCommandAction {
-//            var presentModifierFlags = HierarchyInspector.configuration.keyCommands.hierarchyInspector.presentationModfifierFlags
-//
-//            switch presentModifierFlags.insert(modifierFlags) {
-//            case (true, _):
-//                keyCommands.append(
-//                    UIKeyCommand(
-//                        input: HierarchyInspector.configuration.keyCommands.hierarchyInspector.presentationInput,
-//                        modifierFlags: presentModifierFlags,
-//                        action: showInspectorAction,
-//                        discoverabilityTitle: Texts.openHierarchyInspector
-//                    )
-//                )
-//            default:
-//                break
-//            }
-//        }
-//
-//        guard let toggleLayerAction = toggleHirearchyInspectorLayerKeyCommandAction else {
-//            return keyCommands
-//        }
-//
-//        let toggleLayersSlots = HierarchyInspector.configuration.keyCommands.layers.tooggleKeyCommandsInputRange
-//
-//        let availableLayers = populatedHierarchyInspectorLayers
-//
-//        availableLayers.enumerated().prefix(toggleLayersSlots.count).forEach { index, layer in
-//            let isShowing = self.isShowing(layer: layer)
-//            let title = isShowing ? layer.selectedKeyCommand : layer.unselectedKeyCommand
-//
-//            keyCommands.append(
-//                UIKeyCommand(
-//                    input: String(toggleLayersSlots.lowerBound + index),
-//                    modifierFlags: modifierFlags,
-//                    action: toggleLayerAction,
-//                    discoverabilityTitle: title
-//                )
-//            )
-//        }
-//
-//        var containsAllLayers: Bool {
-//            for layer in availableLayers where hierarchyInspectorViews.keys.contains(layer) == false {
-//                return false
-//            }
-//
-//            return true
-//        }
-//
-//        let toggleAllTitle: String
-//
-//        if containsAllLayers == false {
-//            toggleAllTitle  = Texts.showAllLayers
-//        }
-//        else if hierarchyInspectorViews.keys.count > 1 {
-//            toggleAllTitle  = Texts.hideAllLayers
-//        }
-//        else {
-//            return keyCommands
-//        }
-//
-//        keyCommands.append(
-//            UIKeyCommand(
-//                input: HierarchyInspector.configuration.keyCommands.layers.tooggleAllKeyCommandsInput,
-//                modifierFlags: modifierFlags,
-//                action: toggleLayerAction,
-//                discoverabilityTitle: toggleAllTitle
-//            )
-//        )
-//
-//        return keyCommands
+        modifierFlags.insert(HierarchyInspector.configuration.keyCommands.presentationModfifierFlags)
+        
+        return modifierFlags
     }
     
-    #warning("FIXME: hierarchyInspectorHandleKeyCommand()")
+    public var hierarchyInspectorKeyCommands: [UIKeyCommand] {
+        guard
+            let modifierFlags = hierarchyInspectorKeyModifierFlags,
+            let aSelector = presentHirearchyInspectorKeyCommandSelector
+        else {
+            return []
+        }
+
+        let start = Date()
+
+        defer {
+            print("[Hierarchy Inspector] \(String(describing: classForCoder)): calculated KeyCommands in \(Date().timeIntervalSince(start)) seconds")
+        }
+
+        var keyCommands = [UIKeyCommand]()
+
+        var presentModifierFlags = HierarchyInspector.configuration.keyCommands.presentationModfifierFlags
+
+        switch presentModifierFlags.insert(modifierFlags) {
+        case (true, _):
+            keyCommands.append(
+                UIKeyCommand(
+                    input: HierarchyInspector.configuration.keyCommands.presentationKeyCommand,
+                    modifierFlags: presentModifierFlags,
+                    action: aSelector,
+                    discoverabilityTitle: Texts.openHierarchyInspector
+                )
+            )
+        default:
+            break
+        }
+        
+        let availableCommandsInputRange = HierarchyInspector.configuration.keyCommands.availableCommandsInputRange
+        
+        var index = 0
+        
+        for actionGroup in hierarchyInspectorManager.availableActions {
+            
+            for action in actionGroup.actions {
+                
+                var input: String? {
+                    switch action {
+                    case .emptyLayer:
+                        return nil
+                        
+                    case .toggleLayer:
+                        return String(availableCommandsInputRange.lowerBound + index)
+                        
+                    case .showAllLayers, .hideVisibleLayers:
+                        return HierarchyInspector.configuration.keyCommands.presentationKeyCommand
+                    }
+                }
+                
+                guard let keyInput = input else {
+                    continue
+                }
+                
+                
+                keyCommands.append(
+                    UIKeyCommand(
+                        input: keyInput,
+                        modifierFlags: modifierFlags,
+                        action: aSelector,
+                        discoverabilityTitle: action.title
+                    )
+                )
+                
+                if index == availableCommandsInputRange.upperBound - 1 {
+                    break
+                }
+                
+                index += 1
+                
+                
+            }
+            
+        }
+        
+        return keyCommands
+    }
+    
     public func hierarchyInspectorHandleKeyCommand(_ sender: Any) {
-//        guard
-//            let keyCommand = sender as? UIKeyCommand,
-//            keyCommand.modifierFlags == hierarchyInspectorKeyModifierFlags,
-//            let layer = populatedHierarchyInspectorLayers.layer(for: keyCommand)
-//        else {
-//            return
-//        }
-//        
-//        let isShowing = self.isShowing(layer: layer)
-//        
-//        switch keyCommand.input {
-//        case HierarchyInspector.configuration.keyCommands.layers.tooggleAllKeyCommandsInput:
-//            isShowing ? removeAllLayers() : installAllLayers(in: view.inspectableViewHierarchy)
-//            
-//        default:
-//            isShowing ? removeLayer(layer) : installLayer(layer, in: view.inspectableViewHierarchy)
-//        }
+        guard
+            let keyCommand = sender as? UIKeyCommand,
+            let keyModifierFlags = hierarchyInspectorKeyModifierFlags,
+            let presentationKeyModifierFlags = hierarchyInspectorPresentationKeyModifierFlags
+        else {
+            return
+        }
+        
+        switch (keyCommand.modifierFlags, keyCommand.input == HierarchyInspector.configuration.keyCommands.presentationKeyCommand) {
+        case (presentationKeyModifierFlags, true):
+            presentHierarchyInspector(animated: true)
+            
+        case (keyModifierFlags, true):
+            switch hierarchyInspectorManager.isShowingLayers {
+            case true:
+                hierarchyInspectorManager.removeAllLayers()
+                
+            case false:
+                hierarchyInspectorManager.installAllLayers()
+            }
+            
+        default:
+            guard let layer = layer(with: keyCommand) else {
+                print("[Hierarchy Inspector] Layer not found for key command \(keyCommand)")
+                return
+            }
+            
+            switch hierarchyInspectorManager.isShowingLayer(layer) {
+            case true:
+                hierarchyInspectorManager.removeLayer(layer)
+                
+            case false:
+                hierarchyInspectorManager.installLayer(layer)
+            }
+            
+        }
+    }
+    
+    private func layer(with keyCommand: UIKeyCommand) -> HierarchyInspector.Layer? {
+        guard
+            let input = keyCommand.input,
+            let inputInteger = Int(input)
+        else {
+            print("[Hierarchy Inspector] Could not interpret input integer for key command \(keyCommand)")
+            return nil
+        }
+        
+        let inputRangeStart = HierarchyInspector.configuration.keyCommands.availableCommandsInputRange.lowerBound
+        
+        switch inputInteger - inputRangeStart {
+        case hierarchyInspectorManager.populatedLayers.count:
+            if
+                keyCommand.discoverabilityTitle == HierarchyInspector.Layer.internalViews.selectedActionTitle ||
+                keyCommand.discoverabilityTitle == HierarchyInspector.Layer.internalViews.unselectedActionTitle
+            {
+                return .internalViews
+            }
+            
+        case let index:
+            guard
+                index < hierarchyInspectorManager.populatedLayers.count,
+                HierarchyInspector.configuration.keyCommands.availableCommandsInputRange.contains(inputInteger)
+            else {
+                return nil
+            }
+            
+            return hierarchyInspectorManager.populatedLayers[index]
+        }
+        
+        return nil
     }
     
 }

@@ -9,8 +9,6 @@ import UIKit
 
 public protocol HierarchyInspectableProtocol: UIViewController {
     
-    var hierarchyInspectorManager: HierarchyInspector.Manager { get }
-    
     var hierarchyInspectorLayers: [HierarchyInspector.Layer] { get }
     
     var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme { get }

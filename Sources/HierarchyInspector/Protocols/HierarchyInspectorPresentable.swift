@@ -8,6 +8,9 @@
 import UIKit
 
 public protocol HierarchyInspectorPresentable: HierarchyInspectableProtocol {
+    
+    var hierarchyInspectorManager: HierarchyInspector.Manager { get }
+    
     var canPresentHierarchyInspector: Bool { get }
     
     func presentHierarchyInspector(animated: Bool)
@@ -34,18 +37,18 @@ extension HierarchyInspectorPresentable {
             return
         }
         
-        guard let topViewController = hierarchyInspectorManager.viewControllerHierarchy.first else {
-            return
-        }
-        
         let start = Date()
         
-        hierarchyInspectorManager.async(operation: "Calculating hierarchy") {
-            guard let alertController = self.makeAlertController(for: topViewController.hierarchyInspectorManager, in: topViewController, inspecting: inspecting) else {
+        hierarchyInspectorManager.async(operation: "Calculating hierarchy") { [weak self] in
+            guard let self = self else {
                 return
             }
             
-            topViewController.present(alertController, animated: true) {
+            guard let alertController = self.makeAlertController(for: self.hierarchyInspectorManager, inspecting: inspecting) else {
+                return
+            }
+            
+            self.present(alertController, animated: true) {
                 let elaspedTime = Date().timeIntervalSince(start)
                 
                 print("Presented Hierarchy Inspector in \(elaspedTime) seconds")
@@ -54,7 +57,7 @@ extension HierarchyInspectorPresentable {
     }
     
     // TODO: break up method. create structures or fabricator
-    private func makeAlertController(for manager: HierarchyInspector.Manager, in hostViewController: HierarchyInspectableProtocol, inspecting: Bool) -> UIAlertController? {
+    private func makeAlertController(for manager: HierarchyInspector.Manager, inspecting: Bool) -> UIAlertController? {
         guard let hostViewController = manager.hostViewController else {
             return nil
         }
@@ -76,13 +79,10 @@ extension HierarchyInspectorPresentable {
             UIAlertAction(title: Texts.closeInspector, style: .cancel, handler: nil)
         )
         
-        // Layers count
-        let availableLayersCount = manager.availableLayers.count
-        alertController.addAction(.separator(availableLayersCount == .zero ? "No Layers" : "\(availableLayersCount) Layers"))
-        
         // Manager actions
-        let managerActions = manager.availableActions.compactMap { $0.alertAction }
-        managerActions.forEach { alertController.addAction($0) }
+        manager.availableActions.forEach { group in
+            group.alertActions.forEach { alertController.addAction($0) }
+        }
         
         // Alert controller inspection
         if inspecting {

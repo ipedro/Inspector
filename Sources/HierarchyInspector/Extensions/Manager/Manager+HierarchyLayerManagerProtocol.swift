@@ -36,7 +36,7 @@ extension HierarchyInspector.Manager: HierarchyLayerManagerProtocol {
     // MARK: - Remove
     
     public func removeAllLayers() {
-        async(operation: Texts.hideAllLayers) {
+        async(operation: Texts.hideVisibleLayers) {
             for layer in self.inspectorViewsForLayers.keys {
                 self.destroy(layer: layer)
             }

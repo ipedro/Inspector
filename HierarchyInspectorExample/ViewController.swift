@@ -25,8 +25,8 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
     
     var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme = .colorScheme { view in
         switch view {
-        case is Button:
-            return .systemYellow
+        case is CustomButton:
+            return .systemOrange
             
         default:
             return HierarchyInspector.ColorScheme.default.color(for: view)
@@ -41,9 +41,9 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
     
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
     
-    @IBOutlet var inspectBarButton: Button!
+    @IBOutlet var inspectBarButton: CustomButton!
     
-    @IBOutlet var inspectButton: Button!
+    @IBOutlet var inspectButton: CustomButton!
     
     @IBOutlet var datePickerSegmentedControl: UISegmentedControl!
     
@@ -165,4 +165,23 @@ extension UIDatePickerStyle: CaseIterable {
     }
     
     public typealias AllCases = [UIDatePickerStyle]
+}
+
+extension ViewController: HierarchyInspectorKeyCommandPresentable {
+    
+    override var keyCommands: [UIKeyCommand]? {
+        hierarchyInspectorKeyCommands
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        true
+    }
+    
+    var presentHirearchyInspectorKeyCommandSelector: Selector? {
+        #selector(keyCommand(_:))
+    }
+    
+    @objc func keyCommand(_ sender: Any) {
+        hierarchyInspectorHandleKeyCommand(sender)
+    }
 }

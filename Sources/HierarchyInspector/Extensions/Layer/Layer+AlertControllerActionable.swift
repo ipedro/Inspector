@@ -7,15 +7,15 @@
 
 import UIKit
 
-// MARK: - AlertControllerActionable
+// MARK: - Actionable
 
-extension HierarchyInspector.Layer: AlertControllerActionable {
+extension HierarchyInspector.Layer: Actionable {
     
-    var unselectedAlertAction: String {
+    var unselectedActionTitle: String {
         "☑️ \(description)"
     }
     
-    var selectedAlertAction: String {
+    var selectedActionTitle: String {
         "✅ \(description)"
     }
     
