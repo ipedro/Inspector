@@ -32,8 +32,8 @@ extension HierarchyInspector {
                 
                 let start = Date()
                 let snapshot = ViewHierarchySnapshot(
-                    availableLayers: _availableLayers,
-                    populatedLayers: _populatedLayers,
+                    availableLayers: calculateAvailableLayers(),
+                    populatedLayers: calculatePopulatedLayers(),
                     activeLayers: activeLayers
                 )
                 
@@ -111,14 +111,12 @@ extension HierarchyInspector.Manager {
         viewHierarchySpapshot.populatedLayers
     }
     
-    private var _availableLayers: [HierarchyInspector.Layer] {
+    private func calculateAvailableLayers() -> [HierarchyInspector.Layer] {
         hostViewController?.hierarchyInspectorLayers.uniqueValues ?? [.allViews]
     }
     
-    private var _populatedLayers: [HierarchyInspector.Layer] {
-        _availableLayers.filter {
-            $0.filter(viewHierarchy: inspectableViewHierarchy).isEmpty == false
-        }
+    private func calculatePopulatedLayers() -> [HierarchyInspector.Layer] {
+        calculateAvailableLayers().filter { $0.filter(viewHierarchy: inspectableViewHierarchy).isEmpty == false }
     }
 }
 
