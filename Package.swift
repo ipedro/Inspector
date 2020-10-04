@@ -9,8 +9,7 @@ let package = Package(
         .iOS(.v11)
     ],
     products: [
-        .library(name: "HierarchyInspector", targets: ["HierarchyInspector"]),
-        .executable(name: "HierarchyInspectorExample", targets: ["HierarchyInspectorExample"])
+        .library(name: "HierarchyInspector", targets: ["HierarchyInspector"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -22,9 +21,6 @@ let package = Package(
         .target(
             name: "HierarchyInspector",
             dependencies: []),
-        .target(
-            name: "HierarchyInspectorExample",
-            dependencies: ["HierarchyInspector"]),
         .testTarget(
             name: "HierarchyInspectorTests",
             dependencies: ["HierarchyInspector"]),
