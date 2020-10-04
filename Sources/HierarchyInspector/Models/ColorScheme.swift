@@ -11,6 +11,10 @@ extension HierarchyInspector {
     
     public struct ColorScheme {
         public static let `default` = ColorScheme { view in
+            guard view.isUserInteractionEnabled == true else {
+                return .systemGray
+            }
+            
             switch view {
             case let control as UIControl:
                 return control.isEnabled ? .systemPurple : .systemGray
@@ -19,7 +23,7 @@ extension HierarchyInspector {
                 return .systemBlue
                 
             default:
-                return view.isUserInteractionEnabled ? .systemTeal : .systemGray
+                return .systemTeal
             }
         }
         
