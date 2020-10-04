@@ -16,9 +16,9 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
     var hierarchyInspectorLayers: [HierarchyInspector.Layer] = [
         .controls - .buttons,
         .buttons,
-        .stackViews + .containerViews,
+        .staticTexts + .images,
         .textViews + .textFields,
-        .staticTexts,
+        .stackViews + .containerViews,
         .activityIndicators,
         .maps
     ]
@@ -48,6 +48,8 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
     @IBOutlet var datePickerSegmentedControl: UISegmentedControl!
     
     @IBOutlet var datePicker: UIDatePicker!
+    
+    @IBOutlet var textField: UITextField!
     
     // MARK: - Life cycle
     override func viewDidLoad() {
@@ -96,8 +98,11 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
         datePickerSegmentedControl.selectedSegmentIndex = 0
         datePicker.preferredDatePickerStyle = .automatic
     }
-        
-    // MARK: - Actions
+}
+
+// MARK: - Actions
+
+extension ViewController {
 
     @IBAction func changeDatePickerStyle(_ sender: UISegmentedControl) {
         guard let style = UIDatePickerStyle(rawValue: sender.selectedSegmentIndex) else {
@@ -108,14 +113,18 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
         
     }
     
-    @IBAction func presentInspector(_ sender: Any) {
+    @IBAction func openInspector(_ sender: Any) {
         presentHierarchyInspector(animated: true)
     }
     
-    @IBAction func slider(_ sender: UISlider) {
+    @IBAction func rotateActivityIndicator(_ sender: UISlider) {
         let angle = (sender.value - 1) * .pi
         
         activityIndicator.transform = CGAffineTransform(rotationAngle: CGFloat(angle))
+    }
+    
+    @IBAction func toggleTextField(_ sender: UISwitch) {
+        textField.isEnabled = sender.isOn
     }
     
     @objc func refresh() {
@@ -124,6 +133,8 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
         }
     }
 }
+
+// MARK: - UIScrollViewDelegate
 
 extension ViewController: UIScrollViewDelegate {
     var inspectButtonFrame: CGRect {

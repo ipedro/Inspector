@@ -41,13 +41,7 @@ class HighlightView: View {
     // MARK: - Components
     
     private lazy var label = UILabel().then {
-        
-        if #available(iOS 13.0, *) {
-            $0.textColor = .systemBackground
-        } else {
-            $0.textColor = .white
-        }
-        
+        $0.textColor = .white
         $0.font = .preferredFont(forTextStyle: .caption1)
         $0.textAlignment = .center
         $0.numberOfLines = 1

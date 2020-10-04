@@ -208,14 +208,14 @@
 		EB2D96E725280AC000A5795B /* HierarchyInspectorExample */ = {
 			isa = PBXGroup;
 			children = (
+				EB2D96F625280AC100A5795B /* Info.plist */,
 				EB2D96E825280AC000A5795B /* AppDelegate.swift */,
+				EBA245B125287B4300D4AFD9 /* CustomButton.swift */,
 				EB2D96EA25280AC000A5795B /* SceneDelegate.swift */,
 				EB2D96EC25280AC000A5795B /* ViewController.swift */,
-				EBA245B125287B4300D4AFD9 /* CustomButton.swift */,
-				EB2D96EE25280AC000A5795B /* Main.storyboard */,
 				EB2D96F125280AC100A5795B /* Assets.xcassets */,
 				EB2D96F325280AC100A5795B /* LaunchScreen.storyboard */,
-				EB2D96F625280AC100A5795B /* Info.plist */,
+				EB2D96EE25280AC000A5795B /* Main.storyboard */,
 			);
 			path = HierarchyInspectorExample;
 			sourceTree = "<group>";
