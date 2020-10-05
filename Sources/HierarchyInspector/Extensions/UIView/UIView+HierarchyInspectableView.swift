@@ -62,18 +62,4 @@ extension UIView: ViewHierarchy {
         
         return String(description)
     }
-    
-    func find(highlightViewsNamed name: String) ->  [HighlightView] {
-        subviews.compactMap {
-            guard
-                let highlightView = $0 as? HighlightView,
-                highlightView.name == name
-            else {
-                return nil
-            }
-            
-            return highlightView
-        }
-    }
-    
 }

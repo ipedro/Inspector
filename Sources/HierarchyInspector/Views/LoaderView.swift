@@ -56,6 +56,12 @@ final class LoaderView: InternalView {
         }
     }
     
+    override func layoutSubviews() {
+        highlightView.labelWidthConstraint?.isActive = false
+        
+        super.layoutSubviews()
+    }
+    
     func addInspectorViews() {
         let subviews = self.subviews
         

@@ -33,7 +33,7 @@ class HighlightView: LayerView {
         }
     }
     
-    private var labelWidthConstraint: NSLayoutConstraint? {
+    var labelWidthConstraint: NSLayoutConstraint? {
         didSet {
             guard let oldConstraint = oldValue else {
                 return
@@ -83,8 +83,8 @@ class HighlightView: LayerView {
     // MARK: - Init
     
     init(frame: CGRect, name: String, colorScheme: ColorScheme, reference: ViewHierarchyReference, borderWidth: CGFloat = 1) {
-        self.name = name
         self.colorScheme = colorScheme
+        self.name = name
         
         super.init(frame: frame, reference: reference, color: .systemGray, borderWidth: borderWidth)
     }
@@ -95,23 +95,6 @@ class HighlightView: LayerView {
     
     // MARK: - View Lifecycle
     
-    override func willMove(toSuperview newSuperview: UIView?) {
-        super.willMove(toSuperview: newSuperview)
-        
-        guard
-            newSuperview == nil,
-            let superview = superview
-        else {
-            return
-        }
-        
-        for highlightView in superview.find(highlightViewsNamed: name) where highlightView !== self {
-            highlightView.setupViews(with: superview)
-            
-            return
-        }
-    }
-    
     public override func didMoveToSuperview() {
         super.didMoveToSuperview()
         
@@ -121,17 +104,13 @@ class HighlightView: LayerView {
             return
         }
         
-        if superview.find(highlightViewsNamed: name).count == 1 {
-            setupViews(with: superview)
-        }
-        else {
-            isSafelyHidden = true
-            labelWidthConstraint = nil
-        }
+        setupViews(with: superview)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        
+        name = superview?.elementName ?? viewReference.elementName
         
         updateLabelWidth()
         
