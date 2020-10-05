@@ -10,13 +10,20 @@ import UIKit
 final class LoaderView: InternalView {
     // MARK: - Components
     
-    private lazy var activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
+    private lazy var activityIndicator = UIActivityIndicatorView(style: .whiteLarge).then {
+        $0.startAnimating()
+    }
     
     private lazy var contentView = InternalView(frame: frame)
     
     private lazy var colorScheme: ColorScheme = .colorScheme { _ in .systemBlue }
     
-    private lazy var highlightView = HighlightView(frame: bounds, name: elementName, colorScheme: colorScheme)
+    private lazy var highlightView = HighlightView(
+        frame: bounds,
+        name: elementName,
+        colorScheme: colorScheme,
+        reference: ViewHierarchyReference(view: self)
+    )
     
     // MARK: - Init
     
@@ -38,6 +45,9 @@ final class LoaderView: InternalView {
         
         layer.cornerRadius = 12
         
+        installView(activityIndicator, constraints: .allMargins(8))
+        
+        addInspectorViews()
     }
     
     override var accessibilityIdentifier: String? {
@@ -47,10 +57,12 @@ final class LoaderView: InternalView {
     }
     
     func addInspectorViews() {
-        rawViewHierarchy.forEach { element in
+        let subviews = self.subviews
+        
+        subviews.forEach { element in
             element.layer.cornerRadius = 6
             
-            let inspectorView = WireframeView(frame: element.bounds, color: .white)
+            let inspectorView = WireframeView(frame: element.bounds, reference: ViewHierarchyReference(view: element), color: .white)
             
             element.installView(inspectorView, position: .bottom)
         }

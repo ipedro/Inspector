@@ -7,4 +7,6 @@
 
 import UIKit
 
-class InternalView: UIView, HierarchyInspectorView {}
+class InternalView: UIView, HierarchyInspectorViewProtocol {
+    var shouldPresentOnTop: Bool = false
+}

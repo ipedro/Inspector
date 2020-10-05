@@ -14,13 +14,13 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
     private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(host: self)
     
     var hierarchyInspectorLayers: [HierarchyInspector.Layer] = [
-        .controls - .buttons,
+        .controls,
         .buttons,
         .staticTexts + .images,
         .textViews + .textFields,
         .stackViews + .containerViews,
         .activityIndicators,
-        .maps
+        .allViews
     ]
     
     var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme = .colorScheme { view in

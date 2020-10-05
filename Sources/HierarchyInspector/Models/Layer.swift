@@ -20,7 +20,7 @@ extension HierarchyInspector {
         
         let showLabels: Bool
         
-        let allowsInternalViews: Bool
+        let allowsSystemViews: Bool
         
         var emptyActionTitle: String {
             "No \(description) found"
@@ -29,22 +29,28 @@ extension HierarchyInspector {
         // MARK: - Init
         
         public static func layer(name: String, filter: @escaping Filter) -> Self {
-            self.init(name: name, showLabels: true, allowsInternalViews: false, filter: filter)
+            self.init(name: name, showLabels: true, allowsSystemViews: false, filter: filter)
         }
         
-        init(name: String, showLabels: Bool, allowsInternalViews: Bool = false, filter: @escaping Filter) {
+        init(name: String, showLabels: Bool, allowsSystemViews: Bool = false, filter: @escaping Filter) {
             self.name = name
             self.showLabels = showLabels
-            self.allowsInternalViews = allowsInternalViews
+            self.allowsSystemViews = allowsSystemViews
             self.filter = filter
         }
         
         // MARK: - Metods
         
+        func filter(snapshot: ViewHierarchySnapshot) -> [UIView] {
+            let inspectableViews = snapshot.inspectableViewHierarchy.compactMap { $0.view }
+            
+            return filter(viewHierarchy: inspectableViews)
+        }
+
         func filter(viewHierarchy: [UIView]) -> [UIView] {
             let filteredViews = viewHierarchy.filter(filter)
             
-            switch allowsInternalViews {
+            switch allowsSystemViews {
             case true:
                 return filteredViews
                 
@@ -65,7 +71,7 @@ extension HierarchyInspector.Layer {
     
     #if DEBUG
     #warning("TODO: investigate if this `if` clause makes sense")
-    static let internalViews = HierarchyInspector.Layer(name: "Internal views", showLabels: true, allowsInternalViews: true) { $0.isSystemView }
+    static let internalViews = HierarchyInspector.Layer(name: "Internal views", showLabels: true, allowsSystemViews: true) { $0.isSystemView }
     #endif
     
 }

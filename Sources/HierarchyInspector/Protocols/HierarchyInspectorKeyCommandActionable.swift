@@ -42,11 +42,11 @@ extension HierarchyInspectorKeyCommandPresentable {
             return []
         }
 
-        let start = Date()
-
-        defer {
-            print("[Hierarchy Inspector] \(String(describing: classForCoder)): calculated KeyCommands in \(Date().timeIntervalSince(start)) seconds")
-        }
+//        let start = Date()
+//
+//        defer {
+//            print("[Hierarchy Inspector] \(String(describing: classForCoder)): calculated KeyCommands in \(Date().timeIntervalSince(start)) seconds")
+//        }
 
         var keyCommands = [UIKeyCommand]()
 

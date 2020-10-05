@@ -49,7 +49,7 @@ final class CustomButton: UIButton {
         
         let delay = type == .in ? 0 : 0.15
         
-        UIView.animate(withDuration: 0.2, delay: delay) {
+        UIView.animate(withDuration: 0.2, delay: delay, animations: {
             switch type {
             case .in:
                 self.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
@@ -57,6 +57,6 @@ final class CustomButton: UIButton {
             case .out:
                 self.transform = .identity
             }
-        }
+        })
     }
 }

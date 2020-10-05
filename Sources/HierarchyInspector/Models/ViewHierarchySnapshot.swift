@@ -5,7 +5,7 @@
 //  Created by Pedro Almeida on 03.10.20.
 //
 
-import Foundation
+import UIKit
 
 struct ViewHierarchySnapshot {
     
@@ -13,18 +13,33 @@ struct ViewHierarchySnapshot {
     
     static var cacheExpirationTimeInSeconds: Double = 5
     
+    let expiryDate: Date = Date().addingTimeInterval(Self.cacheExpirationTimeInSeconds)
+    
     let availableLayers: [HierarchyInspector.Layer]
     
     let populatedLayers: [HierarchyInspector.Layer]
     
-    var emptyLayers: [HierarchyInspector.Layer] {
-        Array(Set(availableLayers).subtracting(populatedLayers))
+    let emptyLayers: [HierarchyInspector.Layer]
+    
+    let rootReference: ViewHierarchyReference
+    
+    let inspectableViewHierarchy: [ViewHierarchyReference]
+    
+    init(availableLayers: [HierarchyInspector.Layer], in rootView: UIView) {
+        self.availableLayers = availableLayers
+        
+        rootReference = ViewHierarchyReference(view: rootView)
+        
+        inspectableViewHierarchy = rootReference.inspectableViewHierarchy
+        
+        let inspectableViews = rootReference.inspectableViewHierarchy.compactMap { $0.view }
+        
+        populatedLayers = availableLayers.filter { $0.filter(viewHierarchy: inspectableViews).isEmpty == false }
+        
+        emptyLayers = Array(Set(availableLayers).subtracting(populatedLayers))
     }
     
-    let activeLayers: [HierarchyInspector.Layer]
-    
-    let expiryDate: Date = Date().addingTimeInterval(Self.cacheExpirationTimeInSeconds)
-    
-    #warning("consider keeping weak reference to views, or wrapper with metadata")
-    //let filteredViews: [UIView] // TODO: would create strong reference, consider workaround wrapper
+    var inspectableViews: [UIView] {
+        rootReference.inspectableViewHierarchy.compactMap { $0.view }
+    }
 }

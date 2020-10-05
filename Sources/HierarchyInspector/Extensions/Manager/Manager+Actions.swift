@@ -12,15 +12,17 @@ import Foundation
 extension HierarchyInspector.Manager {
     
     var availableActions: [ActionGroup] {
+        guard let viewHierarchySnapshot = self.viewHierarchySnapshot else {
+            return []
+        }
+        
         var actionGroups = [ActionGroup]()
         
-        let viewHierarchySpapshot = self.viewHierarchySpapshot
-        
         // layer actions
-        actionGroups.append(layerActions(for: viewHierarchySpapshot))
+        actionGroups.append(layerActions(for: viewHierarchySnapshot))
         
         // other actions
-        actionGroups.append(otherActions(for: viewHierarchySpapshot))
+        actionGroups.append(otherActions(for: viewHierarchySnapshot))
         
         return actionGroups
     }

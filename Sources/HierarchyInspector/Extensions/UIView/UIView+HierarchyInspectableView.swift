@@ -1,5 +1,5 @@
 //
-//  UIView+HierarchyInspectableView.swift
+//  UIView+ViewHierarchy.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -7,22 +7,22 @@
 
 import UIKit
 
-// MARK: - HierarchyInspectableView
+// MARK: - ViewHierarchy@objc 
 
-extension UIView: HierarchyInspectableView {
-    
-    var rawViewHierarchy: [UIView] {
-        subviews + subviews.flatMap { $0.rawViewHierarchy }
-    }
-    
-    var inspectableViewHierarchy: [HierarchyInspectableView] {
-        ([self] + rawViewHierarchy).filter { $0.canHostInspectorView }
-    }
-    
-    var originalSubviews: [UIView] {
-        subviews.filter { $0 is View == false }
-    }
+extension UIView: ViewHierarchy {
+    var canPresentOnTop: Bool {
+        switch self {
+        case is UITextView:
+            return true
 
+        case is UIScrollView:
+            return false
+
+        default:
+            return true
+        }
+    }
+    
     var canHostInspectorView: Bool {
         guard
             // Adding subviews directly to a UIVisualEffectView throws runtime exception.
@@ -38,8 +38,8 @@ extension UIView: HierarchyInspectableView {
             superview?.className != "UIViewControllerWrapperView",
             
             // Skip hierarchy inspector internal strcutures.
-            self is HierarchyInspectorView == false,
-            superview is HierarchyInspectorView == false
+            self is HierarchyInspectorViewProtocol == false,
+            superview is HierarchyInspectorViewProtocol == false
         else {
             return false
         }
@@ -62,4 +62,18 @@ extension UIView: HierarchyInspectableView {
         
         return String(description)
     }
+    
+    func find(highlightViewsNamed name: String) ->  [HighlightView] {
+        subviews.compactMap {
+            guard
+                let highlightView = $0 as? HighlightView,
+                highlightView.name == name
+            else {
+                return nil
+            }
+            
+            return highlightView
+        }
+    }
+    
 }

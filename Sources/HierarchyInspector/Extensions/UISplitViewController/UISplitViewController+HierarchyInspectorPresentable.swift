@@ -13,7 +13,7 @@ extension UISplitViewController: HierarchyInspectorPresentable {
     public var hierarchyInspectorManager: HierarchyInspector.Manager {
         guard
             let existingManager = Self.currentHierarchyInspectorManager,
-            existingManager.hostViewController === self
+            existingManager.containerViewController === self
         else {
             
             let newManager = HierarchyInspector.Manager(host: self)

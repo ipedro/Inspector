@@ -15,7 +15,7 @@ extension HierarchyInspector.Layer: AdditiveArithmetic {
         HierarchyInspector.Layer(
             name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",-"),
             showLabels: lhs.showLabels,
-            allowsInternalViews: lhs.allowsInternalViews
+            allowsSystemViews: lhs.allowsSystemViews
         ) {
             lhs.filter($0) && rhs.filter($0) == false
         }
@@ -25,7 +25,7 @@ extension HierarchyInspector.Layer: AdditiveArithmetic {
         HierarchyInspector.Layer(
             name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",+"),
             showLabels: lhs.showLabels,
-            allowsInternalViews: lhs.allowsInternalViews
+            allowsSystemViews: lhs.allowsSystemViews
         ) {
             lhs.filter($0) || rhs.filter($0)
         }

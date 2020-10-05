@@ -14,9 +14,10 @@ final class EmptyView: HighlightView {
         frame: CGRect,
         name: String,
         colorScheme: ColorScheme = defaultColorScheme,
+        reference: ViewHierarchyReference,
         borderWidth: CGFloat = HierarchyInspector.configuration.appearance.emptyLayerBorderWidth
     ) {
-        super.init(frame: frame, name: name, colorScheme: colorScheme, borderWidth: borderWidth)
+        super.init(frame: frame, name: name, colorScheme: colorScheme, reference: reference, borderWidth: borderWidth)
     }
     
     required init?(coder: NSCoder) {

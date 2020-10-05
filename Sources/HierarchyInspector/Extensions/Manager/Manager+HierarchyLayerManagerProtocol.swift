@@ -14,21 +14,23 @@ extension HierarchyInspector.Manager: HierarchyLayerManagerProtocol {
     // MARK: - Install
     
     public func installLayer(_ layer: HierarchyInspector.Layer) {
-        let filteredViewHierarchy = layer.filter(viewHierarchy: inspectableViewHierarchy)
+        guard let viewHierarchySnapshot = viewHierarchySnapshot else {
+            return
+        }
         
-        async(operation: "Adding \(layer.name)") {
-            self.create(layer: layer, filteredViewHierarchy: filteredViewHierarchy)
+        asyncOperation(name: layer.selectedActionTitle) {
+            self.create(layer: layer, for: viewHierarchySnapshot)
         }
     }
     
     public func installAllLayers() {
-        async(operation: Texts.showAllLayers) {
-            let inspectableViewHierarchy = self.inspectableViewHierarchy
-            
+        guard let viewHierarchySnapshot = viewHierarchySnapshot else {
+            return
+        }
+        
+        asyncOperation(name: Texts.showAllLayers) {
             self.populatedLayers.forEach { layer in
-                let filteredViewHierarchy = layer.filter(viewHierarchy: inspectableViewHierarchy)
-                
-                self.create(layer: layer, filteredViewHierarchy: filteredViewHierarchy)
+                self.create(layer: layer, for: viewHierarchySnapshot)
             }
         }
     }
@@ -36,15 +38,13 @@ extension HierarchyInspector.Manager: HierarchyLayerManagerProtocol {
     // MARK: - Remove
     
     public func removeAllLayers() {
-        async(operation: Texts.hideVisibleLayers) {
-            for layer in self.inspectorViewsForLayers.keys {
-                self.destroy(layer: layer)
-            }
+        asyncOperation(name: Texts.hideVisibleLayers) {
+            self.destroyAllLayers()
         }
     }
 
     public func removeLayer(_ layer: HierarchyInspector.Layer) {
-        async(operation: "Hiding \(layer.name)") {
+        asyncOperation(name: layer.unselectedActionTitle) {
             self.destroy(layer: layer)
         }
     }

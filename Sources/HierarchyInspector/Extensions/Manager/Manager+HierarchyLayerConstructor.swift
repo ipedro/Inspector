@@ -18,61 +18,20 @@ extension HierarchyInspector.Manager: HierarchyLayerConstructor {
     // MARK: - Create
     
     @discardableResult
-    func create(layer: HierarchyInspector.Layer, filteredViewHierarchy: [UIView]) -> Bool {
-        guard
-            let hostViewController = hostViewController,
-            inspectorViewsForLayers[layer] == nil
-        else {
+    func create(layer: HierarchyInspector.Layer, for viewHierarchySnapshot: ViewHierarchySnapshot) -> Bool {
+        guard viewHierarchyReferences[layer] == nil else {
             return false
         }
         
-        inspectorViewsForLayers[layer] = []
-        
-        if layer != .wireframes, inspectorViewsForLayers.keys.contains(.wireframes) == false {
-            create(layer: .wireframes, filteredViewHierarchy: hostViewController.view.inspectableViewHierarchy)
+        if layer != .wireframes, viewHierarchyReferences.keys.contains(.wireframes) == false {
+            create(layer: .wireframes, for: viewHierarchySnapshot)
         }
         
-        guard filteredViewHierarchy.isEmpty == false else {
-            let inspectorView = EmptyView(frame: hostViewController.view.frame, name: layer.emptyActionTitle)
-
-            insert(inspectorView, for: layer, in: hostViewController.view, onTop: true)
-            return true
-        }
+        let filteredHirerarchy = layer.filter(snapshot: viewHierarchySnapshot)
         
-        guard layer.showLabels else {
-            filteredViewHierarchy.forEach { element in
-                let inspectorView = WireframeView(frame: element.bounds)
-                
-                insert(inspectorView, for: layer, in: element, onTop: false)
-            }
-            return true
-        }
+        let viewHierarchyRefences = filteredHirerarchy.map { ViewHierarchyReference(view: $0) }
         
-        filteredViewHierarchy.forEach { element in
-            let inspectorView = HighlightView(
-                frame: element.bounds,
-                name: element === hostViewController.view ? element.className : element.elementName,
-                colorScheme: hostViewController.hierarchyInspectorColorScheme
-            )
-            
-            var canPresentOnTop: Bool {
-                switch element {
-                case hostViewController.view:
-                    return false
-                    
-                case is UITextView:
-                    return true
-                    
-                case is UIScrollView:
-                    return false
-                    
-                default:
-                    return true
-                }
-            }
-            
-            insert(inspectorView, for: layer, in: element, onTop: canPresentOnTop)
-        }
+        viewHierarchyReferences.updateValue(viewHierarchyRefences, forKey: layer)
         
         return true
     }
@@ -81,34 +40,20 @@ extension HierarchyInspector.Manager: HierarchyLayerConstructor {
     
     @discardableResult
     func destroyAllLayers() -> Bool {
-        inspectorViewsForLayers.removeAll()
+        viewHierarchyReferences.removeAll()
         
         return true
     }
     
     @discardableResult
     func destroy(layer: HierarchyInspector.Layer) -> Bool {
-        inspectorViewsForLayers.removeValue(forKey: layer)
+        viewHierarchyReferences.removeValue(forKey: layer)
         
-        if Array(inspectorViewsForLayers.keys) == [.wireframes] {
-            inspectorViewsForLayers.removeValue(forKey: .wireframes)
+        if Array(viewHierarchyReferences.keys) == [.wireframes] {
+            viewHierarchyReferences.removeValue(forKey: .wireframes)
         }
         
         return true
-    }
-    
-}
-
-private extension HierarchyInspector.Manager {
-    
-    func insert(_ inspectorView: View, for layer: HierarchyInspector.Layer, in element: HierarchyInspectableView, onTop: Bool) {
-        element.installView(inspectorView, position: .top) // TODO: make not set margins
-        
-        var views = inspectorViewsForLayers[layer] ?? []
-        
-        views.append(inspectorView)
-        
-        inspectorViewsForLayers[layer] = views
     }
     
 }

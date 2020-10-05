@@ -7,13 +7,14 @@
 
 import UIKit
 
-final class WireframeView: View {
+final class WireframeView: LayerView {
     override init(
         frame: CGRect,
+        reference: ViewHierarchyReference,
         color: UIColor = HierarchyInspector.configuration.appearance.wireframeLayerColor,
         borderWidth: CGFloat = HierarchyInspector.configuration.appearance.wireframeLayerBorderWidth
     ) {
-        super.init(frame: frame, color: color, borderWidth: borderWidth)
+        super.init(frame: frame, reference: reference, color: color, borderWidth: borderWidth)
     }
     
     required init?(coder: NSCoder) {

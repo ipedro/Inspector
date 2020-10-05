@@ -7,7 +7,12 @@
 
 import UIKit
 
-class HighlightView: View {
+class HighlightView: LayerView {
+    
+    override var shouldPresentOnTop: Bool {
+        true
+    }
+    
     // MARK: - Properties
     
     var name: String {
@@ -41,18 +46,19 @@ class HighlightView: View {
     // MARK: - Components
     
     private lazy var label = UILabel().then {
-        $0.textColor = .white
-        $0.font = .preferredFont(forTextStyle: .caption1)
-        $0.textAlignment = .center
-        $0.numberOfLines = 1
-        $0.adjustsFontSizeToFitWidth = true
         $0.setContentHuggingPriority(.required, for: .horizontal)
-        $0.minimumScaleFactor  = 0.6
         
-        $0.layer.shadowOffset  = CGSize(width: 0, height: 1)
-        $0.layer.shadowColor   = UIColor.black.cgColor
-        $0.layer.shadowRadius  = 0.8
-        $0.layer.shadowOpacity = 0.4
+        $0.textColor                 = .white
+        $0.font                      = .preferredFont(forTextStyle: .caption1)
+        $0.textAlignment             = .center
+        $0.numberOfLines             = 1
+        $0.adjustsFontSizeToFitWidth = true
+        $0.minimumScaleFactor        = 0.6
+        
+        $0.layer.shadowOffset        = CGSize(width: 0, height: 1)
+        $0.layer.shadowColor         = UIColor.black.cgColor
+        $0.layer.shadowRadius        = 0.8
+        $0.layer.shadowOpacity       = 0.4
     }
     
     private lazy var labelContentView = InternalView().then {
@@ -76,11 +82,11 @@ class HighlightView: View {
     
     // MARK: - Init
     
-    init(frame: CGRect, name: String, colorScheme: ColorScheme, borderWidth: CGFloat = 1) {
+    init(frame: CGRect, name: String, colorScheme: ColorScheme, reference: ViewHierarchyReference, borderWidth: CGFloat = 1) {
         self.name = name
         self.colorScheme = colorScheme
         
-        super.init(frame: frame, color: .systemGray, borderWidth: borderWidth)
+        super.init(frame: frame, reference: reference, color: .systemGray, borderWidth: borderWidth)
     }
     
     required init?(coder: NSCoder) {
@@ -89,7 +95,7 @@ class HighlightView: View {
     
     // MARK: - View Lifecycle
     
-    override func willMove(toSuperview newSuperview: UIView?) { // swiftlint:disable:this delegate_method_naming
+    override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
         
         guard
@@ -106,7 +112,7 @@ class HighlightView: View {
         }
     }
     
-    public override func didMoveToSuperview() { // swiftlint:disable:this delegate_method_naming
+    public override func didMoveToSuperview() {
         super.didMoveToSuperview()
         
         guard let superview = superview else {
@@ -153,11 +159,10 @@ private extension HighlightView {
         
         label.text = name
         
-        let constraint = label.widthAnchor.constraint(equalToConstant: frame.width)
-        constraint.priority = .defaultHigh
-        constraint.isActive = true
-        
-        labelWidthConstraint = constraint
+        labelWidthConstraint = label.widthAnchor.constraint(equalToConstant: frame.width).then {
+            $0.priority = .defaultHigh
+            $0.isActive = true
+        }
         
         isSafelyHidden = false
     }

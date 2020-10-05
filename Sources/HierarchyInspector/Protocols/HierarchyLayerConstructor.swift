@@ -11,7 +11,7 @@ protocol HierarchyLayerConstructor {
     func isShowingLayer(_ layer: HierarchyInspector.Layer) -> Bool
     
     @discardableResult
-    func create(layer: HierarchyInspector.Layer, filteredViewHierarchy: [UIView]) -> Bool
+    func create(layer: HierarchyInspector.Layer, for viewHierarchySnapshot: ViewHierarchySnapshot) -> Bool
     
     @discardableResult
     func destroy(layer: HierarchyInspector.Layer) -> Bool

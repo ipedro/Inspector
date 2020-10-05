@@ -1,5 +1,5 @@
 //
-//  View.swift
+//  LayerView.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -7,7 +7,9 @@
 
 import UIKit
 
-class View: UIImageView, HierarchyInspectorView {
+class LayerView: UIImageView, HierarchyInspectorViewProtocol {
+    open var shouldPresentOnTop: Bool { false }
+    
     // MARK: - Properties
     
     var color: UIColor {
@@ -22,9 +24,12 @@ class View: UIImageView, HierarchyInspectorView {
     
     let borderWidth: CGFloat
     
+    let viewReference: ViewHierarchyReference
+    
     // MARK: - Init
     
-    init(frame: CGRect, color: UIColor, borderWidth: CGFloat) {
+    init(frame: CGRect, reference: ViewHierarchyReference, color: UIColor, borderWidth: CGFloat) {
+        self.viewReference = reference
         self.color = color
         self.borderWidth = borderWidth
         
@@ -49,7 +54,7 @@ class View: UIImageView, HierarchyInspectorView {
     
     // MARK: - View Lifecycle
     
-    public override func didMoveToSuperview() { // swiftlint:disable:this delegate_method_naming
+    public override func didMoveToSuperview() {
         super.didMoveToSuperview()
         
         guard let superview = superview else {

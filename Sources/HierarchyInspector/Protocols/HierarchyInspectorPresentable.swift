@@ -39,12 +39,18 @@ extension HierarchyInspectorPresentable {
         
         let start = Date()
         
-        hierarchyInspectorManager.async(operation: "Calculating hierarchy") { [weak self] in
+        hierarchyInspectorManager.asyncOperation(name: "Calculating hierarchy") { [weak self] in
             guard let self = self else {
                 return
             }
             
-            guard let alertController = self.makeAlertController(for: self.hierarchyInspectorManager, inspecting: inspecting) else {
+            guard
+                let alertController = self.makeAlertController(
+                    with: self.hierarchyInspectorManager.availableActions,
+                    in: self.hierarchyInspectorManager.viewHierarchySnapshot,
+                    inspecting: inspecting
+                )
+            else {
                 return
             }
             
@@ -56,15 +62,18 @@ extension HierarchyInspectorPresentable {
         }
     }
     
-    // TODO: break up method. create structures or fabricator
-    private func makeAlertController(for manager: HierarchyInspector.Manager, inspecting: Bool) -> UIAlertController? {
-        guard let hostViewController = manager.hostViewController else {
+    private func makeAlertController(
+        with actionGroups: [HierarchyInspector.Manager.ActionGroup],
+        in snapshot: ViewHierarchySnapshot?,
+        inspecting: Bool
+    ) -> UIAlertController? {
+        guard let snapshot = snapshot else {
             return nil
         }
         
         let alertController = UIAlertController(
             title: Texts.hierarchyInspector,
-            message: "\(manager.inspectableViewHierarchy.count) inspectable views in \(hostViewController.view.className)",
+            message: "\(snapshot.inspectableViewHierarchy.count) inspectable views in \(snapshot.rootReference.className)",
             preferredStyle: .alert
         ).then {
             if #available(iOS 13.0, *) {
@@ -80,7 +89,7 @@ extension HierarchyInspectorPresentable {
         )
         
         // Manager actions
-        manager.availableActions.forEach { group in
+        actionGroups.forEach { group in
             group.alertActions.forEach { alertController.addAction($0) }
         }
         
