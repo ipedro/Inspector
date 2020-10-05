@@ -11,7 +11,7 @@ struct ViewHierarchySnapshot {
     
     // MARK: - Properties
     
-    static var cacheExpirationTimeInSeconds: Double = 5
+    static var cacheExpirationTimeInSeconds: Double = 0.50
     
     let expiryDate: Date = Date().addingTimeInterval(Self.cacheExpirationTimeInSeconds)
     
@@ -21,25 +21,25 @@ struct ViewHierarchySnapshot {
     
     let emptyLayers: [HierarchyInspector.Layer]
     
-    let rootReference: ViewHierarchyReference
+    let viewHierarchy: ViewHierarchyReference
     
-    let inspectableViewHierarchy: [ViewHierarchyReference]
+    let flattenedViewHierarchy: [ViewHierarchyReference]
     
     init(availableLayers: [HierarchyInspector.Layer], in rootView: UIView) {
         self.availableLayers = availableLayers
         
-        rootReference = ViewHierarchyReference(view: rootView)
+        viewHierarchy = ViewHierarchyReference(view: rootView)
         
-        inspectableViewHierarchy = rootReference.inspectableViewHierarchy
+        flattenedViewHierarchy = viewHierarchy.flattenedInspectableViews
         
-        let inspectableViews = rootReference.inspectableViewHierarchy.compactMap { $0.view }
+        let inspectableViews = viewHierarchy.flattenedInspectableViews.compactMap { $0.view }
         
-        populatedLayers = availableLayers.filter { $0.filter(viewHierarchy: inspectableViews).isEmpty == false }
+        populatedLayers = availableLayers.filter { $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false }
         
         emptyLayers = Array(Set(availableLayers).subtracting(populatedLayers))
     }
     
     var inspectableViews: [UIView] {
-        rootReference.inspectableViewHierarchy.compactMap { $0.view }
+        viewHierarchy.flattenedInspectableViews.compactMap { $0.view }
     }
 }

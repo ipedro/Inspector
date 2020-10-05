@@ -42,13 +42,13 @@ extension HierarchyInspector {
         // MARK: - Metods
         
         func filter(snapshot: ViewHierarchySnapshot) -> [UIView] {
-            let inspectableViews = snapshot.inspectableViewHierarchy.compactMap { $0.view }
+            let inspectableViews = snapshot.flattenedViewHierarchy.compactMap { $0.view }
             
-            return filter(viewHierarchy: inspectableViews)
+            return filter(flattenedViewHierarchy: inspectableViews)
         }
 
-        func filter(viewHierarchy: [UIView]) -> [UIView] {
-            let filteredViews = viewHierarchy.filter(filter)
+        func filter(flattenedViewHierarchy: [UIView]) -> [UIView] {
+            let filteredViews = flattenedViewHierarchy.filter(filter)
             
             switch allowsSystemViews {
             case true:

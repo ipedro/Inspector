@@ -53,7 +53,7 @@ extension ViewHierarchyReference: ViewHierarchy {
         return array
     }
     
-    var inspectableViewHierarchy: [ViewHierarchyReference] {
+    var flattenedInspectableViews: [ViewHierarchyReference] {
         let array = ([self] + viewHierarchy).filter { $0.canHostInspectorView }
         
         return array

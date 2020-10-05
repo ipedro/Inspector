@@ -73,7 +73,7 @@ extension HierarchyInspectorPresentable {
         
         let alertController = UIAlertController(
             title: Texts.hierarchyInspector,
-            message: "\(snapshot.inspectableViewHierarchy.count) inspectable views in \(snapshot.rootReference.className)",
+            message: "\(snapshot.flattenedViewHierarchy.count) inspectable views in \(snapshot.viewHierarchy.className)",
             preferredStyle: .alert
         ).then {
             if #available(iOS 13.0, *) {
