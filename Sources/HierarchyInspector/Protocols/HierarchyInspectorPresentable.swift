@@ -71,6 +71,8 @@ extension HierarchyInspectorPresentable {
             return nil
         }
         
+        UIAlertController.sharedHierarchyInspectorManager = nil
+        
         let alertController = UIAlertController(
             title: Texts.hierarchyInspector,
             message: "\(snapshot.flattenedViewHierarchy.count) inspectable views in \(snapshot.viewHierarchy.className)",
@@ -96,7 +98,6 @@ extension HierarchyInspectorPresentable {
                     title: inspecting ? Texts.stopInspecting : Texts.inspect("Hierarchy Inspector"),
                     style: .default
                 ) { [weak self] action in
-                    
                     self?.presentHierarchyInspector(animated: true, inspecting: !inspecting)
                 }
             )

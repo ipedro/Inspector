@@ -20,7 +20,7 @@ extension HierarchyInspector.Layer: Actionable {
     }
 
     var emptyActionTitle: String {
-        "☒ No \(description) found"
+        "☐ No \(description) found"
     }
     
 }

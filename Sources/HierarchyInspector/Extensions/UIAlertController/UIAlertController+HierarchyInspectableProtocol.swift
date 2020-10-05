@@ -12,12 +12,12 @@ import UIKit
 extension UIAlertController: HierarchyInspectorPresentable {
     public var hierarchyInspectorManager: HierarchyInspector.Manager {
         guard
-            let existingManager = Self.currentHierarchyInspectorManager,
+            let existingManager = Self.sharedHierarchyInspectorManager,
             existingManager.containerViewController === self
         else {
             
             let newManager = HierarchyInspector.Manager(host: self)
-            Self.currentHierarchyInspectorManager = newManager
+            Self.sharedHierarchyInspectorManager = newManager
             
             return newManager
         }
@@ -55,14 +55,14 @@ extension UIAlertController: HierarchyInspectorPresentable {
     }
 }
 
-private extension UIAlertController {
-    static var currentHierarchyInspectorManager: HierarchyInspector.Manager? {
+extension UIAlertController {
+    static var sharedHierarchyInspectorManager: HierarchyInspector.Manager? {
         didSet {
             guard let previousManager = oldValue else {
                 return
             }
 
-            previousManager.removeAllLayers()
+            previousManager.invalidate()
         }
     }
 }

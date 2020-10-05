@@ -80,9 +80,15 @@ extension HierarchyInspector {
         }
         
         func invalidate() {
+            hostViewController = nil
+            
+            cachedViewHierarchySnapshot = nil
+            
             viewHierarchyReferences.removeAll()
             
-            hostViewController = nil
+            wireframeViews.removeAll()
+            
+            inspectorViews.removeAll()
             
             operationQueue.cancelAllOperations()
         }
