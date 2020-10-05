@@ -84,7 +84,7 @@ extension HierarchyInspector {
             
             hostViewController = nil
             
-             operationQueue.cancelAllOperations()
+            operationQueue.cancelAllOperations()
         }
         
         struct Operation {
@@ -130,17 +130,18 @@ extension HierarchyInspector.Manager {
 
 extension HierarchyInspector.Manager {
     var containerViewController: HierarchyInspectableProtocol? {
-        containerViewControllerHierarchy.first
+        hostViewController
+//        containerViewControllerHierarchy.first
     }
     
-    var containerViewControllerHierarchy: [HierarchyInspectorPresentable] {
-        [
-            hostViewController?.splitViewController,
-            hostViewController?.tabBarController,
-            hostViewController?.navigationController,
-            hostViewController
-        ].compactMap { $0 as? HierarchyInspectorPresentable }
-    }
+//    var containerViewControllerHierarchy: [HierarchyInspectorPresentable] {
+//        [
+//            hostViewController?.splitViewController,
+//            hostViewController?.tabBarController,
+//            hostViewController?.navigationController,
+//            hostViewController
+//        ].compactMap { $0 as? HierarchyInspectorPresentable }
+//    }
 }
 
 // MARK: - Private Helpers
@@ -173,13 +174,13 @@ private extension HierarchyInspector.Manager {
     
     func updateLayerViews(to newValue: [ViewHierarchyReference : LayerView], from oldValue: [ViewHierarchyReference : LayerView]) {
         
-        let viewReferences = Set<ViewHierarchyReference>(newValue.keys)
+        let viewReferences    = Set<ViewHierarchyReference>(newValue.keys)
         
         let oldViewReferences = Set<ViewHierarchyReference>(oldValue.keys)
         
         let removedReferences = oldViewReferences.subtracting(viewReferences)
         
-        let newReferences = viewReferences.subtracting(oldViewReferences)
+        let newReferences     = viewReferences.subtracting(oldViewReferences)
         
         removedReferences.forEach {
             guard let layerView = oldValue[$0] else {
@@ -202,6 +203,7 @@ private extension HierarchyInspector.Manager {
     }
     
     func removeReferences(for removedLayers: Set<HierarchyInspector.Layer>, in oldValue: [HierarchyInspector.Layer: [ViewHierarchyReference]]) {
+        
         var removedReferences = [ViewHierarchyReference]()
         
         removedLayers.forEach { layer in
