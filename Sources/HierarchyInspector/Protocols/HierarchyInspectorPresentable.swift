@@ -39,7 +39,7 @@ extension HierarchyInspectorPresentable {
         
         let start = Date()
         
-        hierarchyInspectorManager.asyncOperation(name: "Calculating hierarchy") { [weak self] in
+        hierarchyInspectorManager.asyncOperation(name: "Loading") { [weak self] in
             guard let self = self else {
                 return
             }
@@ -92,6 +92,20 @@ extension HierarchyInspectorPresentable {
         actionGroups.forEach { group in
             group.alertActions.forEach { alertController.addAction($0) }
         }
+        
+        #if DEBUG
+        if self is UIAlertController == false {
+            alertController.addAction(
+                UIAlertAction(
+                    title: inspecting ? Texts.stopInspecting : Texts.inspect("Hierarchy Inspector"),
+                    style: .default
+                ) { [weak self] action in
+                    
+                    self?.presentHierarchyInspector(animated: true, inspecting: !inspecting)
+                }
+            )
+        }
+        #endif
         
         // Alert controller inspection
         if inspecting {
