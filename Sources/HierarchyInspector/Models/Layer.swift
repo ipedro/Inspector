@@ -22,10 +22,6 @@ extension HierarchyInspector {
         
         let allowsSystemViews: Bool
         
-        var emptyActionTitle: String {
-            "No \(description) found"
-        }
-        
         // MARK: - Init
         
         public static func layer(name: String, filter: @escaping Filter) -> Self {

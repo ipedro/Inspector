@@ -76,11 +76,7 @@ extension HierarchyInspectorPresentable {
             message: "\(snapshot.flattenedViewHierarchy.count) inspectable views in \(snapshot.viewHierarchy.className)",
             preferredStyle: .alert
         ).then {
-            if #available(iOS 13.0, *) {
-                $0.view.tintColor = .label
-            } else {
-                $0.view.tintColor = .darkText
-            }
+            $0.view.tintColor = .systemPurple
         }
         
         // Close button

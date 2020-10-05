@@ -12,11 +12,15 @@ import UIKit
 extension HierarchyInspector.Layer: Actionable {
     
     var unselectedActionTitle: String {
-        "[﹣] \(description)" // ☑️
+        "☐ \(description)"
     }
     
     var selectedActionTitle: String {
-        "[✓] \(description)" // ✅
+        "☑ \(description)"
+    }
+
+    var emptyActionTitle: String {
+        "☒ No \(description) found"
     }
     
 }
