@@ -43,6 +43,17 @@ class HighlightView: LayerView {
         }
     }
     
+    var verticalAlignmentOffset: CGFloat {
+        get {
+            verticalAlignmentConstraint.constant
+        }
+        set {
+            verticalAlignmentConstraint.constant = newValue
+        }
+    }
+    
+    private lazy var verticalAlignmentConstraint = labelContainerView.centerYAnchor.constraint(equalTo: centerYAnchor)
+    
     // MARK: - Components
     
     private lazy var label = UILabel().then {
@@ -134,7 +145,9 @@ private extension HighlightView {
         
         layerBorderColor = color.withAlphaComponent(0.7)
         
-        installView(labelContainerView, constraints: .centerXY)
+        installView(labelContainerView, constraints: .centerX)
+        
+        verticalAlignmentConstraint.isActive = true
         
         label.text = name
         

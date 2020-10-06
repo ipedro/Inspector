@@ -12,6 +12,7 @@ enum ViewPosition {
 }
 
 enum ViewConstraints {
+    case centerX
     case centerXY
     case allMargins(CGFloat = .zero)
     case margins(horizontal: CGFloat = .zero, vertical: CGFloat = .zero)
@@ -39,6 +40,11 @@ extension UIView {
         let constraints: [NSLayoutConstraint]
         
         switch constraintOptions {
+        case .centerX:
+            constraints = [
+                view.centerXAnchor.constraint(equalTo: centerXAnchor)
+            ]
+        
         case .centerXY:
             constraints = [
                 view.centerXAnchor.constraint(equalTo: centerXAnchor),

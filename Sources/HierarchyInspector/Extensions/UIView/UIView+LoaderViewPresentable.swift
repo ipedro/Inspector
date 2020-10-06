@@ -13,10 +13,22 @@ extension UIView: LoaderViewPresentable {
     
     func showActivityIndicator(for operation: HierarchyInspector.Manager.Operation) {
         let loaderView = LoaderView.dequeueLoaderView(for: operation, in: self)
+        loaderView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
         
         addSubview(loaderView)
         
         installView(loaderView, constraints: .centerXY)
+        
+        UIView.animate(
+            withDuration: 0.33,
+            delay: 0,
+            usingSpringWithDamping: 0.85,
+            initialSpringVelocity: 30,
+            options: .beginFromCurrentState,
+            animations: {
+                loaderView.transform = .identity
+            }
+        )
     }
     
     func removeActivityIndicator(for operation: HierarchyInspector.Manager.Operation) {

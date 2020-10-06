@@ -28,7 +28,7 @@ struct ViewHierarchySnapshot {
     init(availableLayers: [HierarchyInspector.Layer], in rootView: UIView) {
         self.availableLayers = availableLayers.uniqueValues
         
-        viewHierarchy = ViewHierarchyReference(view: rootView)
+        viewHierarchy = ViewHierarchyReference(root: rootView)
         
         flattenedViewHierarchy = viewHierarchy.flattenedInspectableViews
         

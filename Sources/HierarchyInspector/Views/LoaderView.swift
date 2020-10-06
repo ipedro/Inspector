@@ -11,18 +11,18 @@ final class LoaderView: InternalView {
     // MARK: - Components
     
     private lazy var activityIndicator = UIActivityIndicatorView(style: .whiteLarge).then {
-        $0.hidesWhenStopped   = true
+        $0.hidesWhenStopped = true
         
         $0.startAnimating()
     }
     
     private lazy var checkmarkLabel = UILabel().then {
         $0.adjustsFontSizeToFitWidth = true
-        $0.font               = .systemFont(ofSize: 50, weight: .medium)
-        $0.text               = "✓"
-        $0.textColor          = .white
-        $0.textAlignment      = .center
-        $0.isSafelyHidden     = true
+        $0.font = .systemFont(ofSize: 32, weight: .semibold)
+        $0.text = "✓"
+        $0.textColor = .white
+        $0.textAlignment = .center
+        $0.isSafelyHidden = true
     }
     
     private lazy var colorScheme: ColorScheme = .colorScheme { _ in .systemBlue }
@@ -31,10 +31,16 @@ final class LoaderView: InternalView {
         frame: bounds,
         name: elementName,
         colorScheme: colorScheme,
-        reference: ViewHierarchyReference(view: self)
-    )
+        reference: ViewHierarchyReference(root: self)
+    ).then {
+        $0.verticalAlignmentOffset = activityIndicator.frame.height * 2 / 3
+    }
     
-    var currentOperation: HierarchyInspector.Manager.Operation?
+    var currentOperation: HierarchyInspector.Manager.Operation? {
+        didSet {
+            accessibilityIdentifier = currentOperation?.name
+        }
+    }
     
     override var accessibilityIdentifier: String? {
         didSet {
@@ -43,6 +49,7 @@ final class LoaderView: InternalView {
             }
         }
     }
+    
     // MARK: - Init
     
     private init() {
@@ -62,8 +69,6 @@ final class LoaderView: InternalView {
         
         backgroundColor = HierarchyInspector.ColorScheme.default.color(for: activityIndicator)
         
-        layer.cornerRadius = 12
-        
         installView(checkmarkLabel, constraints: .centerXY)
         
         installView(activityIndicator, constraints: .allMargins(8))
@@ -72,21 +77,21 @@ final class LoaderView: InternalView {
         
         addInspectorViews()
         
-        checkmarkLabel.widthAnchor.constraint(equalTo:  activityIndicator.widthAnchor).isActive  = true
+        checkmarkLabel.widthAnchor.constraint(equalTo: activityIndicator.widthAnchor).isActive = true
         checkmarkLabel.heightAnchor.constraint(equalTo: activityIndicator.heightAnchor).isActive = true
     }
     
     func addInspectorViews() {
-        subviews.forEach { element in
-            element.layer.cornerRadius = layer.cornerRadius * 0.5
+        for element in subviews where element.canHostInspectorView {
+            element.layer.cornerRadius = layer.cornerRadius / 2
             
             let inspectorView = WireframeView(
                 frame: element.bounds,
-                reference: ViewHierarchyReference(view: element),
+                reference: ViewHierarchyReference(root: element),
                 color: .white
             )
             
-            element.installView(inspectorView, position: .bottom)
+            element.installView(inspectorView, position: .top)
         }
         
         installView(highlightView)
@@ -96,6 +101,8 @@ final class LoaderView: InternalView {
         super.layoutSubviews()
         
         highlightView.labelWidthConstraint = nil
+        
+        layer.cornerRadius = frame.height / .pi
     }
     
     func done() {
@@ -110,6 +117,7 @@ final class LoaderView: InternalView {
         activityIndicator.startAnimating()
         
         checkmarkLabel.isSafelyHidden = true
+        
         alpha = 1
     }
 }
@@ -120,7 +128,11 @@ extension LoaderView {
     
     static var sharedPool: [UIView: LoaderView] = [:]
     
-    static func dequeueLoaderView(for operation: HierarchyInspector.Manager.Operation, in presenter: LoaderViewPresentable) -> LoaderView {
+    static func dequeueLoaderView(
+        for operation: HierarchyInspector.Manager.Operation,
+        in presenter: LoaderViewPresentable
+    ) -> LoaderView {
+        
         let loaderView = sharedPool[presenter] ?? LoaderView()
         
         loaderView.layer.removeAllAnimations()
@@ -128,8 +140,6 @@ extension LoaderView {
         loaderView.prepareForReuse()
         
         loaderView.currentOperation = operation
-        
-        loaderView.accessibilityIdentifier = operation.name
         
         sharedPool[presenter] = loaderView
         

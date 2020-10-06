@@ -24,22 +24,22 @@ struct ViewHierarchyReference {
     
     let elementName: String
     
-    init(view: UIView) {
-        self.view = view
+    init(root: UIView) {
+        self.view = root
         
-        viewIdentifier = ObjectIdentifier(view)
+        viewIdentifier = ObjectIdentifier(root)
         
-        canPresentOnTop = view.canPresentOnTop
+        canPresentOnTop = root.canPresentOnTop
         
-        className = view.className
+        className = root.className
         
-        elementName = view.elementName
+        elementName = root.elementName
         
-        isSystemView = view.isSystemView
+        isSystemView = root.isSystemView
         
-        canHostInspectorView = view.canHostInspectorView
+        canHostInspectorView = root.canHostInspectorView
         
-        children = view.originalSubviews.map { ViewHierarchyReference(view: $0) }
+        children = root.originalSubviews.map { ViewHierarchyReference(root: $0) }
     }
 }
 

@@ -29,7 +29,7 @@ extension HierarchyInspector.Manager: HierarchyLayerConstructor {
         
         let filteredHirerarchy = layer.filter(snapshot: viewHierarchySnapshot)
         
-        let viewHierarchyRefences = filteredHirerarchy.map { ViewHierarchyReference(view: $0) }
+        let viewHierarchyRefences = filteredHirerarchy.map { ViewHierarchyReference(root: $0) }
         
         viewHierarchyReferences.updateValue(viewHierarchyRefences, forKey: layer)
         
