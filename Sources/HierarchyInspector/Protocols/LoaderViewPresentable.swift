@@ -11,6 +11,6 @@ protocol LoaderViewPresentable: UIView {
     
     func showActivityIndicator(for operation: HierarchyInspector.Manager.Operation)
     
-    func removeActivityIndicator()
+    func removeActivityIndicator(for operation: HierarchyInspector.Manager.Operation)
     
 }

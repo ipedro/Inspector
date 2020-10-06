@@ -97,6 +97,17 @@ extension HierarchyInspectorKeyCommandPresentable {
             
         }
         
+        keyCommands.sort { lhs, rhs -> Bool in
+            guard
+                let lhsInput = lhs.input,
+                let rhsInput = rhs.input
+            else {
+                return true
+            }
+            
+            return lhsInput < rhsInput
+        }
+        
         return keyCommands
     }
     

@@ -57,7 +57,7 @@ extension HierarchyInspector.Layer: CustomStringConvertible {
         
         exclusions.enumerated().forEach { index, name in
             if index == 0 {
-                displayName += " excl. \(name)"
+                displayName += " excl․ \(name)"
                 return
             }
             

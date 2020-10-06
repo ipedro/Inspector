@@ -9,21 +9,32 @@ import Foundation
 
 enum Texts {
     
-    static let hierarchyInspector = "🧬\nHierarchy Inspector"
+    static func inspect(_ name: Any) -> String {
+        "Inspect \(String(describing: name))..."
+    }
     
-    static let stopInspecting = "Stop inspecting me"
+    static func inspectableViews(_ viewCount: Int, in className: String) -> String {
+        "\(viewCount) inspectable views in \(className)"
+    }
     
-    static func inspect(_ name: Any) -> String { "Inspect \(String(describing: name))..." }
-    
-    static let showAllLayers = "Show all layers"
-    
-    static let hideVisibleLayers = "Hide visible layers"
+    static func layers(_ count: Int) -> String {
+        "\(count) Layers"
+    }
     
     static let closeInspector = "Close"
     
-    static let openHierarchyInspector = "Open Hierarchy Inspector..."
+    static let hideVisibleLayers = "Hide visible layers"
+    
+    static let hierarchyInspector = "🧬\nHierarchy Inspector"
     
     static let noLayers = "No Layers"
     
-    static func layers(_ count: Int) -> String { "\(count) Layers" }
+    static let openHierarchyInspector = "Open Hierarchy Inspector..."
+    
+    static let openingHierarchyInspector = "Opening..."
+    
+    static let showAllLayers = "Show all layers"
+    
+    static let stopInspecting = "Stop inspecting me"
+    
 }

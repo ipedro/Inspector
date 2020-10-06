@@ -49,23 +49,32 @@ extension HierarchyInspector {
         }
         
         var viewHierarchySnapshot: ViewHierarchySnapshot? {
-            guard
-                let cachedSnapshot = cachedViewHierarchySnapshot,
-                Date() <= cachedSnapshot.expiryDate
-            else {
+            let start = Date()
+            
+            guard let hostViewController = hostViewController else {
+                print("\(Date()) [Hierarchy Inspector] could not caculate snapshot: host is nil")
                 
-                let start = Date()
+                return nil
+            }
                 
-                let snapshot = makeSnapshot()
+            guard let cachedSnapshot = cachedViewHierarchySnapshot, Date() <= cachedSnapshot.expiryDate else {
+                
+                guard let snapshot = makeSnapshot() else {
+                    print("\(Date()) [Hierarchy Inspector] \(hostViewController.view.className): could not caculate snapshot")
+                    
+                    return nil
+                }
                 
                 if shouldCacheViewHierarchySnapshot {
                     cachedViewHierarchySnapshot = snapshot
                 }
                 
-                print("[Hierarchy Inspector] \(String(describing: classForCoder)): calculated snapshot in \(Date().timeIntervalSince(start)) s")
+                print("\(Date()) [Hierarchy Inspector] \(snapshot.viewHierarchy.className): 📐 calculated snapshot in \(Date().timeIntervalSince(start)) s")
                 
                 return snapshot
             }
+            
+            print("\(Date()) [Hierarchy Inspector] \(cachedSnapshot.viewHierarchy.className): ♻️ reused snapshot in \(Date().timeIntervalSince(start)) s")
             
             return cachedSnapshot
         }
@@ -97,9 +106,16 @@ extension HierarchyInspector {
             operationQueue.cancelAllOperations()
         }
         
-        struct Operation {
+        struct Operation: Equatable {
+            let identifier = UUID()
+            
             let name: String
+            
             let closure: Closure
+            
+            static func == (lhs: HierarchyInspector.Manager.Operation, rhs: HierarchyInspector.Manager.Operation) -> Bool {
+                lhs.identifier == rhs.identifier
+            }
         }
         
         func asyncOperation(name: String, execute closure: @escaping Closure) {
@@ -144,10 +160,9 @@ private extension HierarchyInspector.Manager {
         window?.showActivityIndicator(for: operation)
         
         DispatchQueue.main.async {
-            
             operation.closure()
             
-            window?.removeActivityIndicator()
+            window?.removeActivityIndicator(for: operation)
         }
     }
     

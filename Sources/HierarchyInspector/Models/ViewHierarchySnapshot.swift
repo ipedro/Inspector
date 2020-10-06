@@ -11,9 +11,9 @@ struct ViewHierarchySnapshot {
     
     // MARK: - Properties
     
-    static var cacheExpirationTimeInSeconds: Double = 0.50
+    static var cacheExpirationTimeInterval: TimeInterval = 0.5
     
-    let expiryDate: Date = Date().addingTimeInterval(Self.cacheExpirationTimeInSeconds)
+    let expiryDate: Date = Date().addingTimeInterval(Self.cacheExpirationTimeInterval)
     
     let availableLayers: [HierarchyInspector.Layer]
     

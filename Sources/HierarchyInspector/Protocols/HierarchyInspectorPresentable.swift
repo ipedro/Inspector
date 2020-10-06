@@ -39,7 +39,7 @@ extension HierarchyInspectorPresentable {
         
         let start = Date()
         
-        hierarchyInspectorManager.asyncOperation(name: "Loading") { [weak self] in
+        hierarchyInspectorManager.asyncOperation(name: Texts.openingHierarchyInspector) { [weak self] in
             guard let self = self else {
                 return
             }
@@ -73,7 +73,7 @@ extension HierarchyInspectorPresentable {
         
         let alertController = UIAlertController(
             title: Texts.hierarchyInspector,
-            message: "\(snapshot.flattenedViewHierarchy.count) inspectable views in \(snapshot.viewHierarchy.className)",
+            message: Texts.inspectableViews(snapshot.flattenedViewHierarchy.count, in: snapshot.viewHierarchy.className),
             preferredStyle: .alert
         ).then {
             $0.view.tintColor = .systemPurple
