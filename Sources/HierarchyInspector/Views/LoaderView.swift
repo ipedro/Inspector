@@ -18,7 +18,7 @@ final class LoaderView: InternalView {
     
     private lazy var colorScheme: ColorScheme = .colorScheme { _ in .systemBlue }
     
-    private lazy var highlightView = HighlightView(
+    private(set) lazy var highlightView = HighlightView(
         frame: bounds,
         name: elementName,
         colorScheme: colorScheme,
@@ -48,18 +48,6 @@ final class LoaderView: InternalView {
         installView(activityIndicator, constraints: .allMargins(8))
         
         addInspectorViews()
-    }
-    
-    override var accessibilityIdentifier: String? {
-        didSet {
-            highlightView.name = elementName
-        }
-    }
-    
-    override func layoutSubviews() {
-        highlightView.labelWidthConstraint?.isActive = false
-        
-        super.layoutSubviews()
     }
     
     func addInspectorViews() {

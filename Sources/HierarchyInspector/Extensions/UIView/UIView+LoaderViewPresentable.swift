@@ -15,7 +15,7 @@ extension UIView: LoaderViewPresentable {
         removeActivityIndicator()
         
         let loaderView = LoaderView.dequeueLoaderView(for: self)
-        loaderView.accessibilityIdentifier = operation.name
+        loaderView.highlightView.name = operation.name
         
         addSubview(loaderView)
         

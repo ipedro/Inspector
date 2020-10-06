@@ -14,6 +14,8 @@ extension HierarchyInspector {
             self.hostViewController = host
         }
         
+        var shouldCacheViewHierarchySnapshot = true
+        
         weak private var hostViewController: HierarchyInspectableProtocol?
         
         var viewHierarchyReferences: [Layer: [ViewHierarchyReference]] = [:] {
@@ -56,7 +58,9 @@ extension HierarchyInspector {
                 
                 let snapshot = makeSnapshot()
                 
-                cachedViewHierarchySnapshot = snapshot
+                if shouldCacheViewHierarchySnapshot {
+                    cachedViewHierarchySnapshot = snapshot
+                }
                 
                 print("[Hierarchy Inspector] \(String(describing: classForCoder)): calculated snapshot in \(Date().timeIntervalSince(start)) s")
                 
