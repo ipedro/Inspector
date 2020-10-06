@@ -130,9 +130,9 @@ private extension HighlightView {
     }
     
     func setupViews(with hostView: UIView) {
-        backgroundColor = color.withAlphaComponent(0.03)
+        layerBackgroundColor = color.withAlphaComponent(0.03)
         
-        layer.borderColor = color.withAlphaComponent(0.7).cgColor
+        layerBorderColor = color.withAlphaComponent(0.7)
         
         installView(labelContainerView, constraints: .centerXY)
         

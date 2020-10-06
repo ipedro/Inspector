@@ -18,11 +18,35 @@ class LayerView: UIImageView, HierarchyInspectorViewProtocol {
                 return
             }
             
-            layer.borderColor = color.withAlphaComponent(0.5).cgColor
+            layerBorderColor = color.withAlphaComponent(0.5)
         }
     }
     
-    let borderWidth: CGFloat
+    let layerBorderWidth: CGFloat
+    
+    var layerBackgroundColor: UIColor? {
+        get {
+            borderedView.backgroundColor
+        }
+        set {
+            borderedView.backgroundColor = newValue
+        }
+    }
+    
+    var layerBorderColor: UIColor? {
+        get {
+            guard let borderColor = borderedView.layer.borderColor else {
+                return nil
+            }
+            
+            return UIColor(cgColor: borderColor)
+        }
+        set {
+            borderedView.layer.borderColor = newValue?.cgColor
+        }
+    }
+    
+    private lazy var borderedView = InternalView(frame: bounds)
     
     let viewReference: ViewHierarchyReference
     
@@ -31,19 +55,21 @@ class LayerView: UIImageView, HierarchyInspectorViewProtocol {
     init(frame: CGRect, reference: ViewHierarchyReference, color: UIColor, borderWidth: CGFloat) {
         self.viewReference = reference
         self.color = color
-        self.borderWidth = borderWidth
+        self.layerBorderWidth = borderWidth
         
         super.init(frame: frame)
         
         isUserInteractionEnabled = false
         
         if #available(iOS 13.0, *) {
-            layer.cornerCurve = .continuous
+            borderedView.layer.cornerCurve = .continuous
         }
         
-        layer.borderWidth = borderWidth
+        borderedView.layer.borderWidth = borderWidth
         
-        layer.borderColor = color.withAlphaComponent(0.5).cgColor
+        borderedView.layer.borderColor = color.withAlphaComponent(0.5).cgColor
+        
+        installView(borderedView)
         
         autoresizingMask = [.flexibleHeight, .flexibleWidth]
     }
@@ -62,11 +88,11 @@ class LayerView: UIImageView, HierarchyInspectorViewProtocol {
         }
         
         if superview.isSystemView == false {
-            layer.maskedCorners = superview.layer.maskedCorners
+            borderedView.layer.maskedCorners = superview.layer.maskedCorners
         }
         
         if #available(iOS 13.0, *) {
-            layer.cornerCurve = superview.layer.cornerCurve
+            borderedView.layer.cornerCurve = superview.layer.cornerCurve
         }
     }
     
@@ -76,7 +102,8 @@ class LayerView: UIImageView, HierarchyInspectorViewProtocol {
         guard let superview = superview else {
             return
         }
-                    
-        layer.cornerRadius  = superview.layer.cornerRadius
+        
+        borderedView.layer.maskedCorners = superview.layer.maskedCorners
+        borderedView.layer.cornerRadius  = superview.layer.cornerRadius
     }
 }
