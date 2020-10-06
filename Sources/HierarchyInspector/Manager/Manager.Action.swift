@@ -18,6 +18,8 @@ extension HierarchyInspector.Manager {
         
         case hideVisibleLayers(closure: Closure)
         
+        case inspect(vc: HierarchyInspectorPresentable)
+        
         var title: String {
             switch self {
             case let .emptyLayer(title),
@@ -29,6 +31,9 @@ extension HierarchyInspector.Manager {
                 
             case .hideVisibleLayers:
                 return Texts.hideVisibleLayers
+                
+            case let .inspect(vc):
+                return "Inspect \(String(describing: vc.classForCoder))..."
             }
         }
     }
@@ -51,6 +56,11 @@ extension HierarchyInspector.Manager.Action {
             return UIAlertAction(title: title, style: .default) { _ in
                closure()
            }
+            
+        case let .inspect(vc):
+            return UIAlertAction(title: title, style: .default) { _ in
+                vc.presentHierarchyInspector(animated: true)
+            }
         }
     }
     

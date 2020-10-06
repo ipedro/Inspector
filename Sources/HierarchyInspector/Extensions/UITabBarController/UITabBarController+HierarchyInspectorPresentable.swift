@@ -13,7 +13,7 @@ extension UITabBarController: HierarchyInspectorPresentable {
     public var hierarchyInspectorManager: HierarchyInspector.Manager {
         guard
             let existingManager = Self.currentHierarchyInspectorManager,
-            existingManager.containerViewController === self
+            existingManager.hostViewController === self
         else {
             
             let newManager = HierarchyInspector.Manager(host: self).then {

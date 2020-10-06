@@ -16,7 +16,7 @@ extension HierarchyInspector {
         
         var shouldCacheViewHierarchySnapshot = true
         
-        weak private var hostViewController: HierarchyInspectableProtocol?
+        weak private(set) var hostViewController: HierarchyInspectableProtocol?
         
         var viewHierarchyReferences: [Layer: [ViewHierarchyReference]] = [:] {
             didSet {
@@ -27,7 +27,7 @@ extension HierarchyInspector {
                 
                 removeReferences(for: removedLayers, in: oldValue)
                 
-                guard let colorScheme = containerViewController?.hierarchyInspectorColorScheme else {
+                guard let colorScheme = hostViewController?.hierarchyInspectorColorScheme else {
                     return
                 }
                 
@@ -103,7 +103,7 @@ extension HierarchyInspector {
         }
         
         func asyncOperation(name: String, execute closure: @escaping Closure) {
-            async(operation: Operation(name: name, closure: closure), in: containerViewController?.view.window)
+            async(operation: Operation(name: name, closure: closure), in: hostViewController?.view.window)
         }
         
     }
@@ -132,26 +132,8 @@ extension HierarchyInspector.Manager {
     }
     
     private func calculateAvailableLayers() -> [HierarchyInspector.Layer] {
-        containerViewController?.hierarchyInspectorLayers.uniqueValues ?? [.allViews]
+        hostViewController?.hierarchyInspectorLayers.uniqueValues ?? [.allViews]
     }
-}
-
-// MARK: - ViewController Hierarchy
-
-extension HierarchyInspector.Manager {
-    var containerViewController: HierarchyInspectableProtocol? {
-        hostViewController
-//        containerViewControllerHierarchy.first
-    }
-    
-//    var containerViewControllerHierarchy: [HierarchyInspectorPresentable] {
-//        [
-//            hostViewController?.splitViewController,
-//            hostViewController?.tabBarController,
-//            hostViewController?.navigationController,
-//            hostViewController
-//        ].compactMap { $0 as? HierarchyInspectorPresentable }
-//    }
 }
 
 // MARK: - Private Helpers
@@ -170,11 +152,11 @@ private extension HierarchyInspector.Manager {
     }
     
     func makeSnapshot() -> ViewHierarchySnapshot? {
-        guard let containerView = containerViewController?.view else {
+        guard let hostView = hostViewController?.view else {
             return nil
         }
         
-        return ViewHierarchySnapshot(availableLayers: calculateAvailableLayers(), in: containerView)
+        return ViewHierarchySnapshot(availableLayers: calculateAvailableLayers(), in: hostView)
     }
 }
 

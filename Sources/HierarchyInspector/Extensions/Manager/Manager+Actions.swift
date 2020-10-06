@@ -80,6 +80,15 @@ private extension HierarchyInspector.Manager {
                     )
                 }
                 
+                if
+                    let topMostContainer = hostViewController?.topMostContainerViewController as? HierarchyInspectorPresentable,
+                    topMostContainer !== hostViewController
+                    {
+                    
+                    array.append(.inspect(vc: topMostContainer))
+                    
+                }
+                
                 return array
             }()
         )

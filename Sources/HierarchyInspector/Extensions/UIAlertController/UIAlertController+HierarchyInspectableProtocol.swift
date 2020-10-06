@@ -13,7 +13,7 @@ extension UIAlertController: HierarchyInspectorPresentable {
     public var hierarchyInspectorManager: HierarchyInspector.Manager {
         guard
             let existingManager = Self.sharedHierarchyInspectorManager,
-            existingManager.containerViewController === self
+            existingManager.hostViewController === self
         else {
             
             let newManager = HierarchyInspector.Manager(host: self).then {
@@ -30,30 +30,9 @@ extension UIAlertController: HierarchyInspectorPresentable {
 
     public var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
         [
-            .layer(name: "Alert controller") { element -> Bool in
-                let denyList = [
-                    Texts.closeInspector,
-                    Texts.stopInspecting,
-                    Texts.hierarchyInspector
-                ]
-
-                if let label = element as? UILabel, let text = label.text {
-                    return denyList.contains(text) == false
-                }
-
-                let labels = element.subviews.filter {
-                    guard
-                        let label = $0 as? UILabel,
-                        let text = label.text
-                    else {
-                        return false
-                    }
-
-                    return denyList.contains(text)
-                }
-
-                return labels.isEmpty
-            }
+            .staticTexts,
+            .stackViews,
+            .containerViews
         ]
     }
 }

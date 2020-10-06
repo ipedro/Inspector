@@ -19,8 +19,8 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
         .staticTexts + .images,
         .textViews + .textFields,
         .stackViews + .containerViews,
-        .activityIndicators,
-        .allViews
+//        .activityIndicators,
+//        .allViews
     ]
     
     var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme = .colorScheme { view in

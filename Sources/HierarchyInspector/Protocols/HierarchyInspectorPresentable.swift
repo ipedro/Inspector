@@ -89,6 +89,8 @@ extension HierarchyInspectorPresentable {
             group.alertActions.forEach { alertController.addAction($0) }
         }
         
+        // Alert controller inspection
+        
         #if DEBUG
         if self is UIAlertController == false {
             alertController.addAction(
@@ -102,7 +104,6 @@ extension HierarchyInspectorPresentable {
         }
         #endif
         
-        // Alert controller inspection
         if inspecting {
             DispatchQueue.main.async {
                 alertController.hierarchyInspectorManager.installAllLayers()

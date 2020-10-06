@@ -79,11 +79,14 @@ extension HierarchyInspectorKeyCommandPresentable {
                     case .emptyLayer:
                         return nil
                         
+                    case .showAllLayers, .hideVisibleLayers:
+                        return HierarchyInspector.configuration.keyCommands.presentationKeyCommand
+                        
                     case .toggleLayer:
                         return String(availableCommandsInputRange.lowerBound + index)
                         
-                    case .showAllLayers, .hideVisibleLayers:
-                        return HierarchyInspector.configuration.keyCommands.presentationKeyCommand
+                    case .inspect:
+                        return nil
                     }
                 }
                 
