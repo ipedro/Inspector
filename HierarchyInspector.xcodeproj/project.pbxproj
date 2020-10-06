@@ -35,6 +35,7 @@
 		EB7EAAE02529B9F2000001BE /* Manager+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAADF2529B9F2000001BE /* Manager+Actions.swift */; };
 		EB7EAAF22529BFC0000001BE /* Array+UniqueValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAF12529BFC0000001BE /* Array+UniqueValues.swift */; };
 		EB80AFBB252B570200F0ECD5 /* NSObject+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */; };
+		EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */; };
 		EBA245AC252878B700D4AFD9 /* ColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245AB252878B700D4AFD9 /* ColorScheme.swift */; };
 		EBA245B225287B4300D4AFD9 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245B125287B4300D4AFD9 /* CustomButton.swift */; };
 		EBA245F12528894400D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245F02528892E00D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift */; };
@@ -135,6 +136,7 @@
 		EB7EAADF2529B9F2000001BE /* Manager+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Manager+Actions.swift"; sourceTree = "<group>"; };
 		EB7EAAF12529BFC0000001BE /* Array+UniqueValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+UniqueValues.swift"; sourceTree = "<group>"; };
 		EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Create.swift"; sourceTree = "<group>"; };
+		EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SFSafariViewController+HierarchyInspectableProtocol.swift"; sourceTree = "<group>"; };
 		EBA245AB252878B700D4AFD9 /* ColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorScheme.swift; sourceTree = "<group>"; };
 		EBA245B125287B4300D4AFD9 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		EBA245F02528892E00D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISplitViewController+HierarchyInspectorPresentable.swift"; sourceTree = "<group>"; };
@@ -237,6 +239,14 @@
 				EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */,
 			);
 			path = NSObject;
+			sourceTree = "<group>";
+		};
+		EB943FAC252C864A0007A611 /* SFSafariViewController */ = {
+			isa = PBXGroup;
+			children = (
+				EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */,
+			);
+			path = SFSafariViewController;
 			sourceTree = "<group>";
 		};
 		EBA245C32528817A00D4AFD9 /* Layer */ = {
@@ -444,6 +454,7 @@
 				EBA245C32528817A00D4AFD9 /* Layer */,
 				EBA245CD2528819500D4AFD9 /* Manager */,
 				EB80AFB9252B56F100F0ECD5 /* NSObject */,
+				EB943FAC252C864A0007A611 /* SFSafariViewController */,
 				EBA245DC252881AC00D4AFD9 /* UIAlertController */,
 				EBA245E1252881B400D4AFD9 /* UINavigationController */,
 				EBA245EF2528892500D4AFD9 /* UISplitViewController */,
@@ -622,6 +633,7 @@
 				OBJ_79 /* UIView+HierarchyInspectableView.swift in Sources */,
 				OBJ_80 /* UIView+LoaderViewPresentable.swift in Sources */,
 				OBJ_81 /* HierarchyInspector.swift in Sources */,
+				EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */,
 				OBJ_82 /* Configuration.Appearance.swift in Sources */,
 				OBJ_84 /* Layer.swift in Sources */,
 				OBJ_85 /* Texts.swift in Sources */,
