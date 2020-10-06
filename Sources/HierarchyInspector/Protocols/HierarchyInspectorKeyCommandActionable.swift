@@ -9,7 +9,7 @@ import UIKit
 
 public protocol HierarchyInspectorKeyCommandPresentable: HierarchyInspectorPresentable {
     
-    var presentHirearchyInspectorKeyCommandSelector: Selector? { get }
+    var hirearchyInspectorKeyCommandsSelector: Selector? { get }
     
     var hierarchyInspectorKeyCommands: [UIKeyCommand] { get }
     
@@ -37,40 +37,18 @@ extension HierarchyInspectorKeyCommandPresentable {
     public var hierarchyInspectorKeyCommands: [UIKeyCommand] {
         guard
             let modifierFlags = hierarchyInspectorKeyModifierFlags,
-            let aSelector = presentHirearchyInspectorKeyCommandSelector
+            let aSelector = hirearchyInspectorKeyCommandsSelector
         else {
             return []
         }
-
-//        let start = Date()
-//
-//        defer {
-//            print("[Hierarchy Inspector] \(String(describing: classForCoder)): calculated KeyCommands in \(Date().timeIntervalSince(start)) seconds")
-//        }
-
-        var keyCommands = [UIKeyCommand]()
-
-        var presentModifierFlags = HierarchyInspector.configuration.keyCommands.presentationModfifierFlags
-
-        switch presentModifierFlags.insert(modifierFlags) {
-        case (true, _):
-            keyCommands.append(
-                UIKeyCommand(
-                    input: HierarchyInspector.configuration.keyCommands.presentationKeyCommand,
-                    modifierFlags: presentModifierFlags,
-                    action: aSelector,
-                    discoverabilityTitle: Texts.openHierarchyInspector
-                )
-            )
-        default:
-            break
-        }
         
-        let availableCommandsInputRange = HierarchyInspector.configuration.keyCommands.availableCommandsInputRange
+        var keyCommands = [UIKeyCommand]()
+        
+        let keyCommandsInputRange = HierarchyInspector.configuration.keyCommands.keyCommandsInputRange
         
         var index = 0
         
-        for actionGroup in hierarchyInspectorManager.availableActions {
+        for actionGroup in hierarchyInspectorManager.availableActionsForKeyCommand {
             
             for action in actionGroup.actions {
                 
@@ -80,13 +58,10 @@ extension HierarchyInspectorKeyCommandPresentable {
                         return nil
                         
                     case .showAllLayers, .hideVisibleLayers:
-                        return HierarchyInspector.configuration.keyCommands.presentationKeyCommand
+                        return HierarchyInspector.configuration.keyCommands.openHierarchyInspectorInput
                         
-                    case .toggleLayer:
-                        return String(availableCommandsInputRange.lowerBound + index)
-                        
-                    case .inspect:
-                        return nil
+                    default:
+                        return String(keyCommandsInputRange.lowerBound + index)
                     }
                 }
                 
@@ -94,23 +69,30 @@ extension HierarchyInspectorKeyCommandPresentable {
                     continue
                 }
                 
+                var actionModifierFlags: UIKeyModifierFlags {
+                    guard var actionFlags = action.modifierFlags else {
+                        return modifierFlags
+                    }
+                    
+                    actionFlags.insert(modifierFlags)
+                    
+                    return actionFlags
+                }
                 
                 keyCommands.append(
                     UIKeyCommand(
                         input: keyInput,
-                        modifierFlags: modifierFlags,
+                        modifierFlags: actionModifierFlags,
                         action: aSelector,
                         discoverabilityTitle: action.title
                     )
                 )
                 
-                if index == availableCommandsInputRange.upperBound - 1 {
+                if index == keyCommandsInputRange.upperBound - 1 {
                     break
                 }
                 
                 index += 1
-                
-                
             }
             
         }
@@ -118,77 +100,37 @@ extension HierarchyInspectorKeyCommandPresentable {
         return keyCommands
     }
     
-    public func hierarchyInspectorHandleKeyCommand(_ sender: Any) {
-        guard
-            let keyCommand = sender as? UIKeyCommand,
-            let keyModifierFlags = hierarchyInspectorKeyModifierFlags,
-            let presentationKeyModifierFlags = hierarchyInspectorPresentationKeyModifierFlags
-        else {
+    /// Interprets key commands into HierarchyInspector actions.
+    /// - Parameter sender: (Any) If sender is not of `UIKeyCommand` type methods does nothing.
+    public func hierarchyInspectorKeyCommandHandler(_ sender: Any) {
+        guard let keyCommand = sender as? UIKeyCommand else {
             return
         }
         
-        switch (keyCommand.modifierFlags, keyCommand.input == HierarchyInspector.configuration.keyCommands.presentationKeyCommand) {
-        case (presentationKeyModifierFlags, true):
-            presentHierarchyInspector(animated: true)
+        let flattenedActions = hierarchyInspectorManager.availableActionsForKeyCommand.flatMap { $0.actions }
+        
+        for action in flattenedActions where action.title == keyCommand.discoverabilityTitle {
             
-        case (keyModifierFlags, true):
-            switch hierarchyInspectorManager.isShowingLayers {
-            case true:
-                hierarchyInspectorManager.removeAllLayers()
+            switch action {
+            
+            case .emptyLayer:
+                break
+            
+            case let .toggleLayer(_, closure),
+                 let .showAllLayers(closure),
+                 let .hideVisibleLayers(closure):
+                closure()
                 
-            case false:
-                hierarchyInspectorManager.installAllLayers()
-            }
-            
-        default:
-            guard let layer = layer(with: keyCommand) else {
-                print("[Hierarchy Inspector] Layer not found for key command \(keyCommand)")
-                return
-            }
-            
-            switch hierarchyInspectorManager.isShowingLayer(layer) {
-            case true:
-                hierarchyInspectorManager.removeLayer(layer)
+            case let .openHierarchyInspector(fromViewController):
+                fromViewController.presentHierarchyInspector(animated: true)
                 
-            case false:
-                hierarchyInspectorManager.installLayer(layer)
+            case let .inspect(vc):
+                vc.presentHierarchyInspector(animated: true)
             }
             
+            return
         }
-    }
     
-    private func layer(with keyCommand: UIKeyCommand) -> HierarchyInspector.Layer? {
-        guard
-            let input = keyCommand.input,
-            let inputInteger = Int(input)
-        else {
-            print("[Hierarchy Inspector] Could not interpret input integer for key command \(keyCommand)")
-            return nil
-        }
-        
-        let inputRangeStart = HierarchyInspector.configuration.keyCommands.availableCommandsInputRange.lowerBound
-        
-        switch inputInteger - inputRangeStart {
-        case hierarchyInspectorManager.populatedLayers.count:
-            if
-                keyCommand.discoverabilityTitle == HierarchyInspector.Layer.internalViews.selectedActionTitle ||
-                keyCommand.discoverabilityTitle == HierarchyInspector.Layer.internalViews.unselectedActionTitle
-            {
-                return .internalViews
-            }
-            
-        case let index:
-            guard
-                index < hierarchyInspectorManager.populatedLayers.count,
-                HierarchyInspector.configuration.keyCommands.availableCommandsInputRange.contains(inputInteger)
-            else {
-                return nil
-            }
-            
-            return hierarchyInspectorManager.populatedLayers[index]
-        }
-        
-        return nil
     }
     
 }

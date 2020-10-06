@@ -95,7 +95,7 @@ extension HierarchyInspectorPresentable {
         if self is UIAlertController == false {
             alertController.addAction(
                 UIAlertAction(
-                    title: inspecting ? Texts.stopInspecting : Texts.inspect("Hierarchy Inspector"),
+                    title: inspecting ? Texts.stopInspecting : Texts.inspect(alertController.classForCoder),
                     style: .default
                 ) { [weak self] action in
                     self?.presentHierarchyInspector(animated: true, inspecting: !inspecting)

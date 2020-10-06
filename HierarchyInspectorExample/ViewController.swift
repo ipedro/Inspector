@@ -193,6 +193,6 @@ extension ViewController: HierarchyInspectorKeyCommandPresentable {
     }
     
     @objc func keyCommand(_ sender: Any) {
-        hierarchyInspectorHandleKeyCommand(sender)
+        hierarchyInspectorKeyCommandHandler(sender)
     }
 }

@@ -13,7 +13,7 @@ enum Texts {
     
     static let stopInspecting = "Stop inspecting me"
     
-    static func inspect(_ name: String) -> String { "Inspect \(name)..." }
+    static func inspect(_ name: Any) -> String { "Inspect \(String(describing: name))..." }
     
     static let showAllLayers = "Show all layers"
     

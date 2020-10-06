@@ -11,20 +11,39 @@ import Foundation
 
 extension HierarchyInspector.Manager {
     
+    var availableActionsForKeyCommand: [ActionGroup] {
+        var array = availableActions
+        
+        guard let hostViewController = hostViewController as? HierarchyInspectorPresentable else {
+            return array
+        }
+        
+        let openInspectorGroup = ActionGroup(
+            title: nil,
+            actions: [
+                .openHierarchyInspector(from: hostViewController)
+            ]
+        )
+        
+        array.insert(openInspectorGroup, at: 0)
+        
+        return array
+    }
+    
     var availableActions: [ActionGroup] {
         guard let viewHierarchySnapshot = self.viewHierarchySnapshot else {
             return []
         }
         
-        var actionGroups = [ActionGroup]()
+        var array = [ActionGroup]()
         
         // layer actions
-        actionGroups.append(layerActions(for: viewHierarchySnapshot))
+        array.append(layerActions(for: viewHierarchySnapshot))
         
         // other actions
-        actionGroups.append(otherActions(for: viewHierarchySnapshot))
+        array.append(otherActions(for: viewHierarchySnapshot))
         
-        return actionGroups
+        return array
     }
     
 }
@@ -32,6 +51,10 @@ extension HierarchyInspector.Manager {
 private extension HierarchyInspector.Manager {
     
     func layerActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup {
+        let layerToggleInputRange = HierarchyInspector.configuration.keyCommands.layerToggleInputRange
+        
+        let maxCount = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
+        
         var actions = snapshot.availableLayers.map { layer in
             layerAction(layer, isEmpty: snapshot.populatedLayers.contains(layer) == false)
         }
@@ -39,8 +62,8 @@ private extension HierarchyInspector.Manager {
         actions.append(layerAction(.internalViews, isEmpty: false))
         
         return ActionGroup(
-            title: snapshot.availableLayers.isEmpty ? Texts.noLayers : Texts.layers(actions.count),
-            actions: actions
+            title: actions.isEmpty ? Texts.noLayers : Texts.layers(actions.count),
+            actions: Array(actions.prefix(maxCount))
         )
     }
     

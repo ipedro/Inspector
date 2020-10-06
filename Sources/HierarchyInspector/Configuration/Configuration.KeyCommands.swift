@@ -13,7 +13,7 @@ public extension HierarchyInspector.Configuration {
         
         private static let inputRange: ClosedRange<Int> = (0 ... 9)
         
-        public let availableCommandsInputRange: ClosedRange<Int> = inputRange.lowerBound + 1 ... inputRange.upperBound
+        public let layerToggleInputRange: ClosedRange<Int> = inputRange.lowerBound + 1 ... inputRange.upperBound - 1
         
         public var presentationModfifierFlags: UIKeyModifierFlags = [.alternate]
         
@@ -21,7 +21,7 @@ public extension HierarchyInspector.Configuration {
             Self.inputRange
         }
         
-        var presentationKeyCommand: String {
+        var openHierarchyInspectorInput: String {
             String(keyCommandsInputRange.lowerBound)
         }
     }

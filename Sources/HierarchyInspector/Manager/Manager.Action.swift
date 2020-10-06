@@ -18,6 +18,8 @@ extension HierarchyInspector.Manager {
         
         case hideVisibleLayers(closure: Closure)
         
+        case openHierarchyInspector(from: HierarchyInspectorPresentable)
+        
         case inspect(vc: HierarchyInspectorPresentable)
         
         var title: String {
@@ -33,7 +35,24 @@ extension HierarchyInspector.Manager {
                 return Texts.hideVisibleLayers
                 
             case let .inspect(vc):
-                return "Inspect \(String(describing: vc.classForCoder))..."
+                return Texts.inspect(String(describing: vc.classForCoder))
+                
+            case .openHierarchyInspector:
+                return Texts.openHierarchyInspector
+            }
+        }
+        
+        var modifierFlags: UIKeyModifierFlags? {
+            switch self {
+            case .openHierarchyInspector:
+                return HierarchyInspector.configuration.keyCommands.presentationModfifierFlags
+            
+            case .emptyLayer,
+                 .toggleLayer,
+                 .showAllLayers,
+                 .hideVisibleLayers,
+                 .inspect:
+                return nil
             }
         }
     }
@@ -60,6 +79,11 @@ extension HierarchyInspector.Manager.Action {
         case let .inspect(vc):
             return UIAlertAction(title: title, style: .default) { _ in
                 vc.presentHierarchyInspector(animated: true)
+            }
+            
+        case let .openHierarchyInspector(fromViewController):
+            return UIAlertAction(title: title, style: .default) { _ in
+                fromViewController.presentHierarchyInspector(animated: true)
             }
         }
     }
