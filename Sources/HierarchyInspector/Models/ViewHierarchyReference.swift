@@ -14,7 +14,7 @@ struct ViewHierarchyReference {
     
     let canHostInspectorView: Bool
     
-    let children: [ViewHierarchyReference]
+    private(set) var children: [ViewHierarchyReference]
     
     let viewIdentifier: ObjectIdentifier
     
@@ -24,8 +24,25 @@ struct ViewHierarchyReference {
     
     let elementName: String
     
-    init(root: UIView) {
+    let frame: CGRect
+    
+    let accessibilityIdentifier: String?
+    
+    var depth: Int {
+        didSet {
+            guard let view = view else {
+                children = []
+                return
+            }
+            
+            children = view.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1) }
+        }
+    }
+    
+    init(root: UIView, depth: Int = 0) {
         self.view = root
+        
+        self.depth = depth
         
         viewIdentifier = ObjectIdentifier(root)
         
@@ -37,9 +54,13 @@ struct ViewHierarchyReference {
         
         isSystemView = root.isSystemView
         
+        frame = root.frame
+        
+        accessibilityIdentifier = root.accessibilityIdentifier
+        
         canHostInspectorView = root.canHostInspectorView
         
-        children = root.originalSubviews.map { ViewHierarchyReference(root: $0) }
+        children = root.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1) }
     }
 }
 
@@ -47,14 +68,14 @@ struct ViewHierarchyReference {
 
 extension ViewHierarchyReference: ViewHierarchy {
     
-    private var viewHierarchy: [ViewHierarchyReference] {
-        let array = children + children.flatMap { $0.viewHierarchy }
+    var flattenedViewHierarchy: [ViewHierarchyReference] {
+        let array = children + children.flatMap { $0.flattenedViewHierarchy }
         
         return array
     }
     
     var flattenedInspectableViews: [ViewHierarchyReference] {
-        let array = ([self] + viewHierarchy).filter { $0.canHostInspectorView }
+        let array = ([self] + flattenedViewHierarchy).filter { $0.canHostInspectorView }
         
         return array
     }

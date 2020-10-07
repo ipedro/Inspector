@@ -14,6 +14,9 @@ extension HierarchyInspector {
             self.hostViewController = host
         }
         
+        @available(*, deprecated, message: "temporary holding coordinator. remove")
+        var viewHierarchyListCoordinator: ViewHierarchyListCoordinator?
+        
         var shouldCacheViewHierarchySnapshot = true
         
         weak private(set) var hostViewController: HierarchyInspectableProtocol?
@@ -267,7 +270,9 @@ private extension HierarchyInspector.Manager {
                         name: element.className,
                         colorScheme: colorScheme,
                         reference: viewReference
-                    )
+                    ).then {
+                        $0.delegate = self
+                    }
                     
                     inspectorViews[viewReference] = inspectorView
                 }
@@ -291,5 +296,19 @@ private extension HierarchyInspector.Manager {
             }
             
         }
+    }
+}
+
+extension HierarchyInspector.Manager: HighlightViewDelegate {
+    func highlightView(didTap view: UIView, with reference: ViewHierarchyReference) {
+        guard let hostViewController = hostViewController else {
+            return
+        }
+        
+        let coordinator = ViewHierarchyListCoordinator(reference: reference, sourceView: view)
+        
+        viewHierarchyListCoordinator = coordinator
+        
+        hostViewController.present(coordinator.start(), animated: true)
     }
 }

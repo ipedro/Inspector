@@ -22,7 +22,6 @@ public extension HierarchyInspectableProtocol {
 
 // MARK: - View Controller Hierarchy
 
-#warning("WIP")
 extension HierarchyInspectableProtocol {
     var topMostContainerViewController: HierarchyInspectableProtocol {
         var topController: HierarchyInspectableProtocol = self

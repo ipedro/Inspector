@@ -7,11 +7,12 @@
 
 import UIKit
 
+protocol HighlightViewDelegate: AnyObject {
+    func highlightView(didTap view: UIView, with reference: ViewHierarchyReference)
+}
+
 class HighlightView: LayerView {
-    
-    override var shouldPresentOnTop: Bool {
-        true
-    }
+    weak var delegate: HighlightViewDelegate?
     
     // MARK: - Properties
     
@@ -91,13 +92,59 @@ class HighlightView: LayerView {
         $0.layer.rasterizationScale = UIScreen.main.scale
     }
     
+    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
+    
+    @objc func tap(_ sender: Any) {
+        delegate?.highlightView(didTap: labelContainerView, with: viewReference)
+    }
+    
     // MARK: - Init
     
-    init(frame: CGRect, name: String, colorScheme: ColorScheme, reference: ViewHierarchyReference, borderWidth: CGFloat = 1) {
+    init(
+        frame: CGRect,
+        name: String,
+        colorScheme: ColorScheme,
+        reference: ViewHierarchyReference,
+        borderWidth: CGFloat = 1
+    ) {
         self.colorScheme = colorScheme
+        
         self.name = name
         
-        super.init(frame: frame, reference: reference, color: .systemGray, borderWidth: borderWidth)
+        super.init(
+            frame: frame,
+            reference: reference,
+            color: .systemGray,
+            borderWidth: borderWidth
+        )
+        
+        shouldPresentOnTop = true
+        
+        isUserInteractionEnabled = true
+        
+        addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        labelContainerView.frame.contains(point)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        
+        updateColors(isTouching: true)
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        
+        updateColors()
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        
+        updateColors()
     }
     
     required init?(coder: NSCoder) {
@@ -141,9 +188,7 @@ private extension HighlightView {
     }
     
     func setupViews(with hostView: UIView) {
-        layerBackgroundColor = color.withAlphaComponent(0.03)
-        
-        layerBorderColor = color.withAlphaComponent(0.7)
+        updateColors()
         
         installView(labelContainerView, constraints: .centerX)
         
@@ -159,4 +204,15 @@ private extension HighlightView {
         isSafelyHidden = false
     }
     
+    func updateColors(isTouching: Bool = false) {
+        switch isTouching {
+        case true:
+            layerBackgroundColor = color.withAlphaComponent(0.25)
+            layerBorderColor     = color.withAlphaComponent(1)
+            
+        case false:
+            layerBackgroundColor = color.withAlphaComponent(0.03)
+            layerBorderColor     = color.withAlphaComponent(0.7)
+        }
+    }
 }

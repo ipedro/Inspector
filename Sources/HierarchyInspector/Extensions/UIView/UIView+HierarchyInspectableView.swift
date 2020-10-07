@@ -38,8 +38,8 @@ extension UIView: ViewHierarchy {
             superview?.className != "UIViewControllerWrapperView",
             
             // Skip hierarchy inspector internal strcutures.
-            self is HierarchyInspectorViewProtocol == false,
-            superview is HierarchyInspectorViewProtocol == false
+            self is InternalViewProtocol == false,
+            superview is InternalViewProtocol == false
         else {
             return false
         }

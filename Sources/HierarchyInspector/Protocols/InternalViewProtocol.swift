@@ -7,7 +7,4 @@
 
 import UIKit
 
-public protocol HierarchyInspectorViewProtocol: UIView {
-    var shouldPresentOnTop: Bool { get }
-}
-
+public protocol InternalViewProtocol: UIView {}

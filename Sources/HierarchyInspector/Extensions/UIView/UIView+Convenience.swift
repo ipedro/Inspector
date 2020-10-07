@@ -14,8 +14,12 @@ enum ViewPosition {
 enum ViewConstraints {
     case centerX
     case centerXY
-    case allMargins(CGFloat = .zero)
-    case margins(horizontal: CGFloat = .zero, vertical: CGFloat = .zero)
+    case margins(horizontal: CGFloat, vertical: CGFloat)
+    case autoResizingMask(UIView.AutoresizingMask = [.flexibleWidth, .flexibleHeight])
+    
+    static func allMargins(_ margins: CGFloat) -> ViewConstraints {
+        .margins(horizontal: margins, vertical: margins)
+    }
 }
 
 extension UIView {
@@ -25,10 +29,10 @@ extension UIView {
     }
     
     var originalSubviews: [UIView] {
-        subviews.filter { $0 is HierarchyInspectorViewProtocol == false }
+        subviews.filter { $0 is InternalViewProtocol == false }
     }
     
-    func installView(_ view: UIView, constraints constraintOptions: ViewConstraints = .margins(), position: ViewPosition = .top) {
+    func installView(_ view: UIView, constraints constraintOptions: ViewConstraints = .autoResizingMask(), position: ViewPosition = .top) {
         switch position {
         case .top:
             addSubview(view)
@@ -51,9 +55,8 @@ extension UIView {
                 view.centerYAnchor.constraint(equalTo: centerYAnchor)
             ]
         
-        case .allMargins(.zero),
-             .margins(.zero, .zero):
-            view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        case let .autoResizingMask(mask):
+            view.autoresizingMask = mask
             return
             
         case let .margins(horizontal, vertical):
@@ -62,14 +65,6 @@ extension UIView {
                 view.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -horizontal),
                 view.topAnchor.constraint(equalTo: topAnchor, constant: vertical),
                 view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -vertical)
-            ]
-            
-        case let .allMargins(margin):
-            constraints = [
-                view.leadingAnchor.constraint(equalTo: leadingAnchor, constant: margin),
-                view.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -margin),
-                view.topAnchor.constraint(equalTo: topAnchor, constant: margin),
-                view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -margin)
             ]
         }
         

@@ -7,8 +7,8 @@
 
 import UIKit
 
-class LayerView: UIImageView, HierarchyInspectorViewProtocol {
-    open var shouldPresentOnTop: Bool { false }
+class LayerView: UIImageView, InternalViewProtocol {
+    open var shouldPresentOnTop = false
     
     // MARK: - Properties
     
@@ -22,7 +22,14 @@ class LayerView: UIImageView, HierarchyInspectorViewProtocol {
         }
     }
     
-    let layerBorderWidth: CGFloat
+    var layerBorderWidth: CGFloat {
+        get {
+            borderedView.layer.borderWidth
+        }
+        set {
+            borderedView.layer.borderWidth = newValue
+        }
+    }
     
     var layerBackgroundColor: UIColor? {
         get {
@@ -55,15 +62,10 @@ class LayerView: UIImageView, HierarchyInspectorViewProtocol {
     init(frame: CGRect, reference: ViewHierarchyReference, color: UIColor, borderWidth: CGFloat) {
         self.viewReference = reference
         self.color = color
-        self.layerBorderWidth = borderWidth
         
         super.init(frame: frame)
         
         isUserInteractionEnabled = false
-        
-        if #available(iOS 13.0, *) {
-            borderedView.layer.cornerCurve = .continuous
-        }
         
         borderedView.layer.borderWidth = borderWidth
         
@@ -104,6 +106,7 @@ class LayerView: UIImageView, HierarchyInspectorViewProtocol {
         }
         
         borderedView.layer.maskedCorners = superview.layer.maskedCorners
-        borderedView.layer.cornerRadius  = superview.layer.cornerRadius
+        
+        borderedView.layer.cornerRadius = superview.layer.cornerRadius
     }
 }

@@ -179,6 +179,9 @@ extension UIDatePickerStyle: CaseIterable {
 }
 
 extension ViewController: HierarchyInspectorKeyCommandPresentable {
+    var hirearchyInspectorKeyCommandsSelector: Selector? {
+        #selector(keyCommand(_:))
+    }
     
     override var keyCommands: [UIKeyCommand]? {
         hierarchyInspectorKeyCommands
@@ -186,10 +189,6 @@ extension ViewController: HierarchyInspectorKeyCommandPresentable {
     
     override var canBecomeFirstResponder: Bool {
         true
-    }
-    
-    var presentHirearchyInspectorKeyCommandSelector: Selector? {
-        #selector(keyCommand(_:))
     }
     
     @objc func keyCommand(_ sender: Any) {
