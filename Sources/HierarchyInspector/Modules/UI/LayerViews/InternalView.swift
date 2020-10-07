@@ -7,4 +7,4 @@
 
 import UIKit
 
-class InternalView: UIView, InternalViewProtocol {}
+class InternalView: View, InternalViewProtocol {}

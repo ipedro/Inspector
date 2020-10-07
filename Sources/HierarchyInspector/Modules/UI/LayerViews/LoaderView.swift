@@ -12,17 +12,16 @@ final class LoaderView: InternalView {
     
     private lazy var activityIndicator = UIActivityIndicatorView(style: .whiteLarge).then {
         $0.hidesWhenStopped = true
-        
         $0.startAnimating()
     }
     
     private lazy var checkmarkLabel = UILabel().then {
         $0.adjustsFontSizeToFitWidth = true
-        $0.font = .systemFont(ofSize: 32, weight: .semibold)
-        $0.text = "✓"
-        $0.textColor = .white
-        $0.textAlignment = .center
-        $0.isSafelyHidden = true
+        $0.font                      = .systemFont(ofSize: 32, weight: .semibold)
+        $0.text                      = "✓"
+        $0.textColor                 = .white
+        $0.textAlignment             = .center
+        $0.isSafelyHidden            = true
     }
     
     private lazy var colorScheme: ColorScheme = .colorScheme { _ in .systemBlue }
@@ -50,34 +49,25 @@ final class LoaderView: InternalView {
         }
     }
     
-    // MARK: - Init
-    
-    private init() {
-        super.init(frame: .zero)
-        
-        setup()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     // MARK: - Setup
     
-    func setup() {
+    override func setup() {
+        super.setup()
+        
         isUserInteractionEnabled = false
         
         backgroundColor = HierarchyInspector.ColorScheme.default.color(for: activityIndicator)
         
         installView(checkmarkLabel, constraints: .centerXY)
         
-        installView(activityIndicator, constraints: .allMargins(8))
+        installView(activityIndicator, constraints: .margins(8))
         
-        installView(highlightView)
+        installView(highlightView, constraints: .autoResizingMask)
         
         addInspectorViews()
         
         checkmarkLabel.widthAnchor.constraint(equalTo: activityIndicator.widthAnchor).isActive = true
+        
         checkmarkLabel.heightAnchor.constraint(equalTo: activityIndicator.heightAnchor).isActive = true
     }
     
@@ -91,10 +81,10 @@ final class LoaderView: InternalView {
                 color: .white
             )
             
-            element.installView(inspectorView, position: .top)
+            element.installView(inspectorView, constraints: .autoResizingMask, position: .top)
         }
         
-        installView(highlightView)
+        installView(highlightView, constraints: .autoResizingMask)
     }
     
     override func layoutSubviews() {

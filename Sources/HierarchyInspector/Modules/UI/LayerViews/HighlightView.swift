@@ -82,7 +82,7 @@ class HighlightView: LayerView {
     }
     
     private lazy var labelContainerView = InternalView().then {
-        $0.installView(labelContentView)
+        $0.installView(labelContentView, constraints: .autoResizingMask)
         
         $0.layer.shadowOffset       = CGSize(width: 0, height: 1)
         $0.layer.shadowColor        = UIColor.black.cgColor

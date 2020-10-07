@@ -38,6 +38,7 @@
 		EB7EAAF22529BFC0000001BE /* Array+UniqueValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAF12529BFC0000001BE /* Array+UniqueValues.swift */; };
 		EB80AFBB252B570200F0ECD5 /* NSObject+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */; };
 		EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */; };
+		EB9ED74B252E4F5900BF7D60 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9ED74A252E4F5900BF7D60 /* View.swift */; };
 		EBA245AC252878B700D4AFD9 /* ColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245AB252878B700D4AFD9 /* ColorScheme.swift */; };
 		EBA245B225287B4300D4AFD9 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245B125287B4300D4AFD9 /* CustomButton.swift */; };
 		EBA245F12528894400D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245F02528892E00D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift */; };
@@ -147,6 +148,7 @@
 		EB7EAAF12529BFC0000001BE /* Array+UniqueValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+UniqueValues.swift"; sourceTree = "<group>"; };
 		EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Create.swift"; sourceTree = "<group>"; };
 		EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SFSafariViewController+HierarchyInspectableProtocol.swift"; sourceTree = "<group>"; };
+		EB9ED74A252E4F5900BF7D60 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		EBA245AB252878B700D4AFD9 /* ColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorScheme.swift; sourceTree = "<group>"; };
 		EBA245B125287B4300D4AFD9 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		EBA245F02528892E00D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISplitViewController+HierarchyInspectorPresentable.swift"; sourceTree = "<group>"; };
@@ -286,6 +288,31 @@
 			path = SFSafariViewController;
 			sourceTree = "<group>";
 		};
+		EB9ED73F252E4E3800BF7D60 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				EB9ED749252E4F2700BF7D60 /* View */,
+				EB9ED748252E4E9800BF7D60 /* ViewInspectorInput */,
+				EB5DB399252D03A100CE0398 /* LayerViews */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		EB9ED748252E4E9800BF7D60 /* ViewInspectorInput */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewInspectorInput;
+			sourceTree = "<group>";
+		};
+		EB9ED749252E4F2700BF7D60 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				EB9ED74A252E4F5900BF7D60 /* View.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		EBA245C32528817A00D4AFD9 /* Layer */ = {
 			isa = PBXGroup;
 			children = (
@@ -381,6 +408,7 @@
 		EBF88CBA252DA18300AE9F12 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				EB9ED73F252E4E3800BF7D60 /* UI */,
 				EBF88CBB252DA18D00AE9F12 /* ViewHierarchyList */,
 			);
 			path = Modules;
@@ -463,13 +491,13 @@
 		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
+				OBJ_60 /* README.md */,
 				OBJ_6 /* Package.swift */,
-				OBJ_7 /* Sources */,
-				OBJ_52 /* Tests */,
+				EB2D971025280B8800A5795B /* Frameworks */,
 				EB2D96E725280AC000A5795B /* HierarchyInspectorExample */,
 				OBJ_56 /* Products */,
-				OBJ_60 /* README.md */,
-				EB2D971025280B8800A5795B /* Frameworks */,
+				OBJ_7 /* Sources */,
+				OBJ_52 /* Tests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -515,7 +543,6 @@
 				OBJ_25 /* HierarchyInspector.swift */,
 				EBB0CB35252A6CD0005D4A53 /* Configuration */,
 				OBJ_9 /* Extensions */,
-				EB5DB399252D03A100CE0398 /* LayerViews */,
 				EBA2462D2528DC8100D4AFD9 /* Manager */,
 				OBJ_26 /* Models */,
 				EBF88CBA252DA18300AE9F12 /* Modules */,
@@ -739,6 +766,7 @@
 				OBJ_96 /* LoaderViewPresentable.swift in Sources */,
 				OBJ_97 /* EmptyView.swift in Sources */,
 				EBA246282528D71300D4AFD9 /* Manager.swift in Sources */,
+				EB9ED74B252E4F5900BF7D60 /* View.swift in Sources */,
 				OBJ_98 /* HighlightView.swift in Sources */,
 				EBF88CCE252DA25100AE9F12 /* ViewHierarchyListViewModel.swift in Sources */,
 				OBJ_99 /* InternalView.swift in Sources */,

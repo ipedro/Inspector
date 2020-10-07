@@ -13,11 +13,16 @@ enum ViewPosition {
 
 enum ViewConstraints {
     case centerX
-    case centerXY
-    case margins(horizontal: CGFloat, vertical: CGFloat)
-    case autoResizingMask(UIView.AutoresizingMask = [.flexibleWidth, .flexibleHeight])
     
-    static func allMargins(_ margins: CGFloat) -> ViewConstraints {
+    case centerXY
+    
+    case margins(horizontal: CGFloat, vertical: CGFloat)
+    
+    case autoResizingMask(UIView.AutoresizingMask)
+    
+    static let autoResizingMask = ViewConstraints.autoResizingMask([.flexibleWidth, .flexibleHeight])
+    
+    static func margins(_ margins: CGFloat) -> ViewConstraints {
         .margins(horizontal: margins, vertical: margins)
     }
 }
@@ -32,7 +37,7 @@ extension UIView {
         subviews.filter { $0 is InternalViewProtocol == false }
     }
     
-    func installView(_ view: UIView, constraints constraintOptions: ViewConstraints = .autoResizingMask(), position: ViewPosition = .top) {
+    func installView(_ view: UIView, constraints constraintOptions: ViewConstraints = .margins(.zero), position: ViewPosition = .top) {
         switch position {
         case .top:
             addSubview(view)

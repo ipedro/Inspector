@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ViewHierarchyListViewCode: UIView {
+final class ViewHierarchyListViewCode: View {
     
     private(set) lazy var tableView = UITableView(frame: frame, style: .plain).then {
         $0.register(ViewHierarchyListTableViewCodeCell.self)
@@ -19,18 +19,10 @@ final class ViewHierarchyListViewCode: UIView {
         $0.tableFooterView    = UIView()
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func setup() {
+        super.setup()
         
-        setup()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setup() {
-        installView(tableView, constraints: .allMargins(.zero))
+        contentView.installView(tableView)
     }
     
 }
