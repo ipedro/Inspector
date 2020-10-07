@@ -9,7 +9,9 @@ import UIKit
 
 final class ViewHierarchyListViewCode: View {
     
-    private(set) lazy var tableView = UITableView(frame: frame, style: .plain).then {
+    private(set) lazy var inspectBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: nil, action: nil)
+    
+    private(set) lazy var tableView = UITableView().then {
         $0.register(ViewHierarchyListTableViewCodeCell.self)
         
         $0.backgroundColor    = nil
@@ -22,7 +24,7 @@ final class ViewHierarchyListViewCode: View {
     override func setup() {
         super.setup()
         
-        contentView.installView(tableView)
+        installView(tableView)
     }
     
 }

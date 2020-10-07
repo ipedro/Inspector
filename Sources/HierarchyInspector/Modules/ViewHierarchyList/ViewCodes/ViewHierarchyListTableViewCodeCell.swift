@@ -11,6 +11,8 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        
+        setup()
     }
     
     required init?(coder: NSCoder) {
@@ -22,7 +24,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             backgroundColor = viewModel?.backgroundColor
             
             textLabel?.text = viewModel?.title
-            textLabel?.adjustsFontSizeToFitWidth = true
+            
             textLabel?.font = {
                 switch viewModel?.depth {
                 case 0:
@@ -43,8 +45,6 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             }()
             
             detailTextLabel?.text = viewModel?.subtitle
-            detailTextLabel?.numberOfLines = 0
-            detailTextLabel?.alpha = 0.5
             
             if let viewModel = viewModel {
                 directionalLayoutMargins = NSDirectionalEdgeInsets(
@@ -63,6 +63,13 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
                 )
             }
         }
+    }
+    
+    func setup() {
+        textLabel?.adjustsFontSizeToFitWidth = true
+        detailTextLabel?.numberOfLines = 0
+        detailTextLabel?.alpha = 0.5
+        selectionStyle = .none
     }
     
     override func prepareForReuse() {

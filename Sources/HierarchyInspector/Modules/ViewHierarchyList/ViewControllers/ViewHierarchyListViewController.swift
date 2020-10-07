@@ -12,13 +12,17 @@ final class ViewHierarchyListViewController: UIViewController {
     
     private lazy var viewCode = ViewHierarchyListViewCode().then {
         $0.tableView.dataSource = self
-        $0.tableView.allowsSelection = false
+        $0.tableView.delegate = self
+        $0.inspectBarButtonItem.target = self
+        $0.inspectBarButtonItem.action = #selector(toggleInspect)
     }
     
-    private var viewModel: ViewHierarchyListViewModel!
+    private var viewModel: ViewHierarchyListViewModelProtocol!
     
     override func loadView() {
         view = viewCode
+        
+        navigationItem.rightBarButtonItem = viewCode.inspectBarButtonItem
     }
     
     override func viewDidLoad() {
@@ -33,28 +37,61 @@ final class ViewHierarchyListViewController: UIViewController {
         preferredContentSize = CGSize(width: 320, height: 480)
     }
     
-    static func create(viewModel: ViewHierarchyListViewModel) -> ViewHierarchyListViewController {
+    static func create(viewModel: ViewHierarchyListViewModelProtocol) -> ViewHierarchyListViewController {
         let viewController = ViewHierarchyListViewController()
         viewController.viewModel = viewModel
         
         return viewController
     }
     
+    @objc func toggleInspect() {
+        switch hierarchyInspectorManager.isShowingLayers {
+        case true:
+            hierarchyInspectorManager.removeAllLayers()
+            
+        case false:
+            hierarchyInspectorManager.installAllLayers()
+        }
+    }
 }
 
 extension ViewHierarchyListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.childViewModels.count
+        viewModel.numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ViewHierarchyListTableViewCodeCell.self, for: indexPath)
         
-        let childViewModel = viewModel.childViewModels[indexPath.row]
+        let cellViewModel = viewModel.itemViewModel(for: indexPath)
         
-        cell.viewModel = childViewModel
+        cell.viewModel = cellViewModel
         
         return cell
+    }
+}
+
+extension ViewHierarchyListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let result = viewModel.toggleContainer(at: indexPath) else {
+            tableView.reloadRows(at: [indexPath], with: .none)
+            return
+        }
+        
+        tableView.performBatchUpdates({
+            switch result {
+            case let .inserted(indexPaths):
+                tableView.insertRows(at: indexPaths, with: .top)
+                
+            case let .deleted(indexPaths):
+                tableView.deleteRows(at: indexPaths, with: .top)
+            }
+            
+            tableView.reloadRows(at: [indexPath], with: .none)
+        },
+        completion: { _ in
+            tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+        })
     }
 }
 
@@ -69,3 +106,4 @@ extension ViewHierarchyListViewController: HierarchyInspectorPresentable {
         [.allViews, .staticTexts, .containerViews]
     }
 }
+

@@ -9,18 +9,46 @@ import UIKit
 
 protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
     var title: String { get }
+    
     var subtitle: String { get }
+    
     var isContainer: Bool { get }
+    
+    var isCollapsed: Bool { get set }
+    
+    var isHidden: Bool { get set }
+    
     var depth: Int { get }
+    
     var backgroundColor: UIColor? { get }
 }
 
 final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol {
-    var backgroundColor: UIColor?
+    var isHidden = false
     
-    private(set) lazy var title: String = {
-        "\(reference.children.isEmpty ? "" : "▾ ")\(reference.elementName)" //›
+    var isCollapsed = false
+    
+    let backgroundColor: UIColor? = {
+        if #available(iOS 13.0, *) {
+            return .systemBackground
+        } else {
+            return .white
+        }
     }()
+    
+    var title: String {
+        guard reference.children.isEmpty == false else {
+            return reference.elementName
+        }
+        
+        switch isCollapsed {
+        case true:
+            return "▶ \(reference.elementName)"
+            
+        case false:
+            return "▼ \(reference.elementName)"
+        }
+    }
     
     private(set) lazy var subtitle: String = {
         var strings = [String?]()
