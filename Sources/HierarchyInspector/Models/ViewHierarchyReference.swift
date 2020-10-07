@@ -14,7 +14,11 @@ struct ViewHierarchyReference {
     
     let canHostInspectorView: Bool
     
-    private(set) var children: [ViewHierarchyReference]
+    private(set) var children: [ViewHierarchyReference] {
+        didSet {
+            deepestLevel = children.map { $0.depth }.max() ?? depth
+        }
+    }
     
     let viewIdentifier: ObjectIdentifier
     
@@ -27,6 +31,8 @@ struct ViewHierarchyReference {
     let frame: CGRect
     
     let accessibilityIdentifier: String?
+    
+    private(set) var deepestLevel: Int
     
     var depth: Int {
         didSet {
@@ -61,15 +67,17 @@ struct ViewHierarchyReference {
         canHostInspectorView = root.canHostInspectorView
         
         children = root.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1) }
+        
+        deepestLevel = children.map { $0.depth }.max() ?? depth
     }
 }
 
-// MARK: - ViewHierarchy {
+// MARK: - ViewHierarchyProtocol {
 
-extension ViewHierarchyReference: ViewHierarchy {
+extension ViewHierarchyReference: ViewHierarchyProtocol {
     
     var flattenedViewHierarchy: [ViewHierarchyReference] {
-        let array = children + children.flatMap { $0.flattenedViewHierarchy }
+        let array = children.flatMap { [$0] + $0.flattenedViewHierarchy }
         
         return array
     }

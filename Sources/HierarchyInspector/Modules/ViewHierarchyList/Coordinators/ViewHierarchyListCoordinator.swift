@@ -27,13 +27,14 @@ final class ViewHierarchyListCoordinator {
         
         let navigationController = UINavigationController(rootViewController: viewController)
         
-        if reference.flattenedViewHierarchy.count < 10 {
-            navigationController.modalPresentationStyle = .popover
+        if reference.deepestLevel < 3, reference.flattenedViewHierarchy.count < 10 {
+            navigationController.modalPresentationStyle                    = .popover
             navigationController.popoverPresentationController?.sourceView = sourceView
-            navigationController.popoverPresentationController?.delegate = viewController
+            navigationController.popoverPresentationController?.delegate   = viewController
         }
         else {
             navigationController.modalPresentationStyle = .pageSheet
+            
             if #available(iOS 13.0, *) {
                 navigationController.view.backgroundColor = .systemGroupedBackground
             } else {

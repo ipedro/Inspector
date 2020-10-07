@@ -25,7 +25,7 @@ enum ViewConstraints {
 extension UIView {
     
     var allSubviews: [UIView] {
-        subviews + subviews.flatMap { $0.allSubviews }
+        subviews.flatMap { [$0] + $0.allSubviews }
     }
     
     var originalSubviews: [UIView] {

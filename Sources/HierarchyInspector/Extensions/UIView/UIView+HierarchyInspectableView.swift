@@ -1,5 +1,5 @@
 //
-//  UIView+ViewHierarchy.swift
+//  UIView+ViewHierarchyProtocol.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-// MARK: - ViewHierarchy@objc 
+// MARK: - ViewHierarchyProtocol
 
-extension UIView: ViewHierarchy {
+extension UIView: ViewHierarchyProtocol {
     var canPresentOnTop: Bool {
         switch self {
         case is UITextView:

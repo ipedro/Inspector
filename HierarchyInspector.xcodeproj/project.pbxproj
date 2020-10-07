@@ -32,6 +32,7 @@
 		EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift */; };
 		EB324619252B1E6100406111 /* ViewHierarchyReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB324618252B1E6100406111 /* ViewHierarchyReference.swift */; };
 		EB5DB3A4252D09D400CE0398 /* UIStackView+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5DB3A3252D09D400CE0398 /* UIStackView+Convenience.swift */; };
+		EB74DD92252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */; };
 		EB7EAAC22529B8B4000001BE /* Manager.Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAC12529B8B4000001BE /* Manager.Action.swift */; };
 		EB7EAAE02529B9F2000001BE /* Manager+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAADF2529B9F2000001BE /* Manager+Actions.swift */; };
 		EB7EAAF22529BFC0000001BE /* Array+UniqueValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAF12529BFC0000001BE /* Array+UniqueValues.swift */; };
@@ -79,7 +80,7 @@
 		OBJ_88 /* Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_34 /* Create.swift */; };
 		OBJ_89 /* HierarchyInspectorKeyCommandActionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_35 /* HierarchyInspectorKeyCommandActionable.swift */; };
 		OBJ_90 /* HierarchyInspectableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_36 /* HierarchyInspectableProtocol.swift */; };
-		OBJ_91 /* ViewHierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_37 /* ViewHierarchy.swift */; };
+		OBJ_91 /* ViewHierarchyProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_37 /* ViewHierarchyProtocol.swift */; };
 		OBJ_92 /* HierarchyInspectorLayerManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_38 /* HierarchyInspectorLayerManagerProtocol.swift */; };
 		OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_39 /* HierarchyInspectorPresentable.swift */; };
 		OBJ_94 /* InternalViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_40 /* InternalViewProtocol.swift */; };
@@ -139,6 +140,7 @@
 		EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+HierarchyInspectorPresentable.swift"; sourceTree = "<group>"; };
 		EB324618252B1E6100406111 /* ViewHierarchyReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyReference.swift; sourceTree = "<group>"; };
 		EB5DB3A3252D09D400CE0398 /* UIStackView+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Convenience.swift"; sourceTree = "<group>"; };
+		EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListItemViewModel.swift; sourceTree = "<group>"; };
 		EB7EAAC12529B8B4000001BE /* Manager.Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.Action.swift; sourceTree = "<group>"; };
 		EB7EAAD92529B90B000001BE /* Manager.ActionGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.ActionGroup.swift; sourceTree = "<group>"; };
 		EB7EAADF2529B9F2000001BE /* Manager+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Manager+Actions.swift"; sourceTree = "<group>"; };
@@ -181,7 +183,7 @@
 		OBJ_34 /* Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Create.swift; sourceTree = "<group>"; };
 		OBJ_35 /* HierarchyInspectorKeyCommandActionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectorKeyCommandActionable.swift; sourceTree = "<group>"; };
 		OBJ_36 /* HierarchyInspectableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectableProtocol.swift; sourceTree = "<group>"; };
-		OBJ_37 /* ViewHierarchy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchy.swift; sourceTree = "<group>"; };
+		OBJ_37 /* ViewHierarchyProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyProtocol.swift; sourceTree = "<group>"; };
 		OBJ_38 /* HierarchyInspectorLayerManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectorLayerManagerProtocol.swift; sourceTree = "<group>"; };
 		OBJ_39 /* HierarchyInspectorPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectorPresentable.swift; sourceTree = "<group>"; };
 		OBJ_40 /* InternalViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalViewProtocol.swift; sourceTree = "<group>"; };
@@ -414,6 +416,7 @@
 		EBF88CCC252DA24400AE9F12 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */,
 				EBF88CCD252DA25100AE9F12 /* ViewHierarchyListViewModel.swift */,
 			);
 			path = ViewModels;
@@ -452,7 +455,7 @@
 				OBJ_40 /* InternalViewProtocol.swift */,
 				EBA246362528ECAA00D4AFD9 /* HierarchyLayerConstructor.swift */,
 				OBJ_42 /* LoaderViewPresentable.swift */,
-				OBJ_37 /* ViewHierarchy.swift */,
+				OBJ_37 /* ViewHierarchyProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -724,7 +727,7 @@
 				OBJ_90 /* HierarchyInspectableProtocol.swift in Sources */,
 				EBF88CD5252DA25D00AE9F12 /* ViewHierarchyListViewCode.swift in Sources */,
 				EB7EAAC22529B8B4000001BE /* Manager.Action.swift in Sources */,
-				OBJ_91 /* ViewHierarchy.swift in Sources */,
+				OBJ_91 /* ViewHierarchyProtocol.swift in Sources */,
 				EBE3039B252DB7BC00A8F1C6 /* ViewHierarchyListTableViewCodeCell.swift in Sources */,
 				OBJ_92 /* HierarchyInspectorLayerManagerProtocol.swift in Sources */,
 				OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */,
@@ -732,6 +735,7 @@
 				OBJ_94 /* InternalViewProtocol.swift in Sources */,
 				EBB0CB63252A6F3E005D4A53 /* Manager.ActionGroup.swift in Sources */,
 				EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift in Sources */,
+				EB74DD92252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift in Sources */,
 				OBJ_96 /* LoaderViewPresentable.swift in Sources */,
 				OBJ_97 /* EmptyView.swift in Sources */,
 				EBA246282528D71300D4AFD9 /* Manager.swift in Sources */,

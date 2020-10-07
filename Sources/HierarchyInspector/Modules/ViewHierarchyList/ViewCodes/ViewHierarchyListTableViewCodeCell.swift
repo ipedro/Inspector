@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ViewHierarchyListTableViewCodeCell: UITableViewCell, InternalViewProtocol {
+final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)

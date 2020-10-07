@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ViewHierarchyListViewCode: InternalView {
+final class ViewHierarchyListViewCode: UIView {
     
     private(set) lazy var tableView = UITableView(frame: frame, style: .plain).then {
         $0.register(ViewHierarchyListTableViewCodeCell.self)

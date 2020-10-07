@@ -30,7 +30,7 @@ final class ViewHierarchyListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        preferredContentSize = CGSize(width: 320, height: 500)
+        preferredContentSize = CGSize(width: 320, height: 480)
     }
     
     static func create(viewModel: ViewHierarchyListViewModel) -> ViewHierarchyListViewController {

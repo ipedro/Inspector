@@ -1,5 +1,5 @@
 //
-//  ViewHierarchy.swift
+//  ViewHierarchyProtocol.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol ViewHierarchy {
+protocol ViewHierarchyProtocol {
     /// Determines if a view can host an inspector view.
     var canHostInspectorView: Bool { get }
     
