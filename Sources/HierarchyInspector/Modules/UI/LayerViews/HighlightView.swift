@@ -74,7 +74,7 @@ class HighlightView: LayerView {
     }
     
     private lazy var labelContentView = InternalView().then {
-        $0.installView(label, constraints: .margins(horizontal: 4, vertical: 2))
+        $0.installView(label, .margins(horizontal: 4, vertical: 2))
         
         $0.layer.cornerRadius  = 6
         $0.layer.masksToBounds = true
@@ -82,7 +82,7 @@ class HighlightView: LayerView {
     }
     
     private lazy var labelContainerView = InternalView().then {
-        $0.installView(labelContentView, constraints: .autoResizingMask)
+        $0.installView(labelContentView, .autoResizingMask)
         
         $0.layer.shadowOffset       = CGSize(width: 0, height: 1)
         $0.layer.shadowColor        = UIColor.black.cgColor
@@ -190,7 +190,7 @@ private extension HighlightView {
     func setupViews(with hostView: UIView) {
         updateColors()
         
-        installView(labelContainerView, constraints: .centerX)
+        installView(labelContainerView, .centerX)
         
         verticalAlignmentConstraint.isActive = true
         

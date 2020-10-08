@@ -17,7 +17,7 @@ extension UIView: LoaderViewPresentable {
         
         addSubview(loaderView)
         
-        installView(loaderView, constraints: .centerXY)
+        installView(loaderView, .centerXY)
         
         UIView.animate(
             withDuration: 0.33,

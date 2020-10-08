@@ -36,19 +36,7 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
         }
     }()
     
-    var title: String {
-        guard reference.children.isEmpty == false else {
-            return reference.elementName
-        }
-        
-        switch isCollapsed {
-        case true:
-            return "▶ \(reference.elementName)"
-            
-        case false:
-            return "▼ \(reference.elementName)"
-        }
-    }
+    private(set) lazy var title = reference.elementName
     
     private(set) lazy var subtitle: String = {
         var strings = [String?]()
@@ -83,13 +71,16 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     
     private(set) lazy var isContainer: Bool = reference.children.isEmpty == false
     
-    private(set) lazy var depth: Int = reference.depth
+    private(set) lazy var depth: Int = reference.depth - rootDepth
+    
+    let rootDepth: Int
     
     // MARK: - Properties
     
     private let reference: ViewHierarchyReference
     
-    init(reference: ViewHierarchyReference) {
+    init(reference: ViewHierarchyReference, rootDepth: Int) {
         self.reference = reference
+        self.rootDepth = rootDepth
     }
 }

@@ -29,10 +29,10 @@ final class ViewHierarchyListViewModel: NSObject {
     let rootReference: ViewHierarchyReference
     
     private(set) lazy var childViewModels: [ViewHierarchyListItemViewModelProtocol] = {
-        var array = [ViewHierarchyListItemViewModel(reference: rootReference)]
+        var array = [ViewHierarchyListItemViewModel(reference: rootReference, rootDepth: rootReference.depth)]
         
         rootReference.flattenedViewHierarchy.forEach {
-            array.append(ViewHierarchyListItemViewModel(reference: $0))
+            array.append(ViewHierarchyListItemViewModel(reference: $0, rootDepth: rootReference.depth))
         }
         
         return array
@@ -48,7 +48,7 @@ final class ViewHierarchyListViewModel: NSObject {
 
 extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
     var title: String {
-        "More info"
+        "ℹ️ \(rootReference.elementName)"
     }
     
     var numberOfRows: Int {

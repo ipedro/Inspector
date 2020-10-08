@@ -208,7 +208,7 @@ private extension HierarchyInspector.Manager {
                 return
             }
             
-            referenceView.installView(inspectorView, constraints: .autoResizingMask)
+            referenceView.installView(inspectorView, .autoResizingMask)
         }
     }
     

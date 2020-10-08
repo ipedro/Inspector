@@ -71,7 +71,7 @@ class LayerView: UIImageView, InternalViewProtocol {
         
         borderedView.layer.borderColor = color.withAlphaComponent(0.5).cgColor
         
-        installView(borderedView, constraints: .autoResizingMask)
+        installView(borderedView, .autoResizingMask)
         
         autoresizingMask = [.flexibleHeight, .flexibleWidth]
     }

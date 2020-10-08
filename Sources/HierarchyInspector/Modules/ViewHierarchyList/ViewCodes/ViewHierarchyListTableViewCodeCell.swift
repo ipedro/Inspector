@@ -10,7 +10,7 @@ import UIKit
 final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setup()
     }
@@ -23,12 +23,12 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         didSet {
             backgroundColor = viewModel?.backgroundColor
             
-            textLabel?.text = viewModel?.title
+            elementNameLabel.text = viewModel?.title
             
-            textLabel?.font = {
+            elementNameLabel.font = {
                 switch viewModel?.depth {
                 case 0:
-                    return .systemFont(ofSize: 24, weight: .bold)
+                    return .systemFont(ofSize: 22, weight: .bold)
                     
                 case 1:
                     return .systemFont(ofSize: 18, weight: .semibold)
@@ -44,32 +44,87 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
                 }
             }()
             
-            detailTextLabel?.text = viewModel?.subtitle
+            isCollapsedLabel.font = elementNameLabel.font
             
-            if let viewModel = viewModel {
-                directionalLayoutMargins = NSDirectionalEdgeInsets(
-                    top: 20,
-                    leading: 30 * CGFloat(viewModel.depth),
-                    bottom: 20,
-                    trailing: 15
-                )
-            }
-            else {
-                directionalLayoutMargins = NSDirectionalEdgeInsets(
-                    top: 20,
-                    leading: 0,
-                    bottom: 20,
-                    trailing: 15
-                )
-            }
+            descriptionLabel.text = viewModel?.subtitle
+            
+            let offset = 30 * (CGFloat(viewModel?.depth ?? 0) + 1)
+            
+            separatorInset = .init(top: 0, left: offset, bottom: 0, right: 0)
+            
+            directionalLayoutMargins = .margins(leading: offset)
+            
+            stackView.directionalLayoutMargins = directionalLayoutMargins
+            
+            isCollapsed = viewModel?.isCollapsed == true
+            
+            isCollapsedLabel.isSafelyHidden = viewModel?.isContainer != true
         }
     }
     
+    var isCollapsed = false {
+        didSet {
+            isCollapsedLabel.transform = isCollapsed ? .identity : .init(rotationAngle: .pi / 2)
+        }
+    }
+    
+    func toggleCollapse(animated: Bool) {
+        guard animated else {
+            isCollapsed.toggle()
+            return
+        }
+        
+        UIView.animate(
+            withDuration: 0.25,
+            delay: 0,
+            options: .beginFromCurrentState,
+            animations: {
+                
+                self.isCollapsed.toggle()
+                
+            },
+            completion: nil
+        )
+    }
+    
+    private lazy var elementNameLabel = UILabel().then {
+        $0.adjustsFontSizeToFitWidth = true
+    }
+    
+    private lazy var descriptionLabel = UILabel().then {
+        $0.font = .preferredFont(forTextStyle: .caption2)
+        $0.numberOfLines = 0
+        $0.alpha = 0.5
+    }
+    
+    private lazy var isCollapsedLabel = UILabel().then {
+        $0.text = "›"
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.tintColor = elementNameLabel.textColor
+    }
+    
+    private lazy var stackView = UIStackView(
+        axis: .vertical,
+        arrangedSubviews: [
+            elementNameLabel,
+            descriptionLabel
+        ],
+        spacing: 4
+    )
+    
     func setup() {
-        textLabel?.adjustsFontSizeToFitWidth = true
-        detailTextLabel?.numberOfLines = 0
-        detailTextLabel?.alpha = 0.5
         selectionStyle = .none
+        
+        contentView.installView(
+            stackView,
+            .margins(top: 20, leading: 10, bottom: 20, trailing: 20)
+        )
+        
+        contentView.addSubview(isCollapsedLabel)
+        
+        isCollapsedLabel.centerYAnchor.constraint(equalTo: elementNameLabel.centerYAnchor).isActive = true
+
+        isCollapsedLabel.trailingAnchor.constraint(equalTo: elementNameLabel.leadingAnchor, constant: -8).isActive = true
     }
     
     override func prepareForReuse() {

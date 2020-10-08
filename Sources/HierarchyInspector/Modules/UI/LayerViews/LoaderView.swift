@@ -58,11 +58,11 @@ final class LoaderView: InternalView {
         
         backgroundColor = HierarchyInspector.ColorScheme.default.color(for: activityIndicator)
         
-        installView(checkmarkLabel, constraints: .centerXY)
+        installView(checkmarkLabel, .centerXY)
         
-        installView(activityIndicator, constraints: .margins(8))
+        installView(activityIndicator, .margins(8))
         
-        installView(highlightView, constraints: .autoResizingMask)
+        installView(highlightView, .autoResizingMask)
         
         addInspectorViews()
         
@@ -81,10 +81,10 @@ final class LoaderView: InternalView {
                 color: .white
             )
             
-            element.installView(inspectorView, constraints: .autoResizingMask, position: .top)
+            element.installView(inspectorView, .autoResizingMask, .onTop)
         }
         
-        installView(highlightView, constraints: .autoResizingMask)
+        installView(highlightView, .autoResizingMask)
     }
     
     override func layoutSubviews() {

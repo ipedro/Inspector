@@ -31,7 +31,8 @@
 		EB2D971225280B8800A5795B /* HierarchyInspector.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = "HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift */; };
 		EB324619252B1E6100406111 /* ViewHierarchyReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB324618252B1E6100406111 /* ViewHierarchyReference.swift */; };
-		EB5DB3A4252D09D400CE0398 /* UIStackView+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5DB3A3252D09D400CE0398 /* UIStackView+Convenience.swift */; };
+		EB3C4B4A252E776A00AFABF8 /* NSDirectionalEdgeInsets+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3C4B49252E776A00AFABF8 /* NSDirectionalEdgeInsets+Init.swift */; };
+		EB5DB3A4252D09D400CE0398 /* UIStackView+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5DB3A3252D09D400CE0398 /* UIStackView+Init.swift */; };
 		EB74DD92252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */; };
 		EB7EAAC22529B8B4000001BE /* Manager.Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAC12529B8B4000001BE /* Manager.Action.swift */; };
 		EB7EAAE02529B9F2000001BE /* Manager+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAADF2529B9F2000001BE /* Manager+Actions.swift */; };
@@ -127,6 +128,15 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EB3C4B6A252E7DFF00AFABF8 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -140,7 +150,8 @@
 		EB2D96F625280AC100A5795B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EB2D971E252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+HierarchyInspectorPresentable.swift"; sourceTree = "<group>"; };
 		EB324618252B1E6100406111 /* ViewHierarchyReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyReference.swift; sourceTree = "<group>"; };
-		EB5DB3A3252D09D400CE0398 /* UIStackView+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Convenience.swift"; sourceTree = "<group>"; };
+		EB3C4B49252E776A00AFABF8 /* NSDirectionalEdgeInsets+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDirectionalEdgeInsets+Init.swift"; sourceTree = "<group>"; };
+		EB5DB3A3252D09D400CE0398 /* UIStackView+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Init.swift"; sourceTree = "<group>"; };
 		EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListItemViewModel.swift; sourceTree = "<group>"; };
 		EB7EAAC12529B8B4000001BE /* Manager.Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.Action.swift; sourceTree = "<group>"; };
 		EB7EAAD92529B90B000001BE /* Manager.ActionGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.ActionGroup.swift; sourceTree = "<group>"; };
@@ -251,6 +262,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		EB3C4B48252E775B00AFABF8 /* NSDirectionalEdgeInsets */ = {
+			isa = PBXGroup;
+			children = (
+				EB3C4B49252E776A00AFABF8 /* NSDirectionalEdgeInsets+Init.swift */,
+			);
+			path = NSDirectionalEdgeInsets;
+			sourceTree = "<group>";
+		};
 		EB5DB399252D03A100CE0398 /* LayerViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -267,7 +286,7 @@
 		EB5DB3A2252D09C300CE0398 /* UIStackView */ = {
 			isa = PBXGroup;
 			children = (
-				EB5DB3A3252D09D400CE0398 /* UIStackView+Convenience.swift */,
+				EB5DB3A3252D09D400CE0398 /* UIStackView+Init.swift */,
 			);
 			path = UIStackView;
 			sourceTree = "<group>";
@@ -555,6 +574,7 @@
 		OBJ_9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				EB3C4B48252E775B00AFABF8 /* NSDirectionalEdgeInsets */,
 				EB5DB3A2252D09C300CE0398 /* UIStackView */,
 				EBA245D2252881A100D4AFD9 /* Array */,
 				EBA245C32528817A00D4AFD9 /* Layer */,
@@ -599,6 +619,7 @@
 			buildPhases = (
 				OBJ_65 /* Sources */,
 				OBJ_103 /* Frameworks */,
+				EB3C4B6A252E7DFF00AFABF8 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -746,7 +767,7 @@
 				OBJ_85 /* Texts.swift in Sources */,
 				OBJ_86 /* ViewHierarchySnapshot.swift in Sources */,
 				EB80AFBB252B570200F0ECD5 /* NSObject+Create.swift in Sources */,
-				EB5DB3A4252D09D400CE0398 /* UIStackView+Convenience.swift in Sources */,
+				EB5DB3A4252D09D400CE0398 /* UIStackView+Init.swift in Sources */,
 				EB324619252B1E6100406111 /* ViewHierarchyReference.swift in Sources */,
 				OBJ_87 /* Actionable.swift in Sources */,
 				OBJ_88 /* Create.swift in Sources */,
@@ -778,6 +799,7 @@
 				EBA246412528ED1100D4AFD9 /* Manager+HierarchyLayerConstructor.swift in Sources */,
 				OBJ_102 /* WireframeView.swift in Sources */,
 				EBF88CBF252DA1E300AE9F12 /* ViewHierarchyListViewController.swift in Sources */,
+				EB3C4B4A252E776A00AFABF8 /* NSDirectionalEdgeInsets+Init.swift in Sources */,
 				EB7EAAE02529B9F2000001BE /* Manager+Actions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

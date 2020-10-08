@@ -8,23 +8,29 @@
 import UIKit
 
 enum ViewPosition {
-    case top, bottom
+    case onTop, onBottom
 }
 
-enum ViewConstraints {
+enum ViewBinding {
+    
     case centerX
     
     case centerXY
     
-    case margins(horizontal: CGFloat, vertical: CGFloat)
+    case margins(top: CGFloat, leading: CGFloat, bottom: CGFloat, trailing: CGFloat)
     
     case autoResizingMask(UIView.AutoresizingMask)
     
-    static let autoResizingMask = ViewConstraints.autoResizingMask([.flexibleWidth, .flexibleHeight])
+    static let autoResizingMask = ViewBinding.autoResizingMask([.flexibleWidth, .flexibleHeight])
     
-    static func margins(_ margins: CGFloat) -> ViewConstraints {
-        .margins(horizontal: margins, vertical: margins)
+    static func margins(_ margins: CGFloat) -> ViewBinding {
+        .margins(top: margins, leading: margins, bottom: margins, trailing: margins)
     }
+    
+    static func margins(horizontal: CGFloat, vertical: CGFloat) -> ViewBinding {
+        .margins(top: vertical, leading: horizontal, bottom: vertical, trailing: horizontal)
+    }
+    
 }
 
 extension UIView {
@@ -37,18 +43,18 @@ extension UIView {
         subviews.filter { $0 is InternalViewProtocol == false }
     }
     
-    func installView(_ view: UIView, constraints constraintOptions: ViewConstraints = .margins(.zero), position: ViewPosition = .top) {
+    func installView(_ view: UIView, _ binding: ViewBinding = .margins(.zero), _ position: ViewPosition = .onTop) {
         switch position {
-        case .top:
+        case .onTop:
             addSubview(view)
             
-        case .bottom:
+        case .onBottom:
             insertSubview(view, at: .zero)
         }
         
         let constraints: [NSLayoutConstraint]
         
-        switch constraintOptions {
+        switch binding {
         case .centerX:
             constraints = [
                 view.centerXAnchor.constraint(equalTo: centerXAnchor)
@@ -64,18 +70,16 @@ extension UIView {
             view.autoresizingMask = mask
             return
             
-        case let .margins(horizontal, vertical):
+        case let .margins(top, leading, bottom, trailing):
             constraints = [
-                view.leadingAnchor.constraint(equalTo: leadingAnchor, constant: horizontal),
-                view.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -horizontal),
-                view.topAnchor.constraint(equalTo: topAnchor, constant: vertical),
-                view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -vertical)
+                view.topAnchor.constraint(equalTo: topAnchor, constant: top),
+                view.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leading),
+                view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -bottom),
+                view.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -trailing)
             ]
         }
         
         view.translatesAutoresizingMaskIntoConstraints = false
-        
-        constraints.forEach { $0.priority = .defaultLow }
         
         NSLayoutConstraint.activate(constraints)
     }
