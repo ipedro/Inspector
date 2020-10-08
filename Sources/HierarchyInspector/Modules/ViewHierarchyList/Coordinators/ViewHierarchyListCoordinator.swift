@@ -18,28 +18,29 @@ final class ViewHierarchyListCoordinator {
         self.sourceView = sourceView
     }
     
-    func start() -> UINavigationController {
-        let viewController = ViewHierarchyListViewController.create(
-            viewModel: ViewHierarchyListViewModel(
-                reference: reference
-            )
+    private lazy var viewController = ViewHierarchyListViewController.create(
+        viewModel: ViewHierarchyListViewModel(
+            reference: reference
         )
-        
-        let navigationController = UINavigationController(rootViewController: viewController).then {
-            if #available(iOS 13.0, *) {
-                $0.view.backgroundColor = .systemBackground
-            } else {
-                $0.view.backgroundColor = .white
-            }
+    )
+    
+    private lazy var navigationController = UINavigationController(rootViewController: viewController).then {
+        if #available(iOS 13.0, *) {
+            $0.view.backgroundColor = .systemBackground
+            $0.overrideUserInterfaceStyle = .dark
+        } else {
+            $0.view.backgroundColor = .white
         }
-        
-        if reference.deepestLevel < 3, reference.flattenedViewHierarchy.count < 10 {
+    }
+    
+    func start() -> UINavigationController {
+        if reference.flattenedViewHierarchy.count < 5 {
             navigationController.modalPresentationStyle                    = .popover
             navigationController.popoverPresentationController?.sourceView = sourceView
             navigationController.popoverPresentationController?.delegate   = viewController
         }
         else {
-            navigationController.modalPresentationStyle = .pageSheet
+            navigationController.modalPresentationStyle = .formSheet
         }
         
         return navigationController

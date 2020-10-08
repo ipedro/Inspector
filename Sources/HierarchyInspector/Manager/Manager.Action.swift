@@ -8,7 +8,6 @@
 import UIKit
 
 extension HierarchyInspector.Manager {
-    
     enum Action {
         case emptyLayer(_ title: String)
         
@@ -46,7 +45,7 @@ extension HierarchyInspector.Manager {
             switch self {
             case .openHierarchyInspector:
                 return HierarchyInspector.configuration.keyCommands.presentationModfifierFlags
-            
+                
             case .emptyLayer,
                  .toggleLayer,
                  .showAllLayers,
@@ -56,11 +55,9 @@ extension HierarchyInspector.Manager {
             }
         }
     }
-    
 }
 
 extension HierarchyInspector.Manager.Action {
-    
     var alertAction: UIAlertAction? {
         switch self {
         case let .emptyLayer(title):
@@ -73,8 +70,8 @@ extension HierarchyInspector.Manager.Action {
              let .hideVisibleLayers(closure):
             
             return UIAlertAction(title: title, style: .default) { _ in
-               closure()
-           }
+                closure()
+            }
             
         case let .inspect(vc):
             return UIAlertAction(title: title, style: .default) { _ in
@@ -87,5 +84,4 @@ extension HierarchyInspector.Manager.Action {
             }
         }
     }
-    
 }

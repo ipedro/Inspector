@@ -39,7 +39,13 @@ final class ViewHierarchyListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        preferredContentSize = CGSize(width: 320, height: 480)
+        updatePreferredContentSize()
+    }
+    
+    private func updatePreferredContentSize() {
+        viewCode.layoutIfNeeded()
+        
+        preferredContentSize = viewCode.tableView.contentSize
     }
     
     static func create(viewModel: ViewHierarchyListViewModelProtocol) -> ViewHierarchyListViewController {
@@ -60,9 +66,7 @@ final class ViewHierarchyListViewController: UIViewController {
     }
     
     @objc func close() {
-        dismiss(animated: true) {
-            //
-        }
+        dismiss(animated: true)
     }
 }
 
@@ -73,28 +77,21 @@ extension ViewHierarchyListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ViewHierarchyListTableViewCodeCell.self, for: indexPath)
-        
-        let cellViewModel = viewModel.itemViewModel(for: indexPath)
-        
-        cell.viewModel = cellViewModel
+        cell.viewModel = viewModel.itemViewModel(for: indexPath)
+        cell.isEvenRow = indexPath.row % 2 == 0
         
         return cell
     }
 }
 
 extension ViewHierarchyListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        guard indexPath != IndexPath(row: 0, section: 0) else {
-            return nil
-        }
-        
-        return indexPath
-    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        guard let result = viewModel.toggleContainer(at: indexPath) else {
+        let results = viewModel.toggleContainer(at: indexPath)
+        
+        guard results.isEmpty == false else {
             return
         }
         
@@ -103,17 +100,32 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
         }
         
         tableView.performBatchUpdates({
-            switch result {
-            case let .inserted(indexPaths):
-                tableView.insertRows(at: indexPaths, with: .top)
-                
-            case let .deleted(indexPaths):
-                tableView.deleteRows(at: indexPaths, with: .top)
+            
+            results.forEach {
+                switch $0 {
+                case let .inserted(insertIndexPaths):
+                    tableView.insertRows(at: insertIndexPaths, with: .top)
+                    
+                case let .deleted(deleteIndexPaths):
+                    tableView.deleteRows(at: deleteIndexPaths, with: .top)
+                }
             }
             
         },
         completion: { _ in
-            tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+            
+            UIView.animate(withDuration: 0.25) {
+                
+                tableView.indexPathsForVisibleRows?.forEach { indexPath in
+                    guard let cell = tableView.cellForRow(at: indexPath) as? ViewHierarchyListTableViewCodeCell else {
+                        return
+                    }
+                    
+                    cell.isEvenRow = indexPath.row % 2 == 0
+                }
+                
+            }
+            
         })
     }
 }

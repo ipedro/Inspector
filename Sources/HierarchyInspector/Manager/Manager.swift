@@ -9,7 +9,6 @@ import UIKit
 
 extension HierarchyInspector {
     public final class Manager: NSObject {
-        
         public init(host: HierarchyInspectableProtocol) {
             self.hostViewController = host
         }
@@ -19,13 +18,13 @@ extension HierarchyInspector {
         
         var shouldCacheViewHierarchySnapshot = true
         
-        weak private(set) var hostViewController: HierarchyInspectableProtocol?
+        private(set) weak var hostViewController: HierarchyInspectableProtocol?
         
         var viewHierarchyReferences: [Layer: [ViewHierarchyReference]] = [:] {
             didSet {
-                let layers        = Set<Layer>(viewHierarchyReferences.keys)
-                let oldLayers     = Set<Layer>(oldValue.keys)
-                let newLayers     = layers.subtracting(oldLayers)
+                let layers = Set<Layer>(viewHierarchyReferences.keys)
+                let oldLayers = Set<Layer>(oldValue.keys)
+                let newLayers = layers.subtracting(oldLayers)
                 let removedLayers = oldLayers.subtracting(layers)
                 
                 removeReferences(for: removedLayers, in: oldValue)
@@ -43,7 +42,6 @@ extension HierarchyInspector {
                 updateLayerViews(to: wireframeViews, from: oldValue)
             }
         }
-            
         
         var inspectorViews: [ViewHierarchyReference: HighlightView] = [:] {
             didSet {
@@ -59,9 +57,8 @@ extension HierarchyInspector {
                 
                 return nil
             }
-                
+            
             guard let cachedSnapshot = cachedViewHierarchySnapshot, Date() <= cachedSnapshot.expiryDate else {
-                
                 guard let snapshot = makeSnapshot() else {
                     print("\(Date()) [Hierarchy Inspector] \(hostViewController.view.className): could not caculate snapshot")
                     
@@ -124,14 +121,12 @@ extension HierarchyInspector {
         func asyncOperation(name: String, execute closure: @escaping Closure) {
             async(operation: Operation(name: name, closure: closure), in: hostViewController?.view.window)
         }
-        
     }
 }
 
 // MARK: - Layers Hierarchy
 
 extension HierarchyInspector.Manager {
-    
     var activeLayers: [HierarchyInspector.Layer] {
         viewHierarchyReferences.compactMap { dict -> HierarchyInspector.Layer? in
             guard dict.value.isEmpty == false else {
@@ -158,7 +153,6 @@ extension HierarchyInspector.Manager {
 // MARK: - Private Helpers
 
 private extension HierarchyInspector.Manager {
-    
     func async(operation: Operation, in window: UIWindow?) {
         window?.showActivityIndicator(for: operation)
         
@@ -181,16 +175,14 @@ private extension HierarchyInspector.Manager {
 // MARK: - ViewReference
 
 private extension HierarchyInspector.Manager {
-    
-    func updateLayerViews(to newValue: [ViewHierarchyReference : LayerView], from oldValue: [ViewHierarchyReference : LayerView]) {
-        
-        let viewReferences    = Set<ViewHierarchyReference>(newValue.keys)
+    func updateLayerViews(to newValue: [ViewHierarchyReference: LayerView], from oldValue: [ViewHierarchyReference: LayerView]) {
+        let viewReferences = Set<ViewHierarchyReference>(newValue.keys)
         
         let oldViewReferences = Set<ViewHierarchyReference>(oldValue.keys)
         
         let removedReferences = oldViewReferences.subtracting(viewReferences)
         
-        let newReferences     = viewReferences.subtracting(oldViewReferences)
+        let newReferences = viewReferences.subtracting(oldViewReferences)
         
         removedReferences.forEach {
             guard let layerView = oldValue[$0] else {
@@ -213,34 +205,29 @@ private extension HierarchyInspector.Manager {
     }
     
     func removeReferences(for removedLayers: Set<HierarchyInspector.Layer>, in oldValue: [HierarchyInspector.Layer: [ViewHierarchyReference]]) {
-        
         var removedReferences = [ViewHierarchyReference]()
         
         removedLayers.forEach { layer in
             print("[Hierarchy Inspector] \(layer) was removed")
             
             oldValue[layer]?.forEach {
-                
                 print("[Hierarchy Inspector] \(layer): removing reference to \($0.elementName)")
                 removedReferences.append($0)
-            
             }
         }
         
         for (layer, references) in viewHierarchyReferences where layer != .wireframes {
-            
             references.forEach { reference in
                 
                 if let index = removedReferences.firstIndex(of: reference) {
                     print("[Hierarchy Inspector] reference to \(reference.elementName) reclaimed by \(layer)")
                     
                     removedReferences.remove(at: index)
-                    
                 }
             }
         }
         
-        removedReferences.forEach { (removedReference) in
+        removedReferences.forEach { removedReference in
             inspectorViews.removeValue(forKey: removedReference)
         }
         
@@ -294,10 +281,11 @@ private extension HierarchyInspector.Manager {
                     wireframeViews[viewReference] = wireframeView
                 }
             }
-            
         }
     }
 }
+
+// MARK: - HighlightViewDelegate
 
 extension HierarchyInspector.Manager: HighlightViewDelegate {
     func highlightView(didTap view: UIView, with reference: ViewHierarchyReference) {

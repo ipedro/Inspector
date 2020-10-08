@@ -120,14 +120,22 @@ extension LoaderView {
     
     static func dequeueLoaderView(
         for operation: HierarchyInspector.Manager.Operation,
-        in presenter: LoaderViewPresentable
+        in presenter: UIView
     ) -> LoaderView {
         
-        let loaderView = sharedPool[presenter] ?? LoaderView()
-        
-        loaderView.layer.removeAllAnimations()
-        
-        loaderView.prepareForReuse()
+        let loaderView: LoaderView = {
+            
+            guard let cachedView = sharedPool[presenter] else {
+                return LoaderView()
+            }
+            
+            cachedView.layer.removeAllAnimations()
+            
+            cachedView.prepareForReuse()
+            
+            return cachedView
+            
+        }()
         
         loaderView.currentOperation = operation
         

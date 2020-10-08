@@ -16,7 +16,7 @@ struct ViewHierarchyReference {
     
     private(set) var children: [ViewHierarchyReference] {
         didSet {
-            deepestLevel = children.map { $0.depth }.max() ?? depth
+            deepestAbsoulteLevel = children.map { $0.depth }.max() ?? depth
         }
     }
     
@@ -32,7 +32,11 @@ struct ViewHierarchyReference {
     
     let accessibilityIdentifier: String?
     
-    private(set) var deepestLevel: Int
+    private(set) var deepestAbsoulteLevel: Int
+    
+    var deepestRelativeLevel: Int {
+        deepestAbsoulteLevel - depth
+    }
     
     var depth: Int {
         didSet {
@@ -68,7 +72,7 @@ struct ViewHierarchyReference {
         
         children = root.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1) }
         
-        deepestLevel = children.map { $0.depth }.max() ?? depth
+        deepestAbsoulteLevel = children.map { $0.depth }.max() ?? depth
     }
 }
 

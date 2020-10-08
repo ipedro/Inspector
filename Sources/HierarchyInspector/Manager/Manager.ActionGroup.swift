@@ -8,7 +8,6 @@
 import UIKit
 
 extension HierarchyInspector.Manager {
-    
     struct ActionGroup {
         let title: String?
         
@@ -22,13 +21,11 @@ extension HierarchyInspector.Manager {
         
         let actions: [Action]
     }
-    
 }
 
 // MARK: - UIAlertAction Extension
 
 extension HierarchyInspector.Manager.ActionGroup {
-    
     var alertActions: [UIAlertAction] {
         var array = [UIAlertAction]()
         
@@ -48,5 +45,4 @@ extension HierarchyInspector.Manager.ActionGroup {
         
         return array
     }
-    
 }

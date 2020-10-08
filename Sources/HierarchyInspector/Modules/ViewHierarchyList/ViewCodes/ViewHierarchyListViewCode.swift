@@ -9,18 +9,17 @@ import UIKit
 
 final class ViewHierarchyListViewCode: View {
     
-    private(set) lazy var inspectBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: nil, action: nil)
+    private(set) lazy var inspectBarButtonItem = UIBarButtonItem(title: "🧬", style: .plain, target: nil, action: nil)
     
-    private(set) lazy var dismissBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
+    private(set) lazy var dismissBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
     
     private(set) lazy var tableView = UITableView().then {
         $0.register(ViewHierarchyListTableViewCodeCell.self)
         
-        $0.backgroundColor          = nil
-        $0.directionalLayoutMargins = .margins(top: 20, bottom: 20)
-        $0.rowHeight                = UITableView.automaticDimension
-        $0.estimatedRowHeight       = 80
-        $0.tableFooterView          = UIView()
+        $0.backgroundColor = nil
+        $0.rowHeight       = UITableView.automaticDimension
+        $0.tableFooterView = UIView()
+        $0.separatorStyle  = .none
     }
     
     override func setup() {

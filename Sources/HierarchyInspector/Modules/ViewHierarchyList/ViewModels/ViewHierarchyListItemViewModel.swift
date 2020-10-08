@@ -8,6 +8,8 @@
 import UIKit
 
 protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
+    var parent: ViewHierarchyListItemViewModel? { get set }
+    
     var title: String { get }
     
     var subtitle: String { get }
@@ -16,25 +18,40 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
     
     var isCollapsed: Bool { get set }
     
-    var isHidden: Bool { get set }
+    var isHidden: Bool { get }
     
-    var depth: Int { get }
+    var relativeDepth: Int { get }
     
     var backgroundColor: UIColor? { get }
 }
 
 final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol {
-    var isHidden = false
+    let identifier = UUID()
     
-    var isCollapsed = false
+    weak var parent: ViewHierarchyListItemViewModel?
     
-    let backgroundColor: UIColor? = {
-        if #available(iOS 13.0, *) {
-            return .systemBackground
-        } else {
-            return .white
+    var isHidden: Bool {
+        parent?.isCollapsed == true || parent?.isHidden == true
+    }
+    
+    var isCollapsed: Bool {
+        get {
+            isContainer ? _isCollapsed : true
         }
-    }()
+        set {
+            guard isContainer else {
+                return
+            }
+            
+            _isCollapsed = newValue
+        }
+    }
+    
+    private var _isCollapsed = false
+    
+    var backgroundColor: UIColor? {
+        UIColor(white: 1 - CGFloat(relativeDepth) * 0.03, alpha: 1)
+    }
     
     private(set) lazy var title = reference.elementName
     
@@ -71,7 +88,9 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     
     private(set) lazy var isContainer: Bool = reference.children.isEmpty == false
     
-    private(set) lazy var depth: Int = reference.depth - rootDepth
+    var relativeDepth: Int {
+        reference.depth - rootDepth
+    }
     
     let rootDepth: Int
     
@@ -79,8 +98,23 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     
     private let reference: ViewHierarchyReference
     
-    init(reference: ViewHierarchyReference, rootDepth: Int) {
+    init(
+        reference: ViewHierarchyReference,
+        parent: ViewHierarchyListItemViewModel? = nil,
+        rootDepth: Int
+    ) {
+        self.parent = parent
         self.reference = reference
         self.rootDepth = rootDepth
+    }
+}
+
+extension ViewHierarchyListItemViewModel: Hashable {
+    static func == (lhs: ViewHierarchyListItemViewModel, rhs: ViewHierarchyListItemViewModel) -> Bool {
+        lhs.identifier == rhs.identifier
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        identifier.hash(into: &hasher)
     }
 }

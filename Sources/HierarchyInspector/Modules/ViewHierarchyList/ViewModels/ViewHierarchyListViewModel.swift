@@ -10,6 +10,14 @@ import UIKit
 enum ViewHierarchyListAction {
     case inserted([IndexPath])
     case deleted([IndexPath])
+    
+    var lastIndexPath: IndexPath? {
+        switch self {
+            case let .inserted(indexPaths),
+                 let .deleted(indexPaths):
+                return indexPaths.last
+        }
+    }
 }
 
 protocol ViewHierarchyListViewModelProtocol {
@@ -22,33 +30,48 @@ protocol ViewHierarchyListViewModelProtocol {
     /// Toggle if a container displays its subviews or hides them.
     /// - Parameter indexPath: row with
     /// - Returns: Affected index paths
-    func toggleContainer(at indexPath: IndexPath) -> ViewHierarchyListAction?
+    func toggleContainer(at indexPath: IndexPath) -> [ViewHierarchyListAction]
 }
 
 final class ViewHierarchyListViewModel: NSObject {
     let rootReference: ViewHierarchyReference
     
-    private(set) lazy var childViewModels: [ViewHierarchyListItemViewModelProtocol] = {
-        var array = [ViewHierarchyListItemViewModel(reference: rootReference, rootDepth: rootReference.depth)]
+    private(set) lazy var childViewModels: [ViewHierarchyListItemViewModel] = {
+        let rootViewModel = ViewHierarchyListItemViewModel(reference: rootReference, rootDepth: rootReference.depth)
         
-        rootReference.flattenedViewHierarchy.forEach {
-            array.append(ViewHierarchyListItemViewModel(reference: $0, rootDepth: rootReference.depth))
-        }
+        var array = [rootViewModel]
+        
+        let children = rootReference.children.map { makeViewModels(reference: $0, parent: rootViewModel) }
+        
+        array.append(contentsOf: children.flatMap { $0 })
         
         return array
     }()
+    
+    func makeViewModels(reference: ViewHierarchyReference, parent: ViewHierarchyListItemViewModel?) -> [ViewHierarchyListItemViewModel] {
+        let viewModel = ViewHierarchyListItemViewModel(
+            reference: reference,
+            parent: parent,
+            rootDepth: rootReference.depth
+        )
+        
+        let childrenViewModels: [[ViewHierarchyListItemViewModel]] = reference.children.map {
+            makeViewModels(reference: $0, parent: viewModel)
+        }
+        
+        return [viewModel] + childrenViewModels.flatMap { $0 }
+    }
     
     private lazy var visibleChildViewModels = childViewModels
     
     init(reference: ViewHierarchyReference) {
         self.rootReference = reference
     }
-    
 }
 
 extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
     var title: String {
-        "ℹ️ \(rootReference.elementName)"
+        "More info"
     }
     
     var numberOfRows: Int {
@@ -65,68 +88,57 @@ extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
         return visibleChildViewModels[indexPath.row]
     }
     
-    
-    func toggleContainer(at indexPath: IndexPath) -> ViewHierarchyListAction? {
+    func toggleContainer(at indexPath: IndexPath) -> [ViewHierarchyListAction] {
         guard indexPath.row < visibleChildViewModels.count else {
-            return .none
+            return []
         }
         
         let container = visibleChildViewModels[indexPath.row]
         
-        let index: Int? = childViewModels.firstIndex { $0 === container }
-        
-        guard
-            let existingContainerRow = index,
-            container.isContainer
-        else {
-            return .none
+        guard container.isContainer else {
+            return []
         }
         
-        let newCollapseState = !container.isCollapsed
+        container.isCollapsed.toggle()
         
-        var count = 0
-        
-        for (row, node) in childViewModels.enumerated() where row > existingContainerRow {
-            guard node.depth > container.depth else {
-                break
-            }
-            
-            if node.isHidden != newCollapseState {
-                node.isHidden = newCollapseState
-                node.isCollapsed = false
-                count += 1
-            }
-        }
-        
-        guard count > 0 else {
-            return .none
-        }
-        
-        container.isCollapsed = newCollapseState
+        let oldVisibleChildren = visibleChildViewModels
         
         visibleChildViewModels = childViewModels.filter { $0.isHidden == false }
         
-        let newIndex: Int? = visibleChildViewModels.firstIndex { $0 === container }
+        let addedChildren = Set(visibleChildViewModels).subtracting(oldVisibleChildren)
         
-        guard let newContainerRow = newIndex else {
-            return .none
-        }
+        let deletedChildren = Set(oldVisibleChildren).subtracting(visibleChildViewModels)
         
-        var indexPaths = [IndexPath]()
+        var deletedIndexPaths = [IndexPath]()
         
-        for n in 1 ... count {
-            let row = newContainerRow + n
+        var insertedIndexPaths = [IndexPath]()
+        
+        for child in deletedChildren {
+            guard let row = oldVisibleChildren.firstIndex(of: child) else {
+                continue
+            }
             
-            indexPaths.append(IndexPath(row: row, section: 0))
+            deletedIndexPaths.append(IndexPath(row: row, section: 0))
         }
         
-        switch container.isCollapsed {
-        case true:
-            return .deleted(indexPaths)
-        
-        case false:
-            return .inserted(indexPaths)
+        for child in addedChildren {
+            guard let row = visibleChildViewModels.firstIndex(of: child) else {
+                continue
+            }
+            
+            insertedIndexPaths.append(IndexPath(row: row, section: 0))
         }
+        
+        var actions = [ViewHierarchyListAction]()
+        
+        if insertedIndexPaths.isEmpty == false {
+            actions.append(.inserted(insertedIndexPaths))
+        }
+        
+        if deletedIndexPaths.isEmpty == false {
+            actions.append(.deleted(deletedIndexPaths))
+        }
+        
+        return actions
     }
-    
 }

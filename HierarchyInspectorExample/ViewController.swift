@@ -184,7 +184,11 @@ extension ViewController: HierarchyInspectorKeyCommandPresentable {
     }
     
     override var keyCommands: [UIKeyCommand]? {
-        hierarchyInspectorKeyCommands
+        guard let presentedViewController = presentedViewController else {
+            return hierarchyInspectorKeyCommands
+        }
+        
+        return presentedViewController.keyCommands
     }
     
     override var canBecomeFirstResponder: Bool {
