@@ -28,7 +28,7 @@ extension UISplitViewController: HierarchyInspectorPresentable {
         return existingManager
     }
     
-    public var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme {
+    public var hierarchyInspectorColorScheme: ViewHierarchyColorScheme {
         for vc in hierarchyInspectableViewControllers {
             return vc.hierarchyInspectorColorScheme
         }
@@ -36,8 +36,8 @@ extension UISplitViewController: HierarchyInspectorPresentable {
         return .default
     }
     
-    public var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
-        var allLayers = Set<HierarchyInspector.Layer>()
+    public var hierarchyInspectorLayers: [ViewHierarchyLayer] {
+        var allLayers = Set<ViewHierarchyLayer>()
         
         hierarchyInspectableViewControllers.forEach { viewController in
             viewController.hierarchyInspectorLayers.forEach { allLayers.insert($0) }

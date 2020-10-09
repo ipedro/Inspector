@@ -28,11 +28,11 @@ extension UITabBarController: HierarchyInspectorPresentable {
         return existingManager
     }
 
-    public var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
+    public var hierarchyInspectorLayers: [ViewHierarchyLayer] {
         hierarchyInspectableSelectedViewController?.hierarchyInspectorLayers ?? []
     }
     
-    public var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme {
+    public var hierarchyInspectorColorScheme: ViewHierarchyColorScheme {
         hierarchyInspectableSelectedViewController?.hierarchyInspectorColorScheme ?? .default
     }
 }

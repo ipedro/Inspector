@@ -7,7 +7,7 @@
 
 import UIKit
 
-typealias ColorScheme = HierarchyInspector.ColorScheme
+typealias ColorScheme = ViewHierarchyColorScheme
 
 typealias Closure = () -> Void
 

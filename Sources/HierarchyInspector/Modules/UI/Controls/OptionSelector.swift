@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class OptionSelector<Option: CustomStringConvertible>: BaseControl {
+final class OptionSelector: BaseControl {
     // MARK: - Properties
     
     private lazy var icon = Icon(.chevronDown, color: valueLabel.textColor)
@@ -24,11 +24,11 @@ final class OptionSelector<Option: CustomStringConvertible>: BaseControl {
     
     // MARK: - Init
     
-    let options: [Option]
+    let options: [CustomStringConvertible]
     
-    var selectedIndex: Int
+    var selectedIndex: Int?
 
-    init(title: String?, options: [Option], selectedIndex: Int = 0) {
+    init(title: String?, options: [CustomStringConvertible], selectedIndex: Int? = nil) {
         self.options = options
         
         self.selectedIndex = selectedIndex
@@ -51,6 +51,12 @@ final class OptionSelector<Option: CustomStringConvertible>: BaseControl {
     }
     
     func updateViews() {
-        valueLabel.text = options.first?.description.localizedCapitalized
+        
+        guard let selectedIndex = selectedIndex else {
+            valueLabel.text = "–"
+            return
+        }
+        
+        valueLabel.text = options[selectedIndex].description.localizedCapitalized
     }
 }

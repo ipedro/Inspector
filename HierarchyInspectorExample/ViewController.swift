@@ -13,7 +13,7 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
     
     private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(host: self)
     
-    var hierarchyInspectorLayers: [HierarchyInspector.Layer] = [
+    var hierarchyInspectorLayers: [ViewHierarchyLayer] = [
         .controls,
         .buttons,
         .staticTexts + .images,
@@ -23,13 +23,13 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
 //        .allViews
     ]
     
-    var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme = .colorScheme { view in
+    var hierarchyInspectorColorScheme: ViewHierarchyColorScheme = .colorScheme { view in
         switch view {
         case is CustomButton:
             return .systemOrange
             
         default:
-            return HierarchyInspector.ColorScheme.default.color(for: view)
+            return ViewHierarchyColorScheme.default.color(for: view)
         }
     }
     

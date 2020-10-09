@@ -9,10 +9,10 @@ import Foundation
 
 // MARK: - AdditiveArithmetic
 
-extension HierarchyInspector.Layer: AdditiveArithmetic {
+extension ViewHierarchyLayer: AdditiveArithmetic {
     
-    public static func - (lhs: HierarchyInspector.Layer, rhs: HierarchyInspector.Layer) -> HierarchyInspector.Layer {
-        HierarchyInspector.Layer(
+    public static func - (lhs: ViewHierarchyLayer, rhs: ViewHierarchyLayer) -> ViewHierarchyLayer {
+        ViewHierarchyLayer(
             name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",-"),
             showLabels: lhs.showLabels,
             allowsSystemViews: lhs.allowsSystemViews
@@ -21,8 +21,8 @@ extension HierarchyInspector.Layer: AdditiveArithmetic {
         }
     }
     
-    public static func + (lhs: HierarchyInspector.Layer, rhs: HierarchyInspector.Layer) -> HierarchyInspector.Layer {
-        HierarchyInspector.Layer(
+    public static func + (lhs: ViewHierarchyLayer, rhs: ViewHierarchyLayer) -> ViewHierarchyLayer {
+        ViewHierarchyLayer(
             name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",+"),
             showLabels: lhs.showLabels,
             allowsSystemViews: lhs.allowsSystemViews
@@ -31,7 +31,7 @@ extension HierarchyInspector.Layer: AdditiveArithmetic {
         }
     }
     
-    public static var zero: HierarchyInspector.Layer {
+    public static var zero: ViewHierarchyLayer {
         .layer(name: "zero") { _ in false }
     }
     

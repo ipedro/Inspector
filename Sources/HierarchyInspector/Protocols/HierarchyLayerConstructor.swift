@@ -8,13 +8,13 @@
 import UIKit
 
 protocol HierarchyLayerConstructor {
-    func isShowingLayer(_ layer: HierarchyInspector.Layer) -> Bool
+    func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool
     
     @discardableResult
-    func create(layer: HierarchyInspector.Layer, for viewHierarchySnapshot: ViewHierarchySnapshot) -> Bool
+    func create(layer: ViewHierarchyLayer, for viewHierarchySnapshot: ViewHierarchySnapshot) -> Bool
     
     @discardableResult
-    func destroy(layer: HierarchyInspector.Layer) -> Bool
+    func destroy(layer: ViewHierarchyLayer) -> Bool
     
     @discardableResult
     func destroyAllLayers() -> Bool

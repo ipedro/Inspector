@@ -40,13 +40,20 @@
 		EB80AFBB252B570200F0ECD5 /* NSObject+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */; };
 		EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */; };
 		EB9ED74B252E4F5900BF7D60 /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9ED74A252E4F5900BF7D60 /* BaseView.swift */; };
-		EBA245AC252878B700D4AFD9 /* ColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245AB252878B700D4AFD9 /* ColorScheme.swift */; };
+		EBA245AC252878B700D4AFD9 /* ViewHierarchyColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245AB252878B700D4AFD9 /* ViewHierarchyColorScheme.swift */; };
 		EBA245B225287B4300D4AFD9 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245B125287B4300D4AFD9 /* CustomButton.swift */; };
 		EBA245F12528894400D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245F02528892E00D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift */; };
 		EBA246282528D71300D4AFD9 /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA246272528D71300D4AFD9 /* Manager.swift */; };
 		EBA246372528ECAA00D4AFD9 /* HierarchyLayerConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA246362528ECAA00D4AFD9 /* HierarchyLayerConstructor.swift */; };
 		EBA246412528ED1100D4AFD9 /* Manager+HierarchyLayerConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA246402528ED1100D4AFD9 /* Manager+HierarchyLayerConstructor.swift */; };
 		EBA7D9D425308FEC00496F23 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA7D9D325308FEC00496F23 /* Icon.swift */; };
+		EBAC34EA2530ABBB00A992F5 /* ElementInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC34E92530ABBB00A992F5 /* ElementInspector.swift */; };
+		EBAC35042530DE8300A992F5 /* InspectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35032530DE8300A992F5 /* InspectorViewModel.swift */; };
+		EBAC353E2530E36400A992F5 /* PropertyInspectorInputGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC353D2530E36400A992F5 /* PropertyInspectorInputGroup.swift */; };
+		EBAC35452530E3C400A992F5 /* PropertyInspectorInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35442530E3C400A992F5 /* PropertyInspectorInput.swift */; };
+		EBAC35502530E44400A992F5 /* ElementInspectorNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC354F2530E44400A992F5 /* ElementInspectorNavigationController.swift */; };
+		EBAC356E2530F53800A992F5 /* InspectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC356D2530F53800A992F5 /* InspectorViewController.swift */; };
+		EBAC35882530FE4C00A992F5 /* InspectorViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35872530FE4C00A992F5 /* InspectorViewCode.swift */; };
 		EBB0CB22252A6C3D005D4A53 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB21252A6C3D005D4A53 /* Configuration.swift */; };
 		EBB0CB2C252A6C99005D4A53 /* Configuration.KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */; };
 		EBB0CB63252A6F3E005D4A53 /* Manager.ActionGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAD92529B90B000001BE /* Manager.ActionGroup.swift */; };
@@ -66,7 +73,7 @@
 		EBF88CBF252DA1E300AE9F12 /* ViewHierarchyListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF88CBE252DA1E300AE9F12 /* ViewHierarchyListViewController.swift */; };
 		EBF88CCE252DA25100AE9F12 /* ViewHierarchyListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF88CCD252DA25100AE9F12 /* ViewHierarchyListViewModel.swift */; };
 		EBF88CD5252DA25D00AE9F12 /* ViewHierarchyListViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF88CD4252DA25D00AE9F12 /* ViewHierarchyListViewCode.swift */; };
-		EBF88CDF252DA56100AE9F12 /* ViewHierarchyListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF88CDE252DA56100AE9F12 /* ViewHierarchyListCoordinator.swift */; };
+		EBF88CDF252DA56100AE9F12 /* ElementInspectorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF88CDE252DA56100AE9F12 /* ElementInspectorCoordinator.swift */; };
 		OBJ_100 /* LoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_47 /* LoaderView.swift */; };
 		OBJ_101 /* LayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_48 /* LayerView.swift */; };
 		OBJ_102 /* WireframeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_49 /* WireframeView.swift */; };
@@ -87,7 +94,7 @@
 		OBJ_80 /* UIView+LoaderViewPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_24 /* UIView+LoaderViewPresentable.swift */; };
 		OBJ_81 /* HierarchyInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_25 /* HierarchyInspector.swift */; };
 		OBJ_82 /* Configuration.Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_27 /* Configuration.Appearance.swift */; };
-		OBJ_84 /* Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_29 /* Layer.swift */; };
+		OBJ_84 /* ViewHierarchyLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_29 /* ViewHierarchyLayer.swift */; };
 		OBJ_85 /* Texts.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_30 /* Texts.swift */; };
 		OBJ_86 /* ViewHierarchySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_31 /* ViewHierarchySnapshot.swift */; };
 		OBJ_87 /* Actionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_33 /* Actionable.swift */; };
@@ -172,13 +179,20 @@
 		EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Create.swift"; sourceTree = "<group>"; };
 		EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SFSafariViewController+HierarchyInspectableProtocol.swift"; sourceTree = "<group>"; };
 		EB9ED74A252E4F5900BF7D60 /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
-		EBA245AB252878B700D4AFD9 /* ColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorScheme.swift; sourceTree = "<group>"; };
+		EBA245AB252878B700D4AFD9 /* ViewHierarchyColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyColorScheme.swift; sourceTree = "<group>"; };
 		EBA245B125287B4300D4AFD9 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		EBA245F02528892E00D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISplitViewController+HierarchyInspectorPresentable.swift"; sourceTree = "<group>"; };
 		EBA246272528D71300D4AFD9 /* Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
 		EBA246362528ECAA00D4AFD9 /* HierarchyLayerConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyLayerConstructor.swift; sourceTree = "<group>"; };
 		EBA246402528ED1100D4AFD9 /* Manager+HierarchyLayerConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Manager+HierarchyLayerConstructor.swift"; sourceTree = "<group>"; };
 		EBA7D9D325308FEC00496F23 /* Icon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
+		EBAC34E92530ABBB00A992F5 /* ElementInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspector.swift; sourceTree = "<group>"; };
+		EBAC35032530DE8300A992F5 /* InspectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorViewModel.swift; sourceTree = "<group>"; };
+		EBAC353D2530E36400A992F5 /* PropertyInspectorInputGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorInputGroup.swift; sourceTree = "<group>"; };
+		EBAC35442530E3C400A992F5 /* PropertyInspectorInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorInput.swift; sourceTree = "<group>"; };
+		EBAC354F2530E44400A992F5 /* ElementInspectorNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorNavigationController.swift; sourceTree = "<group>"; };
+		EBAC356D2530F53800A992F5 /* InspectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorViewController.swift; sourceTree = "<group>"; };
+		EBAC35872530FE4C00A992F5 /* InspectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorViewCode.swift; sourceTree = "<group>"; };
 		EBB0CB21252A6C3D005D4A53 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.KeyCommands.swift; sourceTree = "<group>"; };
 		EBC524AA252F5F2F0054C6AA /* BaseControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseControl.swift; sourceTree = "<group>"; };
@@ -197,7 +211,7 @@
 		EBF88CBE252DA1E300AE9F12 /* ViewHierarchyListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListViewController.swift; sourceTree = "<group>"; };
 		EBF88CCD252DA25100AE9F12 /* ViewHierarchyListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListViewModel.swift; sourceTree = "<group>"; };
 		EBF88CD4252DA25D00AE9F12 /* ViewHierarchyListViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListViewCode.swift; sourceTree = "<group>"; };
-		EBF88CDE252DA56100AE9F12 /* ViewHierarchyListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListCoordinator.swift; sourceTree = "<group>"; };
+		EBF88CDE252DA56100AE9F12 /* ElementInspectorCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorCoordinator.swift; sourceTree = "<group>"; };
 		"HierarchyInspector::HierarchyInspector::Product" /* HierarchyInspector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = HierarchyInspector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"HierarchyInspector::HierarchyInspectorTests::Product" /* HierarchyInspectorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = HierarchyInspectorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_12 /* Manager+HierarchyLayerManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Manager+HierarchyLayerManagerProtocol.swift"; sourceTree = "<group>"; };
@@ -213,7 +227,7 @@
 		OBJ_24 /* UIView+LoaderViewPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+LoaderViewPresentable.swift"; sourceTree = "<group>"; };
 		OBJ_25 /* HierarchyInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspector.swift; sourceTree = "<group>"; };
 		OBJ_27 /* Configuration.Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.Appearance.swift; sourceTree = "<group>"; };
-		OBJ_29 /* Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layer.swift; sourceTree = "<group>"; };
+		OBJ_29 /* ViewHierarchyLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyLayer.swift; sourceTree = "<group>"; };
 		OBJ_30 /* Texts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texts.swift; sourceTree = "<group>"; };
 		OBJ_31 /* ViewHierarchySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchySnapshot.swift; sourceTree = "<group>"; };
 		OBJ_33 /* Actionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Actionable.swift; sourceTree = "<group>"; };
@@ -424,12 +438,58 @@
 			path = Manager;
 			sourceTree = "<group>";
 		};
-		EBA7D9BA2530846000496F23 /* ViewHierarchyLayers */ = {
+		EBA7D9BA2530846000496F23 /* ViewHierarchyInspector */ = {
 			isa = PBXGroup;
 			children = (
 				EB5DB399252D03A100CE0398 /* LayerViews */,
 			);
-			path = ViewHierarchyLayers;
+			path = ViewHierarchyInspector;
+			sourceTree = "<group>";
+		};
+		EBAC34F42530DDF300A992F5 /* ViewHierarchyList */ = {
+			isa = PBXGroup;
+			children = (
+				EBF88CD3252DA25400AE9F12 /* ViewCodes */,
+				EBF88CBD252DA1BB00AE9F12 /* ViewControllers */,
+			);
+			path = ViewHierarchyList;
+			sourceTree = "<group>";
+		};
+		EBAC34F92530DE1A00A992F5 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC35022530DE3700A992F5 /* PropertyInspector */,
+				EBAC34F42530DDF300A992F5 /* ViewHierarchyList */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		EBAC35022530DE3700A992F5 /* PropertyInspector */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC35872530FE4C00A992F5 /* InspectorViewCode.swift */,
+				EBAC356D2530F53800A992F5 /* InspectorViewController.swift */,
+				EBAC35032530DE8300A992F5 /* InspectorViewModel.swift */,
+				EBAC353D2530E36400A992F5 /* PropertyInspectorInputGroup.swift */,
+				EBAC35432530E39800A992F5 /* Enums */,
+			);
+			path = PropertyInspector;
+			sourceTree = "<group>";
+		};
+		EBAC35432530E39800A992F5 /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC35442530E3C400A992F5 /* PropertyInspectorInput.swift */,
+			);
+			path = Enums;
+			sourceTree = "<group>";
+		};
+		EBAC354E2530E41900A992F5 /* NavigationController */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC354F2530E44400A992F5 /* ElementInspectorNavigationController.swift */,
+			);
+			path = NavigationController;
 			sourceTree = "<group>";
 		};
 		EBB0CB35252A6CD0005D4A53 /* Configuration */ = {
@@ -498,6 +558,7 @@
 		EBD9DA4C2530413600851E23 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				OBJ_30 /* Texts.swift */,
 				EBA7D9D325308FEC00496F23 /* Icon.swift */,
 				EBD9DA4D2530414700851E23 /* IconKit.swift */,
 			);
@@ -508,7 +569,7 @@
 			isa = PBXGroup;
 			children = (
 				EB9ED73F252E4E3800BF7D60 /* UI */,
-				EBA7D9BA2530846000496F23 /* ViewHierarchyLayers */,
+				EBA7D9BA2530846000496F23 /* ViewHierarchyInspector */,
 				EBF88CBB252DA18D00AE9F12 /* ElementInspector */,
 			);
 			path = Modules;
@@ -517,9 +578,10 @@
 		EBF88CBB252DA18D00AE9F12 /* ElementInspector */ = {
 			isa = PBXGroup;
 			children = (
+				EBAC34E92530ABBB00A992F5 /* ElementInspector.swift */,
 				EBF88CBC252DA1B100AE9F12 /* Coordinators */,
-				EBF88CD3252DA25400AE9F12 /* ViewCodes */,
-				EBF88CBD252DA1BB00AE9F12 /* ViewControllers */,
+				EBAC34F92530DE1A00A992F5 /* Modules */,
+				EBAC354E2530E41900A992F5 /* NavigationController */,
 				EBF88CCC252DA24400AE9F12 /* ViewModels */,
 			);
 			path = ElementInspector;
@@ -528,7 +590,7 @@
 		EBF88CBC252DA1B100AE9F12 /* Coordinators */ = {
 			isa = PBXGroup;
 			children = (
-				EBF88CDE252DA56100AE9F12 /* ViewHierarchyListCoordinator.swift */,
+				EBF88CDE252DA56100AE9F12 /* ElementInspectorCoordinator.swift */,
 			);
 			path = Coordinators;
 			sourceTree = "<group>";
@@ -562,11 +624,10 @@
 		OBJ_26 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				EBA245AB252878B700D4AFD9 /* ColorScheme.swift */,
-				OBJ_29 /* Layer.swift */,
-				OBJ_30 /* Texts.swift */,
-				OBJ_31 /* ViewHierarchySnapshot.swift */,
+				EBA245AB252878B700D4AFD9 /* ViewHierarchyColorScheme.swift */,
+				OBJ_29 /* ViewHierarchyLayer.swift */,
 				EB324618252B1E6100406111 /* ViewHierarchyReference.swift */,
+				OBJ_31 /* ViewHierarchySnapshot.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -829,7 +890,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				EBA245AC252878B700D4AFD9 /* ColorScheme.swift in Sources */,
+				EBA245AC252878B700D4AFD9 /* ViewHierarchyColorScheme.swift in Sources */,
 				EBA245F12528894400D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift in Sources */,
 				OBJ_68 /* Manager+HierarchyLayerManagerProtocol.swift in Sources */,
 				OBJ_69 /* Layer+AdditiveArithmetic.swift in Sources */,
@@ -837,7 +898,9 @@
 				OBJ_70 /* Layer+AlertControllerActionable.swift in Sources */,
 				OBJ_71 /* Layer+CustomStringConvertible.swift in Sources */,
 				OBJ_72 /* Layer+Hashable.swift in Sources */,
+				EBAC35042530DE8300A992F5 /* InspectorViewModel.swift in Sources */,
 				EBD9DA42252FC49900851E23 /* SectionHeader.swift in Sources */,
+				EBAC35452530E3C400A992F5 /* PropertyInspectorInput.swift in Sources */,
 				EB7EAAF22529BFC0000001BE /* Array+UniqueValues.swift in Sources */,
 				OBJ_74 /* Layer+PresetLayers.swift in Sources */,
 				EBB0CB22252A6C3D005D4A53 /* Configuration.swift in Sources */,
@@ -852,7 +915,7 @@
 				OBJ_81 /* HierarchyInspector.swift in Sources */,
 				EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */,
 				OBJ_82 /* Configuration.Appearance.swift in Sources */,
-				OBJ_84 /* Layer.swift in Sources */,
+				OBJ_84 /* ViewHierarchyLayer.swift in Sources */,
 				EBD9DA1F252FA60400851E23 /* ColorSelector.swift in Sources */,
 				OBJ_85 /* Texts.swift in Sources */,
 				OBJ_86 /* ViewHierarchySnapshot.swift in Sources */,
@@ -873,7 +936,9 @@
 				EBE3039B252DB7BC00A8F1C6 /* ViewHierarchyListTableViewCodeCell.swift in Sources */,
 				OBJ_92 /* HierarchyInspectorLayerManagerProtocol.swift in Sources */,
 				OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */,
-				EBF88CDF252DA56100AE9F12 /* ViewHierarchyListCoordinator.swift in Sources */,
+				EBF88CDF252DA56100AE9F12 /* ElementInspectorCoordinator.swift in Sources */,
+				EBAC35882530FE4C00A992F5 /* InspectorViewCode.swift in Sources */,
+				EBAC34EA2530ABBB00A992F5 /* ElementInspector.swift in Sources */,
 				OBJ_94 /* LayerViewProtocol.swift in Sources */,
 				EBB0CB63252A6F3E005D4A53 /* Manager.ActionGroup.swift in Sources */,
 				EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift in Sources */,
@@ -882,6 +947,7 @@
 				OBJ_97 /* EmptyView.swift in Sources */,
 				EBA246282528D71300D4AFD9 /* Manager.swift in Sources */,
 				EB9ED74B252E4F5900BF7D60 /* BaseView.swift in Sources */,
+				EBAC356E2530F53800A992F5 /* InspectorViewController.swift in Sources */,
 				OBJ_98 /* HighlightView.swift in Sources */,
 				EBF88CCE252DA25100AE9F12 /* ViewHierarchyListViewModel.swift in Sources */,
 				OBJ_99 /* LayerViewComponent.swift in Sources */,
@@ -892,9 +958,11 @@
 				EBE303A9252DC13E00A8F1C6 /* UITableView+Convenience.swift in Sources */,
 				OBJ_101 /* LayerView.swift in Sources */,
 				EBA246412528ED1100D4AFD9 /* Manager+HierarchyLayerConstructor.swift in Sources */,
+				EBAC353E2530E36400A992F5 /* PropertyInspectorInputGroup.swift in Sources */,
 				OBJ_102 /* WireframeView.swift in Sources */,
 				EBF88CBF252DA1E300AE9F12 /* ViewHierarchyListViewController.swift in Sources */,
 				EB3C4B4A252E776A00AFABF8 /* NSDirectionalEdgeInsets+Init.swift in Sources */,
+				EBAC35502530E44400A992F5 /* ElementInspectorNavigationController.swift in Sources */,
 				EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */,
 				EB7EAAE02529B9F2000001BE /* Manager+Actions.swift in Sources */,
 			);

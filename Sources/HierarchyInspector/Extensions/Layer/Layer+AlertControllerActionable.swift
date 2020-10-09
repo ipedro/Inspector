@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - Actionable
 
-extension HierarchyInspector.Layer: Actionable {
+extension ViewHierarchyLayer: Actionable {
     
     var unselectedActionTitle: String {
         "☐ \(description)"

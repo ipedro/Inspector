@@ -9,15 +9,15 @@ import UIKit
 
 public protocol HierarchyInspectableProtocol: UIViewController {
     
-    var hierarchyInspectorLayers: [HierarchyInspector.Layer] { get }
+    var hierarchyInspectorLayers: [ViewHierarchyLayer] { get }
     
-    var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme { get }
+    var hierarchyInspectorColorScheme: ViewHierarchyColorScheme { get }
 }
 
 // MARK: - Default Values
 
 public extension HierarchyInspectableProtocol {
-    var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme { .default }
+    var hierarchyInspectorColorScheme: ViewHierarchyColorScheme { .default }
 }
 
 // MARK: - View Controller Hierarchy

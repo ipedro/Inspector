@@ -131,11 +131,11 @@ extension ViewHierarchyListViewController: UIPopoverPresentationControllerDelega
 }
 
 extension ViewHierarchyListViewController: HierarchyInspectorPresentable {
-    var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
+    var hierarchyInspectorLayers: [ViewHierarchyLayer] {
         [.staticTexts, .controls, .icons]
     }
 }
 
-extension HierarchyInspector.Layer {
-    static let icons: HierarchyInspector.Layer = .layer(name: "Icons") { $0 is Icon }
+extension ViewHierarchyLayer {
+    static let icons: ViewHierarchyLayer = .layer(name: "Icons") { $0 is Icon }
 }

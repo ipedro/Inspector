@@ -28,11 +28,11 @@ extension UINavigationController: HierarchyInspectorPresentable {
         return existingManager
     }
     
-    public var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
+    public var hierarchyInspectorLayers: [ViewHierarchyLayer] {
         hierarchyInspectableTopViewController?.hierarchyInspectorLayers ?? []
     }
     
-    public var hierarchyInspectorColorScheme: HierarchyInspector.ColorScheme {
+    public var hierarchyInspectorColorScheme: ViewHierarchyColorScheme {
         hierarchyInspectableTopViewController?.hierarchyInspectorColorScheme ?? .default
     }
 }

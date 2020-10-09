@@ -28,7 +28,7 @@ extension SFSafariViewController: HierarchyInspectorPresentable {
         return existingManager
     }
 
-    public var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
+    public var hierarchyInspectorLayers: [ViewHierarchyLayer] {
         [
             .staticTexts,
             .stackViews,

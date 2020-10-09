@@ -11,14 +11,14 @@ import UIKit
 
 extension HierarchyInspector.Manager: HierarchyLayerConstructor {
     
-    func isShowingLayer(_ layer: HierarchyInspector.Layer) -> Bool {
+    func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool {
         activeLayers.contains(layer)
     }
     
     // MARK: - Create
     
     @discardableResult
-    func create(layer: HierarchyInspector.Layer, for viewHierarchySnapshot: ViewHierarchySnapshot) -> Bool {
+    func create(layer: ViewHierarchyLayer, for viewHierarchySnapshot: ViewHierarchySnapshot) -> Bool {
         guard viewHierarchyReferences[layer] == nil else {
             return false
         }
@@ -46,7 +46,7 @@ extension HierarchyInspector.Manager: HierarchyLayerConstructor {
     }
     
     @discardableResult
-    func destroy(layer: HierarchyInspector.Layer) -> Bool {
+    func destroy(layer: ViewHierarchyLayer) -> Bool {
         viewHierarchyReferences.removeValue(forKey: layer)
         
         if Array(viewHierarchyReferences.keys) == [.wireframes] {

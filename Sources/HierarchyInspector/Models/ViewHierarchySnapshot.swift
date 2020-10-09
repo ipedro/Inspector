@@ -15,17 +15,17 @@ struct ViewHierarchySnapshot {
     
     let expiryDate: Date = Date().addingTimeInterval(Self.cacheExpirationTimeInterval)
     
-    let availableLayers: [HierarchyInspector.Layer]
+    let availableLayers: [ViewHierarchyLayer]
     
-    let populatedLayers: [HierarchyInspector.Layer]
+    let populatedLayers: [ViewHierarchyLayer]
     
-    let emptyLayers: [HierarchyInspector.Layer]
+    let emptyLayers: [ViewHierarchyLayer]
     
     let viewHierarchy: ViewHierarchyReference
     
     let flattenedViewHierarchy: [ViewHierarchyReference]
     
-    init(availableLayers: [HierarchyInspector.Layer], in rootView: UIView) {
+    init(availableLayers: [ViewHierarchyLayer], in rootView: UIView) {
         self.availableLayers = availableLayers.uniqueValues
         
         viewHierarchy = ViewHierarchyReference(root: rootView)

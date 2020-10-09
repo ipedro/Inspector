@@ -67,7 +67,7 @@ private extension HierarchyInspector.Manager {
         )
     }
     
-    func layerAction(_ layer: HierarchyInspector.Layer, isEmpty: Bool) -> Action {
+    func layerAction(_ layer: ViewHierarchyLayer, isEmpty: Bool) -> Action {
         if isEmpty {
             return .emptyLayer(layer.emptyActionTitle)
         }

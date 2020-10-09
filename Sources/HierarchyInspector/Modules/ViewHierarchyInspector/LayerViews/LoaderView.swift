@@ -56,7 +56,7 @@ final class LoaderView: LayerViewComponent {
         
         isUserInteractionEnabled = false
         
-        backgroundColor = HierarchyInspector.ColorScheme.default.color(for: activityIndicator)
+        backgroundColor = ViewHierarchyColorScheme.default.color(for: activityIndicator)
         
         installView(checkmarkLabel, .centerXY)
         

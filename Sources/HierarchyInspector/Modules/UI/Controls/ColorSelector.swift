@@ -41,8 +41,8 @@ final class ColorSelector: BaseControl {
     
     // MARK: - Init
 
-    init(title: String?, color: UIColor) {
-        self.color = color
+    init(title: String?, color: UIColor?) {
+        self.color = color ?? .clear
 
         super.init(title: title)
     }

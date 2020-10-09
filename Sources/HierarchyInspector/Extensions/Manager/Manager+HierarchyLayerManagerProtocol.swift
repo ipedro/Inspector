@@ -13,7 +13,7 @@ extension HierarchyInspector.Manager: HierarchyLayerManagerProtocol {
     
     // MARK: - Install
     
-    public func installLayer(_ layer: HierarchyInspector.Layer) {
+    public func installLayer(_ layer: ViewHierarchyLayer) {
         guard let viewHierarchySnapshot = viewHierarchySnapshot else {
             return
         }
@@ -43,7 +43,7 @@ extension HierarchyInspector.Manager: HierarchyLayerManagerProtocol {
         }
     }
 
-    public func removeLayer(_ layer: HierarchyInspector.Layer) {
+    public func removeLayer(_ layer: ViewHierarchyLayer) {
         asyncOperation(name: layer.unselectedActionTitle) {
             self.destroy(layer: layer)
         }

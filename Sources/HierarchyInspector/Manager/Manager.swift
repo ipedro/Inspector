@@ -14,16 +14,16 @@ extension HierarchyInspector {
         }
         
         @available(*, deprecated, message: "temporary holding coordinator. remove")
-        var viewHierarchyListCoordinator: ViewHierarchyListCoordinator?
+        var elementInspectorCoordinator: ElementInspectorCoordinator?
         
         var shouldCacheViewHierarchySnapshot = true
         
         private(set) weak var hostViewController: HierarchyInspectableProtocol?
         
-        var viewHierarchyReferences: [Layer: [ViewHierarchyReference]] = [:] {
+        var viewHierarchyReferences: [ViewHierarchyLayer: [ViewHierarchyReference]] = [:] {
             didSet {
-                let layers = Set<Layer>(viewHierarchyReferences.keys)
-                let oldLayers = Set<Layer>(oldValue.keys)
+                let layers = Set<ViewHierarchyLayer>(viewHierarchyReferences.keys)
+                let oldLayers = Set<ViewHierarchyLayer>(oldValue.keys)
                 let newLayers = layers.subtracting(oldLayers)
                 let removedLayers = oldLayers.subtracting(layers)
                 
@@ -127,8 +127,8 @@ extension HierarchyInspector {
 // MARK: - Layers Hierarchy
 
 extension HierarchyInspector.Manager {
-    var activeLayers: [HierarchyInspector.Layer] {
-        viewHierarchyReferences.compactMap { dict -> HierarchyInspector.Layer? in
+    var activeLayers: [ViewHierarchyLayer] {
+        viewHierarchyReferences.compactMap { dict -> ViewHierarchyLayer? in
             guard dict.value.isEmpty == false else {
                 return nil
             }
@@ -137,15 +137,15 @@ extension HierarchyInspector.Manager {
         }
     }
     
-    var availableLayers: [HierarchyInspector.Layer] {
+    var availableLayers: [ViewHierarchyLayer] {
         viewHierarchySnapshot?.availableLayers ?? []
     }
     
-    var populatedLayers: [HierarchyInspector.Layer] {
+    var populatedLayers: [ViewHierarchyLayer] {
         viewHierarchySnapshot?.populatedLayers ?? []
     }
     
-    private func calculateAvailableLayers() -> [HierarchyInspector.Layer] {
+    private func calculateAvailableLayers() -> [ViewHierarchyLayer] {
         hostViewController?.hierarchyInspectorLayers.uniqueValues ?? [.allViews]
     }
 }
@@ -204,7 +204,7 @@ private extension HierarchyInspector.Manager {
         }
     }
     
-    func removeReferences(for removedLayers: Set<HierarchyInspector.Layer>, in oldValue: [HierarchyInspector.Layer: [ViewHierarchyReference]]) {
+    func removeReferences(for removedLayers: Set<ViewHierarchyLayer>, in oldValue: [ViewHierarchyLayer: [ViewHierarchyReference]]) {
         var removedReferences = [ViewHierarchyReference]()
         
         removedLayers.forEach { layer in
@@ -236,7 +236,7 @@ private extension HierarchyInspector.Manager {
         }
     }
     
-    func addReferences(for newLayers: Set<HierarchyInspector.Layer>, with colorScheme: ColorScheme) {
+    func addReferences(for newLayers: Set<ViewHierarchyLayer>, with colorScheme: ColorScheme) {
         for newLayer in newLayers {
             guard let references = viewHierarchyReferences[newLayer] else {
                 continue
@@ -293,9 +293,9 @@ extension HierarchyInspector.Manager: HighlightViewDelegate {
             return
         }
         
-        let coordinator = ViewHierarchyListCoordinator(reference: reference, sourceView: view)
+        let coordinator = ElementInspectorCoordinator(reference: reference, sourceView: view)
         
-        viewHierarchyListCoordinator = coordinator
+        elementInspectorCoordinator = coordinator
         
         hostViewController.present(coordinator.start(), animated: true)
     }

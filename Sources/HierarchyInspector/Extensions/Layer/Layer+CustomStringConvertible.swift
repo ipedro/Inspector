@@ -1,5 +1,5 @@
 //
-//  Layer+CustomStringConvertible.swift
+//  ViewHierarchyLayer+CustomStringConvertible.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - CustomStringConvertible
 
-extension HierarchyInspector.Layer: CustomStringConvertible {
+extension ViewHierarchyLayer: CustomStringConvertible {
     
     public var description: String {
         guard name.contains(",+") || name.contains(",-") else {
