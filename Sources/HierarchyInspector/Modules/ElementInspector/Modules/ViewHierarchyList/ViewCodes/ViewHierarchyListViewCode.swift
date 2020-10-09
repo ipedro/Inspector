@@ -9,10 +9,6 @@ import UIKit
 
 final class ViewHierarchyListViewCode: BaseView {
     
-    private(set) lazy var inspectBarButtonItem = UIBarButtonItem(title: "🧬", style: .plain, target: nil, action: nil)
-    
-    private(set) lazy var dismissBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
-    
     private(set) lazy var tableView = UITableView().then {
         $0.register(ViewHierarchyListTableViewCodeCell.self)
         
@@ -20,6 +16,8 @@ final class ViewHierarchyListViewCode: BaseView {
         $0.rowHeight       = UITableView.automaticDimension
         $0.tableFooterView = UIView()
         $0.separatorStyle  = .none
+//        $0.sectionHeaderHeight = UITableView.automaticDimension
+//        $0.estimatedSectionHeaderHeight = 40
     }
     
     override func setup() {
@@ -27,6 +25,9 @@ final class ViewHierarchyListViewCode: BaseView {
         
         if #available(iOS 13.0, *) {
             backgroundColor = .systemBackground
+        }
+        else {
+            backgroundColor = .white
         }
         
         installView(tableView)

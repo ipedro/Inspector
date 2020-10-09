@@ -1,5 +1,5 @@
 //
-//  ColorSelector.swift
+//  ColorPicker.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 08.10.20.
@@ -7,18 +7,28 @@
 
 import UIKit
 
-final class ColorSelector: BaseControl {
+protocol ColorPickerDelegate: AnyObject {
+    func colorPickerDidTap(_ colorPicker: ColorPicker, sourceRect: CGRect)
+}
+
+final class ColorPicker: BaseControl {
     // MARK: - Properties
     
-    var color: UIColor {
+    weak var delegate: ColorPickerDelegate?
+    
+    var selectedColor: UIColor {
         didSet {
             didUpdateColor()
+            
+            sendActions(for: .valueChanged)
         }
     }
     
+    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
+    
     private lazy var colorDisplayView = BaseView().then {
         $0.layer.cornerRadius = 5
-        $0.backgroundColor = color
+        $0.backgroundColor = selectedColor
         $0.layer.borderWidth = 0.5
         $0.layer.borderColor = UIColor.gray.cgColor
         
@@ -29,7 +39,7 @@ final class ColorSelector: BaseControl {
         widthConstraint.isActive = true
     }
     
-    private lazy var colorLabel = UILabel(.footnote, text: String(describing: color)).then {
+    private lazy var colorLabel = UILabel(.footnote, String(describing: selectedColor)).then {
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
@@ -37,12 +47,14 @@ final class ColorSelector: BaseControl {
     private lazy var colorLabelContainer = AccessoryContainerView().then {
         $0.contentView.addArrangedSubview(colorDisplayView)
         $0.contentView.addArrangedSubview(colorLabel)
+        
+        $0.addGestureRecognizer(tapGestureRecognizer)
     }
     
     // MARK: - Init
 
     init(title: String?, color: UIColor?) {
-        self.color = color ?? .clear
+        self.selectedColor = color ?? .clear
 
         super.init(title: title)
     }
@@ -50,17 +62,23 @@ final class ColorSelector: BaseControl {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func setup() {
         super.setup()
-                
+        
         contentView.addArrangedSubview(colorLabelContainer)
         
         didUpdateColor()
     }
     
     private func didUpdateColor() {
-        colorDisplayView.backgroundColor = color
-        colorLabel.text = "#" + color.hexDescription().uppercased()
+        colorDisplayView.backgroundColor = selectedColor
+        colorLabel.text = "#" + selectedColor.hexDescription().uppercased()
+    }
+    
+    @objc private func tap() {
+        let rect = colorLabel.convert(bounds, to: nil)
+        
+        delegate?.colorPickerDidTap(self, sourceRect: rect)
     }
 }

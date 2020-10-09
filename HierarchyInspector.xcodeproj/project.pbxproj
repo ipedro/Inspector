@@ -48,12 +48,13 @@
 		EBA246412528ED1100D4AFD9 /* Manager+HierarchyLayerConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA246402528ED1100D4AFD9 /* Manager+HierarchyLayerConstructor.swift */; };
 		EBA7D9D425308FEC00496F23 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA7D9D325308FEC00496F23 /* Icon.swift */; };
 		EBAC34EA2530ABBB00A992F5 /* ElementInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC34E92530ABBB00A992F5 /* ElementInspector.swift */; };
-		EBAC35042530DE8300A992F5 /* InspectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35032530DE8300A992F5 /* InspectorViewModel.swift */; };
-		EBAC353E2530E36400A992F5 /* PropertyInspectorInputGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC353D2530E36400A992F5 /* PropertyInspectorInputGroup.swift */; };
+		EBAC35042530DE8300A992F5 /* PropertyInspectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35032530DE8300A992F5 /* PropertyInspectorViewModel.swift */; };
+		EBAC353E2530E36400A992F5 /* PropertyInspectorSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC353D2530E36400A992F5 /* PropertyInspectorSection.swift */; };
 		EBAC35452530E3C400A992F5 /* PropertyInspectorInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35442530E3C400A992F5 /* PropertyInspectorInput.swift */; };
-		EBAC35502530E44400A992F5 /* ElementInspectorNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC354F2530E44400A992F5 /* ElementInspectorNavigationController.swift */; };
-		EBAC356E2530F53800A992F5 /* InspectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC356D2530F53800A992F5 /* InspectorViewController.swift */; };
-		EBAC35882530FE4C00A992F5 /* InspectorViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35872530FE4C00A992F5 /* InspectorViewCode.swift */; };
+		EBAC356E2530F53800A992F5 /* PropertyInspectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC356D2530F53800A992F5 /* PropertyInspectorViewController.swift */; };
+		EBAC35882530FE4C00A992F5 /* PropertyInspectorViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35872530FE4C00A992F5 /* PropertyInspectorViewCode.swift */; };
+		EBAC35962531023100A992F5 /* ElementInspectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35952531023100A992F5 /* ElementInspectorViewController.swift */; };
+		EBAC359C2531024E00A992F5 /* ElementInspectorViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC359B2531024E00A992F5 /* ElementInspectorViewCode.swift */; };
 		EBB0CB22252A6C3D005D4A53 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB21252A6C3D005D4A53 /* Configuration.swift */; };
 		EBB0CB2C252A6C99005D4A53 /* Configuration.KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */; };
 		EBB0CB63252A6F3E005D4A53 /* Manager.ActionGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAD92529B90B000001BE /* Manager.ActionGroup.swift */; };
@@ -63,13 +64,14 @@
 		EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */; };
 		EBD9DA0E252FA15500851E23 /* UILabel+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA0D252FA15500851E23 /* UILabel+Init.swift */; };
 		EBD9DA19252FA37500851E23 /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA18252FA37500851E23 /* SeparatorView.swift */; };
-		EBD9DA1F252FA60400851E23 /* ColorSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA1E252FA60400851E23 /* ColorSelector.swift */; };
+		EBD9DA1F252FA60400851E23 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA1E252FA60400851E23 /* ColorPicker.swift */; };
 		EBD9DA26252FB4DF00851E23 /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA25252FB4DF00851E23 /* UIColor+Hex.swift */; };
 		EBD9DA30252FB76900851E23 /* OptionSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA2F252FB76900851E23 /* OptionSelector.swift */; };
 		EBD9DA42252FC49900851E23 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA41252FC49900851E23 /* SectionHeader.swift */; };
 		EBD9DA4E2530414700851E23 /* IconKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA4D2530414700851E23 /* IconKit.swift */; };
 		EBE3039B252DB7BC00A8F1C6 /* ViewHierarchyListTableViewCodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE3039A252DB7BC00A8F1C6 /* ViewHierarchyListTableViewCodeCell.swift */; };
 		EBE303A9252DC13E00A8F1C6 /* UITableView+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE303A8252DC13E00A8F1C6 /* UITableView+Convenience.swift */; };
+		EBF3294525310EC800EABA17 /* ElementInspectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF3294425310EC800EABA17 /* ElementInspectorViewModel.swift */; };
 		EBF88CBF252DA1E300AE9F12 /* ViewHierarchyListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF88CBE252DA1E300AE9F12 /* ViewHierarchyListViewController.swift */; };
 		EBF88CCE252DA25100AE9F12 /* ViewHierarchyListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF88CCD252DA25100AE9F12 /* ViewHierarchyListViewModel.swift */; };
 		EBF88CD5252DA25D00AE9F12 /* ViewHierarchyListViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF88CD4252DA25D00AE9F12 /* ViewHierarchyListViewCode.swift */; };
@@ -187,12 +189,13 @@
 		EBA246402528ED1100D4AFD9 /* Manager+HierarchyLayerConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Manager+HierarchyLayerConstructor.swift"; sourceTree = "<group>"; };
 		EBA7D9D325308FEC00496F23 /* Icon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
 		EBAC34E92530ABBB00A992F5 /* ElementInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspector.swift; sourceTree = "<group>"; };
-		EBAC35032530DE8300A992F5 /* InspectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorViewModel.swift; sourceTree = "<group>"; };
-		EBAC353D2530E36400A992F5 /* PropertyInspectorInputGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorInputGroup.swift; sourceTree = "<group>"; };
+		EBAC35032530DE8300A992F5 /* PropertyInspectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorViewModel.swift; sourceTree = "<group>"; };
+		EBAC353D2530E36400A992F5 /* PropertyInspectorSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSection.swift; sourceTree = "<group>"; };
 		EBAC35442530E3C400A992F5 /* PropertyInspectorInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorInput.swift; sourceTree = "<group>"; };
-		EBAC354F2530E44400A992F5 /* ElementInspectorNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorNavigationController.swift; sourceTree = "<group>"; };
-		EBAC356D2530F53800A992F5 /* InspectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorViewController.swift; sourceTree = "<group>"; };
-		EBAC35872530FE4C00A992F5 /* InspectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorViewCode.swift; sourceTree = "<group>"; };
+		EBAC356D2530F53800A992F5 /* PropertyInspectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorViewController.swift; sourceTree = "<group>"; };
+		EBAC35872530FE4C00A992F5 /* PropertyInspectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorViewCode.swift; sourceTree = "<group>"; };
+		EBAC35952531023100A992F5 /* ElementInspectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorViewController.swift; sourceTree = "<group>"; };
+		EBAC359B2531024E00A992F5 /* ElementInspectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorViewCode.swift; sourceTree = "<group>"; };
 		EBB0CB21252A6C3D005D4A53 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.KeyCommands.swift; sourceTree = "<group>"; };
 		EBC524AA252F5F2F0054C6AA /* BaseControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseControl.swift; sourceTree = "<group>"; };
@@ -201,13 +204,14 @@
 		EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
 		EBD9DA0D252FA15500851E23 /* UILabel+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Init.swift"; sourceTree = "<group>"; };
 		EBD9DA18252FA37500851E23 /* SeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorView.swift; sourceTree = "<group>"; };
-		EBD9DA1E252FA60400851E23 /* ColorSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSelector.swift; sourceTree = "<group>"; };
+		EBD9DA1E252FA60400851E23 /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
 		EBD9DA25252FB4DF00851E23 /* UIColor+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
 		EBD9DA2F252FB76900851E23 /* OptionSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelector.swift; sourceTree = "<group>"; };
 		EBD9DA41252FC49900851E23 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		EBD9DA4D2530414700851E23 /* IconKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconKit.swift; sourceTree = "<group>"; };
 		EBE3039A252DB7BC00A8F1C6 /* ViewHierarchyListTableViewCodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListTableViewCodeCell.swift; sourceTree = "<group>"; };
 		EBE303A8252DC13E00A8F1C6 /* UITableView+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Convenience.swift"; sourceTree = "<group>"; };
+		EBF3294425310EC800EABA17 /* ElementInspectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorViewModel.swift; sourceTree = "<group>"; };
 		EBF88CBE252DA1E300AE9F12 /* ViewHierarchyListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListViewController.swift; sourceTree = "<group>"; };
 		EBF88CCD252DA25100AE9F12 /* ViewHierarchyListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListViewModel.swift; sourceTree = "<group>"; };
 		EBF88CD4252DA25D00AE9F12 /* ViewHierarchyListViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListViewCode.swift; sourceTree = "<group>"; };
@@ -451,6 +455,7 @@
 			children = (
 				EBF88CD3252DA25400AE9F12 /* ViewCodes */,
 				EBF88CBD252DA1BB00AE9F12 /* ViewControllers */,
+				EBF88CCC252DA24400AE9F12 /* ViewModels */,
 			);
 			path = ViewHierarchyList;
 			sourceTree = "<group>";
@@ -458,6 +463,7 @@
 		EBAC34F92530DE1A00A992F5 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				EBAC35A1253108E700A992F5 /* ElementInspector */,
 				EBAC35022530DE3700A992F5 /* PropertyInspector */,
 				EBAC34F42530DDF300A992F5 /* ViewHierarchyList */,
 			);
@@ -467,11 +473,10 @@
 		EBAC35022530DE3700A992F5 /* PropertyInspector */ = {
 			isa = PBXGroup;
 			children = (
-				EBAC35872530FE4C00A992F5 /* InspectorViewCode.swift */,
-				EBAC356D2530F53800A992F5 /* InspectorViewController.swift */,
-				EBAC35032530DE8300A992F5 /* InspectorViewModel.swift */,
-				EBAC353D2530E36400A992F5 /* PropertyInspectorInputGroup.swift */,
 				EBAC35432530E39800A992F5 /* Enums */,
+				EBF3295A2531109600EABA17 /* ViewCodes */,
+				EBF3295F2531109C00EABA17 /* ViewControllers */,
+				EBF32964253110A100EABA17 /* ViewModels */,
 			);
 			path = PropertyInspector;
 			sourceTree = "<group>";
@@ -484,12 +489,30 @@
 			path = Enums;
 			sourceTree = "<group>";
 		};
-		EBAC354E2530E41900A992F5 /* NavigationController */ = {
+		EBAC35A1253108E700A992F5 /* ElementInspector */ = {
 			isa = PBXGroup;
 			children = (
-				EBAC354F2530E44400A992F5 /* ElementInspectorNavigationController.swift */,
+				EBAC35AB2531091800A992F5 /* ViewCodes */,
+				EBAC35A62531091000A992F5 /* ViewControllers */,
+				EBF3296D2531144700EABA17 /* ViewModel */,
 			);
-			path = NavigationController;
+			path = ElementInspector;
+			sourceTree = "<group>";
+		};
+		EBAC35A62531091000A992F5 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC35952531023100A992F5 /* ElementInspectorViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		EBAC35AB2531091800A992F5 /* ViewCodes */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC359B2531024E00A992F5 /* ElementInspectorViewCode.swift */,
+			);
+			path = ViewCodes;
 			sourceTree = "<group>";
 		};
 		EBB0CB35252A6CD0005D4A53 /* Configuration */ = {
@@ -514,7 +537,7 @@
 		EBD9D9DF252F6E6D00851E23 /* Controls */ = {
 			isa = PBXGroup;
 			children = (
-				EBD9DA1E252FA60400851E23 /* ColorSelector.swift */,
+				EBD9DA1E252FA60400851E23 /* ColorPicker.swift */,
 				EBD9DA2F252FB76900851E23 /* OptionSelector.swift */,
 				EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */,
 				EBD9DA00252F919900851E23 /* StepperControl.swift */,
@@ -565,6 +588,39 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		EBF3295A2531109600EABA17 /* ViewCodes */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC353D2530E36400A992F5 /* PropertyInspectorSection.swift */,
+				EBAC35872530FE4C00A992F5 /* PropertyInspectorViewCode.swift */,
+			);
+			path = ViewCodes;
+			sourceTree = "<group>";
+		};
+		EBF3295F2531109C00EABA17 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC356D2530F53800A992F5 /* PropertyInspectorViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		EBF32964253110A100EABA17 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC35032530DE8300A992F5 /* PropertyInspectorViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		EBF3296D2531144700EABA17 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				EBF3294425310EC800EABA17 /* ElementInspectorViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		EBF88CBA252DA18300AE9F12 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
@@ -581,8 +637,6 @@
 				EBAC34E92530ABBB00A992F5 /* ElementInspector.swift */,
 				EBF88CBC252DA1B100AE9F12 /* Coordinators */,
 				EBAC34F92530DE1A00A992F5 /* Modules */,
-				EBAC354E2530E41900A992F5 /* NavigationController */,
-				EBF88CCC252DA24400AE9F12 /* ViewModels */,
 			);
 			path = ElementInspector;
 			sourceTree = "<group>";
@@ -898,7 +952,7 @@
 				OBJ_70 /* Layer+AlertControllerActionable.swift in Sources */,
 				OBJ_71 /* Layer+CustomStringConvertible.swift in Sources */,
 				OBJ_72 /* Layer+Hashable.swift in Sources */,
-				EBAC35042530DE8300A992F5 /* InspectorViewModel.swift in Sources */,
+				EBAC35042530DE8300A992F5 /* PropertyInspectorViewModel.swift in Sources */,
 				EBD9DA42252FC49900851E23 /* SectionHeader.swift in Sources */,
 				EBAC35452530E3C400A992F5 /* PropertyInspectorInput.swift in Sources */,
 				EB7EAAF22529BFC0000001BE /* Array+UniqueValues.swift in Sources */,
@@ -916,7 +970,7 @@
 				EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */,
 				OBJ_82 /* Configuration.Appearance.swift in Sources */,
 				OBJ_84 /* ViewHierarchyLayer.swift in Sources */,
-				EBD9DA1F252FA60400851E23 /* ColorSelector.swift in Sources */,
+				EBD9DA1F252FA60400851E23 /* ColorPicker.swift in Sources */,
 				OBJ_85 /* Texts.swift in Sources */,
 				OBJ_86 /* ViewHierarchySnapshot.swift in Sources */,
 				EBD9DA4E2530414700851E23 /* IconKit.swift in Sources */,
@@ -937,7 +991,8 @@
 				OBJ_92 /* HierarchyInspectorLayerManagerProtocol.swift in Sources */,
 				OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */,
 				EBF88CDF252DA56100AE9F12 /* ElementInspectorCoordinator.swift in Sources */,
-				EBAC35882530FE4C00A992F5 /* InspectorViewCode.swift in Sources */,
+				EBAC35882530FE4C00A992F5 /* PropertyInspectorViewCode.swift in Sources */,
+				EBAC35962531023100A992F5 /* ElementInspectorViewController.swift in Sources */,
 				EBAC34EA2530ABBB00A992F5 /* ElementInspector.swift in Sources */,
 				OBJ_94 /* LayerViewProtocol.swift in Sources */,
 				EBB0CB63252A6F3E005D4A53 /* Manager.ActionGroup.swift in Sources */,
@@ -947,7 +1002,7 @@
 				OBJ_97 /* EmptyView.swift in Sources */,
 				EBA246282528D71300D4AFD9 /* Manager.swift in Sources */,
 				EB9ED74B252E4F5900BF7D60 /* BaseView.swift in Sources */,
-				EBAC356E2530F53800A992F5 /* InspectorViewController.swift in Sources */,
+				EBAC356E2530F53800A992F5 /* PropertyInspectorViewController.swift in Sources */,
 				OBJ_98 /* HighlightView.swift in Sources */,
 				EBF88CCE252DA25100AE9F12 /* ViewHierarchyListViewModel.swift in Sources */,
 				OBJ_99 /* LayerViewComponent.swift in Sources */,
@@ -958,11 +1013,12 @@
 				EBE303A9252DC13E00A8F1C6 /* UITableView+Convenience.swift in Sources */,
 				OBJ_101 /* LayerView.swift in Sources */,
 				EBA246412528ED1100D4AFD9 /* Manager+HierarchyLayerConstructor.swift in Sources */,
-				EBAC353E2530E36400A992F5 /* PropertyInspectorInputGroup.swift in Sources */,
+				EBAC353E2530E36400A992F5 /* PropertyInspectorSection.swift in Sources */,
 				OBJ_102 /* WireframeView.swift in Sources */,
 				EBF88CBF252DA1E300AE9F12 /* ViewHierarchyListViewController.swift in Sources */,
+				EBAC359C2531024E00A992F5 /* ElementInspectorViewCode.swift in Sources */,
 				EB3C4B4A252E776A00AFABF8 /* NSDirectionalEdgeInsets+Init.swift in Sources */,
-				EBAC35502530E44400A992F5 /* ElementInspectorNavigationController.swift in Sources */,
+				EBF3294525310EC800EABA17 /* ElementInspectorViewModel.swift in Sources */,
 				EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */,
 				EB7EAAE02529B9F2000001BE /* Manager+Actions.swift in Sources */,
 			);

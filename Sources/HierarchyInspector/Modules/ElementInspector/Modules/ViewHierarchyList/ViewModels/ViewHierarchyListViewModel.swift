@@ -85,7 +85,7 @@ extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
     }
     
     func title(for section: Int) -> String? {
-        "View hierarchy"
+        nil //"View hierarchy"
     }
     
     var numberOfRows: Int {

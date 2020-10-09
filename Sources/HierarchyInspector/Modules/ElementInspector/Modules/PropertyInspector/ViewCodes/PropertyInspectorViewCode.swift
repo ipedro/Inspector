@@ -1,5 +1,5 @@
 //
-//  InspectorViewCode.swift
+//  PropertyInspectorViewCode.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 09.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class InspectorViewCode: BaseView {
+final class PropertyInspectorViewCode: BaseView {
     
     private(set) lazy var scrollView = UIScrollView()
     
@@ -21,5 +21,13 @@ final class InspectorViewCode: BaseView {
         contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         
         contentView.spacing = 30
+        
+        if #available(iOS 13.0, *) {
+            backgroundColor = .systemBackground
+        }
+        else {
+            backgroundColor = .white
+        }
+        
     }
 }

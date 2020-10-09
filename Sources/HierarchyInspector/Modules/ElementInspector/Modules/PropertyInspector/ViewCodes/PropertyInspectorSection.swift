@@ -1,5 +1,5 @@
 //
-//  PropertyInspectorInputGroup.swift
+//  PropertyInspectorSection.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 09.10.20.
@@ -7,22 +7,25 @@
 
 import UIKit
 
-final class PropertyInspectorInputGroup: BaseView {
+protocol PropertyInspectorSectionDelegate: AnyObject {
+    func propertyInspectorSection(_ section: PropertyInspectorSection, didTapColorPicker colorPicker: ColorPicker, sourceRect: CGRect)
+}
+
+final class PropertyInspectorSection: BaseView {
+    weak var delegate: PropertyInspectorSectionDelegate?
+    
+    let title: String?
     
     let properties: [PropertyInspectorInput]
     
-    let title: String?
-
-    init(title: String?, properties: [PropertyInspectorInput]) {
-        self.title = title
-        self.properties = properties
-
-        super.init(frame: .zero)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    lazy var controlsStackView = UIStackView(
+        axis: .vertical,
+        arrangedSubviews: arrangedSubviews,
+        margins: .margins(
+            horizontal: 30,
+            vertical: 15
+        )
+    )
     
     private lazy var arrangedSubviews: [UIView] = properties.compactMap { inputControls[$0] }
     
@@ -39,7 +42,9 @@ final class PropertyInspectorInputGroup: BaseView {
                     return StepperControl(title: title, value: value, range: range, stepValue: stepValue)
                     
                 case let .colorPicker(title, color, _):
-                    return ColorSelector(title: title, color: color)
+                    return ColorPicker(title: title, color: color).then {
+                        $0.delegate = self
+                    }
                     
                 case let .toggleButton(title, isOn, _):
                     return ToggleControl(title: title, isOn: isOn)
@@ -52,33 +57,43 @@ final class PropertyInspectorInputGroup: BaseView {
                 }
             }()
                 
-            control.addTarget(self, action: #selector(handler(sender:)), for: .valueChanged)
+            control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
+            
             dict[property] = control
         }
         
         return dict
     }()
     
-    lazy var controlsStackView = UIStackView(
-        axis: .vertical,
-        arrangedSubviews: arrangedSubviews,
-        margins: .margins(
-            horizontal: 30,
-            vertical: 15
-        )
-    )
+    // MARK: - Init
+    
+    init(title: String?, properties: [PropertyInspectorInput]) {
+        self.title = title
+        self.properties = properties
+
+        super.init(frame: .zero)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func setup() {
         super.setup()
         
         if let title = title {
-            contentView.addArrangedSubview(SectionHeader(.subheadline, text: title))
+            contentView.addArrangedSubview(SectionHeader(.body, text: title))
         }
         
         contentView.addArrangedSubview(controlsStackView)
     }
-    
-    @objc func handler(sender: AnyObject) {
+}
+
+// MARK: - Actions
+
+private extension PropertyInspectorSection {
+        
+    @objc func valueChanged(_ sender: AnyObject) {
         
         for (property, control) in inputControls where control === sender {
             
@@ -89,8 +104,8 @@ final class PropertyInspectorInputGroup: BaseView {
             case let (.doubleStepper(_, _, _, _, handler), stepperControl as StepperControl):
                 handler(stepperControl.value)
                 
-            case let (.colorPicker(_, _, handler), colorSelector as ColorSelector):
-                handler(colorSelector.color)
+            case let (.colorPicker(_, _, handler), colorPicker as ColorPicker):
+                handler(colorPicker.selectedColor)
                 
             case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
                 handler(toggleControl.isOn)
@@ -101,10 +116,24 @@ final class PropertyInspectorInputGroup: BaseView {
             case let (.optionSelector(_, _, _, handler), optionSelector as OptionSelector):
                 handler(optionSelector.selectedIndex)
                 
-            default:
+            case (.integerStepper, _),
+                 (.doubleStepper, _),
+                 (.colorPicker, _),
+                 (.toggleButton, _),
+                 (.segmentedControl, _),
+                 (.optionSelector, _):
                 break
             }
         }
         
     }
+}
+
+// MARK: - ColorPickerDelegate
+
+extension PropertyInspectorSection: ColorPickerDelegate {
+    func colorPickerDidTap(_ colorPicker: ColorPicker, sourceRect: CGRect) {
+        delegate?.propertyInspectorSection(self, didTapColorPicker: colorPicker, sourceRect: sourceRect)
+    }
+    
 }

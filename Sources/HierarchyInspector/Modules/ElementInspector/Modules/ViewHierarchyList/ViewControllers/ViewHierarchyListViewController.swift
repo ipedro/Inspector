@@ -8,17 +8,9 @@
 import UIKit
 
 final class ViewHierarchyListViewController: UIViewController {
-    private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(host: self)
-    
     private lazy var viewCode = ViewHierarchyListViewCode().then {
         $0.tableView.dataSource = self
         $0.tableView.delegate   = self
-        
-        $0.inspectBarButtonItem.target = self
-        $0.inspectBarButtonItem.action = #selector(toggleInspect)
-        
-        $0.dismissBarButtonItem.target = self
-        $0.dismissBarButtonItem.action = #selector(close)
     }
     
     private var viewModel: ViewHierarchyListViewModelProtocol!
@@ -26,14 +18,10 @@ final class ViewHierarchyListViewController: UIViewController {
     override func loadView() {
         view = viewCode
         
-        navigationItem.rightBarButtonItem = viewCode.inspectBarButtonItem
-        navigationItem.leftBarButtonItem = viewCode.dismissBarButtonItem
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        title = viewModel.title
     }
     
     override func viewDidLayoutSubviews() {
@@ -49,13 +37,6 @@ final class ViewHierarchyListViewController: UIViewController {
         return viewController
     }
     
-    @objc func toggleInspect() {
-        presentHierarchyInspector(animated: true)
-    }
-    
-    @objc func close() {
-        dismiss(animated: true)
-    }
 }
 
 extension ViewHierarchyListViewController: UITableViewDataSource {
@@ -117,25 +98,14 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
         })
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let text = viewModel.title(for: section)
-        
-        return SectionHeader(text: text)
-    }
-}
-
-extension ViewHierarchyListViewController: UIPopoverPresentationControllerDelegate {
-    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-        return .none
-    }
-}
-
-extension ViewHierarchyListViewController: HierarchyInspectorPresentable {
-    var hierarchyInspectorLayers: [ViewHierarchyLayer] {
-        [.staticTexts, .controls, .icons]
-    }
-}
-
-extension ViewHierarchyLayer {
-    static let icons: ViewHierarchyLayer = .layer(name: "Icons") { $0 is Icon }
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        guard let text = viewModel.title(for: section) else {
+//            return UIView().then {
+//                $0.heightAnchor.constraint(equalToConstant: 0).isActive = true
+//            }
+//        }
+//
+//        return SectionHeader(.body, text: text)
+//    }
+    
 }

@@ -18,22 +18,22 @@ final class ElementInspectorCoordinator {
         self.sourceView = sourceView
     }
     
-//    private lazy var viewController = ViewHierarchyListViewController.create(
-//        viewModel: ViewHierarchyListViewModel(
-//            reference: reference
-//        )
-//    )
-    
-    private lazy var viewController: ElementInspector.InspectorViewController = {
-        
-        let viewModel = ElementInspector.InspectorViewModel(reference: reference)
-
-        let viewController = ElementInspector.InspectorViewController.create(viewModel: viewModel)
+    private lazy var elementInspectorViewController: ElementInspectorViewController = {
+        let viewController = ElementInspectorViewController.create(
+            viewModel: ElementInspectorViewModel(
+                reference: reference
+                )
+        )
 
         return viewController
     }()
     
-    private lazy var navigationController = ElementInspectorNavigationController(rootViewController: viewController).then {
+    private lazy var navigationController = UINavigationController(
+        rootViewController: elementInspectorViewController
+    ).then {
+        $0.modalPresentationStyle = .popover
+        $0.popoverPresentationController?.sourceView = sourceView
+        
         if #available(iOS 13.0, *) {
             $0.view.backgroundColor = .systemBackground
         } else {
@@ -42,15 +42,6 @@ final class ElementInspectorCoordinator {
     }
     
     func start() -> UINavigationController {
-//        if reference.flattenedViewHierarchy.count < 5 {
-            navigationController.modalPresentationStyle                    = .popover
-            navigationController.popoverPresentationController?.sourceView = sourceView
-//            navigationController.popoverPresentationController?.delegate   = viewController
-//        }
-//        else {
-//            navigationController.modalPresentationStyle = .formSheet
-//        }
-        
-        return navigationController
+        navigationController
     }
 }
