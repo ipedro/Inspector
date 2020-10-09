@@ -1,5 +1,5 @@
 //
-//  View.swift
+//  BaseView.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 07.10.20.
@@ -7,9 +7,11 @@
 
 import UIKit
 
-class View: UIView {
+class BaseView: UIView {
     
-    private(set) var contentView = UIStackView(axis: .vertical)
+    private(set) lazy var contentView = UIStackView(axis: .vertical).then {
+        installView($0)
+    }
     
     override init(frame: CGRect = .zero) {
         super.init(frame: frame)
@@ -24,7 +26,9 @@ class View: UIView {
     // MARK: - View Lifecycle
     
     func setup() {
-        installView(contentView)
+        if #available(iOS 13.0, *) {
+            layer.cornerCurve = .continuous
+        }
     }
     
 }

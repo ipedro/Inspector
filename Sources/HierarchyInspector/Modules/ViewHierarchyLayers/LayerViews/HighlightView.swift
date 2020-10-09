@@ -73,7 +73,7 @@ class HighlightView: LayerView {
         $0.layer.shadowOpacity       = 0.4
     }
     
-    private lazy var labelContentView = InternalView().then {
+    private lazy var labelContentView = LayerViewComponent().then {
         $0.installView(label, .margins(horizontal: 4, vertical: 2))
         
         $0.layer.cornerRadius  = 6
@@ -81,7 +81,7 @@ class HighlightView: LayerView {
         $0.backgroundColor = color
     }
     
-    private lazy var labelContainerView = InternalView().then {
+    private lazy var labelContainerView = LayerViewComponent().then {
         $0.installView(labelContentView, .autoResizingMask)
         
         $0.layer.shadowOffset       = CGSize(width: 0, height: 1)

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LayerView: UIImageView, InternalViewProtocol {
+class LayerView: UIImageView, LayerViewProtocol {
     open var shouldPresentOnTop = false
     
     // MARK: - Properties
@@ -53,7 +53,7 @@ class LayerView: UIImageView, InternalViewProtocol {
         }
     }
     
-    private lazy var borderedView = InternalView(frame: bounds)
+    private lazy var borderedView = LayerViewComponent(frame: bounds)
     
     let viewReference: ViewHierarchyReference
     

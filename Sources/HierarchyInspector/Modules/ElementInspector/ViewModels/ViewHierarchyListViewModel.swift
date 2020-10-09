@@ -25,6 +25,8 @@ protocol ViewHierarchyListViewModelProtocol {
     
     var numberOfRows: Int { get }
     
+    func title(for section: Int) -> String?
+    
     func itemViewModel(for indexPath: IndexPath) -> ViewHierarchyListItemViewModelProtocol?
     
     /// Toggle if a container displays its subviews or hides them.
@@ -36,42 +38,54 @@ protocol ViewHierarchyListViewModelProtocol {
 final class ViewHierarchyListViewModel: NSObject {
     let rootReference: ViewHierarchyReference
     
-    private(set) lazy var childViewModels: [ViewHierarchyListItemViewModel] = {
-        let rootViewModel = ViewHierarchyListItemViewModel(reference: rootReference, rootDepth: rootReference.depth)
-        
-        var array = [rootViewModel]
-        
-        let children = rootReference.children.map { makeViewModels(reference: $0, parent: rootViewModel) }
-        
-        array.append(contentsOf: children.flatMap { $0 })
-        
-        return array
-    }()
+    private(set) var childViewModels: [ViewHierarchyListItemViewModel] {
+        didSet {
+            updateVisibleChildViews()
+        }
+    }
     
-    func makeViewModels(reference: ViewHierarchyReference, parent: ViewHierarchyListItemViewModel?) -> [ViewHierarchyListItemViewModel] {
+    private static func makeViewModels(
+        reference: ViewHierarchyReference,
+        parent: ViewHierarchyListItemViewModel?,
+        rootDepth: Int
+    ) -> [ViewHierarchyListItemViewModel] {
         let viewModel = ViewHierarchyListItemViewModel(
             reference: reference,
             parent: parent,
-            rootDepth: rootReference.depth
+            rootDepth: rootDepth
         )
         
         let childrenViewModels: [[ViewHierarchyListItemViewModel]] = reference.children.map {
-            makeViewModels(reference: $0, parent: viewModel)
+            makeViewModels(reference: $0, parent: viewModel, rootDepth: rootDepth)
         }
         
         return [viewModel] + childrenViewModels.flatMap { $0 }
     }
     
-    private lazy var visibleChildViewModels = childViewModels
+    private lazy var visibleChildViewModels: [ViewHierarchyListItemViewModel] = []
     
     init(reference: ViewHierarchyReference) {
-        self.rootReference = reference
+        rootReference = reference
+        
+        childViewModels = Self.makeViewModels(
+            reference: rootReference,
+            parent: nil,
+            rootDepth: rootReference.depth
+        )
+        
+        super.init()
+        
+        updateVisibleChildViews()
     }
 }
 
 extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
     var title: String {
         "More info"
+    }
+    
+    func title(for section: Int) -> String? {
+        "View hierarchy"
     }
     
     var numberOfRows: Int {
@@ -103,7 +117,7 @@ extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
         
         let oldVisibleChildren = visibleChildViewModels
         
-        visibleChildViewModels = childViewModels.filter { $0.isHidden == false }
+        updateVisibleChildViews()
         
         let addedChildren = Set(visibleChildViewModels).subtracting(oldVisibleChildren)
         
@@ -140,5 +154,9 @@ extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
         }
         
         return actions
+    }
+    
+    private func updateVisibleChildViews() {
+        visibleChildViewModels = childViewModels.filter { $0.isHidden == false }
     }
 }

@@ -36,33 +36,39 @@ extension UIView: LoaderViewPresentable {
         
         loaderViews.forEach { $0.done() }
         
-        UIView.animate(
-            withDuration: 0.5,
-            delay: 1,
-            options: [.curveEaseInOut, .beginFromCurrentState],
-            animations: {
-                loaderViews.forEach { loaderView in
-                    guard loaderView.currentOperation == operation else {
-                        return
-                    }
-                    
-                    loaderView.alpha = 0
-                }
-            },
-            completion: { finished in
-                guard finished else {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+            loaderViews.forEach { loaderView in
+                guard loaderView.currentOperation == operation else {
                     return
                 }
                 
-                loaderViews.forEach { loaderView in
-                    guard loaderView.currentOperation == operation else {
-                        return
-                    }
-                    
-                    loaderView.removeFromSuperview()
-                }
+                loaderView.removeFromSuperview()
             }
-        )
+        }
+        
+//        UIView.animate(
+//            withDuration: 0.5,
+//            delay: 1,
+//            options: [.curveEaseInOut, .beginFromCurrentState],
+//            animations: {
+//                loaderViews.forEach { loaderView in
+//                    guard loaderView.currentOperation == operation else {
+//                        return
+//                    }
+//
+//                    loaderView.alpha = 0
+//                }
+//            },
+//            completion: { _ in
+//                loaderViews.forEach { loaderView in
+//                    guard loaderView.currentOperation == operation else {
+//                        return
+//                    }
+//
+//                    loaderView.removeFromSuperview()
+//                }
+//            }
+//        )
         
     }
     

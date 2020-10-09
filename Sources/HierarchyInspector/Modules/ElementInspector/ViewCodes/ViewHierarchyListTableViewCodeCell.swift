@@ -27,27 +27,26 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             elementNameLabel.font = {
                 switch viewModel?.relativeDepth {
                 case 0:
-                    return .systemFont(ofSize: 17, weight: .bold)
+                    return .systemFont(ofSize: 16, weight: .bold)
                     
                 case 1:
-                    return .systemFont(ofSize: 16, weight: .semibold)
-                    
-                case 2:
                     return .systemFont(ofSize: 15, weight: .semibold)
                     
-                case 3:
+                case 2:
                     return .systemFont(ofSize: 14, weight: .semibold)
                     
+                case 3:
+                    return .systemFont(ofSize: 13, weight: .semibold)
+                    
                 default:
-                    return .systemFont(ofSize: 14, weight: .medium)
+                    return .systemFont(ofSize: 13, weight: .medium)
                 }
             }()
             
             // Collapse
             
-            isCollapsedLabel.font = elementNameLabel.font.withSize(elementNameLabel.font.pointSize + 10)
             isCollapsed = viewModel?.isCollapsed == true
-            isCollapsedLabel.isSafelyHidden = viewModel?.isContainer != true
+            chevronDownIcon.isSafelyHidden = viewModel?.isContainer != true
             
             // Description
             
@@ -87,7 +86,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     
     var isCollapsed = false {
         didSet {
-            isCollapsedLabel.transform = isCollapsed ? .identity : .init(rotationAngle: .pi / 2)
+            chevronDownIcon.transform = isCollapsed ? .init(rotationAngle: -(.pi / 2)) : .identity
         }
     }
     
@@ -114,15 +113,12 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         $0.adjustsFontSizeToFitWidth = true
     }
     
-    private lazy var descriptionLabel = UILabel().then {
-        $0.font = .preferredFont(forTextStyle: .caption2)
+    private lazy var descriptionLabel = UILabel(.caption2).then {
         $0.numberOfLines = 0
         $0.alpha = 0.5
     }
     
-    private lazy var isCollapsedLabel = UILabel().then {
-        $0.text = "▸" // "›"
-        $0.translatesAutoresizingMaskIntoConstraints = false
+    private lazy var chevronDownIcon = Icon(.chevronDown, color: elementNameLabel.textColor).then {
         $0.tintColor = elementNameLabel.textColor
         $0.alpha = 0.8
     }
@@ -137,25 +133,20 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     )
     
     func setup() {
-        selectionStyle = .none
-        
         contentView.clipsToBounds = true
         
         backgroundColor = nil
-        
-        layer.shouldRasterize = true
-        layer.rasterizationScale = UIScreen.main.scale
         
         contentView.installView(
             stackView,
             .margins(top: 15, leading: 30, bottom: 20, trailing: 15)
         )
         
-        contentView.addSubview(isCollapsedLabel)
+        contentView.addSubview(chevronDownIcon)
         
-        isCollapsedLabel.centerYAnchor.constraint(equalTo: elementNameLabel.centerYAnchor).isActive = true
+        chevronDownIcon.centerYAnchor.constraint(equalTo: elementNameLabel.centerYAnchor).isActive = true
 
-        isCollapsedLabel.trailingAnchor.constraint(equalTo: elementNameLabel.leadingAnchor, constant: -5).isActive = true
+        chevronDownIcon.trailingAnchor.constraint(equalTo: elementNameLabel.leadingAnchor, constant: -5).isActive = true
     }
     
     override func prepareForReuse() {

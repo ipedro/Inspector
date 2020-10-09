@@ -40,10 +40,10 @@ extension UIView {
     }
     
     var originalSubviews: [UIView] {
-        subviews.filter { $0 is InternalViewProtocol == false }
+        subviews.filter { $0 is LayerViewProtocol == false }
     }
     
-    func installView(_ view: UIView, _ binding: ViewBinding = .margins(.zero), _ position: ViewPosition = .onTop) {
+    func installView(_ view: UIView, _ binding: ViewBinding = .margins(.zero), _ position: ViewPosition = .onTop, priority: UILayoutPriority = .defaultHigh) {
         switch position {
         case .onTop:
             addSubview(view)
@@ -78,6 +78,8 @@ extension UIView {
                 view.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -trailing)
             ]
         }
+        
+        constraints.forEach { $0.priority = priority }
         
         view.translatesAutoresizingMaskIntoConstraints = false
         

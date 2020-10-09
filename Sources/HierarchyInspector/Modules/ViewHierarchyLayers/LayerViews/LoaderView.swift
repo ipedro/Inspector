@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class LoaderView: InternalView {
+final class LoaderView: LayerViewComponent {
     // MARK: - Components
     
     private lazy var activityIndicator = UIActivityIndicatorView(style: .whiteLarge).then {

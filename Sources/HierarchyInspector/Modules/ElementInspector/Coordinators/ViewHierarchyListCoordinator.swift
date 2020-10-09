@@ -27,9 +27,8 @@ final class ViewHierarchyListCoordinator {
     private lazy var navigationController = UINavigationController(rootViewController: viewController).then {
         if #available(iOS 13.0, *) {
             $0.view.backgroundColor = .systemBackground
-            $0.overrideUserInterfaceStyle = .dark
         } else {
-            $0.view.backgroundColor = .white
+            $0.view.backgroundColor = .groupTableViewBackground
         }
     }
     

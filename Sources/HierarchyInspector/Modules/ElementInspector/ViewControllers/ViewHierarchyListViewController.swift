@@ -36,14 +36,8 @@ final class ViewHierarchyListViewController: UIViewController {
         title = viewModel.title
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        updatePreferredContentSize()
-    }
-    
-    private func updatePreferredContentSize() {
-        viewCode.layoutIfNeeded()
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
         preferredContentSize = viewCode.tableView.contentSize
     }
@@ -56,13 +50,7 @@ final class ViewHierarchyListViewController: UIViewController {
     }
     
     @objc func toggleInspect() {
-        switch hierarchyInspectorManager.isShowingLayers {
-        case true:
-            hierarchyInspectorManager.removeAllLayers()
-            
-        case false:
-            hierarchyInspectorManager.installAllLayers()
-        }
+        presentHierarchyInspector(animated: true)
     }
     
     @objc func close() {
@@ -128,6 +116,12 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             
         })
     }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let text = viewModel.title(for: section)
+        
+        return SectionHeader(text: text)
+    }
 }
 
 extension ViewHierarchyListViewController: UIPopoverPresentationControllerDelegate {
@@ -138,7 +132,10 @@ extension ViewHierarchyListViewController: UIPopoverPresentationControllerDelega
 
 extension ViewHierarchyListViewController: HierarchyInspectorPresentable {
     var hierarchyInspectorLayers: [HierarchyInspector.Layer] {
-        [.allViews, .staticTexts, .containerViews]
+        [.staticTexts, .controls, .icons]
     }
 }
 
+extension HierarchyInspector.Layer {
+    static let icons: HierarchyInspector.Layer = .layer(name: "Icons") { $0 is Icon }
+}
