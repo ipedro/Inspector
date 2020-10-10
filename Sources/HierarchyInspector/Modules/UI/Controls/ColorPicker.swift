@@ -68,6 +68,19 @@ final class ColorPicker: BaseControl {
         
         contentView.addArrangedSubview(colorLabelContainer)
         
+        #if swift(>=5.3)
+            isEnabled = true
+        #else
+            isEnabled = false
+            colorLabelContainer.backgroundColor = nil
+            
+            var margins = colorLabelContainer.contentView.directionalLayoutMargins
+            margins.leading = 0
+            margins.trailing = 0
+                
+            colorLabelContainer.contentView.directionalLayoutMargins = margins
+        #endif
+        
         didUpdateColor()
     }
     
