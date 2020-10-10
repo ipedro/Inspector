@@ -29,7 +29,7 @@ extension PropertyInspectorInputSection {
                 return .subSection(name: "alignment")
                 
             case .contentHorizontalAlignment:
-                return .segmentedControl(
+                return .inlineOptions(
                     title: "horizontal alignment",
                     items: UIControl.ContentHorizontalAlignment.allCases,
                     selectedSegmentIndex: UIControl.ContentHorizontalAlignment.allCases.firstIndex(of: control.contentHorizontalAlignment)
@@ -44,7 +44,7 @@ extension PropertyInspectorInputSection {
                 }
                 
             case .contentVerticalAlignment:
-                return .segmentedControl(
+                return .inlineOptions(
                     title: "vertical alignment",
                     items: UIControl.ContentVerticalAlignment.allCases,
                     selectedSegmentIndex: UIControl.ContentVerticalAlignment.allCases.firstIndex(of: control.contentVerticalAlignment)
@@ -87,81 +87,5 @@ extension PropertyInspectorInputSection {
             }
             
         })
-    }
-}
-
-extension UIControl.ContentVerticalAlignment: CaseIterable {
-    public typealias AllCases = [UIControl.ContentVerticalAlignment]
-    
-    public static var allCases: [UIControl.ContentVerticalAlignment] {
-        [
-            .center,
-            .top,
-            .bottom,
-            .fill
-        ]
-    }
-}
-
-extension UIControl.ContentVerticalAlignment: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .center:
-            return "center"
-            
-        case .top:
-            return "top"
-            
-        case .bottom:
-            return "bottom"
-            
-        case .fill:
-            return "fill"
-            
-        @unknown default:
-            return String(describing: self)
-        }
-    }
-}
-
-extension UIControl.ContentHorizontalAlignment: CaseIterable {
-    public typealias AllCases = [UIControl.ContentHorizontalAlignment]
-    
-    public static var allCases: [UIControl.ContentHorizontalAlignment] {
-        [
-            .leading,
-            .left,
-            .center,
-            .trailing,
-            .right,
-            .fill
-        ]
-    }
-}
-
-extension UIControl.ContentHorizontalAlignment: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .leading:
-            return "|L]"
-            
-        case .left:
-            return "| ]"
-            
-        case .center:
-            return "[|]"
-            
-        case .right:
-            return "[ |"
-            
-        case .trailing:
-            return "[T|"
-            
-        case .fill:
-            return "[⟷]"
-            
-        @unknown default:
-            return String(describing: self)
-        }
     }
 }

@@ -35,7 +35,7 @@ extension PropertyInspectorInputSection {
 
             switch $0 {
             case .contentMode:
-                return .optionSelector(
+                return .optionsList(
                     title: "content mode",
                     options: UIView.ContentMode.allCases,
                     selectedIndex: UIView.ContentMode.allCases.firstIndex(of: view.contentMode)
@@ -50,7 +50,7 @@ extension PropertyInspectorInputSection {
                 }
 
             case .semanticContentAttribute:
-                return .optionSelector(
+                return .optionsList(
                     title: "semantic content",
                     options: UISemanticContentAttribute.allCases,
                     selectedIndex: UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute)
@@ -97,13 +97,13 @@ extension PropertyInspectorInputSection {
                 return .separator
             
             case .alpha:
-                return .doubleStepper(
+                return .cgFloatStepper(
                     title: "alpha",
-                    value: Double(view.alpha),
+                    value: view.alpha,
                     range: 0...1,
                     stepValue: 0.05
                 ) { alpha in
-                    view.alpha = CGFloat(alpha)
+                    view.alpha = alpha
                 }
 
             case .backgroundColor:

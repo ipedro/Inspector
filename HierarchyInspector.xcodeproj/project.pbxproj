@@ -40,6 +40,18 @@
 		EB439B7F25321644004CCBCA /* PropertyInspectorInputSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B7E25321644004CCBCA /* PropertyInspectorInputSection.swift */; };
 		EB439B8F25321766004CCBCA /* PropertyInspectorInputSection+UIViewSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B8E25321766004CCBCA /* PropertyInspectorInputSection+UIViewSection.swift */; };
 		EB439B9D253217D3004CCBCA /* PropertyInspectorInputSection+UIControlSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B9C253217D3004CCBCA /* PropertyInspectorInputSection+UIControlSection.swift */; };
+		EB439BAB25322F95004CCBCA /* PropertyInspectorInputSection+UIStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BAA25322F95004CCBCA /* PropertyInspectorInputSection+UIStackView.swift */; };
+		EB439BB6253237D0004CCBCA /* UIControl.ContentHorizontalAlignment+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BB5253237D0004CCBCA /* UIControl.ContentHorizontalAlignment+CaseIterable.swift */; };
+		EB439BC4253237EC004CCBCA /* UIControl.ContentHorizontalAlignment+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BC3253237EC004CCBCA /* UIControl.ContentHorizontalAlignment+CustomStringConvertible.swift */; };
+		EB439BCF25323823004CCBCA /* UIControl.ContentVerticalAlignment+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BCE25323823004CCBCA /* UIControl.ContentVerticalAlignment+CaseIterable.swift */; };
+		EB439BD92532383D004CCBCA /* UIControl.ContentVerticalAlignment+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BD82532383C004CCBCA /* UIControl.ContentVerticalAlignment+CustomStringConvertible.swift */; };
+		EB439BED253238A4004CCBCA /* UIStackView.Distribution+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BEC253238A4004CCBCA /* UIStackView.Distribution+CaseIterable.swift */; };
+		EB439BF7253238BA004CCBCA /* UIStackView.Distribution+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BF6253238BA004CCBCA /* UIStackView.Distribution+CustomStringConvertible.swift */; };
+		EB439C02253238EC004CCBCA /* UIStackView.Alignment+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C01253238EC004CCBCA /* UIStackView.Alignment+CaseIterable.swift */; };
+		EB439C0C25323905004CCBCA /* UIStackView.Alignment+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C0B25323905004CCBCA /* UIStackView.Alignment+CustomStringConvertible.swift */; };
+		EB439C1325323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C1225323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift */; };
+		EB439C1D2532393A004CCBCA /* NSLayoutConstraint.Axis+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C1C2532393A004CCBCA /* NSLayoutConstraint.Axis+CustomStringConvertible.swift */; };
+		EB439C2B25323D12004CCBCA /* UIColor+RGBA.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C2A25323D12004CCBCA /* UIColor+RGBA.swift */; };
 		EB5DB3A4252D09D400CE0398 /* UIStackView+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5DB3A3252D09D400CE0398 /* UIStackView+Init.swift */; };
 		EB74DD92252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */; };
 		EB7EAAC22529B8B4000001BE /* Manager.Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAC12529B8B4000001BE /* Manager.Action.swift */; };
@@ -191,6 +203,18 @@
 		EB439B7E25321644004CCBCA /* PropertyInspectorInputSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorInputSection.swift; sourceTree = "<group>"; };
 		EB439B8E25321766004CCBCA /* PropertyInspectorInputSection+UIViewSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PropertyInspectorInputSection+UIViewSection.swift"; sourceTree = "<group>"; };
 		EB439B9C253217D3004CCBCA /* PropertyInspectorInputSection+UIControlSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PropertyInspectorInputSection+UIControlSection.swift"; sourceTree = "<group>"; };
+		EB439BAA25322F95004CCBCA /* PropertyInspectorInputSection+UIStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PropertyInspectorInputSection+UIStackView.swift"; sourceTree = "<group>"; };
+		EB439BB5253237D0004CCBCA /* UIControl.ContentHorizontalAlignment+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl.ContentHorizontalAlignment+CaseIterable.swift"; sourceTree = "<group>"; };
+		EB439BC3253237EC004CCBCA /* UIControl.ContentHorizontalAlignment+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl.ContentHorizontalAlignment+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EB439BCE25323823004CCBCA /* UIControl.ContentVerticalAlignment+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl.ContentVerticalAlignment+CaseIterable.swift"; sourceTree = "<group>"; };
+		EB439BD82532383C004CCBCA /* UIControl.ContentVerticalAlignment+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl.ContentVerticalAlignment+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EB439BEC253238A4004CCBCA /* UIStackView.Distribution+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView.Distribution+CaseIterable.swift"; sourceTree = "<group>"; };
+		EB439BF6253238BA004CCBCA /* UIStackView.Distribution+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView.Distribution+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EB439C01253238EC004CCBCA /* UIStackView.Alignment+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView.Alignment+CaseIterable.swift"; sourceTree = "<group>"; };
+		EB439C0B25323905004CCBCA /* UIStackView.Alignment+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView.Alignment+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EB439C1225323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint.Axis+CaseIterable.swift"; sourceTree = "<group>"; };
+		EB439C1C2532393A004CCBCA /* NSLayoutConstraint.Axis+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint.Axis+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EB439C2A25323D12004CCBCA /* UIColor+RGBA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+RGBA.swift"; sourceTree = "<group>"; };
 		EB5DB3A3252D09D400CE0398 /* UIStackView+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Init.swift"; sourceTree = "<group>"; };
 		EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListItemViewModel.swift; sourceTree = "<group>"; };
 		EB7EAAC12529B8B4000001BE /* Manager.Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.Action.swift; sourceTree = "<group>"; };
@@ -364,9 +388,55 @@
 			isa = PBXGroup;
 			children = (
 				EB439B9C253217D3004CCBCA /* PropertyInspectorInputSection+UIControlSection.swift */,
+				EB439BAA25322F95004CCBCA /* PropertyInspectorInputSection+UIStackView.swift */,
 				EB439B8E25321766004CCBCA /* PropertyInspectorInputSection+UIViewSection.swift */,
 			);
 			path = PropertyInspectorInputSection;
+			sourceTree = "<group>";
+		};
+		EB439BB4253237BD004CCBCA /* UIControl.ContentHorizontalAlignment */ = {
+			isa = PBXGroup;
+			children = (
+				EB439BC3253237EC004CCBCA /* UIControl.ContentHorizontalAlignment+CustomStringConvertible.swift */,
+				EB439BB5253237D0004CCBCA /* UIControl.ContentHorizontalAlignment+CaseIterable.swift */,
+			);
+			path = UIControl.ContentHorizontalAlignment;
+			sourceTree = "<group>";
+		};
+		EB439BCD25323815004CCBCA /* UIControl.ContentVerticalAlignment */ = {
+			isa = PBXGroup;
+			children = (
+				EB439BCE25323823004CCBCA /* UIControl.ContentVerticalAlignment+CaseIterable.swift */,
+				EB439BD82532383C004CCBCA /* UIControl.ContentVerticalAlignment+CustomStringConvertible.swift */,
+			);
+			path = UIControl.ContentVerticalAlignment;
+			sourceTree = "<group>";
+		};
+		EB439BEA25323887004CCBCA /* UIStackView.Distribution */ = {
+			isa = PBXGroup;
+			children = (
+				EB439BEC253238A4004CCBCA /* UIStackView.Distribution+CaseIterable.swift */,
+				EB439BF6253238BA004CCBCA /* UIStackView.Distribution+CustomStringConvertible.swift */,
+			);
+			path = UIStackView.Distribution;
+			sourceTree = "<group>";
+		};
+		EB439C00253238E0004CCBCA /* UIStackView.Alignment */ = {
+			isa = PBXGroup;
+			children = (
+				EB439C01253238EC004CCBCA /* UIStackView.Alignment+CaseIterable.swift */,
+				EB439C0B25323905004CCBCA /* UIStackView.Alignment+CustomStringConvertible.swift */,
+			);
+			path = UIStackView.Alignment;
+			sourceTree = "<group>";
+		};
+		EB439C112532391B004CCBCA /* NSLayoutConstraint.Axis */ = {
+			isa = PBXGroup;
+			children = (
+				EB439C1225323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift */,
+				EB439C1C2532393A004CCBCA /* NSLayoutConstraint.Axis+CustomStringConvertible.swift */,
+			);
+			path = NSLayoutConstraint.Axis;
 			sourceTree = "<group>";
 		};
 		EB5DB399252D03A100CE0398 /* LayerViews */ = {
@@ -633,6 +703,7 @@
 			isa = PBXGroup;
 			children = (
 				EBD9DA25252FB4DF00851E23 /* UIColor+Hex.swift */,
+				EB439C2A25323D12004CCBCA /* UIColor+RGBA.swift */,
 			);
 			path = UIColor;
 			sourceTree = "<group>";
@@ -845,16 +916,21 @@
 				EBA245C32528817A00D4AFD9 /* Layer */,
 				EBA245CD2528819500D4AFD9 /* Manager */,
 				EB3C4B48252E775B00AFABF8 /* NSDirectionalEdgeInsets */,
+				EB439C112532391B004CCBCA /* NSLayoutConstraint.Axis */,
 				EB80AFB9252B56F100F0ECD5 /* NSObject */,
 				EB439B8D25321755004CCBCA /* PropertyInspectorInputSection */,
 				EB943FAC252C864A0007A611 /* SFSafariViewController */,
 				EBA245DC252881AC00D4AFD9 /* UIAlertController */,
 				EBD9DA24252FB4D500851E23 /* UIColor */,
+				EB439BB4253237BD004CCBCA /* UIControl.ContentHorizontalAlignment */,
+				EB439BCD25323815004CCBCA /* UIControl.ContentVerticalAlignment */,
 				EBD9DA0C252FA14900851E23 /* UILabel */,
 				EBA245E1252881B400D4AFD9 /* UINavigationController */,
 				EB439B442532136F004CCBCA /* UISemanticContentAttribute */,
 				EBA245EF2528892500D4AFD9 /* UISplitViewController */,
 				EB5DB3A2252D09C300CE0398 /* UIStackView */,
+				EB439C00253238E0004CCBCA /* UIStackView.Alignment */,
+				EB439BEA25323887004CCBCA /* UIStackView.Distribution */,
 				EBA245E6252881BA00D4AFD9 /* UITabBarController */,
 				EB439B8825321746004CCBCA /* UITableView */,
 				EBA245C82528818D00D4AFD9 /* UIView */,
@@ -1027,17 +1103,22 @@
 				OBJ_72 /* Layer+Hashable.swift in Sources */,
 				EBAC35042530DE8300A992F5 /* PropertyInspectorViewModel.swift in Sources */,
 				EBD9DA42252FC49900851E23 /* SectionHeader.swift in Sources */,
+				EB439BC4253237EC004CCBCA /* UIControl.ContentHorizontalAlignment+CustomStringConvertible.swift in Sources */,
 				EBAC35452530E3C400A992F5 /* PropertyInspectorInput.swift in Sources */,
 				EB7EAAF22529BFC0000001BE /* Array+UniqueValues.swift in Sources */,
 				OBJ_74 /* Layer+PresetLayers.swift in Sources */,
+				EB439C02253238EC004CCBCA /* UIStackView.Alignment+CaseIterable.swift in Sources */,
 				EBB0CB22252A6C3D005D4A53 /* Configuration.swift in Sources */,
 				OBJ_76 /* UIAlertController+HierarchyInspectableProtocol.swift in Sources */,
+				EB439C1325323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift in Sources */,
 				OBJ_77 /* UINavigationController+HierarchyInspectorPresentable.swift in Sources */,
 				OBJ_78 /* UIView+Convenience.swift in Sources */,
 				OBJ_79 /* UIView+HierarchyInspectableView.swift in Sources */,
 				EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */,
 				EB15C9222531A53B00D100E6 /* Console.swift in Sources */,
 				OBJ_80 /* UIView+LoaderViewPresentable.swift in Sources */,
+				EB439BB6253237D0004CCBCA /* UIControl.ContentHorizontalAlignment+CaseIterable.swift in Sources */,
+				EB439C2B25323D12004CCBCA /* UIColor+RGBA.swift in Sources */,
 				EBA7D9D425308FEC00496F23 /* Icon.swift in Sources */,
 				EBD9DA19252FA37500851E23 /* SeparatorView.swift in Sources */,
 				EB439B7F25321644004CCBCA /* PropertyInspectorInputSection.swift in Sources */,
@@ -1051,21 +1132,25 @@
 				OBJ_86 /* ViewHierarchySnapshot.swift in Sources */,
 				EBD9DA4E2530414700851E23 /* IconKit.swift in Sources */,
 				EBD9DA26252FB4DF00851E23 /* UIColor+Hex.swift in Sources */,
+				EB439BED253238A4004CCBCA /* UIStackView.Distribution+CaseIterable.swift in Sources */,
 				EB80AFBB252B570200F0ECD5 /* NSObject+Create.swift in Sources */,
 				EB5DB3A4252D09D400CE0398 /* UIStackView+Init.swift in Sources */,
 				EB324619252B1E6100406111 /* ViewHierarchyReference.swift in Sources */,
 				EB439B50253213AB004CCBCA /* UISemanticContentAttribute+CaseIterable.swift in Sources */,
 				EBD9DA0E252FA15500851E23 /* UILabel+Init.swift in Sources */,
+				EB439C0C25323905004CCBCA /* UIStackView.Alignment+CustomStringConvertible.swift in Sources */,
 				OBJ_87 /* Actionable.swift in Sources */,
 				OBJ_88 /* Create.swift in Sources */,
 				OBJ_89 /* HierarchyInspectorKeyCommandActionable.swift in Sources */,
 				EBC045BF2531F8A800C311E6 /* OptionSelectorViewModel.swift in Sources */,
 				OBJ_90 /* HierarchyInspectableProtocol.swift in Sources */,
 				EBD9DA30252FB76900851E23 /* OptionSelector.swift in Sources */,
+				EB439C1D2532393A004CCBCA /* NSLayoutConstraint.Axis+CustomStringConvertible.swift in Sources */,
 				EBF88CD5252DA25D00AE9F12 /* ViewHierarchyListViewCode.swift in Sources */,
 				EB7EAAC22529B8B4000001BE /* Manager.Action.swift in Sources */,
 				OBJ_91 /* ViewHierarchyProtocol.swift in Sources */,
 				EBE3039B252DB7BC00A8F1C6 /* ViewHierarchyListTableViewCodeCell.swift in Sources */,
+				EB439BF7253238BA004CCBCA /* UIStackView.Distribution+CustomStringConvertible.swift in Sources */,
 				EBC045AF2531F68000C311E6 /* OptionSelectorViewController.swift in Sources */,
 				OBJ_92 /* HierarchyInspectorLayerManagerProtocol.swift in Sources */,
 				OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */,
@@ -1092,9 +1177,11 @@
 				EB439B65253213EF004CCBCA /* UIView.ContentMode+CustomStringConvertible.swift in Sources */,
 				EBA246372528ECAA00D4AFD9 /* HierarchyLayerConstructor.swift in Sources */,
 				EBC524AB252F5F2F0054C6AA /* BaseControl.swift in Sources */,
+				EB439BD92532383D004CCBCA /* UIControl.ContentVerticalAlignment+CustomStringConvertible.swift in Sources */,
 				OBJ_100 /* LoaderView.swift in Sources */,
 				EBB0CB2C252A6C99005D4A53 /* Configuration.KeyCommands.swift in Sources */,
 				EBE303A9252DC13E00A8F1C6 /* UITableView+Convenience.swift in Sources */,
+				EB439BCF25323823004CCBCA /* UIControl.ContentVerticalAlignment+CaseIterable.swift in Sources */,
 				OBJ_101 /* LayerView.swift in Sources */,
 				EBA246412528ED1100D4AFD9 /* Manager+HierarchyLayerConstructor.swift in Sources */,
 				EBAC353E2530E36400A992F5 /* PropertyInspectorSectionView.swift in Sources */,
@@ -1105,6 +1192,7 @@
 				EBF3294525310EC800EABA17 /* ElementInspectorViewModel.swift in Sources */,
 				EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */,
 				EB7EAAE02529B9F2000001BE /* Manager+Actions.swift in Sources */,
+				EB439BAB25322F95004CCBCA /* PropertyInspectorInputSection+UIStackView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

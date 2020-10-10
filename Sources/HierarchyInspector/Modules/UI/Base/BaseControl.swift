@@ -13,9 +13,9 @@ class BaseControl: UIControl {
         $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
     }
     
-    private(set) lazy var contentView = UIStackView()
+    private(set) lazy var contentView = UIStackView(axis: .horizontal, spacing: Self.spacing)
     
-    static var verticalMargin: CGFloat = 10
+    static var spacing: CGFloat = 10
     
     private lazy var contentContainerView = UIStackView(
         axis: .horizontal,
@@ -23,8 +23,8 @@ class BaseControl: UIControl {
             titleLabel,
             contentView
         ],
-        spacing: Self.verticalMargin,
-        margins: .margins(top: Self.verticalMargin)
+        spacing: Self.spacing,
+        margins: .margins(top: Self.spacing)
     )
     
     private lazy var containerView = UIStackView(
@@ -33,7 +33,7 @@ class BaseControl: UIControl {
             contentContainerView,
             separator
         ],
-        spacing: Self.verticalMargin
+        spacing: Self.spacing
     )
     
     private lazy var separator = SeparatorView()

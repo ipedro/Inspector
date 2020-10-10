@@ -72,8 +72,6 @@ final class StepperControl: BaseControl {
     override func setup() {
         super.setup()
         
-        contentView.spacing = 20
-        
         contentView.addArrangedSubview(counterLabel)
         
         contentView.addArrangedSubview(stepperControl)

@@ -8,7 +8,7 @@
 import UIKit
 
 enum PropertyInspectorInput {
-    case doubleStepper(title: String, value: Double, range: ClosedRange<Double>, stepValue: Double, handler: ((Double) -> Void))
+    case cgFloatStepper(title: String, value: CGFloat, range: ClosedRange<CGFloat>, stepValue: CGFloat, handler: ((CGFloat) -> Void))
     
     case integerStepper(title: String, value: Int, range: ClosedRange<Int>, stepValue: Int, handler: ((Int) -> Void))
     
@@ -16,9 +16,9 @@ enum PropertyInspectorInput {
     
     case toggleButton(title: String, isOn: Bool, handler: ((Bool) -> Void))
     
-    case segmentedControl(title: String, items: [CustomStringConvertible], selectedSegmentIndex: Int?, handler: ((Int?) -> Void))
+    case inlineOptions(title: String, items: [CustomStringConvertible], selectedSegmentIndex: Int?, handler: ((Int?) -> Void))
     
-    case optionSelector(title: String, options: [CustomStringConvertible], selectedIndex: Int?, handler: ((Int?) -> Void))
+    case optionsList(title: String, options: [CustomStringConvertible], selectedIndex: Int?, handler: ((Int?) -> Void))
     
     case subSection(name: String)
     
@@ -30,12 +30,12 @@ enum PropertyInspectorInput {
 extension PropertyInspectorInput: Hashable {
     private var idenfitifer: String {
         switch self {
-        case let .doubleStepper(title, _, _, _, _),
+        case let .cgFloatStepper(title, _, _, _, _),
              let .integerStepper(title, _, _, _, _),
              let .colorPicker(title, _, _),
              let .toggleButton(title, _, _),
-             let .segmentedControl(title, _, _, _),
-             let .optionSelector(title, _, _, _),
+             let .inlineOptions(title, _, _, _),
+             let .optionsList(title, _, _, _),
              let .subSection(title):
             return title
             
@@ -46,12 +46,12 @@ extension PropertyInspectorInput: Hashable {
     
     var isControl: Bool {
         switch self {
-        case .doubleStepper,
+        case .cgFloatStepper,
              .integerStepper,
              .colorPicker,
              .toggleButton,
-             .segmentedControl,
-             .optionSelector:
+             .inlineOptions,
+             .optionsList:
             return true
             
         case .subSection,

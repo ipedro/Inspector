@@ -16,7 +16,7 @@ final class ColorPicker: BaseControl {
     
     weak var delegate: ColorPickerDelegate?
     
-    var selectedColor: UIColor {
+    var selectedColor: UIColor? {
         didSet {
             didUpdateColor()
             
@@ -89,7 +89,27 @@ final class ColorPicker: BaseControl {
     
     private func didUpdateColor() {
         selectedColorView.backgroundColor = selectedColor
-        valueLabel.text = "#" + selectedColor.hexDescription().uppercased()
+        
+        switch selectedColor {
+        case .none:
+            valueLabel.text = "–"
+            
+        case UIColor.clear:
+            valueLabel.text = "Clear Color"
+        
+        case let color?:
+            var colorHex = "#" + color.hexDescription().uppercased()
+            
+            defer {
+                valueLabel.text = colorHex
+            }
+            
+            guard color.rgba.alpha < 1 else {
+                return
+            }
+            
+            colorHex += " (\(Int(color.rgba.alpha * 100))%)"
+        }
     }
     
     @objc private func tap() {

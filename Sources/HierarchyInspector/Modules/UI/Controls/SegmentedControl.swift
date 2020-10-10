@@ -10,9 +10,9 @@ import UIKit
 final class SegmentedControl: BaseControl {
     // MARK: - Properties
     
-    let items: [String]
+    let options: [CustomStringConvertible]
     
-    var selectedSegmentIndex: Int? {
+    var selectedIndex: Int? {
         get {
             segmentedControl.selectedSegmentIndex == UISegmentedControl.noSegment ? nil : segmentedControl.selectedSegmentIndex
         }
@@ -26,18 +26,20 @@ final class SegmentedControl: BaseControl {
         }
     }
     
-    private lazy var segmentedControl = UISegmentedControl(items: items).then {
+    private lazy var segmentedControl = UISegmentedControl(
+        items: options.map { $0.description.localizedCapitalized }
+    ).then {
         $0.addTarget(self, action: #selector(changeSegment), for: .valueChanged)
     }
     
     // MARK: - Init
     
     init(title: String?, items: [CustomStringConvertible], selectedSegmentIndex: Int?) {
-        self.items = items.map { $0.description }
+        self.options = items
         
         super.init(title: title)
         
-        self.selectedSegmentIndex = selectedSegmentIndex
+        self.selectedIndex = selectedSegmentIndex
     }
 
     required init?(coder: NSCoder) {

@@ -19,6 +19,10 @@ final class PropertyInspectorViewModel: PropertyInspectorViewModelProtocol {
     private(set) lazy var sectionInputs: [PropertyInspectorInputSection] = {
         var array = [PropertyInspectorInputSection]()
         
+        if let stackView = reference.view as? UIStackView {
+            array.append(.UIStackViewSection(stackView: stackView))
+        }
+        
         if let control = reference.view as? UIControl {
             array.append(.UIControlSection(control: control))
         }

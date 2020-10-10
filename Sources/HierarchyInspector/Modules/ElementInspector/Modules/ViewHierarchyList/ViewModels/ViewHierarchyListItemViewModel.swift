@@ -72,14 +72,30 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
             return "\(reference.flattenedViewHierarchy.count) children. (\(reference.children.count) subviews)"
         }
         
-        var description: String? {
+        var frame: String? {
             guard let view = reference.view else {
                 return nil
             }
-            return view.description.replacingOccurrences(of: "; ", with: "\n", options: .caseInsensitive)
+            
+            return "width: \(view.frame.width), height: \(view.frame.height)\nx: \(view.frame.origin.x), y: \(view.frame.origin.y)\n"
         }
         
-        strings.append(description)
+        var className: String? {
+            guard let view = reference.view else {
+                return nil
+            }
+            
+            guard let superclass = view.superclass else {
+                return view.className
+            }
+            
+            return "\(view.className) (\(String(describing: superclass)))"
+        }
+        
+        strings.append(className)
+        
+        strings.append(frame)
+        
         strings.append(subviews)
         strings.append(constraints)
         

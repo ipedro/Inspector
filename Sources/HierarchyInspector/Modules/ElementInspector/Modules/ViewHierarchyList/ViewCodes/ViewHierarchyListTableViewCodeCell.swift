@@ -24,6 +24,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             // Name
             
             elementNameLabel.text = viewModel?.title
+            
             elementNameLabel.font = {
                 switch viewModel?.relativeDepth {
                 case 0:
@@ -43,6 +44,8 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
                 }
             }()
             
+            elementNameLabel.sizeToFit()
+            
             // Collapse
             
             isCollapsed = viewModel?.isCollapsed == true
@@ -51,10 +54,11 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             // Description
             
             descriptionLabel.text = viewModel?.subtitle
+            descriptionLabel.sizeToFit()
             
             // Containers Insets
             
-            let offset = 28 * CGFloat(viewModel?.relativeDepth ?? 0)
+            let offset = 26 * (CGFloat(viewModel?.relativeDepth ?? 0) + 1)
             
             separatorInset = .init(top: 0, left: offset, bottom: 0, right: 0)
             directionalLayoutMargins = .margins(leading: offset)
@@ -110,7 +114,9 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     }
     
     private lazy var elementNameLabel = UILabel().then {
+        $0.numberOfLines = 0
         $0.adjustsFontSizeToFitWidth = true
+        $0.preferredMaxLayoutWidth = 200
     }
     
     private lazy var descriptionLabel = UILabel(.caption2).then {
@@ -139,14 +145,14 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         contentView.installView(
             stackView,
-            .margins(top: 15, leading: 30, bottom: 20, trailing: 15)
+            .margins(top: 15, leading: 0, bottom: 20, trailing: 15)
         )
         
         contentView.addSubview(chevronDownIcon)
         
         chevronDownIcon.centerYAnchor.constraint(equalTo: elementNameLabel.centerYAnchor).isActive = true
 
-        chevronDownIcon.trailingAnchor.constraint(equalTo: elementNameLabel.leadingAnchor, constant: -5).isActive = true
+        chevronDownIcon.trailingAnchor.constraint(equalTo: elementNameLabel.leadingAnchor, constant: -3).isActive = true
     }
     
     override func prepareForReuse() {

@@ -79,7 +79,11 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
         if #available(iOS 14.0, *) {
             let colorPicker = UIColorPickerViewController().then {
                 $0.delegate = self
-                $0.selectedColor = colorPicker.selectedColor
+                
+                if let selectedColor = colorPicker.selectedColor {
+                    $0.selectedColor = selectedColor
+                }
+                
                 $0.modalPresentationStyle = .popover
                 $0.popoverPresentationController?.sourceView = colorPicker.valueContainerView
                 $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]

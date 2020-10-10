@@ -40,33 +40,49 @@ final class PropertyInspectorSectionView: BaseView {
                 case .separator:
                     return SeparatorView().then {
                         $0.contentView.directionalLayoutMargins = .margins(top: 25, bottom: 20)
-                        $0.alpha = 0.6
+                        $0.alpha = 0.5
                     }
                     
                 case let .subSection(title):
-                    return SectionHeader(.footnote, text: title.localizedCapitalized).then {
+                    return SectionHeader(
+                        .footnote,
+                        text: title.localizedCapitalized
+                    ).then {
                         $0.contentView.directionalLayoutMargins = .margins(top: 25, bottom: 10)
-                        $0.alpha = 0.4
+                        $0.alpha = 1 / 3
                     }
                     
                 case let .integerStepper(title, value, range, stepValue, _):
-                    return StepperControl(title: title, value: value, range: range, stepValue: stepValue)
+                    return StepperControl(
+                        title: title,
+                        value: value,
+                        range: range,
+                        stepValue: stepValue
+                    )
                     
-                case let .doubleStepper(title, value, range, stepValue, _):
-                    return StepperControl(title: title, value: value, range: range, stepValue: stepValue)
+                case let .cgFloatStepper(title, value, range, stepValue, _):
+                    return StepperControl(
+                        title: title,
+                        value: Double(value),
+                        range: Double(range.lowerBound) ... Double(range.upperBound),
+                        stepValue: Double(stepValue)
+                    )
                     
                 case let .colorPicker(title, color, _):
-                    return ColorPicker(title: title, color: color).then {
+                    return ColorPicker(
+                        title: title,
+                        color: color
+                    ).then {
                         $0.delegate = self
                     }
                     
                 case let .toggleButton(title, isOn, _):
                     return ToggleControl(title: title, isOn: isOn)
                     
-                case let .segmentedControl(title, items, selectedSegmentIndex, _):
+                case let .inlineOptions(title, items, selectedSegmentIndex, _):
                     return SegmentedControl(title: title, items: items, selectedSegmentIndex: selectedSegmentIndex)
                     
-                case let .optionSelector(title, options, selectedIndex, _):
+                case let .optionsList(title, options, selectedIndex, _):
                     return OptionSelector(title: title, options: options, selectedIndex: selectedIndex).then {
                         $0.delegate = self
                     }
@@ -124,8 +140,8 @@ private extension PropertyInspectorSectionView {
             case let (.integerStepper(_, _, _, _, handler), stepperControl as StepperControl):
                 handler(Int(stepperControl.value))
                 
-            case let (.doubleStepper(_, _, _, _, handler), stepperControl as StepperControl):
-                handler(stepperControl.value)
+            case let (.cgFloatStepper(_, _, _, _, handler), stepperControl as StepperControl):
+                handler(CGFloat(stepperControl.value))
                 
             case let (.colorPicker(_, _, handler), colorPicker as ColorPicker):
                 handler(colorPicker.selectedColor)
@@ -133,20 +149,20 @@ private extension PropertyInspectorSectionView {
             case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
                 handler(toggleControl.isOn)
                 
-            case let (.segmentedControl(_, _, _, handler), segmentedControl as SegmentedControl):
-                handler(segmentedControl.selectedSegmentIndex)
+            case let (.inlineOptions(_, _, _, handler), segmentedControl as SegmentedControl):
+                handler(segmentedControl.selectedIndex)
                 
-            case let (.optionSelector(_, _, _, handler), optionSelector as OptionSelector):
+            case let (.optionsList(_, _, _, handler), optionSelector as OptionSelector):
                 handler(optionSelector.selectedIndex)
                 
             case (.separator, _),
                  (.subSection, _),
                  (.integerStepper, _),
-                 (.doubleStepper, _),
+                 (.cgFloatStepper, _),
                  (.colorPicker, _),
                  (.toggleButton, _),
-                 (.segmentedControl, _),
-                 (.optionSelector, _):
+                 (.inlineOptions, _),
+                 (.optionsList, _):
                 break
             }
         }
