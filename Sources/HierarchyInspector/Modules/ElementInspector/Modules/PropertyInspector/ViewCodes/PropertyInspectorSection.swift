@@ -9,6 +9,7 @@ import UIKit
 
 protocol PropertyInspectorSectionDelegate: AnyObject {
     func propertyInspectorSection(_ section: PropertyInspectorSection, didTapColorPicker colorPicker: ColorPicker, sourceRect: CGRect)
+    func propertyInspectorSection(_ section: PropertyInspectorSection, didTapOptionSelector optionSelector: OptionSelector, sourceRect: CGRect)
 }
 
 final class PropertyInspectorSection: BaseView {
@@ -21,10 +22,7 @@ final class PropertyInspectorSection: BaseView {
     lazy var controlsStackView = UIStackView(
         axis: .vertical,
         arrangedSubviews: arrangedSubviews,
-        margins: .margins(
-            horizontal: 30,
-            vertical: 15
-        )
+        margins: .margins(top: 0, leading: 30, bottom: 30, trailing: 30)
     )
     
     private lazy var sectionHeader = SectionHeader(.body, text: title).then {
@@ -36,7 +34,7 @@ final class PropertyInspectorSection: BaseView {
     private lazy var inputControls: [PropertyInspectorInput: BaseControl] = {
         var dict = [PropertyInspectorInput: BaseControl]()
         
-        for property in properties {
+        for (index, property) in properties.enumerated() {
             let control: BaseControl = {
                 switch property {
                 case let .integerStepper(title, value, range, stepValue, _):
@@ -57,11 +55,14 @@ final class PropertyInspectorSection: BaseView {
                     return SegmentedControl(title: title, items: items, selectedSegmentIndex: selectedSegmentIndex)
                     
                 case let .optionSelector(title, options, selectedIndex, _):
-                    return OptionSelector(title: title, options: options, selectedIndex: selectedIndex)
+                    return OptionSelector(title: title, options: options, selectedIndex: selectedIndex).then {
+                        $0.delegate = self
+                    }
                 }
             }()
                 
             control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
+            control.isShowingSeparator = index != properties.count - 1
             
             dict[property] = control
         }
@@ -137,5 +138,10 @@ extension PropertyInspectorSection: ColorPickerDelegate {
     func colorPickerDidTap(_ colorPicker: ColorPicker, sourceRect: CGRect) {
         delegate?.propertyInspectorSection(self, didTapColorPicker: colorPicker, sourceRect: sourceRect)
     }
-    
+}
+
+extension PropertyInspectorSection: OptionSelectorDelegate {
+    func optionSelectorDidTap(_ optionSelector: OptionSelector, sourceRect: CGRect) {
+        delegate?.propertyInspectorSection(self, didTapOptionSelector: optionSelector, sourceRect: sourceRect)
+    }
 }

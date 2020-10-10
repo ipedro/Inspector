@@ -81,8 +81,8 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
                 $0.delegate = self
                 $0.selectedColor = colorPicker.selectedColor
                 $0.modalPresentationStyle = .popover
-                $0.popoverPresentationController?.sourceView = viewController.view.window
-                $0.popoverPresentationController?.sourceRect = sourceRect
+                $0.popoverPresentationController?.sourceView = colorPicker.valueContainerView
+                $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
             }
             
             viewController.present(colorPicker, animated: true)
@@ -92,6 +92,27 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
         #endif
     }
     
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapOptionSelector optionSelector: OptionSelector, sourceRect: CGRect) {
+        
+        let viewModel = OptionSelectorViewModel(
+            title: optionSelector.title,
+            options: optionSelector.options,
+            selectedIndex: optionSelector.selectedIndex
+        )
+        
+        let optionSelectorViewController = OptionSelectorViewController.create(viewModel: viewModel).then {
+            $0.delegate = self
+        }
+        
+        let navigationController = UINavigationController(rootViewController: optionSelectorViewController).then {
+            $0.modalPresentationStyle = .popover
+            $0.popoverPresentationController?.sourceView = optionSelector.valueContainerView
+            $0.popoverPresentationController?.delegate = self
+            $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
+        }
+        
+        viewController.present(navigationController, animated: true)
+    }
 }
 
 // MARK: - UIPopoverPresentationControllerDelegate
@@ -110,10 +131,6 @@ extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
 @available(iOS 14.0, *)
 extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
     
-    private var propertyInspectorViewController: PropertyInspectorViewController? {
-        elementInspectorViewController.children.first as? PropertyInspectorViewController
-    }
-    
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
         propertyInspectorViewController?.selectColor(viewController.selectedColor)
     }
@@ -125,3 +142,19 @@ extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
 }
 
 #endif
+
+extension ElementInspectorCoordinator: OptionSelectorViewControllerDelegate {
+    
+    func optionSelectorViewController(_ viewController: OptionSelectorViewController, didSelectIndex selectedIndex: Int?) {
+        propertyInspectorViewController?.selectOptionAtIndex(selectedIndex)
+    }
+    
+}
+
+private extension ElementInspectorCoordinator {
+    
+    private var propertyInspectorViewController: PropertyInspectorViewController? {
+        elementInspectorViewController.children.first as? PropertyInspectorViewController
+    }
+    
+}

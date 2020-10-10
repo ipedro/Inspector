@@ -11,6 +11,10 @@ protocol PropertyInspectorViewControllerDelegate: AnyObject {
     func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
                                          didTapColorPicker colorPicker: ColorPicker,
                                          sourceRect: CGRect)
+    
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
+                                         didTapOptionSelector optionSelector: OptionSelector,
+                                         sourceRect: CGRect)
 }
 
 final class PropertyInspectorViewController: UIViewController {
@@ -18,10 +22,12 @@ final class PropertyInspectorViewController: UIViewController {
     
     private var viewModel: PropertyInspectorViewModelProtocol!
     
-    private var presentedColorPicker: ColorPicker?
+    private var selectedColorPicker: ColorPicker?
+    
+    private var selectedOptionSelector: OptionSelector?
     
     private lazy var viewCode = PropertyInspectorViewCode().then { viewCode in
-        sections.forEach { section in
+        sections.enumerated().forEach { index, section in
             viewCode.contentView.addArrangedSubview(section)
         }
     }
@@ -67,23 +73,32 @@ final class PropertyInspectorViewController: UIViewController {
     }
     
     func selectColor(_ color: UIColor) {
-        presentedColorPicker?.selectedColor = color
+        selectedColorPicker?.selectedColor = color
     }
     
     func finishColorSelection() {
-        presentedColorPicker = nil
+        selectedColorPicker = nil
+    }
+    
+    func selectOptionAtIndex(_ index: Int?) {
+        selectedOptionSelector?.selectedIndex = index
+    }
+    
+    func finishOptionSelction() {
+        selectedOptionSelector = nil
     }
 }
 
 extension PropertyInspectorViewController: PropertyInspectorSectionDelegate {
-    func propertyInspectorSection(_ section: PropertyInspectorSection, didTapColorPicker
-                                    colorPicker: ColorPicker,
-                                  sourceRect: CGRect) {
-        presentedColorPicker = colorPicker
-        delegate?.propertyInspectorViewController(
-            self,
-            didTapColorPicker: colorPicker,
-            sourceRect: sourceRect
-        )
+    func propertyInspectorSection(_ section: PropertyInspectorSection, didTapColorPicker colorPicker: ColorPicker, sourceRect: CGRect) {
+        selectedColorPicker = colorPicker
+        
+        delegate?.propertyInspectorViewController(self, didTapColorPicker: colorPicker, sourceRect: sourceRect)
+    }
+    
+    func propertyInspectorSection(_ section: PropertyInspectorSection, didTapOptionSelector optionSelector: OptionSelector, sourceRect: CGRect) {
+        selectedOptionSelector = optionSelector
+        
+        delegate?.propertyInspectorViewController(self, didTapOptionSelector: optionSelector, sourceRect: sourceRect)
     }
 }

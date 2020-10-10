@@ -53,6 +53,6 @@ final class ToggleControl: BaseControl {
     }
     
     func updateViews() {
-        titleLabel.alpha = isOn ? 1 : 0.5
+        titleLabel.alpha = isOn ? 1 : 0.75
     }
 }

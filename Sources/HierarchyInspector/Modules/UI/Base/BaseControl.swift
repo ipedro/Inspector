@@ -23,7 +23,7 @@ class BaseControl: UIControl {
             titleLabel,
             contentView
         ],
-        spacing: Self.verticalMargin / 2,
+        spacing: Self.verticalMargin,
         margins: .margins(top: Self.verticalMargin)
     )
     

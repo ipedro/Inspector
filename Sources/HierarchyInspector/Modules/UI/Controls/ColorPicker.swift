@@ -26,7 +26,7 @@ final class ColorPicker: BaseControl {
     
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
     
-    private lazy var colorDisplayView = BaseView().then {
+    private lazy var selectedColorView = BaseView().then {
         $0.layer.cornerRadius = 5
         $0.backgroundColor = selectedColor
         $0.layer.borderWidth = 0.5
@@ -39,14 +39,17 @@ final class ColorPicker: BaseControl {
         widthConstraint.isActive = true
     }
     
-    private lazy var colorLabel = UILabel(.footnote, String(describing: selectedColor)).then {
+    private lazy var valueLabel = UILabel(.footnote, String(describing: selectedColor)).then {
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        
+        $0.adjustsFontSizeToFitWidth = true
+        $0.minimumScaleFactor = 0.6
     }
     
-    private lazy var colorLabelContainer = AccessoryContainerView().then {
-        $0.contentView.addArrangedSubview(colorDisplayView)
-        $0.contentView.addArrangedSubview(colorLabel)
+    private(set) lazy var valueContainerView = AccessoryContainerView().then {
+        $0.contentView.addArrangedSubview(selectedColorView)
+        $0.contentView.addArrangedSubview(valueLabel)
         
         $0.addGestureRecognizer(tapGestureRecognizer)
     }
@@ -66,7 +69,7 @@ final class ColorPicker: BaseControl {
     override func setup() {
         super.setup()
         
-        contentView.addArrangedSubview(colorLabelContainer)
+        contentView.addArrangedSubview(valueContainerView)
         
         #if swift(>=5.3)
             isEnabled = true
@@ -85,12 +88,12 @@ final class ColorPicker: BaseControl {
     }
     
     private func didUpdateColor() {
-        colorDisplayView.backgroundColor = selectedColor
-        colorLabel.text = "#" + selectedColor.hexDescription().uppercased()
+        selectedColorView.backgroundColor = selectedColor
+        valueLabel.text = "#" + selectedColor.hexDescription().uppercased()
     }
     
     @objc private func tap() {
-        let rect = colorLabel.convert(bounds, to: nil)
+        let rect = valueLabel.convert(bounds, to: nil)
         
         delegate?.colorPickerDidTap(self, sourceRect: rect)
     }

@@ -59,6 +59,9 @@
 		EBB0CB22252A6C3D005D4A53 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB21252A6C3D005D4A53 /* Configuration.swift */; };
 		EBB0CB2C252A6C99005D4A53 /* Configuration.KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */; };
 		EBB0CB63252A6F3E005D4A53 /* Manager.ActionGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAD92529B90B000001BE /* Manager.ActionGroup.swift */; };
+		EBC045AF2531F68000C311E6 /* OptionSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045AE2531F68000C311E6 /* OptionSelectorViewController.swift */; };
+		EBC045B92531F6A400C311E6 /* OptionSelectorViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */; };
+		EBC045BF2531F8A800C311E6 /* OptionSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */; };
 		EBC524AB252F5F2F0054C6AA /* BaseControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC524AA252F5F2F0054C6AA /* BaseControl.swift */; };
 		EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */; };
 		EBD9DA01252F919900851E23 /* StepperControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA00252F919900851E23 /* StepperControl.swift */; };
@@ -200,6 +203,9 @@
 		EBAC359B2531024E00A992F5 /* ElementInspectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorViewCode.swift; sourceTree = "<group>"; };
 		EBB0CB21252A6C3D005D4A53 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.KeyCommands.swift; sourceTree = "<group>"; };
+		EBC045AE2531F68000C311E6 /* OptionSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewController.swift; sourceTree = "<group>"; };
+		EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewCode.swift; sourceTree = "<group>"; };
+		EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewModel.swift; sourceTree = "<group>"; };
 		EBC524AA252F5F2F0054C6AA /* BaseControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseControl.swift; sourceTree = "<group>"; };
 		EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleControl.swift; sourceTree = "<group>"; };
 		EBD9DA00252F919900851E23 /* StepperControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperControl.swift; sourceTree = "<group>"; };
@@ -465,6 +471,7 @@
 		EBAC34F92530DE1A00A992F5 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				EBC045AD2531F66800C311E6 /* OptionSelector */,
 				EBAC35A1253108E700A992F5 /* ElementInspector */,
 				EBAC35022530DE3700A992F5 /* PropertyInspector */,
 				EBAC34F42530DDF300A992F5 /* ViewHierarchyList */,
@@ -524,6 +531,16 @@
 				EBB0CB21252A6C3D005D4A53 /* Configuration.swift */,
 			);
 			path = Configuration;
+			sourceTree = "<group>";
+		};
+		EBC045AD2531F66800C311E6 /* OptionSelector */ = {
+			isa = PBXGroup;
+			children = (
+				EBC045AE2531F68000C311E6 /* OptionSelectorViewController.swift */,
+				EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */,
+				EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */,
+			);
+			path = OptionSelector;
 			sourceTree = "<group>";
 		};
 		EBC524B8252F60070054C6AA /* Base */ = {
@@ -970,6 +987,7 @@
 				OBJ_80 /* UIView+LoaderViewPresentable.swift in Sources */,
 				EBA7D9D425308FEC00496F23 /* Icon.swift in Sources */,
 				EBD9DA19252FA37500851E23 /* SeparatorView.swift in Sources */,
+				EBC045B92531F6A400C311E6 /* OptionSelectorViewCode.swift in Sources */,
 				OBJ_81 /* HierarchyInspector.swift in Sources */,
 				EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */,
 				OBJ_82 /* Configuration.Appearance.swift in Sources */,
@@ -986,12 +1004,14 @@
 				OBJ_87 /* Actionable.swift in Sources */,
 				OBJ_88 /* Create.swift in Sources */,
 				OBJ_89 /* HierarchyInspectorKeyCommandActionable.swift in Sources */,
+				EBC045BF2531F8A800C311E6 /* OptionSelectorViewModel.swift in Sources */,
 				OBJ_90 /* HierarchyInspectableProtocol.swift in Sources */,
 				EBD9DA30252FB76900851E23 /* OptionSelector.swift in Sources */,
 				EBF88CD5252DA25D00AE9F12 /* ViewHierarchyListViewCode.swift in Sources */,
 				EB7EAAC22529B8B4000001BE /* Manager.Action.swift in Sources */,
 				OBJ_91 /* ViewHierarchyProtocol.swift in Sources */,
 				EBE3039B252DB7BC00A8F1C6 /* ViewHierarchyListTableViewCodeCell.swift in Sources */,
+				EBC045AF2531F68000C311E6 /* OptionSelectorViewController.swift in Sources */,
 				OBJ_92 /* HierarchyInspectorLayerManagerProtocol.swift in Sources */,
 				OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */,
 				EBF88CDF252DA56100AE9F12 /* ElementInspectorCoordinator.swift in Sources */,

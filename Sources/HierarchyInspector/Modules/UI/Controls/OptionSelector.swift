@@ -7,26 +7,42 @@
 
 import UIKit
 
+protocol OptionSelectorDelegate: AnyObject {
+    func optionSelectorDidTap(_ optionSelector: OptionSelector, sourceRect: CGRect)
+}
+
 final class OptionSelector: BaseControl {
     // MARK: - Properties
+    
+    weak var delegate: OptionSelectorDelegate?
     
     private lazy var icon = Icon(.chevronDown, color: valueLabel.textColor)
     
     private lazy var valueLabel = UILabel(.footnote).then {
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        $0.adjustsFontSizeToFitWidth = true
+        $0.minimumScaleFactor = 0.6
     }
     
-    private lazy var valueContainerView = AccessoryContainerView().then {
+    private(set) lazy var valueContainerView = AccessoryContainerView().then {
         $0.contentView.addArrangedSubview(valueLabel)
         $0.contentView.addArrangedSubview(icon)
+        
+        $0.addGestureRecognizer(tapGestureRecognizer)
     }
+    
+    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
     
     // MARK: - Init
     
     let options: [CustomStringConvertible]
     
-    var selectedIndex: Int?
+    var selectedIndex: Int? {
+        didSet {
+            updateViews()
+        }
+    }
 
     init(title: String?, options: [CustomStringConvertible], selectedIndex: Int? = nil) {
         self.options = options
@@ -58,5 +74,11 @@ final class OptionSelector: BaseControl {
         }
         
         valueLabel.text = options[selectedIndex].description.localizedCapitalized
+    }
+    
+    @objc private func tap() {
+        let rect = valueContainerView.convert(bounds, to: self)
+        
+        delegate?.optionSelectorDidTap(self, sourceRect: rect)
     }
 }
