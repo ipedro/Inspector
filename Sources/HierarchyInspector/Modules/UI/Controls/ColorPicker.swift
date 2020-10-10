@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ColorPickerDelegate: AnyObject {
-    func colorPickerDidTap(_ colorPicker: ColorPicker, sourceRect: CGRect)
+    func colorPickerDidTap(_ colorPicker: ColorPicker)
 }
 
 final class ColorPicker: BaseControl {
@@ -93,8 +93,6 @@ final class ColorPicker: BaseControl {
     }
     
     @objc private func tap() {
-        let rect = valueLabel.convert(bounds, to: nil)
-        
-        delegate?.colorPickerDidTap(self, sourceRect: rect)
+        delegate?.colorPickerDidTap(self)
     }
 }

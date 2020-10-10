@@ -32,8 +32,8 @@ final class SegmentedControl: BaseControl {
     
     // MARK: - Init
     
-    init(title: String?, items: [String], selectedSegmentIndex: Int?) {
-        self.items = items
+    init(title: String?, items: [CustomStringConvertible], selectedSegmentIndex: Int?) {
+        self.items = items.map { $0.description }
         
         super.init(title: title)
         
@@ -48,10 +48,6 @@ final class SegmentedControl: BaseControl {
         super.setup()
         
         axis = .vertical
-        
-        if #available(iOS 13.0, *) {
-            segmentedControl.selectedSegmentTintColor = tintColor
-        }
         
         contentView.installView(segmentedControl)
     }

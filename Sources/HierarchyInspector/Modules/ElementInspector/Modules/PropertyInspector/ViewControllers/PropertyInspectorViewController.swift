@@ -8,13 +8,9 @@
 import UIKit
 
 protocol PropertyInspectorViewControllerDelegate: AnyObject {
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
-                                         didTapColorPicker colorPicker: ColorPicker,
-                                         sourceRect: CGRect)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapColorPicker colorPicker: ColorPicker)
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
-                                         didTapOptionSelector optionSelector: OptionSelector,
-                                         sourceRect: CGRect)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapOptionSelector optionSelector: OptionSelector)
 }
 
 final class PropertyInspectorViewController: UIViewController {
@@ -27,21 +23,12 @@ final class PropertyInspectorViewController: UIViewController {
     private var selectedOptionSelector: OptionSelector?
     
     private lazy var viewCode = PropertyInspectorViewCode().then { viewCode in
-        sections.enumerated().forEach { index, section in
-            viewCode.contentView.addArrangedSubview(section)
-        }
+        sectionViews.forEach { viewCode.contentView.addArrangedSubview($0) }
     }
     
-    private lazy var sections: [PropertyInspectorSection] = {
-        let viewPanel = PropertyInspectorSection(
-            title: "View",
-            properties: viewModel.inputs
-        ).then {
-            $0.delegate = self
-        }
-        
-        return [viewPanel]
-    }()
+    private lazy var sectionViews: [PropertyInspectorSectionView] = viewModel.sectionInputs.map {
+        PropertyInspectorSectionView(section: $0).then { $0.delegate = self }
+    }
     
     override func loadView() {
         view = viewCode
@@ -89,16 +76,16 @@ final class PropertyInspectorViewController: UIViewController {
     }
 }
 
-extension PropertyInspectorViewController: PropertyInspectorSectionDelegate {
-    func propertyInspectorSection(_ section: PropertyInspectorSection, didTapColorPicker colorPicker: ColorPicker, sourceRect: CGRect) {
+extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate {
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTapColorPicker colorPicker: ColorPicker) {
         selectedColorPicker = colorPicker
         
-        delegate?.propertyInspectorViewController(self, didTapColorPicker: colorPicker, sourceRect: sourceRect)
+        delegate?.propertyInspectorViewController(self, didTapColorPicker: colorPicker)
     }
     
-    func propertyInspectorSection(_ section: PropertyInspectorSection, didTapOptionSelector optionSelector: OptionSelector, sourceRect: CGRect) {
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTapOptionSelector optionSelector: OptionSelector) {
         selectedOptionSelector = optionSelector
         
-        delegate?.propertyInspectorViewController(self, didTapOptionSelector: optionSelector, sourceRect: sourceRect)
+        delegate?.propertyInspectorViewController(self, didTapOptionSelector: optionSelector)
     }
 }

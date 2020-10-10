@@ -1,5 +1,5 @@
 //
-//  PropertyInspectorSection.swift
+//  PropertyInspectorSectionView.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 09.10.20.
@@ -7,34 +7,34 @@
 
 import UIKit
 
-protocol PropertyInspectorSectionDelegate: AnyObject {
-    func propertyInspectorSection(_ section: PropertyInspectorSection, didTapColorPicker colorPicker: ColorPicker, sourceRect: CGRect)
-    func propertyInspectorSection(_ section: PropertyInspectorSection, didTapOptionSelector optionSelector: OptionSelector, sourceRect: CGRect)
+protocol PropertyInspectorSectionViewDelegate: AnyObject {
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTapColorPicker colorPicker: ColorPicker)
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTapOptionSelector optionSelector: OptionSelector)
 }
 
-final class PropertyInspectorSection: BaseView {
-    weak var delegate: PropertyInspectorSectionDelegate?
+final class PropertyInspectorSectionView: BaseView {
+    weak var delegate: PropertyInspectorSectionViewDelegate?
     
     let title: String?
     
-    let properties: [PropertyInspectorInput]
+    let propertyInputs: [PropertyInspectorInput]
     
     lazy var controlsStackView = UIStackView(
         axis: .vertical,
         arrangedSubviews: arrangedSubviews,
-        margins: .margins(top: 0, leading: 30, bottom: 30, trailing: 30)
+        margins: .margins(top: 0, leading: 30, bottom: 15, trailing: 30)
     )
     
     private lazy var sectionHeader = SectionHeader(.body, text: title).then {
         $0.isHidden = title == nil
     }
     
-    private lazy var arrangedSubviews: [UIView] = properties.compactMap { inputControls[$0] }
+    private lazy var arrangedSubviews: [UIView] = propertyInputs.compactMap { inputControls[$0] }
     
     private lazy var inputControls: [PropertyInspectorInput: BaseControl] = {
         var dict = [PropertyInspectorInput: BaseControl]()
         
-        for (index, property) in properties.enumerated() {
+        for (index, property) in propertyInputs.enumerated() {
             let control: BaseControl = {
                 switch property {
                 case let .integerStepper(title, value, range, stepValue, _):
@@ -62,7 +62,7 @@ final class PropertyInspectorSection: BaseView {
             }()
                 
             control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
-            control.isShowingSeparator = index != properties.count - 1
+            control.isShowingSeparator = index != propertyInputs.count - 1
             
             dict[property] = control
         }
@@ -72,9 +72,10 @@ final class PropertyInspectorSection: BaseView {
     
     // MARK: - Init
     
-    init(title: String?, properties: [PropertyInspectorInput]) {
-        self.title = title
-        self.properties = properties
+    init(section: PropertyInspectorInputSection) {
+        title = section.title
+        
+        propertyInputs = section.propertyInpus
 
         super.init(frame: .zero)
     }
@@ -94,7 +95,7 @@ final class PropertyInspectorSection: BaseView {
 
 // MARK: - Actions
 
-private extension PropertyInspectorSection {
+private extension PropertyInspectorSectionView {
         
     @objc func valueChanged(_ sender: AnyObject) {
         
@@ -134,14 +135,14 @@ private extension PropertyInspectorSection {
 
 // MARK: - ColorPickerDelegate
 
-extension PropertyInspectorSection: ColorPickerDelegate {
-    func colorPickerDidTap(_ colorPicker: ColorPicker, sourceRect: CGRect) {
-        delegate?.propertyInspectorSection(self, didTapColorPicker: colorPicker, sourceRect: sourceRect)
+extension PropertyInspectorSectionView: ColorPickerDelegate {
+    func colorPickerDidTap(_ colorPicker: ColorPicker) {
+        delegate?.propertyInspectorSectionView(self, didTapColorPicker: colorPicker)
     }
 }
 
-extension PropertyInspectorSection: OptionSelectorDelegate {
-    func optionSelectorDidTap(_ optionSelector: OptionSelector, sourceRect: CGRect) {
-        delegate?.propertyInspectorSection(self, didTapOptionSelector: optionSelector, sourceRect: sourceRect)
+extension PropertyInspectorSectionView: OptionSelectorDelegate {
+    func optionSelectorDidTap(_ optionSelector: OptionSelector) {
+        delegate?.propertyInspectorSectionView(self, didTapOptionSelector: optionSelector)
     }
 }

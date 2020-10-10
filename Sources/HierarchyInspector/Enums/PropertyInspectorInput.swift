@@ -16,7 +16,7 @@ enum PropertyInspectorInput {
     
     case toggleButton(title: String, isOn: Bool, handler: ((Bool) -> Void))
     
-    case segmentedControl(title: String, items: [String], selectedSegmentIndex: Int?, handler: ((Int?) -> Void))
+    case segmentedControl(title: String, items: [CustomStringConvertible], selectedSegmentIndex: Int?, handler: ((Int?) -> Void))
     
     case optionSelector(title: String, options: [CustomStringConvertible], selectedIndex: Int?, handler: ((Int?) -> Void))
 }

@@ -74,7 +74,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
 // MARK: - PropertyInspectorViewControllerDelegate
 
 extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapColorPicker colorPicker: ColorPicker, sourceRect: CGRect) {
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapColorPicker colorPicker: ColorPicker) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             let colorPicker = UIColorPickerViewController().then {
@@ -88,11 +88,11 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
             viewController.present(colorPicker, animated: true)
         }
         #else
-            // Xcode 11
+            // Xcode 11 and lower
         #endif
     }
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapOptionSelector optionSelector: OptionSelector, sourceRect: CGRect) {
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapOptionSelector optionSelector: OptionSelector) {
         
         let viewModel = OptionSelectorViewModel(
             title: optionSelector.title,

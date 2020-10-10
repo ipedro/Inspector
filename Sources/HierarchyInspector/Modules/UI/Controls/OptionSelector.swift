@@ -8,7 +8,7 @@
 import UIKit
 
 protocol OptionSelectorDelegate: AnyObject {
-    func optionSelectorDidTap(_ optionSelector: OptionSelector, sourceRect: CGRect)
+    func optionSelectorDidTap(_ optionSelector: OptionSelector)
 }
 
 final class OptionSelector: BaseControl {
@@ -77,8 +77,6 @@ final class OptionSelector: BaseControl {
     }
     
     @objc private func tap() {
-        let rect = valueContainerView.convert(bounds, to: self)
-        
-        delegate?.optionSelectorDidTap(self, sourceRect: rect)
+        delegate?.optionSelectorDidTap(self)
     }
 }

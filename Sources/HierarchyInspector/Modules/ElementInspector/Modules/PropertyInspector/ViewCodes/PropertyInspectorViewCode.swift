@@ -20,7 +20,9 @@ final class PropertyInspectorViewCode: BaseView {
         
         contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         
-        contentView.spacing = 30
+        contentView.spacing = 15
+        
+        contentView.directionalLayoutMargins = .margins(bottom: 30)
         
         if #available(iOS 13.0, *) {
             backgroundColor = .systemBackground
