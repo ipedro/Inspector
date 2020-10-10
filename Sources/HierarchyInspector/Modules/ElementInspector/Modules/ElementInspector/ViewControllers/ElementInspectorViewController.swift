@@ -175,7 +175,14 @@ private extension ElementInspectorViewController {
 
 extension ElementInspectorViewController: HierarchyInspectorPresentable {
     var hierarchyInspectorLayers: [ViewHierarchyLayer] {
-        [.staticTexts, .controls, .icons]
+        [
+            .buttons,
+            .staticTexts + .images + .icons,
+            .textViews + .textFields,
+            .stackViews + .containerViews,
+            .activityIndicators,
+            .allViews
+        ]
     }
 }
 

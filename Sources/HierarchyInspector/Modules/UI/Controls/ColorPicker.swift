@@ -55,13 +55,13 @@ final class ColorPicker: BaseControl {
     }
     
     // MARK: - Init
-
+    
     init(title: String?, color: UIColor?) {
         self.selectedColor = color ?? .clear
-
+        
         super.init(title: title)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -72,16 +72,16 @@ final class ColorPicker: BaseControl {
         contentView.addArrangedSubview(valueContainerView)
         
         #if swift(>=5.3)
-            isEnabled = true
+        isEnabled = true
         #else
-            isEnabled = false
-            colorLabelContainer.backgroundColor = nil
-            
-            var margins = colorLabelContainer.contentView.directionalLayoutMargins
-            margins.leading = 0
-            margins.trailing = 0
-                
-            colorLabelContainer.contentView.directionalLayoutMargins = margins
+        isEnabled = false
+        valueContainerView.backgroundColor = nil
+        
+        var margins = valueContainerView.contentView.directionalLayoutMargins
+        margins.leading = 0
+        margins.trailing = 0
+        
+        valueContainerView.contentView.directionalLayoutMargins = margins
         #endif
         
         didUpdateColor()

@@ -29,14 +29,26 @@ final class PropertyInspectorSectionView: BaseView {
         $0.isHidden = title == nil
     }
     
-    private lazy var arrangedSubviews: [UIView] = propertyInputs.compactMap { inputControls[$0] }
+    private lazy var arrangedSubviews: [UIView] = propertyInputs.compactMap { inputViews[$0] }
     
-    private lazy var inputControls: [PropertyInspectorInput: BaseControl] = {
-        var dict = [PropertyInspectorInput: BaseControl]()
+    private lazy var inputViews: [PropertyInspectorInput: UIView] = {
+        var dict = [PropertyInspectorInput: UIView]()
         
-        for (index, property) in propertyInputs.enumerated() {
-            let control: BaseControl = {
-                switch property {
+        for (index, input) in propertyInputs.enumerated() {
+            let element: UIView = {
+                switch input {
+                case .separator:
+                    return SeparatorView().then {
+                        $0.contentView.directionalLayoutMargins = .margins(top: 25, bottom: 20)
+                        $0.alpha = 0.6
+                    }
+                    
+                case let .subSection(title):
+                    return SectionHeader(.footnote, text: title.localizedCapitalized).then {
+                        $0.contentView.directionalLayoutMargins = .margins(top: 25, bottom: 10)
+                        $0.alpha = 0.4
+                    }
+                    
                 case let .integerStepper(title, value, range, stepValue, _):
                     return StepperControl(title: title, value: value, range: range, stepValue: stepValue)
                     
@@ -60,11 +72,18 @@ final class PropertyInspectorSectionView: BaseView {
                     }
                 }
             }()
-                
-            control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
-            control.isShowingSeparator = index != propertyInputs.count - 1
             
-            dict[property] = control
+            if let control = element as? BaseControl {
+                control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
+                
+                let isLastElement = index == propertyInputs.count - 1
+                
+                let isNotFollowedByControl = index + 1 < propertyInputs.count && propertyInputs[index + 1].isControl == false
+                
+                control.isShowingSeparator = (isLastElement || isNotFollowedByControl) == false
+            }
+            
+            dict[input] = element
         }
         
         return dict
@@ -99,9 +118,9 @@ private extension PropertyInspectorSectionView {
         
     @objc func valueChanged(_ sender: AnyObject) {
         
-        for (property, control) in inputControls where control === sender {
+        for (property, inputView) in inputViews where inputView === sender {
             
-            switch (property, control) {
+            switch (property, inputView) {
             case let (.integerStepper(_, _, _, _, handler), stepperControl as StepperControl):
                 handler(Int(stepperControl.value))
                 
@@ -120,7 +139,9 @@ private extension PropertyInspectorSectionView {
             case let (.optionSelector(_, _, _, handler), optionSelector as OptionSelector):
                 handler(optionSelector.selectedIndex)
                 
-            case (.integerStepper, _),
+            case (.separator, _),
+                 (.subSection, _),
+                 (.integerStepper, _),
                  (.doubleStepper, _),
                  (.colorPicker, _),
                  (.toggleButton, _),

@@ -8,8 +8,10 @@
 import UIKit
 
 private enum UIControlProperty: CaseIterable {
+    case groupAlignment
     case contentHorizontalAlignment
     case contentVerticalAlignment
+    case groupState
     case isSelected
     case isEnabled
     case isHighlighted
@@ -23,18 +25,20 @@ extension PropertyInspectorInputSection {
             }
 
             switch $0 {
+            case .groupAlignment:
+                return .subSection(name: "alignment")
+                
             case .contentHorizontalAlignment:
                 return .segmentedControl(
                     title: "horizontal alignment",
                     items: UIControl.ContentHorizontalAlignment.allCases,
                     selectedSegmentIndex: UIControl.ContentHorizontalAlignment.allCases.firstIndex(of: control.contentHorizontalAlignment)
-                ) { newValue in
-                    guard
-                        let value = newValue,
-                        let contentHorizontalAlignment = UIControl.ContentHorizontalAlignment(rawValue: value)
-                    else {
+                ) {
+                    guard let newIndex = $0 else {
                         return
                     }
+                    
+                    let contentHorizontalAlignment = UIControl.ContentHorizontalAlignment.allCases[newIndex]
 
                     control.contentHorizontalAlignment = contentHorizontalAlignment
                 }
@@ -44,41 +48,42 @@ extension PropertyInspectorInputSection {
                     title: "vertical alignment",
                     items: UIControl.ContentVerticalAlignment.allCases,
                     selectedSegmentIndex: UIControl.ContentVerticalAlignment.allCases.firstIndex(of: control.contentVerticalAlignment)
-                ) { newValue in
-                    guard
-                        let value = newValue,
-                        let contentVerticalAlignment = UIControl.ContentVerticalAlignment(rawValue: value)
-                    else {
+                ) {
+                    guard let newIndex = $0 else {
                         return
                     }
-
+                    
+                    let contentVerticalAlignment = UIControl.ContentVerticalAlignment.allCases[newIndex]
+                    
                     control.contentVerticalAlignment = contentVerticalAlignment
                 }
+                
+            case .groupState:
+                return .subSection(name: "state")
                 
             case .isSelected:
                 return .toggleButton(
                     title: "selected",
                     isOn: control.isSelected
-                ) { newValue in
-                    control.isSelected = newValue
+                ) { isSelected in
+                    control.isSelected = isSelected
                 }
                 
             case .isEnabled:
                 return .toggleButton(
                     title: "enabled",
                     isOn: control.isEnabled
-                ) { newValue in
-                    control.isEnabled = newValue
+                ) { isEnabled in
+                    control.isEnabled = isEnabled
                 }
                 
             case .isHighlighted:
                 return .toggleButton(
                     title: "highlighted",
                     isOn: control.isHighlighted
-                ) { newValue in
-                    control.isHighlighted = newValue
+                ) { isHighlighted in
+                    control.isHighlighted = isHighlighted
                 }
-                
             }
             
         })

@@ -21,6 +21,6 @@ final class SeparatorView: BaseView {
     override func setup() {
         super.setup()
         
-        contentView.installView(separatorView)
+        contentView.addArrangedSubview(separatorView)
     }
 }
