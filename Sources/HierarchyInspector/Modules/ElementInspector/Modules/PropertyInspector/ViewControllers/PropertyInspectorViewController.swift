@@ -8,7 +8,9 @@
 import UIKit
 
 protocol PropertyInspectorViewControllerDelegate: AnyObject {
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapColorPicker colorPicker: ColorPicker)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
+                                         didTapColorPicker colorPicker: ColorPicker,
+                                         sourceRect: CGRect)
 }
 
 final class PropertyInspectorViewController: UIViewController {
@@ -18,16 +20,22 @@ final class PropertyInspectorViewController: UIViewController {
     
     private var presentedColorPicker: ColorPicker?
     
-    private lazy var viewCode = PropertyInspectorViewCode().then {
-        $0.contentView.addArrangedSubview(viewPanel)
+    private lazy var viewCode = PropertyInspectorViewCode().then { viewCode in
+        sections.forEach { section in
+            viewCode.contentView.addArrangedSubview(section)
+        }
     }
     
-    private lazy var viewPanel = PropertyInspectorSection(
-        title: "View",
-        properties: viewModel.inputs
-    ).then {
-        $0.delegate = self
-    }
+    private lazy var sections: [PropertyInspectorSection] = {
+        let viewPanel = PropertyInspectorSection(
+            title: "View",
+            properties: viewModel.inputs
+        ).then {
+            $0.delegate = self
+        }
+        
+        return [viewPanel]
+    }()
     
     override func loadView() {
         view = viewCode
@@ -36,7 +44,19 @@ final class PropertyInspectorViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        preferredContentSize = viewCode.scrollView.contentSize
+        calculatePreferredContentSize()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        calculatePreferredContentSize()
+    }
+    
+    func calculatePreferredContentSize() {
+        let size = viewCode.contentView.systemLayoutSizeFitting(UIView.layoutFittingExpandedSize)
+
+        preferredContentSize = size
     }
     
     static func create(viewModel: PropertyInspectorViewModelProtocol) -> PropertyInspectorViewController {
@@ -45,36 +65,25 @@ final class PropertyInspectorViewController: UIViewController {
         
         return viewController
     }
+    
+    func selectColor(_ color: UIColor) {
+        presentedColorPicker?.selectedColor = color
+    }
+    
+    func finishColorSelection() {
+        presentedColorPicker = nil
+    }
 }
 
 extension PropertyInspectorViewController: PropertyInspectorSectionDelegate {
-    func propertyInspectorSection(_ section: PropertyInspectorSection, didTapColorPicker colorPicker: ColorPicker, sourceRect: CGRect) {
-        delegate?.propertyInspectorViewController(self, didTapColorPicker: colorPicker)
-        if #available(iOS 14.0, *) {
-            presentedColorPicker = colorPicker
-            
-            #warning("move to coordinator")
-            let colorPicker = UIColorPickerViewController().then {
-                $0.delegate = self
-                $0.selectedColor = colorPicker.selectedColor
-                $0.modalPresentationStyle = .popover
-                $0.popoverPresentationController?.sourceView = view.window
-                $0.popoverPresentationController?.sourceRect = sourceRect
-            }
-            
-            present(colorPicker, animated: true)
-        }
-    }
-}
-
-@available(iOS 14.0, *)
-extension PropertyInspectorViewController: UIColorPickerViewControllerDelegate {
-    #warning("move to coordinator")
-    func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
-        presentedColorPicker?.selectedColor = viewController.selectedColor
-    }
-    
-    func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
-        presentedColorPicker = nil
+    func propertyInspectorSection(_ section: PropertyInspectorSection, didTapColorPicker
+                                    colorPicker: ColorPicker,
+                                  sourceRect: CGRect) {
+        presentedColorPicker = colorPicker
+        delegate?.propertyInspectorViewController(
+            self,
+            didTapColorPicker: colorPicker,
+            sourceRect: sourceRect
+        )
     }
 }

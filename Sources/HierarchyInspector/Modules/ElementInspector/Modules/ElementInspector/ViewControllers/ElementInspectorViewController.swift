@@ -7,33 +7,60 @@
 
 import UIKit
 
+protocol ElementInspectorViewControllerDelegate: AnyObject {
+    func elementInspectorViewController(_ viewController: ElementInspectorViewController, viewControllerForPanel panel: ElementInspectorPanel) -> UIViewController
+}
+
 final class ElementInspectorViewController: UIViewController {
+    weak var delegate: ElementInspectorViewControllerDelegate?
+    
     private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(host: self)
     
     private var viewModel: ElementInspectorViewModelProtocol!
     
-    private var currentPageViewController: UIViewController? {
+    override var preferredContentSize: CGSize {
         didSet {
-            if let currentPageViewController = currentPageViewController {
-                
-                currentPageViewController.willMove(toParent: self)
-                
-                addChild(currentPageViewController)
-                
-                viewCode.contentView.installView(currentPageViewController.view)
-                
-                currentPageViewController.didMove(toParent: self)
+            Console.print(self.classForCoder, #function, preferredContentSize)
+            
+            guard let superview = view.superview else {
+                return
             }
             
-            if let oldPageViewController = oldValue {
+            view.frame = superview.bounds
+            view.layoutIfNeeded()
+        }
+    }
+    
+    private var presentedPanelViewController: UIViewController? {
+        didSet {
+            if let panelViewController = presentedPanelViewController {
                 
-                oldPageViewController.willMove(toParent: nil)
+                panelViewController.willMove(toParent: self)
                 
-                oldPageViewController.removeFromParent()
+                addChild(panelViewController)
                 
-                oldPageViewController.view.removeFromSuperview()
+                viewCode.contentView.installView(panelViewController.view)
+                
+                panelViewController.didMove(toParent: self)
+            }
+            
+            if let oldPanelViewController = oldValue {
+                
+                oldPanelViewController.willMove(toParent: nil)
+                
+                oldPanelViewController.removeFromParent()
+                
+                oldPanelViewController.view.removeFromSuperview()
             }
         }
+    }
+    
+    private lazy var heightConstraint = viewCode.heightAnchor.constraint(equalToConstant: 0).then {
+        $0.isActive = true
+    }
+    
+    private lazy var widthConstraint = viewCode.widthAnchor.constraint(equalToConstant: 0).then {
+        $0.isActive = true
     }
     
     private lazy var viewCode = ElementInspectorViewCode().then {
@@ -70,12 +97,41 @@ final class ElementInspectorViewController: UIViewController {
         installPanel(firstPanel)
     }
     
+    override func size(forChildContentContainer container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
+        let newSize = calculatePreferredContentSize(with: container)
+        
+        return newSize
+    }
+    
+    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
+        let newSize = calculatePreferredContentSize(with: container)
+        
+        preferredContentSize = newSize
+    }
+    
+    private func calculatePreferredContentSize(with container: UIContentContainer) -> CGSize {
+        guard let containerViewController = container as? UIViewController else {
+            return .zero
+        }
+        
+        containerViewController.view.layoutIfNeeded()
+        
+        let newHeight = container.preferredContentSize.height
+
+        let newWidth = max(320, container.preferredContentSize.width)
+
+        let newSize = CGSize(width: newWidth, height: newHeight)
+        
+        return newSize
+    }
+    
     static func create(viewModel: ElementInspectorViewModelProtocol) -> ElementInspectorViewController {
         let viewController = ElementInspectorViewController()
         viewController.viewModel = viewModel
         
         return viewController
     }
+    
 }
 
 // MARK: - Actions
@@ -93,11 +149,16 @@ private extension ElementInspectorViewController {
     }
     
     func installPanel(_ panel: ElementInspectorPanel) {
-        currentPageViewController = viewModel.viewController(for: panel)
+        guard let panelViewController = delegate?.elementInspectorViewController(self, viewControllerForPanel: panel) else {
+            presentedPanelViewController = nil
+            return
+        }
+        
+        presentedPanelViewController = panelViewController
     }
     
     func removeCurrentPanel() {
-        currentPageViewController = nil
+        presentedPanelViewController = nil
     }
     
     @objc func toggleInspect() {
@@ -109,13 +170,6 @@ private extension ElementInspectorViewController {
     }
 }
 
-// MARK: - UIPopoverPresentationControllerDelegate
-
-extension ElementInspectorViewController: UIPopoverPresentationControllerDelegate {
-    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-        return .none
-    }
-}
 
 // MARK: - HierarchyInspectorPresentable
 

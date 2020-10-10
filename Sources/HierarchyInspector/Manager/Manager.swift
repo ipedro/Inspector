@@ -53,15 +53,13 @@ extension HierarchyInspector {
             let start = Date()
             
             guard let hostViewController = hostViewController else {
-                print("\(Date()) [Hierarchy Inspector] could not caculate snapshot: host is nil")
-                
+                Console.print("could not caculate snapshot: host is nil")
                 return nil
             }
             
             guard let cachedSnapshot = cachedViewHierarchySnapshot, Date() <= cachedSnapshot.expiryDate else {
                 guard let snapshot = makeSnapshot() else {
-                    print("\(Date()) [Hierarchy Inspector] \(hostViewController.view.className): could not caculate snapshot")
-                    
+                    Console.print("\(hostViewController.classForCoder) could not caculate snapshot")
                     return nil
                 }
                 
@@ -69,12 +67,12 @@ extension HierarchyInspector {
                     cachedViewHierarchySnapshot = snapshot
                 }
                 
-                print("\(Date()) [Hierarchy Inspector] \(snapshot.viewHierarchy.className): 📐 calculated snapshot in \(Date().timeIntervalSince(start)) s")
+                Console.print("📐 calculated snapshot in \(Date().timeIntervalSince(start)) s")
                 
                 return snapshot
             }
             
-            print("\(Date()) [Hierarchy Inspector] \(cachedSnapshot.viewHierarchy.className): ♻️ reused snapshot in \(Date().timeIntervalSince(start)) s")
+            Console.print("♻️ reused snapshot in \(Date().timeIntervalSince(start)) s")
             
             return cachedSnapshot
         }
@@ -208,7 +206,7 @@ private extension HierarchyInspector.Manager {
         var removedReferences = [ViewHierarchyReference]()
         
         removedLayers.forEach { layer in
-            print("[Hierarchy Inspector] \(layer) was removed")
+            Console.print("\(layer) was removed")
             
             oldValue[layer]?.forEach {
                 print("[Hierarchy Inspector] \(layer): removing reference to \($0.elementName)")

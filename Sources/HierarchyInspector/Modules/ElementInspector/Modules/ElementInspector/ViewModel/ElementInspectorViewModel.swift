@@ -23,32 +23,11 @@ enum ElementInspectorPanel: Int, CaseIterable {
 
 protocol ElementInspectorViewModelProtocol {
     var elementPanels: [ElementInspectorPanel] { get }
-    
-    func viewController(for panel: ElementInspectorPanel) -> UIViewController
 }
 
 struct ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     let reference: ViewHierarchyReference
     
     let elementPanels: [ElementInspectorPanel] = ElementInspectorPanel.allCases
-    
-    func viewController(for panel: ElementInspectorPanel) -> UIViewController {
-        switch panel {
-        
-        case .propertyInspector:
-            return PropertyInspectorViewController.create(
-                viewModel: PropertyInspectorViewModel(
-                    reference: reference
-                )
-            )
-            
-        case .viewHierarchy:
-            return ViewHierarchyListViewController.create(
-                viewModel: ViewHierarchyListViewModel(
-                    reference: reference
-                )
-            )
-        }
-    }
     
 }

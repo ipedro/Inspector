@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		EB15C9222531A53B00D100E6 /* Console.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB15C9212531A53B00D100E6 /* Console.swift */; };
 		EB2D96E925280AC000A5795B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D96E825280AC000A5795B /* AppDelegate.swift */; };
 		EB2D96EB25280AC000A5795B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D96EA25280AC000A5795B /* SceneDelegate.swift */; };
 		EB2D96ED25280AC000A5795B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D96EC25280AC000A5795B /* ViewController.swift */; };
@@ -161,6 +162,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EB15C9212531A53B00D100E6 /* Console.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Console.swift; sourceTree = "<group>"; };
 		EB2D96E625280AC000A5795B /* HierarchyInspectorExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HierarchyInspectorExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB2D96E825280AC000A5795B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EB2D96EA25280AC000A5795B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -473,7 +475,6 @@
 		EBAC35022530DE3700A992F5 /* PropertyInspector */ = {
 			isa = PBXGroup;
 			children = (
-				EBAC35432530E39800A992F5 /* Enums */,
 				EBF3295A2531109600EABA17 /* ViewCodes */,
 				EBF3295F2531109C00EABA17 /* ViewControllers */,
 				EBF32964253110A100EABA17 /* ViewModels */,
@@ -682,6 +683,7 @@
 				OBJ_29 /* ViewHierarchyLayer.swift */,
 				EB324618252B1E6100406111 /* ViewHierarchyReference.swift */,
 				OBJ_31 /* ViewHierarchySnapshot.swift */,
+				EB15C9212531A53B00D100E6 /* Console.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -762,6 +764,7 @@
 				EBA2462D2528DC8100D4AFD9 /* Manager */,
 				OBJ_26 /* Models */,
 				EBF88CBA252DA18300AE9F12 /* Modules */,
+				EBAC35432530E39800A992F5 /* Enums */,
 				OBJ_32 /* Protocols */,
 			);
 			name = HierarchyInspector;
@@ -963,6 +966,7 @@
 				OBJ_78 /* UIView+Convenience.swift in Sources */,
 				OBJ_79 /* UIView+HierarchyInspectableView.swift in Sources */,
 				EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */,
+				EB15C9222531A53B00D100E6 /* Console.swift in Sources */,
 				OBJ_80 /* UIView+LoaderViewPresentable.swift in Sources */,
 				EBA7D9D425308FEC00496F23 /* Icon.swift in Sources */,
 				EBD9DA19252FA37500851E23 /* SeparatorView.swift in Sources */,

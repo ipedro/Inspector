@@ -43,7 +43,8 @@ final class SectionHeader: BaseView {
     convenience init(_ textStyle: UIFont.TextStyle = .title3, text: String?) {
         self.init(frame: .zero)
         
-        self.text = text
         self.textStyle = textStyle
+        self.text = text
+        self.textLabel.font = .preferredFont(forTextStyle: textStyle)
     }
 }

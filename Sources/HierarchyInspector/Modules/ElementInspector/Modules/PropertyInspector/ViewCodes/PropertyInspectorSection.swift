@@ -27,6 +27,10 @@ final class PropertyInspectorSection: BaseView {
         )
     )
     
+    private lazy var sectionHeader = SectionHeader(.body, text: title).then {
+        $0.isHidden = title == nil
+    }
+    
     private lazy var arrangedSubviews: [UIView] = properties.compactMap { inputControls[$0] }
     
     private lazy var inputControls: [PropertyInspectorInput: BaseControl] = {
@@ -81,9 +85,7 @@ final class PropertyInspectorSection: BaseView {
     override func setup() {
         super.setup()
         
-        if let title = title {
-            contentView.addArrangedSubview(SectionHeader(.body, text: title))
-        }
+        contentView.addArrangedSubview(sectionHeader)
         
         contentView.addArrangedSubview(controlsStackView)
     }

@@ -22,12 +22,16 @@ final class ViewHierarchyListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        viewCode.tableView.reloadData()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        preferredContentSize = viewCode.tableView.contentSize
+        let size = viewCode.tableView.contentSize
+        
+        preferredContentSize = size
     }
     
     static func create(viewModel: ViewHierarchyListViewModelProtocol) -> ViewHierarchyListViewController {
@@ -95,6 +99,9 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
                 
             }
             
+            tableView.layoutIfNeeded()
+            
+            self.preferredContentSize = tableView.contentSize
         })
     }
     
