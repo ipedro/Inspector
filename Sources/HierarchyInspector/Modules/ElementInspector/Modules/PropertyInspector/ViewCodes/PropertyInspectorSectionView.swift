@@ -21,11 +21,12 @@ final class PropertyInspectorSectionView: BaseView {
     
     lazy var controlsStackView = UIStackView(
         axis: .vertical,
-        arrangedSubviews: arrangedSubviews,
-        margins: .margins(top: 0, leading: 30, bottom: 15, trailing: 30)
+        arrangedSubviews: arrangedSubviews
     )
     
-    private lazy var sectionHeader = SectionHeader(.body, text: title).then {
+    private lazy var sectionHeader = SectionHeader(.callout, text: title).then {
+        $0.contentView.directionalLayoutMargins = .zero
+        
         $0.isHidden = title == nil
     }
     
@@ -121,6 +122,8 @@ final class PropertyInspectorSectionView: BaseView {
     
     override func setup() {
         super.setup()
+        
+        contentView.directionalLayoutMargins = .margins(horizontal: 30, vertical: 15)
         
         contentView.addArrangedSubview(sectionHeader)
         

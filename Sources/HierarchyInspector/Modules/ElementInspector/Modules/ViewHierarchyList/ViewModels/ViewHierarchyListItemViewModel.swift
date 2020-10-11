@@ -10,6 +10,8 @@ import UIKit
 protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
     var parent: ViewHierarchyListItemViewModel? { get set }
     
+    var reference: ViewHierarchyReference { get }
+    
     var title: String { get }
     
     var subtitle: String { get }
@@ -55,52 +57,7 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     
     private(set) lazy var title = reference.elementName
     
-    private(set) lazy var subtitle: String = {
-        var strings = [String?]()
-        
-        var constraints: String? {
-            guard let view = reference.view else {
-                return nil
-            }
-            return "\(view.constraints.count) constraints"
-        }
-        
-        var subviews: String? {
-            guard isContainer else {
-                return nil
-            }
-            return "\(reference.flattenedViewHierarchy.count) children. (\(reference.children.count) subviews)"
-        }
-        
-        var frame: String? {
-            guard let view = reference.view else {
-                return nil
-            }
-            
-            return "width: \(view.frame.width), height: \(view.frame.height)\nx: \(view.frame.origin.x), y: \(view.frame.origin.y)\n"
-        }
-        
-        var className: String? {
-            guard let view = reference.view else {
-                return nil
-            }
-            
-            guard let superclass = view.superclass else {
-                return view.className
-            }
-            
-            return "\(view.className) (\(String(describing: superclass)))"
-        }
-        
-        strings.append(className)
-        
-        strings.append(frame)
-        
-        strings.append(subviews)
-        strings.append(constraints)
-        
-        return strings.compactMap { $0 }.joined(separator: "\n")
-    }()
+    private(set) lazy var subtitle = reference.elementDescription
     
     private(set) lazy var isContainer: Bool = reference.children.isEmpty == false
     
@@ -112,7 +69,7 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     
     // MARK: - Properties
     
-    private let reference: ViewHierarchyReference
+    let reference: ViewHierarchyReference
     
     init(
         reference: ViewHierarchyReference,

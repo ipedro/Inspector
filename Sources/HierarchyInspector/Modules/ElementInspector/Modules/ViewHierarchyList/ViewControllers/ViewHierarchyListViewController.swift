@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol ViewHierarchyListViewControllerDelegate: AnyObject {
+    func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController, didSelect reference: ViewHierarchyReference)
+}
+
 final class ViewHierarchyListViewController: UIViewController {
+    weak var delegate: ViewHierarchyListViewControllerDelegate?
+    
     private lazy var viewCode = ViewHierarchyListViewCode().then {
         $0.tableView.dataSource = self
         $0.tableView.delegate   = self
@@ -61,6 +67,14 @@ extension ViewHierarchyListViewController: UITableViewDataSource {
 }
 
 extension ViewHierarchyListViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
+            return
+        }
+        
+        delegate?.viewHierarchyListViewController(self, didSelect: itemViewModel.reference)
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

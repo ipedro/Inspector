@@ -25,10 +25,11 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             
             elementNameLabel.text = viewModel?.title
             
+            #warning("move style to ElementInspector.Appearance")
             elementNameLabel.font = {
                 switch viewModel?.relativeDepth {
                 case 0:
-                    return .systemFont(ofSize: 16, weight: .bold)
+                    return UIFont.preferredFont(forTextStyle: .title3).bold()
                     
                 case 1:
                     return .systemFont(ofSize: 15, weight: .semibold)
@@ -46,6 +47,13 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             
             elementNameLabel.sizeToFit()
             
+            if let relativeDepth = viewModel?.relativeDepth, relativeDepth > 0 {
+                accessoryType = .detailButton
+            }
+            else {
+                accessoryType = .none
+            }
+            
             // Collapse
             
             isCollapsed = viewModel?.isCollapsed == true
@@ -58,7 +66,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             
             // Containers Insets
             
-            let offset = 26 * (CGFloat(viewModel?.relativeDepth ?? 0) + 1)
+            let offset = ElementInspector.appearance.horizontalMargins * (CGFloat(viewModel?.relativeDepth ?? 0) + 1)
             
             separatorInset = .init(top: 0, left: offset, bottom: 0, right: 0)
             directionalLayoutMargins = .margins(leading: offset)
@@ -119,13 +127,11 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         $0.preferredMaxLayoutWidth = 200
     }
     
-    private lazy var descriptionLabel = UILabel(.caption2).then {
-        $0.numberOfLines = 0
+    private lazy var descriptionLabel = UILabel(.caption2, numberOfLines: 0).then {
         $0.alpha = 0.5
     }
     
     private lazy var chevronDownIcon = Icon(.chevronDown, color: elementNameLabel.textColor).then {
-        $0.tintColor = elementNameLabel.textColor
         $0.alpha = 0.8
     }
     

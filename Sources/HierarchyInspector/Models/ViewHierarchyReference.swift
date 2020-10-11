@@ -32,6 +32,8 @@ struct ViewHierarchyReference {
     
     let accessibilityIdentifier: String?
     
+    let isContainer: Bool
+    
     private(set) var deepestAbsoulteLevel: Int
     
     var deepestRelativeLevel: Int {
@@ -65,6 +67,8 @@ struct ViewHierarchyReference {
         isSystemView = root.isSystemView
         
         frame = root.frame
+        
+        isContainer = root.subviews.isEmpty == false
         
         accessibilityIdentifier = root.accessibilityIdentifier
         

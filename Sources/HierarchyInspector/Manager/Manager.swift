@@ -281,12 +281,8 @@ private extension HierarchyInspector.Manager {
             }
         }
     }
-}
-
-// MARK: - HighlightViewDelegate
-
-extension HierarchyInspector.Manager: HighlightViewDelegate {
-    func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference) {
+    
+    func presentInspector(for reference: ViewHierarchyReference, animated: Bool) {
         guard let hostViewController = hostViewController else {
             return
         }
@@ -297,11 +293,25 @@ extension HierarchyInspector.Manager: HighlightViewDelegate {
         
         elementInspectorCoordinator = coordinator
         
-        hostViewController.present(coordinator.start(), animated: true)
+        hostViewController.present(coordinator.start(), animated: animated)
+    }
+}
+
+// MARK: - HighlightViewDelegate
+
+extension HierarchyInspector.Manager: HighlightViewDelegate {
+    func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference) {
+        presentInspector(for: reference, animated: true)
     }
 }
 
 extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didSelect reference: ViewHierarchyReference) {
+        elementInspectorCoordinator?.start().dismiss(animated: false) { [weak self] in
+            self?.presentInspector(for: reference, animated: false)
+        }
+    }
+    
     func elementInspectorCoordinatorDidFinish(_ coordinator: ElementInspectorCoordinator) {
         elementInspectorCoordinator = nil
     }

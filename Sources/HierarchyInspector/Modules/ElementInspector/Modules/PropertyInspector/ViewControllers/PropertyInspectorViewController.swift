@@ -22,9 +22,7 @@ final class PropertyInspectorViewController: UIViewController {
     
     private var selectedOptionSelector: OptionSelector?
     
-    private lazy var viewCode = PropertyInspectorViewCode().then { viewCode in
-        sectionViews.forEach { viewCode.contentView.addArrangedSubview($0) }
-    }
+    private lazy var viewCode = PropertyInspectorViewCode()
     
     private lazy var sectionViews: [PropertyInspectorSectionView] = viewModel.sectionInputs.map {
         PropertyInspectorSectionView(section: $0).then { $0.delegate = self }
@@ -32,6 +30,16 @@ final class PropertyInspectorViewController: UIViewController {
     
     override func loadView() {
         view = viewCode
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        viewCode.elementNameLabel.text = viewModel.reference.elementName
+        
+        viewCode.elementDescriptionLabel.text = viewModel.reference.elementDescription
+        
+        sectionViews.forEach { viewCode.contentView.addArrangedSubview($0) }
     }
     
     override func viewWillAppear(_ animated: Bool) {

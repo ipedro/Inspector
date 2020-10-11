@@ -40,11 +40,21 @@ final class SectionHeader: BaseView {
         backgroundColor = superview?.backgroundColor
     }
     
-    convenience init(_ textStyle: UIFont.TextStyle = .title3, text: String?) {
+    convenience init(_ textStyle: UIFont.TextStyle = .title3, text: String?, bold: Bool = false) {
         self.init(frame: .zero)
         
         self.textStyle = textStyle
         self.text = text
-        self.textLabel.font = .preferredFont(forTextStyle: textStyle)
+        
+        let font = UIFont.preferredFont(forTextStyle: textStyle)
+        
+        switch bold {
+        case true:
+            self.textLabel.font = font.bold()
+            
+        case false:
+            self.textLabel.font = font
+        }
+        
     }
 }

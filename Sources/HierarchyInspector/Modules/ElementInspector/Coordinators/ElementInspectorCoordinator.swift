@@ -9,6 +9,8 @@ import UIKit
 
 protocol ElementInspectorCoordinatorDelegate: AnyObject {
     func elementInspectorCoordinatorDidFinish(_ coordinator: ElementInspectorCoordinator)
+    
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didSelect reference: ViewHierarchyReference)
 }
 
 final class ElementInspectorCoordinator: NSObject {
@@ -94,8 +96,16 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
                 viewModel: ViewHierarchyListViewModel(
                     reference: reference
                 )
-            )
+            ).then {
+                $0.delegate = self
+            }
         }
+    }
+}
+
+extension ElementInspectorCoordinator: ViewHierarchyListViewControllerDelegate {
+    func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController, didSelect reference: ViewHierarchyReference) {
+        delegate?.elementInspectorCoordinator(self, didSelect: reference)
     }
 }
 
