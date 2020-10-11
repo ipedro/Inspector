@@ -34,13 +34,34 @@ final class ElementInspectorCoordinator: NSObject {
     ).then {
         $0.presentationDelegate = self
         $0.modalPresentationStyle = .popover
-        $0.popoverPresentationController?.sourceView = reference.view
         $0.popoverPresentationController?.delegate = self
+        $0.popoverPresentationController?.sourceView = reference.view
         
         if #available(iOS 13.0, *) {
             $0.view.backgroundColor = .systemBackground
         } else {
             $0.view.backgroundColor = .groupTableViewBackground
+        }
+    }
+    
+    private var permittedPopoverArrowDirections: UIPopoverArrowDirection {
+        switch navigationController.popoverPresentationController?.arrowDirection {
+            
+        case .some(.up):
+            return [.up, .left, .right]
+            
+        case .some(.down):
+            return [.down, .left, .right]
+            
+        case .some(.left):
+            return [.left]
+            
+        case .some(.right):
+            return [.right]
+            
+        default:
+            return .any
+            
         }
     }
     
@@ -99,7 +120,7 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
                 
                 $0.modalPresentationStyle = .popover
                 $0.popoverPresentationController?.sourceView = colorPicker.valueContainerView
-                $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
+                $0.popoverPresentationController?.permittedArrowDirections = permittedPopoverArrowDirections
             }
             
             viewController.present(colorPicker, animated: true)
@@ -127,7 +148,7 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
             $0.modalPresentationStyle = .popover
             $0.popoverPresentationController?.sourceView = optionSelector.valueContainerView
             $0.popoverPresentationController?.delegate = self
-            $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
+            $0.popoverPresentationController?.permittedArrowDirections = permittedPopoverArrowDirections
         }
         
         viewController.present(navigationController, animated: true)
