@@ -29,25 +29,29 @@ extension PropertyInspectorInputSection {
                 return .subSection(name: "alignment")
                 
             case .contentHorizontalAlignment:
-                return .inlineOptions(
+                let knownCases = UIControl.ContentHorizontalAlignment.allCases.filter { $0.image?.withRenderingMode(.alwaysTemplate) != nil }
+                
+                return .inlineImageOptions(
                     title: "horizontal alignment",
-                    items: UIControl.ContentHorizontalAlignment.allCases,
-                    selectedSegmentIndex: UIControl.ContentHorizontalAlignment.allCases.firstIndex(of: control.contentHorizontalAlignment)
+                    images: knownCases.compactMap { $0.image },
+                    selectedSegmentIndex: knownCases.firstIndex(of: control.contentHorizontalAlignment)
                 ) {
                     guard let newIndex = $0 else {
                         return
                     }
                     
-                    let contentHorizontalAlignment = UIControl.ContentHorizontalAlignment.allCases[newIndex]
+                    let contentHorizontalAlignment = knownCases[newIndex]
 
                     control.contentHorizontalAlignment = contentHorizontalAlignment
                 }
                 
             case .contentVerticalAlignment:
-                return .inlineOptions(
+                let knownCases = UIControl.ContentVerticalAlignment.allCases.filter { $0.image?.withRenderingMode(.alwaysTemplate) != nil }
+                
+                return .inlineImageOptions(
                     title: "vertical alignment",
-                    items: UIControl.ContentVerticalAlignment.allCases,
-                    selectedSegmentIndex: UIControl.ContentVerticalAlignment.allCases.firstIndex(of: control.contentVerticalAlignment)
+                    images: knownCases.compactMap { $0.image },
+                    selectedSegmentIndex: knownCases.firstIndex(of: control.contentVerticalAlignment)
                 ) {
                     guard let newIndex = $0 else {
                         return

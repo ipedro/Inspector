@@ -7,10 +7,16 @@
 
 import UIKit
 
+protocol SegmentedControlDisplayable {}
+
+extension String: SegmentedControlDisplayable {}
+
+extension UIImage: SegmentedControlDisplayable {}
+
 final class SegmentedControl: BaseControl {
     // MARK: - Properties
     
-    let options: [CustomStringConvertible]
+    let options: [SegmentedControlDisplayable]
     
     var selectedIndex: Int? {
         get {
@@ -26,15 +32,13 @@ final class SegmentedControl: BaseControl {
         }
     }
     
-    private lazy var segmentedControl = UISegmentedControl(
-        items: options.map { $0.description.localizedCapitalized }
-    ).then {
+    private lazy var segmentedControl = UISegmentedControl(items: options).then {
         $0.addTarget(self, action: #selector(changeSegment), for: .valueChanged)
     }
     
     // MARK: - Init
     
-    init(title: String?, items: [CustomStringConvertible], selectedSegmentIndex: Int?) {
+    init(title: String?, items: [SegmentedControlDisplayable], selectedSegmentIndex: Int?) {
         self.options = items
         
         super.init(title: title)

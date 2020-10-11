@@ -86,8 +86,11 @@ final class PropertyInspectorSectionView: BaseView {
                 case let .toggleButton(title, isOn, _):
                     return ToggleControl(title: title, isOn: isOn)
                     
-                case let .inlineOptions(title, items, selectedSegmentIndex, _):
-                    return SegmentedControl(title: title, items: items, selectedSegmentIndex: selectedSegmentIndex)
+                case let .inlineTextOptions(title, customStringConvertibles, selectedSegmentIndex, _):
+                    return SegmentedControl(title: title, items: customStringConvertibles.map { $0.description }, selectedSegmentIndex: selectedSegmentIndex)
+
+                case let .inlineImageOptions(title, images, selectedSegmentIndex, _):
+                    return SegmentedControl(title: title, items: images, selectedSegmentIndex: selectedSegmentIndex)
                     
                 case let .optionsList(title, options, selectedIndex, _):
                     return OptionSelector(title: title, options: options, selectedIndex: selectedIndex).then {
@@ -158,7 +161,8 @@ private extension PropertyInspectorSectionView {
             case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
                 handler(toggleControl.isOn)
                 
-            case let (.inlineOptions(_, _, _, handler), segmentedControl as SegmentedControl):
+            case let (.inlineTextOptions(_, _, _, handler), segmentedControl as SegmentedControl),
+                 let (.inlineImageOptions(_, _, _, handler), segmentedControl as SegmentedControl):
                 handler(segmentedControl.selectedIndex)
                 
             case let (.optionsList(_, _, _, handler), optionSelector as OptionSelector):
@@ -170,7 +174,8 @@ private extension PropertyInspectorSectionView {
                  (.cgFloatStepper, _),
                  (.colorPicker, _),
                  (.toggleButton, _),
-                 (.inlineOptions, _),
+                 (.inlineTextOptions, _),
+                 (.inlineImageOptions, _),
                  (.optionsList, _):
                 break
             }

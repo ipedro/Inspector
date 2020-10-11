@@ -16,7 +16,9 @@ enum PropertyInspectorInput {
     
     case toggleButton(title: String, isOn: Bool, handler: ((Bool) -> Void))
     
-    case inlineOptions(title: String, items: [CustomStringConvertible], selectedSegmentIndex: Int?, handler: ((Int?) -> Void))
+    case inlineTextOptions(title: String, texts: [CustomStringConvertible], selectedSegmentIndex: Int?, handler: ((Int?) -> Void))
+    
+    case inlineImageOptions(title: String, images: [UIImage], selectedSegmentIndex: Int?, handler: ((Int?) -> Void))
     
     case optionsList(title: String, options: [CustomStringConvertible], selectedIndex: Int?, handler: ((Int?) -> Void))
     
@@ -34,7 +36,8 @@ extension PropertyInspectorInput: Hashable {
              let .integerStepper(title, _, _, _, _),
              let .colorPicker(title, _, _),
              let .toggleButton(title, _, _),
-             let .inlineOptions(title, _, _, _),
+             let .inlineTextOptions(title, _, _, _),
+             let .inlineImageOptions(title, _, _, _),
              let .optionsList(title, _, _, _),
              let .subSection(title):
             return title
@@ -50,7 +53,8 @@ extension PropertyInspectorInput: Hashable {
              .integerStepper,
              .colorPicker,
              .toggleButton,
-             .inlineOptions,
+             .inlineTextOptions,
+             .inlineImageOptions,
              .optionsList:
             return true
             

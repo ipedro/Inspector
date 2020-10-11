@@ -25,9 +25,9 @@ extension PropertyInspectorInputSection {
 
             switch $0 {
             case .axis:
-                return .inlineOptions(
+                return .inlineTextOptions(
                     title: "axis",
-                    items: NSLayoutConstraint.Axis.allCases,
+                    texts: NSLayoutConstraint.Axis.allCases,
                     selectedSegmentIndex: NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis)
                 ) {
                     guard let newIndex = $0 else {
