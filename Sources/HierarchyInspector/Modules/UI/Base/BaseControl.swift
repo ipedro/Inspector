@@ -9,7 +9,9 @@ import UIKit
 
 class BaseControl: UIControl {
     
-    private lazy var verticalSpacing = ElementInspector.appearance.verticalMargins / 2
+    let verticalMargins = ElementInspector.appearance.verticalMargins / 2
+    
+    let spacing = ElementInspector.appearance.verticalMargins
     
     private(set) lazy var titleLabel = UILabel(.footnote).then {
         $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
@@ -17,7 +19,7 @@ class BaseControl: UIControl {
     
     private(set) lazy var contentView = UIStackView(
         axis: .horizontal,
-        spacing: verticalSpacing
+        spacing: spacing
     )
     
     private lazy var contentContainerView = UIStackView(
@@ -26,7 +28,7 @@ class BaseControl: UIControl {
             titleLabel,
             contentView
         ],
-        spacing: verticalSpacing * 2
+        spacing: spacing
     )
     
     private lazy var containerView = UIStackView(
@@ -34,10 +36,10 @@ class BaseControl: UIControl {
         arrangedSubviews: [
             contentContainerView
         ],
-        spacing: verticalSpacing,
+        spacing: verticalMargins,
         margins: .margins(
             horizontal: .zero,
-            vertical: verticalSpacing
+            vertical: verticalMargins
         )
     )
     
@@ -84,14 +86,21 @@ class BaseControl: UIControl {
     
     open func setup() {
         setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        
         setContentHuggingPriority(.defaultHigh, for: .vertical)
         
         tintColor = .systemPurple
         
         installView(containerView)
         
+        installSeparator()
+    }
+    
+    private func installSeparator() {
         separator.translatesAutoresizingMaskIntoConstraints = false
+        
         containerView.addSubview(separator)
+    
         separator.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
         separator.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
         separator.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
