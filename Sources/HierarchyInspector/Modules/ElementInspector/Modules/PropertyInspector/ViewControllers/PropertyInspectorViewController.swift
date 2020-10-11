@@ -34,12 +34,6 @@ final class PropertyInspectorViewController: UIViewController {
         view = viewCode
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        calculatePreferredContentSize()
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         

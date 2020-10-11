@@ -27,7 +27,7 @@ final class ElementInspectorCoordinator: NSObject {
         return viewController
     }()
     
-    private lazy var navigationController = UINavigationController(
+    private lazy var navigationController = PopoverNavigationController(
         rootViewController: elementInspectorViewController
     ).then {
         $0.modalPresentationStyle = .popover
@@ -108,7 +108,9 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
             $0.delegate = self
         }
         
-        let navigationController = UINavigationController(rootViewController: optionSelectorViewController).then {
+        let navigationController = PopoverNavigationController(
+            rootViewController: optionSelectorViewController
+        ).then {
             $0.modalPresentationStyle = .popover
             $0.popoverPresentationController?.sourceView = optionSelector.valueContainerView
             $0.popoverPresentationController?.delegate = self

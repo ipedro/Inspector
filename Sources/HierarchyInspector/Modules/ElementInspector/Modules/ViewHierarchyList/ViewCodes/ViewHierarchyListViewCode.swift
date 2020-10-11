@@ -16,8 +16,7 @@ final class ViewHierarchyListViewCode: BaseView {
         $0.rowHeight       = UITableView.automaticDimension
         $0.tableFooterView = UIView()
         $0.separatorStyle  = .none
-//        $0.sectionHeaderHeight = UITableView.automaticDimension
-//        $0.estimatedSectionHeaderHeight = 40
+        $0.estimatedRowHeight = 137
     }
     
     override func setup() {

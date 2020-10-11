@@ -26,11 +26,14 @@ final class ViewHierarchyListViewController: UIViewController {
         viewCode.tableView.reloadData()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        viewCode.tableView.layoutIfNeeded()
+        viewCode.tableView.reloadData()
         
         let size = viewCode.tableView.contentSize
-        
+
         preferredContentSize = size
     }
     
@@ -99,9 +102,6 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
                 
             }
             
-            tableView.layoutIfNeeded()
-            
-            self.preferredContentSize = tableView.contentSize
         })
     }
     
