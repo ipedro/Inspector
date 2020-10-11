@@ -74,8 +74,16 @@ extension OptionSelectorViewController: UIPickerViewDelegate {
         viewModel.title(for: row, in: component)
     }
     
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        guard let title = viewModel.title(for: row, in: component) else {
+            return SeparatorView()
+        }
+
+        return SectionHeader(.callout, text: title)
+    }
+    
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-        40
+        50
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
