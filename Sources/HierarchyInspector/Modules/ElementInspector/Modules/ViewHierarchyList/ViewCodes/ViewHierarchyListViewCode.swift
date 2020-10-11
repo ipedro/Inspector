@@ -17,16 +17,12 @@ final class ViewHierarchyListViewCode: BaseView {
         $0.tableFooterView = UIView()
         $0.separatorStyle  = .none
         $0.estimatedRowHeight = 137
-//        $0.contentInset = UIEdgeInsets(
-//            top: 11,
-//            left: 0,
-//            bottom: 0,
-//            right: 0
-//        )
     }
     
     override func setup() {
         super.setup()
+        
+        backgroundColor = ElementInspector.appearance.panelBackgroundColor
         
         installView(tableView)
     }

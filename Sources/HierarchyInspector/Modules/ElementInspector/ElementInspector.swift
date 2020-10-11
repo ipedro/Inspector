@@ -22,6 +22,15 @@ enum ElementInspector {
             )
         }
         
+        var panelBackgroundColor: UIColor = {
+            #if swift(>=5.0)
+            if #available(iOS 13.0, *) {
+                return .secondarySystemBackground
+            }
+            #endif
+            
+            return .groupTableViewBackground
+        }()
     }
     
     static var appearance = Appearance()

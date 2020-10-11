@@ -23,7 +23,6 @@ final class ViewHierarchyListViewController: UIViewController {
     
     override func loadView() {
         view = viewCode
-        
     }
     
     override func viewDidLoad() {

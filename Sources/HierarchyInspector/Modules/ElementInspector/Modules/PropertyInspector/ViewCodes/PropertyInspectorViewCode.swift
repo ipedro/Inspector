@@ -35,6 +35,8 @@ final class PropertyInspectorViewCode: BaseView {
     override func setup() {
         super.setup()
         
+        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        
         contentView.addArrangedSubview(headerContentView)
         
         scrollView.installView(contentView)

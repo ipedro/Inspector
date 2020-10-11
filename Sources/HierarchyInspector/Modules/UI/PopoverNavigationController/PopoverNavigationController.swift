@@ -19,13 +19,12 @@ final class PopoverNavigationController: UINavigationController {
         
         view.tintColor = .systemPurple
         
+        view.backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             overrideUserInterfaceStyle = .dark
-            view.backgroundColor = .secondarySystemBackground
         }
-        #else
-        view.backgroundColor = .groupTableViewBackground
         #endif
     }
     
