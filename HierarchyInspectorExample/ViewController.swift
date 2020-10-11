@@ -19,7 +19,7 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
         .staticTexts + .images,
         .textViews + .textFields,
         .stackViews + .containerViews,
-//        .activityIndicators,
+        .activityIndicators,
 //        .allViews
     ]
     

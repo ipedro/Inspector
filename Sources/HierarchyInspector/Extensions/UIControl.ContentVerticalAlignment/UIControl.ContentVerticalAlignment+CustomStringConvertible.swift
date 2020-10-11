@@ -23,7 +23,7 @@ extension UIControl.ContentVerticalAlignment: CustomStringConvertible {
             return "fill"
             
         @unknown default:
-            return String(describing: self)
+            return "\(self) (unsupported)"
         }
     }
 }

@@ -29,7 +29,7 @@ extension UIControl.ContentHorizontalAlignment: CustomStringConvertible {
             return "[⟷]"
             
         @unknown default:
-            return String(describing: self)
+            return "\(self) (unsupported)"
         }
     }
 }

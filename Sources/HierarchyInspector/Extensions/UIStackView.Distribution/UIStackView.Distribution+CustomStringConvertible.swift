@@ -26,7 +26,7 @@ extension UIStackView.Distribution: CustomStringConvertible {
             return "equal centering"
             
         @unknown default:
-            return String(describing: self)
+            return "\(self) (unsupported)"
         }
     }
 }

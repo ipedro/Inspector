@@ -17,7 +17,7 @@ extension NSLayoutConstraint.Axis: CustomStringConvertible {
             return "vertical"
             
         @unknown default:
-            return String(describing: self)
+            return "\(self) (unsupported)"
         }
     }
 }

@@ -26,7 +26,7 @@ extension UISemanticContentAttribute: CustomStringConvertible {
             return "force right to left"
             
         @unknown default:
-            return String(describing: self)
+            return "\(self) (unsupported)"
         }
     }
 }

@@ -52,7 +52,10 @@
 		EB439C1325323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C1225323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift */; };
 		EB439C1D2532393A004CCBCA /* NSLayoutConstraint.Axis+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C1C2532393A004CCBCA /* NSLayoutConstraint.Axis+CustomStringConvertible.swift */; };
 		EB439C2B25323D12004CCBCA /* UIColor+RGBA.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C2A25323D12004CCBCA /* UIColor+RGBA.swift */; };
+		EB439C352532F2E1004CCBCA /* PropertyInspectorInputSection+UIActivityIndicatorViewSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C342532F2E1004CCBCA /* PropertyInspectorInputSection+UIActivityIndicatorViewSection.swift */; };
 		EB439C4B25330D8E004CCBCA /* PopoverNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C4A25330D8E004CCBCA /* PopoverNavigationController.swift */; };
+		EB439C5825330E87004CCBCA /*  UIActivityIndicatorView.Style+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C5725330E87004CCBCA /*  UIActivityIndicatorView.Style+CaseIterable.swift */; };
+		EB439C6225330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C6125330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift */; };
 		EB5DB3A4252D09D400CE0398 /* UIStackView+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5DB3A3252D09D400CE0398 /* UIStackView+Init.swift */; };
 		EB74DD92252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */; };
 		EB7EAAC22529B8B4000001BE /* Manager.Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAC12529B8B4000001BE /* Manager.Action.swift */; };
@@ -216,7 +219,10 @@
 		EB439C1225323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint.Axis+CaseIterable.swift"; sourceTree = "<group>"; };
 		EB439C1C2532393A004CCBCA /* NSLayoutConstraint.Axis+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint.Axis+CustomStringConvertible.swift"; sourceTree = "<group>"; };
 		EB439C2A25323D12004CCBCA /* UIColor+RGBA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+RGBA.swift"; sourceTree = "<group>"; };
+		EB439C342532F2E1004CCBCA /* PropertyInspectorInputSection+UIActivityIndicatorViewSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PropertyInspectorInputSection+UIActivityIndicatorViewSection.swift"; sourceTree = "<group>"; };
 		EB439C4A25330D8E004CCBCA /* PopoverNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverNavigationController.swift; sourceTree = "<group>"; };
+		EB439C5725330E87004CCBCA /*  UIActivityIndicatorView.Style+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " UIActivityIndicatorView.Style+CaseIterable.swift"; sourceTree = "<group>"; };
+		EB439C6125330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIActivityIndicatorView.Style+CustomStringConvertible.swift"; sourceTree = "<group>"; };
 		EB5DB3A3252D09D400CE0398 /* UIStackView+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Init.swift"; sourceTree = "<group>"; };
 		EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListItemViewModel.swift; sourceTree = "<group>"; };
 		EB7EAAC12529B8B4000001BE /* Manager.Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.Action.swift; sourceTree = "<group>"; };
@@ -391,6 +397,7 @@
 			children = (
 				EB439B9C253217D3004CCBCA /* PropertyInspectorInputSection+UIControlSection.swift */,
 				EB439BAA25322F95004CCBCA /* PropertyInspectorInputSection+UIStackViewSection.swift */,
+				EB439C342532F2E1004CCBCA /* PropertyInspectorInputSection+UIActivityIndicatorViewSection.swift */,
 				EB439B8E25321766004CCBCA /* PropertyInspectorInputSection+UIViewSection.swift */,
 			);
 			path = PropertyInspectorInputSection;
@@ -447,6 +454,15 @@
 				EB439C4A25330D8E004CCBCA /* PopoverNavigationController.swift */,
 			);
 			path = PopoverNavigationController;
+			sourceTree = "<group>";
+		};
+		EB439C5525330E73004CCBCA /* UIActivityIndicatorView.Style */ = {
+			isa = PBXGroup;
+			children = (
+				EB439C5725330E87004CCBCA /*  UIActivityIndicatorView.Style+CaseIterable.swift */,
+				EB439C6125330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift */,
+			);
+			path = UIActivityIndicatorView.Style;
 			sourceTree = "<group>";
 		};
 		EB5DB399252D03A100CE0398 /* LayerViews */ = {
@@ -931,6 +947,7 @@
 				EB80AFB9252B56F100F0ECD5 /* NSObject */,
 				EB439B8D25321755004CCBCA /* PropertyInspectorInputSection */,
 				EB943FAC252C864A0007A611 /* SFSafariViewController */,
+				EB439C5525330E73004CCBCA /* UIActivityIndicatorView.Style */,
 				EBA245DC252881AC00D4AFD9 /* UIAlertController */,
 				EBD9DA24252FB4D500851E23 /* UIColor */,
 				EB439BB4253237BD004CCBCA /* UIControl.ContentHorizontalAlignment */,
@@ -1199,10 +1216,13 @@
 				EBAC353E2530E36400A992F5 /* PropertyInspectorSectionView.swift in Sources */,
 				OBJ_102 /* WireframeView.swift in Sources */,
 				EBF88CBF252DA1E300AE9F12 /* ViewHierarchyListViewController.swift in Sources */,
+				EB439C5825330E87004CCBCA /*  UIActivityIndicatorView.Style+CaseIterable.swift in Sources */,
 				EBAC359C2531024E00A992F5 /* ElementInspectorViewCode.swift in Sources */,
 				EB3C4B4A252E776A00AFABF8 /* NSDirectionalEdgeInsets+Init.swift in Sources */,
 				EBF3294525310EC800EABA17 /* ElementInspectorViewModel.swift in Sources */,
+				EB439C352532F2E1004CCBCA /* PropertyInspectorInputSection+UIActivityIndicatorViewSection.swift in Sources */,
 				EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */,
+				EB439C6225330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift in Sources */,
 				EB7EAAE02529B9F2000001BE /* Manager+Actions.swift in Sources */,
 				EB439BAB25322F95004CCBCA /* PropertyInspectorInputSection+UIStackViewSection.swift in Sources */,
 			);

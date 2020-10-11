@@ -29,7 +29,7 @@ extension UIStackView.Alignment: CustomStringConvertible {
             return "last baseline"
             
         @unknown default:
-            return String(describing: self)
+            return "\(self) (unsupported)"
         }
     }
 }
