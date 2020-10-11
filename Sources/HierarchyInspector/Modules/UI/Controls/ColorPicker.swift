@@ -66,7 +66,7 @@ final class ColorPicker: ViewInspectorControl {
         #if swift(>=5.3)
         colorDisplayControl.isEnabled = true
         #else
-        colorDisplayControl.isUserInteractionEnabled = false
+        colorDisplayAccessoryControl.isUserInteractionEnabled = false
         colorDisplayLabel.textColor = .systemPurple
         colorDisplayAccessoryControl.backgroundColor = nil
         
