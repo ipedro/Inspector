@@ -286,15 +286,23 @@ private extension HierarchyInspector.Manager {
 // MARK: - HighlightViewDelegate
 
 extension HierarchyInspector.Manager: HighlightViewDelegate {
-    func highlightView(didTap view: UIView, with reference: ViewHierarchyReference) {
+    func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference) {
         guard let hostViewController = hostViewController else {
             return
         }
         
-        let coordinator = ElementInspectorCoordinator(reference: reference, sourceView: view)
+        let coordinator = ElementInspectorCoordinator(reference: reference).then {
+            $0.delegate = self
+        }
         
         elementInspectorCoordinator = coordinator
         
         hostViewController.present(coordinator.start(), animated: true)
+    }
+}
+
+extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
+    func elementInspectorCoordinatorDidFinish(_ coordinator: ElementInspectorCoordinator) {
+        elementInspectorCoordinator = nil
     }
 }

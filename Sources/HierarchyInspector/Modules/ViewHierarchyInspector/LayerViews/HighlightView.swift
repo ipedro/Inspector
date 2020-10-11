@@ -8,7 +8,7 @@
 import UIKit
 
 protocol HighlightViewDelegate: AnyObject {
-    func highlightView(didTap view: UIView, with reference: ViewHierarchyReference)
+    func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference)
 }
 
 class HighlightView: LayerView {
@@ -92,10 +92,10 @@ class HighlightView: LayerView {
         $0.layer.rasterizationScale = UIScreen.main.scale
     }
     
-    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
+    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
     
-    @objc func tap(_ sender: Any) {
-        delegate?.highlightView(didTap: labelContainerView, with: viewReference)
+    @objc func tap() {
+        delegate?.highlightView(self, didTapWith: viewReference)
     }
     
     // MARK: - Init

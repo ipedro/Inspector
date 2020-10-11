@@ -7,15 +7,17 @@
 
 import UIKit
 
+protocol ElementInspectorCoordinatorDelegate: AnyObject {
+    func elementInspectorCoordinatorDidFinish(_ coordinator: ElementInspectorCoordinator)
+}
+
 final class ElementInspectorCoordinator: NSObject {
+    weak var delegate: ElementInspectorCoordinatorDelegate?
     
     let reference: ViewHierarchyReference
     
-    weak var sourceView: UIView?
-    
-    init(reference: ViewHierarchyReference, sourceView: UIView) {
+    init(reference: ViewHierarchyReference) {
         self.reference = reference
-        self.sourceView = sourceView
     }
     
     private lazy var elementInspectorViewController: ElementInspectorViewController = {
@@ -30,8 +32,9 @@ final class ElementInspectorCoordinator: NSObject {
     private lazy var navigationController = PopoverNavigationController(
         rootViewController: elementInspectorViewController
     ).then {
+        $0.presentationDelegate = self
         $0.modalPresentationStyle = .popover
-        $0.popoverPresentationController?.sourceView = sourceView
+        $0.popoverPresentationController?.sourceView = reference.view
         $0.popoverPresentationController?.delegate = self
         
         if #available(iOS 13.0, *) {
@@ -43,6 +46,16 @@ final class ElementInspectorCoordinator: NSObject {
     
     func start() -> UINavigationController {
         navigationController
+    }
+}
+
+extension ElementInspectorCoordinator: PopoverNavigationControllerDelegate {
+    func popoverNavigationControllerDidFinish(_ popoverNavigationController: PopoverNavigationController) {
+        guard popoverNavigationController.topViewController === elementInspectorViewController else {
+            return
+        }
+        
+        delegate?.elementInspectorCoordinatorDidFinish(self)
     }
 }
 

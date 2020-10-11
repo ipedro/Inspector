@@ -48,8 +48,9 @@ final class ColorPicker: BaseControl {
     }
     
     private(set) lazy var valueContainerView = AccessoryContainerView().then {
-        $0.contentView.addArrangedSubview(selectedColorView)
         $0.contentView.addArrangedSubview(valueLabel)
+        
+        $0.contentView.addArrangedSubview(selectedColorView)
         
         $0.addGestureRecognizer(tapGestureRecognizer)
     }
