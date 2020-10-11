@@ -41,6 +41,8 @@ final class OptionSelector: BaseControl {
     var selectedIndex: Int? {
         didSet {
             updateViews()
+            
+            sendActions(for: .valueChanged)
         }
     }
 
