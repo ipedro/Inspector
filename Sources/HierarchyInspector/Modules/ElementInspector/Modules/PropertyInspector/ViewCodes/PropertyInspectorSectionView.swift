@@ -28,17 +28,17 @@ final class PropertyInspectorSectionView: BaseView {
     private lazy var topSeparatorView = SeparatorView(thickness: 1)
     
     private lazy var sectionHeader = SectionHeader(.callout, text: title).then {
-        $0.contentView.directionalLayoutMargins = .zero
+        $0.contentView.directionalLayoutMargins = .margins(
+            horizontal: .zero,
+            vertical: ElementInspector.appearance.verticalMargins / 2
+        )
         
         $0.isHidden = title == nil
     }
     
-    var isCollapsed: Bool {
-        get {
-            controlsStackView.isHidden
-        }
-        set {
-            hideContent(newValue)
+    var isCollapsed: Bool = false {
+        didSet {
+            hideContent(isCollapsed)
         }
     }
     
@@ -56,7 +56,6 @@ final class PropertyInspectorSectionView: BaseView {
                             top: ElementInspector.appearance.horizontalMargins,
                             bottom: ElementInspector.appearance.horizontalMargins - 5
                         )
-                        $0.alpha = 0.5
                     }
                     
                 case let .subSection(title):
@@ -66,7 +65,7 @@ final class PropertyInspectorSectionView: BaseView {
                     ).then {
                         $0.contentView.directionalLayoutMargins = .margins(
                             top: ElementInspector.appearance.horizontalMargins,
-                            bottom: ElementInspector.appearance.horizontalMargins / 2
+                            bottom: ElementInspector.appearance.verticalMargins
                         )
                         $0.alpha = 1 / 3
                     }
@@ -104,7 +103,7 @@ final class PropertyInspectorSectionView: BaseView {
                 case let .inlineTextOptions(title, customStringConvertibles, selectedSegmentIndex, _):
                     return SegmentedControl(
                         title: title,
-                        items: customStringConvertibles.map { $0.description },
+                        items: customStringConvertibles.map { $0.description.localizedCapitalized },
                         selectedSegmentIndex: selectedSegmentIndex
                     )
 
@@ -225,26 +224,10 @@ final class PropertyInspectorSectionView: BaseView {
     }
     
     private func hideContent(_ hide: Bool) {
-        guard controlsStackView.isHidden != hide else {
-            return
-        }
-        
-        UIView.animate(
-            withDuration: 0.5,
-            delay: 0,
-            usingSpringWithDamping: 0.85,
-            initialSpringVelocity: 0,
-            options: [.beginFromCurrentState, .curveEaseInOut],
-            animations: {
-                self.controlsStackView.isSafelyHidden = hide
-                self.controlsStackView.alpha = hide ? 0 : 1
-                self.controlsStackView.clipsToBounds = hide
-                self.chevronDownIcon.transform = hide ? .init(rotationAngle: -(.pi / 2)) : .identity
-            },
-            completion: { _ in
-                
-            }
-        )
+        controlsStackView.clipsToBounds  = hide
+        controlsStackView.isSafelyHidden = hide
+        controlsStackView.alpha          = hide ? 0 : 1
+        chevronDownIcon.transform        = hide ? CGAffineTransform(rotationAngle: -(.pi / 2)) : .identity
     }
 }
 

@@ -27,7 +27,7 @@ extension UIView {
         UIView.animate(withDuration: 0.2, delay: delay, options: [.curveEaseInOut, .beginFromCurrentState], animations: {
             switch type {
             case .in:
-                self.transform = CGAffineTransform(scaleX: 0.92, y: 0.92)
+                self.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
                 
             case .out:
                 self.transform = .identity

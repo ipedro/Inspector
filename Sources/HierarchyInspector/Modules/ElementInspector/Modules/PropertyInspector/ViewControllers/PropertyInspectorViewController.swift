@@ -24,10 +24,9 @@ final class PropertyInspectorViewController: UIViewController {
     
     private lazy var viewCode = PropertyInspectorViewCode()
     
-    private lazy var sectionViews: [PropertyInspectorSectionView] = viewModel.sectionInputs.enumerated().map { index, section in
-        PropertyInspectorSectionView(section: section).then {
+    private lazy var sectionViews: [PropertyInspectorSectionView] = viewModel.sectionInputs.map {
+        PropertyInspectorSectionView(section: $0).then {
             $0.delegate = self
-            $0.isCollapsed = index > 0
         }
     }
     
@@ -84,19 +83,33 @@ final class PropertyInspectorViewController: UIViewController {
 extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate {
     
     func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool) {
-        guard isCollapsed else {
-            section.isCollapsed.toggle()
-            return
-        }
+        UIView.animate(
+            withDuration: 0.4,
+            delay: 0,
+            usingSpringWithDamping: 0.88,
+            initialSpringVelocity: 0,
+            options: .beginFromCurrentState,
+            animations: { [weak self] in
+                
+                guard isCollapsed else {
+                    section.isCollapsed.toggle()
+                    return
+                }
+                
+                self?.sectionViews.forEach {
+                    if $0 === section {
+                        $0.isCollapsed = !isCollapsed
+                    }
+                    else {
+                        $0.isCollapsed = isCollapsed
+                    }
+                }
+                
+                
+            },
+            completion: nil
+        )
         
-        sectionViews.forEach {
-            if $0 === section {
-                $0.isCollapsed = !isCollapsed
-            }
-            else {
-                $0.isCollapsed = isCollapsed
-            }
-        }
     }
     
     func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTapColorPicker colorPicker: ColorPicker) {

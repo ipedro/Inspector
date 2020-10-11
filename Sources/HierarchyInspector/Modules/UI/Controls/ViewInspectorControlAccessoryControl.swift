@@ -12,6 +12,8 @@ final class ViewInspectorControlAccessoryControl: BaseControl {
     override func setup() {
         super.setup()
         
+        animateOnTouch = true
+        
         contentView.axis = .horizontal
         
         contentView.spacing = ElementInspector.appearance.verticalMargins / 2

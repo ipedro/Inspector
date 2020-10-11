@@ -148,9 +148,9 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
             rootViewController: optionSelectorViewController
         ).then {
             $0.modalPresentationStyle = .popover
-            $0.popoverPresentationController?.sourceView = optionSelector.valueContainerView
-            $0.popoverPresentationController?.delegate = self
+            $0.popoverPresentationController?.sourceView = optionSelector
             $0.popoverPresentationController?.permittedArrowDirections = permittedPopoverArrowDirections
+            $0.popoverPresentationController?.delegate = self
         }
         
         viewController.present(navigationController, animated: true)

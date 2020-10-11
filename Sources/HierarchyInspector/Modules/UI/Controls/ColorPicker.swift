@@ -24,26 +24,24 @@ final class ColorPicker: ViewInspectorControl {
         }
     }
     
-    private lazy var selectedColorView = ColorDisplayControl().then {
+    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapColor))
+    
+    private lazy var colorDisplayControl = ColorDisplayControl().then {
         $0.color = selectedColor
-        $0.addTarget(self, action: #selector(tapColor), for: .touchUpInside)
         
         $0.heightAnchor.constraint(equalToConstant: 16).isActive = true
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor, multiplier: 2).isActive = true
     }
     
-    private lazy var valueTextView = UITextView(.footnote).then {
+    private lazy var colorDisplayLabel = UILabel(.footnote).then {
         $0.font = $0.font?.withTraits(traits: .traitMonoSpace)
-        $0.setContentCompressionResistancePriority(.required, for: .horizontal)
-        $0.textContainer.widthTracksTextView = true
+        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
     
-    private(set) lazy var valueContainerView = ViewInspectorControlAccessoryControl().then {
-        $0.contentView.alignment = .center
-        
-        $0.contentView.addArrangedSubview(valueTextView)
-        
-        $0.contentView.addArrangedSubview(selectedColorView)
+    private(set) lazy var colorDisplayAccessoryControl = ViewInspectorControlAccessoryControl().then {
+        $0.addGestureRecognizer(tapGestureRecognizer)
+        $0.contentView.addArrangedSubview(colorDisplayLabel)
+        $0.contentView.addArrangedSubview(colorDisplayControl)
     }
     
     // MARK: - Init
@@ -61,33 +59,29 @@ final class ColorPicker: ViewInspectorControl {
     override func setup() {
         super.setup()
         
-        contentView.addArrangedSubview(valueContainerView)
+        contentView.addArrangedSubview(colorDisplayAccessoryControl)
         
         didUpdateColor()
         
         #if swift(>=5.3)
-        selectedColorView.isEnabled = true
+        colorDisplayControl.isEnabled = true
         #else
-        selectedColorView.isUserInteractionEnabled = false
-        valueTextView.textColor = .systemPurple
-        valueContainerView.backgroundColor = nil
+        colorDisplayControl.isUserInteractionEnabled = false
+        colorDisplayLabel.textColor = .systemPurple
+        colorDisplayAccessoryControl.backgroundColor = nil
         
-        var margins = valueContainerView.contentView.directionalLayoutMargins
+        var margins = colorDisplayAccessoryControl.contentView.directionalLayoutMargins
         margins.leading = 0
         margins.trailing = 0
         
-        valueContainerView.contentView.directionalLayoutMargins = margins
+        colorDisplayAccessoryControl.contentView.directionalLayoutMargins = margins
         #endif
     }
     
     private func didUpdateColor() {
-        selectedColorView.color = selectedColor
+        colorDisplayControl.color = selectedColor
         
-        valueTextView.text = selectedColor?.hexDescription ?? "–"
-    }
-    
-    @objc private func dismissSelection() {
-        valueTextView.selectedTextRange = nil
+        colorDisplayLabel.text = selectedColor?.hexDescription ?? "–"
     }
     
     @objc private func tapColor() {

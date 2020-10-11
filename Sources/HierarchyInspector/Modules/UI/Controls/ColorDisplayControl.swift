@@ -22,8 +22,6 @@ final class ColorDisplayControl: BaseControl {
     override func setup() {
         super.setup()
         
-        animateOnTouch = true
-        
         layer.cornerRadius = 5
         
         layer.masksToBounds = true

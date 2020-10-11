@@ -61,6 +61,7 @@
 		EB5ED3AB25339C8200ABDCF7 /* ViewInspectorControlAccessoryControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3AA25339C8200ABDCF7 /* ViewInspectorControlAccessoryControl.swift */; };
 		EB5ED3B525339CA000ABDCF7 /* ViewInspectorControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3B425339CA000ABDCF7 /* ViewInspectorControl.swift */; };
 		EB5ED3C325339CEF00ABDCF7 /* ColorDisplayControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3C225339CEF00ABDCF7 /* ColorDisplayControl.swift */; };
+		EB5ED3CD2533AB3100ABDCF7 /* PropertyInspectorInputSection+UIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3CC2533AB3000ABDCF7 /* PropertyInspectorInputSection+UIButton.swift */; };
 		EB74DD92252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */; };
 		EB7EAAC22529B8B4000001BE /* Manager.Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAC12529B8B4000001BE /* Manager.Action.swift */; };
 		EB7EAAE02529B9F2000001BE /* Manager+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAADF2529B9F2000001BE /* Manager+Actions.swift */; };
@@ -235,6 +236,7 @@
 		EB5ED3AA25339C8200ABDCF7 /* ViewInspectorControlAccessoryControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewInspectorControlAccessoryControl.swift; sourceTree = "<group>"; };
 		EB5ED3B425339CA000ABDCF7 /* ViewInspectorControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewInspectorControl.swift; sourceTree = "<group>"; };
 		EB5ED3C225339CEF00ABDCF7 /* ColorDisplayControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorDisplayControl.swift; sourceTree = "<group>"; };
+		EB5ED3CC2533AB3000ABDCF7 /* PropertyInspectorInputSection+UIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PropertyInspectorInputSection+UIButton.swift"; sourceTree = "<group>"; };
 		EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListItemViewModel.swift; sourceTree = "<group>"; };
 		EB7EAAC12529B8B4000001BE /* Manager.Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.Action.swift; sourceTree = "<group>"; };
 		EB7EAAD92529B90B000001BE /* Manager.ActionGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.ActionGroup.swift; sourceTree = "<group>"; };
@@ -409,9 +411,10 @@
 		EB439B8D25321755004CCBCA /* PropertyInspectorInputSection */ = {
 			isa = PBXGroup;
 			children = (
+				EB439C342532F2E1004CCBCA /* PropertyInspectorInputSection+UIActivityIndicatorViewSection.swift */,
+				EB5ED3CC2533AB3000ABDCF7 /* PropertyInspectorInputSection+UIButton.swift */,
 				EB439B9C253217D3004CCBCA /* PropertyInspectorInputSection+UIControlSection.swift */,
 				EB439BAA25322F95004CCBCA /* PropertyInspectorInputSection+UIStackViewSection.swift */,
-				EB439C342532F2E1004CCBCA /* PropertyInspectorInputSection+UIActivityIndicatorViewSection.swift */,
 				EB439B8E25321766004CCBCA /* PropertyInspectorInputSection+UIViewSection.swift */,
 			);
 			path = PropertyInspectorInputSection;
@@ -1196,6 +1199,7 @@
 				OBJ_77 /* UINavigationController+HierarchyInspectorPresentable.swift in Sources */,
 				OBJ_78 /* UIView+Convenience.swift in Sources */,
 				EBC92E432533564D00D7189A /* UITextView+Init.swift in Sources */,
+				EB5ED3CD2533AB3100ABDCF7 /* PropertyInspectorInputSection+UIButton.swift in Sources */,
 				OBJ_79 /* UIView+HierarchyInspectableView.swift in Sources */,
 				EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */,
 				EB15C9222531A53B00D100E6 /* Console.swift in Sources */,
