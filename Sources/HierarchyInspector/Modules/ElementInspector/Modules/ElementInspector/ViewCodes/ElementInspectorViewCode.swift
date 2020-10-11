@@ -15,7 +15,7 @@ final class ElementInspectorViewCode: BaseView {
     
     private(set) lazy var dismissBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
     
-    private lazy var emptyLabel = UILabel(
+    private(set) lazy var emptyLabel = UILabel(
         .body,
         "No Element Inspector",
         textAlignment: .center).then {

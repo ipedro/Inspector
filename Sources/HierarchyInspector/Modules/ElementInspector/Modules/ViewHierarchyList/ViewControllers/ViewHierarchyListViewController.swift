@@ -104,15 +104,4 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             
         })
     }
-    
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        guard let text = viewModel.title(for: section) else {
-//            return UIView().then {
-//                $0.heightAnchor.constraint(equalToConstant: 0).isActive = true
-//            }
-//        }
-//
-//        return SectionHeader(.body, text: text)
-//    }
-    
 }

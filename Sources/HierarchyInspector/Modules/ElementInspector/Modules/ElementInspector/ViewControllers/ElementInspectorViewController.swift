@@ -33,6 +33,9 @@ final class ElementInspectorViewController: UIViewController {
     
     private var presentedPanelViewController: UIViewController? {
         didSet {
+            
+            viewCode.emptyLabel.isHidden = presentedPanelViewController != nil
+            
             if let panelViewController = presentedPanelViewController {
                 
                 panelViewController.willMove(toParent: self)
@@ -116,13 +119,7 @@ final class ElementInspectorViewController: UIViewController {
         
         containerViewController.view.layoutIfNeeded()
         
-        let newHeight = container.preferredContentSize.height
-
-        let newWidth = max(320, container.preferredContentSize.width)
-
-        let newSize = CGSize(width: newWidth, height: newHeight)
-        
-        return newSize
+        return containerViewController.preferredContentSize
     }
     
     static func create(viewModel: ElementInspectorViewModelProtocol) -> ElementInspectorViewController {
