@@ -8,7 +8,9 @@
 import UIKit
 
 protocol ElementInspectorViewControllerDelegate: AnyObject {
-    func elementInspectorViewController(_ viewController: ElementInspectorViewController, viewControllerForPanel panel: ElementInspectorPanel) -> UIViewController
+    func elementInspectorViewController(_ viewController: ElementInspectorViewController,
+                                        viewControllerForPanel panel: ElementInspectorPanel,
+                                        with reference: ViewHierarchyReference) -> UIViewController
 }
 
 final class ElementInspectorViewController: UIViewController {
@@ -83,9 +85,15 @@ final class ElementInspectorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = viewModel.reference.elementName
+        
         navigationItem.titleView = viewCode.segmentedControl
+        
         navigationItem.rightBarButtonItem = viewCode.inspectBarButtonItem
-        navigationItem.leftBarButtonItem = viewCode.dismissBarButtonItem
+        
+        if navigationController?.viewControllers.count == 1 {
+            navigationItem.leftBarButtonItem = viewCode.dismissBarButtonItem
+        }
         
         viewModel.elementPanels.reversed().forEach {
             viewCode.segmentedControl.insertSegment(with: $0.image.withRenderingMode(.alwaysTemplate), at: 0, animated: false)
@@ -146,7 +154,7 @@ private extension ElementInspectorViewController {
     }
     
     func installPanel(_ panel: ElementInspectorPanel) {
-        guard let panelViewController = delegate?.elementInspectorViewController(self, viewControllerForPanel: panel) else {
+        guard let panelViewController = delegate?.elementInspectorViewController(self, viewControllerForPanel: panel, with: viewModel.reference) else {
             presentedPanelViewController = nil
             return
         }

@@ -306,12 +306,6 @@ extension HierarchyInspector.Manager: HighlightViewDelegate {
 }
 
 extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didSelect reference: ViewHierarchyReference) {
-        elementInspectorCoordinator?.start().dismiss(animated: false) { [weak self] in
-            self?.presentInspector(for: reference, animated: false)
-        }
-    }
-    
     func elementInspectorCoordinatorDidFinish(_ coordinator: ElementInspectorCoordinator) {
         elementInspectorCoordinator = nil
     }

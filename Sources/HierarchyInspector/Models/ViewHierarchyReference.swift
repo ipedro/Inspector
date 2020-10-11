@@ -68,13 +68,13 @@ struct ViewHierarchyReference {
         
         frame = root.frame
         
-        isContainer = root.subviews.isEmpty == false
-        
         accessibilityIdentifier = root.accessibilityIdentifier
         
         canHostInspectorView = root.canHostInspectorView
         
         children = root.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1) }
+        
+        isContainer = children.isEmpty == false
         
         deepestAbsoulteLevel = children.map { $0.depth }.max() ?? depth
     }

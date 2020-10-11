@@ -22,6 +22,8 @@ enum ElementInspectorPanel: Int, CaseIterable {
 }
 
 protocol ElementInspectorViewModelProtocol {
+    var reference: ViewHierarchyReference { get }
+    
     var elementPanels: [ElementInspectorPanel] { get }
 }
 

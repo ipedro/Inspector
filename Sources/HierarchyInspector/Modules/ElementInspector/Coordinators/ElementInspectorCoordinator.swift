@@ -9,35 +9,25 @@ import UIKit
 
 protocol ElementInspectorCoordinatorDelegate: AnyObject {
     func elementInspectorCoordinatorDidFinish(_ coordinator: ElementInspectorCoordinator)
-    
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didSelect reference: ViewHierarchyReference)
 }
 
 final class ElementInspectorCoordinator: NSObject {
     weak var delegate: ElementInspectorCoordinatorDelegate?
     
-    let reference: ViewHierarchyReference
+    let rootReference: ViewHierarchyReference
     
     init(reference: ViewHierarchyReference) {
-        self.reference = reference
+        self.rootReference = reference
     }
     
-    private lazy var elementInspectorViewController: ElementInspectorViewController = {
-        let viewModel = ElementInspectorViewModel(reference: reference)
-        
-        let viewController = ElementInspectorViewController.create(viewModel: viewModel)
-        viewController.delegate = self
-
-        return viewController
-    }()
+    private lazy var elementInspectorViewController = makeElementInspectorViewController(with: rootReference)
     
     private lazy var navigationController = PopoverNavigationController(
         rootViewController: elementInspectorViewController
     ).then {
         $0.presentationDelegate = self
         $0.modalPresentationStyle = .popover
-        $0.popoverPresentationController?.delegate = self
-        $0.popoverPresentationController?.sourceView = reference.view
+        $0.popoverPresentationController?.sourceView = rootReference.view
     }
     
     private var permittedPopoverArrowDirections: UIPopoverArrowDirection {
@@ -64,6 +54,16 @@ final class ElementInspectorCoordinator: NSObject {
     func start() -> UINavigationController {
         navigationController
     }
+    
+    private func makeElementInspectorViewController(with reference: ViewHierarchyReference) -> ElementInspectorViewController {
+        let viewModel = ElementInspectorViewModel(reference: reference)
+        
+        let viewController = ElementInspectorViewController.create(viewModel: viewModel)
+        viewController.delegate = self
+        
+        return viewController
+    }
+    
 }
 
 extension ElementInspectorCoordinator: PopoverNavigationControllerDelegate {
@@ -79,33 +79,30 @@ extension ElementInspectorCoordinator: PopoverNavigationControllerDelegate {
 // MARK: - ElementInspectorViewControllerDelegate
 
 extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
-    func elementInspectorViewController(_ viewController: ElementInspectorViewController, viewControllerForPanel panel: ElementInspectorPanel) -> UIViewController {
+    func elementInspectorViewController(_ viewController: ElementInspectorViewController,
+                                        viewControllerForPanel panel: ElementInspectorPanel,
+                                        with reference: ViewHierarchyReference) -> UIViewController {
         switch panel {
         
         case .propertyInspector:
-            return PropertyInspectorViewController.create(
-                viewModel: PropertyInspectorViewModel(
-                    reference: reference
-                )
-            ).then {
+            return PropertyInspectorViewController.create(viewModel: PropertyInspectorViewModel(reference: reference)).then {
                 $0.delegate = self
             }
             
         case .viewHierarchy:
-            return ViewHierarchyListViewController.create(
-                viewModel: ViewHierarchyListViewModel(
-                    reference: reference
-                )
-            ).then {
+            return ViewHierarchyListViewController.create(viewModel: ViewHierarchyListViewModel(reference: reference)).then {
                 $0.delegate = self
             }
+            
         }
     }
 }
 
 extension ElementInspectorCoordinator: ViewHierarchyListViewControllerDelegate {
     func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController, didSelect reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, didSelect: reference)
+        let elementInspectorViewController = makeElementInspectorViewController(with: reference)
+        
+        navigationController.pushViewController(elementInspectorViewController, animated: true)
     }
 }
 
