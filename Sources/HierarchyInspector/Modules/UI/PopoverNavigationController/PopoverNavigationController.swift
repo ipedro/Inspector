@@ -14,6 +14,21 @@ protocol PopoverNavigationControllerDelegate: AnyObject {
 final class PopoverNavigationController: UINavigationController {
     weak var presentationDelegate: PopoverNavigationControllerDelegate?
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        #if swift(>=5.0)
+        if #available(iOS 13.0, *) {
+            overrideUserInterfaceStyle = .dark
+            view.backgroundColor = .secondarySystemBackground
+        }
+        else {
+            view.backgroundColor = .groupTableViewBackground
+        }
+        #endif
+        
+    }
+    
     override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
         preferredContentSize = container.preferredContentSize
     }

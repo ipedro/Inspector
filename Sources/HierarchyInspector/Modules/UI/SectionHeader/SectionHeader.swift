@@ -29,15 +29,15 @@ final class SectionHeader: BaseView {
     override func setup() {
         super.setup()
         
-        if #available(iOS 13.0, *) {
-            backgroundColor = .systemBackground
-        } else {
-            backgroundColor = .white
-        }
-        
         contentView.addArrangedSubview(textLabel)
         
         contentView.directionalLayoutMargins = .margins(horizontal: 30, vertical: 15)
+    }
+    
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        
+        backgroundColor = superview?.backgroundColor
     }
     
     convenience init(_ textStyle: UIFont.TextStyle = .title3, text: String?) {

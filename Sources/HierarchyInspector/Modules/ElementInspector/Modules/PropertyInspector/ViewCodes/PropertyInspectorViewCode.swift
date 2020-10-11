@@ -23,13 +23,5 @@ final class PropertyInspectorViewCode: BaseView {
         contentView.spacing = 15
         
         contentView.directionalLayoutMargins = .margins(bottom: 30)
-        
-        if #available(iOS 13.0, *) {
-            backgroundColor = .systemBackground
-        }
-        else {
-            backgroundColor = .white
-        }
-        
     }
 }

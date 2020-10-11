@@ -36,12 +36,6 @@ final class ElementInspectorCoordinator: NSObject {
         $0.modalPresentationStyle = .popover
         $0.popoverPresentationController?.delegate = self
         $0.popoverPresentationController?.sourceView = reference.view
-        
-        if #available(iOS 13.0, *) {
-            $0.view.backgroundColor = .systemBackground
-        } else {
-            $0.view.backgroundColor = .groupTableViewBackground
-        }
     }
     
     private var permittedPopoverArrowDirections: UIPopoverArrowDirection {
@@ -118,6 +112,7 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
                     $0.selectedColor = selectedColor
                 }
                 
+                $0.overrideUserInterfaceStyle = navigationController.overrideUserInterfaceStyle
                 $0.modalPresentationStyle = .popover
                 $0.popoverPresentationController?.sourceView = colorPicker.valueContainerView
                 $0.popoverPresentationController?.permittedArrowDirections = permittedPopoverArrowDirections

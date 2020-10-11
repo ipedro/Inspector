@@ -71,10 +71,10 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             if #available(iOS 13.0, *) {
                 switch isEvenRow {
                 case true:
-                    backgroundColor = .systemBackground
+                    backgroundColor = .secondarySystemBackground
 
                 case false:
-                    backgroundColor = .secondarySystemBackground
+                    backgroundColor = .tertiarySystemBackground
                 }
             } else {
                 switch isEvenRow {
