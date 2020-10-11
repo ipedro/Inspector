@@ -76,6 +76,10 @@ extension HierarchyInspectorPresentable {
             message: Texts.inspectableViews(snapshot.flattenedViewHierarchy.count, in: snapshot.viewHierarchy.className),
             preferredStyle: .alert
         ).then {
+            if #available(iOS 13.0, *) {
+                $0.overrideUserInterfaceStyle = .dark
+            }
+            
             $0.view.tintColor = .systemPurple
         }
         

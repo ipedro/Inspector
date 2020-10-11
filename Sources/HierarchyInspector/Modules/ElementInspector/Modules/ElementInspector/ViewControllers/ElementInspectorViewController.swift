@@ -182,10 +182,10 @@ extension ElementInspectorViewController: HierarchyInspectorPresentable {
     var hierarchyInspectorLayers: [ViewHierarchyLayer] {
         [
             .buttons,
-            .staticTexts + .images + .icons,
-            .textViews + .textFields,
-            .stackViews + .containerViews,
-            .activityIndicators,
+            .controls,
+            .staticTexts + .icons + .images,
+            .stackViews,
+            .containerViews,
             .allViews
         ]
     }

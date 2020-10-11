@@ -9,7 +9,7 @@ import UIKit
 
 final class SectionHeader: BaseView {
     
-    private lazy var textLabel = UILabel(textStyle).then {
+    private(set) lazy var textLabel = UILabel(textStyle).then {
         $0.numberOfLines = 0
         $0.adjustsFontSizeToFitWidth = true
         $0.preferredMaxLayoutWidth = 200

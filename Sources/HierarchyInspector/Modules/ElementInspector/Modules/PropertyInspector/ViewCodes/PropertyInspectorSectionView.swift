@@ -10,6 +10,7 @@ import UIKit
 protocol PropertyInspectorSectionViewDelegate: AnyObject {
     func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTapColorPicker colorPicker: ColorPicker)
     func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTapOptionSelector optionSelector: OptionSelector)
+    func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool)
 }
 
 final class PropertyInspectorSectionView: BaseView {
@@ -30,6 +31,15 @@ final class PropertyInspectorSectionView: BaseView {
         $0.contentView.directionalLayoutMargins = .zero
         
         $0.isHidden = title == nil
+    }
+    
+    var isCollapsed: Bool {
+        get {
+            controlsStackView.isHidden
+        }
+        set {
+            hideContent(newValue)
+        }
     }
     
     private lazy var arrangedSubviews: [UIView] = propertyInputs.compactMap { inputViews[$0] }
@@ -132,6 +142,23 @@ final class PropertyInspectorSectionView: BaseView {
         return dict
     }()
     
+    private lazy var toggleControl = UIControl().then {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        
+        $0.addTarget(self, action: #selector(tapHeader), for: .touchUpInside)
+    }
+    
+    private lazy var chevronDownIcon = Icon(
+        .chevronDown,
+        color: sectionHeader.textLabel.textColor.withAlphaComponent(0.7),
+        size: CGSize(
+            width: 12,
+            height: 12
+        )
+    ).then {
+        $0.alpha = 0.8
+    }
+    
     // MARK: - Init
     
     init(section: PropertyInspectorInputSection) {
@@ -149,17 +176,41 @@ final class PropertyInspectorSectionView: BaseView {
     override func setup() {
         super.setup()
         
+        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        
         contentView.directionalLayoutMargins = ElementInspector.appearance.margins
         
         contentView.addArrangedSubview(sectionHeader)
-        contentView.setCustomSpacing(ElementInspector.appearance.verticalMargins, after: sectionHeader)
         
         contentView.addArrangedSubview(controlsStackView)
         
-        installTopSeparator()
+        contentView.setCustomSpacing(ElementInspector.appearance.verticalMargins, after: sectionHeader)
+        
+        installSeparator()
+        
+        installIcon()
+        
+        installHeaderControl()
     }
     
-    private func installTopSeparator() {
+    private func installHeaderControl() {
+        contentView.addSubview(toggleControl)
+        
+        toggleControl.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        toggleControl.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        toggleControl.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        toggleControl.bottomAnchor.constraint(equalTo: controlsStackView.topAnchor).isActive = true
+    }
+    
+    private func installIcon() {
+        contentView.addSubview(chevronDownIcon)
+        
+        chevronDownIcon.centerYAnchor.constraint(equalTo: sectionHeader.centerYAnchor).isActive = true
+
+        chevronDownIcon.trailingAnchor.constraint(equalTo: sectionHeader.leadingAnchor, constant: -4).isActive = true
+    }
+    
+    private func installSeparator() {
         topSeparatorView.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(topSeparatorView)
@@ -167,6 +218,33 @@ final class PropertyInspectorSectionView: BaseView {
         topSeparatorView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         topSeparatorView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         topSeparatorView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+    }
+    
+    @objc private func tapHeader() {
+        delegate?.propertyInspectorSectionViewDidTapHeader(self, isCollapsed: isCollapsed)
+    }
+    
+    private func hideContent(_ hide: Bool) {
+        guard controlsStackView.isHidden != hide else {
+            return
+        }
+        
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0,
+            usingSpringWithDamping: 0.85,
+            initialSpringVelocity: 0,
+            options: [.beginFromCurrentState, .curveEaseInOut],
+            animations: {
+                self.controlsStackView.isSafelyHidden = hide
+                self.controlsStackView.alpha = hide ? 0 : 1
+                self.controlsStackView.clipsToBounds = hide
+                self.chevronDownIcon.transform = hide ? .init(rotationAngle: -(.pi / 2)) : .identity
+            },
+            completion: { _ in
+                
+            }
+        )
     }
 }
 

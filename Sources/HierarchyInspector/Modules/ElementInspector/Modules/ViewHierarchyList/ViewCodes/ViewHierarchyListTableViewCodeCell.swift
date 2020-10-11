@@ -132,7 +132,14 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         $0.alpha = 0.5
     }
     
-    private lazy var chevronDownIcon = Icon(.chevronDown, color: elementNameLabel.textColor).then {
+    private lazy var chevronDownIcon = Icon(
+        .chevronDown,
+        color: elementNameLabel.textColor.withAlphaComponent(0.7),
+        size: CGSize(
+            width: 12,
+            height: 12
+        )
+    ).then {
         $0.alpha = 0.8
     }
     
@@ -164,7 +171,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         chevronDownIcon.centerYAnchor.constraint(equalTo: elementNameLabel.centerYAnchor).isActive = true
 
-        chevronDownIcon.trailingAnchor.constraint(equalTo: elementNameLabel.leadingAnchor, constant: -3).isActive = true
+        chevronDownIcon.trailingAnchor.constraint(equalTo: elementNameLabel.leadingAnchor, constant: -4).isActive = true
     }
     
     override func prepareForReuse() {

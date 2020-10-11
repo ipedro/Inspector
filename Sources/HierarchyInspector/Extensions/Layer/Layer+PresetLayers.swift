@@ -11,7 +11,7 @@ import WebKit
 
 // MARK: - Preset Layers
 
-#warning("TODO: add documentation")
+#warning("TODO: add layers documentation")
 public extension ViewHierarchyLayer {
     
     static let allViews           : ViewHierarchyLayer = .layer(name: "All views")            { _ in true }

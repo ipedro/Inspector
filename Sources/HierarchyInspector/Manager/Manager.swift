@@ -13,8 +13,7 @@ extension HierarchyInspector {
             self.hostViewController = host
         }
         
-        @available(*, deprecated, message: "temporary holding coordinator. remove")
-        var elementInspectorCoordinator: ElementInspectorCoordinator?
+        private var elementInspectorCoordinator: ElementInspectorCoordinator?
         
         var shouldCacheViewHierarchySnapshot = true
         

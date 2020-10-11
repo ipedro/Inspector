@@ -23,6 +23,10 @@ final class PropertyInspectorViewModel: PropertyInspectorViewModelProtocol {
             array.append(.UIStackViewSection(stackView: stackView))
         }
         
+        if let button = reference.view as? UIButton {
+            array.append(.UIButtonSection(button: button))
+        }
+        
         if let control = reference.view as? UIControl {
             array.append(.UIControlSection(control: control))
         }
