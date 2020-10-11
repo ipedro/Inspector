@@ -8,6 +8,18 @@
 import UIKit
 
 final class SeparatorView: BaseView {
+    let thickness: CGFloat
+    
+    init(thickness: CGFloat = 0.5, frame: CGRect = .zero) {
+        self.thickness = thickness
+        
+        super.init(frame: frame)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private lazy var separatorView = UIView().then {
         if #available(iOS 13.0, *) {
             $0.backgroundColor = .separator
@@ -15,7 +27,7 @@ final class SeparatorView: BaseView {
             $0.backgroundColor = .lightGray
         }
         
-        $0.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
+        $0.heightAnchor.constraint(equalToConstant: thickness).isActive = true
     }
     
     override func setup() {

@@ -24,6 +24,8 @@ final class PropertyInspectorSectionView: BaseView {
         arrangedSubviews: arrangedSubviews
     )
     
+    private lazy var topSeparatorView = SeparatorView(thickness: 1)
+    
     private lazy var sectionHeader = SectionHeader(.callout, text: title).then {
         $0.contentView.directionalLayoutMargins = .zero
         
@@ -84,16 +86,31 @@ final class PropertyInspectorSectionView: BaseView {
                     }
                     
                 case let .toggleButton(title, isOn, _):
-                    return ToggleControl(title: title, isOn: isOn)
+                    return ToggleControl(
+                        title: title,
+                        isOn: isOn
+                    )
                     
                 case let .inlineTextOptions(title, customStringConvertibles, selectedSegmentIndex, _):
-                    return SegmentedControl(title: title, items: customStringConvertibles.map { $0.description }, selectedSegmentIndex: selectedSegmentIndex)
+                    return SegmentedControl(
+                        title: title,
+                        items: customStringConvertibles.map { $0.description },
+                        selectedSegmentIndex: selectedSegmentIndex
+                    )
 
                 case let .inlineImageOptions(title, images, selectedSegmentIndex, _):
-                    return SegmentedControl(title: title, items: images, selectedSegmentIndex: selectedSegmentIndex)
+                    return SegmentedControl(
+                        title: title,
+                        items: images,
+                        selectedSegmentIndex: selectedSegmentIndex
+                    )
                     
                 case let .optionsList(title, options, selectedIndex, _):
-                    return OptionSelector(title: title, options: options, selectedIndex: selectedIndex).then {
+                    return OptionSelector(
+                        title: title,
+                        options: options,
+                        selectedIndex: selectedIndex
+                    ).then {
                         $0.delegate = self
                     }
                 }
@@ -135,8 +152,21 @@ final class PropertyInspectorSectionView: BaseView {
         contentView.directionalLayoutMargins = ElementInspector.appearance.margins
         
         contentView.addArrangedSubview(sectionHeader)
+        contentView.setCustomSpacing(ElementInspector.appearance.verticalMargins, after: sectionHeader)
         
         contentView.addArrangedSubview(controlsStackView)
+        
+        installTopSeparator()
+    }
+    
+    private func installTopSeparator() {
+        topSeparatorView.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(topSeparatorView)
+    
+        topSeparatorView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        topSeparatorView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        topSeparatorView.topAnchor.constraint(equalTo: topAnchor).isActive = true
     }
 }
 

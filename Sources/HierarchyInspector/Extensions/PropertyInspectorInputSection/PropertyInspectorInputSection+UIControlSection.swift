@@ -8,7 +8,6 @@
 import UIKit
 
 private enum UIControlProperty: CaseIterable {
-    case groupAlignment
     case contentHorizontalAlignment
     case contentVerticalAlignment
     case groupState
@@ -25,9 +24,6 @@ extension PropertyInspectorInputSection {
             }
 
             switch $0 {
-            case .groupAlignment:
-                return .subSection(name: "alignment")
-                
             case .contentHorizontalAlignment:
                 let knownCases = UIControl.ContentHorizontalAlignment.allCases.filter { $0.image?.withRenderingMode(.alwaysTemplate) != nil }
                 

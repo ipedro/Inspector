@@ -36,7 +36,6 @@ final class PropertyInspectorViewCode: BaseView {
         super.setup()
         
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
-        
         contentView.addArrangedSubview(headerContentView)
         
         scrollView.installView(contentView)

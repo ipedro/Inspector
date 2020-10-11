@@ -44,11 +44,11 @@ final class ToggleControl: ViewInspectorControl {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             switchControl.preferredStyle = .checkbox
-            switchControl.thumbTintColor = .tertiaryLabel
+            switchControl.thumbTintColor = .quaternaryLabel
         }
         #elseif swift(>=5.0)
         if #available(iOS 13.0, *) {
-            switchControl.thumbTintColor = .tertiaryLabel
+            switchControl.thumbTintColor = .quaternaryLabel
         }
         #endif
 
