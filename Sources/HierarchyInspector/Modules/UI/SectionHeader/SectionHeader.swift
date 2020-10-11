@@ -9,7 +9,11 @@ import UIKit
 
 final class SectionHeader: BaseView {
     
-    private lazy var textLabel = UILabel(textStyle)
+    private lazy var textLabel = UILabel(textStyle).then {
+        $0.numberOfLines = 0
+        $0.adjustsFontSizeToFitWidth = true
+        $0.preferredMaxLayoutWidth = 200
+    }
     
     var textStyle: UIFont.TextStyle = .title3 {
         didSet {
@@ -31,7 +35,7 @@ final class SectionHeader: BaseView {
         
         contentView.addArrangedSubview(textLabel)
         
-        contentView.directionalLayoutMargins = .margins(horizontal: 30, vertical: 15)
+        contentView.directionalLayoutMargins = ElementInspector.appearance.margins
     }
     
     override func didMoveToSuperview() {

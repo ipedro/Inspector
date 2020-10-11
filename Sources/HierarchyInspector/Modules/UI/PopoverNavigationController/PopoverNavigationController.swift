@@ -17,16 +17,16 @@ final class PopoverNavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.tintColor = .systemPurple
+        
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             overrideUserInterfaceStyle = .dark
             view.backgroundColor = .secondarySystemBackground
         }
-        else {
-            view.backgroundColor = .groupTableViewBackground
-        }
+        #else
+        view.backgroundColor = .groupTableViewBackground
         #endif
-        
     }
     
     override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {

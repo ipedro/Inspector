@@ -88,6 +88,7 @@
 		EBC524AB252F5F2F0054C6AA /* BaseControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC524AA252F5F2F0054C6AA /* BaseControl.swift */; };
 		EBC92E162533267200D7189A /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E152533267200D7189A /* File.swift */; };
 		EBC92E1D25332A5100D7189A /* UIFont+Traits.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E1C25332A5100D7189A /* UIFont+Traits.swift */; };
+		EBC92E432533564D00D7189A /* UITextView+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E422533564D00D7189A /* UITextView+Init.swift */; };
 		EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */; };
 		EBD9DA01252F919900851E23 /* StepperControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA00252F919900851E23 /* StepperControl.swift */; };
 		EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */; };
@@ -257,6 +258,7 @@
 		EBC524AA252F5F2F0054C6AA /* BaseControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseControl.swift; sourceTree = "<group>"; };
 		EBC92E152533267200D7189A /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		EBC92E1C25332A5100D7189A /* UIFont+Traits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Traits.swift"; sourceTree = "<group>"; };
+		EBC92E422533564D00D7189A /* UITextView+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Init.swift"; sourceTree = "<group>"; };
 		EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleControl.swift; sourceTree = "<group>"; };
 		EBD9DA00252F919900851E23 /* StepperControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperControl.swift; sourceTree = "<group>"; };
 		EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
@@ -718,6 +720,14 @@
 			path = UIFont;
 			sourceTree = "<group>";
 		};
+		EBC92E412533563B00D7189A /* UITextView */ = {
+			isa = PBXGroup;
+			children = (
+				EBC92E422533564D00D7189A /* UITextView+Init.swift */,
+			);
+			path = UITextView;
+			sourceTree = "<group>";
+		};
 		EBD9D9DF252F6E6D00851E23 /* Controls */ = {
 			isa = PBXGroup;
 			children = (
@@ -959,8 +969,6 @@
 		OBJ_9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				EBC92E1B25332A4A00D7189A /* UIFont */,
-				EBC92E142533266600D7189A /* ViewHierarchyReference */,
 				EBA245D2252881A100D4AFD9 /* Array */,
 				EBA245C32528817A00D4AFD9 /* Layer */,
 				EBA245CD2528819500D4AFD9 /* Manager */,
@@ -974,6 +982,7 @@
 				EBD9DA24252FB4D500851E23 /* UIColor */,
 				EB439BB4253237BD004CCBCA /* UIControl.ContentHorizontalAlignment */,
 				EB439BCD25323815004CCBCA /* UIControl.ContentVerticalAlignment */,
+				EBC92E1B25332A4A00D7189A /* UIFont */,
 				EBD9DA0C252FA14900851E23 /* UILabel */,
 				EBA245E1252881B400D4AFD9 /* UINavigationController */,
 				EB439B442532136F004CCBCA /* UISemanticContentAttribute */,
@@ -983,8 +992,10 @@
 				EB439BEA25323887004CCBCA /* UIStackView.Distribution */,
 				EBA245E6252881BA00D4AFD9 /* UITabBarController */,
 				EB439B8825321746004CCBCA /* UITableView */,
+				EBC92E412533563B00D7189A /* UITextView */,
 				EBA245C82528818D00D4AFD9 /* UIView */,
 				EB439B59253213CA004CCBCA /* UIView.ContentMode */,
+				EBC92E142533266600D7189A /* ViewHierarchyReference */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1164,6 +1175,7 @@
 				EB439C1325323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift in Sources */,
 				OBJ_77 /* UINavigationController+HierarchyInspectorPresentable.swift in Sources */,
 				OBJ_78 /* UIView+Convenience.swift in Sources */,
+				EBC92E432533564D00D7189A /* UITextView+Init.swift in Sources */,
 				OBJ_79 /* UIView+HierarchyInspectableView.swift in Sources */,
 				EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */,
 				EB15C9222531A53B00D100E6 /* Console.swift in Sources */,

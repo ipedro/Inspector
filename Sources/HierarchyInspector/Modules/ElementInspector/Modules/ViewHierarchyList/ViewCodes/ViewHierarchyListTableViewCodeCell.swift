@@ -128,6 +128,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     }
     
     private lazy var descriptionLabel = UILabel(.caption2, numberOfLines: 0).then {
+        $0.preferredMaxLayoutWidth = 200
         $0.alpha = 0.5
     }
     
@@ -151,7 +152,12 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         contentView.installView(
             stackView,
-            .margins(top: 15, leading: 0, bottom: 20, trailing: 15)
+            .margins(
+                top: ElementInspector.appearance.verticalMargins,
+                leading: 0,
+                bottom: ElementInspector.appearance.verticalMargins,
+                trailing: ElementInspector.appearance.verticalMargins
+            )
         )
         
         contentView.addSubview(chevronDownIcon)

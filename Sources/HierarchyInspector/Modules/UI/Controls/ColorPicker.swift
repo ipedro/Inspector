@@ -24,35 +24,29 @@ final class ColorPicker: BaseControl {
         }
     }
     
-    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
-    
-    private lazy var selectedColorView = BaseView().then {
+    private lazy var selectedColorView = UIControl().then {
         $0.layer.cornerRadius = 5
         $0.backgroundColor = selectedColor
         $0.layer.borderWidth = 0.5
         $0.layer.borderColor = UIColor.gray.cgColor
         
-        let widthConstraint = $0.widthAnchor.constraint(equalTo: $0.heightAnchor, multiplier: 4 / 3).then {
-            $0.priority = .defaultHigh
-        }
+        $0.heightAnchor.constraint(equalToConstant: 16).isActive = true
+        $0.widthAnchor.constraint(equalToConstant: 32).isActive = true
         
-        widthConstraint.isActive = true
+        $0.addTarget(self, action: #selector(tap), for: .touchDown)
     }
     
-    private lazy var valueLabel = UILabel(.footnote, String(describing: selectedColor)).then {
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        
-        $0.adjustsFontSizeToFitWidth = true
-        $0.minimumScaleFactor = 0.6
+    private lazy var valueLabel = UITextView(.footnote).then {
+        $0.setContentCompressionResistancePriority(.required, for: .horizontal)
+        $0.textContainer.widthTracksTextView = true
     }
     
     private(set) lazy var valueContainerView = AccessoryContainerView().then {
+        $0.contentView.alignment = .center
+        
         $0.contentView.addArrangedSubview(valueLabel)
         
         $0.contentView.addArrangedSubview(selectedColorView)
-        
-        $0.addGestureRecognizer(tapGestureRecognizer)
     }
     
     // MARK: - Init
@@ -72,6 +66,8 @@ final class ColorPicker: BaseControl {
         
         contentView.addArrangedSubview(valueContainerView)
         
+        didUpdateColor()
+        
         #if swift(>=5.3)
         isEnabled = true
         #else
@@ -84,8 +80,6 @@ final class ColorPicker: BaseControl {
         
         valueContainerView.contentView.directionalLayoutMargins = margins
         #endif
-        
-        didUpdateColor()
     }
     
     private func didUpdateColor() {

@@ -9,13 +9,16 @@ import UIKit
 
 class BaseControl: UIControl {
     
+    private lazy var verticalSpacing = ElementInspector.appearance.verticalMargins / 2
+    
     private(set) lazy var titleLabel = UILabel(.footnote).then {
         $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
     }
     
-    private(set) lazy var contentView = UIStackView(axis: .horizontal, spacing: Self.spacing)
-    
-    static var spacing: CGFloat = 10
+    private(set) lazy var contentView = UIStackView(
+        axis: .horizontal,
+        spacing: verticalSpacing
+    )
     
     private lazy var contentContainerView = UIStackView(
         axis: .horizontal,
@@ -23,17 +26,19 @@ class BaseControl: UIControl {
             titleLabel,
             contentView
         ],
-        spacing: Self.spacing,
-        margins: .margins(top: Self.spacing)
+        spacing: verticalSpacing * 2
     )
     
     private lazy var containerView = UIStackView(
         axis: .vertical,
         arrangedSubviews: [
-            contentContainerView,
-            separator
+            contentContainerView
         ],
-        spacing: Self.spacing
+        spacing: verticalSpacing,
+        margins: .margins(
+            horizontal: .zero,
+            vertical: verticalSpacing
+        )
     )
     
     private lazy var separator = SeparatorView()
@@ -84,6 +89,12 @@ class BaseControl: UIControl {
         tintColor = .systemPurple
         
         installView(containerView)
+        
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(separator)
+        separator.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
+        separator.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
+        separator.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
     }
     
 }
@@ -95,28 +106,20 @@ extension BaseControl {
             super.setup()
             
             contentView.axis = .horizontal
-            contentView.spacing = 8
-            contentView.directionalLayoutMargins = .margins(horizontal: 12, vertical: 9)
             
-            layer.cornerRadius = 8
+            contentView.spacing = ElementInspector.appearance.verticalMargins / 2
+            
+            contentView.directionalLayoutMargins = .margins(horizontal: 12, vertical: 9) // matches UIStepper
+            
+            layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
             
             #warning("TODO: move to theme")
             backgroundColor = {
-                let defaultColor = UIColor(hex: "EEEEEF")
-                
                 if #available(iOS 13.0, *) {
-                    return UIColor { trait -> UIColor in
-                        switch trait.userInterfaceStyle {
-                        case .dark:
-                            return UIColor(hex: "313136")
-                            
-                        default:
-                            return defaultColor
-                        }
-                    }
+                    return UIColor.label.withAlphaComponent(0.085)
                 }
                 
-                return defaultColor
+                return UIColor.black.withAlphaComponent(0.085)
             }()
         }
     }

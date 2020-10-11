@@ -40,7 +40,10 @@ final class PropertyInspectorSectionView: BaseView {
                 switch input {
                 case .separator:
                     return SeparatorView().then {
-                        $0.contentView.directionalLayoutMargins = .margins(top: 25, bottom: 20)
+                        $0.contentView.directionalLayoutMargins = .margins(
+                            top: ElementInspector.appearance.horizontalMargins,
+                            bottom: ElementInspector.appearance.horizontalMargins - 5
+                        )
                         $0.alpha = 0.5
                     }
                     
@@ -49,7 +52,10 @@ final class PropertyInspectorSectionView: BaseView {
                         .footnote,
                         text: title.localizedCapitalized
                     ).then {
-                        $0.contentView.directionalLayoutMargins = .margins(top: 25, bottom: 10)
+                        $0.contentView.directionalLayoutMargins = .margins(
+                            top: ElementInspector.appearance.horizontalMargins,
+                            bottom: ElementInspector.appearance.horizontalMargins / 2
+                        )
                         $0.alpha = 1 / 3
                     }
                     
@@ -123,7 +129,7 @@ final class PropertyInspectorSectionView: BaseView {
     override func setup() {
         super.setup()
         
-        contentView.directionalLayoutMargins = .margins(horizontal: 30, vertical: 15)
+        contentView.directionalLayoutMargins = ElementInspector.appearance.margins
         
         contentView.addArrangedSubview(sectionHeader)
         

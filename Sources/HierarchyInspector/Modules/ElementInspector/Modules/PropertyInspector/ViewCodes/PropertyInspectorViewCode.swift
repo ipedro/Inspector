@@ -27,10 +27,7 @@ final class PropertyInspectorViewCode: BaseView {
             elementDescriptionLabel
         ],
         spacing: 4,
-        margins: .margins(
-            horizontal: ElementInspector.appearance.horizontalMargins,
-            vertical: 15
-        )
+        margins: ElementInspector.appearance.margins
     )
     
     private(set) lazy var scrollView = UIScrollView()

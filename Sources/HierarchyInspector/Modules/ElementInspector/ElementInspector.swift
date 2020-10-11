@@ -13,6 +13,15 @@ enum ElementInspector {
         
         let horizontalMargins: CGFloat = 26
         
+        let verticalMargins: CGFloat = 13
+        
+        var margins: NSDirectionalEdgeInsets {
+            .margins(
+                horizontal: ElementInspector.appearance.horizontalMargins,
+                vertical: ElementInspector.appearance.verticalMargins
+            )
+        }
+        
     }
     
     static var appearance = Appearance()

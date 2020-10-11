@@ -25,9 +25,21 @@ protocol ElementInspectorViewModelProtocol {
     var elementPanels: [ElementInspectorPanel] { get }
 }
 
-struct ElementInspectorViewModel: ElementInspectorViewModelProtocol {
+final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     let reference: ViewHierarchyReference
     
-    let elementPanels: [ElementInspectorPanel] = ElementInspectorPanel.allCases
+    init(reference: ViewHierarchyReference) {
+        self.reference = reference
+    }
+    
+    private(set) lazy var elementPanels: [ElementInspectorPanel] = {
+        var array: [ElementInspectorPanel] = [.propertyInspector]
+        
+        if reference.isContainer {
+            array.append(.viewHierarchy)
+        }
+        
+        return array
+    }()
     
 }

@@ -30,6 +30,8 @@ final class ViewHierarchyListViewController: UIViewController {
         super.viewDidLoad()
         
         viewCode.tableView.reloadData()
+        
+        viewCode.tableView.setContentOffset(CGPoint(x: 0, y: -viewCode.tableView.contentInset.top), animated: false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,6 +69,9 @@ extension ViewHierarchyListViewController: UITableViewDataSource {
 }
 
 extension ViewHierarchyListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        viewModel.itemViewModel(for: indexPath)?.isContainer == true
+    }
     
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
         guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {

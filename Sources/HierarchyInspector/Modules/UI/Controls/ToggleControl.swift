@@ -40,6 +40,17 @@ final class ToggleControl: BaseControl {
         super.setup()
 
         switchControl.onTintColor = .systemPurple
+        
+        #if swift(>=5.3)
+        if #available(iOS 14.0, *) {
+            switchControl.preferredStyle = .checkbox
+            switchControl.thumbTintColor = .tertiaryLabel
+        }
+        #elseif swift(>=5.0)
+        if #available(iOS 13.0, *) {
+            switchControl.thumbTintColor = .tertiaryLabel
+        }
+        #endif
 
         contentView.addArrangedSubview(switchControl)
         
