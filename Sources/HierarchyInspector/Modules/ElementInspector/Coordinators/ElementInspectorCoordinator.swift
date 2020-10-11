@@ -20,7 +20,7 @@ final class ElementInspectorCoordinator: NSObject {
         self.rootReference = reference
     }
     
-    private lazy var elementInspectorViewController = makeElementInspectorViewController(with: rootReference)
+    private lazy var elementInspectorViewController = makeElementInspectorViewController(with: rootReference, showDismissBarButton: true)
     
     private lazy var navigationController = PopoverNavigationController(
         rootViewController: elementInspectorViewController
@@ -55,8 +55,8 @@ final class ElementInspectorCoordinator: NSObject {
         navigationController
     }
     
-    private func makeElementInspectorViewController(with reference: ViewHierarchyReference) -> ElementInspectorViewController {
-        let viewModel = ElementInspectorViewModel(reference: reference)
+    private func makeElementInspectorViewController(with reference: ViewHierarchyReference, showDismissBarButton: Bool) -> ElementInspectorViewController {
+        let viewModel = ElementInspectorViewModel(reference: reference, showDismissBarButton: showDismissBarButton)
         
         let viewController = ElementInspectorViewController.create(viewModel: viewModel)
         viewController.delegate = self
@@ -100,7 +100,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
 
 extension ElementInspectorCoordinator: ViewHierarchyListViewControllerDelegate {
     func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController, didSelect reference: ViewHierarchyReference) {
-        let elementInspectorViewController = makeElementInspectorViewController(with: reference)
+        let elementInspectorViewController = makeElementInspectorViewController(with: reference, showDismissBarButton: false)
         
         navigationController.pushViewController(elementInspectorViewController, animated: true)
     }

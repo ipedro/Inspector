@@ -25,13 +25,18 @@ protocol ElementInspectorViewModelProtocol {
     var reference: ViewHierarchyReference { get }
     
     var elementPanels: [ElementInspectorPanel] { get }
+    
+    var showDismissBarButton: Bool { get }
 }
 
 final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     let reference: ViewHierarchyReference
     
-    init(reference: ViewHierarchyReference) {
+    let showDismissBarButton: Bool
+    
+    init(reference: ViewHierarchyReference, showDismissBarButton: Bool) {
         self.reference = reference
+        self.showDismissBarButton = showDismissBarButton
     }
     
     private(set) lazy var elementPanels: [ElementInspectorPanel] = {

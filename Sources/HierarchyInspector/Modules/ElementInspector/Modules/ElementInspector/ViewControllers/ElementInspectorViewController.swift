@@ -91,7 +91,7 @@ final class ElementInspectorViewController: UIViewController {
         
         navigationItem.rightBarButtonItem = viewCode.inspectBarButtonItem
         
-        if navigationController?.viewControllers.count == 1 {
+        if viewModel.showDismissBarButton {
             navigationItem.leftBarButtonItem = viewCode.dismissBarButtonItem
         }
         
