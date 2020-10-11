@@ -13,7 +13,7 @@ extension String: SegmentedControlDisplayable {}
 
 extension UIImage: SegmentedControlDisplayable {}
 
-final class SegmentedControl: BaseControl {
+final class SegmentedControl: ViewInspectorControl {
     // MARK: - Properties
     
     let options: [SegmentedControlDisplayable]

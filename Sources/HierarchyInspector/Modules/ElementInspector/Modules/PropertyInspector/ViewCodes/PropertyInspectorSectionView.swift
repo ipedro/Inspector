@@ -99,7 +99,7 @@ final class PropertyInspectorSectionView: BaseView {
                 }
             }()
             
-            if let control = element as? BaseControl {
+            if let control = element as? ViewInspectorControl {
                 control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
                 
                 let isLastElement = index == propertyInputs.count - 1

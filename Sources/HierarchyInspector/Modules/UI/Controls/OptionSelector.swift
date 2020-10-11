@@ -11,7 +11,7 @@ protocol OptionSelectorDelegate: AnyObject {
     func optionSelectorDidTap(_ optionSelector: OptionSelector)
 }
 
-final class OptionSelector: BaseControl {
+final class OptionSelector: ViewInspectorControl {
     // MARK: - Properties
     
     weak var delegate: OptionSelectorDelegate?
@@ -25,7 +25,7 @@ final class OptionSelector: BaseControl {
         $0.minimumScaleFactor = 0.6
     }
     
-    private(set) lazy var valueContainerView = AccessoryContainerView().then {
+    private(set) lazy var valueContainerView = ViewInspectorControlAccessoryControl().then {
         $0.contentView.addArrangedSubview(valueLabel)
         $0.contentView.addArrangedSubview(icon)
         

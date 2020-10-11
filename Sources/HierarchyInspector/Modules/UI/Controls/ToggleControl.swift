@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ToggleControl: BaseControl {
+final class ToggleControl: ViewInspectorControl {
     // MARK: - Properties
 
     var isOn: Bool {

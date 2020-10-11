@@ -121,7 +121,7 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
                 
                 $0.overrideUserInterfaceStyle = navigationController.overrideUserInterfaceStyle
                 $0.modalPresentationStyle = .popover
-                $0.popoverPresentationController?.sourceView = colorPicker.valueContainerView
+                $0.popoverPresentationController?.sourceView = colorPicker
                 $0.popoverPresentationController?.permittedArrowDirections = permittedPopoverArrowDirections
             }
             

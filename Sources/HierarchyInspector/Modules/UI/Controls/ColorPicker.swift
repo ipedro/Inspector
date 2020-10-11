@@ -11,7 +11,7 @@ protocol ColorPickerDelegate: AnyObject {
     func colorPickerDidTap(_ colorPicker: ColorPicker)
 }
 
-final class ColorPicker: BaseControl {
+final class ColorPicker: ViewInspectorControl {
     // MARK: - Properties
     
     weak var delegate: ColorPickerDelegate?
@@ -24,27 +24,24 @@ final class ColorPicker: BaseControl {
         }
     }
     
-    private lazy var selectedColorView = UIControl().then {
-        $0.layer.cornerRadius = 5
-        $0.backgroundColor = selectedColor
-        $0.layer.borderWidth = 0.5
-        $0.layer.borderColor = UIColor.gray.cgColor
+    private lazy var selectedColorView = ColorDisplayControl().then {
+        $0.color = selectedColor
+        $0.addTarget(self, action: #selector(tapColor), for: .touchUpInside)
         
         $0.heightAnchor.constraint(equalToConstant: 16).isActive = true
-        $0.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        
-        $0.addTarget(self, action: #selector(tap), for: .touchDown)
+        $0.widthAnchor.constraint(equalTo: $0.heightAnchor, multiplier: 2).isActive = true
     }
     
-    private lazy var valueLabel = UITextView(.footnote).then {
+    private lazy var valueTextView = UITextView(.footnote).then {
+        $0.font = $0.font?.withTraits(traits: .traitMonoSpace)
         $0.setContentCompressionResistancePriority(.required, for: .horizontal)
         $0.textContainer.widthTracksTextView = true
     }
     
-    private(set) lazy var valueContainerView = AccessoryContainerView().then {
+    private(set) lazy var valueContainerView = ViewInspectorControlAccessoryControl().then {
         $0.contentView.alignment = .center
         
-        $0.contentView.addArrangedSubview(valueLabel)
+        $0.contentView.addArrangedSubview(valueTextView)
         
         $0.contentView.addArrangedSubview(selectedColorView)
     }
@@ -71,7 +68,8 @@ final class ColorPicker: BaseControl {
         #if swift(>=5.3)
         selectedColorView.isEnabled = true
         #else
-        selectedColorView.isEnabled = false
+        selectedColorView.isUserInteractionEnabled = false
+        valueTextView.textColor = .systemPurple
         valueContainerView.backgroundColor = nil
         
         var margins = valueContainerView.contentView.directionalLayoutMargins
@@ -83,12 +81,20 @@ final class ColorPicker: BaseControl {
     }
     
     private func didUpdateColor() {
-        selectedColorView.backgroundColor = selectedColor
+        selectedColorView.color = selectedColor
         
-        valueLabel.text = selectedColor?.hexDescription ?? "–"
+        valueTextView.text = selectedColor?.hexDescription ?? "–"
     }
     
-    @objc private func tap() {
+    @objc private func dismissSelection() {
+        valueTextView.selectedTextRange = nil
+    }
+    
+    @objc private func tapColor() {
         delegate?.colorPickerDidTap(self)
     }
+}
+
+extension ColorPicker {
+    
 }

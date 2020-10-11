@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class StepperControl: BaseControl {
+final class StepperControl: ViewInspectorControl {
     // MARK: - Properties
     
     static let sharedDecimalNumberFormatter = NumberFormatter().then {
@@ -35,7 +35,7 @@ final class StepperControl: BaseControl {
     
     private lazy var counterLabel = UILabel().then {
         $0.setContentHuggingPriority(.required, for: .horizontal)
-        $0.font = titleLabel.font
+        $0.font = titleLabel.font?.withTraits(traits: .traitMonoSpace)
         $0.textColor = tintColor
     }
     
