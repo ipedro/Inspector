@@ -59,7 +59,7 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     
     private(set) lazy var subtitle = reference.elementDescription
     
-    private(set) lazy var isContainer: Bool = reference.children.isEmpty == false
+    var isContainer: Bool { reference.isContainer }
     
     var relativeDepth: Int {
         reference.depth - rootDepth

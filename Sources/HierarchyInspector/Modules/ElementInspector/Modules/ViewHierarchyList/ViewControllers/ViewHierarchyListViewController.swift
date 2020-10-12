@@ -81,7 +81,9 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        DispatchQueue.main.async {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
         
         let results = viewModel.toggleContainer(at: indexPath)
         

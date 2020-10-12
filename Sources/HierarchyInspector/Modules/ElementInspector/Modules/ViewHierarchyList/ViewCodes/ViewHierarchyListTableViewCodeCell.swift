@@ -113,9 +113,9 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             withDuration: 0.25,
             delay: 0,
             options: [.beginFromCurrentState, .curveEaseInOut],
-            animations: {
+            animations: { [weak self] in
                 
-                self.isCollapsed.toggle()
+                self?.isCollapsed.toggle()
                 
             },
             completion: nil
@@ -151,7 +151,9 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             descriptionLabel
         ],
         spacing: 4
-    )
+    ).then {
+        $0.isUserInteractionEnabled = false
+    }
     
     func setup() {
         contentView.clipsToBounds = true

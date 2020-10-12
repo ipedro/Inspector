@@ -60,6 +60,8 @@ final class Icon: BaseView {
         
         isOpaque = false
         
+        isUserInteractionEnabled = false
+        
         translatesAutoresizingMaskIntoConstraints = false
         
         widthConstraint.isActive = true

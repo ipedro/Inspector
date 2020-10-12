@@ -13,13 +13,19 @@ public extension HierarchyInspector.Configuration {
         
         // MARK: - Wireframe Style
         
-        public var wireframeLayerColor: UIColor = .systemGray
+        public var wireframeLayerColor: UIColor = {
+            if #available(iOS 13.0, *) {
+                return .tertiarySystemFill
+            }
+            
+            return .systemGray
+        }()
         
         public var wireframeLayerBorderWidth: CGFloat = 0.5
         
         // MARK: - Empty Layer Style
         
-        public var emptyLayerColor: UIColor = .systemGray
+        public lazy var emptyLayerColor: UIColor = wireframeLayerColor
         
         public var emptyLayerBorderWidth: CGFloat = 0
     }
