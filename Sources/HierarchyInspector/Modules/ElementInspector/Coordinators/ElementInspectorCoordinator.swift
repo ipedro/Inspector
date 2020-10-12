@@ -27,7 +27,11 @@ final class ElementInspectorCoordinator: NSObject {
         self.rootReference = reference
     }
     
-    private(set) lazy var elementInspectorViewController = makeElementInspectorViewController(with: rootReference, showDismissBarButton: true)
+    private(set) lazy var elementInspectorViewController = makeElementInspectorViewController(
+        with: rootReference,
+        showDismissBarButton: true,
+        selectedPanel: .propertyInspector
+    )
     
     private(set) lazy var navigationController = PopoverNavigationController(
         rootViewController: elementInspectorViewController
@@ -93,8 +97,12 @@ final class ElementInspectorCoordinator: NSObject {
         navigationController
     }
     
-    func makeElementInspectorViewController(with reference: ViewHierarchyReference, showDismissBarButton: Bool) -> ElementInspectorViewController {
-        let viewModel = ElementInspectorViewModel(reference: reference, showDismissBarButton: showDismissBarButton)
+    func makeElementInspectorViewController(with reference: ViewHierarchyReference, showDismissBarButton: Bool, selectedPanel: ElementInspectorPanel?) -> ElementInspectorViewController {
+        let viewModel = ElementInspectorViewModel(
+            reference: reference,
+            showDismissBarButton: showDismissBarButton,
+            selectedPanel: selectedPanel
+        )
         
         let viewController = ElementInspectorViewController.create(viewModel: viewModel)
         viewController.delegate = self

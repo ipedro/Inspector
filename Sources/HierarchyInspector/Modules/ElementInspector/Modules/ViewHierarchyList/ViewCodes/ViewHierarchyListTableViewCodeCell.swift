@@ -148,49 +148,54 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
                 thumbnailView.showEmptyStatusMessage = false
                 thumbnailContainerView.installView(thumbnailView)
                 
-                thumbnailView.widthAnchor.constraint(equalTo: thumbnailView.heightAnchor, multiplier: 4 / 3).isActive = true
+                thumbnailView.widthAnchor.constraint(
+                    equalTo: thumbnailView.heightAnchor,
+                    multiplier: 4 / 3
+                ).isActive = true
                 
-                let heightConstraint = thumbnailView.heightAnchor.constraint(equalToConstant: 66).then {
+                let heightConstraint = thumbnailView.heightAnchor.constraint(
+                    equalToConstant: ElementInspector.appearance.horizontalMargins * 2
+                ).then {
                     $0.priority = .defaultHigh
                 }
                 
                 heightConstraint.isActive = true
                 
-                containerStackView.alignment = .center
-                
                 thumbnailView.updateViews(afterScreenUpdates: true)
             }
             else {
-                containerStackView.alignment = .fill
-                
                 thumbnailContainerView.isSafelyHidden = true
             }
         }
     }
     
     private lazy var thumbnailContainerView = UIView().then {
+        $0.isSafelyHidden = true
         $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
         $0.setContentHuggingPriority(.fittingSizeLevel, for: .vertical)
         $0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
     }
     
     private lazy var containerStackView = UIStackView(
-        axis: .horizontal,
+        axis: .vertical,
         arrangedSubviews: [
-            textStackView,
-            thumbnailContainerView
+            elementNameLabel,
+            textStackView
         ],
         spacing: ElementInspector.appearance.verticalMargins
     )
     
     private lazy var textStackView = UIStackView(
-        axis: .vertical,
+        axis: .horizontal,
         arrangedSubviews: [
-            elementNameLabel,
+            thumbnailContainerView,
             descriptionLabel
         ],
-        spacing: 4
-    )
+        spacing: ElementInspector.appearance.verticalMargins
+    ).then {
+        $0.alignment = .center
+        $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
+    }
     
     func setup() {
         contentView.clipsToBounds = true

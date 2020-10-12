@@ -99,6 +99,19 @@ final class ElementInspectorViewController: UIViewController {
             viewCode.segmentedControl.insertSegment(with: $0.image.withRenderingMode(.alwaysTemplate), at: 0, animated: false)
         }
         
+        var selectedSegment: Int {
+            guard
+                let selectedPanel = viewModel.selectedPanel,
+                let index = viewModel.elementPanels.firstIndex(of: selectedPanel)
+            else {
+                return .zero
+            }
+            
+            return index
+        }
+        
+        viewCode.segmentedControl.selectedSegmentIndex = selectedSegment
+        
         guard let firstPanel = viewModel.elementPanels.first else {
             return
         }

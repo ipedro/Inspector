@@ -8,7 +8,11 @@
 import UIKit
 
 protocol ViewHierarchyListViewControllerDelegate: AnyObject {
-    func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController, didSelect reference: ViewHierarchyReference)
+    func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController,
+                                         didSelectInfo reference: ViewHierarchyReference)
+    
+    func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController,
+                                         didSegueTo reference: ViewHierarchyReference)
 }
 
 final class ViewHierarchyListViewController: UIViewController {
@@ -90,12 +94,21 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             return
         }
         
-        delegate?.viewHierarchyListViewController(self, didSelect: itemViewModel.reference)
+        delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         DispatchQueue.main.async {
             tableView.deselectRow(at: indexPath, animated: true)
+        }
+        
+        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
+            return
+        }
+        
+        guard itemViewModel.relativeDepth < 3 else {
+            delegate?.viewHierarchyListViewController(self, didSegueTo: itemViewModel.reference)
+            return
         }
         
         let results = viewModel.toggleContainer(at: indexPath)

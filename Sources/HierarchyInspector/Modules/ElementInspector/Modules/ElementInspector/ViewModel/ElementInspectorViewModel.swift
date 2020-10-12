@@ -26,6 +26,8 @@ protocol ElementInspectorViewModelProtocol {
     
     var elementPanels: [ElementInspectorPanel] { get }
     
+    var selectedPanel: ElementInspectorPanel? { get }
+    
     var showDismissBarButton: Bool { get }
 }
 
@@ -34,8 +36,11 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     
     let showDismissBarButton: Bool
     
-    init(reference: ViewHierarchyReference, showDismissBarButton: Bool) {
+    var selectedPanel: ElementInspectorPanel?
+    
+    init(reference: ViewHierarchyReference, showDismissBarButton: Bool, selectedPanel: ElementInspectorPanel?) {
         self.reference = reference
+        self.selectedPanel = selectedPanel
         self.showDismissBarButton = showDismissBarButton
     }
     

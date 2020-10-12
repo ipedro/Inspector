@@ -106,7 +106,8 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
                     newSnapshot.widthAnchor.constraint(equalToConstant: proportionalFrame.width),
                     newSnapshot.heightAnchor.constraint(equalTo: newSnapshot.widthAnchor, multiplier: proportionalFrame.height / proportionalFrame.width),
                     newSnapshot.topAnchor.constraint(greaterThanOrEqualTo: wireframeView.topAnchor),
-                    newSnapshot.leadingAnchor.constraint(greaterThanOrEqualTo: wireframeView.leadingAnchor)
+                    newSnapshot.leadingAnchor.constraint(greaterThanOrEqualTo: wireframeView.leadingAnchor),
+                    newSnapshot.bottomAnchor.constraint(lessThanOrEqualTo: wireframeView.bottomAnchor)
                 ]
                 
                 constraints.forEach {

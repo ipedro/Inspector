@@ -44,7 +44,7 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     
     var isCollapsed: Bool {
         get {
-            isContainer && relativeDepth < 5 ? _isCollapsed : true
+            isContainer ? _isCollapsed : true
         }
         set {
             guard isContainer else {
