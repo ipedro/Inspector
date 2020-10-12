@@ -49,7 +49,7 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
         }
     }
     
-    private var _isCollapsed = false
+    private var _isCollapsed: Bool
     
     var backgroundColor: UIColor? {
         UIColor(white: 1 - CGFloat(relativeDepth) * 0.03, alpha: 1)
@@ -74,11 +74,13 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     init(
         reference: ViewHierarchyReference,
         parent: ViewHierarchyListItemViewModelProtocol? = nil,
-        rootDepth: Int
+        rootDepth: Int,
+        isCollapsed: Bool
     ) {
         self.parent = parent
         self.reference = reference
         self.rootDepth = rootDepth
+        self._isCollapsed = isCollapsed
     }
 }
 

@@ -52,7 +52,8 @@ final class ViewHierarchyListViewModel: NSObject {
         let viewModel = ViewHierarchyListItemViewModel(
             reference: reference,
             parent: parent,
-            rootDepth: rootDepth
+            rootDepth: rootDepth,
+            isCollapsed: reference.depth > rootDepth
         )
         
         let childrenViewModels: [[ViewHierarchyListItemViewModel]] = reference.children.map {
