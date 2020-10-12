@@ -36,7 +36,9 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
     private(set) lazy var toggleHighlightViewsControl = ToggleControl(
         title: "show view highlights",
         isOn: true
-    )
+    ).then {
+        $0.isShowingSeparator = false
+    }
     
     private lazy var containerHeightConstraint = snapshotWrapperView.heightAnchor.constraint(
         equalToConstant: 100
@@ -76,15 +78,15 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
     
     private var viewSnapshot: UIView? {
         didSet {
-            if let oldView = oldValue {
-                oldView.removeFromSuperview()
+            if let oldSnapshot = oldValue {
+                oldSnapshot.removeFromSuperview()
             }
             
-            if let newView = viewSnapshot, newView.frame.isEmpty == false {
+            if let newSnapshot = viewSnapshot, newSnapshot.frame.isEmpty == false {
                 let frame = AVMakeRect(
                     aspectRatio: CGSize(
                         width: 1,
-                        height: newView.bounds.height / newView.bounds.width
+                        height: newSnapshot.bounds.height / newSnapshot.bounds.width
                     ),
                     insideRect: CGRect(
                         origin: .zero,
@@ -95,7 +97,7 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
                     )
                 )
                 
-                newView.frame = CGRect(
+                newSnapshot.frame = CGRect(
                     origin: CGPoint(
                         x: frame.minX,
                         y: .zero
@@ -105,7 +107,7 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
                 
                 containerHeightConstraint.constant = frame.height
                 
-                snapshotWrapperView.addSubview(newView)
+                snapshotWrapperView.addSubview(newSnapshot)
             }
         }
     }

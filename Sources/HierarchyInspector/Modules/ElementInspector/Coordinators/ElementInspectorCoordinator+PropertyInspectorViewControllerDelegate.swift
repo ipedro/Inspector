@@ -21,8 +21,7 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
         delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
     }
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
-                                         didTapColorPicker colorPicker: ColorPicker) {
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTap colorPicker: ColorPicker) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             let colorPicker = UIColorPickerViewController().then {
@@ -45,8 +44,7 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
         #endif
     }
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
-                                         didTapOptionSelector optionSelector: OptionSelector) {
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTap optionSelector: OptionSelector) {
         
         let viewModel = OptionSelectorViewModel(
             title: optionSelector.title,

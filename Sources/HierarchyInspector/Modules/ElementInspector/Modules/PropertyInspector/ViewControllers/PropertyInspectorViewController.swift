@@ -9,10 +9,10 @@ import UIKit
 
 protocol PropertyInspectorViewControllerDelegate: AnyObject {
     func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
-                                         didTapColorPicker colorPicker: ColorPicker)
+                                         didTap colorPicker: ColorPicker)
     
     func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
-                                         didTapOptionSelector optionSelector: OptionSelector)
+                                         didTap optionSelector: OptionSelector)
     
     func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
                                          showLayerInspectorViewsInside reference: ViewHierarchyReference)
@@ -119,6 +119,10 @@ final class PropertyInspectorViewController: UIViewController {
 
 extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate {
     
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didUpdate property: PropertyInspectorInput) {
+        Console.print(#function, property)
+    }
+    
     func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool) {
         UIView.animate(
             withDuration: 0.4,
@@ -149,15 +153,15 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate 
         
     }
     
-    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTapColorPicker colorPicker: ColorPicker) {
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap colorPicker: ColorPicker) {
         selectedColorPicker = colorPicker
         
-        delegate?.propertyInspectorViewController(self, didTapColorPicker: colorPicker)
+        delegate?.propertyInspectorViewController(self, didTap: colorPicker)
     }
     
-    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTapOptionSelector optionSelector: OptionSelector) {
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap optionSelector: OptionSelector) {
         selectedOptionSelector = optionSelector
         
-        delegate?.propertyInspectorViewController(self, didTapOptionSelector: optionSelector)
+        delegate?.propertyInspectorViewController(self, didTap: optionSelector)
     }
 }

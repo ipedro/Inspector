@@ -8,9 +8,10 @@
 import UIKit
 
 protocol PropertyInspectorSectionViewDelegate: AnyObject {
-    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTapColorPicker colorPicker: ColorPicker)
-    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTapOptionSelector optionSelector: OptionSelector)
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap colorPicker: ColorPicker)
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap optionSelector: OptionSelector)
     func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool)
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didUpdate property: PropertyInspectorInput)
 }
 
 final class PropertyInspectorSectionView: BaseView {
@@ -275,8 +276,9 @@ private extension PropertyInspectorSectionView {
                  (.optionsList, _):
                 break
             }
+            
+            delegate?.propertyInspectorSectionView(self, didUpdate: property)
         }
-        
     }
 }
 
@@ -284,12 +286,12 @@ private extension PropertyInspectorSectionView {
 
 extension PropertyInspectorSectionView: ColorPickerDelegate {
     func colorPickerDidTap(_ colorPicker: ColorPicker) {
-        delegate?.propertyInspectorSectionView(self, didTapColorPicker: colorPicker)
+        delegate?.propertyInspectorSectionView(self, didTap: colorPicker)
     }
 }
 
 extension PropertyInspectorSectionView: OptionSelectorDelegate {
     func optionSelectorDidTap(_ optionSelector: OptionSelector) {
-        delegate?.propertyInspectorSectionView(self, didTapOptionSelector: optionSelector)
+        delegate?.propertyInspectorSectionView(self, didTap: optionSelector)
     }
 }
