@@ -50,7 +50,7 @@ extension UIView.ContentMode: CustomStringConvertible {
             return "bottom right"
             
         @unknown default:
-            return "unknown"
+            return "\(self) (unsupported)"
         }
     }
 }

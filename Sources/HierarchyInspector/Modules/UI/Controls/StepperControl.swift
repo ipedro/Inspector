@@ -7,12 +7,18 @@
 
 import UIKit
 
-final class StepperControl: ViewInspectorControl {
+final class StepperControl: BaseFormControl {
     // MARK: - Properties
     
     static let sharedDecimalNumberFormatter = NumberFormatter().then {
         $0.minimumFractionDigits = 2
         $0.numberStyle = .decimal
+    }
+    
+    override var isEnabled: Bool {
+        didSet {
+            stepperControl.isEnabled = isEnabled
+        }
     }
     
     var value: Double {

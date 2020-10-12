@@ -9,6 +9,12 @@ import UIKit
 
 final class ViewInspectorControlAccessoryControl: BaseControl {
     
+    override var isEnabled: Bool {
+        didSet {
+            alpha = isEnabled ? 1 : 0.5
+        }
+    }
+    
     override func setup() {
         super.setup()
         

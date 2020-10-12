@@ -88,7 +88,7 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
                     return "Inline"
                     
                 @unknown default:
-                    return "Unknown style"
+                    return "\(self) (unsupported)"
                 }
             }
             

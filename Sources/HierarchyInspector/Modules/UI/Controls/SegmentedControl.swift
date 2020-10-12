@@ -13,10 +13,16 @@ extension String: SegmentedControlDisplayable {}
 
 extension UIImage: SegmentedControlDisplayable {}
 
-final class SegmentedControl: ViewInspectorControl {
+final class SegmentedControl: BaseFormControl {
     // MARK: - Properties
     
     let options: [SegmentedControlDisplayable]
+    
+    override var isEnabled: Bool {
+        didSet {
+            segmentedControl.isEnabled = isEnabled
+        }
+    }
     
     var selectedIndex: Int? {
         get {

@@ -1,5 +1,5 @@
 //
-//  ViewInspectorControl.swift
+//  BaseFormControl.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 11.10.20.
@@ -7,10 +7,16 @@
 
 import UIKit
 
-class ViewInspectorControl: BaseControl {
+class BaseFormControl: BaseControl {
 
     private(set) lazy var titleLabel = UILabel(.footnote).then {
         $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
+    }
+    
+    override var isEnabled: Bool {
+        didSet {
+            titleLabel.alpha = isEnabled ? 1 : 0.5
+        }
     }
     
     private lazy var contentContainerView = UIStackView(
@@ -27,10 +33,10 @@ class ViewInspectorControl: BaseControl {
         arrangedSubviews: [
             contentContainerView
         ],
-        spacing: verticalMargins,
+        spacing: spacing,
         margins: .margins(
             horizontal: .zero,
-            vertical: verticalMargins
+            vertical: spacing
         )
     )
     
@@ -63,10 +69,12 @@ class ViewInspectorControl: BaseControl {
         }
     }
     
-    init(title: String?, frame: CGRect = .zero) {
+    init(title: String?, isEnabled: Bool = true, frame: CGRect = .zero) {
         super.init(frame: frame)
         
         self.title = title
+        
+        self.isEnabled = isEnabled
     }
     
     required init?(coder: NSCoder) {

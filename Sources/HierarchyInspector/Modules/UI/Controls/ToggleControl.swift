@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ToggleControl: ViewInspectorControl {
+final class ToggleControl: BaseFormControl {
     // MARK: - Properties
 
     var isOn: Bool {
@@ -19,7 +19,13 @@ final class ToggleControl: ViewInspectorControl {
             updateViews()
         }
     }
-
+    
+    override var isEnabled: Bool {
+        didSet {
+            switchControl.isEnabled = isEnabled
+        }
+    }
+    
     private lazy var switchControl = UISwitch().then {
         $0.addTarget(self, action: #selector(toggleOn), for: .valueChanged)
     }

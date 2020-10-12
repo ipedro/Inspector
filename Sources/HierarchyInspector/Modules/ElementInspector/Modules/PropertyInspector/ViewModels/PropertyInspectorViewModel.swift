@@ -27,6 +27,10 @@ final class PropertyInspectorViewModel: PropertyInspectorViewModelProtocol {
             array.append(.UIButtonSection(button: button))
         }
         
+        if let switchControl = reference.view as? UISwitch {
+            array.append(.UISwitchSection(switchControl: switchControl))
+        }
+        
         if let control = reference.view as? UIControl {
             array.append(.UIControlSection(control: control))
         }

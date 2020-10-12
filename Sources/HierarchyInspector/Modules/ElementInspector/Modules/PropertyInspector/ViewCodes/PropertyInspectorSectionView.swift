@@ -28,7 +28,7 @@ final class PropertyInspectorSectionView: BaseView {
     
     private lazy var topSeparatorView = SeparatorView(thickness: 1)
     
-    private lazy var sectionHeader = SectionHeader(.callout, text: title).then {
+    private lazy var sectionHeader = SectionHeader(.callout, text: title, withTraits: .traitBold).then {
         $0.contentView.directionalLayoutMargins = .margins(
             horizontal: .zero,
             vertical: ElementInspector.appearance.verticalMargins / 2
@@ -48,9 +48,9 @@ final class PropertyInspectorSectionView: BaseView {
     private lazy var inputViews: [PropertyInspectorInput: UIView] = {
         var dict = [PropertyInspectorInput: UIView]()
         
-        for (index, input) in propertyInputs.enumerated() {
+        for (index, property) in propertyInputs.enumerated() {
             let element: UIView = {
-                switch input {
+                switch property {
                 case .separator:
                     return SeparatorView().then {
                         $0.contentView.directionalLayoutMargins = .margins(
@@ -62,8 +62,7 @@ final class PropertyInspectorSectionView: BaseView {
                 case let .subSection(title):
                     return SectionHeader(
                         .footnote,
-                        text: title.localizedCapitalized,
-                        withTraits: .traitBold
+                        text: title.localizedCapitalized
                     ).then {
                         $0.contentView.directionalLayoutMargins = .margins(
                             top: ElementInspector.appearance.horizontalMargins,
@@ -127,7 +126,7 @@ final class PropertyInspectorSectionView: BaseView {
                 }
             }()
             
-            if let control = element as? ViewInspectorControl {
+            if let control = element as? BaseFormControl {
                 control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
                 
                 let isLastElement = index == propertyInputs.count - 1
@@ -135,9 +134,11 @@ final class PropertyInspectorSectionView: BaseView {
                 let isNotFollowedByControl = index + 1 < propertyInputs.count && propertyInputs[index + 1].isControl == false
                 
                 control.isShowingSeparator = (isLastElement || isNotFollowedByControl) == false
+                
+                control.isEnabled = property.hasHandler
             }
             
-            dict[input] = element
+            dict[property] = element
         }
         
         return dict
@@ -247,23 +248,23 @@ private extension PropertyInspectorSectionView {
             
             switch (property, inputView) {
             case let (.integerStepper(_, _, _, _, handler), stepperControl as StepperControl):
-                handler(Int(stepperControl.value))
+                handler?(Int(stepperControl.value))
                 
             case let (.cgFloatStepper(_, _, _, _, handler), stepperControl as StepperControl):
-                handler(CGFloat(stepperControl.value))
+                handler?(CGFloat(stepperControl.value))
                 
             case let (.colorPicker(_, _, handler), colorPicker as ColorPicker):
-                handler(colorPicker.selectedColor)
+                handler?(colorPicker.selectedColor)
                 
             case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
-                handler(toggleControl.isOn)
+                handler?(toggleControl.isOn)
                 
             case let (.inlineTextOptions(_, _, _, handler), segmentedControl as SegmentedControl),
                  let (.inlineImageOptions(_, _, _, handler), segmentedControl as SegmentedControl):
-                handler(segmentedControl.selectedIndex)
+                handler?(segmentedControl.selectedIndex)
                 
             case let (.optionsList(_, _, _, handler), optionSelector as OptionSelector):
-                handler(optionSelector.selectedIndex)
+                handler?(optionSelector.selectedIndex)
                 
             case (.separator, _),
                  (.subSection, _),

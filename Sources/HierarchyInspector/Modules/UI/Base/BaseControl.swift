@@ -11,8 +11,6 @@ class BaseControl: UIControl {
     
     open var animateOnTouch: Bool = false
     
-    let verticalMargins = ElementInspector.appearance.verticalMargins / 2
-    
     let spacing = ElementInspector.appearance.verticalMargins
     
     override init(frame: CGRect) {

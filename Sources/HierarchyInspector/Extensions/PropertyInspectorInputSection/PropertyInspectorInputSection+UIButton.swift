@@ -31,9 +31,14 @@ extension PropertyInspectorInputSection {
 
             switch $0 {
             
-            #warning("finish button properties implementation")
+            #warning("improve ")
             case .font:
-                return nil
+                return .optionsList(
+                    title: "font",
+                    options: [button.titleLabel?.font.familyName ?? "–"],
+                    selectedIndex: 0,
+                    handler: nil
+                )
             
             case .currentTitleColor:
                 return .colorPicker(

@@ -11,7 +11,7 @@ protocol ColorPickerDelegate: AnyObject {
     func colorPickerDidTap(_ colorPicker: ColorPicker)
 }
 
-final class ColorPicker: ViewInspectorControl {
+final class ColorPicker: BaseFormControl {
     // MARK: - Properties
     
     weak var delegate: ColorPickerDelegate?
@@ -21,6 +21,13 @@ final class ColorPicker: ViewInspectorControl {
             didUpdateColor()
             
             sendActions(for: .valueChanged)
+        }
+    }
+    
+    override var isEnabled: Bool {
+        didSet {
+            tapGestureRecognizer.isEnabled = isEnabled
+            accessoryControl.isEnabled = isEnabled
         }
     }
     
@@ -38,7 +45,7 @@ final class ColorPicker: ViewInspectorControl {
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
     
-    private(set) lazy var colorDisplayAccessoryControl = ViewInspectorControlAccessoryControl().then {
+    private(set) lazy var accessoryControl = ViewInspectorControlAccessoryControl().then {
         $0.addGestureRecognizer(tapGestureRecognizer)
         $0.contentView.addArrangedSubview(colorDisplayLabel)
         $0.contentView.addArrangedSubview(colorDisplayControl)
@@ -59,22 +66,22 @@ final class ColorPicker: ViewInspectorControl {
     override func setup() {
         super.setup()
         
-        contentView.addArrangedSubview(colorDisplayAccessoryControl)
+        contentView.addArrangedSubview(accessoryControl)
         
         didUpdateColor()
         
         #if swift(>=5.3)
         colorDisplayControl.isEnabled = true
         #else
-        colorDisplayAccessoryControl.isUserInteractionEnabled = false
+        accessoryControl.isUserInteractionEnabled = false
         colorDisplayLabel.textColor = .systemPurple
-        colorDisplayAccessoryControl.backgroundColor = nil
+        accessoryControl.backgroundColor = nil
         
-        var margins = colorDisplayAccessoryControl.contentView.directionalLayoutMargins
+        var margins = accessoryControl.contentView.directionalLayoutMargins
         margins.leading = 0
         margins.trailing = 0
         
-        colorDisplayAccessoryControl.contentView.directionalLayoutMargins = margins
+        accessoryControl.contentView.directionalLayoutMargins = margins
         #endif
     }
     

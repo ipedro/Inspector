@@ -11,10 +11,18 @@ protocol OptionSelectorDelegate: AnyObject {
     func optionSelectorDidTap(_ optionSelector: OptionSelector)
 }
 
-final class OptionSelector: ViewInspectorControl {
+final class OptionSelector: BaseFormControl {
     // MARK: - Properties
     
     weak var delegate: OptionSelectorDelegate?
+    
+    override var isEnabled: Bool {
+        didSet {
+            tapGestureRecognizer.isEnabled = isEnabled
+            icon.isHidden = isEnabled == false
+            accessoryControl.isEnabled = isEnabled
+        }
+    }
     
     private lazy var icon = Icon(.chevronDown, color: valueLabel.textColor)
     
@@ -25,7 +33,7 @@ final class OptionSelector: ViewInspectorControl {
         $0.minimumScaleFactor = 0.6
     }
     
-    private(set) lazy var valueContainerView = ViewInspectorControlAccessoryControl().then {
+    private(set) lazy var accessoryControl = ViewInspectorControlAccessoryControl().then {
         $0.contentView.addArrangedSubview(valueLabel)
         $0.contentView.addArrangedSubview(icon)
         
@@ -61,7 +69,7 @@ final class OptionSelector: ViewInspectorControl {
     override func setup() {
         super.setup()
         
-        contentView.addArrangedSubview(valueContainerView)
+        contentView.addArrangedSubview(accessoryControl)
         
         tintColor = valueLabel.textColor
         
