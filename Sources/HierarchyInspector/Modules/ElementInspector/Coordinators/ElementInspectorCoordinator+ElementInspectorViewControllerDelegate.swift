@@ -27,4 +27,8 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
             
         }
     }
+    
+    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController) {
+        delegate?.elementInspectorCoordinator(self, didFinishWith: rootReference)
+    }
 }

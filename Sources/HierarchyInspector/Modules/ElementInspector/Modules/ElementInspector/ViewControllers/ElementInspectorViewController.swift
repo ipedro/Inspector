@@ -11,6 +11,8 @@ protocol ElementInspectorViewControllerDelegate: AnyObject {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
                                         viewControllerForPanel panel: ElementInspectorPanel,
                                         with reference: ViewHierarchyReference) -> UIViewController
+    
+    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController)
 }
 
 final class ElementInspectorViewController: UIViewController {
@@ -175,7 +177,13 @@ private extension ElementInspectorViewController {
     }
     
     @objc func close() {
-        dismiss(animated: true)
+        dismiss(animated: true) { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            self.delegate?.elementInspectorViewControllerDidFinish(self)
+        }
     }
 }
 

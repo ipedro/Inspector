@@ -32,11 +32,14 @@ final class ElementInspectorCoordinator: NSObject {
     private(set) lazy var navigationController = PopoverNavigationController(
         rootViewController: elementInspectorViewController
     ).then {
-        $0.presentationDelegate = self
         
         $0.modalPresentationStyle = {
             guard let window = rootReference.view?.window else {
-                return .fullScreen
+                return .pageSheet
+            }
+            
+            guard window.traitCollection.userInterfaceIdiom != .phone else {
+                return .pageSheet
             }
             
             let referenceViewArea = rootReference.frame.height * rootReference.frame.width
@@ -55,7 +58,14 @@ final class ElementInspectorCoordinator: NSObject {
             return .pageSheet
         }()
         
-        $0.popoverPresentationController?.sourceView = rootReference.view
+        switch $0.modalPresentationStyle {
+        case .popover:
+            $0.popoverPresentationController?.sourceView = rootReference.view
+            $0.popoverPresentationController?.delegate = self
+            
+        default:
+            $0.presentationController?.delegate = self
+        }
     }
     
     var permittedPopoverArrowDirections: UIPopoverArrowDirection {
@@ -94,22 +104,25 @@ final class ElementInspectorCoordinator: NSObject {
     
 }
 
-extension ElementInspectorCoordinator: PopoverNavigationControllerDelegate {
-    func popoverNavigationControllerDidFinish(_ popoverNavigationController: PopoverNavigationController) {
-        guard popoverNavigationController.topViewController === elementInspectorViewController else {
-            return
-        }
-        
+// MARK: - UIPopoverPresentationControllerDelegate
+
+extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate {
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    @available(iOS 13.0, *)
+    public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         delegate?.elementInspectorCoordinator(self, didFinishWith: rootReference)
     }
 }
 
-// MARK: - UIPopoverPresentationControllerDelegate
-
 extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
-    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-        return .none
+    
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        delegate?.elementInspectorCoordinator(self, didFinishWith: rootReference)
     }
+    
 }
 
 // MARK: - UIColorPickerViewControllerDelegate
