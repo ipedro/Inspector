@@ -37,7 +37,7 @@ final class PropertyInspectorViewController: UIViewController {
             return nil
         }
         
-        return PropertyInspectorViewReferenceSnapshotView(targetView: referenceView).then {
+        return PropertyInspectorViewReferenceSnapshotView(reference: viewModel.reference).then {
             $0.toggleHighlightViewsControl.isOn = !viewModel.reference.isHidingHighlightViews
             $0.toggleHighlightViewsControl.addTarget(self, action: #selector(toggleLayerInspectorViewsVisibility), for: .valueChanged)
         }

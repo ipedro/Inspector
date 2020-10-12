@@ -10,7 +10,7 @@ import UIKit
 
 final class PropertyInspectorViewReferenceSnapshotView: BaseView {
     
-    weak var targetView: UIView?
+    let reference: ViewHierarchyReference
     
     private var displayLink: CADisplayLink? {
         didSet {
@@ -40,14 +40,14 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
         $0.isShowingSeparator = false
     }
     
-    private lazy var containerHeightConstraint = snapshotWrapperView.heightAnchor.constraint(
+    private lazy var containerHeightConstraint = snapshotWireframeView.heightAnchor.constraint(
         equalToConstant: 100
     ).then {
         $0.priority = .defaultHigh
     }
     
-    init(targetView: UIView?, frame: CGRect = .zero) {
-        self.targetView = targetView
+    init(reference: ViewHierarchyReference, frame: CGRect = .zero) {
+        self.reference = reference
         
         super.init(frame: frame)
     }
@@ -60,28 +60,31 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
         image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)
     )
     
-    private lazy var statusMessageLabel = UILabel(.footnote)
+    private lazy var statusLabel = UILabel(.footnote)
     
     private lazy var snapshotContentView = UIStackView(
         axis: .vertical,
         arrangedSubviews: [
-            snapshotWrapperView
+            snapshotWireframeView
         ],
         margins: .margins(ElementInspector.appearance.horizontalMargins)
     ).then {
         $0.installView(snapshotBackgroundImageView, .margins(horizontal: -20, vertical: 0), .onBottom)
-        $0.installView(statusMessageLabel, .centerXY)
+        $0.installView(statusLabel, .centerXY)
     }
     
-    private lazy var snapshotWrapperView = UIView()
+    private lazy var snapshotWireframeView = WireframeView(
+        frame: .zero,
+        reference: reference
+    )
     
     private var state: State = .lostConnection {
         didSet {
-            snapshotWrapperView.subviews.forEach { $0.removeFromSuperview() }
+            snapshotWireframeView.subviews.forEach { $0.removeFromSuperview() }
             
             switch state {
             case let .snapshot(newSnapshot):
-                statusMessageLabel.text = nil
+                statusLabel.text = nil
                 snapshotBackgroundImageView.alpha = 0.5
                 
                 let frame = AVMakeRect(
@@ -92,8 +95,8 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
                     insideRect: CGRect(
                         origin: .zero,
                         size: CGSize(
-                            width: snapshotWrapperView.bounds.width,
-                            height: snapshotWrapperView.bounds.width
+                            width: snapshotWireframeView.bounds.width,
+                            height: snapshotWireframeView.bounds.width
                         )
                     )
                 )
@@ -113,19 +116,19 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
 
                 containerHeightConstraint.constant = frame.height
 
-                snapshotWrapperView.addSubview(newSnapshot)
+                snapshotWireframeView.addSubview(newSnapshot)
                 
             case .isHidden:
                 snapshotBackgroundImageView.alpha = 0.1
-                statusMessageLabel.text = "View is hidden."
+                statusLabel.text = "View is hidden."
                 
             case .lostConnection:
                 snapshotBackgroundImageView.alpha = 0.1
-                statusMessageLabel.text = "Lost connection to view."
+                statusLabel.text = "Lost connection to view."
                 
             case .frameIsEmpty:
                 snapshotBackgroundImageView.alpha = 0.1
-                statusMessageLabel.text = "View frame is empty."
+                statusLabel.text = "View frame is empty."
             }
         }
     }
@@ -160,24 +163,24 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
     }
     
     @objc private func updateViews() {
-        guard let targetView = targetView else {
+        guard let referenceView = reference.view else {
             displayLink = nil
             
             state = .lostConnection
             return
         }
         
-        guard targetView.frame.isEmpty == false else {
+        guard referenceView.frame.isEmpty == false else {
             state = .frameIsEmpty
             return
         }
         
-        guard targetView.isHidden == false else {
+        guard referenceView.isHidden == false else {
             state = .isHidden
             return
         }
         
-        guard let snapshotView = targetView.snapshotView(afterScreenUpdates: false) else {
+        guard let snapshotView = referenceView.snapshotView(afterScreenUpdates: false) else {
             state = .lostConnection
             return
         }

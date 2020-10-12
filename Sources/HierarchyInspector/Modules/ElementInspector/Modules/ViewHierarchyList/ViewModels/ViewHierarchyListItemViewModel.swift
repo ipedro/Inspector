@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
-    var parent: ViewHierarchyListItemViewModel? { get set }
+    var parent: ViewHierarchyListItemViewModelProtocol? { get set }
     
     var reference: ViewHierarchyReference { get }
     
@@ -30,7 +30,7 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
 final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol {
     let identifier = UUID()
     
-    weak var parent: ViewHierarchyListItemViewModel?
+    weak var parent: ViewHierarchyListItemViewModelProtocol?
     
     var isHidden: Bool {
         parent?.isCollapsed == true || parent?.isHidden == true
@@ -38,7 +38,7 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     
     var isCollapsed: Bool {
         get {
-            isContainer ? _isCollapsed : true
+            isContainer && relativeDepth < 5 ? _isCollapsed : true
         }
         set {
             guard isContainer else {
@@ -73,7 +73,7 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     
     init(
         reference: ViewHierarchyReference,
-        parent: ViewHierarchyListItemViewModel? = nil,
+        parent: ViewHierarchyListItemViewModelProtocol? = nil,
         rootDepth: Int
     ) {
         self.parent = parent
