@@ -34,7 +34,7 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
     )
     
     private(set) lazy var toggleHighlightViewsControl = ToggleControl(
-        title: "show view highlights",
+        title: "highlight views",
         isOn: true
     ).then {
         $0.isShowingSeparator = false
@@ -60,6 +60,8 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
         image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)
     )
     
+    private lazy var statusMessageLabel = UILabel(.footnote)
+    
     private lazy var snapshotContentView = UIStackView(
         axis: .vertical,
         arrangedSubviews: [
@@ -68,21 +70,20 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
         margins: .margins(ElementInspector.appearance.horizontalMargins)
     ).then {
         $0.installView(snapshotBackgroundImageView, .margins(horizontal: -20, vertical: 0), .onBottom)
-        
-        if #available(iOS 13.0, *) {
-            $0.backgroundColor = .quaternaryLabel
-        }
+        $0.installView(statusMessageLabel, .centerXY)
     }
     
     private lazy var snapshotWrapperView = UIView()
     
-    private var viewSnapshot: UIView? {
+    private var state: State = .lostConnection {
         didSet {
-            if let oldSnapshot = oldValue {
-                oldSnapshot.removeFromSuperview()
-            }
+            snapshotWrapperView.subviews.forEach { $0.removeFromSuperview() }
             
-            if let newSnapshot = viewSnapshot, newSnapshot.frame.isEmpty == false {
+            switch state {
+            case let .snapshot(newSnapshot):
+                statusMessageLabel.text = nil
+                snapshotBackgroundImageView.alpha = 0.5
+                
                 let frame = AVMakeRect(
                     aspectRatio: CGSize(
                         width: 1,
@@ -96,7 +97,7 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
                         )
                     )
                 )
-                
+
                 newSnapshot.frame = CGRect(
                     origin: CGPoint(
                         x: frame.minX,
@@ -104,10 +105,27 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
                     ),
                     size: frame.size
                 )
-                
+
+                if frame.size.height / UIScreen.main.bounds.height >= 1.0 {
+                    newSnapshot.layer.shouldRasterize = true
+                    newSnapshot.layer.rasterizationScale = 1
+                }
+
                 containerHeightConstraint.constant = frame.height
-                
+
                 snapshotWrapperView.addSubview(newSnapshot)
+                
+            case .isHidden:
+                snapshotBackgroundImageView.alpha = 0.1
+                statusMessageLabel.text = "View is hidden."
+                
+            case .lostConnection:
+                snapshotBackgroundImageView.alpha = 0.1
+                statusMessageLabel.text = "Lost connection to view."
+                
+            case .frameIsEmpty:
+                snapshotBackgroundImageView.alpha = 0.1
+                statusMessageLabel.text = "View frame is empty."
             }
         }
     }
@@ -134,8 +152,37 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
         displayLink = CADisplayLink(target: self, selector: #selector(updateViews))
     }
     
+    enum State {
+        case snapshot(UIView)
+        case isHidden
+        case frameIsEmpty
+        case lostConnection
+    }
+    
     @objc private func updateViews() {
-        viewSnapshot = targetView?.snapshotView(afterScreenUpdates: false)
+        guard let targetView = targetView else {
+            displayLink = nil
+            
+            state = .lostConnection
+            return
+        }
+        
+        guard targetView.frame.isEmpty == false else {
+            state = .frameIsEmpty
+            return
+        }
+        
+        guard targetView.isHidden == false else {
+            state = .isHidden
+            return
+        }
+        
+        guard let snapshotView = targetView.snapshotView(afterScreenUpdates: false) else {
+            state = .lostConnection
+            return
+        }
+        
+        state = .snapshot(snapshotView)
     }
     
     deinit {
