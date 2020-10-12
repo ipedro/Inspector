@@ -8,9 +8,17 @@
 import UIKit
 
 protocol PropertyInspectorViewControllerDelegate: AnyObject {
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapColorPicker colorPicker: ColorPicker)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
+                                         didTapColorPicker colorPicker: ColorPicker)
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapOptionSelector optionSelector: OptionSelector)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
+                                         didTapOptionSelector optionSelector: OptionSelector)
+    
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
+                                         showLayerInspectorViewsInside reference: ViewHierarchyReference)
+    
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
+                                         hideLayerInspectorViewsInside reference: ViewHierarchyReference)
 }
 
 final class PropertyInspectorViewController: UIViewController {
@@ -29,8 +37,20 @@ final class PropertyInspectorViewController: UIViewController {
             return nil
         }
         
-        return PropertyInspectorViewReferenceSnapshotView(targetView: referenceView)
+        return PropertyInspectorViewReferenceSnapshotView(targetView: referenceView).then {
+            $0.toggleHighlightViewsControl.isOn = !viewModel.reference.isHidingHighlightViews
+            $0.toggleHighlightViewsControl.addTarget(self, action: #selector(toggleLayerInspectorViewsVisibility), for: .valueChanged)
+        }
     }()
+    
+    @objc private func toggleLayerInspectorViewsVisibility() {
+        guard viewModel.reference.isHidingHighlightViews else {
+            delegate?.propertyInspectorViewController(self, hideLayerInspectorViewsInside: viewModel.reference)
+            return
+        }
+        
+        delegate?.propertyInspectorViewController(self, showLayerInspectorViewsInside: viewModel.reference)
+    }
     
     private lazy var sectionViews: [PropertyInspectorSectionView] = {
         viewModel.sectionInputs.enumerated().map { index, section in

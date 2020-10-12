@@ -302,10 +302,32 @@ extension HierarchyInspector.Manager: HighlightViewDelegate {
     func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference) {
         presentInspector(for: reference, animated: true)
     }
+    
+    func hideAllHighlightViews(_ hide: Bool, containedIn reference: ViewHierarchyReference) {
+        guard let referenceView = reference.view else {
+            return
+        }
+        
+        for view in referenceView.allSubviews where view is LayerViewProtocol {
+            view.isSafelyHidden = hide
+        }
+    }
 }
 
 extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
-    func elementInspectorCoordinatorDidFinish(_ coordinator: ElementInspectorCoordinator) {
+    
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
+        hideAllHighlightViews(false, containedIn: reference)
+    }
+    
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, hideHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
+        hideAllHighlightViews(true, containedIn: reference)
+    }
+    
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
+                                     didFinishWith reference: ViewHierarchyReference) {
+        hideAllHighlightViews(false, containedIn: reference)
+        
         elementInspectorCoordinator = nil
     }
 }

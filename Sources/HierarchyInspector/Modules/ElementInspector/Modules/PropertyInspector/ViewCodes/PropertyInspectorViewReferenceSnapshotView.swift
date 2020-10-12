@@ -24,7 +24,21 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
         }
     }
     
-    private lazy var containerHeightConstraint = containerView.heightAnchor.constraint(
+    private lazy var controlsContainerView = UIStackView(
+        axis: .vertical,
+        arrangedSubviews: [
+            toggleHighlightViewsControl
+        ],
+        spacing: ElementInspector.appearance.verticalMargins / 2,
+        margins: ElementInspector.appearance.margins
+    )
+    
+    private(set) lazy var toggleHighlightViewsControl = ToggleControl(
+        title: "show view highlights",
+        isOn: true
+    )
+    
+    private lazy var containerHeightConstraint = snapshotWrapperView.heightAnchor.constraint(
         equalToConstant: 100
     ).then {
         $0.priority = .defaultHigh
@@ -40,11 +54,25 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var containerBackgroundImageView = UIImageView(
+    private lazy var snapshotBackgroundImageView = UIImageView(
         image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)
     )
     
-    private lazy var containerView = UIView()
+    private lazy var snapshotContentView = UIStackView(
+        axis: .vertical,
+        arrangedSubviews: [
+            snapshotWrapperView
+        ],
+        margins: .margins(ElementInspector.appearance.horizontalMargins)
+    ).then {
+        $0.installView(snapshotBackgroundImageView, .margins(horizontal: -20, vertical: 0), .onBottom)
+        
+        if #available(iOS 13.0, *) {
+            $0.backgroundColor = .quaternaryLabel
+        }
+    }
+    
+    private lazy var snapshotWrapperView = UIView()
     
     private var viewSnapshot: UIView? {
         didSet {
@@ -61,8 +89,8 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
                     insideRect: CGRect(
                         origin: .zero,
                         size: CGSize(
-                            width: containerView.bounds.width,
-                            height: containerView.bounds.width
+                            width: snapshotWrapperView.bounds.width,
+                            height: snapshotWrapperView.bounds.width
                         )
                     )
                 )
@@ -77,7 +105,7 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
                 
                 containerHeightConstraint.constant = frame.height
                 
-                containerView.addSubview(newView)
+                snapshotWrapperView.addSubview(newView)
             }
         }
     }
@@ -85,18 +113,9 @@ final class PropertyInspectorViewReferenceSnapshotView: BaseView {
     override func setup() {
         super.setup()
         
-        installView(containerBackgroundImageView, .margins(.zero), .onBottom)
+        contentView.addArrangedSubview(snapshotContentView)
         
-        if #available(iOS 13.0, *) {
-            backgroundColor = .quaternaryLabel
-        }
-        
-        contentView.addArrangedSubview(containerView)
-        
-        contentView.directionalLayoutMargins = .margins(
-            horizontal: ElementInspector.appearance.horizontalMargins,
-            vertical: ElementInspector.appearance.horizontalMargins
-        )
+        contentView.addArrangedSubview(controlsContainerView)
     }
     
     override func didMoveToSuperview() {

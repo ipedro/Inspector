@@ -105,3 +105,19 @@ extension ViewHierarchyReference: Hashable {
         viewIdentifier.hash(into: &hasher)
     }
 }
+
+extension ViewHierarchyReference {
+    var isHidingHighlightViews: Bool {
+        guard let view = view else {
+            return false
+        }
+        
+        for view in view.allSubviews where view is LayerViewProtocol {
+            if view.isHidden {
+                return true
+            }
+        }
+        
+        return false
+    }
+}

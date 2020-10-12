@@ -8,7 +8,14 @@
 import UIKit
 
 protocol ElementInspectorCoordinatorDelegate: AnyObject {
-    func elementInspectorCoordinatorDidFinish(_ coordinator: ElementInspectorCoordinator)
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
+                                     didFinishWith reference: ViewHierarchyReference)
+    
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
+                                     showHighlightViewsVisibilityOf reference: ViewHierarchyReference)
+    
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
+                                     hideHighlightViewsVisibilityOf reference: ViewHierarchyReference)
 }
 
 final class ElementInspectorCoordinator: NSObject {
@@ -20,9 +27,9 @@ final class ElementInspectorCoordinator: NSObject {
         self.rootReference = reference
     }
     
-    private lazy var elementInspectorViewController = makeElementInspectorViewController(with: rootReference, showDismissBarButton: true)
+    private(set) lazy var elementInspectorViewController = makeElementInspectorViewController(with: rootReference, showDismissBarButton: true)
     
-    private lazy var navigationController = PopoverNavigationController(
+    private(set) lazy var navigationController = PopoverNavigationController(
         rootViewController: elementInspectorViewController
     ).then {
         $0.presentationDelegate = self
@@ -51,7 +58,7 @@ final class ElementInspectorCoordinator: NSObject {
         $0.popoverPresentationController?.sourceView = rootReference.view
     }
     
-    private var permittedPopoverArrowDirections: UIPopoverArrowDirection {
+    var permittedPopoverArrowDirections: UIPopoverArrowDirection {
         switch navigationController.popoverPresentationController?.arrowDirection {
             
         case .some(.up):
@@ -76,7 +83,7 @@ final class ElementInspectorCoordinator: NSObject {
         navigationController
     }
     
-    private func makeElementInspectorViewController(with reference: ViewHierarchyReference, showDismissBarButton: Bool) -> ElementInspectorViewController {
+    func makeElementInspectorViewController(with reference: ViewHierarchyReference, showDismissBarButton: Bool) -> ElementInspectorViewController {
         let viewModel = ElementInspectorViewModel(reference: reference, showDismissBarButton: showDismissBarButton)
         
         let viewController = ElementInspectorViewController.create(viewModel: viewModel)
@@ -93,88 +100,7 @@ extension ElementInspectorCoordinator: PopoverNavigationControllerDelegate {
             return
         }
         
-        delegate?.elementInspectorCoordinatorDidFinish(self)
-    }
-}
-
-// MARK: - ElementInspectorViewControllerDelegate
-
-extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
-    func elementInspectorViewController(_ viewController: ElementInspectorViewController,
-                                        viewControllerForPanel panel: ElementInspectorPanel,
-                                        with reference: ViewHierarchyReference) -> UIViewController {
-        switch panel {
-        
-        case .propertyInspector:
-            return PropertyInspectorViewController.create(viewModel: PropertyInspectorViewModel(reference: reference)).then {
-                $0.delegate = self
-            }
-            
-        case .viewHierarchy:
-            return ViewHierarchyListViewController.create(viewModel: ViewHierarchyListViewModel(reference: reference)).then {
-                $0.delegate = self
-            }
-            
-        }
-    }
-}
-
-extension ElementInspectorCoordinator: ViewHierarchyListViewControllerDelegate {
-    func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController, didSelect reference: ViewHierarchyReference) {
-        let elementInspectorViewController = makeElementInspectorViewController(with: reference, showDismissBarButton: false)
-        
-        navigationController.pushViewController(elementInspectorViewController, animated: true)
-    }
-}
-
-// MARK: - PropertyInspectorViewControllerDelegate
-
-extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapColorPicker colorPicker: ColorPicker) {
-        #if swift(>=5.3)
-        if #available(iOS 14.0, *) {
-            let colorPicker = UIColorPickerViewController().then {
-                $0.delegate = self
-                
-                if let selectedColor = colorPicker.selectedColor {
-                    $0.selectedColor = selectedColor
-                }
-                
-                $0.overrideUserInterfaceStyle = navigationController.overrideUserInterfaceStyle
-                $0.modalPresentationStyle = .popover
-                $0.popoverPresentationController?.sourceView = colorPicker
-                $0.popoverPresentationController?.permittedArrowDirections = permittedPopoverArrowDirections
-            }
-            
-            viewController.present(colorPicker, animated: true)
-        }
-        #else
-            // Xcode 11 and lower
-        #endif
-    }
-    
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTapOptionSelector optionSelector: OptionSelector) {
-        
-        let viewModel = OptionSelectorViewModel(
-            title: optionSelector.title,
-            options: optionSelector.options,
-            selectedIndex: optionSelector.selectedIndex
-        )
-        
-        let optionSelectorViewController = OptionSelectorViewController.create(viewModel: viewModel).then {
-            $0.delegate = self
-        }
-        
-        let navigationController = PopoverNavigationController(
-            rootViewController: optionSelectorViewController
-        ).then {
-            $0.modalPresentationStyle = .popover
-            $0.popoverPresentationController?.sourceView = optionSelector
-            $0.popoverPresentationController?.permittedArrowDirections = permittedPopoverArrowDirections
-            $0.popoverPresentationController?.delegate = self
-        }
-        
-        viewController.present(navigationController, animated: true)
+        delegate?.elementInspectorCoordinator(self, didFinishWith: rootReference)
     }
 }
 
