@@ -10,7 +10,7 @@ import UIKit
 final class PropertyInspectorViewCode: BaseView {
     
     #warning("move header style to ElementInspector.Appearance")
-    private(set) lazy var elementNameLabel = SectionHeader(.title3, text: nil, bold: true).then {
+    private(set) lazy var elementNameLabel = SectionHeader(.title3, text: nil, withTraits: .traitBold).then {
         $0.contentView.directionalLayoutMargins = .zero
     }
     
@@ -30,7 +30,9 @@ final class PropertyInspectorViewCode: BaseView {
         margins: ElementInspector.appearance.margins
     )
     
-    private(set) lazy var scrollView = UIScrollView()
+    private(set) lazy var scrollView = UIScrollView().then {
+        $0.alwaysBounceVertical = true
+    }
     
     override func setup() {
         super.setup()

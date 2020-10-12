@@ -26,7 +26,28 @@ final class ElementInspectorCoordinator: NSObject {
         rootViewController: elementInspectorViewController
     ).then {
         $0.presentationDelegate = self
-        $0.modalPresentationStyle = .popover
+        
+        $0.modalPresentationStyle = {
+            guard let window = rootReference.view?.window else {
+                return .fullScreen
+            }
+            
+            let referenceViewArea = rootReference.frame.height * rootReference.frame.width
+            
+            let windowArea = window.frame.height * window.frame.width
+            
+            let ratio = referenceViewArea / windowArea
+            
+            if ratio < 0.4 {
+                return .popover
+            }
+            else if ratio < 0.7 {
+                return .formSheet
+            }
+            
+            return .pageSheet
+        }()
+        
         $0.popoverPresentationController?.sourceView = rootReference.view
     }
     

@@ -24,11 +24,24 @@ final class PropertyInspectorViewController: UIViewController {
     
     private lazy var viewCode = PropertyInspectorViewCode()
     
-    private lazy var sectionViews: [PropertyInspectorSectionView] = viewModel.sectionInputs.map {
-        PropertyInspectorSectionView(section: $0).then {
-            $0.delegate = self
+    private lazy var snapshotViewCode: PropertyInspectorViewReferenceSnapshotView? = {
+        guard let referenceView = viewModel.reference.view else {
+            return nil
         }
-    }
+        
+        return PropertyInspectorViewReferenceSnapshotView(targetView: referenceView)
+    }()
+    
+    private lazy var sectionViews: [PropertyInspectorSectionView] = {
+        viewModel.sectionInputs.enumerated().map { index, section in
+            PropertyInspectorSectionView(
+                section: section,
+                isCollapsed: index > 0
+            ).then {
+                $0.delegate = self
+            }
+        }
+    }()
     
     override func loadView() {
         view = viewCode
@@ -40,6 +53,10 @@ final class PropertyInspectorViewController: UIViewController {
         viewCode.elementNameLabel.text = viewModel.reference.elementName
         
         viewCode.elementDescriptionLabel.text = viewModel.reference.elementDescription
+        
+        if let snapshotViewCode = snapshotViewCode {
+            viewCode.contentView.addArrangedSubview(snapshotViewCode)
+        }
         
         sectionViews.forEach { viewCode.contentView.addArrangedSubview($0) }
     }

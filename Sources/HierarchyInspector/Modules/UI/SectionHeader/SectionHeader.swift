@@ -9,16 +9,10 @@ import UIKit
 
 final class SectionHeader: BaseView {
     
-    private(set) lazy var textLabel = UILabel(textStyle).then {
+    private(set) lazy var textLabel = UILabel().then {
         $0.numberOfLines = 0
         $0.adjustsFontSizeToFitWidth = true
         $0.preferredMaxLayoutWidth = 200
-    }
-    
-    var textStyle: UIFont.TextStyle = .title3 {
-        didSet {
-            textLabel.font = .preferredFont(forTextStyle: textStyle)
-        }
     }
     
     var text: String? {
@@ -34,8 +28,6 @@ final class SectionHeader: BaseView {
         super.setup()
         
         contentView.addArrangedSubview(textLabel)
-        
-        contentView.directionalLayoutMargins = ElementInspector.appearance.margins
     }
     
     override func didMoveToSuperview() {
@@ -44,21 +36,25 @@ final class SectionHeader: BaseView {
         backgroundColor = superview?.backgroundColor
     }
     
-    convenience init(_ textStyle: UIFont.TextStyle = .title3, text: String?, bold: Bool = false) {
+    convenience init(
+        _ textStyle: UIFont.TextStyle = .title3,
+        text: String?,
+        withTraits traits: UIFontDescriptor.SymbolicTraits? = nil,
+        margins: NSDirectionalEdgeInsets = ElementInspector.appearance.margins
+    ) {
         self.init(frame: .zero)
         
-        self.textStyle = textStyle
         self.text = text
+        
+        self.contentView.directionalLayoutMargins = margins
         
         let font = UIFont.preferredFont(forTextStyle: textStyle)
         
-        switch bold {
-        case true:
-            self.textLabel.font = font.bold()
-            
-        case false:
-            self.textLabel.font = font
+        guard let traits = traits else {
+            textLabel.font = font
+            return
         }
         
+        textLabel.font = font.withTraits(traits: traits)
     }
 }

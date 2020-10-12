@@ -36,7 +36,7 @@ final class PropertyInspectorSectionView: BaseView {
         $0.isHidden = title == nil
     }
     
-    var isCollapsed: Bool = false {
+    var isCollapsed: Bool {
         didSet {
             hideContent(isCollapsed)
         }
@@ -53,15 +53,16 @@ final class PropertyInspectorSectionView: BaseView {
                 case .separator:
                     return SeparatorView().then {
                         $0.contentView.directionalLayoutMargins = .margins(
-                            top: ElementInspector.appearance.horizontalMargins,
-                            bottom: ElementInspector.appearance.horizontalMargins - 5
+                            horizontal: .zero,
+                            vertical: ElementInspector.appearance.verticalMargins
                         )
                     }
                     
                 case let .subSection(title):
                     return SectionHeader(
                         .footnote,
-                        text: title.localizedCapitalized
+                        text: title.localizedCapitalized,
+                        withTraits: .traitBold
                     ).then {
                         $0.contentView.directionalLayoutMargins = .margins(
                             top: ElementInspector.appearance.horizontalMargins,
@@ -160,10 +161,12 @@ final class PropertyInspectorSectionView: BaseView {
     
     // MARK: - Init
     
-    init(section: PropertyInspectorInputSection) {
-        title = section.title
+    init(section: PropertyInspectorInputSection, isCollapsed: Bool) {
+        self.isCollapsed = isCollapsed
         
-        propertyInputs = section.propertyInpus
+        self.title = section.title
+        
+        self.propertyInputs = section.propertyInpus
 
         super.init(frame: .zero)
     }
@@ -174,6 +177,8 @@ final class PropertyInspectorSectionView: BaseView {
     
     override func setup() {
         super.setup()
+        
+        hideContent(isCollapsed)
         
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
         

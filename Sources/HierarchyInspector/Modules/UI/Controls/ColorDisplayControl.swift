@@ -30,6 +30,6 @@ final class ColorDisplayControl: BaseControl {
     }
     
     override func draw(_ rect: CGRect) {
-        IconKit.drawColorGridLarge(frame: bounds, resizing: .aspectFill)
+        IconKit.drawColorGrid(frame: bounds, resizing: .aspectFill)
     }
 }

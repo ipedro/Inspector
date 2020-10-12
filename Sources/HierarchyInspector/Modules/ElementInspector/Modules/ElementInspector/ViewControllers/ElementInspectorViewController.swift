@@ -87,8 +87,6 @@ final class ElementInspectorViewController: UIViewController {
         
         title = viewModel.reference.elementName
         
-        navigationItem.titleView = viewCode.segmentedControl
-        
         navigationItem.rightBarButtonItem = viewCode.inspectBarButtonItem
         
         if viewModel.showDismissBarButton {
@@ -106,6 +104,12 @@ final class ElementInspectorViewController: UIViewController {
         viewCode.segmentedControl.selectedSegmentIndex = 0
         
         installPanel(firstPanel)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationItem.titleView = viewCode.segmentedControl
     }
     
     override func size(forChildContentContainer container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
