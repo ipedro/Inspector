@@ -32,12 +32,12 @@ final class PropertyInspectorViewController: UIViewController {
     
     private lazy var viewCode = PropertyInspectorViewCode()
     
-    private lazy var snapshotViewCode: PropertyInspectorViewReferenceSnapshotView? = {
+    private lazy var snapshotViewCode: PropertyInspectorViewThumbnailSectionView? = {
         guard let referenceView = viewModel.reference.view else {
             return nil
         }
         
-        return PropertyInspectorViewReferenceSnapshotView(reference: viewModel.reference).then {
+        return PropertyInspectorViewThumbnailSectionView(reference: viewModel.reference).then {
             $0.toggleHighlightViewsControl.isOn = !viewModel.reference.isHidingHighlightViews
             $0.toggleHighlightViewsControl.addTarget(self, action: #selector(toggleLayerInspectorViewsVisibility), for: .valueChanged)
         }

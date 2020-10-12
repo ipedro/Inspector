@@ -65,6 +65,19 @@ extension ViewHierarchyListViewController: UITableViewDataSource {
         
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let cell = cell as? ViewHierarchyListTableViewCodeCell else {
+            return
+        }
+        
+        if let referenceForThumbnail = cell.viewModel?.referenceForThumbnail {
+            DispatchQueue.main.async {
+                cell.thumbnailView = ViewHierarchyReferenceThumbnailView(reference: referenceForThumbnail)
+            }
+        }
+        
+    }
 }
 
 extension ViewHierarchyListViewController: UITableViewDelegate {

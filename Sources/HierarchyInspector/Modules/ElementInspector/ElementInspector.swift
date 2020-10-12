@@ -15,6 +15,16 @@ enum ElementInspector {
         
         let verticalMargins: CGFloat = 13
         
+        lazy var textColor: UIColor = {
+            #if swift(>=5.0)
+            if #available(iOS 13.0, *) {
+                return .label
+            }
+            #endif
+            
+            return .darkText
+        }()
+        
         var margins: NSDirectionalEdgeInsets {
             .margins(
                 horizontal: ElementInspector.appearance.horizontalMargins,

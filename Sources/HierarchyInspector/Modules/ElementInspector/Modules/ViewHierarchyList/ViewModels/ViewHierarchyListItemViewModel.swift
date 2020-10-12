@@ -12,6 +12,8 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
     
     var reference: ViewHierarchyReference { get }
     
+    var referenceForThumbnail: ViewHierarchyReference? { get }
+    
     var title: String { get }
     
     var subtitle: String { get }
@@ -28,6 +30,10 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
 }
 
 final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol {
+    var referenceForThumbnail: ViewHierarchyReference? {
+        relativeDepth == 0 ? nil : reference 
+    }
+    
     let identifier = UUID()
     
     weak var parent: ViewHierarchyListItemViewModelProtocol?

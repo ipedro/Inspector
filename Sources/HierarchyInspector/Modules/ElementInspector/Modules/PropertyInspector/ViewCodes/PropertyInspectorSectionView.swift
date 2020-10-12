@@ -150,16 +150,7 @@ final class PropertyInspectorSectionView: BaseView {
         $0.addTarget(self, action: #selector(tapHeader), for: .touchUpInside)
     }
     
-    private lazy var chevronDownIcon = Icon(
-        .chevronDown,
-        color: sectionHeader.textLabel.textColor.withAlphaComponent(0.7),
-        size: CGSize(
-            width: 12,
-            height: 12
-        )
-    ).then {
-        $0.alpha = 0.8
-    }
+    private lazy var chevronDownIcon = Icon.chevronDownIcon()
     
     // MARK: - Init
     

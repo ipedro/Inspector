@@ -70,13 +70,14 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             
             separatorInset = .init(top: 0, left: offset, bottom: 0, right: 0)
             directionalLayoutMargins = .margins(leading: offset)
-            stackView.directionalLayoutMargins = directionalLayoutMargins
+            containerStackView.directionalLayoutMargins = directionalLayoutMargins
         }
     }
     
+    #warning("move to theme")
     var isEvenRow = false {
         didSet {
-            #warning("move to theme")
+            #if swift(>=5.0)
             if #available(iOS 13.0, *) {
                 switch isEvenRow {
                 case true:
@@ -85,15 +86,16 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
                 case false:
                     backgroundColor = .tertiarySystemBackground
                 }
-            } else {
-                switch isEvenRow {
-                case true:
-                    backgroundColor = .white
-
-                case false:
-                    backgroundColor = UIColor(white: 0.05, alpha: 1)
-                }
             }
+            #else
+            switch isEvenRow {
+            case true:
+                backgroundColor = .white
+
+            case false:
+                backgroundColor = UIColor(white: 0.05, alpha: 1)
+            }
+            #endif
         }
     }
     
@@ -133,27 +135,60 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         $0.alpha = 0.5
     }
     
-    private lazy var chevronDownIcon = Icon(
-        .chevronDown,
-        color: elementNameLabel.textColor.withAlphaComponent(0.7),
-        size: CGSize(
-            width: 12,
-            height: 12
-        )
-    ).then {
-        $0.alpha = 0.8
+    private lazy var chevronDownIcon = Icon.chevronDownIcon()
+    
+    var thumbnailView: ViewHierarchyReferenceThumbnailView? {
+        didSet {
+            oldValue?.removeFromSuperview()
+            
+            if let thumbnailView = thumbnailView {
+                thumbnailView.layer.cornerRadius = 12
+                thumbnailView.contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.verticalMargins)
+                thumbnailContainerView.isSafelyHidden = false
+                thumbnailView.showEmptyStatusMessage = false
+                thumbnailContainerView.installView(thumbnailView)
+                
+                thumbnailView.widthAnchor.constraint(equalTo: thumbnailView.heightAnchor, multiplier: 4 / 3).isActive = true
+                
+                let heightConstraint = thumbnailView.heightAnchor.constraint(equalToConstant: 66).then {
+                    $0.priority = .defaultHigh
+                }
+                
+                heightConstraint.isActive = true
+                
+                thumbnailView.updateViews(afterScreenUpdates: true)
+            }
+            else {
+                thumbnailContainerView.isSafelyHidden = true
+            }
+        }
     }
     
-    private lazy var stackView = UIStackView(
+    private lazy var thumbnailContainerView = UIView().then {
+        $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
+        $0.setContentHuggingPriority(.fittingSizeLevel, for: .vertical)
+        $0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+    }
+    
+    private lazy var containerStackView = UIStackView(
+        axis: .horizontal,
+        arrangedSubviews: [
+            textStackView,
+            thumbnailContainerView
+        ],
+        spacing: ElementInspector.appearance.verticalMargins
+    ).then {
+        $0.alignment = .center
+    }
+    
+    private lazy var textStackView = UIStackView(
         axis: .vertical,
         arrangedSubviews: [
             elementNameLabel,
             descriptionLabel
         ],
         spacing: 4
-    ).then {
-        $0.isUserInteractionEnabled = false
-    }
+    )
     
     func setup() {
         contentView.clipsToBounds = true
@@ -161,7 +196,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         backgroundColor = nil
         
         contentView.installView(
-            stackView,
+            containerStackView,
             .margins(
                 top: ElementInspector.appearance.verticalMargins,
                 leading: 0,
@@ -181,5 +216,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         super.prepareForReuse()
         
         viewModel = nil
+        
+        thumbnailView = nil
     }
 }

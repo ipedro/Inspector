@@ -73,3 +73,20 @@ final class Icon: BaseView {
         glpyh.draw(color: color, frame: bounds, resizing: .aspectFit)
     }
 }
+
+extension Icon {
+    
+    static func chevronDownIcon() -> Icon {
+        Icon(
+            .chevronDown,
+            color: ElementInspector.appearance.textColor.withAlphaComponent(0.7),
+            size: CGSize(
+                width: ElementInspector.appearance.verticalMargins,
+                height: ElementInspector.appearance.verticalMargins
+            )
+        ).then {
+            $0.alpha = 0.8
+        }
+    }
+    
+}
