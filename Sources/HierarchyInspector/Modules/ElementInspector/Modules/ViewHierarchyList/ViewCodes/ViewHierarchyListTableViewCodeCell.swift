@@ -156,9 +156,13 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
                 
                 heightConstraint.isActive = true
                 
+                containerStackView.alignment = .center
+                
                 thumbnailView.updateViews(afterScreenUpdates: true)
             }
             else {
+                containerStackView.alignment = .fill
+                
                 thumbnailContainerView.isSafelyHidden = true
             }
         }
@@ -177,9 +181,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             thumbnailContainerView
         ],
         spacing: ElementInspector.appearance.verticalMargins
-    ).then {
-        $0.alignment = .center
-    }
+    )
     
     private lazy var textStackView = UIStackView(
         axis: .vertical,
