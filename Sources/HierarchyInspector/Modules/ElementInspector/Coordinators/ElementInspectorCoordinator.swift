@@ -113,6 +113,10 @@ extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate 
     
     @available(iOS 13.0, *)
     public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        guard presentationController.presentedViewController === navigationController else {
+            return
+        }
+        
         delegate?.elementInspectorCoordinator(self, didFinishWith: rootReference)
     }
 }
@@ -120,6 +124,10 @@ extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate 
 extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
     
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        guard popoverPresentationController.presentedViewController === navigationController else {
+            return
+        }
+        
         delegate?.elementInspectorCoordinator(self, didFinishWith: rootReference)
     }
     
