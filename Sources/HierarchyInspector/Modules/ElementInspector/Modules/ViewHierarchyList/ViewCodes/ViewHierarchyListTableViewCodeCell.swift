@@ -32,16 +32,16 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
                     return UIFont.preferredFont(forTextStyle: .title3).bold()
                     
                 case 1:
-                    return .systemFont(ofSize: 15, weight: .semibold)
+                    return UIFont.preferredFont(forTextStyle: .body).bold()
                     
                 case 2:
-                    return .systemFont(ofSize: 14, weight: .semibold)
+                    return UIFont.preferredFont(forTextStyle: .caption1).bold()
                     
                 case 3:
-                    return .systemFont(ofSize: 13, weight: .semibold)
+                    return UIFont.preferredFont(forTextStyle: .footnote).bold()
                     
                 default:
-                    return .systemFont(ofSize: 13, weight: .medium)
+                    return UIFont.preferredFont(forTextStyle: .footnote)
                 }
             }()
             

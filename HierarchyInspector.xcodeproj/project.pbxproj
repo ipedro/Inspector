@@ -97,7 +97,7 @@
 		EBC045B92531F6A400C311E6 /* OptionSelectorViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */; };
 		EBC045BF2531F8A800C311E6 /* OptionSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */; };
 		EBC524AB252F5F2F0054C6AA /* BaseControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC524AA252F5F2F0054C6AA /* BaseControl.swift */; };
-		EBC92E162533267200D7189A /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E152533267200D7189A /* File.swift */; };
+		EBC92E162533267200D7189A /* ViewHierarchyReference+ElementDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E152533267200D7189A /* ViewHierarchyReference+ElementDescription.swift */; };
 		EBC92E1D25332A5100D7189A /* UIFont+Traits.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E1C25332A5100D7189A /* UIFont+Traits.swift */; };
 		EBC92E432533564D00D7189A /* UITextView+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E422533564D00D7189A /* UITextView+Init.swift */; };
 		EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */; };
@@ -278,7 +278,7 @@
 		EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewCode.swift; sourceTree = "<group>"; };
 		EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewModel.swift; sourceTree = "<group>"; };
 		EBC524AA252F5F2F0054C6AA /* BaseControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseControl.swift; sourceTree = "<group>"; };
-		EBC92E152533267200D7189A /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		EBC92E152533267200D7189A /* ViewHierarchyReference+ElementDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyReference+ElementDescription.swift"; sourceTree = "<group>"; };
 		EBC92E1C25332A5100D7189A /* UIFont+Traits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Traits.swift"; sourceTree = "<group>"; };
 		EBC92E422533564D00D7189A /* UITextView+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Init.swift"; sourceTree = "<group>"; };
 		EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleControl.swift; sourceTree = "<group>"; };
@@ -743,7 +743,7 @@
 		EBC92E142533266600D7189A /* ViewHierarchyReference */ = {
 			isa = PBXGroup;
 			children = (
-				EBC92E152533267200D7189A /* File.swift */,
+				EBC92E152533267200D7189A /* ViewHierarchyReference+ElementDescription.swift */,
 			);
 			path = ViewHierarchyReference;
 			sourceTree = "<group>";
@@ -1307,7 +1307,7 @@
 				EB439C352532F2E1004CCBCA /* PropertyInspectorInputSection+UIActivityIndicatorViewSection.swift in Sources */,
 				EB5ED3A02533907600ABDCF7 /* UIView+Animation.swift in Sources */,
 				EB6651A425349FFD005B8FF2 /* ElementInspectorCoordinator+PropertyInspectorViewControllerDelegate.swift in Sources */,
-				EBC92E162533267200D7189A /* File.swift in Sources */,
+				EBC92E162533267200D7189A /* ViewHierarchyReference+ElementDescription.swift in Sources */,
 				EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */,
 				EB439C6225330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift in Sources */,
 				EBC92E1D25332A5100D7189A /* UIFont+Traits.swift in Sources */,

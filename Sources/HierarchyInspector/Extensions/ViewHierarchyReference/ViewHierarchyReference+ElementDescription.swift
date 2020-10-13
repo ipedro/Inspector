@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ViewHierarchyReference+ElementDescription.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 11.10.20.
@@ -31,7 +31,7 @@ extension ViewHierarchyReference {
                 return nil
             }
             
-            return "width: \(view.frame.width), height: \(view.frame.height)\nx: \(view.frame.origin.x), y: \(view.frame.origin.y)\n"
+            return "x: \(view.frame.origin.x), y: \(view.frame.origin.y) – w: \(view.frame.width), h: \(view.frame.height)"
         }
         
         var className: String? {
@@ -51,6 +51,7 @@ extension ViewHierarchyReference {
         strings.append(frame)
         
         strings.append(subviews)
+        
         strings.append(constraints)
         
         return strings.compactMap { $0 }.joined(separator: "\n")

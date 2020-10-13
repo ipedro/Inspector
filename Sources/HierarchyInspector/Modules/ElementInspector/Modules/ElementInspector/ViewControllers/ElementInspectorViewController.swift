@@ -99,30 +99,11 @@ final class ElementInspectorViewController: UIViewController {
             viewCode.segmentedControl.insertSegment(with: $0.image.withRenderingMode(.alwaysTemplate), at: 0, animated: false)
         }
         
-        var selectedSegment: Int {
-            guard
-                let selectedPanel = viewModel.selectedPanel,
-                let index = viewModel.elementPanels.firstIndex(of: selectedPanel)
-            else {
-                return .zero
-            }
-            
-            return index
+        viewCode.segmentedControl.selectedSegmentIndex = viewModel.selectedPanelSegmentIndex
+        
+        if let selectedPanel = viewModel.selectedPanel {
+            installPanel(selectedPanel)
         }
-        
-        viewCode.segmentedControl.selectedSegmentIndex = selectedSegment
-        
-        guard let firstPanel = viewModel.elementPanels.first else {
-            return
-        }
-        
-        viewCode.segmentedControl.selectedSegmentIndex = 0
-        
-        installPanel(firstPanel)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         
         navigationItem.titleView = viewCode.segmentedControl
     }

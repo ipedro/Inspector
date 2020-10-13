@@ -26,7 +26,7 @@ final class PropertyInspectorViewCode: BaseView {
             elementNameLabel,
             elementDescriptionLabel
         ],
-        spacing: 4,
+        spacing: ElementInspector.appearance.verticalMargins / 2,
         margins: ElementInspector.appearance.margins
     )
     

@@ -204,7 +204,10 @@ final class PropertyInspectorSectionView: BaseView {
         
         chevronDownIcon.centerYAnchor.constraint(equalTo: sectionHeader.centerYAnchor).isActive = true
 
-        chevronDownIcon.trailingAnchor.constraint(equalTo: sectionHeader.leadingAnchor, constant: -4).isActive = true
+        chevronDownIcon.trailingAnchor.constraint(
+            equalTo: sectionHeader.leadingAnchor,
+            constant: -(ElementInspector.appearance.verticalMargins / 3)
+        ).isActive = true
     }
     
     private func installSeparator() {

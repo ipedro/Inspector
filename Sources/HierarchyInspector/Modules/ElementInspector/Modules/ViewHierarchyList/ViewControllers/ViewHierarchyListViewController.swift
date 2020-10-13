@@ -18,6 +18,8 @@ protocol ViewHierarchyListViewControllerDelegate: AnyObject {
 final class ViewHierarchyListViewController: UIViewController {
     weak var delegate: ViewHierarchyListViewControllerDelegate?
     
+    private var needsSetup = true
+    
     private lazy var viewCode = ViewHierarchyListViewCode().then {
         $0.tableView.dataSource = self
         $0.tableView.delegate   = self
@@ -40,7 +42,14 @@ final class ViewHierarchyListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        guard needsSetup else {
+            return
+        }
+        
+        needsSetup = false
+        
         viewCode.tableView.layoutIfNeeded()
+        
         viewCode.tableView.reloadData()
         
         let size = viewCode.tableView.contentSize

@@ -28,6 +28,8 @@ protocol ElementInspectorViewModelProtocol {
     
     var selectedPanel: ElementInspectorPanel? { get }
     
+    var selectedPanelSegmentIndex: Int { get }
+    
     var showDismissBarButton: Bool { get }
 }
 
@@ -38,10 +40,27 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     
     var selectedPanel: ElementInspectorPanel?
     
+    var selectedPanelSegmentIndex: Int {
+        guard
+            let selectedPanel = selectedPanel,
+            let selectedIndex = elementPanels.firstIndex(of: selectedPanel)
+        else {
+            return UISegmentedControl.noSegment
+        }
+        
+        return selectedIndex
+    }
+    
     init(reference: ViewHierarchyReference, showDismissBarButton: Bool, selectedPanel: ElementInspectorPanel?) {
         self.reference = reference
-        self.selectedPanel = selectedPanel
         self.showDismissBarButton = showDismissBarButton
+        
+        if let selectedPanel = selectedPanel, elementPanels.contains(selectedPanel) {
+            self.selectedPanel = selectedPanel
+        }
+        else {
+            self.selectedPanel = elementPanels.first
+        }
     }
     
     private(set) lazy var elementPanels: [ElementInspectorPanel] = {
