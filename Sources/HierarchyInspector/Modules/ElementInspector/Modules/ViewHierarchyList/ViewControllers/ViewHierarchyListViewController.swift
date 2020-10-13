@@ -48,13 +48,15 @@ final class ViewHierarchyListViewController: UIViewController {
         
         needsSetup = false
         
-        viewCode.tableView.layoutIfNeeded()
-        
-        viewCode.tableView.reloadData()
-        
-        let size = viewCode.tableView.contentSize
-
-        preferredContentSize = size
+        DispatchQueue.main.async {
+            self.viewCode.tableView.layoutIfNeeded()
+            
+            self.viewCode.tableView.reloadData()
+            
+            let size = self.viewCode.tableView.contentSize
+            
+            self.preferredContentSize = size
+        }
     }
     
     static func create(viewModel: ViewHierarchyListViewModelProtocol) -> ViewHierarchyListViewController {

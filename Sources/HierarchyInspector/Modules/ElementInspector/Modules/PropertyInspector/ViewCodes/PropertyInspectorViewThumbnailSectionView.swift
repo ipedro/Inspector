@@ -18,7 +18,7 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
             }
             
             if let newLink = displayLink {
-                newLink.add(to: .current, forMode: .common)
+                newLink.add(to: .current, forMode: .default)
             }
         }
     }

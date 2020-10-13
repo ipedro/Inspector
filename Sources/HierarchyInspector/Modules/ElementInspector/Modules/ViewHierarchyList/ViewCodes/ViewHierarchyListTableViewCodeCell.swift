@@ -199,6 +199,8 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     }
     
     func setup() {
+        setContentHuggingPriority(.defaultHigh, for: .vertical)
+        
         contentView.clipsToBounds = true
         
         backgroundColor = nil
