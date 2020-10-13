@@ -53,7 +53,8 @@ final class ViewHierarchyListViewController: UIViewController {
             
             self.viewCode.tableView.reloadData()
             
-            let size = self.viewCode.tableView.contentSize
+            var size = self.viewCode.tableView.contentSize
+            size.width = max(size.width, 414)
             
             self.preferredContentSize = size
         }
@@ -81,18 +82,6 @@ extension ViewHierarchyListViewController: UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let cell = cell as? ViewHierarchyListTableViewCodeCell else {
-            return
-        }
-        
-        if let referenceForThumbnail = cell.viewModel?.referenceForThumbnail {
-            DispatchQueue.main.async {
-                cell.thumbnailView = ViewHierarchyReferenceThumbnailView(reference: referenceForThumbnail)
-            }
-        }
-        
-    }
 }
 
 extension ViewHierarchyListViewController: UITableViewDelegate {
@@ -117,11 +106,11 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             return
         }
         
-        guard itemViewModel.relativeDepth < 3 else {
-            delegate?.viewHierarchyListViewController(self, didSegueTo: itemViewModel.reference)
-            return
-        }
-        
+//        guard itemViewModel.relativeDepth < 3 else {
+//            delegate?.viewHierarchyListViewController(self, didSegueTo: itemViewModel.reference)
+//            return
+//        }
+//        
         let results = viewModel.toggleContainer(at: indexPath)
         
         guard results.isEmpty == false else {

@@ -22,6 +22,8 @@ protocol PropertyInspectorViewControllerDelegate: AnyObject {
 }
 
 final class PropertyInspectorViewController: UIViewController {
+    // MARK: - Properties
+    
     weak var delegate: PropertyInspectorViewControllerDelegate?
     
     private var viewModel: PropertyInspectorViewModelProtocol!
@@ -43,15 +45,6 @@ final class PropertyInspectorViewController: UIViewController {
         }
     }()
     
-    @objc private func toggleLayerInspectorViewsVisibility() {
-        guard viewModel.reference.isHidingHighlightViews else {
-            delegate?.propertyInspectorViewController(self, hideLayerInspectorViewsInside: viewModel.reference)
-            return
-        }
-        
-        delegate?.propertyInspectorViewController(self, showLayerInspectorViewsInside: viewModel.reference)
-    }
-    
     private lazy var sectionViews: [PropertyInspectorSectionView] = {
         viewModel.sectionInputs.enumerated().map { index, section in
             PropertyInspectorSectionView(
@@ -62,6 +55,17 @@ final class PropertyInspectorViewController: UIViewController {
             }
         }
     }()
+    
+    // MARK: - Init
+    
+    static func create(viewModel: PropertyInspectorViewModelProtocol) -> PropertyInspectorViewController {
+        let viewController = PropertyInspectorViewController()
+        viewController.viewModel = viewModel
+        
+        return viewController
+    }
+    
+    // MARK: - Lifecycle
     
     override func loadView() {
         view = viewCode
@@ -85,6 +89,14 @@ final class PropertyInspectorViewController: UIViewController {
         super.viewWillAppear(animated)
         
         calculatePreferredContentSize()
+        
+        snapshotViewCode?.startLiveUpdatingSnaphost()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        snapshotViewCode?.stopLiveUpdatingSnaphost()
+        
+        super.viewWillDisappear(animated)
     }
     
     func calculatePreferredContentSize() {
@@ -93,12 +105,7 @@ final class PropertyInspectorViewController: UIViewController {
         preferredContentSize = size
     }
     
-    static func create(viewModel: PropertyInspectorViewModelProtocol) -> PropertyInspectorViewController {
-        let viewController = PropertyInspectorViewController()
-        viewController.viewModel = viewModel
-        
-        return viewController
-    }
+    // MARK: - API
     
     func selectColor(_ color: UIColor) {
         selectedColorPicker?.selectedColor = color
@@ -115,7 +122,19 @@ final class PropertyInspectorViewController: UIViewController {
     func finishOptionSelction() {
         selectedOptionSelector = nil
     }
+    
+    @objc private func toggleLayerInspectorViewsVisibility() {
+        guard viewModel.reference.isHidingHighlightViews else {
+            delegate?.propertyInspectorViewController(self, hideLayerInspectorViewsInside: viewModel.reference)
+            return
+        }
+        
+        delegate?.propertyInspectorViewController(self, showLayerInspectorViewsInside: viewModel.reference)
+    }
+    
 }
+
+// MARK: - PropertyInspectorSectionViewDelegate
 
 extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate {
     

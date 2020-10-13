@@ -54,6 +54,16 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
                 accessoryType = .none
             }
             
+            thumbnailWrapperView.subviews.forEach { $0.removeFromSuperview() }
+            
+            if let referenceThumbnail = viewModel?.referenceThumbnail {
+                thumbnailWrapperView.installView(referenceThumbnail)
+                thumbnailWrapperView.isSafelyHidden = false
+            }
+            else {
+                thumbnailWrapperView.isSafelyHidden = true
+            }
+            
             // Collapse
             
             isCollapsed = viewModel?.isCollapsed == true
@@ -140,41 +150,10 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     
     private lazy var chevronDownIcon = Icon.chevronDownIcon()
     
-    var thumbnailView: ViewHierarchyReferenceThumbnailView? {
-        didSet {
-            oldValue?.removeFromSuperview()
-            
-            if let thumbnailView = thumbnailView {
-                
-                thumbnailView.layer.cornerRadius = ElementInspector.appearance.verticalMargins
-                thumbnailView.contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.verticalMargins / 2)
-                thumbnailContainerView.isSafelyHidden = false
-                thumbnailView.showEmptyStatusMessage = false
-                
-                thumbnailContainerView.installView(thumbnailView)
-                
-                thumbnailView.heightAnchor.constraint(equalTo: thumbnailContainerView.heightAnchor).isActive = true
-                
-                let widthConstraint = thumbnailView.widthAnchor.constraint(
-                    equalTo: thumbnailView.heightAnchor,
-                    multiplier: 4 / 3
-                ).then {
-                    $0.priority = .defaultHigh
-                }
-                
-                widthConstraint.isActive = true
-                
-                thumbnailView.updateViews(afterScreenUpdates: true)
-            }
-            else {
-                thumbnailContainerView.isSafelyHidden = true
-            }
-        }
-    }
-    
-    private lazy var thumbnailContainerView = UIView().then {
+    private lazy var thumbnailWrapperView = UIView().then {
+        $0.contentMode = .scaleAspectFit
         $0.heightAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
-        $0.isSafelyHidden = true
+        $0.widthAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
     }
     
     private lazy var containerStackView = UIStackView(
@@ -189,7 +168,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     private lazy var textStackView = UIStackView(
         axis: .horizontal,
         arrangedSubviews: [
-            thumbnailContainerView,
+            thumbnailWrapperView,
             descriptionLabel
         ],
         spacing: ElementInspector.appearance.verticalMargins / 2
@@ -200,6 +179,12 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     
     func setup() {
         setContentHuggingPriority(.defaultHigh, for: .vertical)
+        
+        layer.shouldRasterize = true
+        
+        layer.rasterizationScale = UIScreen.main.scale
+        
+        contentView.isUserInteractionEnabled = false
         
         contentView.clipsToBounds = true
         
@@ -229,7 +214,5 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         super.prepareForReuse()
         
         viewModel = nil
-        
-        thumbnailView = nil
     }
 }

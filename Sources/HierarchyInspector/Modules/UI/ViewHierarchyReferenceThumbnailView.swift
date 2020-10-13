@@ -23,13 +23,15 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     var showEmptyStatusMessage: Bool = true {
         didSet {
-            updateViews(afterScreenUpdates: true)
+            updateViews()
         }
     }
     
+    private(set) var originalSnapshotSize: CGSize = .zero
+    
     // MARK: - Init
     
-    init(reference: ViewHierarchyReference, frame: CGRect = .zero) {
+    init(frame: CGRect, reference: ViewHierarchyReference) {
         self.reference = reference
         
         super.init(frame: frame)
@@ -52,9 +54,11 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     private lazy var statusLabel = UILabel(.footnote)
     
     private lazy var wireframeView = WireframeView(
-        frame: .zero,
+        frame: bounds,
         reference: reference
-    )
+    ).then {
+        $0.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    }
     
     // MARK: - View Lifecycle
     
@@ -72,12 +76,6 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         contentView.installView(statusLabel, .centerXY)
         
         contentView.addArrangedSubview(wireframeView)
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        updateViews(afterScreenUpdates: true)
     }
     
     // MARK: - State
@@ -149,14 +147,14 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             insideRect: CGRect(
                 origin: .zero,
                 size: CGSize(
-                    width: wireframeView.bounds.width,
-                    height: wireframeView.bounds.width
+                    width:  bounds.width - contentView.directionalLayoutMargins.leading - contentView.directionalLayoutMargins.trailing,
+                    height: bounds.width - contentView.directionalLayoutMargins.leading - contentView.directionalLayoutMargins.trailing
                 )
             )
         )
     }
     
-    func updateViews(afterScreenUpdates: Bool = false) {
+    func updateViews(afterScreenUpdates: Bool = true) {
         guard let referenceView = reference.view else {
             state = .lostConnection
             return
@@ -176,6 +174,8 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             state = .lostConnection
             return
         }
+        
+        originalSnapshotSize = snapshotView.frame.size
         
         state = .snapshot(snapshotView)
     }

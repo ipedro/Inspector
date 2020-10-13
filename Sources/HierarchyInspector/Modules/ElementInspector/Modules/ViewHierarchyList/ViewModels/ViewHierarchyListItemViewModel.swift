@@ -12,7 +12,7 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
     
     var reference: ViewHierarchyReference { get }
     
-    var referenceForThumbnail: ViewHierarchyReference? { get }
+    var referenceThumbnail: UIView? { get }
     
     var title: String { get }
     
@@ -30,7 +30,8 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
 }
 
 final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol {
-    var referenceForThumbnail: ViewHierarchyReference? {
+    
+    private var referenceForThumbnail: ViewHierarchyReference? {
         relativeDepth == 0 ? nil : reference 
     }
     
@@ -76,6 +77,62 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     // MARK: - Properties
     
     let reference: ViewHierarchyReference
+    
+    static let thumbSize = CGSize(
+        width: ElementInspector.appearance.horizontalMargins * 2,
+        height: ElementInspector.appearance.horizontalMargins * 2
+    )
+    
+    private var cachedReferenceThumbnail: ViewHierarchyReferenceThumbnailView?
+    
+    func makeReferenceThumbnailmage() -> ViewHierarchyReferenceThumbnailView? {
+        guard let referenceForThumbnail = referenceForThumbnail else {
+            return nil
+        }
+        
+        let thumbnailView = ViewHierarchyReferenceThumbnailView(
+            frame: CGRect(
+                origin: .zero,
+                size: Self.thumbSize
+            ),
+            reference: referenceForThumbnail
+        )
+        
+        thumbnailView.showEmptyStatusMessage = false
+        
+        thumbnailView.heightAnchor.constraint(equalToConstant: Self.thumbSize.height).isActive = true
+        thumbnailView.widthAnchor.constraint(equalToConstant: Self.thumbSize.width).isActive = true
+        
+        thumbnailView.layer.cornerRadius = ElementInspector.appearance.verticalMargins
+        thumbnailView.contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.verticalMargins / 2)
+        thumbnailView.updateViews()
+        thumbnailView.layoutIfNeeded()
+        thumbnailView.layer.shouldRasterize = true
+        thumbnailView.layer.rasterizationScale = 1
+        
+        print(
+            #function,
+            "thumbnail size",
+            thumbnailView.frame.size,
+            "original size",
+            thumbnailView.originalSnapshotSize,
+            "raster scale",
+            thumbnailView.layer.rasterizationScale
+        )
+        
+        return thumbnailView
+    }
+    
+    var referenceThumbnail: UIView? {
+        guard let cachedReferenceThumbnail = cachedReferenceThumbnail else {
+            let newReference = makeReferenceThumbnailmage()
+            self.cachedReferenceThumbnail = newReference
+            
+            return newReference
+        }
+        
+        return cachedReferenceThumbnail
+    }
     
     init(
         reference: ViewHierarchyReference,

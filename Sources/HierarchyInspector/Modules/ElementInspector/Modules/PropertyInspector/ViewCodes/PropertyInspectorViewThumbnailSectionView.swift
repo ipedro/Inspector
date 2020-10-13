@@ -9,7 +9,16 @@ import UIKit
 
 final class PropertyInspectorViewThumbnailSectionView: BaseView {
     
+    enum State {
+        case snapshot(UIView)
+        case isHidden
+        case frameIsEmpty
+        case lostConnection
+    }
+    
     let reference: ViewHierarchyReference
+    
+    private var calculatedLastFrame = 0
     
     private var displayLink: CADisplayLink? {
         didSet {
@@ -39,7 +48,16 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         $0.isShowingSeparator = false
     }
     
-    private lazy var thumbnailView = ViewHierarchyReferenceThumbnailView(reference: reference).then {
+    private lazy var thumbnailView = ViewHierarchyReferenceThumbnailView(
+        frame: CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: frame.height,
+                height: frame.height
+            )
+        ),
+        reference: reference
+    ).then {
         $0.clipsToBounds = false
     }
     
@@ -57,41 +75,52 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         super.setup()
         
         setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        
         setContentHuggingPriority(.defaultHigh, for: .vertical)
         
         contentView.addArrangedSubview(thumbnailView)
+        
         contentView.addArrangedSubview(controlsContainerView)
     }
     
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
         
-        guard superview != nil else {
-            displayLink = nil
+        guard superview == nil else {
             return
         }
         
-        displayLink = CADisplayLink(target: self, selector: #selector(updateViews))
+        stopLiveUpdatingSnaphost()
     }
     
-    enum State {
-        case snapshot(UIView)
-        case isHidden
-        case frameIsEmpty
-        case lostConnection
+    var isRedrawingViews: Bool {
+        displayLink != nil
     }
     
-    @objc private func updateViews() {
-        thumbnailView.updateViews()
-        
-        guard reference.view == nil else {
-            return
-        }
-        
+    func startLiveUpdatingSnaphost() {
+        displayLink = CADisplayLink(target: self, selector: #selector(updateSnapshot))
+    }
+    
+    func stopLiveUpdatingSnaphost() {
         displayLink = nil
+    }
+    
+    @objc private func updateSnapshot() {
+        guard reference.view != nil else {
+            stopLiveUpdatingSnaphost()
+            return
+        }
+        
+        calculatedLastFrame = (calculatedLastFrame + 1) % 3
+        
+        guard calculatedLastFrame == 1 else {
+            return
+        }
+        
+        thumbnailView.updateViews(afterScreenUpdates: false)
     }
     
     deinit {
-        displayLink = nil
+        stopLiveUpdatingSnaphost()
     }
 }

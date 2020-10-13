@@ -42,8 +42,6 @@ final class ElementInspectorViewController: UIViewController {
             
             if let panelViewController = presentedPanelViewController {
                 
-                panelViewController.willMove(toParent: self)
-                
                 addChild(panelViewController)
                 
                 viewCode.contentView.installView(panelViewController.view)
@@ -55,9 +53,9 @@ final class ElementInspectorViewController: UIViewController {
                 
                 oldPanelViewController.willMove(toParent: nil)
                 
-                oldPanelViewController.removeFromParent()
-                
                 oldPanelViewController.view.removeFromSuperview()
+                
+                oldPanelViewController.removeFromParent()
             }
         }
     }

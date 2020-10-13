@@ -300,8 +300,6 @@ private extension HierarchyInspector.Manager {
 
 extension HierarchyInspector.Manager: HighlightViewDelegate {
     func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference) {
-        hideAllHighlightViews(true, containedIn: reference)
-        
         presentElementInspector(for: reference, animated: true)
     }
     
@@ -310,9 +308,12 @@ extension HierarchyInspector.Manager: HighlightViewDelegate {
             return
         }
         
-        for view in referenceView.allSubviews where view is LayerViewProtocol {
-            view.isSafelyHidden = hide
+        asyncOperation(name: hide ? "☐ Highlight Views" : "☑ Highlight Views") {
+            for view in referenceView.allSubviews where view is LayerViewProtocol {
+                view.isSafelyHidden = hide
+            }
         }
+        
     }
 }
 
