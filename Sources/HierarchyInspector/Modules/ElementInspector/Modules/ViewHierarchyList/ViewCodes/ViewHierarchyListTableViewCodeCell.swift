@@ -125,12 +125,15 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     }
     
     private lazy var elementNameLabel = UILabel().then {
+        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.numberOfLines = 0
         $0.adjustsFontSizeToFitWidth = true
         $0.preferredMaxLayoutWidth = 200
     }
     
     private lazy var descriptionLabel = UILabel(.caption2, numberOfLines: 0).then {
+        $0.setContentCompressionResistancePriority(.required, for: .vertical)
+        $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
         $0.preferredMaxLayoutWidth = 200
         $0.alpha = 0.5
     }
@@ -142,24 +145,24 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             oldValue?.removeFromSuperview()
             
             if let thumbnailView = thumbnailView {
-                thumbnailView.layer.cornerRadius = 12
-                thumbnailView.contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.verticalMargins)
+                
+                thumbnailView.layer.cornerRadius = ElementInspector.appearance.verticalMargins
+                thumbnailView.contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.verticalMargins / 2)
                 thumbnailContainerView.isSafelyHidden = false
                 thumbnailView.showEmptyStatusMessage = false
+                
                 thumbnailContainerView.installView(thumbnailView)
                 
-                thumbnailView.widthAnchor.constraint(
+                thumbnailView.heightAnchor.constraint(equalTo: thumbnailContainerView.heightAnchor).isActive = true
+                
+                let widthConstraint = thumbnailView.widthAnchor.constraint(
                     equalTo: thumbnailView.heightAnchor,
                     multiplier: 4 / 3
-                ).isActive = true
-                
-                let heightConstraint = thumbnailView.heightAnchor.constraint(
-                    equalToConstant: ElementInspector.appearance.horizontalMargins * 2
                 ).then {
                     $0.priority = .defaultHigh
                 }
                 
-                heightConstraint.isActive = true
+                widthConstraint.isActive = true
                 
                 thumbnailView.updateViews(afterScreenUpdates: true)
             }
@@ -170,10 +173,8 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     }
     
     private lazy var thumbnailContainerView = UIView().then {
+        $0.heightAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
         $0.isSafelyHidden = true
-        $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
-        $0.setContentHuggingPriority(.fittingSizeLevel, for: .vertical)
-        $0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
     }
     
     private lazy var containerStackView = UIStackView(
@@ -182,7 +183,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             elementNameLabel,
             textStackView
         ],
-        spacing: ElementInspector.appearance.verticalMargins
+        spacing: ElementInspector.appearance.verticalMargins / 2
     )
     
     private lazy var textStackView = UIStackView(
@@ -191,10 +192,10 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             thumbnailContainerView,
             descriptionLabel
         ],
-        spacing: ElementInspector.appearance.verticalMargins
+        spacing: ElementInspector.appearance.verticalMargins / 2
     ).then {
-        $0.alignment = .center
-        $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
+        $0.heightAnchor.constraint(greaterThanOrEqualToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
+        $0.alignment = .firstBaseline
     }
     
     func setup() {
@@ -216,7 +217,10 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         chevronDownIcon.centerYAnchor.constraint(equalTo: elementNameLabel.centerYAnchor).isActive = true
 
-        chevronDownIcon.trailingAnchor.constraint(equalTo: elementNameLabel.leadingAnchor, constant: -4).isActive = true
+        chevronDownIcon.trailingAnchor.constraint(
+            equalTo: elementNameLabel.leadingAnchor,
+            constant: -(ElementInspector.appearance.verticalMargins / 3)
+        ).isActive = true
     }
     
     override func prepareForReuse() {
