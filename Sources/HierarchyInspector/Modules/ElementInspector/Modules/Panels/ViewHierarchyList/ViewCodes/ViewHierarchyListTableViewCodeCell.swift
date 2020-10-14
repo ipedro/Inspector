@@ -47,18 +47,18 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             
             elementNameLabel.sizeToFit()
             
-            if let relativeDepth = viewModel?.relativeDepth, relativeDepth > 0 {
-                accessoryType = .detailButton
-            }
-            else {
-                accessoryType = .none
-            }
-            
-            thumbnailWrapperView.subviews.forEach { $0.removeFromSuperview() }
-            
             if let referenceThumbnail = viewModel?.referenceThumbnail {
-                thumbnailWrapperView.installView(referenceThumbnail)
-                thumbnailWrapperView.isSafelyHidden = false
+                DispatchQueue.main.async { [weak self] in
+                    self?.thumbnailWrapperView.subviews.forEach { $0.removeFromSuperview() }
+                    
+                    guard self?.viewModel?.referenceThumbnail == referenceThumbnail else {
+                        self?.thumbnailWrapperView.isSafelyHidden = true
+                        return
+                    }
+                    
+                    self?.thumbnailWrapperView.installView(referenceThumbnail)
+                    self?.thumbnailWrapperView.isSafelyHidden = false
+                }
             }
             else {
                 thumbnailWrapperView.isSafelyHidden = true
@@ -141,11 +141,14 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         $0.preferredMaxLayoutWidth = 200
     }
     
-    private lazy var descriptionLabel = UILabel(.caption2, numberOfLines: 0).then {
+    private lazy var descriptionLabel = UILabel(
+        .caption2,
+        textColor: ElementInspector.appearance.secondaryTextColor,
+        numberOfLines: 0
+    ).then {
         $0.setContentCompressionResistancePriority(.required, for: .vertical)
         $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
         $0.preferredMaxLayoutWidth = 200
-        $0.alpha = 0.5
     }
     
     private lazy var chevronDownIcon = Icon.chevronDownIcon()
@@ -174,11 +177,13 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         spacing: ElementInspector.appearance.verticalMargins / 2
     ).then {
         $0.heightAnchor.constraint(greaterThanOrEqualToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
-        $0.alignment = .firstBaseline
+        $0.alignment = .top
     }
     
     func setup() {
         setContentHuggingPriority(.defaultHigh, for: .vertical)
+        
+        isOpaque = true
         
         layer.shouldRasterize = true
         
@@ -188,7 +193,13 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         contentView.clipsToBounds = true
         
-        backgroundColor = nil
+        selectedBackgroundView = UIView().then {
+            $0.backgroundColor = UIColor.systemPurple.withAlphaComponent(0.1)
+        }
+        
+        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        
+        accessoryType = .detailButton
         
         contentView.installView(
             containerStackView,

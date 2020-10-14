@@ -32,7 +32,7 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
 final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol {
     
     private var referenceForThumbnail: ViewHierarchyReference? {
-        relativeDepth == 0 ? nil : reference 
+        relativeDepth == 0 ? nil : reference
     }
     
     let identifier = UUID()

@@ -29,6 +29,12 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
     }
     
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController) {
-        delegate?.elementInspectorCoordinator(self, didFinishWith: rootReference)
+        navigationController.dismiss(animated: true) { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            self.delegate?.elementInspectorCoordinator(self, didFinishWith: self.rootReference)
+        }
     }
 }

@@ -10,15 +10,27 @@ import UIKit
 extension Icon {
     enum Glyph: String {
         case chevronDown
-        case sliderHorizontal
+        case infoCircle
+        case wifiExlusionMark
+        case eyeSlashFill
+        case listBulletIndent
         
         fileprivate func draw(color: UIColor, frame: CGRect, resizing: IconKit.ResizingBehavior) {
             switch self {
             case .chevronDown:
                 IconKit.drawChevronDown(color: color, frame: frame, resizing: resizing)
                 
-            case .sliderHorizontal:
-                IconKit.drawSliderHorizontal(color: color, frame: frame, resizing: resizing)
+            case .infoCircle:
+                IconKit.drawInfoCircle(color: color, frame: frame, resizing: resizing)
+            
+            case .wifiExlusionMark:
+                IconKit.drawWifiExlusionMark(color: color, frame: frame, resizing: resizing)
+                
+            case .eyeSlashFill:
+                IconKit.drawEyeSlashFill(color: color, frame: frame, resizing: resizing)
+                
+            case .listBulletIndent:
+                IconKit.drawListBulletIndent(color: color, frame: frame, resizing: resizing)
             }
         }
     }

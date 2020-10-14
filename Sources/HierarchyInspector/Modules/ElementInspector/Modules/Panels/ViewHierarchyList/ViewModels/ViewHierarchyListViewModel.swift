@@ -23,6 +23,8 @@ enum ViewHierarchyListAction {
 protocol ViewHierarchyListViewModelProtocol {
     var title: String { get }
     
+    var rootReference: ViewHierarchyReference { get }
+    
     var numberOfRows: Int { get }
     
     func title(for section: Int) -> String?

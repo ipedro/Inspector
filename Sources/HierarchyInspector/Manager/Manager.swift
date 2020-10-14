@@ -327,9 +327,7 @@ extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
         hideAllHighlightViews(true, containedIn: reference)
     }
     
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
-                                     didFinishWith reference: ViewHierarchyReference) {
-        
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference) {
         hideAllHighlightViews(false, containedIn: reference)
         
         elementInspectorCoordinator = nil

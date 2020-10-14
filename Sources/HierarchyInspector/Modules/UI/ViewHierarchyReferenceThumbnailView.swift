@@ -13,7 +13,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     enum State {
         case snapshot(UIView)
         case isHidden
-        case frameIsEmpty
+        case frameIsEmpty(CGRect)
         case lostConnection
     }
     
@@ -43,15 +43,17 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     // MARK: - Componentns
     
-    private lazy var gridImageView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)).then {
-        if #available(iOS 13.0, *) {
-            $0.backgroundColor = .systemBackground
-        } else {
-            $0.backgroundColor = .darkGray
-        }
-    }
+    private lazy var gridImageView = UIImageView(
+        image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)
+    )
     
-    private lazy var statusLabel = UILabel(.footnote)
+    private lazy var statusContentView = UIStackView(
+        axis: .vertical,
+        spacing: ElementInspector.appearance.verticalMargins / 2,
+        margins: contentView.directionalLayoutMargins
+    ).then {
+        $0.alignment = .center
+    }
     
     private lazy var snapshotContainerView = UIView(frame: bounds).then {
         $0.layer.masksToBounds = true
@@ -63,21 +65,21 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     override func setup() {
         super.setup()
         
+        contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.horizontalMargins)
+        
         clipsToBounds = true
         
         contentMode = .scaleAspectFit
         
         isOpaque = true
         
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
         
         isUserInteractionEnabled = false
         
-        contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.horizontalMargins)
-        
         installView(gridImageView, .margins(horizontal: -20, vertical: 0), .onBottom)
         
-        contentView.installView(statusLabel, .centerXY)
+        contentView.installView(statusContentView)
         
         contentView.addArrangedSubview(snapshotContainerView)
     }
@@ -102,7 +104,9 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         }
         
         snapshotContainerView.layer.rasterizationScale = min(UIScreen.main.scale, max(1, UIScreen.main.scale * aspectRatio))
+        
         snapshotContainerView.layer.shouldRasterize = true
+        
         Console.print(#function, "rasterizationScale", snapshotContainerView.layer.rasterizationScale)
         
     }
@@ -110,6 +114,10 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     private(set) var state: State = .lostConnection {
         didSet {
+            statusContentView.subviews.forEach { $0.removeFromSuperview() }
+            
+            backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
+            
             let previousSubviews = snapshotContainerView.subviews
             
             defer {
@@ -118,6 +126,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             
             switch state {
             case let .snapshot(newSnapshot):
+                backgroundColor = ElementInspector.appearance.tertiaryTextColor
                 
                 let proportionalFrame = calculateFrame(with: newSnapshot)
                 
@@ -126,10 +135,6 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
                 }
                 
                 newSnapshot.contentMode = contentMode
-                statusLabel.text = nil
-                statusLabel.isHidden = true
-                gridImageView.alpha = 0.5
-                
                 snapshotContainerView.installView(newSnapshot, .centerXY)
 
                 let constraints = [
@@ -148,21 +153,33 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
                 snapshotContainerView.addSubview(newSnapshot)
                 
             case .isHidden:
-                gridImageView.alpha = 0.1
-                statusLabel.isHidden = showEmptyStatusMessage == false
-                statusLabel.text = "View is hidden."
+                installStatusView(icon: .eyeSlashFill, text: "View is hidden.")
                 
             case .lostConnection:
-                gridImageView.alpha = 0.1
-                statusLabel.isHidden = showEmptyStatusMessage == false
-                statusLabel.text = "Lost connection to view."
+                installStatusView(icon: .wifiExlusionMark, text: "Lost connection to view.")
                 
-            case .frameIsEmpty:
-                gridImageView.alpha = 0.1
-                statusLabel.isHidden = showEmptyStatusMessage == false
-                statusLabel.text = "View frame is empty."
+            case let .frameIsEmpty(frame):
+                installStatusView(icon: .eyeSlashFill, text: "View frame is empty.\n\(frame)")
             }
         }
+    }
+    
+    private func installStatusView(icon glyph: Icon.Glyph, text: String) {
+        statusContentView.subviews.forEach { $0.removeFromSuperview() }
+        
+        let color = ElementInspector.appearance.secondaryTextColor
+        
+        let icon = Icon(glyph, color: color, size: CGSize(width: 36, height: 36))
+        
+        statusContentView.addArrangedSubview(icon)
+        
+        guard showEmptyStatusMessage else {
+            return
+        }
+        
+        let label = UILabel.init(.footnote, text, textAlignment: .center, textColor: color)
+        
+        statusContentView.addArrangedSubview(label)
     }
     
     private func calculateFrame(with snapshot: UIView) -> CGRect {
@@ -188,7 +205,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         }
         
         guard referenceView.frame.isEmpty == false, referenceView.frame != .zero else {
-            state = .frameIsEmpty
+            state = .frameIsEmpty(referenceView.frame)
             return
         }
         

@@ -22,6 +22,8 @@ final class ColorDisplayControl: BaseControl {
     override func setup() {
         super.setup()
         
+        backgroundColor = ElementInspector.appearance.tertiaryTextColor
+        
         layer.cornerRadius = 5
         
         layer.masksToBounds = true

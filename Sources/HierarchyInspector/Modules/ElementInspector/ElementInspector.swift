@@ -25,6 +25,27 @@ enum ElementInspector {
             return .darkText
         }()
         
+        lazy var secondaryTextColor: UIColor = {
+            #if swift(>=5.0)
+            if #available(iOS 13.0, *) {
+                return .secondaryLabel
+            }
+            #endif
+            
+            return UIColor.darkText.withAlphaComponent(0.6)
+        }()
+        
+        
+        lazy var tertiaryTextColor: UIColor = {
+            #if swift(>=5.0)
+            if #available(iOS 13.0, *) {
+                return .tertiaryLabel
+            }
+            #endif
+            
+            return UIColor.darkText.withAlphaComponent(0.3)
+        }()
+        
         var margins: NSDirectionalEdgeInsets {
             .margins(
                 horizontal: ElementInspector.appearance.horizontalMargins,
@@ -40,6 +61,16 @@ enum ElementInspector {
             #endif
             
             return .groupTableViewBackground
+        }()
+        
+        var panelHighlightBackgroundColor: UIColor = {
+            #if swift(>=5.0)
+            if #available(iOS 13.0, *) {
+                return .tertiarySystemBackground
+            }
+            #endif
+            
+            return .white
         }()
     }
     

@@ -25,24 +25,24 @@ final class ElementInspectorViewController: UIViewController {
     override var preferredContentSize: CGSize {
         didSet {
             Console.print(self.classForCoder, #function, preferredContentSize)
-            
-            guard let superview = view.superview else {
-                return
-            }
-            
-            view.frame = superview.bounds
-            view.layoutIfNeeded()
         }
     }
     
     private var presentedPanelViewController: UIViewController? {
         didSet {
+            viewCode.setNeedsLayout()
             
+            defer {
+                viewCode.layoutIfNeeded()
+            }
+
             viewCode.emptyLabel.isHidden = presentedPanelViewController != nil
             
             if let panelViewController = presentedPanelViewController {
                 
                 addChild(panelViewController)
+                
+                panelViewController.view.setNeedsLayout()
                 
                 viewCode.contentView.installView(panelViewController.view)
                 
@@ -69,7 +69,7 @@ final class ElementInspectorViewController: UIViewController {
     }
     
     private lazy var viewCode = ElementInspectorViewCode().then {
-        $0.segmentedControl.addTarget(self, action: #selector(selectedSegment), for: .valueChanged)
+        $0.segmentedControl.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
         
         $0.inspectBarButtonItem.target = self
         $0.inspectBarButtonItem.action = #selector(toggleInspect)
@@ -139,8 +139,8 @@ final class ElementInspectorViewController: UIViewController {
 
 // MARK: - Actions
 
-private extension ElementInspectorViewController {
-    @objc func selectedSegment() {
+extension ElementInspectorViewController {
+    @objc private func didChangeSelectedSegmentIndex() {
         guard
             viewCode.segmentedControl.selectedSegmentIndex != UISegmentedControl.noSegment,
             let panel = ElementInspectorPanel(rawValue: viewCode.segmentedControl.selectedSegmentIndex)
@@ -151,7 +151,20 @@ private extension ElementInspectorViewController {
         installPanel(panel)
     }
     
-    func installPanel(_ panel: ElementInspectorPanel) {
+    @discardableResult
+    func selectPanelIfAvailable(_ panel: ElementInspectorPanel) -> Bool {
+        guard let index = viewModel.elementPanels.firstIndex(of: panel) else {
+            return false
+        }
+        
+        viewCode.segmentedControl.selectedSegmentIndex = index
+        
+        installPanel(panel)
+        
+        return true
+    }
+    
+    private func installPanel(_ panel: ElementInspectorPanel) {
         guard let panelViewController = delegate?.elementInspectorViewController(self, viewControllerForPanel: panel, with: viewModel.reference) else {
             presentedPanelViewController = nil
             return
@@ -164,18 +177,12 @@ private extension ElementInspectorViewController {
         presentedPanelViewController = nil
     }
     
-    @objc func toggleInspect() {
+    @objc private func toggleInspect() {
         presentHierarchyInspector(animated: true)
     }
     
-    @objc func close() {
-        dismiss(animated: true) { [weak self] in
-            guard let self = self else {
-                return
-            }
-            
-            self.delegate?.elementInspectorViewControllerDidFinish(self)
-        }
+    @objc private func close() {
+        self.delegate?.elementInspectorViewControllerDidFinish(self)
     }
 }
 
@@ -189,6 +196,7 @@ extension ElementInspectorViewController: HierarchyInspectorPresentable {
             .controls,
             .staticTexts + .icons + .images,
             .stackViews,
+            .tableViewCells,
             .containerViews,
             .allViews
         ]

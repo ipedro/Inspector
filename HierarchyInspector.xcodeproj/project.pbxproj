@@ -386,6 +386,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		EB3166352537556A001A4A80 /* Panels */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC35022530DE3700A992F5 /* PropertyInspector */,
+				EBAC34F42530DDF300A992F5 /* ViewHierarchyList */,
+			);
+			path = Panels;
+			sourceTree = "<group>";
+		};
+		EB31663A2537557C001A4A80 /* Popovers */ = {
+			isa = PBXGroup;
+			children = (
+				EBC045AD2531F66800C311E6 /* OptionSelector */,
+			);
+			path = Popovers;
+			sourceTree = "<group>";
+		};
 		EB3C4B48252E775B00AFABF8 /* NSDirectionalEdgeInsets */ = {
 			isa = PBXGroup;
 			children = (
@@ -659,9 +676,8 @@
 			isa = PBXGroup;
 			children = (
 				EBAC35A1253108E700A992F5 /* ElementInspector */,
-				EBC045AD2531F66800C311E6 /* OptionSelector */,
-				EBAC35022530DE3700A992F5 /* PropertyInspector */,
-				EBAC34F42530DDF300A992F5 /* ViewHierarchyList */,
+				EB3166352537556A001A4A80 /* Panels */,
+				EB31663A2537557C001A4A80 /* Popovers */,
 			);
 			path = Modules;
 			sourceTree = "<group>";

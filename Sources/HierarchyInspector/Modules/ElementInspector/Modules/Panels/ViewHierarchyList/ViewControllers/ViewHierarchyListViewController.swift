@@ -9,10 +9,12 @@ import UIKit
 
 protocol ViewHierarchyListViewControllerDelegate: AnyObject {
     func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController,
-                                         didSelectInfo reference: ViewHierarchyReference)
+                                         didSelectInfo reference: ViewHierarchyReference,
+                                         from rootReference: ViewHierarchyReference)
     
     func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController,
-                                         didSegueTo reference: ViewHierarchyReference)
+                                         didSegueTo reference: ViewHierarchyReference,
+                                         from rootReference: ViewHierarchyReference)
 }
 
 final class ViewHierarchyListViewController: UIViewController {
@@ -31,14 +33,6 @@ final class ViewHierarchyListViewController: UIViewController {
         view = viewCode
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        viewCode.tableView.reloadData()
-        
-        viewCode.tableView.setContentOffset(CGPoint(x: 0, y: -viewCode.tableView.contentInset.top), animated: false)
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -48,16 +42,11 @@ final class ViewHierarchyListViewController: UIViewController {
         
         needsSetup = false
         
-        DispatchQueue.main.async {
-            self.viewCode.tableView.layoutIfNeeded()
-            
-            self.viewCode.tableView.reloadData()
-            
-            var size = self.viewCode.tableView.contentSize
-            size.width = max(size.width, 414)
-            
-            self.preferredContentSize = size
-        }
+        viewCode.tableView.reloadData()
+        
+        viewCode.tableView.setContentOffset(CGPoint(x: 0, y: -viewCode.tableView.contentInset.top), animated: false)
+        
+        preferredContentSize = CGSize(width: 414, height: viewCode.tableView.contentSize.height)
     }
     
     static func create(viewModel: ViewHierarchyListViewModelProtocol) -> ViewHierarchyListViewController {
@@ -94,7 +83,7 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             return
         }
         
-        delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference)
+        delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference, from: viewModel.rootReference)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -102,15 +91,15 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
         }
         
-        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
-            return
-        }
-        
-//        guard itemViewModel.relativeDepth < 3 else {
-//            delegate?.viewHierarchyListViewController(self, didSegueTo: itemViewModel.reference)
+//        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
 //            return
 //        }
-//        
+//
+//        guard itemViewModel.relativeDepth < 3 else {
+//            delegate?.viewHierarchyListViewController(self, didSegueTo: itemViewModel.reference, from: viewModel.rootReference)
+//            return
+//        }
+        
         let results = viewModel.toggleContainer(at: indexPath)
         
         guard results.isEmpty == false else {

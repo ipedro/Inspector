@@ -58,6 +58,7 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         ),
         reference: reference
     ).then {
+        $0.heightAnchor.constraint(lessThanOrEqualTo: $0.widthAnchor, multiplier: 3 / 4).isActive = true
         $0.clipsToBounds = false
     }
     
