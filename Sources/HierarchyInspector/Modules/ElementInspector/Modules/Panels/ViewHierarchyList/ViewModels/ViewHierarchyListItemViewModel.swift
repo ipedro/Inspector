@@ -83,7 +83,7 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
         height: ElementInspector.appearance.horizontalMargins * 2
     )
     
-    private var cachedReferenceThumbnail: ViewHierarchyReferenceThumbnailView?
+    var cachedReferenceThumbnail: ViewHierarchyReferenceThumbnailView?
     
     func makeReferenceThumbnailmage() -> ViewHierarchyReferenceThumbnailView? {
         guard let referenceForThumbnail = referenceForThumbnail else {

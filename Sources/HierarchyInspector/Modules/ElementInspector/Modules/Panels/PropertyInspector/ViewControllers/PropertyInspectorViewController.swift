@@ -32,19 +32,11 @@ final class PropertyInspectorViewController: UIViewController {
     
     private var selectedOptionSelector: OptionSelector?
     
-    private lazy var viewCode = PropertyInspectorViewCode().then {
-        $0.scrollView.delegate = self
-    }
+    private lazy var viewCode = PropertyInspectorViewCode()
     
     private lazy var snapshotViewCode = PropertyInspectorViewThumbnailSectionView(
         reference: viewModel.reference,
-        frame: CGRect(
-            origin: .zero,
-            size: CGSize(
-                width: viewCode.frame.width,
-                height: viewCode.frame.width
-            )
-        )
+        frame: .zero
     ).then {
         $0.toggleHighlightViewsControl.isOn = !viewModel.reference.isHidingHighlightViews
         $0.toggleHighlightViewsControl.addTarget(self, action: #selector(toggleLayerInspectorViewsVisibility), for: .valueChanged)
@@ -92,28 +84,28 @@ final class PropertyInspectorViewController: UIViewController {
         super.viewWillAppear(animated)
         
         calculatePreferredContentSize()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         
         snapshotViewCode.startLiveUpdatingSnaphost()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
         snapshotViewCode.stopLiveUpdatingSnaphost()
-        
-        super.viewWillDisappear(animated)
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        snapshotViewCode.stopLiveUpdatingSnaphost()
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
         
-        super.viewWillTransition(to: size, with: coordinator)
-        
-        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
-            self?.snapshotViewCode.startLiveUpdatingSnaphost()
+        guard parent == nil else {
+            return
         }
+        
+        snapshotViewCode.stopLiveUpdatingSnaphost()
+    }
+    
+    deinit {
+        snapshotViewCode.stopLiveUpdatingSnaphost()
     }
     
     func calculatePreferredContentSize() {
@@ -171,8 +163,12 @@ final class PropertyInspectorViewController: UIViewController {
 
 extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate {
     
+    func propertyInspectorSectionViewWillUpdateProperty(_ section: PropertyInspectorSectionView) {
+        snapshotViewCode.stopLiveUpdatingSnaphost()
+    }
+    
     func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didUpdate property: PropertyInspectorInput) {
-        Console.print(#function, property)
+        snapshotViewCode.startLiveUpdatingSnaphost()
     }
     
     func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool) {
@@ -219,15 +215,5 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate 
         selectedOptionSelector = optionSelector
         
         delegate?.propertyInspectorViewController(self, didTap: optionSelector)
-    }
-}
-
-extension PropertyInspectorViewController: UIScrollViewDelegate {
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        snapshotViewCode.stopLiveUpdatingSnaphost()
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        snapshotViewCode.startLiveUpdatingSnaphost()
     }
 }

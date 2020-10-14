@@ -11,7 +11,9 @@ protocol PropertyInspectorSectionViewDelegate: AnyObject {
     func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap colorPicker: ColorPicker)
     func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap optionSelector: OptionSelector)
     func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool)
+    
     func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didUpdate property: PropertyInspectorInput)
+    func propertyInspectorSectionViewWillUpdateProperty(_ section: PropertyInspectorSectionView)
 }
 
 final class PropertyInspectorSectionView: BaseView {
@@ -237,42 +239,49 @@ final class PropertyInspectorSectionView: BaseView {
 private extension PropertyInspectorSectionView {
         
     @objc func valueChanged(_ sender: AnyObject) {
+        delegate?.propertyInspectorSectionViewWillUpdateProperty(self)
         
-        for (property, inputView) in inputViews where inputView === sender {
-            
-            switch (property, inputView) {
-            case let (.integerStepper(_, _, _, _, handler), stepperControl as StepperControl):
-                handler?(Int(stepperControl.value))
-                
-            case let (.cgFloatStepper(_, _, _, _, handler), stepperControl as StepperControl):
-                handler?(CGFloat(stepperControl.value))
-                
-            case let (.colorPicker(_, _, handler), colorPicker as ColorPicker):
-                handler?(colorPicker.selectedColor)
-                
-            case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
-                handler?(toggleControl.isOn)
-                
-            case let (.inlineTextOptions(_, _, _, handler), segmentedControl as SegmentedControl),
-                 let (.inlineImageOptions(_, _, _, handler), segmentedControl as SegmentedControl):
-                handler?(segmentedControl.selectedIndex)
-                
-            case let (.optionsList(_, _, _, handler), optionSelector as OptionSelector):
-                handler?(optionSelector.selectedIndex)
-                
-            case (.separator, _),
-                 (.subSection, _),
-                 (.integerStepper, _),
-                 (.cgFloatStepper, _),
-                 (.colorPicker, _),
-                 (.toggleButton, _),
-                 (.inlineTextOptions, _),
-                 (.inlineImageOptions, _),
-                 (.optionsList, _):
-                break
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
             }
             
-            delegate?.propertyInspectorSectionView(self, didUpdate: property)
+            for (property, inputView) in self.inputViews where inputView === sender {
+                
+                switch (property, inputView) {
+                case let (.integerStepper(_, _, _, _, handler), stepperControl as StepperControl):
+                    handler?(Int(stepperControl.value))
+                    
+                case let (.cgFloatStepper(_, _, _, _, handler), stepperControl as StepperControl):
+                    handler?(CGFloat(stepperControl.value))
+                    
+                case let (.colorPicker(_, _, handler), colorPicker as ColorPicker):
+                    handler?(colorPicker.selectedColor)
+                    
+                case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
+                    handler?(toggleControl.isOn)
+                    
+                case let (.inlineTextOptions(_, _, _, handler), segmentedControl as SegmentedControl),
+                     let (.inlineImageOptions(_, _, _, handler), segmentedControl as SegmentedControl):
+                    handler?(segmentedControl.selectedIndex)
+                    
+                case let (.optionsList(_, _, _, handler), optionSelector as OptionSelector):
+                    handler?(optionSelector.selectedIndex)
+                    
+                case (.separator, _),
+                     (.subSection, _),
+                     (.integerStepper, _),
+                     (.cgFloatStepper, _),
+                     (.colorPicker, _),
+                     (.toggleButton, _),
+                     (.inlineTextOptions, _),
+                     (.inlineImageOptions, _),
+                     (.optionsList, _):
+                    break
+                }
+                
+                self.delegate?.propertyInspectorSectionView(self, didUpdate: property)
+            }
         }
     }
 }

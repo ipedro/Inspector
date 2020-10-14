@@ -45,7 +45,9 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     private lazy var gridImageView = UIImageView(
         image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)
-    )
+    ).then {
+        $0.backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
+    }
     
     private lazy var statusContentView = UIStackView(
         axis: .vertical,
@@ -73,11 +75,16 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         
         isOpaque = true
         
-        backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
-        
         isUserInteractionEnabled = false
         
-        installView(gridImageView, .margins(horizontal: -20, vertical: 0), .onBottom)
+        installView(
+            gridImageView,
+            .margins(
+                horizontal: -ElementInspector.appearance.verticalMargins,
+                vertical: .zero
+            ),
+            .onBottom
+        )
         
         contentView.installView(statusContentView)
         
@@ -103,9 +110,13 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             return
         }
         
-        snapshotContainerView.layer.rasterizationScale = min(UIScreen.main.scale, max(1, UIScreen.main.scale * aspectRatio))
+        let scale = min(UIScreen.main.scale, max(1, UIScreen.main.scale * aspectRatio))
         
-        snapshotContainerView.layer.shouldRasterize = true
+        guard scale != snapshotContainerView.layer.rasterizationScale else {
+            return
+        }
+        
+        snapshotContainerView.layer.rasterizationScale = scale
         
         Console.print(#function, "rasterizationScale", snapshotContainerView.layer.rasterizationScale)
         
@@ -126,6 +137,8 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             
             switch state {
             case let .snapshot(newSnapshot):
+                snapshotContainerView.layer.shouldRasterize = true
+                
                 backgroundColor = ElementInspector.appearance.tertiaryTextColor
                 
                 let proportionalFrame = calculateFrame(with: newSnapshot)

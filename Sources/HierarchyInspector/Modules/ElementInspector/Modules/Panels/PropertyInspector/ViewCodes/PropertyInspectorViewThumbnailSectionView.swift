@@ -105,7 +105,7 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        updateSnapshot()
+        updateSnapshot(afterScreenUpdates: false)
     }
     
     var isRedrawingViews: Bool {
@@ -135,13 +135,11 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         
         calculatedLastFrame += 1
         
-        guard calculatedLastFrame % 3 == 0 else {
+        guard calculatedLastFrame % 2 == 0 else {
             return
         }
         
-        DispatchQueue.main.async {
-            self.updateSnapshot(afterScreenUpdates: false)
-        }
+        updateSnapshot(afterScreenUpdates: false)
     }
     
     deinit {

@@ -42,11 +42,21 @@ final class ViewHierarchyListViewController: UIViewController {
         
         needsSetup = false
         
-        viewCode.tableView.reloadData()
-        
         viewCode.tableView.setContentOffset(CGPoint(x: 0, y: -viewCode.tableView.contentInset.top), animated: false)
         
         preferredContentSize = CGSize(width: 414, height: viewCode.tableView.contentSize.height)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        viewModel.clearCachedThumbnails()
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        
+        viewModel.clearCachedThumbnails()
     }
     
     static func create(viewModel: ViewHierarchyListViewModelProtocol) -> ViewHierarchyListViewController {

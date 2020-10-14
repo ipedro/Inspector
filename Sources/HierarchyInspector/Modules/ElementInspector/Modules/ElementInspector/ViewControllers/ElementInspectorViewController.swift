@@ -30,8 +30,6 @@ final class ElementInspectorViewController: UIViewController {
     
     private var presentedPanelViewController: UIViewController? {
         didSet {
-            viewCode.setNeedsLayout()
-            
             defer {
                 viewCode.layoutIfNeeded()
             }
@@ -122,8 +120,6 @@ final class ElementInspectorViewController: UIViewController {
         guard let containerViewController = container as? UIViewController else {
             return .zero
         }
-        
-        containerViewController.view.layoutIfNeeded()
         
         return containerViewController.preferredContentSize
     }
