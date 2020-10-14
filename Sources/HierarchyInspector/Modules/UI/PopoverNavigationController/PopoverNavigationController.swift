@@ -23,7 +23,11 @@ final class PopoverNavigationController: UINavigationController {
     }
     
     override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
-        preferredContentSize = container.preferredContentSize
+        
+        DispatchQueue.main.async {
+            self.preferredContentSize = container.preferredContentSize
+        }
+        
     }
     
 }

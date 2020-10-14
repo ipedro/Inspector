@@ -19,66 +19,64 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private lazy var activityIndicatorView = UIActivityIndicatorView(style: .gray).then {
+        $0.startAnimating()
+        $0.color = ElementInspector.appearance.tertiaryTextColor
+    }
+    
+    func renderThumbnailImage() {
+        thumbnailWrapperView.subviews.forEach { $0.removeFromSuperview() }
+        
+        guard let referenceThumbnail = viewModel?.thumbnailView else {
+            return
+        }
+        
+        thumbnailWrapperView.installView(referenceThumbnail, .centerXY)
+    }
+    
     var viewModel: ViewHierarchyListItemViewModelProtocol? {
         didSet {
             // Name
             
             elementNameLabel.text = viewModel?.title
-            
+
             #warning("move style to ElementInspector.Appearance")
             elementNameLabel.font = {
                 switch viewModel?.relativeDepth {
                 case 0:
                     return UIFont.preferredFont(forTextStyle: .title3).bold()
-                    
+
                 case 1:
                     return UIFont.preferredFont(forTextStyle: .body).bold()
-                    
+
                 case 2:
-                    return UIFont.preferredFont(forTextStyle: .caption1).bold()
-                    
+                    return UIFont.preferredFont(forTextStyle: .callout).bold()
+
                 case 3:
-                    return UIFont.preferredFont(forTextStyle: .footnote).bold()
-                    
+                    return UIFont.preferredFont(forTextStyle: .subheadline).bold()
+
                 default:
                     return UIFont.preferredFont(forTextStyle: .footnote)
                 }
             }()
             
-            elementNameLabel.sizeToFit()
-            
-            if let referenceThumbnail = viewModel?.referenceThumbnail {
-                DispatchQueue.main.async { [weak self] in
-                    self?.thumbnailWrapperView.subviews.forEach { $0.removeFromSuperview() }
-                    
-                    guard self?.viewModel?.referenceThumbnail == referenceThumbnail else {
-                        self?.thumbnailWrapperView.isSafelyHidden = true
-                        return
-                    }
-                    
-                    self?.thumbnailWrapperView.installView(referenceThumbnail)
-                    self?.thumbnailWrapperView.isSafelyHidden = false
-                }
-            }
-            else {
-                thumbnailWrapperView.isSafelyHidden = true
-            }
-            
-            // Collapse
-            
+            accessoryType = viewModel?.showDisclosureIndicator == true ? .detailDisclosureButton : .detailButton
+
+            // Collapsed
+
             isCollapsed = viewModel?.isCollapsed == true
-            chevronDownIcon.isSafelyHidden = viewModel?.isContainer != true
             
+            chevronDownIcon.isSafelyHidden = viewModel?.isContainer != true || viewModel?.showDisclosureIndicator == true
+
             // Description
-            
+
             descriptionLabel.text = viewModel?.subtitle
-            descriptionLabel.sizeToFit()
-            
+
             // Containers Insets
-            
+
             let offset = ElementInspector.appearance.horizontalMargins * (CGFloat(viewModel?.relativeDepth ?? 0) + 1)
-            
-            separatorInset = .init(top: 0, left: offset, bottom: 0, right: 0)
+
+            separatorInset = UIEdgeInsets(top: 0, left: offset, bottom: 0, right: 0)
             directionalLayoutMargins = .margins(leading: offset)
             containerStackView.directionalLayoutMargins = directionalLayoutMargins
         }
@@ -153,8 +151,10 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     
     private lazy var chevronDownIcon = Icon.chevronDownIcon()
     
-    private lazy var thumbnailWrapperView = UIView().then {
-        $0.contentMode = .scaleAspectFit
+    private lazy var thumbnailWrapperView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)).then {
+        $0.clipsToBounds = true
+        $0.backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
+        $0.layer.cornerRadius = ElementInspector.appearance.verticalMargins
         $0.heightAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
         $0.widthAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
     }
@@ -185,21 +185,17 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         isOpaque = true
         
-        layer.shouldRasterize = true
-        
-        layer.rasterizationScale = UIScreen.main.scale
-        
         contentView.isUserInteractionEnabled = false
         
         contentView.clipsToBounds = true
+        
+        showThumbnailLoader()
         
         selectedBackgroundView = UIView().then {
             $0.backgroundColor = UIColor.systemPurple.withAlphaComponent(0.1)
         }
         
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
-        
-        accessoryType = .detailButton
         
         contentView.installView(
             containerStackView,
@@ -225,5 +221,13 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         super.prepareForReuse()
         
         viewModel = nil
+        
+        showThumbnailLoader()
+    }
+    
+    private func showThumbnailLoader() {
+        thumbnailWrapperView.subviews.forEach { $0.removeFromSuperview() }
+        
+        thumbnailWrapperView.installView(activityIndicatorView, .centerXY)
     }
 }

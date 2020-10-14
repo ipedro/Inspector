@@ -281,7 +281,7 @@ private extension HierarchyInspector.Manager {
         }
     }
     
-    func presentElementInspector(for reference: ViewHierarchyReference, animated: Bool) {
+    func presentElementInspector(for reference: ViewHierarchyReference, from sourceView: UIView, animated: Bool) {
         guard let hostViewController = hostViewController else {
             return
         }
@@ -292,7 +292,10 @@ private extension HierarchyInspector.Manager {
         
         elementInspectorCoordinator = coordinator
         
-        hostViewController.present(coordinator.start(), animated: animated)
+        let elementInspectorNavigationController = coordinator.start()
+        elementInspectorNavigationController.popoverPresentationController?.sourceView = sourceView
+        
+        hostViewController.present(elementInspectorNavigationController, animated: animated)
     }
 }
 
@@ -300,7 +303,7 @@ private extension HierarchyInspector.Manager {
 
 extension HierarchyInspector.Manager: HighlightViewDelegate {
     func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference) {
-        presentElementInspector(for: reference, animated: true)
+        presentElementInspector(for: reference, from: highlightView.labelContentView, animated: true)
     }
     
     func hideAllHighlightViews(_ hide: Bool, containedIn reference: ViewHierarchyReference) {

@@ -30,17 +30,12 @@ final class ElementInspectorViewController: UIViewController {
     
     private var presentedPanelViewController: UIViewController? {
         didSet {
-            defer {
-                viewCode.layoutIfNeeded()
-            }
-
+            
             viewCode.emptyLabel.isHidden = presentedPanelViewController != nil
             
             if let panelViewController = presentedPanelViewController {
                 
                 addChild(panelViewController)
-                
-                panelViewController.view.setNeedsLayout()
                 
                 viewCode.contentView.installView(panelViewController.view)
                 

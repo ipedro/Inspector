@@ -73,7 +73,7 @@ class HighlightView: LayerView {
         $0.layer.shadowOpacity       = 0.4
     }
     
-    private lazy var labelContentView = LayerViewComponent().then {
+    private(set) lazy var labelContentView = LayerViewComponent().then {
         $0.installView(label, .margins(horizontal: 4, vertical: 2))
         
         $0.layer.cornerRadius  = 6

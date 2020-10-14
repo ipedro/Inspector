@@ -22,7 +22,15 @@ final class ViewHierarchyListViewController: UIViewController {
     
     private var needsSetup = true
     
-    private lazy var viewCode = ViewHierarchyListViewCode().then {
+    private lazy var viewCode = ViewHierarchyListViewCode(
+        frame: CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: min(UIScreen.main.bounds.width, 414),
+                height: .zero
+            )
+        )
+    ).then {
         $0.tableView.dataSource = self
         $0.tableView.delegate   = self
     }
@@ -33,30 +41,35 @@ final class ViewHierarchyListViewController: UIViewController {
         view = viewCode
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        viewCode.tableView.reloadData()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        guard needsSetup else {
-            return
+        viewCode.tableView.indexPathsForSelectedRows?.forEach {
+            viewCode.tableView.deselectRow(at: $0, animated: animated)
         }
         
-        needsSetup = false
-        
-        viewCode.tableView.setContentOffset(CGPoint(x: 0, y: -viewCode.tableView.contentInset.top), animated: false)
-        
-        preferredContentSize = CGSize(width: 414, height: viewCode.tableView.contentSize.height)
+        preferredContentSize = CGSize(
+            width: min(UIScreen.main.bounds.width, 414),
+            height: viewCode.tableView.contentSize.height
+        )
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        viewModel.clearCachedThumbnails()
+        viewCode.tableView.reloadData()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         
-        viewModel.clearCachedThumbnails()
+        viewModel.clearAllCachedThumbnails()
     }
     
     static func create(viewModel: ViewHierarchyListViewModelProtocol) -> ViewHierarchyListViewController {
@@ -85,7 +98,11 @@ extension ViewHierarchyListViewController: UITableViewDataSource {
 
 extension ViewHierarchyListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        viewModel.itemViewModel(for: indexPath)?.isContainer == true
+        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
+            return false
+        }
+        
+        return itemViewModel.isContainer == true || itemViewModel.showDisclosureIndicator
     }
     
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
@@ -96,19 +113,45 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
         delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference, from: viewModel.rootReference)
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let cell = cell as? ViewHierarchyListTableViewCodeCell else {
+            return
+        }
+        
+        guard
+            let viewModel = cell.viewModel, viewModel.hasCachedThumbnailView == false,
+            let firstVisibleRow = tableView.indexPathsForVisibleRows?.first
+        else {
+            Console.print("cell", indexPath, "using cached view")
+            
+            return cell.renderThumbnailImage()
+        }
+        
+        let milliseconds = 300 * max(1, indexPath.row - firstVisibleRow.row)
+        
+        Console.print("cell", indexPath, "delay", milliseconds)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(milliseconds)) {
+            cell.renderThumbnailImage()
+        }
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
+            return
+        }
+
+        if itemViewModel.showDisclosureIndicator {
+            delegate?.viewHierarchyListViewController(self, didSegueTo: itemViewModel.reference, from: viewModel.rootReference)
+            
+            itemViewModel.clearCachedThumbnail()
+            
+            return
+        }
+        
         DispatchQueue.main.async {
             tableView.deselectRow(at: indexPath, animated: true)
         }
-        
-//        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
-//            return
-//        }
-//
-//        guard itemViewModel.relativeDepth < 3 else {
-//            delegate?.viewHierarchyListViewController(self, didSegueTo: itemViewModel.reference, from: viewModel.rootReference)
-//            return
-//        }
         
         let results = viewModel.toggleContainer(at: indexPath)
         

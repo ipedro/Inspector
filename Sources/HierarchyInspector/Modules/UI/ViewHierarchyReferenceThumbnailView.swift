@@ -45,9 +45,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     private lazy var gridImageView = UIImageView(
         image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)
-    ).then {
-        $0.backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
-    }
+    )
     
     private lazy var statusContentView = UIStackView(
         axis: .vertical,
@@ -67,6 +65,8 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     override func setup() {
         super.setup()
         
+        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        
         contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.horizontalMargins)
         
         clipsToBounds = true
@@ -77,14 +77,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         
         isUserInteractionEnabled = false
         
-        installView(
-            gridImageView,
-            .margins(
-                horizontal: -ElementInspector.appearance.verticalMargins,
-                vertical: .zero
-            ),
-            .onBottom
-        )
+        installView(gridImageView, .margins(.zero), .onBottom)
         
         contentView.installView(statusContentView)
         
@@ -102,25 +95,6 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         return snapshotContainerView.frame.size.width / originalSnapshotSize.width
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        guard originalSnapshotSize != .zero else {
-            Console.print(#function, "rasterizationScale", "skipped")
-            return
-        }
-        
-        let scale = min(UIScreen.main.scale, max(1, UIScreen.main.scale * aspectRatio))
-        
-        guard scale != snapshotContainerView.layer.rasterizationScale else {
-            return
-        }
-        
-        snapshotContainerView.layer.rasterizationScale = scale
-        
-        Console.print(#function, "rasterizationScale", snapshotContainerView.layer.rasterizationScale)
-        
-    }
     // MARK: - State
     
     private(set) var state: State = .lostConnection {
@@ -137,11 +111,9 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             
             switch state {
             case let .snapshot(newSnapshot):
-                snapshotContainerView.layer.shouldRasterize = true
-                
                 backgroundColor = ElementInspector.appearance.tertiaryTextColor
                 
-                let proportionalFrame = calculateFrame(with: newSnapshot)
+                let proportionalFrame = calculateFrame(with: newSnapshot.bounds.size)
                 
                 guard proportionalFrame != .zero else {
                     return
@@ -195,11 +167,11 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         statusContentView.addArrangedSubview(label)
     }
     
-    private func calculateFrame(with snapshot: UIView) -> CGRect {
+    private func calculateFrame(with snapshotSize: CGSize) -> CGRect {
         AVMakeRect(
             aspectRatio: CGSize(
                 width: 1,
-                height: snapshot.bounds.height / snapshot.bounds.width
+                height: snapshotSize.height / snapshotSize.width //snapshot.bounds.height / snapshot.bounds.width
             ),
             insideRect: CGRect(
                 origin: .zero,

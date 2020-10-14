@@ -12,7 +12,11 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
     
     var reference: ViewHierarchyReference { get }
     
-    var referenceThumbnail: UIView? { get }
+    var thumbnailView: UIView { get }
+    
+    var hasCachedThumbnailView: Bool { get }
+    
+    func clearCachedThumbnail()
     
     var title: String { get }
     
@@ -24,6 +28,8 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
     
     var isHidden: Bool { get }
     
+    var showDisclosureIndicator: Bool { get }
+    
     var relativeDepth: Int { get }
     
     var backgroundColor: UIColor? { get }
@@ -31,16 +37,16 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
 
 final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol {
     
-    private var referenceForThumbnail: ViewHierarchyReference? {
-        relativeDepth == 0 ? nil : reference
-    }
-    
     let identifier = UUID()
     
     weak var parent: ViewHierarchyListItemViewModelProtocol?
     
     var isHidden: Bool {
         parent?.isCollapsed == true || parent?.isHidden == true
+    }
+    
+    var showDisclosureIndicator: Bool {
+        relativeDepth >= 5 && isContainer
     }
     
     var isCollapsed: Bool {
@@ -54,6 +60,10 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
             
             _isCollapsed = newValue
         }
+    }
+    
+    func clearCachedThumbnail() {
+        cachedReferenceThumbnail = nil
     }
     
     private var _isCollapsed: Bool
@@ -85,33 +95,30 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
     
     var cachedReferenceThumbnail: ViewHierarchyReferenceThumbnailView?
     
-    func makeReferenceThumbnailmage() -> ViewHierarchyReferenceThumbnailView? {
-        guard let referenceForThumbnail = referenceForThumbnail else {
-            return nil
-        }
-        
+    var hasCachedThumbnailView: Bool {
+        cachedReferenceThumbnail != nil
+    }
+    
+    func makeReferenceThumbnailmage() -> ViewHierarchyReferenceThumbnailView {
         let thumbnailView = ViewHierarchyReferenceThumbnailView(
             frame: CGRect(
                 origin: .zero,
                 size: Self.thumbSize
             ),
-            reference: referenceForThumbnail
+            reference: reference
         )
         
         thumbnailView.showEmptyStatusMessage = false
-        
+        thumbnailView.layer.shouldRasterize = true
         thumbnailView.heightAnchor.constraint(equalToConstant: Self.thumbSize.height).isActive = true
         thumbnailView.widthAnchor.constraint(equalToConstant: Self.thumbSize.width).isActive = true
-        
-        thumbnailView.layer.cornerRadius = ElementInspector.appearance.verticalMargins
         thumbnailView.contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.verticalMargins / 2)
-        thumbnailView.updateViews()
-        thumbnailView.layoutIfNeeded()
+        thumbnailView.updateViews(afterScreenUpdates: false)
         
         return thumbnailView
     }
     
-    var referenceThumbnail: UIView? {
+    var thumbnailView: UIView {
         guard let cachedReferenceThumbnail = cachedReferenceThumbnail else {
             let newReference = makeReferenceThumbnailmage()
             self.cachedReferenceThumbnail = newReference

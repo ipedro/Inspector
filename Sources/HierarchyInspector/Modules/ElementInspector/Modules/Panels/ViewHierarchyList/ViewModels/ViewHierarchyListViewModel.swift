@@ -36,7 +36,7 @@ protocol ViewHierarchyListViewModelProtocol {
     /// - Returns: Affected index paths
     func toggleContainer(at indexPath: IndexPath) -> [ViewHierarchyListAction]
     
-    func clearCachedThumbnails()
+    func clearAllCachedThumbnails()
 }
 
 final class ViewHierarchyListViewModel: NSObject {
@@ -83,7 +83,7 @@ final class ViewHierarchyListViewModel: NSObject {
         updateVisibleChildViews()
     }
     
-    func clearCachedThumbnails() {
+    func clearAllCachedThumbnails() {
         childViewModels.forEach { $0.cachedReferenceThumbnail = nil}
     }
 }

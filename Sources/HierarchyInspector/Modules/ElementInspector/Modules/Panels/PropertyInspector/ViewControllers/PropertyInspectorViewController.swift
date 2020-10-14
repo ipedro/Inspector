@@ -34,6 +34,8 @@ final class PropertyInspectorViewController: UIViewController {
     
     private lazy var viewCode = PropertyInspectorViewCode()
     
+    private var needsSetup = true
+    
     private lazy var snapshotViewCode = PropertyInspectorViewThumbnailSectionView(
         reference: viewModel.reference,
         frame: .zero
@@ -80,10 +82,22 @@ final class PropertyInspectorViewController: UIViewController {
         sectionViews.forEach { viewCode.contentView.addArrangedSubview($0) }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        guard needsSetup else {
+            return
+        }
+        
+        needsSetup = false
+        
+        snapshotViewCode.updateSnapshot()
         
         calculatePreferredContentSize()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         snapshotViewCode.startLiveUpdatingSnaphost()
     }
@@ -91,6 +105,8 @@ final class PropertyInspectorViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
+        needsSetup = true
+        
         snapshotViewCode.stopLiveUpdatingSnaphost()
     }
     

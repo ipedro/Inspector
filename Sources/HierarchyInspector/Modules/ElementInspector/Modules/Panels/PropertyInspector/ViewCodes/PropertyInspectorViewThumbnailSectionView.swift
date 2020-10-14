@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 final class PropertyInspectorViewThumbnailSectionView: BaseView {
     
@@ -58,8 +59,11 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         ),
         reference: reference
     ).then {
-        $0.heightAnchor.constraint(lessThanOrEqualTo: $0.widthAnchor, multiplier: 3 / 4).isActive = true
         $0.clipsToBounds = false
+    }
+    
+    private lazy var contentHeight = thumbnailView.heightAnchor.constraint(equalToConstant: frame.height).then {
+        $0.isActive = true
     }
     
     init(reference: ViewHierarchyReference, frame: CGRect) {
@@ -106,6 +110,19 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         super.layoutSubviews()
         
         updateSnapshot(afterScreenUpdates: false)
+        
+        let frame = AVMakeRect(
+            aspectRatio: CGSize(
+                width: 1,
+                height: thumbnailView.originalSnapshotSize.height / thumbnailView.originalSnapshotSize.width
+            ),
+            insideRect: CGRect(
+                origin: .zero,
+                size: CGSize(width: bounds.width, height: bounds.width * 2 / 3)
+            )
+        )
+        
+        contentHeight.constant = frame.height + thumbnailView.contentView.directionalLayoutMargins.top + thumbnailView.contentView.directionalLayoutMargins.bottom
     }
     
     var isRedrawingViews: Bool {

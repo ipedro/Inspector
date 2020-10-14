@@ -55,9 +55,6 @@ final class ElementInspectorCoordinator: NSObject {
             if occupiedRatio <= 0.35 {
                 return .popover
             }
-//            else if occupiedRatio <= 0.5 {
-//                return .formSheet
-//            }
             
             return .pageSheet
         }()
