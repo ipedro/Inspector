@@ -15,11 +15,10 @@ final class PropertyInspectorViewCode: BaseView {
     }
     
     #warning("move text style to ElementInspector.Appearance")
-    private(set) lazy var elementDescriptionLabel =  UILabel.init(.caption2, numberOfLines: 0).then {
+    private(set) lazy var elementDescriptionLabel =  UILabel(.caption2, numberOfLines: 0).then {
         $0.alpha = 0.5
     }
     
-    #warning("move vertical to ElementInspector.Appearance")
     private(set) lazy var headerContentView = UIStackView(
         axis: .vertical,
         arrangedSubviews: [
@@ -37,14 +36,18 @@ final class PropertyInspectorViewCode: BaseView {
     override func setup() {
         super.setup()
         
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
-        contentView.addArrangedSubview(headerContentView)
-        
         scrollView.installView(contentView)
-        
         installView(scrollView)
         
-        contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        
+        contentView.addArrangedSubview(headerContentView)
+        
+        let widthConstraint = contentView.widthAnchor.constraint(equalTo: widthAnchor).then {
+            $0.priority = .defaultHigh
+        }
+        
+        widthConstraint.isActive = true
         
         contentView.directionalLayoutMargins = .margins(bottom: 30)
     }

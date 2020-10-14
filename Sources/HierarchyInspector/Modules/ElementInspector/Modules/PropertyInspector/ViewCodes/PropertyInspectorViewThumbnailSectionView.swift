@@ -61,10 +61,18 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         $0.clipsToBounds = false
     }
     
-    init(reference: ViewHierarchyReference, frame: CGRect = .zero) {
+    init(reference: ViewHierarchyReference, frame: CGRect) {
         self.reference = reference
         
         super.init(frame: frame)
+        
+        guard frame.isEmpty == false else {
+            return
+        }
+        
+        widthAnchor.constraint(equalToConstant: frame.width).isActive = true
+        
+        heightAnchor.constraint(equalToConstant: frame.height).isActive = true
     }
     
     required init?(coder: NSCoder) {
@@ -93,31 +101,38 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         stopLiveUpdatingSnaphost()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        updateSnapshot()
+    }
+    
     var isRedrawingViews: Bool {
         displayLink != nil
     }
     
     func startLiveUpdatingSnaphost() {
-        displayLink = CADisplayLink(target: self, selector: #selector(updateSnapshot))
+        displayLink = CADisplayLink(
+            target: self,
+            selector: #selector(refresh)
+        )
     }
     
     func stopLiveUpdatingSnaphost() {
         displayLink = nil
     }
     
-    @objc private func updateSnapshot() {
+    func updateSnapshot(afterScreenUpdates: Bool = true) {
+        thumbnailView.updateViews(afterScreenUpdates: afterScreenUpdates)
+    }
+    
+    @objc private func refresh() {
         guard reference.view != nil else {
             stopLiveUpdatingSnaphost()
             return
         }
         
-        calculatedLastFrame = (calculatedLastFrame + 1) % 3
-        
-        guard calculatedLastFrame == 1 else {
-            return
-        }
-        
-        thumbnailView.updateViews(afterScreenUpdates: false)
+        updateSnapshot(afterScreenUpdates: false)
     }
     
     deinit {

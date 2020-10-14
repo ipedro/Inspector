@@ -107,18 +107,6 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
         thumbnailView.contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.verticalMargins / 2)
         thumbnailView.updateViews()
         thumbnailView.layoutIfNeeded()
-        thumbnailView.layer.shouldRasterize = true
-        thumbnailView.layer.rasterizationScale = 1
-        
-        print(
-            #function,
-            "thumbnail size",
-            thumbnailView.frame.size,
-            "original size",
-            thumbnailView.originalSnapshotSize,
-            "raster scale",
-            thumbnailView.layer.rasterizationScale
-        )
         
         return thumbnailView
     }

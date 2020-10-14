@@ -53,11 +53,9 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     private lazy var statusLabel = UILabel(.footnote)
     
-    private lazy var wireframeView = WireframeView(
-        frame: bounds,
-        reference: reference
-    ).then {
-        $0.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    private lazy var snapshotContainerView = UIView(frame: bounds).then {
+        $0.layer.masksToBounds = true
+        $0.clipsToBounds = true
     }
     
     // MARK: - View Lifecycle
@@ -65,9 +63,9 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     override func setup() {
         super.setup()
         
-        contentMode = .scaleAspectFit
-        
         clipsToBounds = true
+        
+        contentMode = .scaleAspectFit
         
         contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.horizontalMargins)
         
@@ -75,14 +73,42 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         
         contentView.installView(statusLabel, .centerXY)
         
-        contentView.addArrangedSubview(wireframeView)
+        contentView.addArrangedSubview(snapshotContainerView)
     }
     
+    var aspectRatio: CGFloat {
+        guard
+            snapshotContainerView.frame.isEmpty == false,
+            originalSnapshotSize != .zero
+        else {
+            return 0
+        }
+        
+        return snapshotContainerView.frame.size.width / originalSnapshotSize.width
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        guard originalSnapshotSize != .zero else {
+            Console.print(#function, "rasterizationScale", "skipped")
+            return
+        }
+        
+        snapshotContainerView.layer.shouldRasterize = true
+        snapshotContainerView.layer.rasterizationScale = max(1, UIScreen.main.scale * aspectRatio)
+        Console.print(#function, "rasterizationScale", snapshotContainerView.layer.rasterizationScale)
+        
+    }
     // MARK: - State
     
     private(set) var state: State = .lostConnection {
         didSet {
-            wireframeView.subviews.forEach { $0.removeFromSuperview() }
+            let previousSubviews = snapshotContainerView.subviews
+            
+            defer {
+                previousSubviews.forEach { $0.removeFromSuperview() }
+            }
             
             switch state {
             case let .snapshot(newSnapshot):
@@ -98,14 +124,14 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
                 statusLabel.isHidden = true
                 gridImageView.alpha = 0.5
                 
-                wireframeView.installView(newSnapshot, .centerXY)
+                snapshotContainerView.installView(newSnapshot, .centerXY)
 
                 let constraints = [
                     newSnapshot.widthAnchor.constraint(equalToConstant: proportionalFrame.width),
                     newSnapshot.heightAnchor.constraint(equalTo: newSnapshot.widthAnchor, multiplier: proportionalFrame.height / proportionalFrame.width),
-                    newSnapshot.topAnchor.constraint(greaterThanOrEqualTo: wireframeView.topAnchor),
-                    newSnapshot.leadingAnchor.constraint(greaterThanOrEqualTo: wireframeView.leadingAnchor),
-                    newSnapshot.bottomAnchor.constraint(lessThanOrEqualTo: wireframeView.bottomAnchor)
+                    newSnapshot.topAnchor.constraint(greaterThanOrEqualTo: snapshotContainerView.topAnchor),
+                    newSnapshot.leadingAnchor.constraint(greaterThanOrEqualTo: snapshotContainerView.leadingAnchor),
+                    newSnapshot.bottomAnchor.constraint(lessThanOrEqualTo: snapshotContainerView.bottomAnchor)
                 ]
                 
                 constraints.forEach {
@@ -113,12 +139,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
                     $0.isActive = true
                 }
 
-                if proportionalFrame.size.height / UIScreen.main.bounds.height >= 1.0 {
-                    newSnapshot.layer.shouldRasterize = true
-                    newSnapshot.layer.rasterizationScale = 1
-                }
-                
-                wireframeView.addSubview(newSnapshot)
+                snapshotContainerView.addSubview(newSnapshot)
                 
             case .isHidden:
                 gridImageView.alpha = 0.1
@@ -147,8 +168,8 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             insideRect: CGRect(
                 origin: .zero,
                 size: CGSize(
-                    width:  bounds.width - contentView.directionalLayoutMargins.leading - contentView.directionalLayoutMargins.trailing,
-                    height: bounds.width - contentView.directionalLayoutMargins.leading - contentView.directionalLayoutMargins.trailing
+                    width:  max(0, bounds.width - contentView.directionalLayoutMargins.leading - contentView.directionalLayoutMargins.trailing),
+                    height: max(0, bounds.width - contentView.directionalLayoutMargins.leading - contentView.directionalLayoutMargins.trailing)
                 )
             )
         )

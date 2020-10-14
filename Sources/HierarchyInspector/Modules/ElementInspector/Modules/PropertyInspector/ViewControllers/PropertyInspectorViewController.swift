@@ -39,7 +39,16 @@ final class PropertyInspectorViewController: UIViewController {
             return nil
         }
         
-        return PropertyInspectorViewThumbnailSectionView(reference: viewModel.reference).then {
+        return PropertyInspectorViewThumbnailSectionView(
+            reference: viewModel.reference,
+            frame: CGRect(
+                origin: .zero,
+                size: CGSize(
+                    width: viewCode.frame.width,
+                    height: viewCode.frame.width
+                )
+            )
+        ).then {
             $0.toggleHighlightViewsControl.isOn = !viewModel.reference.isHidingHighlightViews
             $0.toggleHighlightViewsControl.addTarget(self, action: #selector(toggleLayerInspectorViewsVisibility), for: .valueChanged)
         }
@@ -143,6 +152,8 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate 
     }
     
     func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool) {
+        snapshotViewCode?.stopLiveUpdatingSnaphost()
+        
         UIView.animate(
             withDuration: 0.4,
             delay: 0,
@@ -167,7 +178,9 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate 
                 
                 
             },
-            completion: nil
+            completion: { [weak self] _ in
+                self?.snapshotViewCode?.startLiveUpdatingSnaphost()
+            }
         )
         
     }
