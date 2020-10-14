@@ -48,7 +48,7 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         $0.isShowingSeparator = false
     }
     
-    private lazy var thumbnailView = ViewHierarchyReferenceThumbnailView(
+    private(set) lazy var thumbnailView = ViewHierarchyReferenceThumbnailView(
         frame: CGRect(
             origin: .zero,
             size: CGSize(
@@ -132,7 +132,15 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
             return
         }
         
-        updateSnapshot(afterScreenUpdates: false)
+        calculatedLastFrame += 1
+        
+        guard calculatedLastFrame % 3 == 0 else {
+            return
+        }
+        
+        DispatchQueue.main.async {
+            self.updateSnapshot(afterScreenUpdates: false)
+        }
     }
     
     deinit {

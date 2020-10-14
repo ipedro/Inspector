@@ -32,27 +32,23 @@ final class PropertyInspectorViewController: UIViewController {
     
     private var selectedOptionSelector: OptionSelector?
     
-    private lazy var viewCode = PropertyInspectorViewCode()
+    private lazy var viewCode = PropertyInspectorViewCode().then {
+        $0.scrollView.delegate = self
+    }
     
-    private lazy var snapshotViewCode: PropertyInspectorViewThumbnailSectionView? = {
-        guard let referenceView = viewModel.reference.view else {
-            return nil
-        }
-        
-        return PropertyInspectorViewThumbnailSectionView(
-            reference: viewModel.reference,
-            frame: CGRect(
-                origin: .zero,
-                size: CGSize(
-                    width: viewCode.frame.width,
-                    height: viewCode.frame.width
-                )
+    private lazy var snapshotViewCode = PropertyInspectorViewThumbnailSectionView(
+        reference: viewModel.reference,
+        frame: CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: viewCode.frame.width,
+                height: viewCode.frame.width
             )
-        ).then {
-            $0.toggleHighlightViewsControl.isOn = !viewModel.reference.isHidingHighlightViews
-            $0.toggleHighlightViewsControl.addTarget(self, action: #selector(toggleLayerInspectorViewsVisibility), for: .valueChanged)
-        }
-    }()
+        )
+    ).then {
+        $0.toggleHighlightViewsControl.isOn = !viewModel.reference.isHidingHighlightViews
+        $0.toggleHighlightViewsControl.addTarget(self, action: #selector(toggleLayerInspectorViewsVisibility), for: .valueChanged)
+    }
     
     private lazy var sectionViews: [PropertyInspectorSectionView] = {
         viewModel.sectionInputs.enumerated().map { index, section in
@@ -87,9 +83,7 @@ final class PropertyInspectorViewController: UIViewController {
         
         viewCode.elementDescriptionLabel.text = viewModel.reference.elementDescription
         
-        if let snapshotViewCode = snapshotViewCode {
-            viewCode.contentView.addArrangedSubview(snapshotViewCode)
-        }
+        viewCode.contentView.addArrangedSubview(snapshotViewCode)
         
         sectionViews.forEach { viewCode.contentView.addArrangedSubview($0) }
     }
@@ -98,18 +92,39 @@ final class PropertyInspectorViewController: UIViewController {
         super.viewWillAppear(animated)
         
         calculatePreferredContentSize()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        snapshotViewCode?.startLiveUpdatingSnaphost()
+        snapshotViewCode.startLiveUpdatingSnaphost()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        snapshotViewCode?.stopLiveUpdatingSnaphost()
+        snapshotViewCode.stopLiveUpdatingSnaphost()
         
         super.viewWillDisappear(animated)
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        snapshotViewCode.stopLiveUpdatingSnaphost()
+        
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            self?.snapshotViewCode.startLiveUpdatingSnaphost()
+        }
+    }
+    
     func calculatePreferredContentSize() {
-        let size = viewCode.contentView.systemLayoutSizeFitting(UIView.layoutFittingExpandedSize)
+        let size = viewCode.contentView.systemLayoutSizeFitting(
+            CGSize(
+                width: min(UIScreen.main.bounds.width, 414),
+                height: 0
+            ),
+            withHorizontalFittingPriority: .defaultHigh,
+            verticalFittingPriority: .fittingSizeLevel
+        )
 
         preferredContentSize = size
     }
@@ -133,12 +148,21 @@ final class PropertyInspectorViewController: UIViewController {
     }
     
     @objc private func toggleLayerInspectorViewsVisibility() {
-        guard viewModel.reference.isHidingHighlightViews else {
-            delegate?.propertyInspectorViewController(self, hideLayerInspectorViewsInside: viewModel.reference)
-            return
+        DispatchQueue.main.async { [weak self] in
+            guard
+                let self = self,
+                let delegate = self.delegate
+            else {
+                return
+            }
+            
+            guard self.viewModel.reference.isHidingHighlightViews else {
+                delegate.propertyInspectorViewController(self, hideLayerInspectorViewsInside: self.viewModel.reference)
+                return
+            }
+            
+            delegate.propertyInspectorViewController(self, showLayerInspectorViewsInside: self.viewModel.reference)
         }
-        
-        delegate?.propertyInspectorViewController(self, showLayerInspectorViewsInside: viewModel.reference)
     }
     
 }
@@ -152,7 +176,7 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate 
     }
     
     func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool) {
-        snapshotViewCode?.stopLiveUpdatingSnaphost()
+        snapshotViewCode.stopLiveUpdatingSnaphost()
         
         UIView.animate(
             withDuration: 0.4,
@@ -179,7 +203,7 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate 
                 
             },
             completion: { [weak self] _ in
-                self?.snapshotViewCode?.startLiveUpdatingSnaphost()
+                self?.snapshotViewCode.startLiveUpdatingSnaphost()
             }
         )
         
@@ -195,5 +219,15 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate 
         selectedOptionSelector = optionSelector
         
         delegate?.propertyInspectorViewController(self, didTap: optionSelector)
+    }
+}
+
+extension PropertyInspectorViewController: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        snapshotViewCode.stopLiveUpdatingSnaphost()
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        snapshotViewCode.startLiveUpdatingSnaphost()
     }
 }

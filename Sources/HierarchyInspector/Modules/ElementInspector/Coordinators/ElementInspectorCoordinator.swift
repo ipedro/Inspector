@@ -50,14 +50,14 @@ final class ElementInspectorCoordinator: NSObject {
             
             let windowArea = window.frame.height * window.frame.width
             
-            let ratio = referenceViewArea / windowArea
+            let occupiedRatio = referenceViewArea / windowArea
             
-            if ratio < 0.4 {
+            if occupiedRatio <= 0.35 {
                 return .popover
             }
-            else if ratio < 0.7 {
-                return .formSheet
-            }
+//            else if occupiedRatio <= 0.5 {
+//                return .formSheet
+//            }
             
             return .pageSheet
         }()

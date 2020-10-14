@@ -67,6 +67,12 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         
         contentMode = .scaleAspectFit
         
+        isOpaque = true
+        
+        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        
+        isUserInteractionEnabled = false
+        
         contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.horizontalMargins)
         
         installView(gridImageView, .margins(horizontal: -20, vertical: 0), .onBottom)
@@ -95,8 +101,8 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             return
         }
         
+        snapshotContainerView.layer.rasterizationScale = min(UIScreen.main.scale, max(1, UIScreen.main.scale * aspectRatio))
         snapshotContainerView.layer.shouldRasterize = true
-        snapshotContainerView.layer.rasterizationScale = max(1, UIScreen.main.scale * aspectRatio)
         Console.print(#function, "rasterizationScale", snapshotContainerView.layer.rasterizationScale)
         
     }
