@@ -8,17 +8,15 @@
 import UIKit
 
 protocol PropertyInspectorViewControllerDelegate: AnyObject {
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
-                                         didTap colorPicker: ColorPicker)
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
-                                         didTap optionSelector: OptionSelector)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTap colorPicker: ColorPicker)
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
-                                         showLayerInspectorViewsInside reference: ViewHierarchyReference)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTap optionSelector: OptionSelector)
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
-                                         hideLayerInspectorViewsInside reference: ViewHierarchyReference)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, showLayerInspectorViewsInside reference: ViewHierarchyReference)
+    
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, hideLayerInspectorViewsInside reference: ViewHierarchyReference)
+    
 }
 
 final class PropertyInspectorViewController: ElementInspectorPanelViewController {
@@ -40,15 +38,15 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     
     private var viewModel: PropertyInspectorViewModelProtocol!
     
-    private var selectedColorPicker: ColorPicker?
+    var selectedColorPicker: ColorPicker?
     
-    private var selectedOptionSelector: OptionSelector?
+    var selectedOptionSelector: OptionSelector?
     
     private lazy var viewCode = PropertyInspectorViewCode()
     
     private var needsSetup = true
     
-    private lazy var snapshotViewCode = PropertyInspectorViewThumbnailSectionView(
+    private(set) lazy var snapshotViewCode = PropertyInspectorViewThumbnailSectionView(
         reference: viewModel.reference,
         frame: .zero
     ).then {
@@ -56,7 +54,7 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         $0.toggleHighlightViewsControl.addTarget(self, action: #selector(toggleLayerInspectorViewsVisibility), for: .valueChanged)
     }
     
-    private lazy var sectionViews: [PropertyInspectorSectionView] = {
+    private(set) lazy var sectionViews: [PropertyInspectorSectionView] = {
         viewModel.sectionInputs.enumerated().map { index, section in
             PropertyInspectorSectionView(
                 section: section,
@@ -121,8 +119,11 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     deinit {
         snapshotViewCode.stopLiveUpdatingSnaphost()
     }
-    
-    // MARK: - API
+}
+
+// MARK: - API
+
+extension PropertyInspectorViewController {
     
     func selectColor(_ color: UIColor) {
         selectedColorPicker?.selectedColor = color
@@ -140,7 +141,13 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         selectedOptionSelector = nil
     }
     
-    @objc private func toggleLayerInspectorViewsVisibility() {
+}
+
+// MARK: - Actions
+
+private extension PropertyInspectorViewController {
+    
+    @objc func toggleLayerInspectorViewsVisibility() {
         DispatchQueue.main.async { [weak self] in
             guard
                 let self = self,
@@ -158,63 +165,4 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         }
     }
     
-}
-
-// MARK: - PropertyInspectorSectionViewDelegate
-
-extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate {
-    
-    func propertyInspectorSectionViewWillUpdateProperty(_ section: PropertyInspectorSectionView) {
-        snapshotViewCode.stopLiveUpdatingSnaphost()
-    }
-    
-    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didUpdate property: PropertyInspectorInput) {
-        snapshotViewCode.startLiveUpdatingSnaphost()
-    }
-    
-    func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool) {
-        snapshotViewCode.stopLiveUpdatingSnaphost()
-        
-        UIView.animate(
-            withDuration: 0.4,
-            delay: 0,
-            usingSpringWithDamping: 0.88,
-            initialSpringVelocity: 0,
-            options: .beginFromCurrentState,
-            animations: { [weak self] in
-                
-                guard isCollapsed else {
-                    section.isCollapsed.toggle()
-                    return
-                }
-                
-                self?.sectionViews.forEach {
-                    if $0 === section {
-                        $0.isCollapsed = !isCollapsed
-                    }
-                    else {
-                        $0.isCollapsed = isCollapsed
-                    }
-                }
-                
-                
-            },
-            completion: { [weak self] _ in
-                self?.snapshotViewCode.startLiveUpdatingSnaphost()
-            }
-        )
-        
-    }
-    
-    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap colorPicker: ColorPicker) {
-        selectedColorPicker = colorPicker
-        
-        delegate?.propertyInspectorViewController(self, didTap: colorPicker)
-    }
-    
-    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap optionSelector: OptionSelector) {
-        selectedOptionSelector = optionSelector
-        
-        delegate?.propertyInspectorViewController(self, didTap: optionSelector)
-    }
 }

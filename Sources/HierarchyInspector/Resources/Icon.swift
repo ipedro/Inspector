@@ -10,6 +10,7 @@ import UIKit
 extension Icon {
     enum Glyph: String {
         case chevronDown
+        case chevronUpDown
         case infoCircle
         case wifiExlusionMark
         case eyeSlashFill
@@ -31,6 +32,9 @@ extension Icon {
                 
             case .listBulletIndent:
                 IconKit.drawListBulletIndent(color: color, frame: frame, resizing: resizing)
+                
+            case .chevronUpDown:
+                IconKit.drawChevronUpDown(color: color, frame: frame, resizing: resizing)
             }
         }
     }

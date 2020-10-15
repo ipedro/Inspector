@@ -110,6 +110,7 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
         
         thumbnailView.showEmptyStatusMessage = false
         thumbnailView.layer.shouldRasterize = true
+        thumbnailView.layer.rasterizationScale = UIScreen.main.scale
         thumbnailView.heightAnchor.constraint(equalToConstant: Self.thumbSize.height).isActive = true
         thumbnailView.widthAnchor.constraint(equalToConstant: Self.thumbSize.width).isActive = true
         thumbnailView.contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.verticalMargins / 2)

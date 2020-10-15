@@ -21,6 +21,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		EB0B95192538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B95182538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift */; };
+		EB0B95232538897500A35DE4 /* ViewHierarchyListViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B95222538897500A35DE4 /* ViewHierarchyListViewController+UITableViewDelegate.swift */; };
+		EB0B952D253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B952C253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift */; };
+		EB0B953B25388A2700A35DE4 /* PropertyInspectorViewController+PropertyInspectorSectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B953A25388A2700A35DE4 /* PropertyInspectorViewController+PropertyInspectorSectionViewDelegate.swift */; };
 		EB15C9222531A53B00D100E6 /* Console.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB15C9212531A53B00D100E6 /* Console.swift */; };
 		EB2D96E925280AC000A5795B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D96E825280AC000A5795B /* AppDelegate.swift */; };
 		EB2D96EB25280AC000A5795B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D96EA25280AC000A5795B /* SceneDelegate.swift */; };
@@ -205,6 +209,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EB0B95182538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyListViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
+		EB0B95222538897500A35DE4 /* ViewHierarchyListViewController+UITableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyListViewController+UITableViewDelegate.swift"; sourceTree = "<group>"; };
+		EB0B952C253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift"; sourceTree = "<group>"; };
+		EB0B953A25388A2700A35DE4 /* PropertyInspectorViewController+PropertyInspectorSectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PropertyInspectorViewController+PropertyInspectorSectionViewDelegate.swift"; sourceTree = "<group>"; };
 		EB15C9212531A53B00D100E6 /* Console.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Console.swift; sourceTree = "<group>"; };
 		EB2D96E625280AC000A5795B /* HierarchyInspectorExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HierarchyInspectorExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB2D96E825280AC000A5795B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -502,14 +510,6 @@
 			path = NSLayoutConstraint.Axis;
 			sourceTree = "<group>";
 		};
-		EB439C5025330DA6004CCBCA /* PopoverNavigationController */ = {
-			isa = PBXGroup;
-			children = (
-				EB439C4A25330D8E004CCBCA /* ElementInspectorNavigationController.swift */,
-			);
-			path = PopoverNavigationController;
-			sourceTree = "<group>";
-		};
 		EB439C5525330E73004CCBCA /* UIActivityIndicatorView.Style */ = {
 			isa = PBXGroup;
 			children = (
@@ -571,7 +571,6 @@
 			children = (
 				EBC524B8252F60070054C6AA /* Base */,
 				EBD9D9DF252F6E6D00851E23 /* Controls */,
-				EB439C5025330DA6004CCBCA /* PopoverNavigationController */,
 				EBD9DA47252FC66200851E23 /* SectionHeader */,
 				EBD9DA17252FA36900851E23 /* Separator */,
 				EB7062A42534F2BD004693E1 /* ViewHierarchyReferenceThumbnailView.swift */,
@@ -714,6 +713,7 @@
 			isa = PBXGroup;
 			children = (
 				EB31665225384DB0001A4A80 /* ElementInspectorBasePanelViewController.swift */,
+				EB439C4A25330D8E004CCBCA /* ElementInspectorNavigationController.swift */,
 				EBAC35952531023100A992F5 /* ElementInspectorViewController.swift */,
 			);
 			path = ViewControllers;
@@ -740,8 +740,8 @@
 		EBC045AD2531F66800C311E6 /* OptionSelector */ = {
 			isa = PBXGroup;
 			children = (
-				EBC045AE2531F68000C311E6 /* OptionSelectorViewController.swift */,
 				EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */,
+				EBC045AE2531F68000C311E6 /* OptionSelectorViewController.swift */,
 				EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */,
 			);
 			path = OptionSelector;
@@ -852,6 +852,7 @@
 			isa = PBXGroup;
 			children = (
 				EBAC356D2530F53800A992F5 /* PropertyInspectorViewController.swift */,
+				EB0B953A25388A2700A35DE4 /* PropertyInspectorViewController+PropertyInspectorSectionViewDelegate.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -907,6 +908,9 @@
 			isa = PBXGroup;
 			children = (
 				EBF88CBE252DA1E300AE9F12 /* ViewHierarchyListViewController.swift */,
+				EB0B95182538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift */,
+				EB0B952C253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift */,
+				EB0B95222538897500A35DE4 /* ViewHierarchyListViewController+UITableViewDelegate.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -1215,6 +1219,7 @@
 				EBA245AC252878B700D4AFD9 /* ViewHierarchyColorScheme.swift in Sources */,
 				EBA245F12528894400D4AFD9 /* UISplitViewController+HierarchyInspectorPresentable.swift in Sources */,
 				OBJ_68 /* Manager+HierarchyLayerManagerProtocol.swift in Sources */,
+				EB0B95192538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift in Sources */,
 				OBJ_69 /* Layer+AdditiveArithmetic.swift in Sources */,
 				EBD9DA01252F919900851E23 /* StepperControl.swift in Sources */,
 				OBJ_70 /* Layer+AlertControllerActionable.swift in Sources */,
@@ -1260,12 +1265,14 @@
 				EB80AFBB252B570200F0ECD5 /* NSObject+Create.swift in Sources */,
 				EB5DB3A4252D09D400CE0398 /* UIStackView+Init.swift in Sources */,
 				EB324619252B1E6100406111 /* ViewHierarchyReference.swift in Sources */,
+				EB0B952D253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift in Sources */,
 				EB439B50253213AB004CCBCA /* UISemanticContentAttribute+CaseIterable.swift in Sources */,
 				EBD9DA0E252FA15500851E23 /* UILabel+Init.swift in Sources */,
 				EB439C0C25323905004CCBCA /* UIStackView.Alignment+CustomStringConvertible.swift in Sources */,
 				OBJ_87 /* Actionable.swift in Sources */,
 				EB7062872534DC14004693E1 /* PropertyInspectorInputSection+UISwitchSection.swift in Sources */,
 				OBJ_88 /* Create.swift in Sources */,
+				EB0B953B25388A2700A35DE4 /* PropertyInspectorViewController+PropertyInspectorSectionViewDelegate.swift in Sources */,
 				OBJ_89 /* HierarchyInspectorKeyCommandActionable.swift in Sources */,
 				EBC045BF2531F8A800C311E6 /* OptionSelectorViewModel.swift in Sources */,
 				EB31664825384995001A4A80 /* NSObjectProtocoll+Debounce.swift in Sources */,
@@ -1285,6 +1292,7 @@
 				EB439B4625321389004CCBCA /* UISemanticContentAttribute+CustomStringConvertible.swift in Sources */,
 				EB6651AE2534A033005B8FF2 /* ElementInspectorCoordinator+ViewHierarchyListViewControllerDelegate.swift in Sources */,
 				EB7062A52534F2BD004693E1 /* ViewHierarchyReferenceThumbnailView.swift in Sources */,
+				EB0B95232538897500A35DE4 /* ViewHierarchyListViewController+UITableViewDelegate.swift in Sources */,
 				EBAC35882530FE4C00A992F5 /* PropertyInspectorViewCode.swift in Sources */,
 				EBAC35962531023100A992F5 /* ElementInspectorViewController.swift in Sources */,
 				EBAC34EA2530ABBB00A992F5 /* ElementInspector.swift in Sources */,

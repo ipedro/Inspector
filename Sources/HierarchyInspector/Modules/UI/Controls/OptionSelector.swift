@@ -24,7 +24,7 @@ final class OptionSelector: BaseFormControl {
         }
     }
     
-    private lazy var icon = Icon(.chevronDown, color: valueLabel.textColor)
+    private lazy var icon = Icon(.chevronUpDown, color: ElementInspector.appearance.secondaryTextColor, size: CGSize(width: 14, height: 14))
     
     private lazy var valueLabel = UILabel(.footnote).then {
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
@@ -36,7 +36,8 @@ final class OptionSelector: BaseFormControl {
     private(set) lazy var accessoryControl = ViewInspectorControlAccessoryControl().then {
         $0.contentView.addArrangedSubview(valueLabel)
         $0.contentView.addArrangedSubview(icon)
-        
+        $0.contentView.alignment = .center
+        $0.contentView.spacing = ElementInspector.appearance.verticalMargins
         $0.addGestureRecognizer(tapGestureRecognizer)
     }
     
