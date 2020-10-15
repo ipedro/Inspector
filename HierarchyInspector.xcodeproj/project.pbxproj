@@ -102,6 +102,7 @@
 		EBB0CB63252A6F3E005D4A53 /* Manager.ActionGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAD92529B90B000001BE /* Manager.ActionGroup.swift */; };
 		EBBE8C2A2538D7B100CD699D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C292538D7B100CD699D /* ImagePicker.swift */; };
 		EBBE8C382538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C372538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift */; };
+		EBBE8C422538EBBA00CD699D /* PropertyInspectorUILabelSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C412538EBBA00CD699D /* PropertyInspectorUILabelSectionViewModel.swift */; };
 		EBC045AF2531F68000C311E6 /* OptionSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045AE2531F68000C311E6 /* OptionSelectorViewController.swift */; };
 		EBC045B92531F6A400C311E6 /* OptionSelectorViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */; };
 		EBC045BF2531F8A800C311E6 /* OptionSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */; };
@@ -296,6 +297,7 @@
 		EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.KeyCommands.swift; sourceTree = "<group>"; };
 		EBBE8C292538D7B100CD699D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		EBBE8C372538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorUIImageViewSectionViewModel.swift; sourceTree = "<group>"; };
+		EBBE8C412538EBBA00CD699D /* PropertyInspectorUILabelSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorUILabelSectionViewModel.swift; sourceTree = "<group>"; };
 		EBC045AE2531F68000C311E6 /* OptionSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewController.swift; sourceTree = "<group>"; };
 		EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewCode.swift; sourceTree = "<group>"; };
 		EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewModel.swift; sourceTree = "<group>"; };
@@ -884,6 +886,7 @@
 				EB7062862534DC14004693E1 /* PropertyInspectorUISwitchSectionViewModel.swift */,
 				EBBE8C372538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift */,
 				EB439B8E25321766004CCBCA /* PropertyInspectorUIViewSectionViewModel.swift */,
+				EBBE8C412538EBBA00CD699D /* PropertyInspectorUILabelSectionViewModel.swift */,
 				EBAC35032530DE8300A992F5 /* PropertyInspectorViewModel.swift */,
 			);
 			path = ViewModels;
@@ -1256,6 +1259,7 @@
 				EBAC35452530E3C400A992F5 /* PropertyInspectorInput.swift in Sources */,
 				EB7EAAF22529BFC0000001BE /* Array+UniqueValues.swift in Sources */,
 				EBCCF4FC2538524900A9363F /* ElementInspectorPanelViewControllerProtocol.swift in Sources */,
+				EBBE8C422538EBBA00CD699D /* PropertyInspectorUILabelSectionViewModel.swift in Sources */,
 				OBJ_74 /* Layer+PresetLayers.swift in Sources */,
 				EB439C02253238EC004CCBCA /* UIStackView.Alignment+CaseIterable.swift in Sources */,
 				EBB0CB22252A6C3D005D4A53 /* Configuration.swift in Sources */,

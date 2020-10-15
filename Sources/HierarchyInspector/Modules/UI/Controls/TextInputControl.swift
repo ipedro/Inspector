@@ -18,6 +18,7 @@ final class TextInputControl: BaseFormControl {
         $0.setContentHuggingPriority(.required, for: .horizontal)
         $0.adjustsFontSizeToFitWidth = true
         $0.addTarget(self, action: #selector(editText), for: .allEditingEvents)
+        $0.widthAnchor.constraint(lessThanOrEqualToConstant: 250).isActive = true
     }
         
     private(set) lazy var accessoryControl = ViewInspectorControlAccessoryControl().then {

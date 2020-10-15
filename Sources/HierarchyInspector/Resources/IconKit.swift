@@ -19,6 +19,230 @@ class IconKit: NSObject {
     
     /// Icons
     
+    class func drawTextAlignmentNatural(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
+        /// General Declarations
+        let context = UIGraphicsGetCurrentContext()!
+        
+        /// Resize to Target Frame
+        context.saveGState()
+        let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
+        context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
+        context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
+        
+        /// icon
+        let icon = UIBezierPath()
+        icon.move(to: CGPoint(x: 4, y: 0))
+        icon.addLine(to: CGPoint(x: 4, y: 1))
+        icon.addLine(to: CGPoint(x: 0, y: 1))
+        icon.addLine(to: CGPoint.zero)
+        icon.addLine(to: CGPoint(x: 4, y: 0))
+        icon.close()
+        icon.move(to: CGPoint(x: 9, y: 0))
+        icon.addLine(to: CGPoint(x: 9, y: 1))
+        icon.addLine(to: CGPoint(x: 5, y: 1))
+        icon.addLine(to: CGPoint(x: 5, y: 0))
+        icon.addLine(to: CGPoint(x: 9, y: 0))
+        icon.close()
+        icon.move(to: CGPoint(x: 14, y: 0))
+        icon.addLine(to: CGPoint(x: 14, y: 1))
+        icon.addLine(to: CGPoint(x: 10, y: 1))
+        icon.addLine(to: CGPoint(x: 10, y: 0))
+        icon.addLine(to: CGPoint(x: 14, y: 0))
+        icon.close()
+        context.saveGState()
+        context.translateBy(x: 1, y: 7)
+        icon.usesEvenOddFillRule = true
+        UIColor.black.setFill()
+        icon.fill()
+        context.restoreGState()
+        
+        context.restoreGState()
+    }
+    
+    class func drawTextAlignmentJustified(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
+        /// General Declarations
+        let context = UIGraphicsGetCurrentContext()!
+        
+        /// Resize to Target Frame
+        context.saveGState()
+        let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
+        context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
+        context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
+        
+        /// icon
+        let icon = UIBezierPath()
+        icon.move(to: CGPoint(x: 14, y: 6))
+        icon.addLine(to: CGPoint(x: 14, y: 7))
+        icon.addLine(to: CGPoint(x: 0, y: 7))
+        icon.addLine(to: CGPoint(x: 0, y: 6))
+        icon.addLine(to: CGPoint(x: 14, y: 6))
+        icon.close()
+        icon.move(to: CGPoint(x: 14, y: 4))
+        icon.addLine(to: CGPoint(x: 14, y: 5))
+        icon.addLine(to: CGPoint(x: 0, y: 5))
+        icon.addLine(to: CGPoint(x: 0, y: 4))
+        icon.addLine(to: CGPoint(x: 14, y: 4))
+        icon.close()
+        icon.move(to: CGPoint(x: 14, y: 2))
+        icon.addLine(to: CGPoint(x: 14, y: 3))
+        icon.addLine(to: CGPoint(x: 0, y: 3))
+        icon.addLine(to: CGPoint(x: 0, y: 2))
+        icon.addLine(to: CGPoint(x: 14, y: 2))
+        icon.close()
+        icon.move(to: CGPoint(x: 14, y: 0))
+        icon.addLine(to: CGPoint(x: 14, y: 1))
+        icon.addLine(to: CGPoint(x: 0, y: 1))
+        icon.addLine(to: CGPoint.zero)
+        icon.addLine(to: CGPoint(x: 14, y: 0))
+        icon.close()
+        context.saveGState()
+        context.translateBy(x: 1, y: 4)
+        icon.usesEvenOddFillRule = true
+        UIColor.black.setFill()
+        icon.fill()
+        context.restoreGState()
+        
+        context.restoreGState()
+    }
+    
+    class func drawTextAlignmentRight(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
+        /// General Declarations
+        let context = UIGraphicsGetCurrentContext()!
+        
+        /// Resize to Target Frame
+        context.saveGState()
+        let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
+        context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
+        context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
+        
+        /// icon
+        let icon = UIBezierPath()
+        icon.move(to: CGPoint(x: 14, y: 6))
+        icon.addLine(to: CGPoint(x: 14, y: 7))
+        icon.addLine(to: CGPoint(x: 2, y: 7))
+        icon.addLine(to: CGPoint(x: 2, y: 6))
+        icon.addLine(to: CGPoint(x: 14, y: 6))
+        icon.close()
+        icon.move(to: CGPoint(x: 14, y: 4))
+        icon.addLine(to: CGPoint(x: 14, y: 5))
+        icon.addLine(to: CGPoint(x: 0, y: 5))
+        icon.addLine(to: CGPoint(x: 0, y: 4))
+        icon.addLine(to: CGPoint(x: 14, y: 4))
+        icon.close()
+        icon.move(to: CGPoint(x: 14, y: 2))
+        icon.addLine(to: CGPoint(x: 14, y: 3))
+        icon.addLine(to: CGPoint(x: 3, y: 3))
+        icon.addLine(to: CGPoint(x: 3, y: 2))
+        icon.addLine(to: CGPoint(x: 14, y: 2))
+        icon.close()
+        icon.move(to: CGPoint(x: 14, y: 0))
+        icon.addLine(to: CGPoint(x: 14, y: 1))
+        icon.addLine(to: CGPoint(x: 0, y: 1))
+        icon.addLine(to: CGPoint.zero)
+        icon.addLine(to: CGPoint(x: 14, y: 0))
+        icon.close()
+        context.saveGState()
+        context.translateBy(x: 1, y: 4)
+        icon.usesEvenOddFillRule = true
+        UIColor.black.setFill()
+        icon.fill()
+        context.restoreGState()
+        
+        context.restoreGState()
+    }
+    
+    class func drawTextAlignmentCenter(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
+        /// General Declarations
+        let context = UIGraphicsGetCurrentContext()!
+        
+        /// Resize to Target Frame
+        context.saveGState()
+        let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
+        context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
+        context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
+        
+        /// icon
+        let icon = UIBezierPath()
+        icon.move(to: CGPoint(x: 13, y: 6))
+        icon.addLine(to: CGPoint(x: 13, y: 7))
+        icon.addLine(to: CGPoint(x: 1, y: 7))
+        icon.addLine(to: CGPoint(x: 1, y: 6))
+        icon.addLine(to: CGPoint(x: 13, y: 6))
+        icon.close()
+        icon.move(to: CGPoint(x: 14, y: 4))
+        icon.addLine(to: CGPoint(x: 14, y: 5))
+        icon.addLine(to: CGPoint(x: 0, y: 5))
+        icon.addLine(to: CGPoint(x: 0, y: 4))
+        icon.addLine(to: CGPoint(x: 14, y: 4))
+        icon.close()
+        icon.move(to: CGPoint(x: 12, y: 2))
+        icon.addLine(to: CGPoint(x: 12, y: 3))
+        icon.addLine(to: CGPoint(x: 2, y: 3))
+        icon.addLine(to: CGPoint(x: 2, y: 2))
+        icon.addLine(to: CGPoint(x: 12, y: 2))
+        icon.close()
+        icon.move(to: CGPoint(x: 14, y: 0))
+        icon.addLine(to: CGPoint(x: 14, y: 1))
+        icon.addLine(to: CGPoint(x: 0, y: 1))
+        icon.addLine(to: CGPoint.zero)
+        icon.addLine(to: CGPoint(x: 14, y: 0))
+        icon.close()
+        context.saveGState()
+        context.translateBy(x: 1, y: 4)
+        icon.usesEvenOddFillRule = true
+        UIColor.black.setFill()
+        icon.fill()
+        context.restoreGState()
+        
+        context.restoreGState()
+    }
+    
+    class func drawTextAlignmentLeft(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
+        /// General Declarations
+        let context = UIGraphicsGetCurrentContext()!
+        
+        /// Resize to Target Frame
+        context.saveGState()
+        let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
+        context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
+        context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
+        
+        /// icon
+        let icon = UIBezierPath()
+        icon.move(to: CGPoint(x: 12, y: 6))
+        icon.addLine(to: CGPoint(x: 12, y: 7))
+        icon.addLine(to: CGPoint(x: 0, y: 7))
+        icon.addLine(to: CGPoint(x: 0, y: 6))
+        icon.addLine(to: CGPoint(x: 12, y: 6))
+        icon.close()
+        icon.move(to: CGPoint(x: 14, y: 4))
+        icon.addLine(to: CGPoint(x: 14, y: 5))
+        icon.addLine(to: CGPoint(x: 0, y: 5))
+        icon.addLine(to: CGPoint(x: 0, y: 4))
+        icon.addLine(to: CGPoint(x: 14, y: 4))
+        icon.close()
+        icon.move(to: CGPoint(x: 11, y: 2))
+        icon.addLine(to: CGPoint(x: 11, y: 3))
+        icon.addLine(to: CGPoint(x: 0, y: 3))
+        icon.addLine(to: CGPoint(x: 0, y: 2))
+        icon.addLine(to: CGPoint(x: 11, y: 2))
+        icon.close()
+        icon.move(to: CGPoint(x: 14, y: 0))
+        icon.addLine(to: CGPoint(x: 14, y: 1))
+        icon.addLine(to: CGPoint(x: 0, y: 1))
+        icon.addLine(to: CGPoint.zero)
+        icon.addLine(to: CGPoint(x: 14, y: 0))
+        icon.close()
+        context.saveGState()
+        context.translateBy(x: 1, y: 4)
+        icon.usesEvenOddFillRule = true
+        UIColor.black.setFill()
+        icon.fill()
+        context.restoreGState()
+        
+        context.restoreGState()
+    }
+    
     class func drawColorGrid(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 32, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
@@ -961,6 +1185,96 @@ class IconKit: NSObject {
     //MARK: - Canvas Images
     
     /// Icons
+    
+    class func imageOfTextAlignmentNatural() -> UIImage {
+        struct LocalCache {
+            static var image: UIImage!
+        }
+        if LocalCache.image != nil {
+            return LocalCache.image
+        }
+        var image: UIImage
+        
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
+        IconKit.drawTextAlignmentNatural()
+        image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        LocalCache.image = image
+        return image
+    }
+    
+    class func imageOfTextAlignmentJustified() -> UIImage {
+        struct LocalCache {
+            static var image: UIImage!
+        }
+        if LocalCache.image != nil {
+            return LocalCache.image
+        }
+        var image: UIImage
+        
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
+        IconKit.drawTextAlignmentJustified()
+        image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        LocalCache.image = image
+        return image
+    }
+    
+    class func imageOfTextAlignmentRight() -> UIImage {
+        struct LocalCache {
+            static var image: UIImage!
+        }
+        if LocalCache.image != nil {
+            return LocalCache.image
+        }
+        var image: UIImage
+        
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
+        IconKit.drawTextAlignmentRight()
+        image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        LocalCache.image = image
+        return image
+    }
+    
+    class func imageOfTextAlignmentCenter() -> UIImage {
+        struct LocalCache {
+            static var image: UIImage!
+        }
+        if LocalCache.image != nil {
+            return LocalCache.image
+        }
+        var image: UIImage
+        
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
+        IconKit.drawTextAlignmentCenter()
+        image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        LocalCache.image = image
+        return image
+    }
+    
+    class func imageOfTextAlignmentLeft() -> UIImage {
+        struct LocalCache {
+            static var image: UIImage!
+        }
+        if LocalCache.image != nil {
+            return LocalCache.image
+        }
+        var image: UIImage
+        
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
+        IconKit.drawTextAlignmentLeft()
+        image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        LocalCache.image = image
+        return image
+    }
     
     class func imageOfColorGrid() -> UIImage {
         struct LocalCache {

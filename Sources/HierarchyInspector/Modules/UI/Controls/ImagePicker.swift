@@ -33,11 +33,22 @@ final class ImagePicker: BaseFormControl {
     
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapImage))
     
-    private lazy var imageDisplayControl = ImageDisplayControl().then {
-        $0.image = selectedImage
+    private lazy var imageContainerView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)).then {
+        $0.backgroundColor = ElementInspector.appearance.panelBackgroundColor
         
-        $0.heightAnchor.constraint(equalToConstant: 24).isActive = true
-        $0.widthAnchor.constraint(equalTo: $0.heightAnchor, multiplier: 2).isActive = true
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 5
+        
+        $0.setContentHuggingPriority(.required, for: .horizontal)
+        $0.setContentHuggingPriority(.required, for: .vertical)
+        
+        $0.heightAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins).isActive = true
+        
+        $0.installView(imageView)
+    }
+    
+    private lazy var imageView = UIImageView(image: selectedImage).then {
+        $0.contentMode = .scaleAspectFit
     }
     
     private lazy var imageNameLabel = UILabel(.footnote).then {
@@ -47,11 +58,15 @@ final class ImagePicker: BaseFormControl {
     private(set) lazy var accessoryControl = ViewInspectorControlAccessoryControl().then {
         $0.addGestureRecognizer(tapGestureRecognizer)
         
+        $0.clipsToBounds = true
+        
+        $0.setContentHuggingPriority(.required, for: .horizontal)
+        
         $0.contentView.spacing = ElementInspector.appearance.verticalMargins
         
         $0.contentView.addArrangedSubview(imageNameLabel)
         
-        $0.contentView.addArrangedSubview(imageDisplayControl)
+        $0.contentView.addArrangedSubview(imageContainerView)
     }
     
     // MARK: - Init
@@ -69,56 +84,34 @@ final class ImagePicker: BaseFormControl {
     override func setup() {
         super.setup()
         
+        titleLabel.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
+        
         contentView.addArrangedSubview(accessoryControl)
         
         didUpdateImage()
     }
     
     private func didUpdateImage() {
-        imageDisplayControl.image = selectedImage
+        imageView.image = selectedImage
         
         guard let selectedImage = selectedImage else {
             imageNameLabel.text = "No Image"
             return
         }
         
-        imageNameLabel.text = selectedImage.size.debugDescription
+        #if swift(>=5.0)
+        if #available(iOS 13.0, *) {
+            guard selectedImage.isSymbolImage == false else {
+                imageNameLabel.text = "Vector \(selectedImage.size.debugDescription)"
+                return
+            }
+        }
+        #endif
+        
+        imageNameLabel.text = "\(selectedImage.size.debugDescription) @\(Int(selectedImage.scale))x"
     }
     
     @objc private func tapImage() {
         delegate?.imagePickerDidTap(self)
-    }
-}
-
-extension ColorPicker {
-    
-}
-
-final class ImageDisplayControl: BaseControl {
-    
-    var image: UIImage? {
-        didSet {
-            imageVIew.image = image
-        }
-    }
-    
-    private lazy var imageVIew = UIImageView().then {
-        $0.contentMode = .scaleAspectFill
-    }
-    
-    override func setup() {
-        super.setup()
-        
-        backgroundColor = ElementInspector.appearance.tertiaryTextColor
-        
-        layer.cornerRadius = 5
-        
-        layer.masksToBounds = true
-        
-        installView(imageVIew)
-    }
-    
-    override func draw(_ rect: CGRect) {
-        IconKit.drawColorGrid(frame: bounds, resizing: .aspectFill)
     }
 }

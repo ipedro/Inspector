@@ -20,7 +20,7 @@ class BaseControl: UIControl {
     }
     
     open func setup() {
-        installView(contentView)
+        
     }
     
     required init?(coder: NSCoder) {
@@ -30,7 +30,9 @@ class BaseControl: UIControl {
     private(set) lazy var contentView = UIStackView(
         axis: .horizontal,
         spacing: spacing
-    )
+    ).then {
+        installView($0)
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)

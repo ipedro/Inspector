@@ -12,6 +12,7 @@ final class PropertyInspectorUIImageViewSectionViewModel: PropertyInspectorSecti
     private enum Property: CaseIterable {
         case image
         case highlightedImage
+        case separator
         case isHighlighted
         case adjustsImageSizeForAccessibilityContentSizeCategory
     }
@@ -30,6 +31,9 @@ final class PropertyInspectorUIImageViewSectionViewModel: PropertyInspectorSecti
         }
 
         switch $0 {
+        
+        case .separator:
+            return .separator
             
         case .image:
             return .imagePicker(

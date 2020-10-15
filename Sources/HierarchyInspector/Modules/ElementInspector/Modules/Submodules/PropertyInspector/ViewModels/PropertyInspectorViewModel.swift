@@ -43,6 +43,10 @@ final class PropertyInspectorViewModel: PropertyInspectorViewModelProtocol {
             array.append(PropertyInspectorUIImageViewSectionViewModel(imageView: imageView))
         }
         
+        if let label = reference.view as? UILabel {
+            array.append(PropertyInspectorUILabelSectionViewModel(label: label))
+        }
+        
         if let view = reference.view {
             array.append(PropertyInspectorUIViewSectionViewModel(view: view))
         }

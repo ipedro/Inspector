@@ -66,6 +66,8 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         $0.isActive = true
     }
     
+    private lazy var maxContentHeightConstraint = thumbnailView.heightAnchor.constraint(lessThanOrEqualTo: widthAnchor)
+    
     init(reference: ViewHierarchyReference, frame: CGRect) {
         self.reference = reference
         
@@ -94,6 +96,8 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         contentView.addArrangedSubview(thumbnailView)
         
         contentView.addArrangedSubview(controlsContainerView)
+        
+        maxContentHeightConstraint.isActive = true
     }
     
     override func didMoveToSuperview() {
