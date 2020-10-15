@@ -53,6 +53,12 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate 
         
     }
     
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap imagePicker: ImagePicker) {
+        selectedImagePicker = imagePicker
+        
+        delegate?.propertyInspectorViewController(self, didTap: imagePicker)
+    }
+    
     func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap colorPicker: ColorPicker) {
         selectedColorPicker = colorPicker
         

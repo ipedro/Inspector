@@ -7,12 +7,11 @@
 
 import UIKit
 
-
 final class PropertyInspectorUISwitchSectionViewModel: PropertyInspectorSectionViewModelProtocol {
     
     private enum Property: CaseIterable {
         case title
-        case style
+        case preferredStyle
         case isOn
         case onTintColor
         case thumbTintColor
@@ -26,7 +25,6 @@ final class PropertyInspectorUISwitchSectionViewModel: PropertyInspectorSectionV
     
     private(set) lazy var title: String? = "Switch"
     
-    
     private(set) lazy var propertyInpus: [PropertyInspectorInput] = Property.allCases.compactMap {
         guard let switchControl = switchControl else {
             return nil
@@ -36,24 +34,33 @@ final class PropertyInspectorUISwitchSectionViewModel: PropertyInspectorSectionV
         case .title:
             #if swift(>=5.3)
             if #available(iOS 14.0, *) {
-                return .optionsList(
+                return .textInput(
                     title: "title",
-                    options: [switchControl.title ?? "none"],
-                    selectedIndex: 0,
-                    handler: nil
-                )
+                    value: switchControl.title,
+                    placeholder: switchControl.title ?? "title"
+                ) { title in
+                    switchControl.title = title
+                }
             }
             #endif
             return nil
             
-        case .style:
+        case .preferredStyle:
             #if swift(>=5.3)
             if #available(iOS 14.0, *) {
                 return .inlineTextOptions(
-                    title: "style",
+                    title: "preferred style",
                     texts: UISwitch.Style.allCases,
-                    selectedSegmentIndex: UISwitch.Style.allCases.firstIndex(of: switchControl.style),
-                    handler: nil
+                    selectedSegmentIndex: UISwitch.Style.allCases.firstIndex(of: switchControl.preferredStyle),
+                    handler: {
+                        guard let newIndex = $0 else {
+                            return
+                        }
+                        
+                        let preferredStyle = UISwitch.Style.allCases[newIndex]
+                        
+                        switchControl.preferredStyle = preferredStyle
+                    }
                 )
             }
             #endif

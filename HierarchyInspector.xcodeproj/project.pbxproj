@@ -100,6 +100,8 @@
 		EBB0CB22252A6C3D005D4A53 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB21252A6C3D005D4A53 /* Configuration.swift */; };
 		EBB0CB2C252A6C99005D4A53 /* Configuration.KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */; };
 		EBB0CB63252A6F3E005D4A53 /* Manager.ActionGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAD92529B90B000001BE /* Manager.ActionGroup.swift */; };
+		EBBE8C2A2538D7B100CD699D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C292538D7B100CD699D /* ImagePicker.swift */; };
+		EBBE8C382538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C372538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift */; };
 		EBC045AF2531F68000C311E6 /* OptionSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045AE2531F68000C311E6 /* OptionSelectorViewController.swift */; };
 		EBC045B92531F6A400C311E6 /* OptionSelectorViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */; };
 		EBC045BF2531F8A800C311E6 /* OptionSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */; };
@@ -107,6 +109,7 @@
 		EBC92E162533267200D7189A /* ViewHierarchyReference+ElementDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E152533267200D7189A /* ViewHierarchyReference+ElementDescription.swift */; };
 		EBC92E1D25332A5100D7189A /* UIFont+Traits.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E1C25332A5100D7189A /* UIFont+Traits.swift */; };
 		EBC92E432533564D00D7189A /* UITextView+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E422533564D00D7189A /* UITextView+Init.swift */; };
+		EBC9E1B82538B47A000F3E60 /* TextInputControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC9E1B72538B47A000F3E60 /* TextInputControl.swift */; };
 		EBCCF4EF253851A500A9363F /* ElementInspectorBasePanelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB31665225384DB0001A4A80 /* ElementInspectorBasePanelViewController.swift */; };
 		EBCCF4FC2538524900A9363F /* ElementInspectorPanelViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBCCF4E62538513B00A9363F /* ElementInspectorPanelViewControllerProtocol.swift */; };
 		EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */; };
@@ -291,6 +294,8 @@
 		EBAC359B2531024E00A992F5 /* ElementInspectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorViewCode.swift; sourceTree = "<group>"; };
 		EBB0CB21252A6C3D005D4A53 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.KeyCommands.swift; sourceTree = "<group>"; };
+		EBBE8C292538D7B100CD699D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		EBBE8C372538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorUIImageViewSectionViewModel.swift; sourceTree = "<group>"; };
 		EBC045AE2531F68000C311E6 /* OptionSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewController.swift; sourceTree = "<group>"; };
 		EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewCode.swift; sourceTree = "<group>"; };
 		EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewModel.swift; sourceTree = "<group>"; };
@@ -298,6 +303,7 @@
 		EBC92E152533267200D7189A /* ViewHierarchyReference+ElementDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyReference+ElementDescription.swift"; sourceTree = "<group>"; };
 		EBC92E1C25332A5100D7189A /* UIFont+Traits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Traits.swift"; sourceTree = "<group>"; };
 		EBC92E422533564D00D7189A /* UITextView+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Init.swift"; sourceTree = "<group>"; };
+		EBC9E1B72538B47A000F3E60 /* TextInputControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputControl.swift; sourceTree = "<group>"; };
 		EBCCF4E62538513B00A9363F /* ElementInspectorPanelViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorPanelViewControllerProtocol.swift; sourceTree = "<group>"; };
 		EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleControl.swift; sourceTree = "<group>"; };
 		EBD9DA00252F919900851E23 /* StepperControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperControl.swift; sourceTree = "<group>"; };
@@ -793,13 +799,15 @@
 		EBD9D9DF252F6E6D00851E23 /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				EB5ED3C225339CEF00ABDCF7 /* ColorDisplayControl.swift */,
 				EBD9DA1E252FA60400851E23 /* ColorPicker.swift */,
+				EBBE8C292538D7B100CD699D /* ImagePicker.swift */,
+				EBC9E1B72538B47A000F3E60 /* TextInputControl.swift */,
 				EBD9DA2F252FB76900851E23 /* OptionSelector.swift */,
 				EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */,
 				EBD9DA00252F919900851E23 /* StepperControl.swift */,
 				EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */,
 				EB5ED3AA25339C8200ABDCF7 /* ViewInspectorControlAccessoryControl.swift */,
-				EB5ED3C225339CEF00ABDCF7 /* ColorDisplayControl.swift */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -874,6 +882,7 @@
 				EB439B9C253217D3004CCBCA /* PropertyInspectorUIControlSectionViewModel.swift */,
 				EB439BAA25322F95004CCBCA /* PropertyInspectorUIStackViewSectionViewModel.swift */,
 				EB7062862534DC14004693E1 /* PropertyInspectorUISwitchSectionViewModel.swift */,
+				EBBE8C372538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift */,
 				EB439B8E25321766004CCBCA /* PropertyInspectorUIViewSectionViewModel.swift */,
 				EBAC35032530DE8300A992F5 /* PropertyInspectorViewModel.swift */,
 			);
@@ -1239,6 +1248,7 @@
 				OBJ_70 /* Layer+AlertControllerActionable.swift in Sources */,
 				OBJ_71 /* Layer+CustomStringConvertible.swift in Sources */,
 				OBJ_72 /* Layer+Hashable.swift in Sources */,
+				EBC9E1B82538B47A000F3E60 /* TextInputControl.swift in Sources */,
 				EBAC35042530DE8300A992F5 /* PropertyInspectorViewModel.swift in Sources */,
 				EB5ED3C325339CEF00ABDCF7 /* ColorDisplayControl.swift in Sources */,
 				EB439C4B25330D8E004CCBCA /* ElementInspectorNavigationController.swift in Sources */,
@@ -1252,6 +1262,7 @@
 				OBJ_76 /* UIAlertController+HierarchyInspectableProtocol.swift in Sources */,
 				EB439C1325323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift in Sources */,
 				OBJ_77 /* UINavigationController+HierarchyInspectorPresentable.swift in Sources */,
+				EBBE8C382538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift in Sources */,
 				OBJ_78 /* UIView+Convenience.swift in Sources */,
 				EBC92E432533564D00D7189A /* UITextView+Init.swift in Sources */,
 				EB5ED3CD2533AB3100ABDCF7 /* PropertyInspectorUIButtonSectionViewModel.swift in Sources */,
@@ -1335,6 +1346,7 @@
 				EBC524AB252F5F2F0054C6AA /* BaseControl.swift in Sources */,
 				EB439BD92532383D004CCBCA /* UIControl.ContentVerticalAlignment+CustomStringConvertible.swift in Sources */,
 				OBJ_100 /* LoaderView.swift in Sources */,
+				EBBE8C2A2538D7B100CD699D /* ImagePicker.swift in Sources */,
 				EBB0CB2C252A6C99005D4A53 /* Configuration.KeyCommands.swift in Sources */,
 				EBE303A9252DC13E00A8F1C6 /* UITableView+Convenience.swift in Sources */,
 				EB439BCF25323823004CCBCA /* UIControl.ContentVerticalAlignment+CaseIterable.swift in Sources */,

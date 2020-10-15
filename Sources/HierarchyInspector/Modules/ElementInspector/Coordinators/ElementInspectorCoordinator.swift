@@ -177,3 +177,26 @@ private extension ElementInspectorCoordinator {
     }
     
 }
+
+extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        
+        for url in urls {
+            guard let imageData = try? Data(contentsOf: url) else {
+                continue
+            }
+            
+            let image = UIImage(data: imageData)
+            
+            topPropertyInspectorViewController?.selectImage(image)
+            break
+        }
+    }
+    
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        controller.dismiss(animated: true) {
+            //
+        }
+    }
+}

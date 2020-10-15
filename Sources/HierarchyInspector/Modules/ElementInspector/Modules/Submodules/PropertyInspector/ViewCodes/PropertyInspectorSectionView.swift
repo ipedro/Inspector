@@ -8,12 +8,19 @@
 import UIKit
 
 protocol PropertyInspectorSectionViewDelegate: AnyObject {
+    
     func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap colorPicker: ColorPicker)
+    
+    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap imagePicker: ImagePicker)
+    
     func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap optionSelector: OptionSelector)
-    func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool)
     
     func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didUpdate property: PropertyInspectorInput)
+    
+    func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool)
+    
     func propertyInspectorSectionViewWillUpdateProperty(_ section: PropertyInspectorSectionView)
+    
 }
 
 final class PropertyInspectorSectionView: BaseView {
@@ -72,6 +79,14 @@ final class PropertyInspectorSectionView: BaseView {
                         )
                         $0.alpha = 1 / 3
                     }
+                    
+                case let .imagePicker(title, image, _):
+                    return ImagePicker(title: title, image: image).then {
+                        $0.delegate = self
+                    }
+                    
+                case let .textInput(title, value, placeholder, _):
+                    return TextInputControl(title: title, value: value, placeholder: placeholder)
                     
                 case let .integerStepper(title, value, range, stepValue, _):
                     return StepperControl(
@@ -268,6 +283,12 @@ private extension PropertyInspectorSectionView {
                 case let (.optionsList(_, _, _, handler), optionSelector as OptionSelector):
                     handler?(optionSelector.selectedIndex)
                     
+                case let (.textInput(_, _, _, handler), textInputControl as TextInputControl):
+                    handler?(textInputControl.value)
+                    
+                case let (.imagePicker(_, _, handler), imagePicker as ImagePicker):
+                    handler?(imagePicker.selectedImage)
+                    
                 case (.separator, _),
                      (.subSection, _),
                      (.integerStepper, _),
@@ -276,11 +297,14 @@ private extension PropertyInspectorSectionView {
                      (.toggleButton, _),
                      (.inlineTextOptions, _),
                      (.inlineImageOptions, _),
-                     (.optionsList, _):
+                     (.optionsList, _),
+                     (.textInput, _),
+                     (.imagePicker, _):
                     break
                 }
                 
                 self.delegate?.propertyInspectorSectionView(self, didUpdate: property)
+                
             }
         }
     }
@@ -297,5 +321,13 @@ extension PropertyInspectorSectionView: ColorPickerDelegate {
 extension PropertyInspectorSectionView: OptionSelectorDelegate {
     func optionSelectorDidTap(_ optionSelector: OptionSelector) {
         delegate?.propertyInspectorSectionView(self, didTap: optionSelector)
+    }
+}
+
+// MARK: - ImagePickerDelegate
+
+extension PropertyInspectorSectionView: ImagePickerDelegate {
+    func imagePickerDidTap(_ imagePicker: ImagePicker) {
+        delegate?.propertyInspectorSectionView(self, didTap: imagePicker)
     }
 }

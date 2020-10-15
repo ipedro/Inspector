@@ -39,6 +39,10 @@ final class PropertyInspectorViewModel: PropertyInspectorViewModelProtocol {
             array.append(PropertyInspectorUIActivityIndicatorViewSectionViewModel(activityIndicatorView: activityIndicatorView))
         }
         
+        if let imageView = reference.view as? UIImageView {
+            array.append(PropertyInspectorUIImageViewSectionViewModel(imageView: imageView))
+        }
+        
         if let view = reference.view {
             array.append(PropertyInspectorUIViewSectionViewModel(view: view))
         }

@@ -63,13 +63,14 @@ final class PropertyInspectorUIButtonSectionViewModel: PropertyInspectorSectionV
             )
         
         case .titleText:
-            return .optionsList(
+            return .textInput(
                 title: "title",
-                options: [button.title(for: button.state) ?? "–"],
-                selectedIndex: 0,
-                handler: nil
-            )
-        
+                value: button.title(for: button.state),
+                placeholder: button.title(for: button.state) ?? "Title"
+            ) { title in
+                button.setTitle(title, for: button.state)
+            }
+            
         case .currentTitleColor:
             return .colorPicker(
                 title: "text color",
@@ -86,13 +87,21 @@ final class PropertyInspectorUIButtonSectionViewModel: PropertyInspectorSectionV
                 button.setTitleShadowColor(currentTitleShadowColor, for: button.state)
             }
         
-        #warning("finish button properties implementation")
         case .image:
-            return nil
+            return .imagePicker(
+                title: "image",
+                image: button.image(for: button.state)
+            ) { image in
+                button.setImage(image, for: button.state)
+            }
         
-        #warning("finish button properties implementation")
         case .backgroundImage:
-            return nil
+            return .imagePicker(
+                title: "background image",
+                image: button.backgroundImage(for: button.state)
+            ) { backgroundImage in
+                button.setBackgroundImage(backgroundImage, for: button.state)
+            }
         
         case .isPointerInteractionEnabled:
             #if swift(>=5.0)

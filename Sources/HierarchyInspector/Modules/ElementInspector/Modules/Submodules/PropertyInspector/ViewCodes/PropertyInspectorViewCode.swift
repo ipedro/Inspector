@@ -31,6 +31,7 @@ final class PropertyInspectorViewCode: BaseView {
     
     private(set) lazy var scrollView = UIScrollView().then {
         $0.alwaysBounceVertical = true
+        $0.keyboardDismissMode = .onDrag
     }
     
     override func setup() {

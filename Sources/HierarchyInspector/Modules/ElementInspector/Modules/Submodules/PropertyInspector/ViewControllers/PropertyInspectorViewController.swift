@@ -11,6 +11,8 @@ protocol PropertyInspectorViewControllerDelegate: AnyObject {
     
     func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTap colorPicker: ColorPicker)
     
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTap imagePicker: ImagePicker)
+    
     func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTap optionSelector: OptionSelector)
     
     func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, showLayerInspectorViewsInside reference: ViewHierarchyReference)
@@ -39,6 +41,8 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     private var viewModel: PropertyInspectorViewModelProtocol!
     
     var selectedColorPicker: ColorPicker?
+    
+    var selectedImagePicker: ImagePicker?
     
     var selectedOptionSelector: OptionSelector?
     
@@ -124,6 +128,10 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
 // MARK: - API
 
 extension PropertyInspectorViewController {
+    
+    func selectImage(_ image: UIImage?) {
+        selectedImagePicker?.selectedImage = image
+    }
     
     func selectColor(_ color: UIColor) {
         selectedColorPicker?.selectedColor = color

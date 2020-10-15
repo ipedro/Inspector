@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MobileCoreServices
 
 // MARK: - PropertyInspectorViewControllerDelegate
 
@@ -66,5 +67,22 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
         }
         
         viewController.present(navigationController, animated: true)
+    }
+    
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTap imagePicker: ImagePicker) {
+        let documentPicker = UIDocumentPickerViewController(documentTypes: [String(kUTTypeImage)], in: .import).then {
+            if #available(iOS 13.0, *) {
+                $0.overrideUserInterfaceStyle = navigationController.overrideUserInterfaceStyle
+            }
+            
+            $0.view.tintColor = ElementInspector.appearance.tintColor
+            $0.delegate = self
+            $0.modalPresentationStyle = .popover
+            $0.popoverPresentationController?.sourceView = imagePicker
+            $0.popoverPresentationController?.permittedArrowDirections = permittedPopoverArrowDirections
+            $0.popoverPresentationController?.delegate = self
+        }
+        
+        viewController.present(documentPicker, animated: true)
     }
 }
