@@ -79,7 +79,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         
         installView(gridImageView, .margins(.zero), .onBottom)
         
-        contentView.installView(statusContentView)
+        contentView.installView(statusContentView, .centerXY)
         
         contentView.addArrangedSubview(snapshotContainerView)
     }

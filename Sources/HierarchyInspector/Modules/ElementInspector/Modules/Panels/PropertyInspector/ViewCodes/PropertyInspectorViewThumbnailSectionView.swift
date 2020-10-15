@@ -62,7 +62,7 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         $0.clipsToBounds = false
     }
     
-    private lazy var contentHeight = thumbnailView.heightAnchor.constraint(equalToConstant: frame.height).then {
+    private lazy var contentHeightConstraint = thumbnailView.heightAnchor.constraint(greaterThanOrEqualToConstant: frame.height).then {
         $0.isActive = true
     }
     
@@ -109,8 +109,22 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        guard frame.isEmpty == false else {
+            return
+        }
+        
         updateSnapshot(afterScreenUpdates: false)
         
+        switch thumbnailView.state {
+        case .frameIsEmpty, .isHidden, .lostConnection:
+            contentHeightConstraint.constant = ElementInspector.appearance.horizontalMargins * 4
+            
+        default:
+            contentHeightConstraint.constant = calculateContentHeight()
+        }
+    }
+    
+    private func calculateContentHeight() -> CGFloat {
         let frame = AVMakeRect(
             aspectRatio: CGSize(
                 width: 1,
@@ -122,7 +136,14 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
             )
         )
         
-        contentHeight.constant = frame.height + thumbnailView.contentView.directionalLayoutMargins.top + thumbnailView.contentView.directionalLayoutMargins.bottom
+        guard frame.height.isNormal else {
+            Console.print(#function, "skipping frame content frame calc for frame \(frame), original snapshot \(thumbnailView.originalSnapshotSize)")
+            return 0
+        }
+        
+        let height = frame.height + thumbnailView.contentView.directionalLayoutMargins.top + thumbnailView.contentView.directionalLayoutMargins.bottom
+        
+        return height
     }
     
     var isRedrawingViews: Bool {

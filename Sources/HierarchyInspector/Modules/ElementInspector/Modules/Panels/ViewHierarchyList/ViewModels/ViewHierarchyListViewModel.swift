@@ -33,7 +33,7 @@ protocol ViewHierarchyListViewModelProtocol {
     
     /// Toggle if a container displays its subviews or hides them.
     /// - Parameter indexPath: row with
-    /// - Returns: Affected index paths
+    /// - Returns: Actions related to affected index paths
     func toggleContainer(at indexPath: IndexPath) -> [ViewHierarchyListAction]
     
     func clearAllCachedThumbnails()

@@ -18,6 +18,9 @@ protocol ViewHierarchyListViewControllerDelegate: AnyObject {
 }
 
 final class ViewHierarchyListViewController: UIViewController {
+    
+    // MARK: - Properties
+    
     weak var delegate: ViewHierarchyListViewControllerDelegate?
     
     private var needsSetup = true
@@ -37,6 +40,17 @@ final class ViewHierarchyListViewController: UIViewController {
     
     private var viewModel: ViewHierarchyListViewModelProtocol!
     
+    // MARK: - Init
+    
+    static func create(viewModel: ViewHierarchyListViewModelProtocol) -> ViewHierarchyListViewController {
+        let viewController = ViewHierarchyListViewController()
+        viewController.viewModel = viewModel
+        
+        return viewController
+    }
+    
+    // MARK: - Lifecycle
+    
     override func loadView() {
         view = viewCode
     }
@@ -54,10 +68,7 @@ final class ViewHierarchyListViewController: UIViewController {
             viewCode.tableView.deselectRow(at: $0, animated: animated)
         }
         
-        preferredContentSize = CGSize(
-            width: min(UIScreen.main.bounds.width, 414),
-            height: viewCode.tableView.contentSize.height
-        )
+        calculatePreferredContentSize()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -72,14 +83,9 @@ final class ViewHierarchyListViewController: UIViewController {
         viewModel.clearAllCachedThumbnails()
     }
     
-    static func create(viewModel: ViewHierarchyListViewModelProtocol) -> ViewHierarchyListViewController {
-        let viewController = ViewHierarchyListViewController()
-        viewController.viewModel = viewModel
-        
-        return viewController
-    }
-    
 }
+
+// MARK: - UITableViewDataSource
 
 extension ViewHierarchyListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -96,6 +102,8 @@ extension ViewHierarchyListViewController: UITableViewDataSource {
     
 }
 
+// MARK: - UITableViewDelegate
+
 extension ViewHierarchyListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
@@ -111,6 +119,8 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
         }
         
         delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference, from: viewModel.rootReference)
+        
+        viewModel.clearAllCachedThumbnails()
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -118,20 +128,27 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             return
         }
         
-        guard
-            let viewModel = cell.viewModel, viewModel.hasCachedThumbnailView == false,
-            let firstVisibleRow = tableView.indexPathsForVisibleRows?.first
-        else {
+        guard let viewModel = cell.viewModel, viewModel.hasCachedThumbnailView == false else {
             Console.print("cell", indexPath, "using cached view")
-            
             return cell.renderThumbnailImage()
         }
         
-        let milliseconds = 300 * max(1, indexPath.row - firstVisibleRow.row)
+        let delayInMilliseconds: Int = {
+            
+            let uncachedVisibleRows = tableView.indexPathsForVisibleRows?.filter {
+                self.viewModel.itemViewModel(for: $0)?.hasCachedThumbnailView == false
+            }
+            
+            let itemDelay = 300
+            
+            guard let firstUncachedIndexPath = uncachedVisibleRows?.first else { return itemDelay }
+            
+            return itemDelay * (indexPath.row - firstUncachedIndexPath.row + 1)
+        }()
         
-        Console.print("cell", indexPath, "delay", milliseconds)
+        Console.print("cell \(indexPath)", "delay: \(delayInMilliseconds)")
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(milliseconds)) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(delayInMilliseconds)) {
             cell.renderThumbnailImage()
         }
     }
@@ -142,10 +159,14 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
         }
 
         if itemViewModel.showDisclosureIndicator {
-            delegate?.viewHierarchyListViewController(self, didSegueTo: itemViewModel.reference, from: viewModel.rootReference)
             
-            itemViewModel.clearCachedThumbnail()
+            delegate?.viewHierarchyListViewController(
+                self,
+                didSegueTo: itemViewModel.reference,
+                from: viewModel.rootReference
+            )
             
+            viewModel.clearAllCachedThumbnails()
             return
         }
         
@@ -153,11 +174,33 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
         }
         
-        let results = viewModel.toggleContainer(at: indexPath)
+        let actions = viewModel.toggleContainer(at: indexPath)
         
-        guard results.isEmpty == false else {
+        updateTableView(indexPath, with: actions)
+    }
+    
+}
+
+// MARK: - Helpers
+
+private extension ViewHierarchyListViewController {
+    
+    func calculatePreferredContentSize() {
+        let contentSize  = viewCode.tableView.contentSize
+        let contentInset = viewCode.tableView.contentInset
+        
+        preferredContentSize = CGSize(
+            width: min(UIScreen.main.bounds.width, 414),
+            height: contentSize.height + contentInset.top + contentInset.bottom
+        )
+    }
+    
+    func updateTableView(_ indexPath: IndexPath, with actions: [ViewHierarchyListAction]) {
+        guard actions.isEmpty == false else {
             return
         }
+        
+        let tableView = viewCode.tableView
         
         if let cell = tableView.cellForRow(at: indexPath) as? ViewHierarchyListTableViewCodeCell {
             cell.toggleCollapse(animated: true)
@@ -165,7 +208,7 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
         
         tableView.performBatchUpdates({
             
-            results.forEach {
+            actions.forEach {
                 switch $0 {
                 case let .inserted(insertIndexPaths):
                     tableView.insertRows(at: insertIndexPaths, with: .top)
@@ -176,7 +219,7 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             }
             
         },
-        completion: { _ in
+        completion: { [weak self] _ in
             
             UIView.animate(withDuration: 0.25) {
                 
@@ -189,6 +232,8 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
                 }
                 
             }
+            
+            self?.calculatePreferredContentSize()
             
         })
     }
