@@ -10,36 +10,38 @@ import UIKit
 protocol PropertyInspectorViewModelProtocol {
     var reference: ViewHierarchyReference { get}
     
-    var sectionInputs: [PropertyInspectorInputSection] { get }
+    var sectionViewModels: [PropertyInspectorSectionViewModelProtocol] { get }
 }
 
 final class PropertyInspectorViewModel: PropertyInspectorViewModelProtocol {
     let reference: ViewHierarchyReference
     
-    private(set) lazy var sectionInputs: [PropertyInspectorInputSection] = {
-        var array = [PropertyInspectorInputSection]()
+    private(set) lazy var sectionViewModels: [PropertyInspectorSectionViewModelProtocol] = {
+        var array = [PropertyInspectorSectionViewModelProtocol]()
         
         if let stackView = reference.view as? UIStackView {
-            array.append(.UIStackViewSection(stackView: stackView))
+            array.append(PropertyInspectorUIStackViewSectionViewModel(stackView: stackView))
         }
         
         if let button = reference.view as? UIButton {
-            array.append(.UIButtonSection(button: button))
+            array.append(PropertyInspectorUIButtonSectionViewModel(button: button))
         }
         
         if let switchControl = reference.view as? UISwitch {
-            array.append(.UISwitchSection(switchControl: switchControl))
+            array.append(PropertyInspectorUISwitchSectionViewModel(switchControl: switchControl))
         }
         
         if let control = reference.view as? UIControl {
-            array.append(.UIControlSection(control: control))
+            array.append(PropertyInspectorUIControlSectionViewModel(control: control))
         }
         
         if let activityIndicatorView = reference.view as? UIActivityIndicatorView {
-            array.append(.UIActivityIndicatorViewSection(activityIndicatorView: activityIndicatorView))
+            array.append(PropertyInspectorUIActivityIndicatorViewSectionViewModel(activityIndicatorView: activityIndicatorView))
         }
         
-        array.append(.UIViewSection(view: reference.view))
+        if let view = reference.view {
+            array.append(PropertyInspectorUIViewSectionViewModel(view: view))
+        }
         
         return array
     }()

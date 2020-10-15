@@ -55,7 +55,7 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     }
     
     private(set) lazy var sectionViews: [PropertyInspectorSectionView] = {
-        viewModel.sectionInputs.enumerated().map { index, section in
+        viewModel.sectionViewModels.enumerated().map { index, section in
             PropertyInspectorSectionView(
                 section: section,
                 isCollapsed: index > 0

@@ -156,7 +156,7 @@ final class PropertyInspectorSectionView: BaseView {
     
     // MARK: - Init
     
-    init(section: PropertyInspectorInputSection, isCollapsed: Bool) {
+    init(section: PropertyInspectorSectionViewModelProtocol, isCollapsed: Bool) {
         self.isCollapsed = isCollapsed
         
         self.title = section.title
