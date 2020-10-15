@@ -15,6 +15,8 @@ enum ElementInspector {
         
         let verticalMargins: CGFloat = 13
         
+        lazy var tintColor: UIColor = .systemPurple
+        
         lazy var textColor: UIColor = {
             #if swift(>=5.0)
             if #available(iOS 13.0, *) {

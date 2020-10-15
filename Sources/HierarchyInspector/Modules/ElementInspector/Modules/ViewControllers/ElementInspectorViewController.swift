@@ -10,7 +10,7 @@ import UIKit
 protocol ElementInspectorViewControllerDelegate: AnyObject {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
                                         viewControllerForPanel panel: ElementInspectorPanel,
-                                        with reference: ViewHierarchyReference) -> UIViewController
+                                        with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
     
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController)
 }

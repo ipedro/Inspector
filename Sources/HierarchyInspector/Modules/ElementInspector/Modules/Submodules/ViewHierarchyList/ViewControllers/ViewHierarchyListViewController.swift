@@ -17,7 +17,17 @@ protocol ViewHierarchyListViewControllerDelegate: AnyObject {
                                          from rootReference: ViewHierarchyReference)
 }
 
-final class ViewHierarchyListViewController: UIViewController {
+final class ViewHierarchyListViewController: ElementInspectorPanelViewController {
+    
+    func calculatePreferredContentSize() -> CGSize {
+        let contentSize  = viewCode.tableView.contentSize
+        let contentInset = viewCode.tableView.contentInset
+        
+        return CGSize(
+            width: min(UIScreen.main.bounds.width, 414),
+            height: contentSize.height + contentInset.top + contentInset.bottom
+        )
+    }
     
     // MARK: - Properties
     
@@ -25,6 +35,7 @@ final class ViewHierarchyListViewController: UIViewController {
     
     private var needsSetup = true
     
+    #warning("magic number")
     private lazy var viewCode = ViewHierarchyListViewCode(
         frame: CGRect(
             origin: .zero,
@@ -68,7 +79,7 @@ final class ViewHierarchyListViewController: UIViewController {
             viewCode.tableView.deselectRow(at: $0, animated: animated)
         }
         
-        calculatePreferredContentSize()
+        updatePreferredContentSize()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -185,16 +196,6 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
 
 private extension ViewHierarchyListViewController {
     
-    func calculatePreferredContentSize() {
-        let contentSize  = viewCode.tableView.contentSize
-        let contentInset = viewCode.tableView.contentInset
-        
-        preferredContentSize = CGSize(
-            width: min(UIScreen.main.bounds.width, 414),
-            height: contentSize.height + contentInset.top + contentInset.bottom
-        )
-    }
-    
     func updateTableView(_ indexPath: IndexPath, with actions: [ViewHierarchyListAction]) {
         guard actions.isEmpty == false else {
             return
@@ -233,7 +234,7 @@ private extension ViewHierarchyListViewController {
                 
             }
             
-            self?.calculatePreferredContentSize()
+            self?.updatePreferredContentSize()
             
         })
     }

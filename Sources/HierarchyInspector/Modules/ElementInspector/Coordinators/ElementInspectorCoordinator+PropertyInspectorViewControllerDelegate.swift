@@ -56,7 +56,7 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
             $0.delegate = self
         }
         
-        let navigationController = PopoverNavigationController(
+        let navigationController = ElementInspectorNavigationController(
             rootViewController: optionSelectorViewController
         ).then {
             $0.modalPresentationStyle = .popover

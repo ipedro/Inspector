@@ -12,7 +12,7 @@ import UIKit
 extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
                                         viewControllerForPanel panel: ElementInspectorPanel,
-                                        with reference: ViewHierarchyReference) -> UIViewController {
+                                        with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {
         switch panel {
         
         case .propertyInspector:

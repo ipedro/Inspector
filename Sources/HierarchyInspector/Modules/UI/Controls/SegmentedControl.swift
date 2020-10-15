@@ -40,6 +40,13 @@ final class SegmentedControl: BaseFormControl {
     
     private lazy var segmentedControl = UISegmentedControl(items: options).then {
         $0.addTarget(self, action: #selector(changeSegment), for: .valueChanged)
+        if #available(iOS 13.0, *) {
+            $0.selectedSegmentTintColor = ElementInspector.appearance.tintColor
+            $0.setTitleTextAttributes([.foregroundColor: ElementInspector.appearance.textColor], for: .selected)
+        } else {
+            $0.tintColor = .systemPurple
+        }
+        
     }
     
     // MARK: - Init

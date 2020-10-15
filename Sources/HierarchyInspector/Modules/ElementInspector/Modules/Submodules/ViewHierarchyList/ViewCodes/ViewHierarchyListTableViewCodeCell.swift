@@ -192,7 +192,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         showThumbnailLoader()
         
         selectedBackgroundView = UIView().then {
-            $0.backgroundColor = UIColor.systemPurple.withAlphaComponent(0.1)
+            $0.backgroundColor = ElementInspector.appearance.tintColor.withAlphaComponent(0.1)
         }
         
         backgroundColor = ElementInspector.appearance.panelBackgroundColor

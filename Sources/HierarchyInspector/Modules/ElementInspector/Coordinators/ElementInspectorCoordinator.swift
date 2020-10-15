@@ -33,7 +33,7 @@ final class ElementInspectorCoordinator: NSObject {
         selectedPanel: .propertyInspector
     )
     
-    private(set) lazy var navigationController = PopoverNavigationController(
+    private(set) lazy var navigationController = ElementInspectorNavigationController(
         rootViewController: elementInspectorViewController
     ).then {
         

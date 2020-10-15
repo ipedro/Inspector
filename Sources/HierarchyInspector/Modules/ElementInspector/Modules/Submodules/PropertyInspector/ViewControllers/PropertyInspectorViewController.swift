@@ -21,7 +21,19 @@ protocol PropertyInspectorViewControllerDelegate: AnyObject {
                                          hideLayerInspectorViewsInside reference: ViewHierarchyReference)
 }
 
-final class PropertyInspectorViewController: UIViewController {
+final class PropertyInspectorViewController: ElementInspectorPanelViewController {
+    
+    func calculatePreferredContentSize() -> CGSize {
+        viewCode.contentView.systemLayoutSizeFitting(
+            CGSize(
+                width: min(UIScreen.main.bounds.width, 414),
+                height: 0
+            ),
+            withHorizontalFittingPriority: .defaultHigh,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+    }
+    
     // MARK: - Properties
     
     weak var delegate: PropertyInspectorViewControllerDelegate?
@@ -82,20 +94,6 @@ final class PropertyInspectorViewController: UIViewController {
         sectionViews.forEach { viewCode.contentView.addArrangedSubview($0) }
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        guard needsSetup else {
-            return
-        }
-        
-        needsSetup = false
-        
-        snapshotViewCode.updateSnapshot()
-        
-        calculatePreferredContentSize()
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -122,19 +120,6 @@ final class PropertyInspectorViewController: UIViewController {
     
     deinit {
         snapshotViewCode.stopLiveUpdatingSnaphost()
-    }
-    
-    func calculatePreferredContentSize() {
-        let size = viewCode.contentView.systemLayoutSizeFitting(
-            CGSize(
-                width: min(UIScreen.main.bounds.width, 414),
-                height: 0
-            ),
-            withHorizontalFittingPriority: .defaultHigh,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-
-        preferredContentSize = size
     }
     
     // MARK: - API

@@ -31,7 +31,7 @@ extension ViewHierarchyReference {
                 return nil
             }
             
-            return "x: \(view.frame.origin.x), y: \(view.frame.origin.y) – w: \(view.frame.width), h: \(view.frame.height)"
+            return "x: \(Int(view.frame.origin.x)), y: \(Int(view.frame.origin.y)) – w: \(Int(view.frame.width)), h: \(Int(view.frame.height))"
         }
         
         var className: String? {
