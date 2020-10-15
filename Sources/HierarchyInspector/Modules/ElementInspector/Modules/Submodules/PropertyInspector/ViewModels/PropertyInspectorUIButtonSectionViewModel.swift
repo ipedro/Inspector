@@ -43,30 +43,24 @@ final class PropertyInspectorUIButtonSectionViewModel: PropertyInspectorSectionV
         
         #warning("improve ")
         case .fontName:
-            guard let font = button.titleLabel?.font else {
-                return nil
-            }
-            
-            return .optionsList(
-                title: "font name",
-                options: [font.familyName],
-                selectedIndex: 0,
-                handler: nil
+            return .fontNamePicker(
+                fontProvider: {
+                    button.titleLabel?.font
+                },
+                handler: { font in
+                    button.titleLabel?.font = font
+                }
             )
-        
-        case .fontPointSize:
-            guard let font = button.titleLabel?.font else {
-                return nil
-            }
             
-            return .cgFloatStepper(
-                title: "font size",
-                value: font.pointSize,
-                range: 0...256,
-                stepValue: 1
-            ) { fontSize in
-                button.titleLabel?.font = font.withSize(fontSize)
-            }
+        case .fontPointSize:
+            return .fontSizeStepper(
+                fontProvider: {
+                    button.titleLabel?.font
+                },
+                handler: { font in
+                    button.titleLabel?.font = font
+                }
+            )
         
         case .titleText:
             return .optionsList(
