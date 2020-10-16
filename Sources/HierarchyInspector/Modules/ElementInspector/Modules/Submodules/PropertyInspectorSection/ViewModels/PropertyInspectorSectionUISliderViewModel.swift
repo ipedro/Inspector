@@ -12,14 +12,15 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
     enum Property: CaseIterable {
         case value
         case minimumValue
-        case maximum
+        case maximumValue
         case separator0
-        case minImage
-        case maxImage
+        case minimumValueImage
+        case maximumValueImage
         case separator1
-        case minTrack
+        case minimumTrackTintColor
         case maxTrack
         case thumbTintColor
+        case groupEvent
         case isContinuous
     }
     
@@ -59,7 +60,7 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
                 slider.minimumValue = minimumValue
             }
         
-        case .maximum:
+        case .maximumValue:
             return .floatStepper(
                 title: "maximum",
                 value: slider.maximumValue,
@@ -73,17 +74,37 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
              .separator1:
             return .separator
         
-        case .minImage:
-            return nil
+        case .minimumValueImage:
+            return .imagePicker(
+                title: "min image",
+                image: slider.minimumValueImage
+            ) { minimumValueImage in
+                slider.minimumValueImage = minimumValueImage
+            }
         
-        case .maxImage:
-            return nil
+        case .maximumValueImage:
+            return .imagePicker(
+                title: "max image",
+                image: slider.maximumValueImage
+            ) { maximumValueImage in
+                slider.maximumValueImage = maximumValueImage
+            }
         
-        case .minTrack:
-            return nil
+        case .minimumTrackTintColor:
+            return .colorPicker(
+                title: "min track",
+                color: slider.minimumTrackTintColor
+            ) { minimumTrackTintColor in
+                slider.minimumTrackTintColor = minimumTrackTintColor
+            }
         
         case .maxTrack:
-            return nil
+            return .colorPicker(
+                title: "max track",
+                color: slider.maximumTrackTintColor
+            ) { maximumTrackTintColor in
+                slider.maximumTrackTintColor = maximumTrackTintColor
+            }
         
         case .thumbTintColor:
             return .colorPicker(
@@ -93,9 +114,12 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
                 slider.thumbTintColor = thumbTintColor
             }
         
+        case .groupEvent:
+            return .subSection(name: "Event")
+            
         case .isContinuous:
             return .toggleButton(
-                title: "continuous event updates",
+                title: "continuous updates",
                 isOn: slider.isContinuous
             ) { isContinuous in
                 slider.isContinuous = isContinuous

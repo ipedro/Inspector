@@ -41,7 +41,6 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         
         switch $0 {
         
-        #warning("improve ")
         case .fontName:
             return .fontNamePicker(
                 fontProvider: {
