@@ -9,15 +9,20 @@ import UIKit
 
 protocol PropertyInspectorViewControllerDelegate: AnyObject {
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTap colorPicker: ColorPicker)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
+                                         didTap colorPicker: ColorPicker)
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTap imagePicker: ImagePicker)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
+                                         didTap imagePicker: ImagePicker)
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, didTap optionSelector: OptionSelector)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
+                                         didTap optionSelector: OptionSelector)
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, showLayerInspectorViewsInside reference: ViewHierarchyReference)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
+                                         showLayerInspectorViewsInside reference: ViewHierarchyReference)
     
-    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController, hideLayerInspectorViewsInside reference: ViewHierarchyReference)
+    func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
+                                         hideLayerInspectorViewsInside reference: ViewHierarchyReference)
     
 }
 
@@ -58,17 +63,6 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         $0.toggleHighlightViewsControl.addTarget(self, action: #selector(toggleLayerInspectorViewsVisibility), for: .valueChanged)
     }
     
-    private(set) lazy var sectionViews: [PropertyInspectorSectionView] = {
-        viewModel.sectionViewModels.enumerated().map { index, section in
-            PropertyInspectorSectionView(
-                section: section,
-                isCollapsed: index > 0
-            ).then {
-                $0.delegate = self
-            }
-        }
-    }()
-    
     // MARK: - Init
     
     static func create(viewModel: PropertyInspectorViewModelProtocol) -> PropertyInspectorViewController {
@@ -93,7 +87,22 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         
         viewCode.contentView.addArrangedSubview(snapshotViewCode)
         
-        sectionViews.forEach { viewCode.contentView.addArrangedSubview($0) }
+        loadSections()
+    }
+    
+    private func loadSections() {
+        viewModel.sectionViewModels.enumerated().forEach { index, sectionViewModel in
+            
+            let sectionViewController = PropertyInspectorSectionViewController.create(viewModel: sectionViewModel)
+            sectionViewController.delegate = self
+            sectionViewController.isCollapsed = index > 0
+            
+            addChild(sectionViewController)
+            
+            viewCode.contentView.addArrangedSubview(sectionViewController.view)
+            
+            sectionViewController.didMove(toParent: self)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -1,5 +1,5 @@
 //
-//  PropertyInspectorUISwitchSectionViewModel.swift
+//  PropertyInspectorSectionUISwitchViewModel.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 10.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PropertyInspectorUISwitchSectionViewModel: PropertyInspectorSectionViewModelProtocol {
+final class PropertyInspectorSectionUISwitchViewModel: PropertyInspectorSectionViewModelProtocol {
     
     private enum Property: CaseIterable {
         case title
@@ -25,7 +25,7 @@ final class PropertyInspectorUISwitchSectionViewModel: PropertyInspectorSectionV
     
     private(set) lazy var title: String? = "Switch"
     
-    private(set) lazy var propertyInpus: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
         guard let switchControl = switchControl else {
             return nil
         }
@@ -72,6 +72,7 @@ final class PropertyInspectorUISwitchSectionViewModel: PropertyInspectorSectionV
                 isOn: switchControl.isOn
             ) { isOn in
                 switchControl.setOn(isOn, animated: true)
+                switchControl.sendActions(for: .valueChanged)
             }
                 
         case .onTintColor:

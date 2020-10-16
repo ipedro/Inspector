@@ -31,7 +31,7 @@ final class StepperControl: BaseFormControl {
         }
     }
     
-    private var isDecimalValue = true
+    let isDecimalValue: Bool
     
     // MARK: - Components
 
@@ -51,15 +51,9 @@ final class StepperControl: BaseFormControl {
     
     // MARK: - Init
     
-    convenience init(title: String?, value: Int, range: ClosedRange<Int>, stepValue: Int) {
-        self.init(title: title, value: Double(value), range: Double(range.lowerBound)...Double(range.upperBound), stepValue: Double(stepValue))
+    init(title: String?, value: Double, range: ClosedRange<Double>, stepValue: Double, isDecimalValue: Bool) {
+        self.isDecimalValue = isDecimalValue
         
-        isDecimalValue = false
-        
-        updateCounterLabel()
-    }
-    
-    init(title: String?, value: Double, range: ClosedRange<Double>, stepValue: Double) {
         super.init(title: title)
         
         self.stepperControl.maximumValue = range.upperBound

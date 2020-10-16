@@ -20,35 +20,39 @@ final class PropertyInspectorViewModel: PropertyInspectorViewModelProtocol {
         var array = [PropertyInspectorSectionViewModelProtocol]()
         
         if let stackView = reference.view as? UIStackView {
-            array.append(PropertyInspectorUIStackViewSectionViewModel(stackView: stackView))
+            array.append(PropertyInspectorSectionUIStackViewViewModel(stackView: stackView))
         }
         
         if let button = reference.view as? UIButton {
-            array.append(PropertyInspectorUIButtonSectionViewModel(button: button))
+            array.append(PropertyInspectorSectionUIButtonViewModel(button: button))
+        }
+        
+        if let slider = reference.view as? UISlider {
+            array.append(PropertyInspectorSectionUISliderViewModel(slider: slider))
         }
         
         if let switchControl = reference.view as? UISwitch {
-            array.append(PropertyInspectorUISwitchSectionViewModel(switchControl: switchControl))
+            array.append(PropertyInspectorSectionUISwitchViewModel(switchControl: switchControl))
         }
         
         if let control = reference.view as? UIControl {
-            array.append(PropertyInspectorUIControlSectionViewModel(control: control))
+            array.append(PropertyInspectorSectionUIControlViewModel(control: control))
         }
         
         if let activityIndicatorView = reference.view as? UIActivityIndicatorView {
-            array.append(PropertyInspectorUIActivityIndicatorViewSectionViewModel(activityIndicatorView: activityIndicatorView))
+            array.append(PropertyInspectorSectionUIActivityIndicatorViewViewModel(activityIndicatorView: activityIndicatorView))
         }
         
         if let imageView = reference.view as? UIImageView {
-            array.append(PropertyInspectorUIImageViewSectionViewModel(imageView: imageView))
+            array.append(PropertyInspectorSectionUIImageViewViewModel(imageView: imageView))
         }
         
         if let label = reference.view as? UILabel {
-            array.append(PropertyInspectorUILabelSectionViewModel(label: label))
+            array.append(PropertyInspectorSectionUILabelViewModel(label: label))
         }
         
         if let view = reference.view {
-            array.append(PropertyInspectorUIViewSectionViewModel(view: view))
+            array.append(PropertyInspectorSectionUIViewViewModel(view: view))
         }
         
         return array

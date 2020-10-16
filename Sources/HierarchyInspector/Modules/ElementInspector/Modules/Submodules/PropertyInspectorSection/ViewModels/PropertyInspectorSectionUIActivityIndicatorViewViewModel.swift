@@ -1,5 +1,5 @@
 //
-//  PropertyInspectorUIActivityIndicatorViewSectionViewModel.swift
+//  PropertyInspectorSectionUIActivityIndicatorViewViewModel.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 10.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PropertyInspectorUIActivityIndicatorViewSectionViewModel: PropertyInspectorSectionViewModelProtocol {
+final class PropertyInspectorSectionUIActivityIndicatorViewViewModel: PropertyInspectorSectionViewModelProtocol {
     
     enum Property: CaseIterable {
         case style
@@ -25,7 +25,7 @@ final class PropertyInspectorUIActivityIndicatorViewSectionViewModel: PropertyIn
     
     private(set) lazy var title: String? = "Activity Indicator"
     
-    private(set) lazy var propertyInpus: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
         guard let activityIndicatorView = activityIndicatorView else {
             return nil
         }

@@ -9,17 +9,17 @@ import UIKit
 
 // MARK: - PropertyInspectorSectionViewDelegate
 
-extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate {
+extension PropertyInspectorViewController: PropertyInspectorSectionViewControllerDelegate {
     
-    func propertyInspectorSectionViewWillUpdateProperty(_ section: PropertyInspectorSectionView) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, willUpdate property: PropertyInspectorSectionInput) {
         snapshotViewCode.stopLiveUpdatingSnaphost()
     }
     
-    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didUpdate property: PropertyInspectorInput) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didUpdate property: PropertyInspectorSectionInput) {
         snapshotViewCode.startLiveUpdatingSnaphost()
     }
     
-    func propertyInspectorSectionViewDidTapHeader(_ section: PropertyInspectorSectionView, isCollapsed: Bool) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didToggle isCollapsed: Bool) {
         snapshotViewCode.stopLiveUpdatingSnaphost()
         
         UIView.animate(
@@ -31,19 +31,24 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate 
             animations: { [weak self] in
                 
                 guard isCollapsed else {
-                    section.isCollapsed.toggle()
+                    viewController.isCollapsed.toggle()
                     return
                 }
                 
-                self?.sectionViews.forEach {
-                    if $0 === section {
-                        $0.isCollapsed = !isCollapsed
+                self?.children.forEach {
+                    
+                    guard let sectionViewController = $0 as? PropertyInspectorSectionViewController else {
+                        return
+                    }
+                    
+                    if sectionViewController === viewController {
+                        sectionViewController.isCollapsed = !isCollapsed
                     }
                     else {
-                        $0.isCollapsed = isCollapsed
+                        sectionViewController.isCollapsed = isCollapsed
                     }
+                    
                 }
-                
                 
             },
             completion: { [weak self] _ in
@@ -53,19 +58,19 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewDelegate 
         
     }
     
-    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap imagePicker: ImagePicker) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didTap imagePicker: ImagePicker) {
         selectedImagePicker = imagePicker
         
         delegate?.propertyInspectorViewController(self, didTap: imagePicker)
     }
     
-    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap colorPicker: ColorPicker) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didTap colorPicker: ColorPicker) {
         selectedColorPicker = colorPicker
         
         delegate?.propertyInspectorViewController(self, didTap: colorPicker)
     }
     
-    func propertyInspectorSectionView(_ section: PropertyInspectorSectionView, didTap optionSelector: OptionSelector) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didTap optionSelector: OptionSelector) {
         selectedOptionSelector = optionSelector
         
         delegate?.propertyInspectorViewController(self, didTap: optionSelector)

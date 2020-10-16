@@ -1,5 +1,5 @@
 //
-//  PropertyInspectorUIImageViewSectionViewModel.swift
+//  PropertyInspectorSectionUIImageViewViewModel.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 10.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PropertyInspectorUIImageViewSectionViewModel: PropertyInspectorSectionViewModelProtocol {
+final class PropertyInspectorSectionUIImageViewViewModel: PropertyInspectorSectionViewModelProtocol {
     
     private enum Property: CaseIterable {
         case image
@@ -25,7 +25,7 @@ final class PropertyInspectorUIImageViewSectionViewModel: PropertyInspectorSecti
     
     private(set) lazy var title: String? = "Image"
     
-    private(set) lazy var propertyInpus: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
         guard let imageView = imageView else {
             return nil
         }

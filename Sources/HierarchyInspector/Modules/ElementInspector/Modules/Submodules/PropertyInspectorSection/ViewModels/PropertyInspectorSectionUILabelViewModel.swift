@@ -1,5 +1,5 @@
 //
-//  PropertyInspectorUILabelSectionViewModel.swift
+//  PropertyInspectorSectionUILabelViewModel.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 10.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PropertyInspectorUILabelSectionViewModel: PropertyInspectorSectionViewModelProtocol {
+final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionViewModelProtocol {
     
     enum Property: CaseIterable {
         case text
@@ -38,7 +38,7 @@ final class PropertyInspectorUILabelSectionViewModel: PropertyInspectorSectionVi
     
     private(set) lazy var title: String? = "Label"
     
-    private(set) lazy var propertyInpus: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
         guard let label = label else {
             return nil
         }

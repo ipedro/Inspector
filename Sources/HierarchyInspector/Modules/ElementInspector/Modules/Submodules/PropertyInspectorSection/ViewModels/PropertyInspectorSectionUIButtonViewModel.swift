@@ -1,5 +1,5 @@
 //
-//  PropertyInspectorUIButtonSectionViewModel.swift
+//  PropertyInspectorSectionUIButtonViewModel.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 10.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PropertyInspectorUIButtonSectionViewModel: PropertyInspectorSectionViewModelProtocol {
+final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionViewModelProtocol {
     
     enum Property: CaseIterable {
         case fontName
@@ -34,7 +34,7 @@ final class PropertyInspectorUIButtonSectionViewModel: PropertyInspectorSectionV
     
     private(set) lazy var title: String? = "Button"
     
-    private(set) lazy var propertyInpus: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
         guard let button = button else {
             return nil
         }

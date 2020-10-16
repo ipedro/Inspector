@@ -11,6 +11,6 @@ protocol PropertyInspectorSectionViewModelProtocol: AnyObject {
     
     var title: String? { get }
     
-    var propertyInpus: [PropertyInspectorInput] { get }
+    var propertyInputs: [PropertyInspectorSectionInput] { get }
     
 }

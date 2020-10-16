@@ -1,5 +1,5 @@
 //
-//  PropertyInspectorUIStackViewSectionViewModel.swift
+//  PropertyInspectorSectionUIStackViewViewModel.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 10.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PropertyInspectorUIStackViewSectionViewModel: PropertyInspectorSectionViewModelProtocol {
+final class PropertyInspectorSectionUIStackViewViewModel: PropertyInspectorSectionViewModelProtocol {
     
     enum Property: CaseIterable {
         case axis
@@ -26,7 +26,7 @@ final class PropertyInspectorUIStackViewSectionViewModel: PropertyInspectorSecti
     
     private(set) lazy var title: String? = "Stack View"
     
-    private(set) lazy var propertyInpus: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
         guard let stackView = stackView else {
             return nil
         }

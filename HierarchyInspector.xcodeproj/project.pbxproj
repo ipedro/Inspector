@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		EB048F5C2539D7B300A91D5A /* PropertyInspectorSectionViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B7E25321644004CCBCA /* PropertyInspectorSectionViewModelProtocol.swift */; };
 		EB0B95192538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B95182538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift */; };
 		EB0B95232538897500A35DE4 /* ViewHierarchyListViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B95222538897500A35DE4 /* ViewHierarchyListViewController+UITableViewDelegate.swift */; };
 		EB0B952D253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B952C253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift */; };
@@ -44,10 +45,9 @@
 		EB439B50253213AB004CCBCA /* UISemanticContentAttribute+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B4F253213AB004CCBCA /* UISemanticContentAttribute+CaseIterable.swift */; };
 		EB439B5B253213DF004CCBCA /* UIView.ContentMode+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B5A253213DF004CCBCA /* UIView.ContentMode+CaseIterable.swift */; };
 		EB439B65253213EF004CCBCA /* UIView.ContentMode+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B64253213EF004CCBCA /* UIView.ContentMode+CustomStringConvertible.swift */; };
-		EB439B7F25321644004CCBCA /* PropertyInspectorSectionViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B7E25321644004CCBCA /* PropertyInspectorSectionViewModelProtocol.swift */; };
-		EB439B8F25321766004CCBCA /* PropertyInspectorUIViewSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B8E25321766004CCBCA /* PropertyInspectorUIViewSectionViewModel.swift */; };
-		EB439B9D253217D3004CCBCA /* PropertyInspectorUIControlSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B9C253217D3004CCBCA /* PropertyInspectorUIControlSectionViewModel.swift */; };
-		EB439BAB25322F95004CCBCA /* PropertyInspectorUIStackViewSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BAA25322F95004CCBCA /* PropertyInspectorUIStackViewSectionViewModel.swift */; };
+		EB439B8F25321766004CCBCA /* PropertyInspectorSectionUIViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B8E25321766004CCBCA /* PropertyInspectorSectionUIViewViewModel.swift */; };
+		EB439B9D253217D3004CCBCA /* PropertyInspectorSectionUIControlViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B9C253217D3004CCBCA /* PropertyInspectorSectionUIControlViewModel.swift */; };
+		EB439BAB25322F95004CCBCA /* PropertyInspectorSectionUIStackViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BAA25322F95004CCBCA /* PropertyInspectorSectionUIStackViewViewModel.swift */; };
 		EB439BB6253237D0004CCBCA /* UIControl.ContentHorizontalAlignment+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BB5253237D0004CCBCA /* UIControl.ContentHorizontalAlignment+CaseIterable.swift */; };
 		EB439BCF25323823004CCBCA /* UIControl.ContentVerticalAlignment+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BCE25323823004CCBCA /* UIControl.ContentVerticalAlignment+CaseIterable.swift */; };
 		EB439BD92532383D004CCBCA /* UIControl.ContentVerticalAlignment+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439BD82532383C004CCBCA /* UIControl.ContentVerticalAlignment+CustomStringConvertible.swift */; };
@@ -58,7 +58,7 @@
 		EB439C1325323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C1225323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift */; };
 		EB439C1D2532393A004CCBCA /* NSLayoutConstraint.Axis+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C1C2532393A004CCBCA /* NSLayoutConstraint.Axis+CustomStringConvertible.swift */; };
 		EB439C2B25323D12004CCBCA /* UIColor+RGBA.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C2A25323D12004CCBCA /* UIColor+RGBA.swift */; };
-		EB439C352532F2E1004CCBCA /* PropertyInspectorUIActivityIndicatorViewSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C342532F2E1004CCBCA /* PropertyInspectorUIActivityIndicatorViewSectionViewModel.swift */; };
+		EB439C352532F2E1004CCBCA /* PropertyInspectorSectionUIActivityIndicatorViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C342532F2E1004CCBCA /* PropertyInspectorSectionUIActivityIndicatorViewViewModel.swift */; };
 		EB439C4B25330D8E004CCBCA /* ElementInspectorNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C4A25330D8E004CCBCA /* ElementInspectorNavigationController.swift */; };
 		EB439C5825330E87004CCBCA /*  UIActivityIndicatorView.Style+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C5725330E87004CCBCA /*  UIActivityIndicatorView.Style+CaseIterable.swift */; };
 		EB439C6225330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439C6125330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift */; };
@@ -68,12 +68,12 @@
 		EB5ED3AB25339C8200ABDCF7 /* ViewInspectorControlAccessoryControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3AA25339C8200ABDCF7 /* ViewInspectorControlAccessoryControl.swift */; };
 		EB5ED3B525339CA000ABDCF7 /* BaseFormControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3B425339CA000ABDCF7 /* BaseFormControl.swift */; };
 		EB5ED3C325339CEF00ABDCF7 /* ColorDisplayControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3C225339CEF00ABDCF7 /* ColorDisplayControl.swift */; };
-		EB5ED3CD2533AB3100ABDCF7 /* PropertyInspectorUIButtonSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3CC2533AB3000ABDCF7 /* PropertyInspectorUIButtonSectionViewModel.swift */; };
+		EB5ED3CD2533AB3100ABDCF7 /* PropertyInspectorSectionUIButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3CC2533AB3000ABDCF7 /* PropertyInspectorSectionUIButtonViewModel.swift */; };
 		EB66519225349327005B8FF2 /* PropertyInspectorViewThumbnailSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB66519125349327005B8FF2 /* PropertyInspectorViewThumbnailSectionView.swift */; };
 		EB6651A425349FFD005B8FF2 /* ElementInspectorCoordinator+PropertyInspectorViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6651A325349FFD005B8FF2 /* ElementInspectorCoordinator+PropertyInspectorViewControllerDelegate.swift */; };
 		EB6651AE2534A033005B8FF2 /* ElementInspectorCoordinator+ViewHierarchyListViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6651AD2534A032005B8FF2 /* ElementInspectorCoordinator+ViewHierarchyListViewControllerDelegate.swift */; };
 		EB6651B82534A05E005B8FF2 /* ElementInspectorCoordinator+ElementInspectorViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6651B72534A05E005B8FF2 /* ElementInspectorCoordinator+ElementInspectorViewControllerDelegate.swift */; };
-		EB7062872534DC14004693E1 /* PropertyInspectorUISwitchSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7062862534DC14004693E1 /* PropertyInspectorUISwitchSectionViewModel.swift */; };
+		EB7062872534DC14004693E1 /* PropertyInspectorSectionUISwitchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7062862534DC14004693E1 /* PropertyInspectorSectionUISwitchViewModel.swift */; };
 		EB7062A52534F2BD004693E1 /* ViewHierarchyReferenceThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7062A42534F2BD004693E1 /* ViewHierarchyReferenceThumbnailView.swift */; };
 		EB74DD92252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */; };
 		EB7EAAC22529B8B4000001BE /* Manager.Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAC12529B8B4000001BE /* Manager.Action.swift */; };
@@ -81,6 +81,7 @@
 		EB7EAAF22529BFC0000001BE /* Array+UniqueValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAF12529BFC0000001BE /* Array+UniqueValues.swift */; };
 		EB80AFBB252B570200F0ECD5 /* NSObject+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */; };
 		EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */; };
+		EB9729692539C54B004630FC /* PropertyInspectorSectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9729682539C54B004630FC /* PropertyInspectorSectionViewController.swift */; };
 		EB9ED74B252E4F5900BF7D60 /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9ED74A252E4F5900BF7D60 /* BaseView.swift */; };
 		EBA245AC252878B700D4AFD9 /* ViewHierarchyColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245AB252878B700D4AFD9 /* ViewHierarchyColorScheme.swift */; };
 		EBA245B225287B4300D4AFD9 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245B125287B4300D4AFD9 /* CustomButton.swift */; };
@@ -91,8 +92,8 @@
 		EBA7D9D425308FEC00496F23 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA7D9D325308FEC00496F23 /* Icon.swift */; };
 		EBAC34EA2530ABBB00A992F5 /* ElementInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC34E92530ABBB00A992F5 /* ElementInspector.swift */; };
 		EBAC35042530DE8300A992F5 /* PropertyInspectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35032530DE8300A992F5 /* PropertyInspectorViewModel.swift */; };
-		EBAC353E2530E36400A992F5 /* PropertyInspectorSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC353D2530E36400A992F5 /* PropertyInspectorSectionView.swift */; };
-		EBAC35452530E3C400A992F5 /* PropertyInspectorInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35442530E3C400A992F5 /* PropertyInspectorInput.swift */; };
+		EBAC353E2530E36400A992F5 /* PropertyInspectorSectionViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC353D2530E36400A992F5 /* PropertyInspectorSectionViewCode.swift */; };
+		EBAC35452530E3C400A992F5 /* PropertyInspectorSectionInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35442530E3C400A992F5 /* PropertyInspectorSectionInput.swift */; };
 		EBAC356E2530F53800A992F5 /* PropertyInspectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC356D2530F53800A992F5 /* PropertyInspectorViewController.swift */; };
 		EBAC35882530FE4C00A992F5 /* PropertyInspectorViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35872530FE4C00A992F5 /* PropertyInspectorViewCode.swift */; };
 		EBAC35962531023100A992F5 /* ElementInspectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAC35952531023100A992F5 /* ElementInspectorViewController.swift */; };
@@ -101,8 +102,9 @@
 		EBB0CB2C252A6C99005D4A53 /* Configuration.KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */; };
 		EBB0CB63252A6F3E005D4A53 /* Manager.ActionGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAD92529B90B000001BE /* Manager.ActionGroup.swift */; };
 		EBBE8C2A2538D7B100CD699D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C292538D7B100CD699D /* ImagePicker.swift */; };
-		EBBE8C382538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C372538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift */; };
-		EBBE8C422538EBBA00CD699D /* PropertyInspectorUILabelSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C412538EBBA00CD699D /* PropertyInspectorUILabelSectionViewModel.swift */; };
+		EBBE8C382538E87200CD699D /* PropertyInspectorSectionUIImageViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C372538E87200CD699D /* PropertyInspectorSectionUIImageViewViewModel.swift */; };
+		EBBE8C422538EBBA00CD699D /* PropertyInspectorSectionUILabelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C412538EBBA00CD699D /* PropertyInspectorSectionUILabelViewModel.swift */; };
+		EBBE8C4C25398FAD00CD699D /* PropertyInspectorSectionUISliderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C4B25398FAC00CD699D /* PropertyInspectorSectionUISliderViewModel.swift */; };
 		EBC045AF2531F68000C311E6 /* OptionSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045AE2531F68000C311E6 /* OptionSelectorViewController.swift */; };
 		EBC045B92531F6A400C311E6 /* OptionSelectorViewCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */; };
 		EBC045BF2531F8A800C311E6 /* OptionSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */; };
@@ -240,9 +242,9 @@
 		EB439B5A253213DF004CCBCA /* UIView.ContentMode+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView.ContentMode+CaseIterable.swift"; sourceTree = "<group>"; };
 		EB439B64253213EF004CCBCA /* UIView.ContentMode+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView.ContentMode+CustomStringConvertible.swift"; sourceTree = "<group>"; };
 		EB439B7E25321644004CCBCA /* PropertyInspectorSectionViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionViewModelProtocol.swift; sourceTree = "<group>"; };
-		EB439B8E25321766004CCBCA /* PropertyInspectorUIViewSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorUIViewSectionViewModel.swift; sourceTree = "<group>"; };
-		EB439B9C253217D3004CCBCA /* PropertyInspectorUIControlSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorUIControlSectionViewModel.swift; sourceTree = "<group>"; };
-		EB439BAA25322F95004CCBCA /* PropertyInspectorUIStackViewSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorUIStackViewSectionViewModel.swift; sourceTree = "<group>"; };
+		EB439B8E25321766004CCBCA /* PropertyInspectorSectionUIViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionUIViewViewModel.swift; sourceTree = "<group>"; };
+		EB439B9C253217D3004CCBCA /* PropertyInspectorSectionUIControlViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionUIControlViewModel.swift; sourceTree = "<group>"; };
+		EB439BAA25322F95004CCBCA /* PropertyInspectorSectionUIStackViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionUIStackViewViewModel.swift; sourceTree = "<group>"; };
 		EB439BB5253237D0004CCBCA /* UIControl.ContentHorizontalAlignment+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl.ContentHorizontalAlignment+CaseIterable.swift"; sourceTree = "<group>"; };
 		EB439BCE25323823004CCBCA /* UIControl.ContentVerticalAlignment+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl.ContentVerticalAlignment+CaseIterable.swift"; sourceTree = "<group>"; };
 		EB439BD82532383C004CCBCA /* UIControl.ContentVerticalAlignment+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl.ContentVerticalAlignment+CustomStringConvertible.swift"; sourceTree = "<group>"; };
@@ -253,7 +255,7 @@
 		EB439C1225323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint.Axis+CaseIterable.swift"; sourceTree = "<group>"; };
 		EB439C1C2532393A004CCBCA /* NSLayoutConstraint.Axis+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint.Axis+CustomStringConvertible.swift"; sourceTree = "<group>"; };
 		EB439C2A25323D12004CCBCA /* UIColor+RGBA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+RGBA.swift"; sourceTree = "<group>"; };
-		EB439C342532F2E1004CCBCA /* PropertyInspectorUIActivityIndicatorViewSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorUIActivityIndicatorViewSectionViewModel.swift; sourceTree = "<group>"; };
+		EB439C342532F2E1004CCBCA /* PropertyInspectorSectionUIActivityIndicatorViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionUIActivityIndicatorViewViewModel.swift; sourceTree = "<group>"; };
 		EB439C4A25330D8E004CCBCA /* ElementInspectorNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorNavigationController.swift; sourceTree = "<group>"; };
 		EB439C5725330E87004CCBCA /*  UIActivityIndicatorView.Style+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " UIActivityIndicatorView.Style+CaseIterable.swift"; sourceTree = "<group>"; };
 		EB439C6125330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIActivityIndicatorView.Style+CustomStringConvertible.swift"; sourceTree = "<group>"; };
@@ -263,12 +265,12 @@
 		EB5ED3AA25339C8200ABDCF7 /* ViewInspectorControlAccessoryControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewInspectorControlAccessoryControl.swift; sourceTree = "<group>"; };
 		EB5ED3B425339CA000ABDCF7 /* BaseFormControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseFormControl.swift; sourceTree = "<group>"; };
 		EB5ED3C225339CEF00ABDCF7 /* ColorDisplayControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorDisplayControl.swift; sourceTree = "<group>"; };
-		EB5ED3CC2533AB3000ABDCF7 /* PropertyInspectorUIButtonSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorUIButtonSectionViewModel.swift; sourceTree = "<group>"; };
+		EB5ED3CC2533AB3000ABDCF7 /* PropertyInspectorSectionUIButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionUIButtonViewModel.swift; sourceTree = "<group>"; };
 		EB66519125349327005B8FF2 /* PropertyInspectorViewThumbnailSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorViewThumbnailSectionView.swift; sourceTree = "<group>"; };
 		EB6651A325349FFD005B8FF2 /* ElementInspectorCoordinator+PropertyInspectorViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ElementInspectorCoordinator+PropertyInspectorViewControllerDelegate.swift"; sourceTree = "<group>"; };
 		EB6651AD2534A032005B8FF2 /* ElementInspectorCoordinator+ViewHierarchyListViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ElementInspectorCoordinator+ViewHierarchyListViewControllerDelegate.swift"; sourceTree = "<group>"; };
 		EB6651B72534A05E005B8FF2 /* ElementInspectorCoordinator+ElementInspectorViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ElementInspectorCoordinator+ElementInspectorViewControllerDelegate.swift"; sourceTree = "<group>"; };
-		EB7062862534DC14004693E1 /* PropertyInspectorUISwitchSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorUISwitchSectionViewModel.swift; sourceTree = "<group>"; };
+		EB7062862534DC14004693E1 /* PropertyInspectorSectionUISwitchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionUISwitchViewModel.swift; sourceTree = "<group>"; };
 		EB7062A42534F2BD004693E1 /* ViewHierarchyReferenceThumbnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyReferenceThumbnailView.swift; sourceTree = "<group>"; };
 		EB74DD91252DD3820025FC8D /* ViewHierarchyListItemViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewHierarchyListItemViewModel.swift; sourceTree = "<group>"; };
 		EB7EAAC12529B8B4000001BE /* Manager.Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.Action.swift; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 		EB7EAAF12529BFC0000001BE /* Array+UniqueValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+UniqueValues.swift"; sourceTree = "<group>"; };
 		EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Create.swift"; sourceTree = "<group>"; };
 		EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SFSafariViewController+HierarchyInspectableProtocol.swift"; sourceTree = "<group>"; };
+		EB9729682539C54B004630FC /* PropertyInspectorSectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionViewController.swift; sourceTree = "<group>"; };
 		EB9ED74A252E4F5900BF7D60 /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		EBA245AB252878B700D4AFD9 /* ViewHierarchyColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyColorScheme.swift; sourceTree = "<group>"; };
 		EBA245B125287B4300D4AFD9 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
@@ -287,8 +290,8 @@
 		EBA7D9D325308FEC00496F23 /* Icon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
 		EBAC34E92530ABBB00A992F5 /* ElementInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspector.swift; sourceTree = "<group>"; };
 		EBAC35032530DE8300A992F5 /* PropertyInspectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorViewModel.swift; sourceTree = "<group>"; };
-		EBAC353D2530E36400A992F5 /* PropertyInspectorSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionView.swift; sourceTree = "<group>"; };
-		EBAC35442530E3C400A992F5 /* PropertyInspectorInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorInput.swift; sourceTree = "<group>"; };
+		EBAC353D2530E36400A992F5 /* PropertyInspectorSectionViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionViewCode.swift; sourceTree = "<group>"; };
+		EBAC35442530E3C400A992F5 /* PropertyInspectorSectionInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionInput.swift; sourceTree = "<group>"; };
 		EBAC356D2530F53800A992F5 /* PropertyInspectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorViewController.swift; sourceTree = "<group>"; };
 		EBAC35872530FE4C00A992F5 /* PropertyInspectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorViewCode.swift; sourceTree = "<group>"; };
 		EBAC35952531023100A992F5 /* ElementInspectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorViewController.swift; sourceTree = "<group>"; };
@@ -296,8 +299,9 @@
 		EBB0CB21252A6C3D005D4A53 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.KeyCommands.swift; sourceTree = "<group>"; };
 		EBBE8C292538D7B100CD699D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
-		EBBE8C372538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorUIImageViewSectionViewModel.swift; sourceTree = "<group>"; };
-		EBBE8C412538EBBA00CD699D /* PropertyInspectorUILabelSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorUILabelSectionViewModel.swift; sourceTree = "<group>"; };
+		EBBE8C372538E87200CD699D /* PropertyInspectorSectionUIImageViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionUIImageViewViewModel.swift; sourceTree = "<group>"; };
+		EBBE8C412538EBBA00CD699D /* PropertyInspectorSectionUILabelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionUILabelViewModel.swift; sourceTree = "<group>"; };
+		EBBE8C4B25398FAC00CD699D /* PropertyInspectorSectionUISliderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionUISliderViewModel.swift; sourceTree = "<group>"; };
 		EBC045AE2531F68000C311E6 /* OptionSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewController.swift; sourceTree = "<group>"; };
 		EBC045B82531F6A400C311E6 /* OptionSelectorViewCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewCode.swift; sourceTree = "<group>"; };
 		EBC045BE2531F8A800C311E6 /* OptionSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelectorViewModel.swift; sourceTree = "<group>"; };
@@ -390,6 +394,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EB048F232539D5DB00A91D5A /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				EB9729682539C54B004630FC /* PropertyInspectorSectionViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
 		EB0B95542538923800A35DE4 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
@@ -433,6 +445,7 @@
 			isa = PBXGroup;
 			children = (
 				EBC045AD2531F66800C311E6 /* OptionSelector */,
+				EB9729592539C4F9004630FC /* PropertyInspectorSection */,
 				EBAC35022530DE3700A992F5 /* PropertyInspector */,
 				EBAC34F42530DDF300A992F5 /* ViewHierarchyList */,
 			);
@@ -582,6 +595,42 @@
 			path = SFSafariViewController;
 			sourceTree = "<group>";
 		};
+		EB9729592539C4F9004630FC /* PropertyInspectorSection */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC35432530E39800A992F5 /* Enums */,
+				EB0B95542538923800A35DE4 /* Protocols */,
+				EB97295F2539C51D004630FC /* ViewCodes */,
+				EB048F232539D5DB00A91D5A /* ViewControllers */,
+				EB97295A2539C50E004630FC /* ViewModels */,
+			);
+			path = PropertyInspectorSection;
+			sourceTree = "<group>";
+		};
+		EB97295A2539C50E004630FC /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				EB439C342532F2E1004CCBCA /* PropertyInspectorSectionUIActivityIndicatorViewViewModel.swift */,
+				EB5ED3CC2533AB3000ABDCF7 /* PropertyInspectorSectionUIButtonViewModel.swift */,
+				EB439B9C253217D3004CCBCA /* PropertyInspectorSectionUIControlViewModel.swift */,
+				EBBE8C372538E87200CD699D /* PropertyInspectorSectionUIImageViewViewModel.swift */,
+				EBBE8C412538EBBA00CD699D /* PropertyInspectorSectionUILabelViewModel.swift */,
+				EBBE8C4B25398FAC00CD699D /* PropertyInspectorSectionUISliderViewModel.swift */,
+				EB439BAA25322F95004CCBCA /* PropertyInspectorSectionUIStackViewViewModel.swift */,
+				EB7062862534DC14004693E1 /* PropertyInspectorSectionUISwitchViewModel.swift */,
+				EB439B8E25321766004CCBCA /* PropertyInspectorSectionUIViewViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		EB97295F2539C51D004630FC /* ViewCodes */ = {
+			isa = PBXGroup;
+			children = (
+				EBAC353D2530E36400A992F5 /* PropertyInspectorSectionViewCode.swift */,
+			);
+			path = ViewCodes;
+			sourceTree = "<group>";
+		};
 		EB9ED73F252E4E3800BF7D60 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -698,7 +747,6 @@
 		EBAC34F92530DE1A00A992F5 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				EB31665125384DA5001A4A80 /* Protocols */,
 				EB3166352537556A001A4A80 /* Submodules */,
 				EBAC35AB2531091800A992F5 /* ViewCodes */,
 				EBAC35A62531091000A992F5 /* ViewControllers */,
@@ -710,7 +758,6 @@
 		EBAC35022530DE3700A992F5 /* PropertyInspector */ = {
 			isa = PBXGroup;
 			children = (
-				EB0B95542538923800A35DE4 /* Protocols */,
 				EBF3295A2531109600EABA17 /* ViewCodes */,
 				EBF3295F2531109C00EABA17 /* ViewControllers */,
 				EBF32964253110A100EABA17 /* ViewModels */,
@@ -721,7 +768,7 @@
 		EBAC35432530E39800A992F5 /* Enums */ = {
 			isa = PBXGroup;
 			children = (
-				EBAC35442530E3C400A992F5 /* PropertyInspectorInput.swift */,
+				EBAC35442530E3C400A992F5 /* PropertyInspectorSectionInput.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -860,9 +907,8 @@
 		EBF3295A2531109600EABA17 /* ViewCodes */ = {
 			isa = PBXGroup;
 			children = (
-				EBAC353D2530E36400A992F5 /* PropertyInspectorSectionView.swift */,
-				EBAC35872530FE4C00A992F5 /* PropertyInspectorViewCode.swift */,
 				EB66519125349327005B8FF2 /* PropertyInspectorViewThumbnailSectionView.swift */,
+				EBAC35872530FE4C00A992F5 /* PropertyInspectorViewCode.swift */,
 			);
 			path = ViewCodes;
 			sourceTree = "<group>";
@@ -879,14 +925,6 @@
 		EBF32964253110A100EABA17 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				EB439C342532F2E1004CCBCA /* PropertyInspectorUIActivityIndicatorViewSectionViewModel.swift */,
-				EB5ED3CC2533AB3000ABDCF7 /* PropertyInspectorUIButtonSectionViewModel.swift */,
-				EB439B9C253217D3004CCBCA /* PropertyInspectorUIControlSectionViewModel.swift */,
-				EB439BAA25322F95004CCBCA /* PropertyInspectorUIStackViewSectionViewModel.swift */,
-				EB7062862534DC14004693E1 /* PropertyInspectorUISwitchSectionViewModel.swift */,
-				EBBE8C372538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift */,
-				EB439B8E25321766004CCBCA /* PropertyInspectorUIViewSectionViewModel.swift */,
-				EBBE8C412538EBBA00CD699D /* PropertyInspectorUILabelSectionViewModel.swift */,
 				EBAC35032530DE8300A992F5 /* PropertyInspectorViewModel.swift */,
 			);
 			path = ViewModels;
@@ -914,6 +952,7 @@
 			isa = PBXGroup;
 			children = (
 				EBAC34E92530ABBB00A992F5 /* ElementInspector.swift */,
+				EB31665125384DA5001A4A80 /* Protocols */,
 				EBF88CBC252DA1B100AE9F12 /* Coordinators */,
 				EBAC34F92530DE1A00A992F5 /* Modules */,
 			);
@@ -1048,7 +1087,6 @@
 				EBA2462D2528DC8100D4AFD9 /* Manager */,
 				OBJ_26 /* Models */,
 				EBF88CBA252DA18300AE9F12 /* Modules */,
-				EBAC35432530E39800A992F5 /* Enums */,
 				OBJ_32 /* Protocols */,
 			);
 			name = HierarchyInspector;
@@ -1256,20 +1294,20 @@
 				EB5ED3C325339CEF00ABDCF7 /* ColorDisplayControl.swift in Sources */,
 				EB439C4B25330D8E004CCBCA /* ElementInspectorNavigationController.swift in Sources */,
 				EBD9DA42252FC49900851E23 /* SectionHeader.swift in Sources */,
-				EBAC35452530E3C400A992F5 /* PropertyInspectorInput.swift in Sources */,
+				EBAC35452530E3C400A992F5 /* PropertyInspectorSectionInput.swift in Sources */,
 				EB7EAAF22529BFC0000001BE /* Array+UniqueValues.swift in Sources */,
 				EBCCF4FC2538524900A9363F /* ElementInspectorPanelViewControllerProtocol.swift in Sources */,
-				EBBE8C422538EBBA00CD699D /* PropertyInspectorUILabelSectionViewModel.swift in Sources */,
+				EBBE8C422538EBBA00CD699D /* PropertyInspectorSectionUILabelViewModel.swift in Sources */,
 				OBJ_74 /* Layer+PresetLayers.swift in Sources */,
 				EB439C02253238EC004CCBCA /* UIStackView.Alignment+CaseIterable.swift in Sources */,
 				EBB0CB22252A6C3D005D4A53 /* Configuration.swift in Sources */,
 				OBJ_76 /* UIAlertController+HierarchyInspectableProtocol.swift in Sources */,
 				EB439C1325323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift in Sources */,
 				OBJ_77 /* UINavigationController+HierarchyInspectorPresentable.swift in Sources */,
-				EBBE8C382538E87200CD699D /* PropertyInspectorUIImageViewSectionViewModel.swift in Sources */,
+				EBBE8C382538E87200CD699D /* PropertyInspectorSectionUIImageViewViewModel.swift in Sources */,
 				OBJ_78 /* UIView+Convenience.swift in Sources */,
 				EBC92E432533564D00D7189A /* UITextView+Init.swift in Sources */,
-				EB5ED3CD2533AB3100ABDCF7 /* PropertyInspectorUIButtonSectionViewModel.swift in Sources */,
+				EB5ED3CD2533AB3100ABDCF7 /* PropertyInspectorSectionUIButtonViewModel.swift in Sources */,
 				OBJ_79 /* UIView+HierarchyInspectableView.swift in Sources */,
 				EB0B956B2538944800A35DE4 /* UISwitch.Style+CaseIterable.swift in Sources */,
 				EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */,
@@ -1279,7 +1317,6 @@
 				EB439C2B25323D12004CCBCA /* UIColor+RGBA.swift in Sources */,
 				EBA7D9D425308FEC00496F23 /* Icon.swift in Sources */,
 				EBD9DA19252FA37500851E23 /* SeparatorView.swift in Sources */,
-				EB439B7F25321644004CCBCA /* PropertyInspectorSectionViewModelProtocol.swift in Sources */,
 				EBC045B92531F6A400C311E6 /* OptionSelectorViewCode.swift in Sources */,
 				OBJ_81 /* HierarchyInspector.swift in Sources */,
 				EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */,
@@ -1295,12 +1332,13 @@
 				EB80AFBB252B570200F0ECD5 /* NSObject+Create.swift in Sources */,
 				EB5DB3A4252D09D400CE0398 /* UIStackView+Init.swift in Sources */,
 				EB324619252B1E6100406111 /* ViewHierarchyReference.swift in Sources */,
+				EB048F5C2539D7B300A91D5A /* PropertyInspectorSectionViewModelProtocol.swift in Sources */,
 				EB0B952D253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift in Sources */,
 				EB439B50253213AB004CCBCA /* UISemanticContentAttribute+CaseIterable.swift in Sources */,
 				EBD9DA0E252FA15500851E23 /* UILabel+Init.swift in Sources */,
 				EB439C0C25323905004CCBCA /* UIStackView.Alignment+CustomStringConvertible.swift in Sources */,
 				OBJ_87 /* Actionable.swift in Sources */,
-				EB7062872534DC14004693E1 /* PropertyInspectorUISwitchSectionViewModel.swift in Sources */,
+				EB7062872534DC14004693E1 /* PropertyInspectorSectionUISwitchViewModel.swift in Sources */,
 				OBJ_88 /* Create.swift in Sources */,
 				EB0B953B25388A2700A35DE4 /* PropertyInspectorViewController+PropertyInspectorSectionViewDelegate.swift in Sources */,
 				OBJ_89 /* HierarchyInspectorKeyCommandActionable.swift in Sources */,
@@ -1319,6 +1357,7 @@
 				OBJ_92 /* HierarchyInspectorLayerManagerProtocol.swift in Sources */,
 				OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */,
 				EBF88CDF252DA56100AE9F12 /* ElementInspectorCoordinator.swift in Sources */,
+				EBBE8C4C25398FAD00CD699D /* PropertyInspectorSectionUISliderViewModel.swift in Sources */,
 				EB439B4625321389004CCBCA /* UISemanticContentAttribute+CustomStringConvertible.swift in Sources */,
 				EB6651AE2534A033005B8FF2 /* ElementInspectorCoordinator+ViewHierarchyListViewControllerDelegate.swift in Sources */,
 				EB7062A52534F2BD004693E1 /* ViewHierarchyReferenceThumbnailView.swift in Sources */,
@@ -1334,7 +1373,7 @@
 				EB6651B82534A05E005B8FF2 /* ElementInspectorCoordinator+ElementInspectorViewControllerDelegate.swift in Sources */,
 				OBJ_97 /* EmptyView.swift in Sources */,
 				EB5ED3B525339CA000ABDCF7 /* BaseFormControl.swift in Sources */,
-				EB439B8F25321766004CCBCA /* PropertyInspectorUIViewSectionViewModel.swift in Sources */,
+				EB439B8F25321766004CCBCA /* PropertyInspectorSectionUIViewViewModel.swift in Sources */,
 				EB439B5B253213DF004CCBCA /* UIView.ContentMode+CaseIterable.swift in Sources */,
 				EBA246282528D71300D4AFD9 /* Manager.swift in Sources */,
 				EB9ED74B252E4F5900BF7D60 /* BaseView.swift in Sources */,
@@ -1343,7 +1382,7 @@
 				EB66519225349327005B8FF2 /* PropertyInspectorViewThumbnailSectionView.swift in Sources */,
 				EB0B95752538945800A35DE4 /* UISwitch.Style+CustomStringConvertible.swift in Sources */,
 				EBF88CCE252DA25100AE9F12 /* ViewHierarchyListViewModel.swift in Sources */,
-				EB439B9D253217D3004CCBCA /* PropertyInspectorUIControlSectionViewModel.swift in Sources */,
+				EB439B9D253217D3004CCBCA /* PropertyInspectorSectionUIControlViewModel.swift in Sources */,
 				OBJ_99 /* LayerViewComponent.swift in Sources */,
 				EB439B65253213EF004CCBCA /* UIView.ContentMode+CustomStringConvertible.swift in Sources */,
 				EBA246372528ECAA00D4AFD9 /* HierarchyLayerConstructor.swift in Sources */,
@@ -1356,14 +1395,15 @@
 				EB439BCF25323823004CCBCA /* UIControl.ContentVerticalAlignment+CaseIterable.swift in Sources */,
 				OBJ_101 /* LayerView.swift in Sources */,
 				EBA246412528ED1100D4AFD9 /* Manager+HierarchyLayerConstructor.swift in Sources */,
-				EBAC353E2530E36400A992F5 /* PropertyInspectorSectionView.swift in Sources */,
+				EBAC353E2530E36400A992F5 /* PropertyInspectorSectionViewCode.swift in Sources */,
 				OBJ_102 /* WireframeView.swift in Sources */,
 				EBF88CBF252DA1E300AE9F12 /* ViewHierarchyListViewController.swift in Sources */,
 				EB439C5825330E87004CCBCA /*  UIActivityIndicatorView.Style+CaseIterable.swift in Sources */,
 				EBAC359C2531024E00A992F5 /* ElementInspectorViewCode.swift in Sources */,
 				EB3C4B4A252E776A00AFABF8 /* NSDirectionalEdgeInsets+Init.swift in Sources */,
 				EBF3294525310EC800EABA17 /* ElementInspectorViewModel.swift in Sources */,
-				EB439C352532F2E1004CCBCA /* PropertyInspectorUIActivityIndicatorViewSectionViewModel.swift in Sources */,
+				EB9729692539C54B004630FC /* PropertyInspectorSectionViewController.swift in Sources */,
+				EB439C352532F2E1004CCBCA /* PropertyInspectorSectionUIActivityIndicatorViewViewModel.swift in Sources */,
 				EB5ED3A02533907600ABDCF7 /* UIView+Animation.swift in Sources */,
 				EB6651A425349FFD005B8FF2 /* ElementInspectorCoordinator+PropertyInspectorViewControllerDelegate.swift in Sources */,
 				EBC92E162533267200D7189A /* ViewHierarchyReference+ElementDescription.swift in Sources */,
@@ -1372,7 +1412,7 @@
 				EB439C6225330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift in Sources */,
 				EBC92E1D25332A5100D7189A /* UIFont+Traits.swift in Sources */,
 				EB7EAAE02529B9F2000001BE /* Manager+Actions.swift in Sources */,
-				EB439BAB25322F95004CCBCA /* PropertyInspectorUIStackViewSectionViewModel.swift in Sources */,
+				EB439BAB25322F95004CCBCA /* PropertyInspectorSectionUIStackViewViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
