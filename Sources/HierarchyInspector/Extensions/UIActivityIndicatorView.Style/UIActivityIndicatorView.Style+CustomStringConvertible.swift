@@ -13,19 +13,19 @@ extension UIActivityIndicatorView.Style: CustomStringConvertible {
     public var description: String {
         switch self {
         case .medium:
-            return "medium"
+            return "Medium"
         
         case .large:
-            return "large"
+            return "Large"
         
         case .whiteLarge:
-            return "white large (deprecated)"
+            return "White Large (deprecated)"
         
         case .white:
-            return "white (deprecated)"
+            return "White (deprecated)"
         
         case .gray:
-            return "gray (deprecated)"
+            return "Gray (deprecated)"
             
         @unknown default:
             return "\(self) (unsupported)"
@@ -35,13 +35,13 @@ extension UIActivityIndicatorView.Style: CustomStringConvertible {
     public var description: String {
         switch self {
         case .whiteLarge:
-            return "white large"
+            return "White Large"
         
         case .white:
-            return "white"
+            return "White"
         
         case .gray:
-            return "gray"
+            return "Gray"
             
         @unknown default:
             return "\(self) (unsupported)"

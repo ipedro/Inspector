@@ -32,9 +32,9 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         self.button = button
     }
     
-    private(set) lazy var title: String? = "Button"
+    let title = "Button"
     
-    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var properties: [PropertyInspectorSectionProperty] = Property.allCases.compactMap {
         guard let button = button else {
             return nil
         }

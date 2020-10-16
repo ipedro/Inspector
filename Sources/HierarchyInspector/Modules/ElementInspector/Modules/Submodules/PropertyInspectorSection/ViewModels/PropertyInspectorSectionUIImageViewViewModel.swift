@@ -23,9 +23,9 @@ final class PropertyInspectorSectionUIImageViewViewModel: PropertyInspectorSecti
         self.imageView = imageView
     }
     
-    private(set) lazy var title: String? = "Image"
+    let title = "Image"
     
-    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var properties: [PropertyInspectorSectionProperty] = Property.allCases.compactMap {
         guard let imageView = imageView else {
             return nil
         }

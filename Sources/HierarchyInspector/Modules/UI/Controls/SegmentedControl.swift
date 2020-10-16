@@ -7,11 +7,21 @@
 
 import UIKit
 
-protocol SegmentedControlDisplayable {}
+protocol SegmentedControlDisplayable {
+    var displayItem: Any { get }
+}
 
-extension String: SegmentedControlDisplayable {}
+extension String: SegmentedControlDisplayable {
+    var displayItem: Any {
+        localizedCapitalized
+    }
+}
 
-extension UIImage: SegmentedControlDisplayable {}
+extension UIImage: SegmentedControlDisplayable {
+    var displayItem: Any {
+        self
+    }
+}
 
 final class SegmentedControl: BaseFormControl {
     // MARK: - Properties
@@ -38,7 +48,7 @@ final class SegmentedControl: BaseFormControl {
         }
     }
     
-    private lazy var segmentedControl = UISegmentedControl(items: options).then {
+    private lazy var segmentedControl = UISegmentedControl(items: options.map { $0.displayItem }).then {
         $0.addTarget(self, action: #selector(changeSegment), for: .valueChanged)
         if #available(iOS 13.0, *) {
             $0.selectedSegmentTintColor = ElementInspector.appearance.tintColor
@@ -51,12 +61,12 @@ final class SegmentedControl: BaseFormControl {
     
     // MARK: - Init
     
-    init(title: String?, items: [SegmentedControlDisplayable], selectedSegmentIndex: Int?) {
-        self.options = items
+    init(title: String?, options: [SegmentedControlDisplayable], selectedIndex: Int?) {
+        self.options = options
         
         super.init(title: title)
         
-        self.selectedIndex = selectedSegmentIndex
+        self.selectedIndex = selectedIndex
     }
 
     required init?(coder: NSCoder) {

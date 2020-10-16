@@ -23,9 +23,9 @@ final class PropertyInspectorSectionUISwitchViewModel: PropertyInspectorSectionV
         self.switchControl = switchControl
     }
     
-    private(set) lazy var title: String? = "Switch"
+    let title = "Switch"
     
-    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var properties: [PropertyInspectorSectionProperty] = Property.allCases.compactMap {
         guard let switchControl = switchControl else {
             return nil
         }
@@ -48,10 +48,10 @@ final class PropertyInspectorSectionUISwitchViewModel: PropertyInspectorSectionV
         case .preferredStyle:
             #if swift(>=5.3)
             if #available(iOS 14.0, *) {
-                return .inlineTextOptions(
+                return .segmentedControl(
                     title: "preferred style",
-                    texts: UISwitch.Style.allCases,
-                    selectedSegmentIndex: UISwitch.Style.allCases.firstIndex(of: switchControl.preferredStyle),
+                    options: UISwitch.Style.allCases,
+                    selectedIndex: UISwitch.Style.allCases.firstIndex(of: switchControl.preferredStyle),
                     handler: {
                         guard let newIndex = $0 else {
                             return

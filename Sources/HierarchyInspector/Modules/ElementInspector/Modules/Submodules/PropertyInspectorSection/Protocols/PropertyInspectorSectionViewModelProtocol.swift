@@ -9,8 +9,8 @@ import Foundation
 
 protocol PropertyInspectorSectionViewModelProtocol: AnyObject {
     
-    var title: String? { get }
+    var title: String { get }
     
-    var propertyInputs: [PropertyInspectorSectionInput] { get }
+    var properties: [PropertyInspectorSectionProperty] { get }
     
 }

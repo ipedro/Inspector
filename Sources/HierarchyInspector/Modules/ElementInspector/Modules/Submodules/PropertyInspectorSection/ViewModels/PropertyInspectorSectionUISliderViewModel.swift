@@ -29,9 +29,9 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
         self.slider = slider
     }
     
-    private(set) lazy var title: String? = "Slider"
+    let title = "Slider"
     
-    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var properties: [PropertyInspectorSectionProperty] = Property.allCases.compactMap {
         guard let slider = slider else {
             return nil
         }

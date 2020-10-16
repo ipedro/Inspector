@@ -36,9 +36,9 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
         self.label = label
     }
     
-    private(set) lazy var title: String? = "Label"
+    let title = "Label"
     
-    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var properties: [PropertyInspectorSectionProperty] = Property.allCases.compactMap {
         guard let label = label else {
             return nil
         }
@@ -93,10 +93,10 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
             }
             
         case .textAlignment:
-            return .inlineImageOptions(
+            return .segmentedControl(
                 title: "alignment",
-                images: NSTextAlignment.allCases.map { $0.image },
-                selectedSegmentIndex: NSTextAlignment.allCases.firstIndex(of: label.textAlignment)
+                options: NSTextAlignment.allCases,
+                selectedIndex: NSTextAlignment.allCases.firstIndex(of: label.textAlignment)
             ) {
                 guard let newIndex = $0 else {
                     return
@@ -175,41 +175,5 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
             
         }
         
-    }
-}
-
-extension NSTextAlignment: CaseIterable {
-    public typealias AllCases = [NSTextAlignment]
-    
-    public static let allCases: [NSTextAlignment] = [
-        .left,
-        .center,
-        .right,
-        .justified,
-        .natural
-    ]
-}
-
-extension NSTextAlignment {
-    var image: UIImage {
-        switch self {
-        case .left:
-            return IconKit.imageOfTextAlignmentLeft()
-            
-        case .center:
-            return IconKit.imageOfTextAlignmentCenter()
-            
-        case .right:
-            return IconKit.imageOfTextAlignmentRight()
-            
-        case .justified:
-            return IconKit.imageOfTextAlignmentJustified()
-            
-        case .natural:
-            return IconKit.imageOfTextAlignmentNatural()
-            
-        @unknown default:
-            return UIImage()
-        }
     }
 }

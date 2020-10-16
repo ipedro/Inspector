@@ -11,19 +11,19 @@ extension UIStackView.Distribution: CustomStringConvertible {
     public var description: String {
         switch self {
         case .fill:
-            return "fill"
+            return "Fill"
             
         case .fillEqually:
-            return "fill equally"
+            return "Fill Equally"
             
         case .fillProportionally:
-            return "fill proportionally"
+            return "Fill Proportionally"
             
         case .equalSpacing:
-            return "equal spacing"
+            return "Equal Spacing"
             
         case .equalCentering:
-            return "equal centering"
+            return "Equal Centering"
             
         @unknown default:
             return "\(self) (unsupported)"

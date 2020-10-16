@@ -23,9 +23,9 @@ final class PropertyInspectorSectionUIActivityIndicatorViewViewModel: PropertyIn
         self.activityIndicatorView = activityIndicatorView
     }
     
-    private(set) lazy var title: String? = "Activity Indicator"
+    let title = "Activity Indicator"
     
-    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var properties: [PropertyInspectorSectionProperty] = Property.allCases.compactMap {
         guard let activityIndicatorView = activityIndicatorView else {
             return nil
         }

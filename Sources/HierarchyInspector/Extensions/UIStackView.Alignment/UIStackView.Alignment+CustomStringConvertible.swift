@@ -11,22 +11,22 @@ extension UIStackView.Alignment: CustomStringConvertible {
     public var description: String {
         switch self {
         case .fill:
-            return "fill"
+            return "Fill"
             
         case .leading:
-            return "leading"
+            return "Leading"
             
         case .firstBaseline:
-            return "first baseline"
+            return "First Baseline"
             
         case .center:
-            return "center"
+            return "Center"
             
         case .trailing:
-            return "trailing"
+            return "Trailing"
             
         case .lastBaseline:
-            return "last baseline"
+            return "Last Baseline"
             
         @unknown default:
             return "\(self) (unsupported)"

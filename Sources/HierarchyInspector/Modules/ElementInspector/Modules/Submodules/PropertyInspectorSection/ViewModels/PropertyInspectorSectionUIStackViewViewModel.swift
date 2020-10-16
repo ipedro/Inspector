@@ -24,19 +24,19 @@ final class PropertyInspectorSectionUIStackViewViewModel: PropertyInspectorSecti
         self.stackView = stackView
     }
     
-    private(set) lazy var title: String? = "Stack View"
+    let title = "Stack View"
     
-    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var properties: [PropertyInspectorSectionProperty] = Property.allCases.compactMap {
         guard let stackView = stackView else {
             return nil
         }
 
         switch $0 {
         case .axis:
-            return .inlineTextOptions(
+            return .segmentedControl(
                 title: "axis",
-                texts: NSLayoutConstraint.Axis.allCases,
-                selectedSegmentIndex: NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis)
+                options: NSLayoutConstraint.Axis.allCases,
+                selectedIndex: NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis)
             ) {
                 guard let newIndex = $0 else {
                     return

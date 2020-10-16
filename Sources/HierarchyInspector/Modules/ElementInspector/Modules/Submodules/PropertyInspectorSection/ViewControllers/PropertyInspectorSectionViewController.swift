@@ -19,10 +19,10 @@ protocol PropertyInspectorSectionViewControllerDelegate: AnyObject {
                                                 didTap optionSelector: OptionSelector)
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
-                                                didUpdate property: PropertyInspectorInput)
+                                                didUpdate property: PropertyInspectorSectionProperty)
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
-                                                willUpdate property: PropertyInspectorInput)
+                                                willUpdate property: PropertyInspectorSectionProperty)
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
                                                 didToggle isCollapsed: Bool)
@@ -54,7 +54,7 @@ final class PropertyInspectorSectionViewController: UIViewController {
         
         viewCode.sectionHeader.text = viewModel.title
         
-        viewModel.propertyInputs.forEach {
+        viewModel.properties.forEach {
             guard let view = inputViews[$0] else {
                 return
             }
@@ -72,10 +72,10 @@ final class PropertyInspectorSectionViewController: UIViewController {
         }
     }
     
-    private lazy var inputViews: [PropertyInspectorInput: UIView] = {
-        var dict = [PropertyInspectorInput: UIView]()
+    private lazy var inputViews: [PropertyInspectorSectionProperty: UIView] = {
+        var dict = [PropertyInspectorSectionProperty: UIView]()
         
-        for (index, property) in viewModel.propertyInputs.enumerated() {
+        for (index, property) in viewModel.properties.enumerated() {
             let element: UIView = {
                 switch property {
                 case .separator:
@@ -129,18 +129,11 @@ final class PropertyInspectorSectionViewController: UIViewController {
                         isOn: isOn
                     )
                     
-                case let .inlineTextOptions(title, customStringConvertibles, selectedSegmentIndex, _):
+                case let .segmentedControl(title, options, selectedSegmentIndex, _):
                     return SegmentedControl(
                         title: title,
-                        items: customStringConvertibles.map { $0.description.localizedCapitalized },
-                        selectedSegmentIndex: selectedSegmentIndex
-                    )
-
-                case let .inlineImageOptions(title, images, selectedSegmentIndex, _):
-                    return SegmentedControl(
-                        title: title,
-                        items: images,
-                        selectedSegmentIndex: selectedSegmentIndex
+                        options: options,
+                        selectedIndex: selectedSegmentIndex
                     )
                     
                 case let .optionsList(title, options, selectedIndex, _):
@@ -157,9 +150,9 @@ final class PropertyInspectorSectionViewController: UIViewController {
             if let control = element as? BaseFormControl {
                 control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
                 
-                let isLastElement = index == viewModel.propertyInputs.count - 1
+                let isLastElement = index == viewModel.properties.count - 1
                 
-                let isNotFollowedByControl = index + 1 < viewModel.propertyInputs.count && viewModel.propertyInputs[index + 1].isControl == false
+                let isNotFollowedByControl = index + 1 < viewModel.properties.count && viewModel.properties[index + 1].isControl == false
                 
                 control.isShowingSeparator = (isLastElement || isNotFollowedByControl) == false
                 
@@ -198,8 +191,7 @@ private extension PropertyInspectorSectionViewController {
             case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
                 handler?(toggleControl.isOn)
                 
-            case let (.inlineTextOptions(_, _, _, handler), segmentedControl as SegmentedControl),
-                 let (.inlineImageOptions(_, _, _, handler), segmentedControl as SegmentedControl):
+            case let (.segmentedControl(_, _, _, handler), segmentedControl as SegmentedControl):
                 handler?(segmentedControl.selectedIndex)
                 
             case let (.optionsList(_, _, _, handler), optionSelector as OptionSelector):
@@ -216,8 +208,7 @@ private extension PropertyInspectorSectionViewController {
                  (.stepper, _),
                  (.colorPicker, _),
                  (.toggleButton, _),
-                 (.inlineTextOptions, _),
-                 (.inlineImageOptions, _),
+                 (.segmentedControl, _),
                  (.optionsList, _),
                  (.textInput, _),
                  (.imagePicker, _):

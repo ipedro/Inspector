@@ -11,19 +11,19 @@ extension UISemanticContentAttribute: CustomStringConvertible {
     public var description: String {
         switch self {
         case .unspecified:
-            return "unspecified"
+            return "Unspecified"
             
         case .playback:
-            return "playback"
+            return "Playback"
             
         case .spatial:
-            return "spatial"
+            return "Spatial"
             
         case .forceLeftToRight:
-            return "force left to right"
+            return "Force Left To Right"
             
         case .forceRightToLeft:
-            return "force right to left"
+            return "Force right To Left"
             
         @unknown default:
             return "\(self) (unsupported)"

@@ -11,11 +11,11 @@ import UIKit
 
 extension PropertyInspectorViewController: PropertyInspectorSectionViewControllerDelegate {
     
-    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, willUpdate property: PropertyInspectorSectionInput) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, willUpdate property: PropertyInspectorSectionProperty) {
         snapshotViewCode.stopLiveUpdatingSnaphost()
     }
     
-    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didUpdate property: PropertyInspectorSectionInput) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didUpdate property: PropertyInspectorSectionProperty) {
         snapshotViewCode.startLiveUpdatingSnaphost()
     }
     

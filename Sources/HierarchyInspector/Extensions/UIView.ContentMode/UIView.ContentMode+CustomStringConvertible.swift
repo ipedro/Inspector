@@ -11,43 +11,43 @@ extension UIView.ContentMode: CustomStringConvertible {
     public var description: String {
         switch self {
         case .scaleToFill:
-            return "scale to fill"
+            return "Scale To Fill"
             
         case .scaleAspectFit:
-            return "scale aspect fit"
+            return "Scale Aspect Fit"
             
         case .scaleAspectFill:
-            return "scale aspect fill"
+            return "Scale Aspect Fill"
             
         case .redraw:
-            return "redraw"
+            return "Redraw"
             
         case .center:
-            return "center"
+            return "Center"
             
         case .top:
-            return "top"
+            return "Top"
             
         case .bottom:
-            return "bottom"
+            return "Bottom"
             
         case .left:
-            return "left"
+            return "Left"
             
         case .right:
-            return "right"
+            return "Right"
             
         case .topLeft:
-            return "top left"
+            return "Top Left"
             
         case .topRight:
-            return "top right"
+            return "Top Right"
             
         case .bottomLeft:
-            return "bottom left"
+            return "Bottom Left"
             
         case .bottomRight:
-            return "bottom right"
+            return "Bottom Right"
             
         @unknown default:
             return "\(self) (unsupported)"

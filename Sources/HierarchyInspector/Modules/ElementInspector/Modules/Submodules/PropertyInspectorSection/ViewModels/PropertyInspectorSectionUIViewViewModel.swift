@@ -34,9 +34,9 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         self.view = view
     }
     
-    private(set) lazy var title: String? = "View"
+    let title = "View"
     
-    private(set) lazy var propertyInputs: [PropertyInspectorInput] = Property.allCases.compactMap {
+    private(set) lazy var properties: [PropertyInspectorSectionProperty] = Property.allCases.compactMap {
         guard let view = view else {
             return nil
         }

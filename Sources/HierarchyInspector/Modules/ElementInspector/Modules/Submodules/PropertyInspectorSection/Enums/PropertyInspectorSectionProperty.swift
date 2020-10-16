@@ -1,5 +1,5 @@
 //
-//  PropertyInspectorSectionInput.swift
+//  PropertyInspectorSectionProperty.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 09.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum PropertyInspectorSectionInput {
+enum PropertyInspectorSectionProperty {
     
     case stepper(title: String, value: Double, range: ClosedRange<Double>, stepValue: Double, isDecimalValue: Bool, handler: ((Double) -> Void)?)
     
@@ -17,9 +17,7 @@ enum PropertyInspectorSectionInput {
     
     case toggleButton(title: String, isOn: Bool, handler: ((Bool) -> Void)?)
     
-    case inlineTextOptions(title: String, texts: [CustomStringConvertible], selectedSegmentIndex: Int?, handler: ((Int?) -> Void)?)
-    
-    case inlineImageOptions(title: String, images: [UIImage], selectedSegmentIndex: Int?, handler: ((Int?) -> Void)?)
+    case segmentedControl(title: String, options: [SegmentedControlDisplayable], selectedIndex: Int?, handler: ((Int?) -> Void)?)
     
     case optionsList(title: String, options: [CustomStringConvertible], selectedIndex: Int?, handler: ((Int?) -> Void)?)
     
@@ -29,13 +27,13 @@ enum PropertyInspectorSectionInput {
     
     case separator(identifier: UUID)
     
-    static let separator = PropertyInspectorSectionInput.separator(identifier: UUID())
+    static let separator = PropertyInspectorSectionProperty.separator(identifier: UUID())
     
 }
 
 // MARK: - Hashable
 
-extension PropertyInspectorSectionInput: Hashable {
+extension PropertyInspectorSectionProperty: Hashable {
     
     private var idenfitifer: String {
         switch self {
@@ -46,8 +44,7 @@ extension PropertyInspectorSectionInput: Hashable {
         case .stepper,
              .colorPicker,
              .toggleButton,
-             .inlineTextOptions,
-             .inlineImageOptions,
+             .segmentedControl,
              .optionsList,
              .textInput,
              .subSection,
@@ -63,8 +60,7 @@ extension PropertyInspectorSectionInput: Hashable {
         case .stepper,
              .colorPicker,
              .toggleButton,
-             .inlineTextOptions,
-             .inlineImageOptions,
+             .segmentedControl,
              .optionsList,
              .textInput,
              .imagePicker:
@@ -83,8 +79,7 @@ extension PropertyInspectorSectionInput: Hashable {
         case .stepper(_, _, _, _, _, .some),
              .colorPicker(_, _, .some),
              .toggleButton(_, _, .some),
-             .inlineTextOptions(_, _, _, .some),
-             .inlineImageOptions(_, _, _, .some),
+             .segmentedControl(_, _, _, .some),
              .optionsList(_, _, _, .some),
              .textInput(_, _, _, .some),
              .imagePicker(_, _, .some):
@@ -93,8 +88,7 @@ extension PropertyInspectorSectionInput: Hashable {
         case .stepper,
              .colorPicker,
              .toggleButton,
-             .inlineTextOptions,
-             .inlineImageOptions,
+             .segmentedControl,
              .optionsList,
              .textInput,
              .subSection,
@@ -105,7 +99,7 @@ extension PropertyInspectorSectionInput: Hashable {
         }
     }
     
-    static func == (lhs: PropertyInspectorSectionInput, rhs: PropertyInspectorSectionInput) -> Bool {
+    static func == (lhs: PropertyInspectorSectionProperty, rhs: PropertyInspectorSectionProperty) -> Bool {
         lhs.idenfitifer == rhs.idenfitifer
     }
     
@@ -116,9 +110,9 @@ extension PropertyInspectorSectionInput: Hashable {
 
 // MARK: - Stepper Helpers
 
-extension PropertyInspectorSectionInput {
+extension PropertyInspectorSectionProperty {
     
-    static func integerStepper(title: String, value: Int, range: ClosedRange<Int>, stepValue: Int, handler: ((Int) -> Void)?) -> PropertyInspectorSectionInput {
+    static func integerStepper(title: String, value: Int, range: ClosedRange<Int>, stepValue: Int, handler: ((Int) -> Void)?) -> PropertyInspectorSectionProperty {
         .stepper(
             title: title,
             value: Double(value),
@@ -130,7 +124,7 @@ extension PropertyInspectorSectionInput {
         }
     }
     
-    static func cgFloatStepper(title: String, value: CGFloat, range: ClosedRange<CGFloat>, stepValue: CGFloat, handler: ((CGFloat) -> Void)?) -> PropertyInspectorSectionInput {
+    static func cgFloatStepper(title: String, value: CGFloat, range: ClosedRange<CGFloat>, stepValue: CGFloat, handler: ((CGFloat) -> Void)?) -> PropertyInspectorSectionProperty {
         .stepper(
             title: title,
             value: Double(value),
@@ -143,7 +137,7 @@ extension PropertyInspectorSectionInput {
     }
     
     
-    static func floatStepper(title: String, value: Float, range: ClosedRange<Float>, stepValue: Float, handler: ((Float) -> Void)?) -> PropertyInspectorSectionInput {
+    static func floatStepper(title: String, value: Float, range: ClosedRange<Float>, stepValue: Float, handler: ((Float) -> Void)?) -> PropertyInspectorSectionProperty {
         .stepper(
             title: title,
             value: Double(value),
@@ -159,7 +153,7 @@ extension PropertyInspectorSectionInput {
 
 // MARK: - Font Helpers
 
-extension PropertyInspectorSectionInput {
+extension PropertyInspectorSectionProperty {
     
     private typealias FontReference = (fontName: String, displayName: String)
     
@@ -168,7 +162,7 @@ extension PropertyInspectorSectionInput {
         title: String = "font name",
         fontProvider: @escaping (() -> UIFont?),
         handler: @escaping (UIFont?) -> ()
-    ) -> PropertyInspectorSectionInput {
+    ) -> PropertyInspectorSectionProperty {
         let availableFonts: [FontReference] = {
             
             var array = [FontReference("", "—")]
@@ -224,7 +218,7 @@ extension PropertyInspectorSectionInput {
         title: String = "font size",
         fontProvider: @escaping (() -> UIFont?),
         handler: @escaping (UIFont?) -> ()
-    ) -> PropertyInspectorSectionInput {
+    ) -> PropertyInspectorSectionProperty {
         .cgFloatStepper(
             title: title,
             value: fontProvider()?.pointSize ?? 0,
