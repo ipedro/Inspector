@@ -19,9 +19,13 @@ final class ColorPicker: BaseFormControl {
     var selectedColor: UIColor? {
         didSet {
             didUpdateColor()
-            
-            sendActions(for: .valueChanged)
         }
+    }
+    
+    func updateSelectedColor(_ color: UIColor?) {
+        selectedColor = color
+        
+        sendActions(for: .valueChanged)
     }
     
     override var isEnabled: Bool {

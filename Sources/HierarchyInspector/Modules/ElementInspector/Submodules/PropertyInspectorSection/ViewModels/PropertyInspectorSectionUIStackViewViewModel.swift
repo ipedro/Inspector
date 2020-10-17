@@ -36,7 +36,7 @@ final class PropertyInspectorSectionUIStackViewViewModel: PropertyInspectorSecti
             return .segmentedControl(
                 title: "axis",
                 options: NSLayoutConstraint.Axis.allCases,
-                selectedIndex: NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis)
+                selectedIndex: { NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis) }
             ) {
                 guard let newIndex = $0 else {
                     return
@@ -53,7 +53,7 @@ final class PropertyInspectorSectionUIStackViewViewModel: PropertyInspectorSecti
             return .optionsList(
                 title: "alignment",
                 options: UIStackView.Alignment.allCases,
-                selectedIndex: UIStackView.Alignment.allCases.firstIndex(of: stackView.alignment)
+                selectedIndex: { UIStackView.Alignment.allCases.firstIndex(of: stackView.alignment) }
             ) {
                 guard let newIndex = $0 else {
                     return
@@ -68,7 +68,7 @@ final class PropertyInspectorSectionUIStackViewViewModel: PropertyInspectorSecti
             return .optionsList(
                 title: "distribution",
                 options: UIStackView.Distribution.allCases,
-                selectedIndex: UIStackView.Distribution.allCases.firstIndex(of: stackView.distribution)
+                selectedIndex: { UIStackView.Distribution.allCases.firstIndex(of: stackView.distribution) }
             ) {
                 guard let newIndex = $0 else {
                     return
@@ -82,9 +82,9 @@ final class PropertyInspectorSectionUIStackViewViewModel: PropertyInspectorSecti
         case .spacing:
             return .cgFloatStepper(
                 title: "spacing",
-                value: stackView.spacing,
-                range: 0 ... .infinity,
-                stepValue: 1
+                value: { stackView.spacing },
+                range: { 0 ... .infinity },
+                stepValue: { 1 }
             ) { spacing in
                 stackView.spacing = spacing
             }
@@ -92,7 +92,7 @@ final class PropertyInspectorSectionUIStackViewViewModel: PropertyInspectorSecti
         case .isBaselineRelativeArrangement:
             return .toggleButton(
                 title: "baseline relative",
-                isOn: stackView.isBaselineRelativeArrangement
+                isOn: { stackView.isBaselineRelativeArrangement }
             ) { isBaselineRelativeArrangement in
                 stackView.isBaselineRelativeArrangement = isBaselineRelativeArrangement
             }

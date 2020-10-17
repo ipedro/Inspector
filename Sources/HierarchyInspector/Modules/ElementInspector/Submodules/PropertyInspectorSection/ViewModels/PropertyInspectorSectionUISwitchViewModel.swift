@@ -36,8 +36,8 @@ final class PropertyInspectorSectionUISwitchViewModel: PropertyInspectorSectionV
             if #available(iOS 14.0, *) {
                 return .textInput(
                     title: "title",
-                    value: switchControl.title,
-                    placeholder: switchControl.title ?? "title"
+                    value: { switchControl.title },
+                    placeholder: { switchControl.title ?? "title" }
                 ) { title in
                     switchControl.title = title
                 }
@@ -51,7 +51,7 @@ final class PropertyInspectorSectionUISwitchViewModel: PropertyInspectorSectionV
                 return .segmentedControl(
                     title: "preferred style",
                     options: UISwitch.Style.allCases,
-                    selectedIndex: UISwitch.Style.allCases.firstIndex(of: switchControl.preferredStyle),
+                    selectedIndex: { UISwitch.Style.allCases.firstIndex(of: switchControl.preferredStyle) },
                     handler: {
                         guard let newIndex = $0 else {
                             return
@@ -69,7 +69,7 @@ final class PropertyInspectorSectionUISwitchViewModel: PropertyInspectorSectionV
         case .isOn:
             return .toggleButton(
                 title: "state",
-                isOn: switchControl.isOn
+                isOn: { switchControl.isOn }
             ) { isOn in
                 switchControl.setOn(isOn, animated: true)
                 switchControl.sendActions(for: .valueChanged)
@@ -78,7 +78,7 @@ final class PropertyInspectorSectionUISwitchViewModel: PropertyInspectorSectionV
         case .onTintColor:
             return .colorPicker(
                 title: "on tint",
-                color: switchControl.onTintColor
+                color: { switchControl.onTintColor }
             ) { onTintColor in
                 switchControl.onTintColor = onTintColor
             }
@@ -86,7 +86,7 @@ final class PropertyInspectorSectionUISwitchViewModel: PropertyInspectorSectionV
         case .thumbTintColor:
             return .colorPicker(
                 title: "thumb tint",
-                color: switchControl.thumbTintColor
+                color: { switchControl.thumbTintColor }
             ) { thumbTintColor in
                 switchControl.thumbTintColor = thumbTintColor
             }

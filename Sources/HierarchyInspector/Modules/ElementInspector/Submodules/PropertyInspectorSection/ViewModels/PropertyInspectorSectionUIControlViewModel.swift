@@ -36,7 +36,7 @@ final class PropertyInspectorSectionUIControlViewModel: PropertyInspectorSection
             return .segmentedControl(
                 title: "horizontal alignment",
                 options: UIControl.ContentHorizontalAlignment.allCases,
-                selectedIndex: UIControl.ContentHorizontalAlignment.allCases.firstIndex(of: control.contentHorizontalAlignment)
+                selectedIndex: { UIControl.ContentHorizontalAlignment.allCases.firstIndex(of: control.contentHorizontalAlignment) }
             ) {
                 guard let newIndex = $0 else {
                     return
@@ -53,7 +53,7 @@ final class PropertyInspectorSectionUIControlViewModel: PropertyInspectorSection
             return .segmentedControl(
                 title: "vertical alignment",
                 options: knownCases.compactMap { $0.image },
-                selectedIndex: knownCases.firstIndex(of: control.contentVerticalAlignment)
+                selectedIndex: { knownCases.firstIndex(of: control.contentVerticalAlignment) }
             ) {
                 guard let newIndex = $0 else {
                     return
@@ -70,7 +70,7 @@ final class PropertyInspectorSectionUIControlViewModel: PropertyInspectorSection
         case .isSelected:
             return .toggleButton(
                 title: "selected",
-                isOn: control.isSelected
+                isOn: { control.isSelected }
             ) { isSelected in
                 control.isSelected = isSelected
             }
@@ -78,7 +78,7 @@ final class PropertyInspectorSectionUIControlViewModel: PropertyInspectorSection
         case .isEnabled:
             return .toggleButton(
                 title: "enabled",
-                isOn: control.isEnabled
+                isOn: { control.isEnabled }
             ) { isEnabled in
                 control.isEnabled = isEnabled
             }
@@ -86,7 +86,7 @@ final class PropertyInspectorSectionUIControlViewModel: PropertyInspectorSection
         case .isHighlighted:
             return .toggleButton(
                 title: "highlighted",
-                isOn: control.isHighlighted
+                isOn: { control.isHighlighted }
             ) { isHighlighted in
                 control.isHighlighted = isHighlighted
             }

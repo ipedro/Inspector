@@ -35,7 +35,7 @@ final class PropertyInspectorSectionUIActivityIndicatorViewViewModel: PropertyIn
             return .optionsList(
                 title: "style",
                 options: UIActivityIndicatorView.Style.allCases,
-                selectedIndex: UIActivityIndicatorView.Style.allCases.firstIndex(of: activityIndicatorView.style)
+                selectedIndex: { UIActivityIndicatorView.Style.allCases.firstIndex(of: activityIndicatorView.style) }
             ) {
                 guard let newIndex = $0 else {
                     return
@@ -46,7 +46,7 @@ final class PropertyInspectorSectionUIActivityIndicatorViewViewModel: PropertyIn
         case .color:
             return .colorPicker(
                 title: "color",
-                color: activityIndicatorView.color
+                color: { activityIndicatorView.color }
             ) {
                 guard let color = $0 else {
                     return
@@ -61,7 +61,7 @@ final class PropertyInspectorSectionUIActivityIndicatorViewViewModel: PropertyIn
         case .isAnimating:
             return .toggleButton(
                 title: "animating",
-                isOn: activityIndicatorView.isAnimating
+                isOn: { activityIndicatorView.isAnimating }
             ) { isAnimating in
                 
                 switch isAnimating {
@@ -76,7 +76,7 @@ final class PropertyInspectorSectionUIActivityIndicatorViewViewModel: PropertyIn
         case .hidesWhenStopped:
             return .toggleButton(
                 title: "hides when stopped",
-                isOn: activityIndicatorView.hidesWhenStopped
+                isOn: { activityIndicatorView.hidesWhenStopped }
             ) { hidesWhenStopped in
                 activityIndicatorView.hidesWhenStopped = hidesWhenStopped
             }

@@ -98,49 +98,49 @@ final class PropertyInspectorSectionViewController: UIViewController {
                         $0.alpha = 1 / 3
                     }
                     
-                case let .imagePicker(title, image, _):
-                    return ImagePicker(title: title, image: image).then {
+                case let .imagePicker(title, imageProvider, _):
+                    return ImagePicker(title: title, image: imageProvider()).then {
                         $0.delegate = self
                     }
                     
                 case let .textInput(title, value, placeholder, _):
-                    return TextInputControl(title: title, value: value, placeholder: placeholder)
+                    return TextInputControl(title: title, value: value(), placeholder: placeholder())
                     
-                case let .stepper(title, value, range, stepValue, isDecimal, _):
+                case let .stepper(title, valueProvider, rangeProvider, stepValueProvider, isDecimal, _):
                     return StepperControl(
                         title: title,
-                        value: Double(value),
-                        range: Double(range.lowerBound) ... Double(range.upperBound),
-                        stepValue: Double(stepValue),
+                        value: valueProvider(),
+                        range: rangeProvider(),
+                        stepValue: stepValueProvider(),
                         isDecimalValue: isDecimal
                     )
                     
-                case let .colorPicker(title, color, _):
+                case let .colorPicker(title, colorProvider, _):
                     return ColorPicker(
                         title: title,
-                        color: color
+                        color: colorProvider()
                     ).then {
                         $0.delegate = self
                     }
                     
-                case let .toggleButton(title, isOn, _):
+                case let .toggleButton(title, isOnProvider, _):
                     return ToggleControl(
                         title: title,
-                        isOn: isOn
+                        isOn: isOnProvider()
                     )
                     
-                case let .segmentedControl(title, options, selectedSegmentIndex, _):
+                case let .segmentedControl(title, options, selectedIndexProvider, _):
                     return SegmentedControl(
                         title: title,
                         options: options,
-                        selectedIndex: selectedSegmentIndex
+                        selectedIndex: selectedIndexProvider()
                     )
                     
-                case let .optionsList(title, options, selectedIndex, _):
+                case let .optionsList(title, options, selectedIndexProvider, _):
                     return OptionSelector(
                         title: title,
                         options: options,
-                        selectedIndex: selectedIndex
+                        selectedIndex: selectedIndexProvider()
                     ).then {
                         $0.delegate = self
                     }
@@ -169,15 +169,13 @@ final class PropertyInspectorSectionViewController: UIViewController {
 
 // MARK: - Actions
 
-private extension PropertyInspectorSectionViewController {
+extension PropertyInspectorSectionViewController {
         
-    @objc func valueChanged(_ sender: AnyObject) {
-        DispatchQueue.main.async { [weak self] in
-            self?.handleChange(with: sender)
-        }
+    @objc private func valueChanged(_ sender: AnyObject) {
+        handleChange(with: sender)
     }
     
-    func handleChange(with sender: AnyObject) {
+    private func handleChange(with sender: AnyObject) {
         for (property, inputView) in self.inputViews where inputView === sender {
             self.delegate?.propertyInspectorSectionViewController(self, willUpdate:property)
             
@@ -216,6 +214,53 @@ private extension PropertyInspectorSectionViewController {
             }
             
             self.delegate?.propertyInspectorSectionViewController(self, didUpdate: property)
+            
+        }
+    }
+    
+    func updateValues() {
+        for (property, inputView) in self.inputViews {
+            
+            switch (property, inputView) {
+            
+            case let (.stepper(_, valueProvider, rangeProvider, stepValueProvider, _, _), stepperControl as StepperControl):
+                stepperControl.value = valueProvider()
+                stepperControl.range = rangeProvider()
+                stepperControl.stepValue = stepValueProvider()
+                
+            case let (.colorPicker(_, selectedColorProvider, _), colorPicker as ColorPicker):
+                colorPicker.selectedColor = selectedColorProvider()
+                
+            case let (.imagePicker(_, imageProvider, _), imagePicker as ImagePicker):
+                imagePicker.selectedImage = imageProvider()
+                
+            case let (.toggleButton(_, isOnProvider, _), toggleControl as ToggleControl):
+                toggleControl.isOn = isOnProvider()
+                
+            case let (.segmentedControl(_, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
+                segmentedControl.selectedIndex = selectedIndexProvider()
+                
+            case let (.optionsList(_, _, selectedIndexProvider, _), optionSelector as OptionSelector):
+                optionSelector.selectedIndex = selectedIndexProvider()
+                
+            case let (.textInput(_, valueProvider, placeholderProvider, _), textInputControl as TextInputControl):
+                textInputControl.placeholder = placeholderProvider()
+                textInputControl.value = valueProvider()
+                
+            case (.separator, _),
+                 (.subSection, _):
+                 break
+            
+            case (.stepper, _),
+                 (.colorPicker, _),
+                 (.toggleButton, _),
+                 (.segmentedControl, _),
+                 (.optionsList, _),
+                 (.textInput, _),
+                 (.imagePicker, _):
+                assertionFailure("shouldn't happen")
+                break
+            }
             
         }
     }

@@ -16,7 +16,18 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewControlle
     }
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didUpdate property: PropertyInspectorSectionProperty) {
-        snapshotViewCode.startLiveUpdatingSnaphost()
+        
+        children.forEach {
+            guard let propertySectionViewController = $0 as? PropertyInspectorSectionViewController else {
+                return
+            }
+            
+            propertySectionViewController.updateValues()
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.snapshotViewCode.startLiveUpdatingSnaphost()
+        }
     }
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didToggle isCollapsed: Bool) {

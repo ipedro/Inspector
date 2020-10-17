@@ -38,7 +38,7 @@ final class PropertyInspectorSectionUIImageViewViewModel: PropertyInspectorSecti
         case .image:
             return .imagePicker(
                 title: "image",
-                image: imageView.image
+                image: { imageView.image }
             ) { image in
                 imageView.image = image
             }
@@ -46,7 +46,7 @@ final class PropertyInspectorSectionUIImageViewViewModel: PropertyInspectorSecti
         case .highlightedImage:
             return .imagePicker(
                 title: "highlighted image",
-                image: imageView.highlightedImage
+                image: { imageView.highlightedImage }
             ) { highlightedImage in
                 imageView.highlightedImage = highlightedImage
             }
@@ -54,7 +54,7 @@ final class PropertyInspectorSectionUIImageViewViewModel: PropertyInspectorSecti
         case .isHighlighted:
             return .toggleButton(
                 title: "highlighted",
-                isOn: imageView.isHighlighted
+                isOn: { imageView.isHighlighted }
             ) { isHighlighted in
                 imageView.isHighlighted = isHighlighted
             }
@@ -62,7 +62,7 @@ final class PropertyInspectorSectionUIImageViewViewModel: PropertyInspectorSecti
         case .adjustsImageSizeForAccessibilityContentSizeCategory:
             return .toggleButton(
                 title: "adjusts image size",
-                isOn: imageView.adjustsImageSizeForAccessibilityContentSizeCategory
+                isOn: { imageView.adjustsImageSizeForAccessibilityContentSizeCategory }
             ) { adjustsImageSizeForAccessibilityContentSizeCategory in
                 imageView.adjustsImageSizeForAccessibilityContentSizeCategory = adjustsImageSizeForAccessibilityContentSizeCategory
             }

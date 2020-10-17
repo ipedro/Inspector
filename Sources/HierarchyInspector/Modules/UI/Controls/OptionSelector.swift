@@ -50,11 +50,15 @@ final class OptionSelector: BaseFormControl {
     var selectedIndex: Int? {
         didSet {
             updateViews()
-            
-            sendActions(for: .valueChanged)
         }
     }
-
+    
+    func updateSelectedIndex(_ selectedIndex: Int?) {
+        self.selectedIndex = selectedIndex
+        
+        sendActions(for: .valueChanged)
+    }
+    
     init(title: String?, options: [CustomStringConvertible], selectedIndex: Int? = nil) {
         self.options = options
         

@@ -119,21 +119,20 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
 extension PropertyInspectorViewController {
     
     func selectImage(_ image: UIImage?) {
-        selectedImagePicker?.selectedImage = image
+        selectedImagePicker?.updateSelectedImage(image)
     }
     
     func selectColor(_ color: UIColor) {
-        selectedColorPicker?.selectedColor = color
-    }
-    
-    func finishColorSelection() {
-        selectedColorPicker = nil
+        selectedColorPicker?.updateSelectedColor(color)
     }
     
     func selectOptionAtIndex(_ index: Int?) {
-        selectedOptionSelector?.selectedIndex = index
+        selectedOptionSelector?.updateSelectedIndex(index)
     }
-    
+        
+    func finishColorSelection() {
+        selectedColorPicker = nil
+    }
     func finishOptionSelction() {
         selectedOptionSelector = nil
     }
@@ -147,9 +146,10 @@ private extension PropertyInspectorViewController {
     func loadSections() {
         viewModel.sectionViewModels.enumerated().forEach { index, sectionViewModel in
             
-            let sectionViewController = PropertyInspectorSectionViewController.create(viewModel: sectionViewModel)
-            sectionViewController.delegate = self
-            sectionViewController.isCollapsed = index > 0
+            let sectionViewController = PropertyInspectorSectionViewController.create(viewModel: sectionViewModel).then {
+                $0.isCollapsed = index > 0
+                $0.delegate = self
+            }
             
             addChild(sectionViewController)
             

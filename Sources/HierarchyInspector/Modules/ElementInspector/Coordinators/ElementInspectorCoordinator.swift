@@ -27,16 +27,9 @@ final class ElementInspectorCoordinator: NSObject {
         self.rootReference = reference
     }
     
-    private(set) lazy var elementInspectorViewController = makeElementInspectorViewController(
-        with: rootReference,
-        showDismissBarButton: true,
-        selectedPanel: .propertyInspector
-    )
+    private(set) lazy var elementInspectorViewController = makeElementInspectorViewController(with: rootReference, showDismissBarButton: true, selectedPanel: .propertyInspector)
     
-    private(set) lazy var navigationController = ElementInspectorNavigationController(
-        rootViewController: elementInspectorViewController
-    ).then {
-        
+    private(set) lazy var navigationController = ElementInspectorNavigationController(rootViewController: elementInspectorViewController).then {
         $0.modalPresentationStyle = {
             guard let window = rootReference.view?.window else {
                 return .pageSheet
@@ -109,7 +102,7 @@ final class ElementInspectorCoordinator: NSObject {
     
 }
 
-// MARK: - UIPopoverPresentationControllerDelegate
+// MARK: - UIAdaptivePresentationControllerDelegate
 
 extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
@@ -126,6 +119,8 @@ extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate 
     }
 }
 
+// MARK: - UIPopoverPresentationControllerDelegate
+
 extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
     
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
@@ -138,10 +133,9 @@ extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
     
 }
 
-// MARK: - UIColorPickerViewControllerDelegate
-
-
 #if swift(>=5.3)
+
+// MARK: - UIColorPickerViewControllerDelegate
 
 @available(iOS 14.0, *)
 extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
@@ -158,6 +152,8 @@ extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
 
 #endif
 
+// MARK: - OptionSelectorViewControllerDelegate
+
 extension ElementInspectorCoordinator: OptionSelectorViewControllerDelegate {
     
     func optionSelectorViewController(_ viewController: OptionSelectorViewController, didSelectIndex selectedIndex: Int?) {
@@ -168,7 +164,7 @@ extension ElementInspectorCoordinator: OptionSelectorViewControllerDelegate {
 
 private extension ElementInspectorCoordinator {
     
-    private var topPropertyInspectorViewController: PropertyInspectorViewController? {
+    var topPropertyInspectorViewController: PropertyInspectorViewController? {
         guard let topElementInspectorViewController = navigationController.topViewController as? ElementInspectorViewController else {
             return nil
         }

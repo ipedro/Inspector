@@ -48,8 +48,8 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
         case .text:
             return .textInput(
                 title: "text",
-                value: label.text,
-                placeholder: label.text ?? "text"
+                value: { label.text },
+                placeholder: { label.text ?? "text" }
             ) { text in
                 label.text = text
             }
@@ -57,7 +57,7 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
         case .color:
             return .colorPicker(
                 title: "text color",
-                color: label.textColor
+                color: { label.textColor }
             ) { textColor in
                 label.textColor = textColor
             }
@@ -87,7 +87,7 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
         case .adjustsFontSizeToFitWidth:
             return .toggleButton(
                 title: "automatically adjusts font",
-                isOn: label.adjustsFontSizeToFitWidth
+                isOn: { label.adjustsFontSizeToFitWidth }
             ) { adjustsFontSizeToFitWidth in
                 label.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
             }
@@ -96,7 +96,7 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
             return .segmentedControl(
                 title: "alignment",
                 options: NSTextAlignment.allCases,
-                selectedIndex: NSTextAlignment.allCases.firstIndex(of: label.textAlignment)
+                selectedIndex: { NSTextAlignment.allCases.firstIndex(of: label.textAlignment) }
             ) {
                 guard let newIndex = $0 else {
                     return
@@ -110,9 +110,9 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
         case .numberOfLines:
             return .integerStepper(
                 title: "lines",
-                value: label.numberOfLines,
-                range: 0...100,
-                stepValue: 1
+                value: { label.numberOfLines },
+                range: { 0...100 },
+                stepValue: { 1 }
             ) { numberOfLines in
                 label.numberOfLines = numberOfLines
             }
@@ -123,7 +123,7 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
         case .isEnabled:
             return .toggleButton(
                 title: "enabled",
-                isOn: label.isEnabled
+                isOn: { label.isEnabled }
             ) { isEnabled in
                 label.isEnabled = isEnabled
             }
@@ -131,7 +131,7 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
         case .isHighlighted:
             return .toggleButton(
                 title: "highlighted",
-                isOn: label.isHighlighted
+                isOn: { label.isHighlighted }
             ) { isHighlighted in
                 label.isHighlighted = isHighlighted
             }
@@ -152,7 +152,7 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
         case .allowsDefaultTighteningForTruncation:
             return .toggleButton(
                 title: "tighten letter spacing",
-                isOn: label.allowsDefaultTighteningForTruncation
+                isOn: { label.allowsDefaultTighteningForTruncation }
             ) { allowsDefaultTighteningForTruncation in
                 label.allowsDefaultTighteningForTruncation = allowsDefaultTighteningForTruncation
             }
@@ -160,7 +160,7 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
         case .highlightedTextColor:
             return .colorPicker(
                 title: "highlighted color",
-                color: label.highlightedTextColor
+                color: { label.highlightedTextColor }
             ) { highlightedTextColor in
                 label.highlightedTextColor = highlightedTextColor
             }
@@ -168,7 +168,7 @@ final class PropertyInspectorSectionUILabelViewModel: PropertyInspectorSectionVi
         case .shadowColor:
             return .colorPicker(
                 title: "shadow",
-                color: label.shadowColor
+                color: { label.shadowColor }
             ) { shadowColor in
                 label.shadowColor = shadowColor
             }

@@ -36,9 +36,17 @@ final class TextInputControl: BaseFormControl {
     
     // MARK: - Init
     
-    private(set) var value: String?
+    var value: String? {
+        didSet {
+            guard value != textField.text else {
+                return
+            }
+            
+            textField.text = value
+        }
+    }
     
-    private(set) var placeholder: String? {
+    var placeholder: String? {
         get {
             textField.placeholder
         }

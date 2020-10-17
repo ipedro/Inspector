@@ -9,19 +9,38 @@ import UIKit
 
 enum PropertyInspectorSectionProperty {
     
-    case stepper(title: String, value: Double, range: ClosedRange<Double>, stepValue: Double, isDecimalValue: Bool, handler: ((Double) -> Void)?)
+    // Value providers
+    typealias BoolProvider              = (() -> Bool)
+    typealias DoubleProvider            = (() -> Double)
+    typealias IntProvider               = (() -> Int?)
+    typealias StringProvider            = (() -> String?)
+    typealias ColorProvider             = (() -> UIColor?)
+    typealias ImageProvider             = (() -> UIImage?)
+    typealias ClosedRangeDoubleProvider = (() -> ClosedRange<Double>)
     
-    case colorPicker(title: String, color: UIColor?, handler: ((UIColor?) -> Void)?)
+    // Value change handlers
+    typealias StringHandler  = ((String?)  -> Void)
+    typealias DoubleHandler  = ((Double)   -> Void)
+    typealias ColorHandler   = ((UIColor?) -> Void)
+    typealias ImageHandler   = ((UIImage?) -> Void)
+    typealias BoolHandler    = ((Bool)     -> Void)
+    typealias IntHandler     = ((Int?)     -> Void)
     
-    case imagePicker(title: String, image: UIImage?, handler: ((UIImage?) -> Void)?)
+    // MARK: - Cases
     
-    case toggleButton(title: String, isOn: Bool, handler: ((Bool) -> Void)?)
+    case stepper(title: String, value: DoubleProvider, range: ClosedRangeDoubleProvider, stepValue: DoubleProvider, isDecimalValue: Bool, handler: DoubleHandler?)
     
-    case segmentedControl(title: String, options: [SegmentedControlDisplayable], selectedIndex: Int?, handler: ((Int?) -> Void)?)
+    case colorPicker(title: String, color: ColorProvider, handler: ColorHandler?)
     
-    case optionsList(title: String, options: [CustomStringConvertible], selectedIndex: Int?, handler: ((Int?) -> Void)?)
+    case imagePicker(title: String, image: ImageProvider, handler: ImageHandler?)
     
-    case textInput(title: String, value: String?, placeholder: String?, handler:((String?) -> Void)?)
+    case toggleButton(title: String, isOn: BoolProvider, handler: BoolHandler?)
+    
+    case segmentedControl(title: String, options: [SegmentedControlDisplayable], selectedIndex: IntProvider, handler: IntHandler?)
+    
+    case optionsList(title: String, options: [CustomStringConvertible], selectedIndex: IntProvider, handler: IntHandler?)
+    
+    case textInput(title: String, value: StringProvider, placeholder: StringProvider, handler:StringHandler?)
     
     case subSection(name: String)
     
@@ -36,22 +55,7 @@ enum PropertyInspectorSectionProperty {
 extension PropertyInspectorSectionProperty: Hashable {
     
     private var idenfitifer: String {
-        switch self {
-        
-        case let .separator(identifier):
-            return identifier.uuidString
-        
-        case .stepper,
-             .colorPicker,
-             .toggleButton,
-             .segmentedControl,
-             .optionsList,
-             .textInput,
-             .subSection,
-             .imagePicker:
-            return String(describing: self)
-            
-        }
+        String(describing: self)
     }
     
     var isControl: Bool {
@@ -112,24 +116,36 @@ extension PropertyInspectorSectionProperty: Hashable {
 
 extension PropertyInspectorSectionProperty {
     
-    static func integerStepper(title: String, value: Int, range: ClosedRange<Int>, stepValue: Int, handler: ((Int) -> Void)?) -> PropertyInspectorSectionProperty {
+    static func integerStepper(
+        title: String,
+        value: @escaping (() -> Int),
+        range: @escaping (() -> ClosedRange<Int>),
+        stepValue: @escaping (() -> Int),
+        handler: ((Int) -> Void)?
+    ) -> PropertyInspectorSectionProperty {
         .stepper(
             title: title,
-            value: Double(value),
-            range: Double(range.lowerBound)...Double(range.upperBound),
-            stepValue: Double(stepValue),
+            value: { Double(value()) },
+            range: { Double(range().lowerBound)...Double(range().upperBound) },
+            stepValue: { Double(stepValue()) },
             isDecimalValue: false
         ) { doubleValue in
             handler?(Int(doubleValue))
         }
     }
     
-    static func cgFloatStepper(title: String, value: CGFloat, range: ClosedRange<CGFloat>, stepValue: CGFloat, handler: ((CGFloat) -> Void)?) -> PropertyInspectorSectionProperty {
+    static func cgFloatStepper(
+        title: String,
+        value: @escaping (() -> CGFloat),
+        range: @escaping (() -> ClosedRange<CGFloat>),
+        stepValue: @escaping (() -> CGFloat),
+        handler: ((CGFloat) -> Void)?
+    ) -> PropertyInspectorSectionProperty {
         .stepper(
             title: title,
-            value: Double(value),
-            range: Double(range.lowerBound)...Double(range.upperBound),
-            stepValue: Double(stepValue),
+            value: { Double(value()) },
+            range: { Double(range().lowerBound)...Double(range().upperBound) },
+            stepValue: { Double(stepValue()) },
             isDecimalValue: true
         ) { doubleValue in
             handler?(CGFloat(doubleValue))
@@ -137,12 +153,18 @@ extension PropertyInspectorSectionProperty {
     }
     
     
-    static func floatStepper(title: String, value: Float, range: ClosedRange<Float>, stepValue: Float, handler: ((Float) -> Void)?) -> PropertyInspectorSectionProperty {
+    static func floatStepper(
+        title: String,
+        value: @escaping (() -> Float),
+        range: @escaping (() -> ClosedRange<Float>),
+        stepValue: @escaping (() -> Float),
+        handler: ((Float) -> Void)?
+    ) -> PropertyInspectorSectionProperty {
         .stepper(
             title: title,
-            value: Double(value),
-            range: Double(range.lowerBound)...Double(range.upperBound),
-            stepValue: Double(stepValue),
+            value: { Double(value()) },
+            range: { Double(range().lowerBound)...Double(range().upperBound)} ,
+            stepValue: { Double(stepValue()) },
             isDecimalValue: true
         ) { doubleValue in
             handler?(Float(doubleValue))
@@ -195,7 +217,7 @@ extension PropertyInspectorSectionProperty {
         return .optionsList(
             title: title,
             options: availableFonts.map { $0.displayName },
-            selectedIndex: availableFonts.firstIndex { $0.fontName == fontProvider()?.fontName }
+            selectedIndex: { availableFonts.firstIndex { $0.fontName == fontProvider()?.fontName } }
         ) {
             guard let newIndex = $0 else {
                 return
@@ -221,9 +243,9 @@ extension PropertyInspectorSectionProperty {
     ) -> PropertyInspectorSectionProperty {
         .cgFloatStepper(
             title: title,
-            value: fontProvider()?.pointSize ?? 0,
-            range: 0...256,
-            stepValue: 1
+            value: { fontProvider()?.pointSize ?? 0 },
+            range: { 0...256 },
+            stepValue: { 1 }
         ) { fontSize in
             
             let newFont = fontProvider()?.withSize(fontSize)

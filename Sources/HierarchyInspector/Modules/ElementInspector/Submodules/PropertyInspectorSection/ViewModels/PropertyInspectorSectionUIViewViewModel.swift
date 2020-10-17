@@ -46,7 +46,7 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
             return .optionsList(
                 title: "content mode",
                 options: UIView.ContentMode.allCases,
-                selectedIndex: UIView.ContentMode.allCases.firstIndex(of: view.contentMode)
+                selectedIndex: { UIView.ContentMode.allCases.firstIndex(of: view.contentMode) }
             ) {
                 guard let newIndex = $0 else {
                     return
@@ -61,7 +61,7 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
             return .optionsList(
                 title: "semantic content",
                 options: UISemanticContentAttribute.allCases,
-                selectedIndex: UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute)
+                selectedIndex: { UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute) }
             ) {
                 guard let newIndex = $0 else {
                     return
@@ -75,9 +75,9 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         case .tag:
             return .integerStepper(
                 title: "tag",
-                value: view.tag,
-                range: 0...100,
-                stepValue: 1
+                value: { view.tag },
+                range: { 0...100 },
+                stepValue: { 1 }
             ) { newValue in
                 view.tag = newValue
             }
@@ -88,7 +88,7 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         case .isUserInteractionEnabled:
             return .toggleButton(
                 title: "user interaction enabled",
-                isOn: view.isUserInteractionEnabled
+                isOn: { view.isUserInteractionEnabled }
             ) { isUserInteractionEnabled in
                 view.isUserInteractionEnabled = isUserInteractionEnabled
             }
@@ -96,7 +96,7 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         case .isMultipleTouchEnabled:
             return .toggleButton(
                 title: "multiple touch",
-                isOn: view.isMultipleTouchEnabled
+                isOn: { view.isMultipleTouchEnabled }
             ) { isMultipleTouchEnabled in
                 view.isMultipleTouchEnabled = isMultipleTouchEnabled
             }
@@ -107,9 +107,9 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         case .alpha:
             return .cgFloatStepper(
                 title: "alpha",
-                value: view.alpha,
-                range: 0...1,
-                stepValue: 0.05
+                value: { view.alpha },
+                range: { 0...1 },
+                stepValue: { 0.05 }
             ) { alpha in
                 view.alpha = alpha
             }
@@ -117,7 +117,7 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         case .backgroundColor:
             return .colorPicker(
                 title: "background",
-                color: view.backgroundColor
+                color: { view.backgroundColor }
             ) { backgroundColor in
                 view.backgroundColor = backgroundColor
             }
@@ -125,7 +125,7 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         case .tintColor:
             return .colorPicker(
                 title: "tint",
-                color: view.tintColor
+                color: { view.tintColor }
             ) { tintColor in
                 view.tintColor = tintColor
             }
@@ -136,7 +136,7 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         case .isOpaque:
             return .toggleButton(
                 title: "opaque",
-                isOn: view.isOpaque
+                isOn: { view.isOpaque }
             ) { isOpaque in
                 view.isOpaque = isOpaque
             }
@@ -144,7 +144,7 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         case .isHidden:
             return .toggleButton(
                 title: "hidden",
-                isOn: view.isHidden
+                isOn: { view.isHidden }
             ) { isHidden in
                 view.isHidden = isHidden
             }
@@ -152,7 +152,7 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         case .clearsContextBeforeDrawing:
             return .toggleButton(
                 title: "clears graphic context",
-                isOn: view.clearsContextBeforeDrawing
+                isOn: { view.clearsContextBeforeDrawing }
             ) { clearsContextBeforeDrawing in
                 view.clearsContextBeforeDrawing = clearsContextBeforeDrawing
             }
@@ -160,7 +160,7 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         case .clipsToBounds:
             return .toggleButton(
                 title: "clips to bounds",
-                isOn: view.clipsToBounds
+                isOn: { view.clipsToBounds }
             ) { clipsToBounds in
                 view.clipsToBounds = clipsToBounds
             }
@@ -168,7 +168,7 @@ final class PropertyInspectorSectionUIViewViewModel: PropertyInspectorSectionVie
         case .autoresizesSubviews:
             return .toggleButton(
                 title: "autoresize subviews",
-                isOn: view.autoresizesSubviews
+                isOn: { view.autoresizesSubviews }
             ) { autoresizesSubviews in
                 view.autoresizesSubviews = autoresizesSubviews
             }

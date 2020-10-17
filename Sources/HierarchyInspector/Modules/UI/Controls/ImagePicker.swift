@@ -19,9 +19,13 @@ final class ImagePicker: BaseFormControl {
     var selectedImage: UIImage? {
         didSet {
             didUpdateImage()
-            
-            sendActions(for: .valueChanged)
         }
+    }
+    
+    func updateSelectedImage(_ image: UIImage?) {
+        selectedImage = image
+        
+        sendActions(for: .valueChanged)
     }
     
     override var isEnabled: Bool {

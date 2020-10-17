@@ -64,8 +64,8 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         case .titleText:
             return .textInput(
                 title: "title",
-                value: button.title(for: button.state),
-                placeholder: button.title(for: button.state) ?? "Title"
+                value: { button.title(for: button.state) },
+                placeholder: { button.title(for: button.state) ?? "Title" }
             ) { title in
                 button.setTitle(title, for: button.state)
             }
@@ -73,7 +73,7 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         case .currentTitleColor:
             return .colorPicker(
                 title: "text color",
-                color: button.currentTitleColor
+                color: { button.currentTitleColor }
             ) { currentTitleColor in
                 button.setTitleColor(currentTitleColor, for: button.state)
             }
@@ -81,7 +81,7 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         case .currentTitleShadowColor:
             return .colorPicker(
                 title: "shadow color",
-                color: button.currentTitleShadowColor
+                color: { button.currentTitleShadowColor }
             ) { currentTitleShadowColor in
                 button.setTitleShadowColor(currentTitleShadowColor, for: button.state)
             }
@@ -89,7 +89,7 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         case .image:
             return .imagePicker(
                 title: "image",
-                image: button.image(for: button.state)
+                image: { button.image(for: button.state) }
             ) { image in
                 button.setImage(image, for: button.state)
             }
@@ -97,7 +97,7 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         case .backgroundImage:
             return .imagePicker(
                 title: "background image",
-                image: button.backgroundImage(for: button.state)
+                image: { button.backgroundImage(for: button.state) }
             ) { backgroundImage in
                 button.setBackgroundImage(backgroundImage, for: button.state)
             }
@@ -107,7 +107,7 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
             if #available(iOS 13.4, *) {
                 return .toggleButton(
                     title: "pointer interaction enabled",
-                    isOn: button.isPointerInteractionEnabled
+                    isOn: { button.isPointerInteractionEnabled }
                 ) { isPointerInteractionEnabled in
                     button.isPointerInteractionEnabled = isPointerInteractionEnabled
                 }
@@ -118,7 +118,7 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         case .adjustsImageSizeForAccessibilityContentSizeCategory:
             return .toggleButton(
                 title: "adjusts image size",
-                isOn: button.adjustsImageSizeForAccessibilityContentSizeCategory
+                isOn: { button.adjustsImageSizeForAccessibilityContentSizeCategory }
             ) { adjustsImageSizeForAccessibilityContentSizeCategory in
                 button.adjustsImageSizeForAccessibilityContentSizeCategory = adjustsImageSizeForAccessibilityContentSizeCategory
             }
@@ -129,7 +129,7 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         case .reversesTitleShadowWhenHighlighted:
             return .toggleButton(
                 title: "reverses on highlight",
-                isOn: button.reversesTitleShadowWhenHighlighted
+                isOn: { button.reversesTitleShadowWhenHighlighted }
             ) { reversesTitleShadowWhenHighlighted in
                 button.reversesTitleShadowWhenHighlighted = reversesTitleShadowWhenHighlighted
             }
@@ -137,7 +137,7 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         case .showsTouchWhenHighlighted:
             return .toggleButton(
                 title: "shows touch on highlight",
-                isOn: button.showsTouchWhenHighlighted
+                isOn: { button.showsTouchWhenHighlighted }
             ) { showsTouchWhenHighlighted in
                 button.showsTouchWhenHighlighted = showsTouchWhenHighlighted
             }
@@ -145,7 +145,7 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         case .adjustsImageWhenHighlighted:
             return .toggleButton(
                 title: "highglighted adjusts image",
-                isOn: button.adjustsImageWhenHighlighted
+                isOn: { button.adjustsImageWhenHighlighted }
             ) { adjustsImageWhenHighlighted in
                 button.adjustsImageWhenHighlighted = adjustsImageWhenHighlighted
             }
@@ -154,7 +154,7 @@ final class PropertyInspectorSectionUIButtonViewModel: PropertyInspectorSectionV
         case .adjustsImageWhenDisabled:
             return .toggleButton(
                 title: "disabled adjusts image",
-                isOn: button.adjustsImageWhenDisabled
+                isOn: { button.adjustsImageWhenDisabled }
             ) { adjustsImageWhenDisabled in
                 button.adjustsImageWhenDisabled = adjustsImageWhenDisabled
             }

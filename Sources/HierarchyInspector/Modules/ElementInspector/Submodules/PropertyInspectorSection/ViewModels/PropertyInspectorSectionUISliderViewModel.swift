@@ -36,15 +36,17 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
         guard let slider = slider else {
             return nil
         }
+        
+        let stepValueProvider = { max(0.01, (slider.maximumValue - slider.minimumValue) / 100) }
 
         switch $0 {
             
         case .value:
             return .floatStepper(
                 title: "value",
-                value: slider.value,
-                range: slider.minimumValue...slider.maximumValue,
-                stepValue: (slider.maximumValue - slider.minimumValue) / 100
+                value: { slider.value },
+                range: { slider.minimumValue...slider.maximumValue },
+                stepValue: stepValueProvider
             ) { value in
                 slider.value = value
                 slider.sendActions(for: .valueChanged)
@@ -53,9 +55,9 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
         case .minimumValue:
             return .floatStepper(
                 title: "minimum",
-                value: slider.minimumValue,
-                range: 0...slider.maximumValue,
-                stepValue: (slider.maximumValue - slider.minimumValue) / 100
+                value: { slider.minimumValue },
+                range: { 0...slider.maximumValue} ,
+                stepValue: stepValueProvider
             ) { minimumValue in
                 slider.minimumValue = minimumValue
             }
@@ -63,11 +65,11 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
         case .maximumValue:
             return .floatStepper(
                 title: "maximum",
-                value: slider.maximumValue,
-                range: slider.minimumValue...Float.infinity,
-                stepValue: (slider.maximumValue - slider.minimumValue) / 100
-            ) { minimumValue in
-                slider.minimumValue = minimumValue
+                value: { slider.maximumValue },
+                range: { slider.minimumValue...Float.infinity },
+                stepValue: stepValueProvider
+            ) { maximumValue in
+                slider.maximumValue = maximumValue
             }
         
         case .separator0,
@@ -77,7 +79,7 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
         case .minimumValueImage:
             return .imagePicker(
                 title: "min image",
-                image: slider.minimumValueImage
+                 image: { slider.minimumValueImage}
             ) { minimumValueImage in
                 slider.minimumValueImage = minimumValueImage
             }
@@ -85,7 +87,7 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
         case .maximumValueImage:
             return .imagePicker(
                 title: "max image",
-                image: slider.maximumValueImage
+                image: { slider.maximumValueImage }
             ) { maximumValueImage in
                 slider.maximumValueImage = maximumValueImage
             }
@@ -93,7 +95,7 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
         case .minimumTrackTintColor:
             return .colorPicker(
                 title: "min track",
-                color: slider.minimumTrackTintColor
+                color: { slider.minimumTrackTintColor }
             ) { minimumTrackTintColor in
                 slider.minimumTrackTintColor = minimumTrackTintColor
             }
@@ -101,7 +103,7 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
         case .maxTrack:
             return .colorPicker(
                 title: "max track",
-                color: slider.maximumTrackTintColor
+                color: { slider.maximumTrackTintColor }
             ) { maximumTrackTintColor in
                 slider.maximumTrackTintColor = maximumTrackTintColor
             }
@@ -109,7 +111,7 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
         case .thumbTintColor:
             return .colorPicker(
                 title: "thumb tint",
-                color: slider.thumbTintColor
+                color: { slider.thumbTintColor }
             ) { thumbTintColor in
                 slider.thumbTintColor = thumbTintColor
             }
@@ -120,7 +122,7 @@ final class PropertyInspectorSectionUISliderViewModel: PropertyInspectorSectionV
         case .isContinuous:
             return .toggleButton(
                 title: "continuous updates",
-                isOn: slider.isContinuous
+                isOn: { slider.isContinuous }
             ) { isContinuous in
                 slider.isContinuous = isContinuous
             }

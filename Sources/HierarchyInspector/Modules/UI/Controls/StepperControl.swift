@@ -31,6 +31,25 @@ final class StepperControl: BaseFormControl {
         }
     }
     
+    var range: ClosedRange<Double> {
+        get {
+            stepperControl.minimumValue...stepperControl.maximumValue
+        }
+        set {
+            stepperControl.minimumValue = newValue.lowerBound
+            stepperControl.maximumValue = newValue.upperBound
+        }
+    }
+    
+    var stepValue: Double {
+        get {
+            stepperControl.stepValue
+        }
+        set {
+            stepperControl.stepValue = newValue
+        }
+    }
+    
     let isDecimalValue: Bool
     
     // MARK: - Components
