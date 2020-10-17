@@ -55,7 +55,7 @@ final class ImagePicker: BaseFormControl {
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
     
-    private(set) lazy var accessoryControl = ViewInspectorControlAccessoryControl().then {
+    private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.addGestureRecognizer(tapGestureRecognizer)
         
         $0.clipsToBounds = true

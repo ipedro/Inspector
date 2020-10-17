@@ -54,7 +54,7 @@ private extension UISplitViewController {
                 return
             }
 
-            previousManager.removeAllLayers()
+            previousManager.invalidate()
         }
     }
     

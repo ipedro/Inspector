@@ -44,7 +44,7 @@ private extension UINavigationController {
                 return
             }
 
-            previousManager.removeAllLayers()
+            previousManager.invalidate()
         }
     }
     

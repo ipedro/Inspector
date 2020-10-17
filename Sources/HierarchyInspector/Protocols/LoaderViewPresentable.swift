@@ -9,8 +9,8 @@ import UIKit
 
 protocol LoaderViewPresentable: UIView {
     
-    func showActivityIndicator(for operation: HierarchyInspector.Manager.Operation)
+    func showActivityIndicator(for operation: Operation)
     
-    func removeActivityIndicator(for operation: HierarchyInspector.Manager.Operation)
+    func removeActivityIndicator(for operation: Operation)
     
 }

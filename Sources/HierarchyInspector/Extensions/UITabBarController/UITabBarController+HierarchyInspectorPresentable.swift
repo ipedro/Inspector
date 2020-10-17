@@ -44,7 +44,7 @@ private extension UITabBarController {
                 return
             }
             
-            previousManager.removeAllLayers()
+            previousManager.invalidate()
         }
     }
     

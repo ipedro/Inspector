@@ -39,31 +39,25 @@ extension HierarchyInspectorPresentable {
         
         let start = Date()
         
-        hierarchyInspectorManager.asyncOperation(name: Texts.openingHierarchyInspector) { [weak self] in
-            guard let self = self else {
-                return
-            }
+        guard
+            let alertController = makeAlertController(
+                with: hierarchyInspectorManager.availableActions,
+                in: hierarchyInspectorManager.viewHierarchySnapshot,
+                inspecting: inspecting
+            )
+        else {
+            return
+        }
+        
+        present(alertController, animated: true) {
+            let elaspedTime = Date().timeIntervalSince(start)
             
-            guard
-                let alertController = self.makeAlertController(
-                    with: self.hierarchyInspectorManager.availableActions,
-                    in: self.hierarchyInspectorManager.viewHierarchySnapshot,
-                    inspecting: inspecting
-                )
-            else {
-                return
-            }
-            
-            self.present(alertController, animated: true) {
-                let elaspedTime = Date().timeIntervalSince(start)
-                
-                print("Presented Hierarchy Inspector in \(elaspedTime) seconds")
-            }
+            print("Presented Hierarchy Inspector in \(elaspedTime) seconds")
         }
     }
     
     private func makeAlertController(
-        with actionGroups: [HierarchyInspector.Manager.ActionGroup],
+        with actionGroups: [ActionGroup],
         in snapshot: ViewHierarchySnapshot?,
         inspecting: Bool
     ) -> UIAlertController? {

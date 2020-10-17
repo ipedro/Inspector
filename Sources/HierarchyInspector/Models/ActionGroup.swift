@@ -7,25 +7,23 @@
 
 import UIKit
 
-extension HierarchyInspector.Manager {
-    struct ActionGroup {
-        let title: String?
-        
-        var displayName: String {
-            guard let title = title else {
-                return "✻"
-            }
-            
-            return "✻ \(title) ✻"
+struct ActionGroup {
+    var title: String?
+    
+    var displayName: String {
+        guard let title = title else {
+            return "✻"
         }
         
-        let actions: [Action]
+        return "✻ \(title) ✻"
     }
+    
+    var actions: [Action]
 }
 
 // MARK: - UIAlertAction Extension
 
-extension HierarchyInspector.Manager.ActionGroup {
+extension ActionGroup {
     var alertActions: [UIAlertAction] {
         var array = [UIAlertAction]()
         

@@ -1,5 +1,5 @@
 //
-//  Manager+HierarchyLayerManagerProtocol.swift
+//  ViewHierarchyInspectorCoordinator+HierarchyLayerManagerProtocol.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -9,12 +9,12 @@ import UIKit
 
 // MARK: - LayerManagerProtocol
 
-extension HierarchyInspector.Manager: HierarchyLayerManagerProtocol {
+extension ViewHierarchyInspectorCoordinator: HierarchyLayerManagerProtocol {
     
     // MARK: - Install
     
     public func installLayer(_ layer: ViewHierarchyLayer) {
-        guard let viewHierarchySnapshot = viewHierarchySnapshot else {
+        guard let viewHierarchySnapshot = dataSource?.viewHierarchySnapshot else {
             return
         }
         
@@ -24,7 +24,7 @@ extension HierarchyInspector.Manager: HierarchyLayerManagerProtocol {
     }
     
     public func installAllLayers() {
-        guard let viewHierarchySnapshot = viewHierarchySnapshot else {
+        guard let viewHierarchySnapshot = dataSource?.viewHierarchySnapshot else {
             return
         }
         

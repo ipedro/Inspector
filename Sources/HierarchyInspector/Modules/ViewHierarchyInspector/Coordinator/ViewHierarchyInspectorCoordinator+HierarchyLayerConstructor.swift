@@ -1,5 +1,5 @@
 //
-//  Manager+HierarchyLayerConstructor.swift
+//  ViewHierarchyInspectorCoordinator+HierarchyLayerConstructor.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - HierarchyLayerConstructor
 
-extension HierarchyInspector.Manager: HierarchyLayerConstructor {
+extension ViewHierarchyInspectorCoordinator: HierarchyLayerConstructor {
     
     func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool {
         activeLayers.contains(layer)

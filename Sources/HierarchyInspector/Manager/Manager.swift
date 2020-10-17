@@ -8,45 +8,17 @@
 import UIKit
 
 extension HierarchyInspector {
-    public final class Manager: NSObject {
-        public init(host: HierarchyInspectableProtocol) {
-            self.hostViewController = host
+    public final class Manager: Create {
+        private(set) var elementInspectorCoordinator: ElementInspectorCoordinator?
+        
+        private(set) lazy var viewHierarchyInspectorCoordinator = ViewHierarchyInspectorCoordinator().then {
+            $0.dataSource = self
+            $0.delegate   = self
         }
-        
-        private var elementInspectorCoordinator: ElementInspectorCoordinator?
-        
-        var shouldCacheViewHierarchySnapshot = true
         
         private(set) weak var hostViewController: HierarchyInspectableProtocol?
         
-        var viewHierarchyReferences: [ViewHierarchyLayer: [ViewHierarchyReference]] = [:] {
-            didSet {
-                let layers = Set<ViewHierarchyLayer>(viewHierarchyReferences.keys)
-                let oldLayers = Set<ViewHierarchyLayer>(oldValue.keys)
-                let newLayers = layers.subtracting(oldLayers)
-                let removedLayers = oldLayers.subtracting(layers)
-                
-                removeReferences(for: removedLayers, in: oldValue)
-                
-                guard let colorScheme = hostViewController?.hierarchyInspectorColorScheme else {
-                    return
-                }
-                
-                addReferences(for: newLayers, with: colorScheme)
-            }
-        }
-        
-        var wireframeViews: [ViewHierarchyReference: WireframeView] = [:] {
-            didSet {
-                updateLayerViews(to: wireframeViews, from: oldValue)
-            }
-        }
-        
-        var inspectorViews: [ViewHierarchyReference: HighlightView] = [:] {
-            didSet {
-                updateLayerViews(to: inspectorViews, from: oldValue)
-            }
-        }
+        var shouldCacheViewHierarchySnapshot = true
         
         var viewHierarchySnapshot: ViewHierarchySnapshot? {
             let start = Date()
@@ -78,12 +50,11 @@ extension HierarchyInspector {
         
         private var cachedViewHierarchySnapshot: ViewHierarchySnapshot?
         
-        public var isShowingLayers: Bool {
-            viewHierarchyReferences.keys.isEmpty == false
-        }
+        // MARK: - Init
         
-        #warning("TODO: migrate Manager operations to OperationQueue")
-        private(set) lazy var operationQueue = OperationQueue()
+        public init(host: HierarchyInspectableProtocol) {
+            self.hostViewController = host
+        }
         
         deinit {
             invalidate()
@@ -94,192 +65,36 @@ extension HierarchyInspector {
             
             cachedViewHierarchySnapshot = nil
             
-            viewHierarchyReferences.removeAll()
-            
-            wireframeViews.removeAll()
-            
-            inspectorViews.removeAll()
-            
-            operationQueue.cancelAllOperations()
+            viewHierarchyInspectorCoordinator.invalidate()
         }
         
-        struct Operation: Equatable {
-            let identifier = UUID()
-            
-            let name: String
-            
-            let closure: Closure
-            
-            static func == (lhs: HierarchyInspector.Manager.Operation, rhs: HierarchyInspector.Manager.Operation) -> Bool {
-                lhs.identifier == rhs.identifier
+        var availableActions: [ActionGroup] {
+            guard let viewHierarchySnapshot = self.viewHierarchySnapshot else {
+                return []
             }
+            
+            // layer actions
+            let layerActions = viewHierarchyInspectorCoordinator.layerActions(for: viewHierarchySnapshot)
+            
+            // other actions
+            var otherActions = viewHierarchyInspectorCoordinator.otherActions(for: viewHierarchySnapshot)
+            
+            guard
+                let topMostContainer = hostViewController?.topMostContainerViewController as? HierarchyInspectorPresentable,
+                topMostContainer !== hostViewController
+            else {
+                return [layerActions, otherActions]
+            }
+            
+            otherActions.actions.append(.inspect(vc: topMostContainer))
+            
+            return [layerActions, otherActions]
         }
         
-        func asyncOperation(name: String, execute closure: @escaping Closure) {
-            async(operation: Operation(name: name, closure: closure), in: hostViewController?.view.window)
-        }
     }
 }
-
-// MARK: - Layers Hierarchy
 
 extension HierarchyInspector.Manager {
-    var activeLayers: [ViewHierarchyLayer] {
-        viewHierarchyReferences.compactMap { dict -> ViewHierarchyLayer? in
-            guard dict.value.isEmpty == false else {
-                return nil
-            }
-            
-            return dict.key
-        }
-    }
-    
-    var availableLayers: [ViewHierarchyLayer] {
-        viewHierarchySnapshot?.availableLayers ?? []
-    }
-    
-    var populatedLayers: [ViewHierarchyLayer] {
-        viewHierarchySnapshot?.populatedLayers ?? []
-    }
-    
-    private func calculateAvailableLayers() -> [ViewHierarchyLayer] {
-        hostViewController?.hierarchyInspectorLayers.uniqueValues ?? [.allViews]
-    }
-}
-
-// MARK: - Private Helpers
-
-private extension HierarchyInspector.Manager {
-    func async(operation: Operation, in window: UIWindow?) {
-        window?.showActivityIndicator(for: operation)
-        
-        DispatchQueue.main.async {
-            operation.closure()
-            
-            window?.removeActivityIndicator(for: operation)
-        }
-    }
-    
-    func makeSnapshot() -> ViewHierarchySnapshot? {
-        guard let hostView = hostViewController?.view else {
-            return nil
-        }
-        
-        return ViewHierarchySnapshot(availableLayers: calculateAvailableLayers(), in: hostView)
-    }
-}
-
-// MARK: - ViewReference
-
-private extension HierarchyInspector.Manager {
-    func updateLayerViews(to newValue: [ViewHierarchyReference: LayerView], from oldValue: [ViewHierarchyReference: LayerView]) {
-        let viewReferences = Set<ViewHierarchyReference>(newValue.keys)
-        
-        let oldViewReferences = Set<ViewHierarchyReference>(oldValue.keys)
-        
-        let removedReferences = oldViewReferences.subtracting(viewReferences)
-        
-        let newReferences = viewReferences.subtracting(oldViewReferences)
-        
-        removedReferences.forEach {
-            guard let layerView = oldValue[$0] else {
-                return
-            }
-            
-            layerView.removeFromSuperview()
-        }
-        
-        newReferences.forEach {
-            guard
-                let referenceView = $0.view,
-                let inspectorView = newValue[$0]
-            else {
-                return
-            }
-            
-            referenceView.installView(inspectorView, .autoResizingMask)
-        }
-    }
-    
-    func removeReferences(for removedLayers: Set<ViewHierarchyLayer>, in oldValue: [ViewHierarchyLayer: [ViewHierarchyReference]]) {
-        var removedReferences = [ViewHierarchyReference]()
-        
-        removedLayers.forEach { layer in
-            Console.print("\(layer) was removed")
-            
-            oldValue[layer]?.forEach {
-                print("[Hierarchy Inspector] \(layer): removing reference to \($0.elementName)")
-                removedReferences.append($0)
-            }
-        }
-        
-        for (layer, references) in viewHierarchyReferences where layer != .wireframes {
-            references.forEach { reference in
-                
-                if let index = removedReferences.firstIndex(of: reference) {
-                    print("[Hierarchy Inspector] reference to \(reference.elementName) reclaimed by \(layer)")
-                    
-                    removedReferences.remove(at: index)
-                }
-            }
-        }
-        
-        removedReferences.forEach { removedReference in
-            inspectorViews.removeValue(forKey: removedReference)
-        }
-        
-        if removedLayers.contains(.wireframes) {
-            wireframeViews.removeAll()
-        }
-    }
-    
-    func addReferences(for newLayers: Set<ViewHierarchyLayer>, with colorScheme: ColorScheme) {
-        for newLayer in newLayers {
-            guard let references = viewHierarchyReferences[newLayer] else {
-                continue
-            }
-            
-            switch newLayer.showLabels {
-            case true:
-                references.forEach { viewReference in
-                    guard
-                        inspectorViews[viewReference] == nil,
-                        let element = viewReference.view
-                    else {
-                        return
-                    }
-                    
-                    let inspectorView = HighlightView(
-                        frame: element.bounds,
-                        name: element.className,
-                        colorScheme: colorScheme,
-                        reference: viewReference
-                    ).then {
-                        $0.delegate = self
-                    }
-                    
-                    inspectorViews[viewReference] = inspectorView
-                }
-                
-            case false:
-                references.forEach { viewReference in
-                    guard
-                        inspectorViews[viewReference] == nil,
-                        let element = viewReference.view
-                    else {
-                        return
-                    }
-                    
-                    let wireframeView = WireframeView(
-                        frame: element.bounds,
-                        reference: viewReference
-                    )
-                    
-                    wireframeViews[viewReference] = wireframeView
-                }
-            }
-        }
-    }
     
     func presentElementInspector(for reference: ViewHierarchyReference, from sourceView: UIView, animated: Bool) {
         guard let hostViewController = hostViewController else {
@@ -297,42 +112,82 @@ private extension HierarchyInspector.Manager {
         
         hostViewController.present(elementInspectorNavigationController, animated: animated)
     }
+
 }
 
-// MARK: - HighlightViewDelegate
+// MARK: - Private Helpers
 
-extension HierarchyInspector.Manager: HighlightViewDelegate {
-    func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference) {
-        presentElementInspector(for: reference, from: highlightView.labelContentView, animated: true)
-    }
-    
-    func hideAllHighlightViews(_ hide: Bool, containedIn reference: ViewHierarchyReference) {
-        guard let referenceView = reference.view else {
-            return
+private extension HierarchyInspector.Manager {
+    func makeSnapshot() -> ViewHierarchySnapshot? {
+        guard let hostView = hostViewController?.view else {
+            return nil
         }
         
-        asyncOperation(name: hide ? "☐ Highlight Views" : "☑ Highlight Views") {
-            for view in referenceView.allSubviews where view is LayerViewProtocol {
-                view.isSafelyHidden = hide
-            }
-        }
+        let snapshot = ViewHierarchySnapshot(availableLayers: availableInspectorLayers, in: hostView)
         
+        return snapshot
     }
 }
+
+// MARK: - ElementInspectorCoordinatorDelegate
 
 extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
     
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        hideAllHighlightViews(false, containedIn: reference)
+        viewHierarchyInspectorCoordinator.hideAllHighlightViews(false, containedIn: reference)
     }
     
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, hideHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        hideAllHighlightViews(true, containedIn: reference)
+        viewHierarchyInspectorCoordinator.hideAllHighlightViews(true, containedIn: reference)
     }
     
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference) {
-        hideAllHighlightViews(false, containedIn: reference)
+        viewHierarchyInspectorCoordinator.hideAllHighlightViews(false, containedIn: reference)
         
         elementInspectorCoordinator = nil
     }
+}
+
+// MARK: - ViewHierarchyLayerCoordinatorDataSource
+
+extension HierarchyInspector.Manager: ViewHierarchyLayerCoordinatorDataSource {
+    var colorScheme: ViewHierarchyColorScheme {
+        hostViewController?.hierarchyInspectorColorScheme ?? .default
+    }
+    
+    var availableInspectorLayers: [ViewHierarchyLayer] {
+        hostViewController?.hierarchyInspectorLayers.uniqueValues ?? [.allViews]
+    }
+}
+
+extension HierarchyInspector.Manager: ViewHierarchyLayerCoordinatorDelegate {
+    func viewHierarchyLayerCoordinator(_ coordinator: ViewHierarchyInspectorCoordinator, didSelect viewHierarchyReference: ViewHierarchyReference, from highlightView: HighlightView) {
+        presentElementInspector(for: viewHierarchyReference, from: highlightView.labelContentView, animated: true)
+    }
+}
+
+// MARK: - HierarchyLayerManagerProtocol
+
+extension HierarchyInspector.Manager: HierarchyLayerManagerProtocol {
+    
+    // MARK: - Install
+    
+    public func installLayer(_ layer: ViewHierarchyLayer) {
+        viewHierarchyInspectorCoordinator.installLayer(layer)
+    }
+
+    public func installAllLayers() {
+        viewHierarchyInspectorCoordinator.installAllLayers()
+    }
+
+    // MARK: - Remove
+
+    public func removeAllLayers() {
+        viewHierarchyInspectorCoordinator.removeAllLayers()
+    }
+
+    public func removeLayer(_ layer: ViewHierarchyLayer) {
+        viewHierarchyInspectorCoordinator.removeLayer(layer)
+    }
+    
 }

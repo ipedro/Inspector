@@ -35,7 +35,7 @@ final class LoaderView: LayerViewComponent {
         $0.verticalAlignmentOffset = activityIndicator.frame.height * 2 / 3
     }
     
-    var currentOperation: HierarchyInspector.Manager.Operation? {
+    var currentOperation: Operation? {
         didSet {
             accessibilityIdentifier = currentOperation?.name
         }
@@ -119,7 +119,7 @@ extension LoaderView {
     static var sharedPool: [UIView: LoaderView] = [:]
     
     static func dequeueLoaderView(
-        for operation: HierarchyInspector.Manager.Operation,
+        for operation: Operation,
         in presenter: UIView
     ) -> LoaderView {
         

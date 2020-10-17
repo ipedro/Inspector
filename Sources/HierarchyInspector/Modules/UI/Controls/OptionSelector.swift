@@ -33,7 +33,7 @@ final class OptionSelector: BaseFormControl {
         $0.minimumScaleFactor = 0.6
     }
     
-    private(set) lazy var accessoryControl = ViewInspectorControlAccessoryControl().then {
+    private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.contentView.addArrangedSubview(valueLabel)
         $0.contentView.addArrangedSubview(icon)
         $0.contentView.alignment = .center

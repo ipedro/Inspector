@@ -145,3 +145,26 @@ extension HierarchyInspectorKeyCommandPresentable {
     }
     
 }
+
+extension HierarchyInspector.Manager {
+    
+    var availableActionsForKeyCommand: [ActionGroup] {
+        var array = availableActions
+        
+        guard let hostViewController = hostViewController as? HierarchyInspectorPresentable else {
+            return array
+        }
+        
+        let openInspectorGroup = ActionGroup(
+            title: nil,
+            actions: [
+                .openHierarchyInspector(from: hostViewController)
+            ]
+        )
+        
+        array.insert(openInspectorGroup, at: 0)
+        
+        return array
+    }
+    
+}

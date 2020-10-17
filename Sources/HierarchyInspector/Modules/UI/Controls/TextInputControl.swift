@@ -21,7 +21,7 @@ final class TextInputControl: BaseFormControl {
         $0.widthAnchor.constraint(lessThanOrEqualToConstant: 250).isActive = true
     }
         
-    private(set) lazy var accessoryControl = ViewInspectorControlAccessoryControl().then {
+    private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.contentView.addArrangedSubview(textField)
         
         $0.setContentHuggingPriority(.required, for: .horizontal)

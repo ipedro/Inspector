@@ -28,17 +28,6 @@ protocol PropertyInspectorViewControllerDelegate: AnyObject {
 
 final class PropertyInspectorViewController: ElementInspectorPanelViewController {
     
-    func calculatePreferredContentSize() -> CGSize {
-        viewCode.contentView.systemLayoutSizeFitting(
-            CGSize(
-                width: min(UIScreen.main.bounds.width, 414),
-                height: 0
-            ),
-            withHorizontalFittingPriority: .defaultHigh,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-    }
-    
     // MARK: - Properties
     
     weak var delegate: PropertyInspectorViewControllerDelegate?
@@ -89,22 +78,6 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         
         loadSections()
     }
-    
-    private func loadSections() {
-        viewModel.sectionViewModels.enumerated().forEach { index, sectionViewModel in
-            
-            let sectionViewController = PropertyInspectorSectionViewController.create(viewModel: sectionViewModel)
-            sectionViewController.delegate = self
-            sectionViewController.isCollapsed = index > 0
-            
-            addChild(sectionViewController)
-            
-            viewCode.contentView.addArrangedSubview(sectionViewController.view)
-            
-            sectionViewController.didMove(toParent: self)
-        }
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -127,6 +100,17 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         }
         
         snapshotViewCode.stopLiveUpdatingSnaphost()
+    }
+    
+    func calculatePreferredContentSize() -> CGSize {
+        viewCode.contentView.systemLayoutSizeFitting(
+            CGSize(
+                width: min(UIScreen.main.bounds.width, 414),
+                height: 0
+            ),
+            withHorizontalFittingPriority: .defaultHigh,
+            verticalFittingPriority: .fittingSizeLevel
+        )
     }
     
     deinit {
@@ -163,6 +147,21 @@ extension PropertyInspectorViewController {
 // MARK: - Actions
 
 private extension PropertyInspectorViewController {
+    
+    func loadSections() {
+        viewModel.sectionViewModels.enumerated().forEach { index, sectionViewModel in
+            
+            let sectionViewController = PropertyInspectorSectionViewController.create(viewModel: sectionViewModel)
+            sectionViewController.delegate = self
+            sectionViewController.isCollapsed = index > 0
+            
+            addChild(sectionViewController)
+            
+            viewCode.contentView.addArrangedSubview(sectionViewController.view)
+            
+            sectionViewController.didMove(toParent: self)
+        }
+    }
     
     @objc func toggleLayerInspectorViewsVisibility() {
         DispatchQueue.main.async { [weak self] in

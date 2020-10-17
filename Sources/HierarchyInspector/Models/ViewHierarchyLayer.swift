@@ -61,9 +61,6 @@ extension ViewHierarchyLayer {
     
     static let wireframes = ViewHierarchyLayer(name: "Wireframes", showLabels: false) { _ in true }
     
-    #if DEBUG
-    #warning("TODO: investigate if this `if` clause makes sense")
     static let internalViews = ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsSystemViews: true) { $0.isSystemView }
-    #endif
     
 }

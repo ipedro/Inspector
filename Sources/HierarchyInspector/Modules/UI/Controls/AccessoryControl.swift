@@ -1,5 +1,5 @@
 //
-//  ViewInspectorControlAccessoryControl.swift
+//  AccessoryControl.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 11.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ViewInspectorControlAccessoryControl: BaseControl {
+final class AccessoryControl: BaseControl {
     
     override var isEnabled: Bool {
         didSet {

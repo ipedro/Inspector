@@ -11,7 +11,7 @@ import UIKit
 
 extension UIView: LoaderViewPresentable {
     
-    func showActivityIndicator(for operation: HierarchyInspector.Manager.Operation) {
+    func showActivityIndicator(for operation: Operation) {
         let loaderView = LoaderView.dequeueLoaderView(for: operation, in: self)
         loaderView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
         
@@ -31,7 +31,7 @@ extension UIView: LoaderViewPresentable {
         )
     }
     
-    func removeActivityIndicator(for operation: HierarchyInspector.Manager.Operation) {
+    func removeActivityIndicator(for operation: Operation) {
         let loaderViews = subviews.compactMap { $0 as? LoaderView }
         
         loaderViews.forEach { $0.done() }
