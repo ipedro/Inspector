@@ -124,6 +124,10 @@
 		EBD4326B253AFA4F00708C75 /* LayerReferenceManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD4326A253AFA4F00708C75 /* LayerReferenceManagerProtocol.swift */; };
 		EBD43279253AFAE300708C75 /* AsyncOperationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD43278253AFAE300708C75 /* AsyncOperationProtocol.swift */; };
 		EBD43287253AFAF500708C75 /* ViewHierarchyInspectorCoordinator+AsyncOperationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD43286253AFAF500708C75 /* ViewHierarchyInspectorCoordinator+AsyncOperationProtocol.swift */; };
+		EBD4329D253B001F00708C75 /* Manager+LayerManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD4329C253B001F00708C75 /* Manager+LayerManagerProtocol.swift */; };
+		EBD432A7253B005000708C75 /* Manager+ViewHierarchyInspectorCoordinatorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD432A6253B005000708C75 /* Manager+ViewHierarchyInspectorCoordinatorDataSource.swift */; };
+		EBD432B1253B008900708C75 /* Manager+ElementInspectorCoordinatorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD432B0253B008900708C75 /* Manager+ElementInspectorCoordinatorDelegate.swift */; };
+		EBD432C4253B011F00708C75 /* Manager+ViewHierarchyInspectorCoordinatorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD432BA253B00D600708C75 /* Manager+ViewHierarchyInspectorCoordinatorDelegate.swift */; };
 		EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */; };
 		EBD9DA01252F919900851E23 /* StepperControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA00252F919900851E23 /* StepperControl.swift */; };
 		EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */; };
@@ -327,6 +331,10 @@
 		EBD4326A253AFA4F00708C75 /* LayerReferenceManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayerReferenceManagerProtocol.swift; sourceTree = "<group>"; };
 		EBD43278253AFAE300708C75 /* AsyncOperationProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperationProtocol.swift; sourceTree = "<group>"; };
 		EBD43286253AFAF500708C75 /* ViewHierarchyInspectorCoordinator+AsyncOperationProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyInspectorCoordinator+AsyncOperationProtocol.swift"; sourceTree = "<group>"; };
+		EBD4329C253B001F00708C75 /* Manager+LayerManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Manager+LayerManagerProtocol.swift"; sourceTree = "<group>"; };
+		EBD432A6253B005000708C75 /* Manager+ViewHierarchyInspectorCoordinatorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Manager+ViewHierarchyInspectorCoordinatorDataSource.swift"; sourceTree = "<group>"; };
+		EBD432B0253B008900708C75 /* Manager+ElementInspectorCoordinatorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Manager+ElementInspectorCoordinatorDelegate.swift"; sourceTree = "<group>"; };
+		EBD432BA253B00D600708C75 /* Manager+ViewHierarchyInspectorCoordinatorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Manager+ViewHierarchyInspectorCoordinatorDelegate.swift"; sourceTree = "<group>"; };
 		EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleControl.swift; sourceTree = "<group>"; };
 		EBD9DA00252F919900851E23 /* StepperControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperControl.swift; sourceTree = "<group>"; };
 		EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
@@ -753,6 +761,10 @@
 			isa = PBXGroup;
 			children = (
 				EB2629D7253A502F00AE43AD /* Manager.swift */,
+				EBD432B0253B008900708C75 /* Manager+ElementInspectorCoordinatorDelegate.swift */,
+				EBD4329C253B001F00708C75 /* Manager+LayerManagerProtocol.swift */,
+				EBD432A6253B005000708C75 /* Manager+ViewHierarchyInspectorCoordinatorDataSource.swift */,
+				EBD432BA253B00D600708C75 /* Manager+ViewHierarchyInspectorCoordinatorDelegate.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1325,6 +1337,7 @@
 				EB0B95192538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift in Sources */,
 				OBJ_69 /* Layer+AdditiveArithmetic.swift in Sources */,
 				EBD9DA01252F919900851E23 /* StepperControl.swift in Sources */,
+				EBD432B1253B008900708C75 /* Manager+ElementInspectorCoordinatorDelegate.swift in Sources */,
 				OBJ_70 /* Layer+AlertControllerActionable.swift in Sources */,
 				OBJ_71 /* Layer+CustomStringConvertible.swift in Sources */,
 				OBJ_72 /* Layer+Hashable.swift in Sources */,
@@ -1340,6 +1353,7 @@
 				OBJ_74 /* Layer+PresetLayers.swift in Sources */,
 				EB439C02253238EC004CCBCA /* UIStackView.Alignment+CaseIterable.swift in Sources */,
 				EBB0CB22252A6C3D005D4A53 /* Configuration.swift in Sources */,
+				EBD432C4253B011F00708C75 /* Manager+ViewHierarchyInspectorCoordinatorDelegate.swift in Sources */,
 				EBD43287253AFAF500708C75 /* ViewHierarchyInspectorCoordinator+AsyncOperationProtocol.swift in Sources */,
 				OBJ_76 /* UIAlertController+HierarchyInspectableProtocol.swift in Sources */,
 				EB439C1325323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift in Sources */,
@@ -1348,6 +1362,7 @@
 				OBJ_78 /* UIView+Convenience.swift in Sources */,
 				EBC92E432533564D00D7189A /* UITextView+Init.swift in Sources */,
 				EB5ED3CD2533AB3100ABDCF7 /* PropertyInspectorSectionUIButtonViewModel.swift in Sources */,
+				EBD432A7253B005000708C75 /* Manager+ViewHierarchyInspectorCoordinatorDataSource.swift in Sources */,
 				OBJ_79 /* UIView+HierarchyInspectableView.swift in Sources */,
 				EB0B956B2538944800A35DE4 /* UISwitch.Style+CaseIterable.swift in Sources */,
 				EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */,
@@ -1441,6 +1456,7 @@
 				OBJ_101 /* LayerView.swift in Sources */,
 				EBA246412528ED1100D4AFD9 /* ViewHierarchyInspectorCoordinator+LayerConstructorProtocol.swift in Sources */,
 				EBAC353E2530E36400A992F5 /* PropertyInspectorSectionViewCode.swift in Sources */,
+				EBD4329D253B001F00708C75 /* Manager+LayerManagerProtocol.swift in Sources */,
 				OBJ_102 /* WireframeView.swift in Sources */,
 				EBF88CBF252DA1E300AE9F12 /* ViewHierarchyListViewController.swift in Sources */,
 				EB439C5825330E87004CCBCA /*  UIActivityIndicatorView.Style+CaseIterable.swift in Sources */,
