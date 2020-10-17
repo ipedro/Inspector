@@ -11,6 +11,20 @@ protocol HighlightViewDelegate: AnyObject {
     func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference)
 }
 
+extension HighlightViewDelegate {
+    
+    func hideAllHighlightViews(_ hide: Bool, containedIn reference: ViewHierarchyReference) {
+        guard let referenceView = reference.view else {
+            return
+        }
+        
+        for view in referenceView.allSubviews where view is LayerViewProtocol {
+            view.isSafelyHidden = hide
+        }
+    }
+    
+}
+
 class HighlightView: LayerView {
     weak var delegate: HighlightViewDelegate?
     

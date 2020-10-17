@@ -1,5 +1,5 @@
 //
-//  ViewHierarchyInspectorCoordinator+HierarchyLayerConstructor.swift
+//  ViewHierarchyInspectorCoordinator+LayerConstructorProtocol.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-// MARK: - HierarchyLayerConstructor
+// MARK: - LayerConstructorProtocol
 
-extension ViewHierarchyInspectorCoordinator: HierarchyLayerConstructor {
+extension ViewHierarchyInspectorCoordinator: LayerConstructorProtocol {
     
     func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool {
         activeLayers.contains(layer)
@@ -19,11 +19,11 @@ extension ViewHierarchyInspectorCoordinator: HierarchyLayerConstructor {
     
     @discardableResult
     func create(layer: ViewHierarchyLayer, for viewHierarchySnapshot: ViewHierarchySnapshot) -> Bool {
-        guard viewHierarchyReferences[layer] == nil else {
+        guard visibleReferences[layer] == nil else {
             return false
         }
         
-        if layer != .wireframes, viewHierarchyReferences.keys.contains(.wireframes) == false {
+        if layer != .wireframes, visibleReferences.keys.contains(.wireframes) == false {
             create(layer: .wireframes, for: viewHierarchySnapshot)
         }
         
@@ -31,7 +31,7 @@ extension ViewHierarchyInspectorCoordinator: HierarchyLayerConstructor {
         
         let viewHierarchyRefences = filteredHirerarchy.map { ViewHierarchyReference(root: $0) }
         
-        viewHierarchyReferences.updateValue(viewHierarchyRefences, forKey: layer)
+        visibleReferences.updateValue(viewHierarchyRefences, forKey: layer)
         
         return true
     }
@@ -40,17 +40,17 @@ extension ViewHierarchyInspectorCoordinator: HierarchyLayerConstructor {
     
     @discardableResult
     func destroyAllLayers() -> Bool {
-        viewHierarchyReferences.removeAll()
+        visibleReferences.removeAll()
         
         return true
     }
     
     @discardableResult
     func destroy(layer: ViewHierarchyLayer) -> Bool {
-        viewHierarchyReferences.removeValue(forKey: layer)
+        visibleReferences.removeValue(forKey: layer)
         
-        if Array(viewHierarchyReferences.keys) == [.wireframes] {
-            viewHierarchyReferences.removeValue(forKey: .wireframes)
+        if Array(visibleReferences.keys) == [.wireframes] {
+            visibleReferences.removeValue(forKey: .wireframes)
         }
         
         return true

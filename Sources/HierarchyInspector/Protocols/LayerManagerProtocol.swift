@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol HierarchyLayerManagerProtocol {
+public protocol LayerManagerProtocol {
     func installLayer(_ layer: ViewHierarchyLayer)
     
     func removeLayer(_ layer: ViewHierarchyLayer)

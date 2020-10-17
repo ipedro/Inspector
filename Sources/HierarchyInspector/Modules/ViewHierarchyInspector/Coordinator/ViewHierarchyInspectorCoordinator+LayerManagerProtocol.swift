@@ -1,5 +1,5 @@
 //
-//  ViewHierarchyInspectorCoordinator+HierarchyLayerManagerProtocol.swift
+//  ViewHierarchyInspectorCoordinator+LayerManagerProtocol.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - LayerManagerProtocol
 
-extension ViewHierarchyInspectorCoordinator: HierarchyLayerManagerProtocol {
+extension ViewHierarchyInspectorCoordinator: LayerManagerProtocol {
     
     // MARK: - Install
     

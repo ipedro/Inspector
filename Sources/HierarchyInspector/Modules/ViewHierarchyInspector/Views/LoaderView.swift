@@ -35,11 +35,11 @@ final class LoaderView: LayerViewComponent {
         $0.verticalAlignmentOffset = activityIndicator.frame.height * 2 / 3
     }
     
-    var currentOperation: Operation? {
-        didSet {
-            accessibilityIdentifier = currentOperation?.name
-        }
-    }
+//    var currentOperation: Operation? {
+//        didSet {
+//            accessibilityIdentifier = currentOperation?.name
+//        }
+//    }
     
     override var accessibilityIdentifier: String? {
         didSet {
@@ -102,7 +102,7 @@ final class LoaderView: LayerViewComponent {
     }
     
     func prepareForReuse() {
-        currentOperation = nil
+//        currentOperation = nil
         
         activityIndicator.startAnimating()
         
@@ -114,34 +114,34 @@ final class LoaderView: LayerViewComponent {
 
 // MARK: - Loader Pool Management
 
-extension LoaderView {
-    
-    static var sharedPool: [UIView: LoaderView] = [:]
-    
-    static func dequeueLoaderView(
-        for operation: Operation,
-        in presenter: UIView
-    ) -> LoaderView {
-        
-        let loaderView: LoaderView = {
-            
-            guard let cachedView = sharedPool[presenter] else {
-                return LoaderView()
-            }
-            
-            cachedView.layer.removeAllAnimations()
-            
-            cachedView.prepareForReuse()
-            
-            return cachedView
-            
-        }()
-        
-        loaderView.currentOperation = operation
-        
-        sharedPool[presenter] = loaderView
-        
-        return loaderView
-    }
-    
-}
+//extension LoaderView {
+//
+//    static var sharedPool: [UIView: LoaderView] = [:]
+//
+//    static func dequeueLoaderView(
+//        for operation: Operation,
+//        in presenter: UIView
+//    ) -> LoaderView {
+//
+//        let loaderView: LoaderView = {
+//
+//            guard let cachedView = sharedPool[presenter] else {
+//                return LoaderView()
+//            }
+//
+//            cachedView.layer.removeAllAnimations()
+//
+//            cachedView.prepareForReuse()
+//
+//            return cachedView
+//
+//        }()
+//
+//        loaderView.currentOperation = operation
+//
+//        sharedPool[presenter] = loaderView
+//
+//        return loaderView
+//    }
+//
+//}

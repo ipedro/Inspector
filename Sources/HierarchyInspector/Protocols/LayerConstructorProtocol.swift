@@ -1,5 +1,5 @@
 //
-//  HierarchyLayerConstructor.swift
+//  LayerConstructorProtocol.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 03.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol HierarchyLayerConstructor {
+protocol LayerConstructorProtocol {
     func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool
     
     @discardableResult

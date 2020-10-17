@@ -118,12 +118,16 @@ extension HierarchyInspector.Manager {
 // MARK: - Private Helpers
 
 private extension HierarchyInspector.Manager {
+    var viewHierarchyLayers: [ViewHierarchyLayer] {
+        hostViewController?.hierarchyInspectorLayers.uniqueValues ?? [.allViews]
+    }
+    
     func makeSnapshot() -> ViewHierarchySnapshot? {
         guard let hostView = hostViewController?.view else {
             return nil
         }
         
-        let snapshot = ViewHierarchySnapshot(availableLayers: availableInspectorLayers, in: hostView)
+        let snapshot = ViewHierarchySnapshot(availableLayers: viewHierarchyLayers, in: hostView)
         
         return snapshot
     }
@@ -150,25 +154,27 @@ extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
 
 // MARK: - ViewHierarchyLayerCoordinatorDataSource
 
-extension HierarchyInspector.Manager: ViewHierarchyLayerCoordinatorDataSource {
-    var colorScheme: ViewHierarchyColorScheme {
+extension HierarchyInspector.Manager: ViewHierarchyInspectorCoordinatorDataSource {
+    
+    var viewHierarchyWindow: UIWindow? {
+        hostViewController?.view.window
+    }
+    
+    var viewHierarchyColorScheme: ViewHierarchyColorScheme {
         hostViewController?.hierarchyInspectorColorScheme ?? .default
     }
     
-    var availableInspectorLayers: [ViewHierarchyLayer] {
-        hostViewController?.hierarchyInspectorLayers.uniqueValues ?? [.allViews]
-    }
 }
 
-extension HierarchyInspector.Manager: ViewHierarchyLayerCoordinatorDelegate {
-    func viewHierarchyLayerCoordinator(_ coordinator: ViewHierarchyInspectorCoordinator, didSelect viewHierarchyReference: ViewHierarchyReference, from highlightView: HighlightView) {
+extension HierarchyInspector.Manager: ViewHierarchyInspectorCoordinatorDelegate {
+    func viewHierarchyInspectorCoordinator(_ coordinator: ViewHierarchyInspectorCoordinator, didSelect viewHierarchyReference: ViewHierarchyReference, from highlightView: HighlightView) {
         presentElementInspector(for: viewHierarchyReference, from: highlightView.labelContentView, animated: true)
     }
 }
 
-// MARK: - HierarchyLayerManagerProtocol
+// MARK: - LayerManagerProtocol
 
-extension HierarchyInspector.Manager: HierarchyLayerManagerProtocol {
+extension HierarchyInspector.Manager: LayerManagerProtocol {
     
     // MARK: - Install
     
