@@ -42,8 +42,6 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     
     private lazy var viewCode = PropertyInspectorViewCode()
     
-    private var needsSetup = true
-    
     private(set) lazy var snapshotViewCode = PropertyInspectorViewThumbnailSectionView(
         reference: viewModel.reference,
         frame: .zero
@@ -84,10 +82,8 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         snapshotViewCode.startLiveUpdatingSnaphost()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        needsSetup = true
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
         snapshotViewCode.stopLiveUpdatingSnaphost()
     }
