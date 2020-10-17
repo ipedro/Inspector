@@ -788,17 +788,6 @@
 			path = ViewHierarchyList;
 			sourceTree = "<group>";
 		};
-		EBAC34F92530DE1A00A992F5 /* Modules */ = {
-			isa = PBXGroup;
-			children = (
-				EB3166352537556A001A4A80 /* Submodules */,
-				EBAC35AB2531091800A992F5 /* ViewCodes */,
-				EBAC35A62531091000A992F5 /* ViewControllers */,
-				EBF3296D2531144700EABA17 /* ViewModel */,
-			);
-			path = Modules;
-			sourceTree = "<group>";
-		};
 		EBAC35022530DE3700A992F5 /* PropertyInspector */ = {
 			isa = PBXGroup;
 			children = (
@@ -988,6 +977,7 @@
 				EB9ED73F252E4E3800BF7D60 /* UI */,
 				EBA7D9BA2530846000496F23 /* ViewHierarchyInspector */,
 				EBF88CBB252DA18D00AE9F12 /* ElementInspector */,
+				EB3166352537556A001A4A80 /* Submodules */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -996,9 +986,11 @@
 			isa = PBXGroup;
 			children = (
 				EBAC34E92530ABBB00A992F5 /* ElementInspector.swift */,
-				EB31665125384DA5001A4A80 /* Protocols */,
 				EBF88CBC252DA1B100AE9F12 /* Coordinators */,
-				EBAC34F92530DE1A00A992F5 /* Modules */,
+				EB31665125384DA5001A4A80 /* Protocols */,
+				EBAC35AB2531091800A992F5 /* ViewCodes */,
+				EBAC35A62531091000A992F5 /* ViewControllers */,
+				EBF3296D2531144700EABA17 /* ViewModel */,
 			);
 			path = ElementInspector;
 			sourceTree = "<group>";
