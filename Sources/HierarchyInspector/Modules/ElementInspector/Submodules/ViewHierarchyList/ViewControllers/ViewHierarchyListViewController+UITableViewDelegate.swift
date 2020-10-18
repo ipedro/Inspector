@@ -24,6 +24,8 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
         }
         
         self.delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference, from: self.viewModel.rootReference)
+        
+        viewModel.clearCachedThumbnail(for: indexPath)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -31,27 +33,30 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
         }
         
-        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
+        guard let selectedItemViewModel = viewModel.itemViewModel(for: indexPath) else {
             return
         }
         
-        guard itemViewModel.showDisclosureIndicator else {
+        guard selectedItemViewModel.showDisclosureIndicator else {
             return toggleContainer(at: indexPath)
         }
         
-        delegate?.viewHierarchyListViewController(self, didSegueTo: itemViewModel.reference, from: viewModel.rootReference)
+        delegate?.viewHierarchyListViewController(self, didSegueTo: selectedItemViewModel.reference, from: viewModel.rootReference)
+        
+        viewModel.clearCachedThumbnail(for: indexPath)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard
             viewModel.shouldDisplayThumbnails,
-            let cell = cell as? ViewHierarchyListTableViewCodeCell
+            let cell = cell as? ViewHierarchyListTableViewCodeCell,
+            viewModel.itemViewModel(for: indexPath)?.hasCachedThumbnailImage != true
         else {
             return
         }
-
-        let thumbnailOperation = MainThreadAsyncOperation(name: "render thumb for row \(indexPath.row)") {
-            cell.renderThumbnailImage()
+        
+        let thumbnailOperation = MainThreadOperation(name: "render thumb for row \(indexPath.row)") {
+            cell.displayThumbnailImage()
         }
 
         delegate?.addOperationToQueue(thumbnailOperation)
@@ -61,6 +66,41 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
         let actions = viewModel.toggleContainer(at: indexPath)
         
         updateTableView(indexPath, with: actions)
+    }
+}
+
+// MARK: - ScrolView
+
+extension ViewHierarchyListViewController {
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            self.stoppedScrolling()
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.stoppedScrolling()
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        delegate?.suspendQueue(true)
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        stoppedScrolling()
+    }
+    
+    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+        return true
+    }
+    
+    func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+        stoppedScrolling()
+    }
+
+    func stoppedScrolling() {
+        delegate?.suspendQueue(false)
     }
 }
 
@@ -116,7 +156,7 @@ private extension ViewHierarchyListViewController {
                     }
                     
                     let thumbnailOperation = MainThreadAsyncOperation(name: "render thumb for row \(indexPath.row)") {
-                        cell.renderThumbnailImage()
+                        cell.displayThumbnailImage()
                     }
                     
                     self?.delegate?.addOperationToQueue(thumbnailOperation)
@@ -143,4 +183,5 @@ private extension ViewHierarchyListViewController {
             completion: completion
         )
     }
+    
 }

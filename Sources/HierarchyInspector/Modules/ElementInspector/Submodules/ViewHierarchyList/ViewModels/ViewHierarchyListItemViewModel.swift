@@ -12,11 +12,9 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
     
     var reference: ViewHierarchyReference { get }
     
-    var thumbnailView: UIView { get }
+    var thumbnailImage: UIImage? { get }
     
-    var hasCachedThumbnailView: Bool { get }
-    
-    func clearCachedThumbnail()
+    var hasCachedThumbnailImage: Bool { get }
     
     var title: String { get }
     
@@ -32,15 +30,50 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
     
     var relativeDepth: Int { get }
     
-    var backgroundColor: UIColor? { get }
+    func clearCachedThumbnail()
 }
 
-final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol {
+final class ViewHierarchyListItemViewModel {
     
     let identifier = UUID()
     
     weak var parent: ViewHierarchyListItemViewModelProtocol?
     
+    private var _isCollapsed: Bool
+    
+    private(set) lazy var title = reference.elementName
+    
+    private(set) lazy var subtitle = reference.elementDescription
+    
+    let rootDepth: Int
+    
+    // MARK: - Properties
+    
+    let reference: ViewHierarchyReference
+    
+    static let thumbSize = CGSize(
+        width: ElementInspector.appearance.horizontalMargins * 2,
+        height: ElementInspector.appearance.horizontalMargins * 2
+    )
+    
+    var cachedThumbnailImage: UIImage?
+    
+    init(
+        reference: ViewHierarchyReference,
+        parent: ViewHierarchyListItemViewModelProtocol? = nil,
+        rootDepth: Int,
+        isCollapsed: Bool
+    ) {
+        self.parent = parent
+        self.reference = reference
+        self.rootDepth = rootDepth
+        self._isCollapsed = isCollapsed
+    }
+}
+
+// MARK: - ViewHierarchyListItemViewModelProtocol
+
+extension ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol {
     var isHidden: Bool {
         parent?.isCollapsed == true || parent?.isHidden == true
     }
@@ -62,86 +95,42 @@ final class ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtoc
         }
     }
     
-    func clearCachedThumbnail() {
-        cachedReferenceThumbnail = nil
+    var isContainer: Bool {
+        reference.isContainer
     }
-    
-    private var _isCollapsed: Bool
-    
-    var backgroundColor: UIColor? {
-        UIColor(white: 1 - CGFloat(relativeDepth) * 0.03, alpha: 1)
-    }
-    
-    private(set) lazy var title = reference.elementName
-    
-    private(set) lazy var subtitle = reference.elementDescription
-    
-    var isContainer: Bool { reference.isContainer }
     
     var relativeDepth: Int {
         reference.depth - rootDepth
     }
     
-    let rootDepth: Int
-    
-    // MARK: - Properties
-    
-    let reference: ViewHierarchyReference
-    
-    static let thumbSize = CGSize(
-        width: ElementInspector.appearance.horizontalMargins * 2,
-        height: ElementInspector.appearance.horizontalMargins * 2
-    )
-    
-    var cachedReferenceThumbnail: ViewHierarchyReferenceThumbnailView?
-    
-    var hasCachedThumbnailView: Bool {
-        cachedReferenceThumbnail != nil
-    }
-    
-    func makeReferenceThumbnailmage() -> ViewHierarchyReferenceThumbnailView {
-        let thumbnailView = ViewHierarchyReferenceThumbnailView(
-            frame: CGRect(
-                origin: .zero,
-                size: Self.thumbSize
-            ),
-            reference: reference
-        )
-        
-        thumbnailView.showEmptyStatusMessage = false
-        thumbnailView.layer.shouldRasterize = true
-        thumbnailView.layer.rasterizationScale = UIScreen.main.scale
-        thumbnailView.heightAnchor.constraint(equalToConstant: Self.thumbSize.height).isActive = true
-        thumbnailView.widthAnchor.constraint(equalToConstant: Self.thumbSize.width).isActive = true
-        thumbnailView.contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.verticalMargins / 2)
-        thumbnailView.updateViews(afterScreenUpdates: false)
-        
-        return thumbnailView
-    }
-    
-    var thumbnailView: UIView {
-        guard let cachedReferenceThumbnail = cachedReferenceThumbnail else {
-            let newReference = makeReferenceThumbnailmage()
-            self.cachedReferenceThumbnail = newReference
-            
-            return newReference
+    var thumbnailImage: UIImage? {
+        if cachedThumbnailImage != nil {
+            return cachedThumbnailImage
         }
         
-        return cachedReferenceThumbnail
+        guard let referenceView = reference.view else {
+            return Self.thumbnailImageLostConnection
+        }
+        
+        guard referenceView.isHidden == false, referenceView.frame.isEmpty == false else {
+            return Self.thumbnailImageIsHidden
+        }
+        
+        cachedThumbnailImage = referenceView.snapshot(afterScreenUpdates: false, with: Self.thumbSize)
+        
+        return cachedThumbnailImage
     }
     
-    init(
-        reference: ViewHierarchyReference,
-        parent: ViewHierarchyListItemViewModelProtocol? = nil,
-        rootDepth: Int,
-        isCollapsed: Bool
-    ) {
-        self.parent = parent
-        self.reference = reference
-        self.rootDepth = rootDepth
-        self._isCollapsed = isCollapsed
+    var hasCachedThumbnailImage: Bool {
+        cachedThumbnailImage != nil
+    }
+    
+    func clearCachedThumbnail() {
+        cachedThumbnailImage = nil
     }
 }
+
+// MARK: - Hashable
 
 extension ViewHierarchyListItemViewModel: Hashable {
     static func == (lhs: ViewHierarchyListItemViewModel, rhs: ViewHierarchyListItemViewModel) -> Bool {
@@ -151,4 +140,14 @@ extension ViewHierarchyListItemViewModel: Hashable {
     func hash(into hasher: inout Hasher) {
         identifier.hash(into: &hasher)
     }
+}
+
+// MARK: - Images
+
+private extension ViewHierarchyListItemViewModel {
+    
+    static let thumbnailImageLostConnection = IconKit.imageOfWifiExlusionMark().withRenderingMode(.alwaysTemplate)
+    
+    static let thumbnailImageIsHidden = IconKit.imageOfEyeSlashFill().withRenderingMode(.alwaysTemplate)
+    
 }

@@ -83,8 +83,10 @@
 		EB7EAAC22529B8B4000001BE /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAC12529B8B4000001BE /* Action.swift */; };
 		EB7EAAF22529BFC0000001BE /* Array+UniqueValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAF12529BFC0000001BE /* Array+UniqueValues.swift */; };
 		EB80AFBB252B570200F0ECD5 /* NSObject+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */; };
+		EB87FD8F253CD827001EA274 /* UIView+Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB87FD8E253CD827001EA274 /* UIView+Snapshot.swift */; };
 		EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */; };
 		EB9729692539C54B004630FC /* PropertyInspectorSectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9729682539C54B004630FC /* PropertyInspectorSectionViewController.swift */; };
+		EB9DD3D4253CC8630054C8BA /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9DD3D3253CC8630054C8BA /* UIImage+Resize.swift */; };
 		EB9ED74B252E4F5900BF7D60 /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9ED74A252E4F5900BF7D60 /* BaseView.swift */; };
 		EBA245AC252878B700D4AFD9 /* ViewHierarchyColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245AB252878B700D4AFD9 /* ViewHierarchyColorScheme.swift */; };
 		EBA245B225287B4300D4AFD9 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA245B125287B4300D4AFD9 /* CustomButton.swift */; };
@@ -293,8 +295,10 @@
 		EB7EAAD92529B90B000001BE /* ActionGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionGroup.swift; sourceTree = "<group>"; };
 		EB7EAAF12529BFC0000001BE /* Array+UniqueValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+UniqueValues.swift"; sourceTree = "<group>"; };
 		EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Create.swift"; sourceTree = "<group>"; };
+		EB87FD8E253CD827001EA274 /* UIView+Snapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Snapshot.swift"; sourceTree = "<group>"; };
 		EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SFSafariViewController+HierarchyInspectableProtocol.swift"; sourceTree = "<group>"; };
 		EB9729682539C54B004630FC /* PropertyInspectorSectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyInspectorSectionViewController.swift; sourceTree = "<group>"; };
+		EB9DD3D3253CC8630054C8BA /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		EB9ED74A252E4F5900BF7D60 /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		EBA245AB252878B700D4AFD9 /* ViewHierarchyColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyColorScheme.swift; sourceTree = "<group>"; };
 		EBA245B125287B4300D4AFD9 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
@@ -685,6 +689,14 @@
 			path = ViewCodes;
 			sourceTree = "<group>";
 		};
+		EB9DD3D2253CC8530054C8BA /* UIImage */ = {
+			isa = PBXGroup;
+			children = (
+				EB9DD3D3253CC8630054C8BA /* UIImage+Resize.swift */,
+			);
+			path = UIImage;
+			sourceTree = "<group>";
+		};
 		EB9ED73F252E4E3800BF7D60 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -715,6 +727,7 @@
 				EB5ED38E2533902700ABDCF7 /* UIView+Animation.swift */,
 				OBJ_22 /* UIView+Convenience.swift */,
 				OBJ_23 /* UIView+HierarchyInspectableView.swift */,
+				EB87FD8E253CD827001EA274 /* UIView+Snapshot.swift */,
 			);
 			path = UIView;
 			sourceTree = "<group>";
@@ -1152,6 +1165,7 @@
 				EBD9DA24252FB4D500851E23 /* UIColor */,
 				EB5ED3852533901100ABDCF7 /* UIControl */,
 				EBC92E1B25332A4A00D7189A /* UIFont */,
+				EB9DD3D2253CC8530054C8BA /* UIImage */,
 				EBD9DA0C252FA14900851E23 /* UILabel */,
 				EBA245E1252881B400D4AFD9 /* UINavigationController */,
 				EB439B442532136F004CCBCA /* UISemanticContentAttribute */,
@@ -1333,6 +1347,7 @@
 				OBJ_69 /* Layer+AdditiveArithmetic.swift in Sources */,
 				EBD9DA01252F919900851E23 /* StepperControl.swift in Sources */,
 				EBD432B1253B008900708C75 /* Manager+ElementInspectorCoordinatorDelegate.swift in Sources */,
+				EB9DD3D4253CC8630054C8BA /* UIImage+Resize.swift in Sources */,
 				OBJ_70 /* Layer+AlertControllerActionable.swift in Sources */,
 				OBJ_71 /* Layer+CustomStringConvertible.swift in Sources */,
 				OBJ_72 /* Layer+Hashable.swift in Sources */,
@@ -1364,6 +1379,7 @@
 				EB15C9222531A53B00D100E6 /* Console.swift in Sources */,
 				EB439BB6253237D0004CCBCA /* UIControl.ContentHorizontalAlignment+CaseIterable.swift in Sources */,
 				EB439C2B25323D12004CCBCA /* UIColor+RGBA.swift in Sources */,
+				EB87FD8F253CD827001EA274 /* UIView+Snapshot.swift in Sources */,
 				EBA7D9D425308FEC00496F23 /* Icon.swift in Sources */,
 				EBD9DA19252FA37500851E23 /* SeparatorView.swift in Sources */,
 				EBC045B92531F6A400C311E6 /* OptionSelectorViewCode.swift in Sources */,

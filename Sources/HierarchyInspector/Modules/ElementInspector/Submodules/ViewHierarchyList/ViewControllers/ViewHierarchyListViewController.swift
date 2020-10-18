@@ -80,8 +80,6 @@ final class ViewHierarchyListViewController: ElementInspectorPanelViewController
         super.viewDidDisappear(animated)
         
         viewModel.shouldDisplayThumbnails = false
-        
-        viewModel.clearAllCachedThumbnails()
     }
     
     override func didReceiveMemoryWarning() {

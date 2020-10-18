@@ -39,6 +39,8 @@ protocol ViewHierarchyListViewModelProtocol {
     func toggleContainer(at indexPath: IndexPath) -> [ViewHierarchyListAction]
     
     func clearAllCachedThumbnails()
+    
+    func clearCachedThumbnail(for indexPath: IndexPath)
 }
 
 final class ViewHierarchyListViewModel: NSObject {
@@ -86,10 +88,6 @@ final class ViewHierarchyListViewModel: NSObject {
         
         updateVisibleChildViews()
     }
-    
-    func clearAllCachedThumbnails() {
-        childViewModels.forEach { $0.cachedReferenceThumbnail = nil}
-    }
 }
 
 extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
@@ -104,6 +102,29 @@ extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
     
     var numberOfRows: Int {
         visibleChildViewModels.count
+    }
+        
+    func clearAllCachedThumbnails() {
+        childViewModels.forEach { $0.clearCachedThumbnail() }
+    }
+    
+    func clearCachedThumbnail(for indexPath: IndexPath) {
+        guard let selectedItemViewModel = itemViewModel(for: indexPath) else {
+            return
+        }
+        
+        for row in indexPath.row...numberOfRows {
+            
+            guard
+                let rowViewModel = itemViewModel(for: IndexPath(row: row, section: .zero)),
+                rowViewModel.relativeDepth > selectedItemViewModel.relativeDepth || rowViewModel === selectedItemViewModel
+            else {
+                return
+            }
+            
+            rowViewModel.clearCachedThumbnail()
+        }
+        
     }
     
     func itemViewModel(for indexPath: IndexPath) -> ViewHierarchyListItemViewModelProtocol? {

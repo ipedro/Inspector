@@ -20,22 +20,15 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     }
     
     private lazy var activityIndicatorView = UIActivityIndicatorView(style: .gray).then {
-        $0.startAnimating()
+        $0.hidesWhenStopped = true
         $0.color = ElementInspector.appearance.tertiaryTextColor
-    }
-    
-    func renderThumbnailImage() {
-        thumbnailWrapperView.subviews.forEach { $0.removeFromSuperview() }
-        
-        guard let referenceThumbnail = viewModel?.thumbnailView else {
-            return
-        }
-        
-        thumbnailWrapperView.installView(referenceThumbnail, .centerXY)
     }
     
     var viewModel: ViewHierarchyListItemViewModelProtocol? {
         didSet {
+            
+            activityIndicatorView.startAnimating()
+            
             // Name
             
             elementNameLabel.text = viewModel?.title
@@ -59,6 +52,10 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
                     return UIFont.preferredFont(forTextStyle: .footnote)
                 }
             }()
+            
+            if viewModel?.hasCachedThumbnailImage == true {
+                displayThumbnailImage()
+            }
             
             accessoryType = viewModel?.showDisclosureIndicator == true ? .detailDisclosureButton : .detailButton
 
@@ -133,6 +130,9 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     }
     
     private lazy var elementNameLabel = UILabel().then {
+        $0.layer.shouldRasterize = true
+        $0.layer.rasterizationScale = UIScreen.main.scale
+        
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.numberOfLines = 0
         $0.adjustsFontSizeToFitWidth = true
@@ -144,6 +144,9 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         textColor: ElementInspector.appearance.secondaryTextColor,
         numberOfLines: 0
     ).then {
+        $0.layer.shouldRasterize = true
+        $0.layer.rasterizationScale = UIScreen.main.scale
+        
         $0.setContentCompressionResistancePriority(.required, for: .vertical)
         $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
         $0.preferredMaxLayoutWidth = 200
@@ -151,7 +154,17 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     
     private lazy var chevronDownIcon = Icon.chevronDownIcon()
     
-    private lazy var thumbnailWrapperView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)).then {
+    private(set) lazy var thumbnailImageView = UIImageView().then {
+        $0.contentMode = .center
+        $0.tintColor   = descriptionLabel.textColor
+    }
+        
+    private lazy var thumbnailContainerView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)).then {
+        $0.installView(thumbnailImageView)
+        
+        $0.layer.shouldRasterize = true
+        $0.layer.rasterizationScale = UIScreen.main.scale
+        
         $0.clipsToBounds = true
         $0.backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
         $0.layer.cornerRadius = ElementInspector.appearance.verticalMargins
@@ -171,16 +184,19 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     private lazy var textStackView = UIStackView(
         axis: .horizontal,
         arrangedSubviews: [
-            thumbnailWrapperView,
+            thumbnailContainerView,
             descriptionLabel
         ],
         spacing: ElementInspector.appearance.verticalMargins / 2
     ).then {
-        $0.heightAnchor.constraint(greaterThanOrEqualToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
         $0.alignment = .top
     }
     
-    func setup() {
+    private lazy var customSelectedBackgroundView = UIView().then {
+        $0.backgroundColor = ElementInspector.appearance.tintColor.withAlphaComponent(0.1)
+    }
+    
+    private func setup() {
         setContentHuggingPriority(.defaultHigh, for: .vertical)
         
         isOpaque = true
@@ -189,14 +205,18 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         contentView.clipsToBounds = true
         
-        showThumbnailLoader()
-        
-        selectedBackgroundView = UIView().then {
-            $0.backgroundColor = ElementInspector.appearance.tintColor.withAlphaComponent(0.1)
-        }
+        selectedBackgroundView = customSelectedBackgroundView
         
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
         
+        setupContainerStackView()
+        
+        setupChevronDownIcon()
+        
+        setupActivityIndicatorView()
+    }
+    
+    private func setupContainerStackView() {
         contentView.installView(
             containerStackView,
             .margins(
@@ -206,7 +226,9 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
                 trailing: ElementInspector.appearance.verticalMargins
             )
         )
-        
+    }
+    
+    private func setupChevronDownIcon() {
         contentView.addSubview(chevronDownIcon)
         
         chevronDownIcon.centerYAnchor.constraint(equalTo: elementNameLabel.centerYAnchor).isActive = true
@@ -215,6 +237,14 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             equalTo: elementNameLabel.leadingAnchor,
             constant: -(ElementInspector.appearance.verticalMargins / 3)
         ).isActive = true
+        
+    }
+    
+    private func setupActivityIndicatorView() {
+        addSubview(activityIndicatorView)
+        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicatorView.centerXAnchor.constraint(equalTo: thumbnailContainerView.centerXAnchor).isActive = true
+        activityIndicatorView.centerYAnchor.constraint(equalTo: thumbnailContainerView.centerYAnchor).isActive = true
     }
     
     override func prepareForReuse() {
@@ -222,12 +252,13 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         viewModel = nil
         
-        showThumbnailLoader()
+        thumbnailImageView.image = nil
+        
+        activityIndicatorView.startAnimating()
     }
     
-    private func showThumbnailLoader() {
-        thumbnailWrapperView.subviews.forEach { $0.removeFromSuperview() }
-        
-        thumbnailWrapperView.installView(activityIndicatorView, .centerXY)
+    func displayThumbnailImage() {
+        thumbnailImageView.image = viewModel?.thumbnailImage
+        activityIndicatorView.stopAnimating()
     }
 }
