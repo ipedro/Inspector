@@ -38,6 +38,7 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             return cell.renderThumbnailImage()
         }
         
+        #warning("migrate to operation queue")
         let delayInMilliseconds: Int = {
             
             let uncachedVisibleRows = tableView.indexPathsForVisibleRows?.filter {

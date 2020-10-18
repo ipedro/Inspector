@@ -23,8 +23,6 @@ final class TextInputControl: BaseFormControl {
         
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.contentView.addArrangedSubview(textField)
-        
-        $0.setContentHuggingPriority(.required, for: .horizontal)
     }
     
     override var isEnabled: Bool {

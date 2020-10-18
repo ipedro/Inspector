@@ -18,6 +18,7 @@ extension ViewHierarchyListViewController: UITableViewDataSourcePrefetching {
                 return
             }
             
+            #warning("migrate to operation queue")
             let delayInMilliseconds: Int = {
                 
                 let uncachedVisibleRows = tableView.indexPathsForVisibleRows?.filter {

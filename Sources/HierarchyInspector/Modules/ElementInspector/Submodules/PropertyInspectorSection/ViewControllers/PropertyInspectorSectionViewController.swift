@@ -172,12 +172,16 @@ final class PropertyInspectorSectionViewController: UIViewController {
 extension PropertyInspectorSectionViewController {
         
     @objc private func valueChanged(_ sender: AnyObject) {
-        handleChange(with: sender)
+        #warning("migrate to operation queue")
+        DispatchQueue.main.async { [weak self] in
+            self?.handleChange(with: sender)
+        }
     }
     
     private func handleChange(with sender: AnyObject) {
         for (property, inputView) in self.inputViews where inputView === sender {
-            self.delegate?.propertyInspectorSectionViewController(self, willUpdate:property)
+            
+            delegate?.propertyInspectorSectionViewController(self, willUpdate:property)
             
             switch (property, inputView) {
             case let (.stepper(_, _, _, _, _, handler), stepperControl as StepperControl):
@@ -202,19 +206,21 @@ extension PropertyInspectorSectionViewController {
                 handler?(imagePicker.selectedImage)
                 
             case (.separator, _),
-                 (.subSection, _),
-                 (.stepper, _),
+                 (.subSection, _):
+                 break
+                
+            case (.stepper, _),
                  (.colorPicker, _),
                  (.toggleButton, _),
                  (.segmentedControl, _),
                  (.optionsList, _),
                  (.textInput, _),
                  (.imagePicker, _):
+                assertionFailure("shouldn't happen")
                 break
             }
             
-            self.delegate?.propertyInspectorSectionViewController(self, didUpdate: property)
-            
+            delegate?.propertyInspectorSectionViewController(self, didUpdate: property)
         }
     }
     

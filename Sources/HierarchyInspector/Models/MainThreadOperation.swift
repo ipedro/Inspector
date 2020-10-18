@@ -19,8 +19,13 @@ final class MainThreadOperation: Operation {
     }
     
     override func main() {
-        DispatchQueue.main.async {
-            self.closure()
+        guard Thread.isMainThread else {
+            DispatchQueue.main.sync {
+                self.closure()
+            }
+            return
         }
+        
+        closure()
     }
 }

@@ -58,7 +58,7 @@ final class ColorPicker: BaseFormControl {
     // MARK: - Init
     
     init(title: String?, color: UIColor?) {
-        self.selectedColor = color ?? .clear
+        self.selectedColor = color
         
         super.init(title: title)
     }
@@ -92,7 +92,7 @@ final class ColorPicker: BaseFormControl {
     private func didUpdateColor() {
         colorDisplayControl.color = selectedColor
         
-        colorDisplayLabel.text = selectedColor?.hexDescription ?? "–"
+        colorDisplayLabel.text = selectedColor?.hexDescription ?? "No color"
     }
     
     @objc private func tapColor() {

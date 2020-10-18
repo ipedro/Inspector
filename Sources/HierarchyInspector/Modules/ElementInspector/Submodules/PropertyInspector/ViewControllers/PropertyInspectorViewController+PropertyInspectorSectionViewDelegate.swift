@@ -11,11 +11,13 @@ import UIKit
 
 extension PropertyInspectorViewController: PropertyInspectorSectionViewControllerDelegate {
     
-    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, willUpdate property: PropertyInspectorSectionProperty) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
+                                                willUpdate property: PropertyInspectorSectionProperty) {
         snapshotViewCode.stopLiveUpdatingSnaphost()
     }
     
-    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didUpdate property: PropertyInspectorSectionProperty) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
+                                                didUpdate property: PropertyInspectorSectionProperty) {
         
         children.forEach {
             guard let propertySectionViewController = $0 as? PropertyInspectorSectionViewController else {
@@ -30,7 +32,8 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewControlle
         }
     }
     
-    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didToggle isCollapsed: Bool) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
+                                                didToggle isCollapsed: Bool) {
         snapshotViewCode.stopLiveUpdatingSnaphost()
         
         UIView.animate(
@@ -69,19 +72,22 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewControlle
         
     }
     
-    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didTap imagePicker: ImagePicker) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
+                                                didTap imagePicker: ImagePicker) {
         selectedImagePicker = imagePicker
         
         delegate?.propertyInspectorViewController(self, didTap: imagePicker)
     }
     
-    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didTap colorPicker: ColorPicker) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
+                                                didTap colorPicker: ColorPicker) {
         selectedColorPicker = colorPicker
         
         delegate?.propertyInspectorViewController(self, didTap: colorPicker)
     }
     
-    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController, didTap optionSelector: OptionSelector) {
+    func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
+                                                didTap optionSelector: OptionSelector) {
         selectedOptionSelector = optionSelector
         
         delegate?.propertyInspectorViewController(self, didTap: optionSelector)

@@ -64,10 +64,6 @@ final class ImagePicker: BaseFormControl {
         
         $0.clipsToBounds = true
         
-        $0.setContentHuggingPriority(.required, for: .horizontal)
-        
-        $0.contentView.spacing = ElementInspector.appearance.verticalMargins
-        
         $0.contentView.addArrangedSubview(imageNameLabel)
         
         $0.contentView.addArrangedSubview(imageContainerView)
