@@ -24,11 +24,12 @@
 		EB048F5C2539D7B300A91D5A /* PropertyInspectorSectionViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B7E25321644004CCBCA /* PropertyInspectorSectionViewModelProtocol.swift */; };
 		EB0B95192538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B95182538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift */; };
 		EB0B95232538897500A35DE4 /* ViewHierarchyListViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B95222538897500A35DE4 /* ViewHierarchyListViewController+UITableViewDelegate.swift */; };
-		EB0B952D253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B952C253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift */; };
 		EB0B953B25388A2700A35DE4 /* PropertyInspectorViewController+PropertyInspectorSectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B953A25388A2700A35DE4 /* PropertyInspectorViewController+PropertyInspectorSectionViewDelegate.swift */; };
 		EB0B956B2538944800A35DE4 /* UISwitch.Style+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B956A2538944800A35DE4 /* UISwitch.Style+CaseIterable.swift */; };
 		EB0B95752538945800A35DE4 /* UISwitch.Style+SegmentedControlDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B95742538945800A35DE4 /* UISwitch.Style+SegmentedControlDisplayable.swift */; };
 		EB15C9222531A53B00D100E6 /* Console.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB15C9212531A53B00D100E6 /* Console.swift */; };
+		EB164FE7253CBD3800DC05E9 /* MainThreadAsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB164FE6253CBD3800DC05E9 /* MainThreadAsyncOperation.swift */; };
+		EB164FF5253CC0E100DC05E9 /* OperationQueueManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB164FF4253CC0E100DC05E9 /* OperationQueueManagerProtocol.swift */; };
 		EB2629A82539DF3E00AE43AD /* NSTextAlignment+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2629A72539DF3E00AE43AD /* NSTextAlignment+CaseIterable.swift */; };
 		EB2629B22539DF5300AE43AD /* NSTextAlignment+SegmentedControlDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2629B12539DF5300AE43AD /* NSTextAlignment+SegmentedControlDisplayable.swift */; };
 		EB2629D8253A502F00AE43AD /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2629D7253A502F00AE43AD /* Manager.swift */; };
@@ -230,11 +231,12 @@
 /* Begin PBXFileReference section */
 		EB0B95182538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyListViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
 		EB0B95222538897500A35DE4 /* ViewHierarchyListViewController+UITableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyListViewController+UITableViewDelegate.swift"; sourceTree = "<group>"; };
-		EB0B952C253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift"; sourceTree = "<group>"; };
 		EB0B953A25388A2700A35DE4 /* PropertyInspectorViewController+PropertyInspectorSectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PropertyInspectorViewController+PropertyInspectorSectionViewDelegate.swift"; sourceTree = "<group>"; };
 		EB0B956A2538944800A35DE4 /* UISwitch.Style+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISwitch.Style+CaseIterable.swift"; sourceTree = "<group>"; };
 		EB0B95742538945800A35DE4 /* UISwitch.Style+SegmentedControlDisplayable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISwitch.Style+SegmentedControlDisplayable.swift"; sourceTree = "<group>"; };
 		EB15C9212531A53B00D100E6 /* Console.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Console.swift; sourceTree = "<group>"; };
+		EB164FE6253CBD3800DC05E9 /* MainThreadAsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainThreadAsyncOperation.swift; sourceTree = "<group>"; };
+		EB164FF4253CC0E100DC05E9 /* OperationQueueManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationQueueManagerProtocol.swift; sourceTree = "<group>"; };
 		EB2629A72539DF3E00AE43AD /* NSTextAlignment+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTextAlignment+CaseIterable.swift"; sourceTree = "<group>"; };
 		EB2629B12539DF5300AE43AD /* NSTextAlignment+SegmentedControlDisplayable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTextAlignment+SegmentedControlDisplayable.swift"; sourceTree = "<group>"; };
 		EB2629D7253A502F00AE43AD /* Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
@@ -1011,7 +1013,6 @@
 			children = (
 				EBF88CBE252DA1E300AE9F12 /* ViewHierarchyListViewController.swift */,
 				EB0B95182538896A00A35DE4 /* ViewHierarchyListViewController+UITableViewDataSource.swift */,
-				EB0B952C253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift */,
 				EB0B95222538897500A35DE4 /* ViewHierarchyListViewController+UITableViewDelegate.swift */,
 			);
 			path = ViewControllers;
@@ -1041,6 +1042,7 @@
 				EB7EAAC12529B8B4000001BE /* Action.swift */,
 				EB7EAAD92529B90B000001BE /* ActionGroup.swift */,
 				EB15C9212531A53B00D100E6 /* Console.swift */,
+				EB164FE6253CBD3800DC05E9 /* MainThreadAsyncOperation.swift */,
 				EBD43226253AF4AF00708C75 /* MainThreadOperation.swift */,
 				EBA245AB252878B700D4AFD9 /* ViewHierarchyColorScheme.swift */,
 				OBJ_29 /* ViewHierarchyLayer.swift */,
@@ -1054,17 +1056,18 @@
 			isa = PBXGroup;
 			children = (
 				OBJ_33 /* Actionable.swift */,
+				EBD43278253AFAE300708C75 /* AsyncOperationProtocol.swift */,
 				OBJ_34 /* Create.swift */,
 				OBJ_36 /* HierarchyInspectableProtocol.swift */,
 				OBJ_35 /* HierarchyInspectorKeyCommandActionable.swift */,
-				OBJ_38 /* LayerManagerProtocol.swift */,
 				OBJ_39 /* HierarchyInspectorPresentable.swift */,
 				EBD4323E253AF7F900708C75 /* LayerActionProtocol.swift */,
 				EBA246362528ECAA00D4AFD9 /* LayerConstructorProtocol.swift */,
+				OBJ_38 /* LayerManagerProtocol.swift */,
 				EBD4326A253AFA4F00708C75 /* LayerReferenceManagerProtocol.swift */,
 				OBJ_40 /* LayerViewProtocol.swift */,
+				EB164FF4253CC0E100DC05E9 /* OperationQueueManagerProtocol.swift */,
 				OBJ_37 /* ViewHierarchyProtocol.swift */,
-				EBD43278253AFAE300708C75 /* AsyncOperationProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -1371,6 +1374,7 @@
 				EBD9DA1F252FA60400851E23 /* ColorPicker.swift in Sources */,
 				OBJ_85 /* Texts.swift in Sources */,
 				OBJ_86 /* ViewHierarchySnapshot.swift in Sources */,
+				EB164FE7253CBD3800DC05E9 /* MainThreadAsyncOperation.swift in Sources */,
 				EBD9DA4E2530414700851E23 /* IconKit.swift in Sources */,
 				EBD9DA26252FB4DF00851E23 /* UIColor+Hex.swift in Sources */,
 				EB439BED253238A4004CCBCA /* UIStackView.Distribution+CaseIterable.swift in Sources */,
@@ -1379,7 +1383,6 @@
 				EB5DB3A4252D09D400CE0398 /* UIStackView+Init.swift in Sources */,
 				EB324619252B1E6100406111 /* ViewHierarchyReference.swift in Sources */,
 				EB048F5C2539D7B300A91D5A /* PropertyInspectorSectionViewModelProtocol.swift in Sources */,
-				EB0B952D253889D800A35DE4 /* ViewHierarchyListViewController+UITableViewDataSourcePrefetching.swift in Sources */,
 				EB439B50253213AB004CCBCA /* UISemanticContentAttribute+CaseIterable.swift in Sources */,
 				EBD43235253AF7CA00708C75 /* ViewHierarchyInspectorCoordinator+HierarchyLayerActionProtocol.swift in Sources */,
 				EBD9DA0E252FA15500851E23 /* UILabel+Init.swift in Sources */,
@@ -1408,6 +1411,7 @@
 				OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */,
 				EBF88CDF252DA56100AE9F12 /* ElementInspectorCoordinator.swift in Sources */,
 				EBBE8C4C25398FAD00CD699D /* PropertyInspectorSectionUISliderViewModel.swift in Sources */,
+				EB164FF5253CC0E100DC05E9 /* OperationQueueManagerProtocol.swift in Sources */,
 				EBD4326B253AFA4F00708C75 /* LayerReferenceManagerProtocol.swift in Sources */,
 				EB2629B22539DF5300AE43AD /* NSTextAlignment+SegmentedControlDisplayable.swift in Sources */,
 				EB439B4625321389004CCBCA /* UISemanticContentAttribute+CustomStringConvertible.swift in Sources */,

@@ -7,8 +7,7 @@
 
 import UIKit
 
-protocol PropertyInspectorSectionViewControllerDelegate: AnyObject {
-    func addOperationToQueue(_ operation: MainThreadOperation)
+protocol PropertyInspectorSectionViewControllerDelegate: OperationQueueManagerProtocol {
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
                                                 didTap colorPicker: ColorPicker)

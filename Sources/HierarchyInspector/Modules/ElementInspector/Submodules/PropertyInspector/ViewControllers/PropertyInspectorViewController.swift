@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol PropertyInspectorViewControllerDelegate: AnyObject {
+protocol PropertyInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     
     func propertyInspectorViewController(_ viewController: PropertyInspectorViewController,
                                          didTap colorPicker: ColorPicker)
@@ -40,7 +40,7 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     
     var selectedOptionSelector: OptionSelector?
     
-    private var displayLink: CADisplayLink? {
+    private(set) var displayLink: CADisplayLink? {
         didSet {
             if let oldLink = oldValue {
                 oldLink.invalidate()
@@ -53,10 +53,6 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     }
     
     private var calculatedLastFrame = 0
-    
-    private lazy var operationQueue = OperationQueue.main.then {
-        $0.isSuspended = true
-    }
     
     private lazy var viewCode = PropertyInspectorViewCode()
     
@@ -94,10 +90,9 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         
         loadSections()
     }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        enableOperationQueue(true, cancelPrevious: true)
         
         startLiveUpdatingSnaphost()
     }
@@ -106,8 +101,6 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         super.viewWillDisappear(animated)
         
         stopLiveUpdatingSnaphost()
-        
-        enableOperationQueue(false, cancelPrevious: true)
     }
     
     override func didMove(toParent parent: UIViewController?) {
@@ -117,7 +110,6 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
             return
         }
         
-        enableOperationQueue(false, cancelPrevious: true)
         stopLiveUpdatingSnaphost()
     }
     
@@ -126,23 +118,11 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     }
     
     deinit {
-        enableOperationQueue(false, cancelPrevious: true)
         stopLiveUpdatingSnaphost()
     }
 }
 
 extension PropertyInspectorViewController {
-    func addOperationToQueue(_ operation: MainThreadOperation) {
-        operationQueue.addOperation(operation)
-    }
-    
-    func enableOperationQueue(_ isEnabled: Bool, cancelPrevious: Bool = false) {
-        if cancelPrevious {
-            operationQueue.cancelAllOperations()
-        }
-        
-        operationQueue.isSuspended = !isEnabled
-    }
     
     private func startLiveUpdatingSnaphost() {
         displayLink = CADisplayLink(
@@ -171,7 +151,7 @@ extension PropertyInspectorViewController {
             self?.snapshotViewCode.updateSnapshot(afterScreenUpdates: false)
         }
         
-        operationQueue.addOperation(operation)
+        delegate?.addOperationToQueue(operation)
     }
 }
 
@@ -221,7 +201,7 @@ private extension PropertyInspectorViewController {
     }
     
     @objc func toggleLayerInspectorViewsVisibility() {
-        DispatchQueue.main.async { [weak self] in
+        let operation = MainThreadAsyncOperation(name: "toggle layers") { [weak self] in
             guard
                 let self = self,
                 let delegate = self.delegate
@@ -236,6 +216,20 @@ private extension PropertyInspectorViewController {
             
             delegate.propertyInspectorViewController(self, showLayerInspectorViewsInside: self.viewModel.reference)
         }
+        
+        delegate?.addOperationToQueue(operation)
     }
     
+}
+
+// MARK: - QueueManagerProtocol
+
+extension PropertyInspectorViewController: OperationQueueManagerProtocol {
+    func suspendQueue(_ isSuspended: Bool) {
+        delegate?.suspendQueue(isSuspended)
+    }
+    
+    func addOperationToQueue(_ operation: MainThreadOperation) {
+        delegate?.addOperationToQueue(operation)
+    }
 }

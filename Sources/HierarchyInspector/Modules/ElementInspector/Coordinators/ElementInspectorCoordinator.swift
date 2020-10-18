@@ -23,6 +23,10 @@ final class ElementInspectorCoordinator: NSObject {
     
     let rootReference: ViewHierarchyReference
     
+    private(set) lazy var operationQueue = OperationQueue.main.then {
+        $0.maxConcurrentOperationCount = 1
+    }
+    
     init(reference: ViewHierarchyReference) {
         self.rootReference = reference
     }
@@ -87,6 +91,13 @@ final class ElementInspectorCoordinator: NSObject {
         navigationController
     }
     
+    func finish() {
+        operationQueue.cancelAllOperations()
+        operationQueue.isSuspended = true
+        
+        delegate?.elementInspectorCoordinator(self, didFinishWith: rootReference)
+    }
+    
     func makeElementInspectorViewController(with reference: ViewHierarchyReference, showDismissBarButton: Bool, selectedPanel: ElementInspectorPanel?) -> ElementInspectorViewController {
         let viewModel = ElementInspectorViewModel(
             reference: reference,
@@ -115,7 +126,7 @@ extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate 
             return
         }
         
-        delegate?.elementInspectorCoordinator(self, didFinishWith: rootReference)
+        finish()
     }
 }
 
@@ -128,7 +139,7 @@ extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
             return
         }
         
-        delegate?.elementInspectorCoordinator(self, didFinishWith: rootReference)
+        finish()
     }
     
 }
@@ -174,6 +185,8 @@ private extension ElementInspectorCoordinator {
     
 }
 
+// MARK: - UIDocumentPickerDelegate
+
 extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
     
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
@@ -191,8 +204,24 @@ extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
     }
     
     func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-        controller.dismiss(animated: true) {
-            //
-        }
+        controller.dismiss(animated: true)
     }
+}
+
+// MARK: - OperationQueueManagerProtocol
+
+extension ElementInspectorCoordinator: OperationQueueManagerProtocol {
+    
+    func addOperationToQueue(_ operation: MainThreadOperation) {
+        guard operationQueue.operations.contains(operation) == false else {
+            return
+        }
+        
+        operationQueue.addOperation(operation)
+    }
+    
+    func suspendQueue(_ isSuspended: Bool) {
+        operationQueue.isSuspended = isSuspended
+    }
+    
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol ElementInspectorViewControllerDelegate: AnyObject {
+protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
                                         viewControllerForPanel panel: ElementInspectorPanel,
                                         with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
@@ -71,6 +71,17 @@ final class ElementInspectorViewController: UIViewController {
         $0.dismissBarButtonItem.action = #selector(close)
     }
     
+    // MARK: - Init
+    
+    static func create(viewModel: ElementInspectorViewModelProtocol) -> ElementInspectorViewController {
+        let viewController = ElementInspectorViewController()
+        viewController.viewModel = viewModel
+        
+        return viewController
+    }
+    
+    // MARK: - Lifecycle
+    
     override func loadView() {
         view = viewCode
     }
@@ -99,6 +110,8 @@ final class ElementInspectorViewController: UIViewController {
         navigationItem.titleView = viewCode.segmentedControl
     }
     
+    // MARK: - Content Size
+    
     override func size(forChildContentContainer container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
         let newSize = calculatePreferredContentSize(with: container)
         
@@ -118,28 +131,28 @@ final class ElementInspectorViewController: UIViewController {
         
         return containerViewController.preferredContentSize
     }
-    
-    static func create(viewModel: ElementInspectorViewModelProtocol) -> ElementInspectorViewController {
-        let viewController = ElementInspectorViewController()
-        viewController.viewModel = viewModel
-        
-        return viewController
-    }
-    
 }
 
 // MARK: - Actions
 
 extension ElementInspectorViewController {
     @objc private func didChangeSelectedSegmentIndex() {
-        guard
-            viewCode.segmentedControl.selectedSegmentIndex != UISegmentedControl.noSegment,
-            let panel = ElementInspectorPanel(rawValue: viewCode.segmentedControl.selectedSegmentIndex)
-        else {
-            return removeCurrentPanel()
-        }
-        
-        installPanel(panel)
+        delegate?.addOperationToQueue(MainThreadOperation(name: UUID().uuidString, closure: { [weak self] in
+            guard
+                let segmentedControl = self?.viewCode.segmentedControl,
+                segmentedControl.selectedSegmentIndex != UISegmentedControl.noSegment,
+                let panel = ElementInspectorPanel(rawValue: segmentedControl.selectedSegmentIndex)
+            else {
+                self?.removeCurrentPanel()
+                
+                return
+            }
+            
+            // wait for segmented control animation to finish
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) { [weak self] in
+                self?.installPanel(panel)
+            }
+        }))
     }
     
     @discardableResult

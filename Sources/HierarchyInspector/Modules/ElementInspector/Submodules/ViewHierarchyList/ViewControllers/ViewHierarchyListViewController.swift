@@ -7,23 +7,13 @@
 
 import UIKit
 
-protocol ViewHierarchyListViewControllerDelegate: AnyObject {
+protocol ViewHierarchyListViewControllerDelegate: OperationQueueManagerProtocol {
     func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController, didSelectInfo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference)
     
     func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController, didSegueTo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference)
 }
 
 final class ViewHierarchyListViewController: ElementInspectorPanelViewController {
-    
-    func calculatePreferredContentSize() -> CGSize {
-        let contentSize  = viewCode.tableView.contentSize
-        let contentInset = viewCode.tableView.contentInset
-        
-        return CGSize(
-            width: min(UIScreen.main.bounds.width, 414),
-            height: contentSize.height + contentInset.top + contentInset.bottom
-        )
-    }
     
     // MARK: - Properties
     
@@ -43,10 +33,9 @@ final class ViewHierarchyListViewController: ElementInspectorPanelViewController
     ).then {
         $0.tableView.dataSource = self
         $0.tableView.delegate   = self
-        $0.tableView.prefetchDataSource = self
     }
     
-    private(set) var viewModel: ViewHierarchyListViewModelProtocol!
+    var viewModel: ViewHierarchyListViewModelProtocol!
     
     // MARK: - Init
     
@@ -82,13 +71,33 @@ final class ViewHierarchyListViewController: ElementInspectorPanelViewController
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        viewModel.shouldDisplayThumbnails = true
+        
         viewCode.tableView.reloadData()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        viewModel.shouldDisplayThumbnails = false
+        
+        viewModel.clearAllCachedThumbnails()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         
         viewModel.clearAllCachedThumbnails()
+    }
+    
+    func calculatePreferredContentSize() -> CGSize {
+        let contentSize  = viewCode.tableView.contentSize
+        let contentInset = viewCode.tableView.contentInset
+        
+        return CGSize(
+            width: min(UIScreen.main.bounds.width, 414),
+            height: contentSize.height + contentInset.top + contentInset.bottom
+        )
     }
     
 }

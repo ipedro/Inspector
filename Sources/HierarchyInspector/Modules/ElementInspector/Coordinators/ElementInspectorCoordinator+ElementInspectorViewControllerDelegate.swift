@@ -13,6 +13,9 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
                                         viewControllerForPanel panel: ElementInspectorPanel,
                                         with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {
+        
+        operationQueue.cancelAllOperations()
+        
         switch panel {
         
         case .propertyInspector:
@@ -29,12 +32,9 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
     }
     
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController) {
+        
         navigationController.dismiss(animated: true) { [weak self] in
-            guard let self = self else {
-                return
-            }
-            
-            self.delegate?.elementInspectorCoordinator(self, didFinishWith: self.rootReference)
+            self?.finish()
         }
     }
 }

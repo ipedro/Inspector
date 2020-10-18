@@ -27,6 +27,8 @@ protocol ViewHierarchyListViewModelProtocol {
     
     var numberOfRows: Int { get }
     
+    var shouldDisplayThumbnails: Bool { get set }
+    
     func title(for section: Int) -> String?
     
     func itemViewModel(for indexPath: IndexPath) -> ViewHierarchyListItemViewModelProtocol?
@@ -41,6 +43,8 @@ protocol ViewHierarchyListViewModelProtocol {
 
 final class ViewHierarchyListViewModel: NSObject {
     let rootReference: ViewHierarchyReference
+    
+    var shouldDisplayThumbnails: Bool = false
     
     private(set) var childViewModels: [ViewHierarchyListItemViewModel] {
         didSet {
@@ -89,6 +93,7 @@ final class ViewHierarchyListViewModel: NSObject {
 }
 
 extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
+    
     var title: String {
         "More info"
     }

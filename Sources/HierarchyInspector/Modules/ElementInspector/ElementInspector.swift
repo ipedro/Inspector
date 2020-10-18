@@ -9,6 +9,8 @@ import UIKit
 
 enum ElementInspector {
     
+    static let animationDuration: TimeInterval = 0.2
+    
     struct Appearance {
         
         let horizontalMargins: CGFloat = 26

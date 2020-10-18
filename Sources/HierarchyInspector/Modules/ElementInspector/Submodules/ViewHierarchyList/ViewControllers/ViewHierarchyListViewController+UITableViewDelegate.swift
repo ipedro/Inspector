@@ -23,68 +23,45 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
             return
         }
         
-        delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference, from: viewModel.rootReference)
-        
-        viewModel.clearAllCachedThumbnails()
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let cell = cell as? ViewHierarchyListTableViewCodeCell else {
-            return
-        }
-        
-        guard let viewModel = cell.viewModel, viewModel.hasCachedThumbnailView == false else {
-            Console.print("cell", indexPath, "using cached view")
-            return cell.renderThumbnailImage()
-        }
-        
-        #warning("migrate to operation queue")
-        let delayInMilliseconds: Int = {
-            
-            let uncachedVisibleRows = tableView.indexPathsForVisibleRows?.filter {
-                self.viewModel.itemViewModel(for: $0)?.hasCachedThumbnailView == false
-            }
-            
-            let itemDelay = 300
-            
-            guard let firstUncachedIndexPath = uncachedVisibleRows?.first else { return itemDelay }
-            
-            return itemDelay * (indexPath.row - firstUncachedIndexPath.row + 1)
-        }()
-        
-        Console.print("cell \(indexPath)", "delay: \(delayInMilliseconds)")
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(delayInMilliseconds)) {
-            cell.renderThumbnailImage()
-        }
+        self.delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference, from: self.viewModel.rootReference)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
-            return
-        }
-
-        if itemViewModel.showDisclosureIndicator {
-            
-            delegate?.viewHierarchyListViewController(
-                self,
-                didSegueTo: itemViewModel.reference,
-                from: viewModel.rootReference
-            )
-            
-            viewModel.clearAllCachedThumbnails()
-            return
-        }
-        
         DispatchQueue.main.async {
             tableView.deselectRow(at: indexPath, animated: true)
         }
         
+        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
+            return
+        }
+        
+        guard itemViewModel.showDisclosureIndicator else {
+            return toggleContainer(at: indexPath)
+        }
+        
+        delegate?.viewHierarchyListViewController(self, didSegueTo: itemViewModel.reference, from: viewModel.rootReference)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard
+            viewModel.shouldDisplayThumbnails,
+            let cell = cell as? ViewHierarchyListTableViewCodeCell
+        else {
+            return
+        }
+
+        let thumbnailOperation = MainThreadAsyncOperation(name: "render thumb for row \(indexPath.row)") {
+            cell.renderThumbnailImage()
+        }
+
+        delegate?.addOperationToQueue(thumbnailOperation)
+    }
+    
+    private func toggleContainer(at indexPath: IndexPath) {
         let actions = viewModel.toggleContainer(at: indexPath)
         
         updateTableView(indexPath, with: actions)
     }
-    
 }
 
 // MARK: - Helpers
@@ -96,7 +73,13 @@ private extension ViewHierarchyListViewController {
             return
         }
         
+        delegate?.suspendQueue(true)
+        
+        viewModel.shouldDisplayThumbnails = false
+        
         let tableView = viewCode.tableView
+        
+        var insertedIndexPaths = [IndexPath]()
         
         if let cell = tableView.cellForRow(at: indexPath) as? ViewHierarchyListTableViewCodeCell {
             cell.toggleCollapse(animated: true)
@@ -106,31 +89,58 @@ private extension ViewHierarchyListViewController {
             
             actions.forEach {
                 switch $0 {
-                case let .inserted(insertIndexPaths):
-                    tableView.insertRows(at: insertIndexPaths, with: .top)
+                case let .inserted(indexPaths):
+                    insertedIndexPaths.append(contentsOf: indexPaths)
                     
-                case let .deleted(deleteIndexPaths):
-                    tableView.deleteRows(at: deleteIndexPaths, with: .top)
+                    tableView.insertRows(at: indexPaths, with: .top)
+                    
+                case let .deleted(indexPaths):
+                    tableView.deleteRows(at: indexPaths, with: .top)
                 }
             }
             
         },
         completion: { [weak self] _ in
             
-            UIView.animate(withDuration: 0.25) {
+            self?.updatePreferredContentSize()
+            
+            self?.updateVisibleRowsBackgroundColor { [weak self] _ in
+            
+                self?.viewModel.shouldDisplayThumbnails = true
                 
-                tableView.indexPathsForVisibleRows?.forEach { indexPath in
-                    guard let cell = tableView.cellForRow(at: indexPath) as? ViewHierarchyListTableViewCodeCell else {
+                self?.delegate?.suspendQueue(false)
+                
+                insertedIndexPaths.forEach {
+                    guard let cell = tableView.cellForRow(at: $0) as? ViewHierarchyListTableViewCodeCell else {
+                        return
+                    }
+                    
+                    let thumbnailOperation = MainThreadAsyncOperation(name: "render thumb for row \(indexPath.row)") {
+                        cell.renderThumbnailImage()
+                    }
+                    
+                    self?.delegate?.addOperationToQueue(thumbnailOperation)
+                }
+            }
+            
+        })
+    }
+    
+    func updateVisibleRowsBackgroundColor(_ completion: ((Bool) -> Void)?) {
+        UIView.animate(
+            withDuration: ElementInspector.animationDuration,
+            animations: { [weak self] in
+            
+                self?.viewCode.tableView.indexPathsForVisibleRows?.forEach { indexPath in
+                    guard let cell = self?.viewCode.tableView.cellForRow(at: indexPath) as? ViewHierarchyListTableViewCodeCell else {
                         return
                     }
                     
                     cell.isEvenRow = indexPath.row % 2 == 0
                 }
-                
-            }
             
-            self?.updatePreferredContentSize()
-            
-        })
+            },
+            completion: completion
+        )
     }
 }

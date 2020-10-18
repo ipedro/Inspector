@@ -12,7 +12,8 @@ final class ViewHierarchyListViewCode: BaseView {
     private(set) lazy var tableView = UITableView().then {
         $0.register(ViewHierarchyListTableViewCodeCell.self)
         
-        $0.backgroundColor    = nil
+        $0.backgroundColor    = backgroundColor
+        $0.isOpaque           = true
         $0.rowHeight          = UITableView.automaticDimension
         $0.tableFooterView    = UIView()
         $0.separatorStyle     = .none

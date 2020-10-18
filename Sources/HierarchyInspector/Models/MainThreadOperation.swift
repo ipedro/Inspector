@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class MainThreadOperation: Operation {
+class MainThreadOperation: Operation {
     let closure: Closure
     
     init(name: String, closure: @escaping Closure) {
@@ -26,6 +26,6 @@ final class MainThreadOperation: Operation {
             return
         }
         
-        closure()
+        self.closure()
     }
 }

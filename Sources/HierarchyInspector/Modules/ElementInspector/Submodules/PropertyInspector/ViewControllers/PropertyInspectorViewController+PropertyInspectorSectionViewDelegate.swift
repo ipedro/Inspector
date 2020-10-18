@@ -13,7 +13,7 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewControlle
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
                                                 willUpdate property: PropertyInspectorSectionProperty) {
-        enableOperationQueue(false)
+        displayLink?.isPaused = true
     }
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
@@ -23,12 +23,12 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewControlle
             ($0 as? PropertyInspectorSectionViewController)?.updateValues()
         }
         
-        enableOperationQueue(true)
+        displayLink?.isPaused = false
     }
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
                                                 didToggle isCollapsed: Bool) {
-        enableOperationQueue(false)
+        displayLink?.isPaused = true
         
         UIView.animate(
             withDuration: 0.4,
@@ -60,7 +60,7 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewControlle
                 
             },
             completion: { [weak self] _ in
-                self?.enableOperationQueue(true)
+                self?.displayLink?.isPaused = false
             }
         )
         

@@ -120,7 +120,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         }
         
         UIView.animate(
-            withDuration: 0.25,
+            withDuration: ElementInspector.animationDuration,
             delay: 0,
             options: [.beginFromCurrentState, .curveEaseInOut],
             animations: { [weak self] in

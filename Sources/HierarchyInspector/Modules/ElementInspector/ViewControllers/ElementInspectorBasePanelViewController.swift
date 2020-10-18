@@ -8,6 +8,9 @@
 import UIKit
 
 class ElementInspectorBasePanelViewController: UIViewController {
+    
+    // MARK: - Layout
+    
     private var needsLayout = true
     
     override func viewDidLayoutSubviews() {
