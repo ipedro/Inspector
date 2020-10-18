@@ -40,6 +40,24 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     
     var selectedOptionSelector: OptionSelector?
     
+    private var displayLink: CADisplayLink? {
+        didSet {
+            if let oldLink = oldValue {
+                oldLink.invalidate()
+            }
+            
+            if let newLink = displayLink {
+                newLink.add(to: .current, forMode: .default)
+            }
+        }
+    }
+    
+    private var calculatedLastFrame = 0
+    
+    private lazy var operationQueue = OperationQueue.main.then {
+        $0.isSuspended = true
+    }
+    
     private lazy var viewCode = PropertyInspectorViewCode()
     
     private(set) lazy var snapshotViewCode = PropertyInspectorViewThumbnailSectionView(
@@ -79,13 +97,17 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        snapshotViewCode.startLiveUpdatingSnaphost()
+        enableOperationQueue(true, cancelPrevious: true)
+        
+        startLiveUpdatingSnaphost()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        snapshotViewCode.stopLiveUpdatingSnaphost()
+        stopLiveUpdatingSnaphost()
+        
+        enableOperationQueue(false, cancelPrevious: true)
     }
     
     override func didMove(toParent parent: UIViewController?) {
@@ -95,22 +117,61 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
             return
         }
         
-        snapshotViewCode.stopLiveUpdatingSnaphost()
+        enableOperationQueue(false, cancelPrevious: true)
+        stopLiveUpdatingSnaphost()
     }
     
     func calculatePreferredContentSize() -> CGSize {
-        viewCode.contentView.systemLayoutSizeFitting(
-            CGSize(
-                width: min(UIScreen.main.bounds.width, 414),
-                height: 0
-            ),
-            withHorizontalFittingPriority: .defaultHigh,
-            verticalFittingPriority: .fittingSizeLevel
-        )
+        viewCode.contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
     }
     
     deinit {
-        snapshotViewCode.stopLiveUpdatingSnaphost()
+        enableOperationQueue(false, cancelPrevious: true)
+        stopLiveUpdatingSnaphost()
+    }
+}
+
+extension PropertyInspectorViewController {
+    func addOperationToQueue(_ operation: MainThreadOperation) {
+        operationQueue.addOperation(operation)
+    }
+    
+    func enableOperationQueue(_ isEnabled: Bool, cancelPrevious: Bool = false) {
+        if cancelPrevious {
+            operationQueue.cancelAllOperations()
+        }
+        
+        operationQueue.isSuspended = !isEnabled
+    }
+    
+    private func startLiveUpdatingSnaphost() {
+        displayLink = CADisplayLink(
+            target: self,
+            selector: #selector(refresh)
+        )
+    }
+    
+    private func stopLiveUpdatingSnaphost() {
+        displayLink = nil
+    }
+    
+    @objc private func refresh() {
+        guard viewModel.reference.view != nil else {
+            stopLiveUpdatingSnaphost()
+            return
+        }
+        
+        calculatedLastFrame += 1
+        
+        guard calculatedLastFrame % 3 == 0 else {
+            return
+        }
+        
+        let operation = MainThreadOperation(name: "udpate snapshot") { [weak self] in
+            self?.snapshotViewCode.updateSnapshot(afterScreenUpdates: false)
+        }
+        
+        operationQueue.addOperation(operation)
     }
 }
 

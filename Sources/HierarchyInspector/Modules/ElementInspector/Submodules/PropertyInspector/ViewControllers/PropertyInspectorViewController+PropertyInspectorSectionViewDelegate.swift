@@ -13,28 +13,22 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewControlle
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
                                                 willUpdate property: PropertyInspectorSectionProperty) {
-        snapshotViewCode.stopLiveUpdatingSnaphost()
+        enableOperationQueue(false)
     }
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
                                                 didUpdate property: PropertyInspectorSectionProperty) {
         
         children.forEach {
-            guard let propertySectionViewController = $0 as? PropertyInspectorSectionViewController else {
-                return
-            }
-            
-            propertySectionViewController.updateValues()
+            ($0 as? PropertyInspectorSectionViewController)?.updateValues()
         }
         
-        DispatchQueue.main.async { [weak self] in
-            self?.snapshotViewCode.startLiveUpdatingSnaphost()
-        }
+        enableOperationQueue(true)
     }
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
                                                 didToggle isCollapsed: Bool) {
-        snapshotViewCode.stopLiveUpdatingSnaphost()
+        enableOperationQueue(false)
         
         UIView.animate(
             withDuration: 0.4,
@@ -66,7 +60,7 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewControlle
                 
             },
             completion: { [weak self] _ in
-                self?.snapshotViewCode.startLiveUpdatingSnaphost()
+                self?.enableOperationQueue(true)
             }
         )
         

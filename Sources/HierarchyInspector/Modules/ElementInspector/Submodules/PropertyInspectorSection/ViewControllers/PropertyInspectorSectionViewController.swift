@@ -8,6 +8,7 @@
 import UIKit
 
 protocol PropertyInspectorSectionViewControllerDelegate: AnyObject {
+    func addOperationToQueue(_ operation: MainThreadOperation)
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
                                                 didTap colorPicker: ColorPicker)
@@ -172,10 +173,7 @@ final class PropertyInspectorSectionViewController: UIViewController {
 extension PropertyInspectorSectionViewController {
         
     @objc private func valueChanged(_ sender: AnyObject) {
-        #warning("migrate to operation queue")
-        DispatchQueue.main.async { [weak self] in
-            self?.handleChange(with: sender)
-        }
+        handleChange(with: sender)
     }
     
     private func handleChange(with sender: AnyObject) {
@@ -183,44 +181,59 @@ extension PropertyInspectorSectionViewController {
             
             delegate?.propertyInspectorSectionViewController(self, willUpdate:property)
             
-            switch (property, inputView) {
-            case let (.stepper(_, _, _, _, _, handler), stepperControl as StepperControl):
-                handler?(stepperControl.value)
+            let updateValueOperation = MainThreadOperation(name: "update property value") {
                 
-            case let (.colorPicker(_, _, handler), colorPicker as ColorPicker):
-                handler?(colorPicker.selectedColor)
+                switch (property, inputView) {
+                case let (.stepper(_, _, _, _, _, handler), stepperControl as StepperControl):
+                    handler?(stepperControl.value)
+                    
+                case let (.colorPicker(_, _, handler), colorPicker as ColorPicker):
+                    handler?(colorPicker.selectedColor)
+                    
+                case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
+                    handler?(toggleControl.isOn)
+                    
+                case let (.segmentedControl(_, _, _, handler), segmentedControl as SegmentedControl):
+                    handler?(segmentedControl.selectedIndex)
+                    
+                case let (.optionsList(_, _, _, handler), optionSelector as OptionSelector):
+                    handler?(optionSelector.selectedIndex)
+                    
+                case let (.textInput(_, _, _, handler), textInputControl as TextInputControl):
+                    handler?(textInputControl.value)
+                    
+                case let (.imagePicker(_, _, handler), imagePicker as ImagePicker):
+                    handler?(imagePicker.selectedImage)
+                    
+                case (.separator, _),
+                     (.subSection, _):
+                     break
+                    
+                case (.stepper, _),
+                     (.colorPicker, _),
+                     (.toggleButton, _),
+                     (.segmentedControl, _),
+                     (.optionsList, _),
+                     (.textInput, _),
+                     (.imagePicker, _):
+                    assertionFailure("shouldn't happen")
+                    break
+                }
                 
-            case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
-                handler?(toggleControl.isOn)
-                
-            case let (.segmentedControl(_, _, _, handler), segmentedControl as SegmentedControl):
-                handler?(segmentedControl.selectedIndex)
-                
-            case let (.optionsList(_, _, _, handler), optionSelector as OptionSelector):
-                handler?(optionSelector.selectedIndex)
-                
-            case let (.textInput(_, _, _, handler), textInputControl as TextInputControl):
-                handler?(textInputControl.value)
-                
-            case let (.imagePicker(_, _, handler), imagePicker as ImagePicker):
-                handler?(imagePicker.selectedImage)
-                
-            case (.separator, _),
-                 (.subSection, _):
-                 break
-                
-            case (.stepper, _),
-                 (.colorPicker, _),
-                 (.toggleButton, _),
-                 (.segmentedControl, _),
-                 (.optionsList, _),
-                 (.textInput, _),
-                 (.imagePicker, _):
-                assertionFailure("shouldn't happen")
-                break
             }
             
-            delegate?.propertyInspectorSectionViewController(self, didUpdate: property)
+            let didUpdateOperation = MainThreadOperation(name: "did update property value") { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                
+                self.delegate?.propertyInspectorSectionViewController(self, didUpdate: property)
+            }
+            
+            didUpdateOperation.addDependency(updateValueOperation)
+            
+            delegate?.addOperationToQueue(updateValueOperation)
+            delegate?.addOperationToQueue(didUpdateOperation)
         }
     }
     
@@ -230,8 +243,8 @@ extension PropertyInspectorSectionViewController {
             switch (property, inputView) {
             
             case let (.stepper(_, valueProvider, rangeProvider, stepValueProvider, _, _), stepperControl as StepperControl):
-                stepperControl.value = valueProvider()
-                stepperControl.range = rangeProvider()
+                stepperControl.value     = valueProvider()
+                stepperControl.range     = rangeProvider()
                 stepperControl.stepValue = stepValueProvider()
                 
             case let (.colorPicker(_, selectedColorProvider, _), colorPicker as ColorPicker):

@@ -19,20 +19,6 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
     
     let reference: ViewHierarchyReference
     
-    private var calculatedLastFrame = 0
-    
-    private var displayLink: CADisplayLink? {
-        didSet {
-            if let oldLink = oldValue {
-                oldLink.invalidate()
-            }
-            
-            if let newLink = displayLink {
-                newLink.add(to: .current, forMode: .default)
-            }
-        }
-    }
-    
     private lazy var controlsContainerView = UIStackView(
         axis: .vertical,
         arrangedSubviews: [
@@ -100,16 +86,6 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         maxContentHeightConstraint.isActive = true
     }
     
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
-        
-        guard superview == nil else {
-            return
-        }
-        
-        stopLiveUpdatingSnaphost()
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -150,41 +126,8 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         return height
     }
     
-    var isRedrawingViews: Bool {
-        displayLink != nil
-    }
-    
-    func startLiveUpdatingSnaphost() {
-        displayLink = CADisplayLink(
-            target: self,
-            selector: #selector(refresh)
-        )
-    }
-    
-    func stopLiveUpdatingSnaphost() {
-        displayLink = nil
-    }
-    
     func updateSnapshot(afterScreenUpdates: Bool = true) {
         thumbnailView.updateViews(afterScreenUpdates: afterScreenUpdates)
     }
     
-    @objc private func refresh() {
-        guard reference.view != nil else {
-            stopLiveUpdatingSnaphost()
-            return
-        }
-        
-        calculatedLastFrame += 1
-        
-        guard calculatedLastFrame % 2 == 0 else {
-            return
-        }
-        
-        updateSnapshot(afterScreenUpdates: false)
-    }
-    
-    deinit {
-        stopLiveUpdatingSnaphost()
-    }
 }

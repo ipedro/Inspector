@@ -8,10 +8,18 @@
 import UIKit
 
 class ElementInspectorBasePanelViewController: UIViewController {
+    private var needsLayout = true
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        debounce(#selector(updatePreferredContentSize), after: 0.15)
+        guard needsLayout else {
+            return
+        }
+        
+        needsLayout = false
+        
+        debounce(#selector(updatePreferredContentSize), after: 0.1)
     }
     
     @objc func updatePreferredContentSize() {
@@ -19,6 +27,6 @@ class ElementInspectorBasePanelViewController: UIViewController {
             return
         }
         
-        self.preferredContentSize = self.calculatePreferredContentSize()
+        preferredContentSize = self.calculatePreferredContentSize()
     }
 }
