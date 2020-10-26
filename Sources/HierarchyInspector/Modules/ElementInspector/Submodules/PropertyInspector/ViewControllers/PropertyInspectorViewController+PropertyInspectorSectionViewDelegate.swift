@@ -19,11 +19,21 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewControlle
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
                                                 didUpdate property: PropertyInspectorSectionProperty) {
         
-        children.forEach {
-            ($0 as? PropertyInspectorSectionViewController)?.updateValues()
+        let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
+            self?.children.forEach {
+                guard let sectionViewController = $0 as? PropertyInspectorSectionViewController else {
+                    return
+                }
+                
+                sectionViewController.updateValues()
+            }
         }
         
-        displayLink?.isPaused = false
+        updateOperation.completionBlock = { [weak self] in
+            self?.displayLink?.isPaused = false
+        }
+        
+        delegate?.addBarrierOperation(updateOperation)
     }
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,
