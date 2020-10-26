@@ -104,21 +104,7 @@ extension ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol
     }
     
     var thumbnailImage: UIImage? {
-        if cachedThumbnailImage != nil {
-            return cachedThumbnailImage
-        }
-        
-        guard let referenceView = reference.view else {
-            return Self.thumbnailImageLostConnection
-        }
-        
-        guard referenceView.isHidden == false, referenceView.frame.isEmpty == false else {
-            return Self.thumbnailImageIsHidden
-        }
-        
-        cachedThumbnailImage = referenceView.snapshot(afterScreenUpdates: false, with: Self.thumbSize)
-        
-        return cachedThumbnailImage
+        cachedThumbnailImage
     }
     
     var hasCachedThumbnailImage: Bool {
@@ -127,6 +113,24 @@ extension ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol
     
     func clearCachedThumbnail() {
         cachedThumbnailImage = nil
+    }
+    
+    func loadThumbnail() {
+        guard cachedThumbnailImage == nil else {
+            return
+        }
+        
+        guard let referenceView = reference.view else {
+            cachedThumbnailImage = Self.thumbnailImageLostConnection
+            return
+        }
+        
+        guard referenceView.isHidden == false, referenceView.frame.isEmpty == false else {
+            cachedThumbnailImage = Self.thumbnailImageIsHidden
+            return
+        }
+        
+        cachedThumbnailImage = referenceView.snapshot(afterScreenUpdates: false, with: Self.thumbSize)
     }
 }
 

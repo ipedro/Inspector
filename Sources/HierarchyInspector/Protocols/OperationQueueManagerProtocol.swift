@@ -26,4 +26,9 @@ protocol OperationQueueManagerProtocol: AnyObject {
      Operations are removed from the queue only when they finish executing. However, in order to finish executing, an operation must first be started. Because a suspended queue does not start any new operations, it does not remove any operations (including cancelled operations) that are currently queued and not executing.
      */
     func suspendQueue(_ isSuspended: Bool)
+    
+    /**
+     The `addBarrierOperation` method executes the block when the OperationQueue has finished all enqueued operations and prevents any subsequent operations to be executed until the barrier has been completed.
+     */
+    func addBarrierOperation(_ operation: MainThreadOperation)
 }

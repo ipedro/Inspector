@@ -46,61 +46,10 @@ extension ViewHierarchyListViewController: UITableViewDelegate {
         viewModel.clearCachedThumbnail(for: indexPath)
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard
-            viewModel.shouldDisplayThumbnails,
-            let cell = cell as? ViewHierarchyListTableViewCodeCell,
-            viewModel.itemViewModel(for: indexPath)?.hasCachedThumbnailImage != true
-        else {
-            return
-        }
-        
-        let thumbnailOperation = MainThreadOperation(name: "render thumb for row \(indexPath.row)") {
-            cell.displayThumbnailImage()
-        }
-
-        delegate?.addOperationToQueue(thumbnailOperation)
-    }
-    
     private func toggleContainer(at indexPath: IndexPath) {
         let actions = viewModel.toggleContainer(at: indexPath)
         
         updateTableView(indexPath, with: actions)
-    }
-}
-
-// MARK: - ScrolView
-
-extension ViewHierarchyListViewController {
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            self.stoppedScrolling()
-        }
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        self.stoppedScrolling()
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        delegate?.suspendQueue(true)
-    }
-    
-    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        stoppedScrolling()
-    }
-    
-    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        return true
-    }
-    
-    func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
-        stoppedScrolling()
-    }
-
-    func stoppedScrolling() {
-        delegate?.suspendQueue(false)
     }
 }
 
@@ -112,10 +61,6 @@ private extension ViewHierarchyListViewController {
         guard actions.isEmpty == false else {
             return
         }
-        
-        delegate?.suspendQueue(true)
-        
-        viewModel.shouldDisplayThumbnails = false
         
         let tableView = viewCode.tableView
         
@@ -141,32 +86,18 @@ private extension ViewHierarchyListViewController {
             
         },
         completion: { [weak self] _ in
-            
-            self?.updatePreferredContentSize()
-            
-            self?.updateVisibleRowsBackgroundColor { [weak self] _ in
-            
-                self?.viewModel.shouldDisplayThumbnails = true
-                
-                self?.delegate?.suspendQueue(false)
-                
-                insertedIndexPaths.forEach {
-                    guard let cell = tableView.cellForRow(at: $0) as? ViewHierarchyListTableViewCodeCell else {
-                        return
-                    }
-                    
-                    let thumbnailOperation = MainThreadAsyncOperation(name: "render thumb for row \(indexPath.row)") {
-                        cell.displayThumbnailImage()
-                    }
-                    
-                    self?.delegate?.addOperationToQueue(thumbnailOperation)
-                }
+            guard let self = self else {
+                return
             }
+            
+            self.updatePreferredContentSize()
+            
+            self.updateVisibleRowsBackgroundColor()
             
         })
     }
     
-    func updateVisibleRowsBackgroundColor(_ completion: ((Bool) -> Void)?) {
+    func updateVisibleRowsBackgroundColor(_ completion: ((Bool) -> Void)? = nil) {
         UIView.animate(
             withDuration: ElementInspector.animationDuration,
             animations: { [weak self] in

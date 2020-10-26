@@ -20,14 +20,18 @@ enum ViewHierarchyListAction {
     }
 }
 
+protocol ViewHierarchyListViewModelDelegate: AnyObject {
+    func viewHierarchyListViewModelDidLoad(_ viewModel: ViewHierarchyListViewModelProtocol)
+}
+
 protocol ViewHierarchyListViewModelProtocol {
+    var delegate: ViewHierarchyListViewModelDelegate? { get set }
+    
     var title: String { get }
     
     var rootReference: ViewHierarchyReference { get }
     
     var numberOfRows: Int { get }
-    
-    var shouldDisplayThumbnails: Bool { get set }
     
     func title(for section: Int) -> String?
     
@@ -38,15 +42,15 @@ protocol ViewHierarchyListViewModelProtocol {
     /// - Returns: Actions related to affected index paths
     func toggleContainer(at indexPath: IndexPath) -> [ViewHierarchyListAction]
     
-    func clearAllCachedThumbnails()
-    
     func clearCachedThumbnail(for indexPath: IndexPath)
+    
+    func loadData()
 }
 
 final class ViewHierarchyListViewModel: NSObject {
-    let rootReference: ViewHierarchyReference
+    var delegate: ViewHierarchyListViewModelDelegate?
     
-    var shouldDisplayThumbnails: Bool = false
+    let rootReference: ViewHierarchyReference
     
     private(set) var childViewModels: [ViewHierarchyListItemViewModel] {
         didSet {
@@ -91,6 +95,15 @@ final class ViewHierarchyListViewModel: NSObject {
 }
 
 extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
+    func loadData() {
+        let start = Date()
+        
+        childViewModels.forEach { $0.loadThumbnail() }
+        
+        Console.print(#function, "calculated thumbnails in \(Date().timeIntervalSince(start))")
+        
+        delegate?.viewHierarchyListViewModelDidLoad(self)
+    }
     
     var title: String {
         "More info"

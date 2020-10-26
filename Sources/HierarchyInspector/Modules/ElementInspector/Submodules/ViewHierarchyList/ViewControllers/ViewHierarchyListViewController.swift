@@ -30,12 +30,13 @@ final class ViewHierarchyListViewController: ElementInspectorPanelViewController
                 height: .zero
             )
         )
-    ).then {
-        $0.tableView.dataSource = self
-        $0.tableView.delegate   = self
-    }
+    )
     
-    var viewModel: ViewHierarchyListViewModelProtocol!
+    var viewModel: ViewHierarchyListViewModelProtocol! {
+        didSet {
+            viewModel.delegate = self
+        }
+    }
     
     // MARK: - Init
     
@@ -52,12 +53,6 @@ final class ViewHierarchyListViewController: ElementInspectorPanelViewController
         view = viewCode
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        viewCode.tableView.reloadData()
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -71,31 +66,31 @@ final class ViewHierarchyListViewController: ElementInspectorPanelViewController
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        viewModel.shouldDisplayThumbnails = true
+        let loadOperation = MainThreadOperation(name: "load data") { [weak self] in
+            self?.viewModel.loadData()
+        }
         
-        viewCode.tableView.reloadData()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        viewModel.shouldDisplayThumbnails = false
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        
-        viewModel.clearAllCachedThumbnails()
+        delegate?.addBarrierOperation(loadOperation)
     }
     
     func calculatePreferredContentSize() -> CGSize {
-        let contentSize  = viewCode.tableView.contentSize
+        let contentHeight = viewCode.tableView.estimatedRowHeight * CGFloat(viewModel.numberOfRows)
         let contentInset = viewCode.tableView.contentInset
         
         return CGSize(
             width: min(UIScreen.main.bounds.width, 414),
-            height: contentSize.height + contentInset.top + contentInset.bottom
+            height: contentHeight + contentInset.top + contentInset.bottom
         )
     }
     
+}
+
+extension ViewHierarchyListViewController: ViewHierarchyListViewModelDelegate {
+    func viewHierarchyListViewModelDidLoad(_ viewModel: ViewHierarchyListViewModelProtocol) {
+        viewCode.activityIndicatorView.stopAnimating()
+        
+        viewCode.tableView.dataSource = self
+        viewCode.tableView.delegate = self
+        viewCode.tableView.reloadData()
+    }
 }

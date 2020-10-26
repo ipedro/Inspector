@@ -232,4 +232,8 @@ extension PropertyInspectorViewController: OperationQueueManagerProtocol {
     func addOperationToQueue(_ operation: MainThreadOperation) {
         delegate?.addOperationToQueue(operation)
     }
+    
+    func addBarrierOperation(_ operation: MainThreadOperation) {
+        delegate?.addBarrierOperation(operation)
+    }
 }

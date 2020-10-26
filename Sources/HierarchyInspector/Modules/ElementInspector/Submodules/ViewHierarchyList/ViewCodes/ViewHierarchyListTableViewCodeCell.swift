@@ -19,15 +19,8 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var activityIndicatorView = UIActivityIndicatorView(style: .gray).then {
-        $0.hidesWhenStopped = true
-        $0.color = ElementInspector.appearance.tertiaryTextColor
-    }
-    
     var viewModel: ViewHierarchyListItemViewModelProtocol? {
         didSet {
-            
-            activityIndicatorView.startAnimating()
             
             // Name
             
@@ -53,9 +46,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
                 }
             }()
             
-            if viewModel?.hasCachedThumbnailImage == true {
-                displayThumbnailImage()
-            }
+            thumbnailImageView.image = viewModel?.thumbnailImage
             
             accessoryType = viewModel?.showDisclosureIndicator == true ? .detailDisclosureButton : .detailButton
 
@@ -154,7 +145,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     
     private lazy var chevronDownIcon = Icon.chevronDownIcon()
     
-    private(set) lazy var thumbnailImageView = UIImageView().then {
+    private lazy var thumbnailImageView = UIImageView().then {
         $0.contentMode = .center
         $0.tintColor   = descriptionLabel.textColor
     }
@@ -212,8 +203,6 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         setupContainerStackView()
         
         setupChevronDownIcon()
-        
-        setupActivityIndicatorView()
     }
     
     private func setupContainerStackView() {
@@ -240,25 +229,12 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
     }
     
-    private func setupActivityIndicatorView() {
-        addSubview(activityIndicatorView)
-        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
-        activityIndicatorView.centerXAnchor.constraint(equalTo: thumbnailContainerView.centerXAnchor).isActive = true
-        activityIndicatorView.centerYAnchor.constraint(equalTo: thumbnailContainerView.centerYAnchor).isActive = true
-    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
         
         viewModel = nil
         
         thumbnailImageView.image = nil
-        
-        activityIndicatorView.startAnimating()
     }
     
-    func displayThumbnailImage() {
-        thumbnailImageView.image = viewModel?.thumbnailImage
-        activityIndicatorView.stopAnimating()
-    }
 }
