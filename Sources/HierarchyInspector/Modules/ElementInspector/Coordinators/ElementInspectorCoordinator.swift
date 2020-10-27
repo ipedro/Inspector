@@ -210,6 +210,10 @@ extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
 
 extension ElementInspectorCoordinator: OperationQueueManagerProtocol {
     
+    func cancelAllOperations() {
+        operationQueue.cancelAllOperations()
+    }
+    
     func addOperationToQueue(_ operation: MainThreadOperation) {
         guard operationQueue.operations.contains(operation) == false else {
             return
@@ -222,32 +226,4 @@ extension ElementInspectorCoordinator: OperationQueueManagerProtocol {
         operationQueue.isSuspended = isSuspended
     }
     
-    func addBarrierOperation(_ operation: MainThreadOperation) {
-        #if swift(>=5.0)
-        if #available(iOS 13.0, *) {
-            operationQueue.addBarrierBlock {
-                operation.main()
-                operation.completionBlock?()
-            }
-        }
-        #else
-        let operationQueue = self.operationQueue
-        
-        let maxConcurrentOperationCount = operationQueue.maxConcurrentOperationCount
-        
-        let barrier = MainThreadOperation(name: "barrier") {
-            operationQueue.maxConcurrentOperationCount = 1
-            operation.main()
-        }
-        
-        barrier.completionBlock = {
-            operationQueue.maxConcurrentOperationCount = maxConcurrentOperationCount
-            operation.completionBlock?()
-        }
-        
-        operationQueue.operations.forEach { barrier.addDependency($0) }
-        
-        operationQueue.addOperation(barrier)
-        #endif
-    }
 }

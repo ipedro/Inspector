@@ -9,7 +9,7 @@ import UIKit
 
 protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
-                                        viewControllerForPanel panel: ElementInspectorPanel,
+                                        viewControllerFor panel: ElementInspectorPanel,
                                         with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
     
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController)
@@ -51,14 +51,6 @@ final class ElementInspectorViewController: UIViewController {
                 oldPanelViewController.removeFromParent()
             }
         }
-    }
-    
-    private lazy var heightConstraint = viewCode.heightAnchor.constraint(equalToConstant: 0).then {
-        $0.isActive = true
-    }
-    
-    private lazy var widthConstraint = viewCode.widthAnchor.constraint(equalToConstant: 0).then {
-        $0.isActive = true
     }
     
     private lazy var viewCode = ElementInspectorViewCode().then {
@@ -136,24 +128,6 @@ final class ElementInspectorViewController: UIViewController {
 // MARK: - Actions
 
 extension ElementInspectorViewController {
-    @objc private func didChangeSelectedSegmentIndex() {
-        delegate?.addOperationToQueue(MainThreadOperation(name: UUID().uuidString, closure: { [weak self] in
-            guard
-                let segmentedControl = self?.viewCode.segmentedControl,
-                segmentedControl.selectedSegmentIndex != UISegmentedControl.noSegment,
-                let panel = ElementInspectorPanel(rawValue: segmentedControl.selectedSegmentIndex)
-            else {
-                self?.removeCurrentPanel()
-                
-                return
-            }
-            
-            // wait for segmented control animation to finish
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) { [weak self] in
-                self?.installPanel(panel)
-            }
-        }))
-    }
     
     @discardableResult
     func selectPanelIfAvailable(_ panel: ElementInspectorPanel) -> Bool {
@@ -168,8 +142,18 @@ extension ElementInspectorViewController {
         return true
     }
     
-    private func installPanel(_ panel: ElementInspectorPanel) {
-        guard let panelViewController = delegate?.elementInspectorViewController(self, viewControllerForPanel: panel, with: viewModel.reference) else {
+    func removeCurrentPanel() {
+        presentedPanelViewController = nil
+    }
+    
+}
+
+// MARK: - Private Actions
+
+private extension ElementInspectorViewController {
+    
+    func installPanel(_ panel: ElementInspectorPanel) {
+        guard let panelViewController = delegate?.elementInspectorViewController(self, viewControllerFor: panel, with: viewModel.reference) else {
             presentedPanelViewController = nil
             return
         }
@@ -177,17 +161,28 @@ extension ElementInspectorViewController {
         presentedPanelViewController = panelViewController
     }
     
-    func removeCurrentPanel() {
-        presentedPanelViewController = nil
+    @objc func didChangeSelectedSegmentIndex() {
+        delegate?.cancelAllOperations()
+        
+        guard
+            viewCode.segmentedControl.selectedSegmentIndex != UISegmentedControl.noSegment,
+            let panel = ElementInspectorPanel(rawValue: viewCode.segmentedControl.selectedSegmentIndex)
+        else {
+            removeCurrentPanel()
+            return
+        }
+        
+        installPanel(panel)
     }
     
-    @objc private func toggleInspect() {
+    @objc func toggleInspect() {
         presentHierarchyInspector(animated: true)
     }
     
-    @objc private func close() {
+    @objc func close() {
         self.delegate?.elementInspectorViewControllerDidFinish(self)
     }
+    
 }
 
 

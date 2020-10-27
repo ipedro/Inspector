@@ -33,8 +33,6 @@ protocol ViewHierarchyListViewModelProtocol {
     
     var numberOfRows: Int { get }
     
-    func title(for section: Int) -> String?
-    
     func itemViewModel(for indexPath: IndexPath) -> ViewHierarchyListItemViewModelProtocol?
     
     /// Toggle if a container displays its subviews or hides them.
@@ -44,7 +42,7 @@ protocol ViewHierarchyListViewModelProtocol {
     
     func clearCachedThumbnail(for indexPath: IndexPath)
     
-    func loadData()
+    func loadOperations() -> [MainThreadOperation]
 }
 
 final class ViewHierarchyListViewModel: NSObject {
@@ -95,30 +93,39 @@ final class ViewHierarchyListViewModel: NSObject {
 }
 
 extension ViewHierarchyListViewModel: ViewHierarchyListViewModelProtocol {
-    func loadData() {
-        let start = Date()
+    func loadOperations() -> [MainThreadOperation] {
+        var operations = childViewModels.enumerated().map { row, childViewModel -> MainThreadOperation in
+            
+            let operation = MainThreadOperation(name: childViewModel.title) {
+                childViewModel.loadThumbnail()
+            }
+            
+            operation.completionBlock = {
+                Console.print(#function, "Loaded thumbnail for row \(row)")
+            }
+            
+            return operation
+        }
         
-        childViewModels.forEach { $0.loadThumbnail() }
+        let delegateOperation = MainThreadOperation(name: "delegate") { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            self.delegate?.viewHierarchyListViewModelDidLoad(self)
+        }
         
-        Console.print(#function, "calculated thumbnails in \(Date().timeIntervalSince(start))")
+        operations.append(delegateOperation)
         
-        delegate?.viewHierarchyListViewModelDidLoad(self)
+        return operations
     }
     
     var title: String {
         "More info"
     }
     
-    func title(for section: Int) -> String? {
-        nil //"View hierarchy"
-    }
-    
     var numberOfRows: Int {
         visibleChildViewModels.count
-    }
-        
-    func clearAllCachedThumbnails() {
-        childViewModels.forEach { $0.clearCachedThumbnail() }
     }
     
     func clearCachedThumbnail(for indexPath: IndexPath) {

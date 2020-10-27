@@ -28,7 +28,11 @@ protocol OperationQueueManagerProtocol: AnyObject {
     func suspendQueue(_ isSuspended: Bool)
     
     /**
-     The `addBarrierOperation` method executes the block when the OperationQueue has finished all enqueued operations and prevents any subsequent operations to be executed until the barrier has been completed.
+     Cancels all queued and executing operations.
+     
+     This method calls the cancel() method on all operations currently in the queue.
+     
+     Canceling the operations does not automatically remove them from the queue or stop those that are currently executing. For operations that are queued and waiting execution, the queue must still attempt to execute the operation before recognizing that it is canceled and moving it to the finished state. For operations that are already executing, the operation object itself must check for cancellation and stop what it is doing so that it can move to the finished state. In both cases, a finished (or canceled) operation is still given a chance to execute its completion block before it is removed from the queue.
      */
-    func addBarrierOperation(_ operation: MainThreadOperation)
+    func cancelAllOperations()
 }

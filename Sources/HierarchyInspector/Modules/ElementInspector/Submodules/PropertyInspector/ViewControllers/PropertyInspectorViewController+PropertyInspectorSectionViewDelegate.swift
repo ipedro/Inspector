@@ -33,7 +33,7 @@ extension PropertyInspectorViewController: PropertyInspectorSectionViewControlle
             self?.displayLink?.isPaused = false
         }
         
-        delegate?.addBarrierOperation(updateOperation)
+        delegate?.addOperationToQueue(updateOperation)
     }
     
     func propertyInspectorSectionViewController(_ viewController: PropertyInspectorSectionViewController,

@@ -66,11 +66,9 @@ final class ViewHierarchyListViewController: ElementInspectorPanelViewController
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        let loadOperation = MainThreadOperation(name: "load data") { [weak self] in
-            self?.viewModel.loadData()
+        viewModel.loadOperations().forEach {
+            delegate?.addOperationToQueue($0)
         }
-        
-        delegate?.addBarrierOperation(loadOperation)
     }
     
     func calculatePreferredContentSize() -> CGSize {

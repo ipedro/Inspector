@@ -225,6 +225,11 @@ private extension PropertyInspectorViewController {
 // MARK: - QueueManagerProtocol
 
 extension PropertyInspectorViewController: OperationQueueManagerProtocol {
+    
+    func cancelAllOperations() {
+        delegate?.cancelAllOperations()
+    }
+    
     func suspendQueue(_ isSuspended: Bool) {
         delegate?.suspendQueue(isSuspended)
     }
@@ -233,7 +238,4 @@ extension PropertyInspectorViewController: OperationQueueManagerProtocol {
         delegate?.addOperationToQueue(operation)
     }
     
-    func addBarrierOperation(_ operation: MainThreadOperation) {
-        delegate?.addBarrierOperation(operation)
-    }
 }
