@@ -108,7 +108,8 @@ class HighlightView: LayerView {
     
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
     
-    @objc func tap() {
+    @objc
+    func tap() {
         delegate?.highlightView(self, didTapWith: viewReference)
     }
     

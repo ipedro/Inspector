@@ -10,49 +10,49 @@ import AVFoundation
 
 final class PropertyInspectorViewThumbnailSectionView: BaseView {
     
-    enum State {
-        case snapshot(UIView)
-        case isHidden
-        case frameIsEmpty
-        case lostConnection
-    }
-    
     let reference: ViewHierarchyReference
     
     private lazy var controlsContainerView = UIStackView(
         axis: .vertical,
         arrangedSubviews: [
-            toggleHighlightViewsControl
+            backgroundAppearanceControl,
+            isHighlightingViewsControl,
+            isLiveUpdatingControl
         ],
-        spacing: ElementInspector.configuration.appearance.verticalMargins / 2,
         margins: ElementInspector.configuration.appearance.margins
     )
     
-    private(set) lazy var toggleHighlightViewsControl = ToggleControl(
+    private lazy var backgroundAppearanceControl = SegmentedControl(
+        title: "preview background",
+        options: ThumbnailBackgroundStyle.allCases.map { $0.image },
+        selectedIndex: thumbnailView.backgroundStyle.rawValue
+    ).then {
+        $0.axis = .horizontal
+        $0.addTarget(self, action: #selector(changeBackground), for: .valueChanged)
+    }
+    
+    private(set) lazy var isHighlightingViewsControl = ToggleControl(
         title: "highlight views",
+        isOn: true
+    )
+    
+    private(set) lazy var isLiveUpdatingControl = ToggleControl(
+        title: "live update",
         isOn: true
     ).then {
         $0.isShowingSeparator = false
     }
     
     private(set) lazy var thumbnailView = ViewHierarchyReferenceThumbnailView(
-        frame: CGRect(
-            origin: .zero,
-            size: CGSize(
-                width: frame.height,
-                height: frame.height
-            )
-        ),
+        frame: .zero,
         reference: reference
     ).then {
         $0.clipsToBounds = false
     }
     
-    private lazy var contentHeightConstraint = thumbnailView.heightAnchor.constraint(greaterThanOrEqualToConstant: frame.height).then {
+    private lazy var thumbnailHeightConstraint = thumbnailView.heightAnchor.constraint(greaterThanOrEqualToConstant: frame.height).then {
         $0.isActive = true
     }
-    
-    private lazy var maxContentHeightConstraint = thumbnailView.heightAnchor.constraint(lessThanOrEqualTo: widthAnchor)
     
     init(reference: ViewHierarchyReference, frame: CGRect) {
         self.reference = reference
@@ -82,8 +82,6 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         contentView.addArrangedSubview(thumbnailView)
         
         contentView.addArrangedSubview(controlsContainerView)
-        
-        maxContentHeightConstraint.isActive = true
     }
     
     override func layoutSubviews() {
@@ -97,10 +95,10 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         
         switch thumbnailView.state {
         case .frameIsEmpty, .isHidden, .lostConnection:
-            contentHeightConstraint.constant = ElementInspector.configuration.appearance.horizontalMargins * 4
+            thumbnailHeightConstraint.constant = ElementInspector.configuration.appearance.horizontalMargins * 4
             
         default:
-            contentHeightConstraint.constant = calculateContentHeight()
+            thumbnailHeightConstraint.constant = calculateContentHeight()
         }
     }
     
@@ -130,4 +128,16 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         thumbnailView.updateViews(afterScreenUpdates: afterScreenUpdates)
     }
     
+    @objc
+    func changeBackground() {
+        guard
+            let selectedIndex = backgroundAppearanceControl.selectedIndex,
+            let backgroundStyle = ThumbnailBackgroundStyle(rawValue: selectedIndex)
+        else {
+            thumbnailView.backgroundStyle = .light
+            return
+        }
+        
+        thumbnailView.backgroundStyle = backgroundStyle
+    }
 }

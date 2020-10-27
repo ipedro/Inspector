@@ -27,7 +27,8 @@ class ElementInspectorBasePanelViewController: UIViewController {
         updatePreferredContentSize()
     }
     
-    @objc func updatePreferredContentSize() {
+    @objc
+    func updatePreferredContentSize() {
         guard let self = self as? ElementInspectorPanelViewController else {
             return
         }

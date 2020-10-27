@@ -22,6 +22,8 @@ extension ElementInspector {
 extension ElementInspector {
     struct Appearance {
         
+        var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
+        
         let horizontalMargins: CGFloat = 26
         
         let verticalMargins: CGFloat = 13

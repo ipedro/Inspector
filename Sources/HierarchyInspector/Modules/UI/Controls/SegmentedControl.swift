@@ -81,7 +81,8 @@ final class SegmentedControl: BaseFormControl {
         contentView.installView(segmentedControl)
     }
 
-    @objc func changeSegment() {
+    @objc
+    func changeSegment() {
         sendActions(for: .valueChanged)
     }
 }

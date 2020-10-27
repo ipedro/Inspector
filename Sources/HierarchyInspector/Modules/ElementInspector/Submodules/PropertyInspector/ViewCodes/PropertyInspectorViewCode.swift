@@ -7,7 +7,12 @@
 
 import UIKit
 
+protocol PropertyInspectorViewCodeDelegate: AnyObject {
+    func propertyInspectorViewCode(_ viewCode: PropertyInspectorViewCode, isPointerInUse: Bool)
+}
+
 final class PropertyInspectorViewCode: BaseView {
+    weak var delegate: PropertyInspectorViewCodeDelegate?
     
     #warning("move header style to ElementInspector.configuration.appearance")
     private(set) lazy var elementNameLabel = SectionHeader(.title3, text: nil, withTraits: .traitBold).then {
@@ -34,6 +39,15 @@ final class PropertyInspectorViewCode: BaseView {
         $0.keyboardDismissMode = .onDrag
     }
     
+    @available(iOS 13.0, *)
+    private lazy var hoverGestureRecognizer = UIHoverGestureRecognizer(target: self, action: #selector(hovering(_:)))
+    
+    private(set) var isPointerInUse = false {
+        didSet {
+            delegate?.propertyInspectorViewCode(self, isPointerInUse: isPointerInUse)
+        }
+    }
+    
     override func setup() {
         super.setup()
         
@@ -51,5 +65,39 @@ final class PropertyInspectorViewCode: BaseView {
         widthConstraint.isActive = true
         
         contentView.directionalLayoutMargins = .margins(bottom: 30)
+    }
+    
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        
+        guard let window = window else {
+            
+            if #available(iOS 13.0, *) {
+                hoverGestureRecognizer.isEnabled = false
+            }
+            
+            return
+        }
+        
+        if #available(iOS 13.0, *) {
+            window.addGestureRecognizer(hoverGestureRecognizer)
+            hoverGestureRecognizer.isEnabled = true
+        }
+    }
+    
+    @available(iOS 13.0, *)
+    @objc
+    func hovering(_ recognizer: UIHoverGestureRecognizer) {
+        switch recognizer.state {
+        
+        case .began, .changed:
+            isPointerInUse = true
+            
+        case .ended, .cancelled:
+            isPointerInUse = false
+            
+        default:
+            break
+        }
     }
 }

@@ -116,7 +116,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     
     private lazy var thumbnailImageView = UIImageView().then {
         $0.contentMode = .center
-        $0.tintColor   = descriptionLabel.textColor
+        $0.tintColor   = ElementInspector.configuration.appearance.thumbnailBackgroundStyle.contrastingColor
     }
         
     private lazy var thumbnailContainerView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)).then {
@@ -126,7 +126,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         $0.layer.rasterizationScale = UIScreen.main.scale
         
-        $0.backgroundColor = ElementInspector.configuration.appearance.secondaryTextColor
+        $0.backgroundColor = ElementInspector.configuration.appearance.thumbnailBackgroundStyle.color
         
         $0.clipsToBounds = true
         
@@ -134,7 +134,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         $0.heightAnchor.constraint(equalToConstant: ElementInspector.configuration.appearance.horizontalMargins * 2).isActive = true
         
-        $0.widthAnchor.constraint(equalToConstant: ElementInspector.configuration.appearance.horizontalMargins * 2).isActive = true
+        $0.widthAnchor.constraint(equalToConstant: ElementInspector.configuration.appearance.horizontalMargins * 2.5).isActive = true
     }
     
     private lazy var containerStackView = UIStackView(

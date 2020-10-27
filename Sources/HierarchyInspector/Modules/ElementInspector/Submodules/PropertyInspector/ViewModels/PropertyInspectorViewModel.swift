@@ -11,9 +11,19 @@ protocol PropertyInspectorViewModelProtocol {
     var reference: ViewHierarchyReference { get}
     
     var sectionViewModels: [PropertyInspectorSectionViewModelProtocol] { get }
+    
+    var isHighlightingViews: Bool { get }
+    
+    var isLiveUpdating: Bool { get set }
 }
 
 final class PropertyInspectorViewModel: PropertyInspectorViewModelProtocol {
+    var isHighlightingViews: Bool {
+        reference.isHidingHighlightViews == false
+    }
+    
+    var isLiveUpdating: Bool
+    
     let reference: ViewHierarchyReference
     
     private(set) lazy var sectionViewModels: [PropertyInspectorSectionViewModelProtocol] = {
@@ -60,5 +70,6 @@ final class PropertyInspectorViewModel: PropertyInspectorViewModelProtocol {
     
     init(reference: ViewHierarchyReference) {
         self.reference = reference
+        self.isLiveUpdating = true
     }
 }

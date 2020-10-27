@@ -29,6 +29,16 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     private(set) var originalSnapshotSize: CGSize = .zero
     
+    var backgroundStyle: ThumbnailBackgroundStyle {
+        get {
+            ElementInspector.configuration.appearance.thumbnailBackgroundStyle
+        }
+        set {
+            ElementInspector.configuration.appearance.thumbnailBackgroundStyle = newValue
+            backgroundColor = newValue.color
+        }
+    }
+    
     // MARK: - Init
     
     init(frame: CGRect, reference: ViewHierarchyReference) {
@@ -65,8 +75,6 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     override func setup() {
         super.setup()
         
-        backgroundColor = ElementInspector.configuration.appearance.secondaryTextColor
-        
         contentView.directionalLayoutMargins = .margins(ElementInspector.configuration.appearance.horizontalMargins)
         
         clipsToBounds = true
@@ -82,6 +90,12 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         contentView.installView(statusContentView, .centerXY)
         
         contentView.addArrangedSubview(snapshotContainerView)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        backgroundColor = backgroundStyle.color
     }
     
     var aspectRatio: CGFloat {

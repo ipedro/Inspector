@@ -15,8 +15,7 @@ final class ToggleControl: BaseFormControl {
             switchControl.isOn
         }
         set {
-            switchControl.setOn(newValue, animated: false)
-            updateViews()
+            setOn(newValue, animated: false)
         }
     }
     
@@ -62,8 +61,15 @@ final class ToggleControl: BaseFormControl {
         
         updateViews()
     }
+    
+    func setOn(_ on: Bool, animated: Bool) {
+        switchControl.setOn(on, animated: animated)
+        
+        updateViews()
+    }
 
-    @objc func toggleOn() {
+    @objc
+    func toggleOn() {
         updateViews()
         
         sendActions(for: .valueChanged)

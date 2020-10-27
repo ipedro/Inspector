@@ -52,16 +52,21 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         }
     }
     
-    private var calculatedLastFrame = 0
+    private lazy var viewCode = PropertyInspectorViewCode().then {
+        $0.delegate = self
+    }
     
-    private lazy var viewCode = PropertyInspectorViewCode()
-    
-    private(set) lazy var snapshotViewCode = PropertyInspectorViewThumbnailSectionView(
+    private(set) lazy var thumbnailSectionViewCode = PropertyInspectorViewThumbnailSectionView(
         reference: viewModel.reference,
         frame: .zero
     ).then {
-        $0.toggleHighlightViewsControl.isOn = !viewModel.reference.isHidingHighlightViews
-        $0.toggleHighlightViewsControl.addTarget(self, action: #selector(toggleLayerInspectorViewsVisibility), for: .valueChanged)
+        $0.isHighlightingViewsControl.isOn = viewModel.isHighlightingViews
+        
+        $0.isLiveUpdatingControl.isOn = viewModel.isLiveUpdating
+        
+        $0.isHighlightingViewsControl.addTarget(self, action: #selector(toggleHighlightViews), for: .valueChanged)
+        
+        $0.isLiveUpdatingControl.addTarget(self, action: #selector(toggleLiveUpdate), for: .valueChanged)
     }
     
     // MARK: - Init
@@ -86,7 +91,7 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
         
         viewCode.elementDescriptionLabel.text = viewModel.reference.elementDescription
         
-        viewCode.contentView.addArrangedSubview(snapshotViewCode)
+        viewCode.contentView.addArrangedSubview(thumbnailSectionViewCode)
         
         loadSections()
     }
@@ -126,33 +131,29 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     }
 }
 
-extension PropertyInspectorViewController {
+private extension PropertyInspectorViewController {
     
-    private func startLiveUpdatingSnaphost() {
-        displayLink = CADisplayLink(
-            target: self,
-            selector: #selector(refresh)
-        )
+    func startLiveUpdatingSnaphost() {
+        displayLink = CADisplayLink(target: self, selector: #selector(refresh))
     }
     
-    private func stopLiveUpdatingSnaphost() {
+    func stopLiveUpdatingSnaphost() {
         displayLink = nil
     }
     
-    @objc private func refresh() {
+    @objc
+    func refresh() {
         guard viewModel.reference.view != nil else {
             stopLiveUpdatingSnaphost()
             return
         }
         
-        calculatedLastFrame += 1
-        
-        guard calculatedLastFrame % 3 == 0 else {
+        guard viewCode.isPointerInUse == false, viewModel.isLiveUpdating else {
             return
         }
         
         let operation = MainThreadOperation(name: "udpate snapshot") { [weak self] in
-            self?.snapshotViewCode.updateSnapshot(afterScreenUpdates: false)
+            self?.thumbnailSectionViewCode.updateSnapshot(afterScreenUpdates: false)
         }
         
         delegate?.addOperationToQueue(operation)
@@ -178,6 +179,7 @@ extension PropertyInspectorViewController {
     func finishColorSelection() {
         selectedColorPicker = nil
     }
+    
     func finishOptionSelction() {
         selectedOptionSelector = nil
     }
@@ -204,7 +206,8 @@ private extension PropertyInspectorViewController {
         }
     }
     
-    @objc func toggleLayerInspectorViewsVisibility() {
+    @objc
+    func toggleHighlightViews() {
         let operation = MainThreadAsyncOperation(name: "toggle layers") { [weak self] in
             guard
                 let self = self,
@@ -213,15 +216,20 @@ private extension PropertyInspectorViewController {
                 return
             }
             
-            guard self.viewModel.reference.isHidingHighlightViews else {
-                delegate.propertyInspectorViewController(self, hideLayerInspectorViewsInside: self.viewModel.reference)
+            guard self.viewModel.isHighlightingViews else {
+                delegate.propertyInspectorViewController(self, showLayerInspectorViewsInside: self.viewModel.reference)
                 return
             }
             
-            delegate.propertyInspectorViewController(self, showLayerInspectorViewsInside: self.viewModel.reference)
+            delegate.propertyInspectorViewController(self, hideLayerInspectorViewsInside: self.viewModel.reference)
         }
         
         delegate?.addOperationToQueue(operation)
+    }
+    
+    @objc
+    func toggleLiveUpdate() {
+        viewModel.isLiveUpdating.toggle()
     }
     
 }
@@ -240,6 +248,17 @@ extension PropertyInspectorViewController: OperationQueueManagerProtocol {
     
     func addOperationToQueue(_ operation: MainThreadOperation) {
         delegate?.addOperationToQueue(operation)
+    }
+    
+}
+
+// MARK: - PropertyInspectorViewCodeDelegate
+
+extension PropertyInspectorViewController: PropertyInspectorViewCodeDelegate {
+    
+    func propertyInspectorViewCode(_ viewCode: PropertyInspectorViewCode, isPointerInUse: Bool) {
+        thumbnailSectionViewCode.isLiveUpdatingControl.isEnabled = isPointerInUse == false
+        thumbnailSectionViewCode.isLiveUpdatingControl.setOn(isPointerInUse == false && viewModel.isLiveUpdating, animated: true)
     }
     
 }

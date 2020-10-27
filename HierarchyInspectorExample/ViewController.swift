@@ -127,7 +127,8 @@ extension ViewController {
         textField.isEnabled = sender.isOn
     }
     
-    @objc func refresh() {
+    @objc
+    func refresh() {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             self.refreshControl.endRefreshing()
         }
@@ -195,7 +196,8 @@ extension ViewController: HierarchyInspectorKeyCommandPresentable {
         true
     }
     
-    @objc func keyCommand(_ sender: Any) {
+    @objc
+    func keyCommand(_ sender: Any) {
         hierarchyInspectorKeyCommandHandler(sender)
     }
 }

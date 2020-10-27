@@ -96,7 +96,8 @@ final class StepperControl: BaseFormControl {
         contentView.addArrangedSubview(stepperControl)
     }
 
-    @objc func step() {
+    @objc
+    func step() {
         updateCounterLabel()
         
         sendActions(for: .valueChanged)

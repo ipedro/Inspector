@@ -170,7 +170,8 @@ private extension ElementInspectorViewController {
         presentedPanelViewController = panelViewController
     }
     
-    @objc func didChangeSelectedSegmentIndex() {
+    @objc
+    func didChangeSelectedSegmentIndex() {
         delegate?.cancelAllOperations()
         
         guard
@@ -184,11 +185,13 @@ private extension ElementInspectorViewController {
         installPanel(panel)
     }
     
-    @objc func toggleInspect() {
+    @objc
+    func toggleInspect() {
         presentHierarchyInspector(animated: true)
     }
     
-    @objc func close() {
+    @objc
+    func close() {
         self.delegate?.elementInspectorViewControllerDidFinish(self)
     }
     
