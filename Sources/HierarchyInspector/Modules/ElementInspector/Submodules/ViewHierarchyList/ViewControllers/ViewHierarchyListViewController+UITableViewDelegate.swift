@@ -99,7 +99,7 @@ private extension ViewHierarchyListViewController {
     
     func updateVisibleRowsBackgroundColor(_ completion: ((Bool) -> Void)? = nil) {
         UIView.animate(
-            withDuration: ElementInspector.animationDuration,
+            withDuration: ElementInspector.configuration.animationDuration,
             animations: { [weak self] in
             
                 self?.viewCode.tableView.indexPathsForVisibleRows?.forEach { indexPath in

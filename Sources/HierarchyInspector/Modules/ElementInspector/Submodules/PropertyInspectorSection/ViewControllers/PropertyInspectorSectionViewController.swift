@@ -82,7 +82,7 @@ final class PropertyInspectorSectionViewController: UIViewController {
                     return SeparatorView().then {
                         $0.contentView.directionalLayoutMargins = .margins(
                             horizontal: .zero,
-                            vertical: ElementInspector.appearance.verticalMargins
+                            vertical: ElementInspector.configuration.appearance.verticalMargins
                         )
                     }
                     
@@ -92,8 +92,8 @@ final class PropertyInspectorSectionViewController: UIViewController {
                         text: title.localizedCapitalized
                     ).then {
                         $0.contentView.directionalLayoutMargins = .margins(
-                            top: ElementInspector.appearance.horizontalMargins,
-                            bottom: ElementInspector.appearance.verticalMargins
+                            top: ElementInspector.configuration.appearance.horizontalMargins,
+                            bottom: ElementInspector.configuration.appearance.verticalMargins
                         )
                         $0.alpha = 1 / 3
                     }

@@ -75,7 +75,7 @@ extension ElementInspectorCoordinator: PropertyInspectorViewControllerDelegate {
                 $0.overrideUserInterfaceStyle = navigationController.overrideUserInterfaceStyle
             }
             
-            $0.view.tintColor = ElementInspector.appearance.tintColor
+            $0.view.tintColor = ElementInspector.configuration.appearance.tintColor
             $0.delegate = self
             $0.modalPresentationStyle = .popover
             $0.popoverPresentationController?.sourceView = imagePicker

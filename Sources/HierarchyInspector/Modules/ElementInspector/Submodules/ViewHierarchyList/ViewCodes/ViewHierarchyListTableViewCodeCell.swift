@@ -26,25 +26,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             
             elementNameLabel.text = viewModel?.title
 
-            #warning("move style to ElementInspector.Appearance")
-            elementNameLabel.font = {
-                switch viewModel?.relativeDepth {
-                case 0:
-                    return UIFont.preferredFont(forTextStyle: .title3).bold()
-
-                case 1:
-                    return UIFont.preferredFont(forTextStyle: .body).bold()
-
-                case 2:
-                    return UIFont.preferredFont(forTextStyle: .callout).bold()
-
-                case 3:
-                    return UIFont.preferredFont(forTextStyle: .subheadline).bold()
-
-                default:
-                    return UIFont.preferredFont(forTextStyle: .footnote)
-                }
-            }()
+            elementNameLabel.font = viewModel?.titleFont
             
             thumbnailImageView.image = viewModel?.thumbnailImage
             
@@ -62,7 +44,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
 
             // Containers Insets
 
-            let offset = ElementInspector.appearance.horizontalMargins * (CGFloat(viewModel?.relativeDepth ?? 0) + 1)
+            let offset = ElementInspector.configuration.appearance.horizontalMargins * (CGFloat(viewModel?.relativeDepth ?? 0) + 1)
 
             separatorInset = UIEdgeInsets(top: 0, left: offset, bottom: 0, right: 0)
             directionalLayoutMargins = .margins(leading: offset)
@@ -70,28 +52,15 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         }
     }
     
-    #warning("move to theme")
     var isEvenRow = false {
         didSet {
-            #if swift(>=5.0)
-            if #available(iOS 13.0, *) {
-                switch isEvenRow {
-                case true:
-                    backgroundColor = .secondarySystemBackground
-
-                case false:
-                    backgroundColor = .tertiarySystemBackground
-                }
-            }
-            #else
             switch isEvenRow {
             case true:
-                backgroundColor = .white
-
+                backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor
+                
             case false:
-                backgroundColor = UIColor(white: 0.05, alpha: 1)
+                backgroundColor = ElementInspector.configuration.appearance.panelHighlightBackgroundColor
             }
-            #endif
         }
     }
     
@@ -108,7 +77,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         }
         
         UIView.animate(
-            withDuration: ElementInspector.animationDuration,
+            withDuration: ElementInspector.configuration.animationDuration,
             delay: 0,
             options: [.beginFromCurrentState, .curveEaseInOut],
             animations: { [weak self] in
@@ -132,7 +101,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     
     private lazy var descriptionLabel = UILabel(
         .caption2,
-        textColor: ElementInspector.appearance.secondaryTextColor,
+        textColor: ElementInspector.configuration.appearance.secondaryTextColor,
         numberOfLines: 0
     ).then {
         $0.layer.shouldRasterize = true
@@ -151,16 +120,21 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
     }
         
     private lazy var thumbnailContainerView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)).then {
-        $0.installView(thumbnailImageView)
+        $0.installView(thumbnailImageView, .centerXY)
         
         $0.layer.shouldRasterize = true
+        
         $0.layer.rasterizationScale = UIScreen.main.scale
         
+        $0.backgroundColor = ElementInspector.configuration.appearance.secondaryTextColor
+        
         $0.clipsToBounds = true
-        $0.backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
-        $0.layer.cornerRadius = ElementInspector.appearance.verticalMargins
-        $0.heightAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
-        $0.widthAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
+        
+        $0.layer.cornerRadius = ElementInspector.configuration.appearance.verticalMargins
+        
+        $0.heightAnchor.constraint(equalToConstant: ElementInspector.configuration.appearance.horizontalMargins * 2).isActive = true
+        
+        $0.widthAnchor.constraint(equalToConstant: ElementInspector.configuration.appearance.horizontalMargins * 2).isActive = true
     }
     
     private lazy var containerStackView = UIStackView(
@@ -169,7 +143,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             elementNameLabel,
             textStackView
         ],
-        spacing: ElementInspector.appearance.verticalMargins / 2
+        spacing: ElementInspector.configuration.appearance.verticalMargins / 2
     )
     
     private lazy var textStackView = UIStackView(
@@ -178,13 +152,13 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
             thumbnailContainerView,
             descriptionLabel
         ],
-        spacing: ElementInspector.appearance.verticalMargins / 2
+        spacing: ElementInspector.configuration.appearance.verticalMargins / 2
     ).then {
         $0.alignment = .top
     }
     
     private lazy var customSelectedBackgroundView = UIView().then {
-        $0.backgroundColor = ElementInspector.appearance.tintColor.withAlphaComponent(0.1)
+        $0.backgroundColor = ElementInspector.configuration.appearance.tintColor.withAlphaComponent(0.1)
     }
     
     private func setup() {
@@ -198,7 +172,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         selectedBackgroundView = customSelectedBackgroundView
         
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor
         
         setupContainerStackView()
         
@@ -209,10 +183,10 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         contentView.installView(
             containerStackView,
             .margins(
-                top: ElementInspector.appearance.verticalMargins,
+                top: ElementInspector.configuration.appearance.verticalMargins,
                 leading: 0,
-                bottom: ElementInspector.appearance.verticalMargins,
-                trailing: ElementInspector.appearance.verticalMargins
+                bottom: ElementInspector.configuration.appearance.verticalMargins,
+                trailing: ElementInspector.configuration.appearance.verticalMargins
             )
         )
     }
@@ -224,7 +198,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
 
         chevronDownIcon.trailingAnchor.constraint(
             equalTo: elementNameLabel.leadingAnchor,
-            constant: -(ElementInspector.appearance.verticalMargins / 3)
+            constant: -(ElementInspector.configuration.appearance.verticalMargins / 3)
         ).isActive = true
         
     }

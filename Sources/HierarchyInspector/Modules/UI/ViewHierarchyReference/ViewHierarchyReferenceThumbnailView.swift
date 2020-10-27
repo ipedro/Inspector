@@ -49,7 +49,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     private lazy var statusContentView = UIStackView(
         axis: .vertical,
-        spacing: ElementInspector.appearance.verticalMargins / 2,
+        spacing: ElementInspector.configuration.appearance.verticalMargins / 2,
         margins: contentView.directionalLayoutMargins
     ).then {
         $0.alignment = .center
@@ -65,9 +65,9 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     override func setup() {
         super.setup()
         
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        backgroundColor = ElementInspector.configuration.appearance.secondaryTextColor
         
-        contentView.directionalLayoutMargins = .margins(ElementInspector.appearance.horizontalMargins)
+        contentView.directionalLayoutMargins = .margins(ElementInspector.configuration.appearance.horizontalMargins)
         
         clipsToBounds = true
         
@@ -101,8 +101,6 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         didSet {
             statusContentView.subviews.forEach { $0.removeFromSuperview() }
             
-            backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
-            
             let previousSubviews = snapshotContainerView.subviews
             
             defer {
@@ -111,8 +109,6 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             
             switch state {
             case let .snapshot(newSnapshot):
-                backgroundColor = ElementInspector.appearance.tertiaryTextColor
-                
                 let proportionalFrame = calculateFrame(with: newSnapshot.bounds.size)
                 
                 guard proportionalFrame != .zero else {
@@ -152,7 +148,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     private func installStatusView(icon glyph: Icon.Glyph, text: String) {
         statusContentView.subviews.forEach { $0.removeFromSuperview() }
         
-        let color = ElementInspector.appearance.secondaryTextColor
+        let color = ElementInspector.configuration.appearance.secondaryTextColor
         
         let icon = Icon(glyph, color: color, size: CGSize(width: 36, height: 36))
         

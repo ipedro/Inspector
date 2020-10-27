@@ -27,7 +27,7 @@ final class PropertyInspectorSectionViewCode: BaseView {
     ).then {
         $0.contentView.directionalLayoutMargins = .margins(
             horizontal: .zero,
-            vertical: ElementInspector.appearance.verticalMargins / 2
+            vertical: ElementInspector.configuration.appearance.verticalMargins / 2
         )
     }
     
@@ -50,16 +50,16 @@ final class PropertyInspectorSectionViewCode: BaseView {
         
         hideContent(isCollapsed)
         
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor
         
-        contentView.directionalLayoutMargins = ElementInspector.appearance.margins
+        contentView.directionalLayoutMargins = ElementInspector.configuration.appearance.margins
         
         contentView.addArrangedSubview(sectionHeader)
         
         contentView.addArrangedSubview(inputContainerView)
         
         contentView.setCustomSpacing(
-            ElementInspector.appearance.verticalMargins,
+            ElementInspector.configuration.appearance.verticalMargins,
             after: sectionHeader
         )
         
@@ -86,7 +86,7 @@ final class PropertyInspectorSectionViewCode: BaseView {
 
         chevronDownIcon.trailingAnchor.constraint(
             equalTo: sectionHeader.leadingAnchor,
-            constant: -(ElementInspector.appearance.verticalMargins / 3)
+            constant: -(ElementInspector.configuration.appearance.verticalMargins / 3)
         ).isActive = true
     }
     

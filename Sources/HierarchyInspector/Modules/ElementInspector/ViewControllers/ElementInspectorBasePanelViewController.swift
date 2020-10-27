@@ -16,13 +16,15 @@ class ElementInspectorBasePanelViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        Console.print(#function, view.frame)
+        
         guard needsLayout else {
             return
         }
         
         needsLayout = false
         
-        debounce(#selector(updatePreferredContentSize), after: 0.1)
+        updatePreferredContentSize()
     }
     
     @objc func updatePreferredContentSize() {

@@ -9,12 +9,12 @@ import UIKit
 
 final class PropertyInspectorViewCode: BaseView {
     
-    #warning("move header style to ElementInspector.Appearance")
+    #warning("move header style to ElementInspector.configuration.appearance")
     private(set) lazy var elementNameLabel = SectionHeader(.title3, text: nil, withTraits: .traitBold).then {
         $0.contentView.directionalLayoutMargins = .zero
     }
     
-    #warning("move text style to ElementInspector.Appearance")
+    #warning("move text style to ElementInspector.configuration.appearance")
     private(set) lazy var elementDescriptionLabel =  UILabel(.caption2, numberOfLines: 0).then {
         $0.alpha = 0.5
     }
@@ -25,8 +25,8 @@ final class PropertyInspectorViewCode: BaseView {
             elementNameLabel,
             elementDescriptionLabel
         ],
-        spacing: ElementInspector.appearance.verticalMargins / 2,
-        margins: ElementInspector.appearance.margins
+        spacing: ElementInspector.configuration.appearance.verticalMargins / 2,
+        margins: ElementInspector.configuration.appearance.margins
     )
     
     private(set) lazy var scrollView = UIScrollView().then {
@@ -40,7 +40,7 @@ final class PropertyInspectorViewCode: BaseView {
         scrollView.installView(contentView)
         installView(scrollView)
         
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor
         
         contentView.addArrangedSubview(headerContentView)
         

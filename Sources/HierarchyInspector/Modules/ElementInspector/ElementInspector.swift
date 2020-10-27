@@ -8,18 +8,27 @@
 import UIKit
 
 enum ElementInspector {
-    
-    static let animationDuration: TimeInterval = 0.2
-    
+    static var configuration = Configuration()
+}
+
+extension ElementInspector {
+    struct Configuration {
+        let animationDuration: TimeInterval = 0.2
+        
+        var appearance = Appearance()
+    }
+}
+
+extension ElementInspector {
     struct Appearance {
         
         let horizontalMargins: CGFloat = 26
         
         let verticalMargins: CGFloat = 13
         
-        lazy var tintColor: UIColor = .systemPurple
+        var tintColor: UIColor = .systemPurple
         
-        lazy var textColor: UIColor = {
+        var textColor: UIColor = {
             #if swift(>=5.0)
             if #available(iOS 13.0, *) {
                 return .label
@@ -29,7 +38,7 @@ enum ElementInspector {
             return .darkText
         }()
         
-        lazy var secondaryTextColor: UIColor = {
+        var secondaryTextColor: UIColor = {
             #if swift(>=5.0)
             if #available(iOS 13.0, *) {
                 return .secondaryLabel
@@ -40,7 +49,7 @@ enum ElementInspector {
         }()
         
         
-        lazy var tertiaryTextColor: UIColor = {
+        var tertiaryTextColor: UIColor = {
             #if swift(>=5.0)
             if #available(iOS 13.0, *) {
                 return .tertiaryLabel
@@ -52,8 +61,15 @@ enum ElementInspector {
         
         var margins: NSDirectionalEdgeInsets {
             .margins(
-                horizontal: ElementInspector.appearance.horizontalMargins,
-                vertical: ElementInspector.appearance.verticalMargins
+                horizontal: horizontalMargins,
+                vertical: verticalMargins
+            )
+        }
+        
+        var panelPreferredCompressedSize: CGSize {
+            CGSize(
+                width: min(UIScreen.main.bounds.width, 414),
+                height: .zero
             )
         }
         
@@ -76,7 +92,24 @@ enum ElementInspector {
             
             return .white
         }()
+        
+        func titleFont(forRelativeDepth relativeDepth: Int) -> UIFont {
+            switch relativeDepth {
+            case 0:
+                return UIFont.preferredFont(forTextStyle: .title3).bold()
+
+            case 1:
+                return UIFont.preferredFont(forTextStyle: .body).bold()
+
+            case 2:
+                return UIFont.preferredFont(forTextStyle: .callout).bold()
+
+            case 3:
+                return UIFont.preferredFont(forTextStyle: .subheadline).bold()
+
+            default:
+                return UIFont.preferredFont(forTextStyle: .footnote)
+            }
+        }
     }
-    
-    static var appearance = Appearance()
 }

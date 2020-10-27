@@ -38,7 +38,7 @@ final class ImagePicker: BaseFormControl {
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapImage))
     
     private lazy var imageContainerView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)).then {
-        $0.backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        $0.backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor
         
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 5
@@ -46,7 +46,7 @@ final class ImagePicker: BaseFormControl {
         $0.setContentHuggingPriority(.required, for: .horizontal)
         $0.setContentHuggingPriority(.required, for: .vertical)
         
-        $0.heightAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins).isActive = true
+        $0.heightAnchor.constraint(equalToConstant: ElementInspector.configuration.appearance.horizontalMargins).isActive = true
         
         $0.installView(imageView)
     }

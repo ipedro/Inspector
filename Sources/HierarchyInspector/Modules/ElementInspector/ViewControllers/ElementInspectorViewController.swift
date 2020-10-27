@@ -37,9 +37,13 @@ final class ElementInspectorViewController: UIViewController {
                 
                 addChild(panelViewController)
                 
+                view.setNeedsLayout()
+                
                 viewCode.contentView.installView(panelViewController.view)
                 
                 panelViewController.didMove(toParent: self)
+                
+                view.layoutIfNeeded()
             }
             
             if let oldPanelViewController = oldValue {
@@ -53,7 +57,12 @@ final class ElementInspectorViewController: UIViewController {
         }
     }
     
-    private lazy var viewCode = ElementInspectorViewCode().then {
+    private lazy var viewCode = ElementInspectorViewCode(
+        frame: CGRect(
+            origin: .zero,
+            size: ElementInspector.configuration.appearance.panelPreferredCompressedSize
+        )
+    ).then {
         $0.segmentedControl.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
         
         $0.inspectBarButtonItem.target = self

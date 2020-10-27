@@ -10,7 +10,7 @@ import UIKit
 final class ViewHierarchyListViewCode: BaseView {
     
     private(set) lazy var activityIndicatorView = UIActivityIndicatorView(style: .whiteLarge).then {
-        $0.color = ElementInspector.appearance.tertiaryTextColor
+        $0.color = ElementInspector.configuration.appearance.tertiaryTextColor
         $0.startAnimating()
     }
     
@@ -26,7 +26,7 @@ final class ViewHierarchyListViewCode: BaseView {
         $0.contentInset       = UIEdgeInsets(
             top: 0,
             left: 0,
-            bottom: ElementInspector.appearance.horizontalMargins,
+            bottom: ElementInspector.configuration.appearance.horizontalMargins,
             right: 0
         )
     }
@@ -34,7 +34,7 @@ final class ViewHierarchyListViewCode: BaseView {
     override func setup() {
         super.setup()
         
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor
         
         installView(tableView)
     }

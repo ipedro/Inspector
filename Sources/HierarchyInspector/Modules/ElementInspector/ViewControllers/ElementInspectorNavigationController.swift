@@ -11,9 +11,9 @@ final class ElementInspectorNavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.tintColor = ElementInspector.appearance.tintColor
+        view.tintColor = ElementInspector.configuration.appearance.tintColor
         
-        view.backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        view.backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor
         
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {

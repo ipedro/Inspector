@@ -21,14 +21,10 @@ final class ViewHierarchyListViewController: ElementInspectorPanelViewController
     
     private var needsSetup = true
     
-    #warning("remove magic number")
     private(set) lazy var viewCode = ViewHierarchyListViewCode(
         frame: CGRect(
             origin: .zero,
-            size: CGSize(
-                width: min(UIScreen.main.bounds.width, 414),
-                height: .zero
-            )
+            size: ElementInspector.configuration.appearance.panelPreferredCompressedSize
         )
     )
     
@@ -73,10 +69,10 @@ final class ViewHierarchyListViewController: ElementInspectorPanelViewController
     
     func calculatePreferredContentSize() -> CGSize {
         let contentHeight = viewCode.tableView.estimatedRowHeight * CGFloat(viewModel.numberOfRows)
-        let contentInset = viewCode.tableView.contentInset
+        let contentInset  = viewCode.tableView.contentInset
         
         return CGSize(
-            width: min(UIScreen.main.bounds.width, 414),
+            width: ElementInspector.configuration.appearance.panelPreferredCompressedSize.width,
             height: contentHeight + contentInset.top + contentInset.bottom
         )
     }

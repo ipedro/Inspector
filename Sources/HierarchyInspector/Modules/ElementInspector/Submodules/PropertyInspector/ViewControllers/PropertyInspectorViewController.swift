@@ -114,7 +114,11 @@ final class PropertyInspectorViewController: ElementInspectorPanelViewController
     }
     
     func calculatePreferredContentSize() -> CGSize {
-        viewCode.contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        viewCode.contentView.systemLayoutSizeFitting(
+            ElementInspector.configuration.appearance.panelPreferredCompressedSize,
+            withHorizontalFittingPriority: .defaultHigh,
+            verticalFittingPriority: .fittingSizeLevel
+        )
     }
     
     deinit {

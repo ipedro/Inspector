@@ -18,6 +18,8 @@ protocol ViewHierarchyListItemViewModelProtocol: AnyObject {
     
     var title: String { get }
     
+    var titleFont: UIFont { get }
+    
     var subtitle: String { get }
     
     var isContainer: Bool { get }
@@ -52,8 +54,8 @@ final class ViewHierarchyListItemViewModel {
     let reference: ViewHierarchyReference
     
     static let thumbSize = CGSize(
-        width: ElementInspector.appearance.horizontalMargins * 2,
-        height: ElementInspector.appearance.horizontalMargins * 2
+        width: ElementInspector.configuration.appearance.horizontalMargins * 2,
+        height: ElementInspector.configuration.appearance.horizontalMargins * 2
     )
     
     var cachedThumbnailImage: UIImage?
@@ -74,6 +76,10 @@ final class ViewHierarchyListItemViewModel {
 // MARK: - ViewHierarchyListItemViewModelProtocol
 
 extension ViewHierarchyListItemViewModel: ViewHierarchyListItemViewModelProtocol {
+    var titleFont: UIFont {
+        ElementInspector.configuration.appearance.titleFont(forRelativeDepth: relativeDepth)
+    }
+    
     var isHidden: Bool {
         parent?.isCollapsed == true || parent?.isHidden == true
     }

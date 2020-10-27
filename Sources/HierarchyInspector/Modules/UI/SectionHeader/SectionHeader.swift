@@ -40,7 +40,7 @@ final class SectionHeader: BaseView {
         _ textStyle: UIFont.TextStyle = .title3,
         text: String?,
         withTraits traits: UIFontDescriptor.SymbolicTraits? = nil,
-        margins: NSDirectionalEdgeInsets = ElementInspector.appearance.margins
+        margins: NSDirectionalEdgeInsets = ElementInspector.configuration.appearance.margins
     ) {
         self.init(frame: .zero)
         

@@ -22,7 +22,7 @@ final class ColorDisplayControl: BaseControl {
     override func setup() {
         super.setup()
         
-        backgroundColor = ElementInspector.appearance.tertiaryTextColor
+        backgroundColor = ElementInspector.configuration.appearance.tertiaryTextColor
         
         layer.cornerRadius = 5
         

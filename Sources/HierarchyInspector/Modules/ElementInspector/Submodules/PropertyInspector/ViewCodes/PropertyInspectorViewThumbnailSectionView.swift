@@ -24,8 +24,8 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         arrangedSubviews: [
             toggleHighlightViewsControl
         ],
-        spacing: ElementInspector.appearance.verticalMargins / 2,
-        margins: ElementInspector.appearance.margins
+        spacing: ElementInspector.configuration.appearance.verticalMargins / 2,
+        margins: ElementInspector.configuration.appearance.margins
     )
     
     private(set) lazy var toggleHighlightViewsControl = ToggleControl(
@@ -97,7 +97,7 @@ final class PropertyInspectorViewThumbnailSectionView: BaseView {
         
         switch thumbnailView.state {
         case .frameIsEmpty, .isHidden, .lostConnection:
-            contentHeightConstraint.constant = ElementInspector.appearance.horizontalMargins * 4
+            contentHeightConstraint.constant = ElementInspector.configuration.appearance.horizontalMargins * 4
             
         default:
             contentHeightConstraint.constant = calculateContentHeight()
