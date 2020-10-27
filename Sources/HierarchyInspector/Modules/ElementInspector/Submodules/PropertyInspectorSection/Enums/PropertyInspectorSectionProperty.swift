@@ -36,7 +36,7 @@ enum PropertyInspectorSectionProperty {
     
     case toggleButton(title: String, isOn: BoolProvider, handler: BoolHandler?)
     
-    case segmentedControl(title: String, options: [SegmentedControlDisplayable], selectedIndex: IntProvider, handler: IntHandler?)
+    case segmentedControl(title: String, options: [SegmentedControlDisplayable], axis: NSLayoutConstraint.Axis = .vertical, selectedIndex: IntProvider, handler: IntHandler?)
     
     case optionsList(title: String, options: [CustomStringConvertible], selectedIndex: IntProvider, handler: IntHandler?)
     
@@ -83,7 +83,7 @@ extension PropertyInspectorSectionProperty: Hashable {
         case .stepper(_, _, _, _, _, .some),
              .colorPicker(_, _, .some),
              .toggleButton(_, _, .some),
-             .segmentedControl(_, _, _, .some),
+             .segmentedControl(_, _, _, _, .some),
              .optionsList(_, _, _, .some),
              .textInput(_, _, _, .some),
              .imagePicker(_, _, .some):

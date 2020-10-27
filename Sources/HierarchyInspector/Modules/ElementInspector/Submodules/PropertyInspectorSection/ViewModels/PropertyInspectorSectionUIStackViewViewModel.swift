@@ -11,7 +11,6 @@ final class PropertyInspectorSectionUIStackViewViewModel: PropertyInspectorSecti
     
     enum Property: CaseIterable {
         case axis
-        case separator
         case alignment
         case distribution
         case spacing
@@ -36,6 +35,7 @@ final class PropertyInspectorSectionUIStackViewViewModel: PropertyInspectorSecti
             return .segmentedControl(
                 title: "axis",
                 options: NSLayoutConstraint.Axis.allCases,
+                axis: .horizontal,
                 selectedIndex: { NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis) }
             ) {
                 guard let newIndex = $0 else {
@@ -46,8 +46,6 @@ final class PropertyInspectorSectionUIStackViewViewModel: PropertyInspectorSecti
                 
                 stackView.axis = axis
             }
-        case .separator:
-            return .separator
             
         case .alignment:
             return .optionsList(

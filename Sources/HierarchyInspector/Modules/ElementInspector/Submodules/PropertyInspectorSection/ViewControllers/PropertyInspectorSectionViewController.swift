@@ -129,12 +129,14 @@ final class PropertyInspectorSectionViewController: UIViewController {
                         isOn: isOnProvider()
                     )
                     
-                case let .segmentedControl(title, options, selectedIndexProvider, _):
+                case let .segmentedControl(title, options, axis, selectedIndexProvider, _):
                     return SegmentedControl(
                         title: title,
                         options: options,
                         selectedIndex: selectedIndexProvider()
-                    )
+                    ).then {
+                        $0.axis = axis
+                    }
                     
                 case let .optionsList(title, options, selectedIndexProvider, _):
                     return OptionSelector(
@@ -192,7 +194,7 @@ extension PropertyInspectorSectionViewController {
                 case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
                     handler?(toggleControl.isOn)
                     
-                case let (.segmentedControl(_, _, _, handler), segmentedControl as SegmentedControl):
+                case let (.segmentedControl(_, _, _, _, handler), segmentedControl as SegmentedControl):
                     handler?(segmentedControl.selectedIndex)
                     
                 case let (.optionsList(_, _, _, handler), optionSelector as OptionSelector):
@@ -255,7 +257,7 @@ extension PropertyInspectorSectionViewController {
             case let (.toggleButton(_, isOnProvider, _), toggleControl as ToggleControl):
                 toggleControl.isOn = isOnProvider()
                 
-            case let (.segmentedControl(_, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
+            case let (.segmentedControl(_, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
                 segmentedControl.selectedIndex = selectedIndexProvider()
                 
             case let (.optionsList(_, _, selectedIndexProvider, _), optionSelector as OptionSelector):
