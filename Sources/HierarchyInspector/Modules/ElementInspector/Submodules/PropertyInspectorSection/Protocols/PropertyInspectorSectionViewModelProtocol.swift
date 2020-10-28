@@ -5,7 +5,7 @@
 //  Created by Pedro Almeida on 03.10.20.
 //
 
-import Foundation
+import UIKit
 
 protocol PropertyInspectorSectionViewModelProtocol: AnyObject {
     
@@ -13,4 +13,5 @@ protocol PropertyInspectorSectionViewModelProtocol: AnyObject {
     
     var properties: [PropertyInspectorSectionProperty] { get }
     
+    init?(view: UIView)
 }
