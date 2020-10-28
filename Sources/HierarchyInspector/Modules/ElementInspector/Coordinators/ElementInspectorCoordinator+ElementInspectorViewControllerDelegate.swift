@@ -26,6 +26,8 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
                 $0.delegate = self
             }
             
+        case .sizeInspector:
+            return SizeInspectorViewController()
         }
     }
     

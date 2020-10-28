@@ -10,7 +10,10 @@
 
 import UIKit
 
+
+
 class IconKit: NSObject {
+    
     
     //MARK: - Canvas Drawings
     
@@ -443,7 +446,7 @@ class IconKit: NSObject {
         context.restoreGState()
     }
     
-    class func drawRullerFill(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) {
+    class func drawSetSquareFill(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
         
@@ -453,99 +456,35 @@ class IconKit: NSObject {
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 24, y: resizedFrame.height / 24)
         
-        /// Shape
-        let shape = UIBezierPath()
-        shape.move(to: CGPoint(x: 22, y: 2.51))
-        shape.addCurve(to: CGPoint(x: 19.47, y: 0), controlPoint1: CGPoint(x: 22, y: 0.87), controlPoint2: CGPoint(x: 21.12, y: 0))
-        shape.addLine(to: CGPoint(x: 2.53, y: 0))
-        shape.addCurve(to: CGPoint(x: 0, y: 2.51), controlPoint1: CGPoint(x: 0.87, y: 0), controlPoint2: CGPoint(x: 0, y: 0.85))
-        shape.addLine(to: CGPoint(x: 0, y: 7.49))
-        shape.addCurve(to: CGPoint(x: 2.55, y: 10), controlPoint1: CGPoint(x: 0, y: 9.13), controlPoint2: CGPoint(x: 0.88, y: 10))
-        shape.addLine(to: CGPoint(x: 19.48, y: 10))
-        shape.addCurve(to: CGPoint(x: 22, y: 7.49), controlPoint1: CGPoint(x: 21.13, y: 10), controlPoint2: CGPoint(x: 22, y: 9.13))
-        shape.addLine(to: CGPoint(x: 22, y: 2.51))
-        shape.close()
-        shape.move(to: CGPoint(x: 2.88, y: 1.8))
-        shape.addLine(to: CGPoint(x: 2.87, y: 5.86))
-        shape.addCurve(to: CGPoint(x: 2.47, y: 6.27), controlPoint1: CGPoint(x: 2.87, y: 6.09), controlPoint2: CGPoint(x: 2.7, y: 6.26))
-        shape.addCurve(to: CGPoint(x: 2.06, y: 5.87), controlPoint1: CGPoint(x: 2.23, y: 6.28), controlPoint2: CGPoint(x: 2.06, y: 6.1))
-        shape.addLine(to: CGPoint(x: 2.06, y: 1.8))
-        shape.addLine(to: CGPoint(x: 2.88, y: 1.8))
-        shape.close()
-        shape.move(to: CGPoint(x: 4.59, y: 1.8))
-        shape.addLine(to: CGPoint(x: 4.58, y: 4.41))
-        shape.addCurve(to: CGPoint(x: 4.18, y: 4.82), controlPoint1: CGPoint(x: 4.58, y: 4.65), controlPoint2: CGPoint(x: 4.41, y: 4.82))
-        shape.addCurve(to: CGPoint(x: 3.77, y: 4.42), controlPoint1: CGPoint(x: 3.95, y: 4.83), controlPoint2: CGPoint(x: 3.77, y: 4.65))
-        shape.addLine(to: CGPoint(x: 3.77, y: 1.8))
-        shape.addLine(to: CGPoint(x: 4.59, y: 1.8))
-        shape.close()
-        shape.move(to: CGPoint(x: 6.3, y: 1.8))
-        shape.addLine(to: CGPoint(x: 6.29, y: 4.41))
-        shape.addCurve(to: CGPoint(x: 5.89, y: 4.82), controlPoint1: CGPoint(x: 6.29, y: 4.65), controlPoint2: CGPoint(x: 6.13, y: 4.82))
-        shape.addCurve(to: CGPoint(x: 5.48, y: 4.42), controlPoint1: CGPoint(x: 5.66, y: 4.83), controlPoint2: CGPoint(x: 5.48, y: 4.65))
-        shape.addLine(to: CGPoint(x: 5.48, y: 1.8))
-        shape.addLine(to: CGPoint(x: 6.3, y: 1.8))
-        shape.close()
-        shape.move(to: CGPoint(x: 8, y: 1.8))
-        shape.addLine(to: CGPoint(x: 8, y: 4.41))
-        shape.addCurve(to: CGPoint(x: 7.59, y: 4.82), controlPoint1: CGPoint(x: 8, y: 4.65), controlPoint2: CGPoint(x: 7.84, y: 4.82))
-        shape.addCurve(to: CGPoint(x: 7.18, y: 4.42), controlPoint1: CGPoint(x: 7.37, y: 4.83), controlPoint2: CGPoint(x: 7.18, y: 4.65))
-        shape.addLine(to: CGPoint(x: 7.18, y: 1.8))
-        shape.addLine(to: CGPoint(x: 8, y: 1.8))
-        shape.close()
-        shape.move(to: CGPoint(x: 9.72, y: 1.8))
-        shape.addLine(to: CGPoint(x: 9.72, y: 4.41))
-        shape.addCurve(to: CGPoint(x: 9.3, y: 4.82), controlPoint1: CGPoint(x: 9.72, y: 4.65), controlPoint2: CGPoint(x: 9.55, y: 4.82))
-        shape.addCurve(to: CGPoint(x: 8.89, y: 4.42), controlPoint1: CGPoint(x: 9.08, y: 4.83), controlPoint2: CGPoint(x: 8.89, y: 4.65))
-        shape.addLine(to: CGPoint(x: 8.89, y: 1.8))
-        shape.addLine(to: CGPoint(x: 9.72, y: 1.8))
-        shape.close()
-        shape.move(to: CGPoint(x: 11.43, y: 1.8))
-        shape.addLine(to: CGPoint(x: 11.42, y: 5.86))
-        shape.addCurve(to: CGPoint(x: 11.01, y: 6.27), controlPoint1: CGPoint(x: 11.42, y: 6.09), controlPoint2: CGPoint(x: 11.25, y: 6.26))
-        shape.addCurve(to: CGPoint(x: 10.59, y: 5.87), controlPoint1: CGPoint(x: 10.78, y: 6.28), controlPoint2: CGPoint(x: 10.59, y: 6.1))
-        shape.addLine(to: CGPoint(x: 10.59, y: 1.8))
-        shape.addLine(to: CGPoint(x: 11.43, y: 1.8))
-        shape.close()
-        shape.move(to: CGPoint(x: 13.14, y: 1.8))
-        shape.addLine(to: CGPoint(x: 13.13, y: 4.41))
-        shape.addCurve(to: CGPoint(x: 12.72, y: 4.82), controlPoint1: CGPoint(x: 13.13, y: 4.65), controlPoint2: CGPoint(x: 12.96, y: 4.82))
-        shape.addCurve(to: CGPoint(x: 12.31, y: 4.42), controlPoint1: CGPoint(x: 12.5, y: 4.83), controlPoint2: CGPoint(x: 12.31, y: 4.65))
-        shape.addLine(to: CGPoint(x: 12.31, y: 1.8))
-        shape.addLine(to: CGPoint(x: 13.14, y: 1.8))
-        shape.close()
-        shape.move(to: CGPoint(x: 14.85, y: 1.8))
-        shape.addLine(to: CGPoint(x: 14.84, y: 4.41))
-        shape.addCurve(to: CGPoint(x: 14.43, y: 4.82), controlPoint1: CGPoint(x: 14.84, y: 4.65), controlPoint2: CGPoint(x: 14.67, y: 4.82))
-        shape.addCurve(to: CGPoint(x: 14.02, y: 4.42), controlPoint1: CGPoint(x: 14.21, y: 4.83), controlPoint2: CGPoint(x: 14.02, y: 4.65))
-        shape.addLine(to: CGPoint(x: 14.02, y: 1.8))
-        shape.addLine(to: CGPoint(x: 14.85, y: 1.8))
-        shape.close()
-        shape.move(to: CGPoint(x: 16.55, y: 1.8))
-        shape.addLine(to: CGPoint(x: 16.54, y: 4.41))
-        shape.addCurve(to: CGPoint(x: 16.13, y: 4.82), controlPoint1: CGPoint(x: 16.54, y: 4.65), controlPoint2: CGPoint(x: 16.38, y: 4.82))
-        shape.addCurve(to: CGPoint(x: 15.72, y: 4.42), controlPoint1: CGPoint(x: 15.91, y: 4.83), controlPoint2: CGPoint(x: 15.72, y: 4.65))
-        shape.addLine(to: CGPoint(x: 15.72, y: 1.8))
-        shape.addLine(to: CGPoint(x: 16.55, y: 1.8))
-        shape.close()
-        shape.move(to: CGPoint(x: 18.26, y: 1.8))
-        shape.addLine(to: CGPoint(x: 18.25, y: 4.41))
-        shape.addCurve(to: CGPoint(x: 17.84, y: 4.82), controlPoint1: CGPoint(x: 18.25, y: 4.65), controlPoint2: CGPoint(x: 18.09, y: 4.82))
-        shape.addCurve(to: CGPoint(x: 17.43, y: 4.42), controlPoint1: CGPoint(x: 17.62, y: 4.83), controlPoint2: CGPoint(x: 17.43, y: 4.65))
-        shape.addLine(to: CGPoint(x: 17.43, y: 1.8))
-        shape.addLine(to: CGPoint(x: 18.26, y: 1.8))
-        shape.close()
-        shape.move(to: CGPoint(x: 19.97, y: 1.8))
-        shape.addLine(to: CGPoint(x: 19.95, y: 5.86))
-        shape.addCurve(to: CGPoint(x: 19.54, y: 6.27), controlPoint1: CGPoint(x: 19.95, y: 6.09), controlPoint2: CGPoint(x: 19.79, y: 6.26))
-        shape.addCurve(to: CGPoint(x: 19.13, y: 5.87), controlPoint1: CGPoint(x: 19.32, y: 6.28), controlPoint2: CGPoint(x: 19.13, y: 6.1))
-        shape.addLine(to: CGPoint(x: 19.13, y: 1.8))
-        shape.addLine(to: CGPoint(x: 19.97, y: 1.8))
-        shape.close()
+        /// SetSquare
+        let setSquare = UIBezierPath()
+        setSquare.move(to: CGPoint(x: 0.43, y: 0))
+        setSquare.addCurve(to: CGPoint(x: 0.74, y: 0.14), controlPoint1: CGPoint(x: 0.55, y: 0), controlPoint2: CGPoint(x: 0.66, y: 0.05))
+        setSquare.addLine(to: CGPoint(x: 13.9, y: 14.28))
+        setSquare.addCurve(to: CGPoint(x: 13.87, y: 14.88), controlPoint1: CGPoint(x: 14.06, y: 14.45), controlPoint2: CGPoint(x: 14.05, y: 14.72))
+        setSquare.addCurve(to: CGPoint(x: 13.58, y: 15), controlPoint1: CGPoint(x: 13.79, y: 14.96), controlPoint2: CGPoint(x: 13.69, y: 15))
+        setSquare.addLine(to: CGPoint(x: 0.43, y: 15))
+        setSquare.addCurve(to: CGPoint(x: 0, y: 14.57), controlPoint1: CGPoint(x: 0.19, y: 15), controlPoint2: CGPoint(x: 0, y: 14.81))
+        setSquare.addLine(to: CGPoint(x: 0, y: 0.43))
+        setSquare.addCurve(to: CGPoint(x: 0.43, y: 0), controlPoint1: CGPoint(x: 0, y: 0.19), controlPoint2: CGPoint(x: 0.19, y: 0))
+        setSquare.close()
+        setSquare.move(to: CGPoint(x: 3, y: 5.99))
+        setSquare.addCurve(to: CGPoint(x: 2.57, y: 6.42), controlPoint1: CGPoint(x: 2.76, y: 5.99), controlPoint2: CGPoint(x: 2.57, y: 6.19))
+        setSquare.addLine(to: CGPoint(x: 2.57, y: 6.42))
+        setSquare.addLine(to: CGPoint(x: 2.57, y: 11.96))
+        setSquare.addCurve(to: CGPoint(x: 3, y: 12.39), controlPoint1: CGPoint(x: 2.57, y: 12.2), controlPoint2: CGPoint(x: 2.76, y: 12.39))
+        setSquare.addLine(to: CGPoint(x: 3, y: 12.39))
+        setSquare.addLine(to: CGPoint(x: 8.54, y: 12.39))
+        setSquare.addCurve(to: CGPoint(x: 8.84, y: 12.26), controlPoint1: CGPoint(x: 8.65, y: 12.39), controlPoint2: CGPoint(x: 8.76, y: 12.34))
+        setSquare.addCurve(to: CGPoint(x: 8.84, y: 11.66), controlPoint1: CGPoint(x: 9.01, y: 12.1), controlPoint2: CGPoint(x: 9.01, y: 11.82))
+        setSquare.addLine(to: CGPoint(x: 8.84, y: 11.66))
+        setSquare.addLine(to: CGPoint(x: 3.3, y: 6.12))
+        setSquare.addCurve(to: CGPoint(x: 3, y: 5.99), controlPoint1: CGPoint(x: 3.22, y: 6.04), controlPoint2: CGPoint(x: 3.11, y: 5.99))
+        setSquare.close()
         context.saveGState()
-        context.translateBy(x: 1, y: 7)
+        context.translateBy(x: 5, y: 5)
         UIColor.black.setFill()
-        shape.fill()
+        setSquare.fill()
         context.restoreGState()
         
         context.restoreGState()
@@ -1543,6 +1482,94 @@ class IconKit: NSObject {
         context.restoreGState()
     }
     
+    class func drawSizeArrowHorizontal(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 9, height: 7)) {
+        /// General Declarations
+        let context = UIGraphicsGetCurrentContext()!
+        
+        /// Line
+        let line = UIBezierPath()
+        line.move(to:    CGPoint(x: targetFrame.maxX - 3.5, y: targetFrame.midY - 0.5))
+        line.addLine(to: CGPoint(x: targetFrame.maxX - 3.5, y: targetFrame.midY + 0.5))
+        line.addLine(to: CGPoint(x: targetFrame.minX + 3.5, y: targetFrame.midY + 0.5))
+        line.addLine(to: CGPoint(x: targetFrame.minX + 3.5, y: targetFrame.midY - 0.5))
+        line.close()
+        context.saveGState()
+        line.usesEvenOddFillRule = true
+        color.setFill()
+        line.fill()
+        context.restoreGState()
+        
+        /// Triangle Left
+        let triangleLeft = UIBezierPath()
+        triangleLeft.move(to:    CGPoint(x: targetFrame.minX + 4, y: targetFrame.midY - 3.5))
+        triangleLeft.addLine(to: CGPoint(x: targetFrame.minX + 4, y: targetFrame.midY + 3.5))
+        triangleLeft.addLine(to: CGPoint(x: targetFrame.minX + 0, y: targetFrame.midY + 0.0))
+        triangleLeft.addLine(to: CGPoint(x: targetFrame.minX + 0, y: targetFrame.midY - 0.0))
+        triangleLeft.close()
+        context.saveGState()
+        triangleLeft.usesEvenOddFillRule = true
+        color.setFill()
+        triangleLeft.fill()
+        context.restoreGState()
+        
+        /// Triangle Right
+        let triangleRight = UIBezierPath()
+        triangleRight.move(to:    CGPoint(x: targetFrame.maxX - 4, y: targetFrame.midY - 3.5))
+        triangleRight.addLine(to: CGPoint(x: targetFrame.maxX - 4, y: targetFrame.midY + 3.5))
+        triangleRight.addLine(to: CGPoint(x: targetFrame.maxX - 0, y: targetFrame.midY + 0.0))
+        triangleRight.addLine(to: CGPoint(x: targetFrame.maxX - 0, y: targetFrame.midY - 0.0))
+        triangleRight.close()
+        context.saveGState()
+        triangleRight.usesEvenOddFillRule = true
+        color.setFill()
+        triangleRight.fill()
+        context.restoreGState()
+    }
+    
+    class func drawSizeArrowVertical(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 7, height: 9)) {
+        /// General Declarations
+        let context = UIGraphicsGetCurrentContext()!
+        
+        /// Line
+        let line = UIBezierPath()
+        line.move(to:    CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.minY + 4))
+        line.addLine(to: CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.maxY - 4))
+        line.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.maxY - 4))
+        line.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.minY + 4))
+        line.close()
+        context.saveGState()
+        line.usesEvenOddFillRule = true
+        color.setFill()
+        line.fill()
+        context.restoreGState()
+        
+        /// Triangle Up
+        let triangleUp = UIBezierPath()
+        triangleUp.move(to:    CGPoint(x: targetFrame.midX + 0.0, y: 0))
+        triangleUp.addLine(to: CGPoint(x: targetFrame.midX + 3.5, y: 4))
+        triangleUp.addLine(to: CGPoint(x: targetFrame.midX - 3.5, y: 4))
+        triangleUp.addLine(to: CGPoint(x: targetFrame.midX + 0.0, y: 0))
+        triangleUp.close()
+        context.saveGState()
+        triangleUp.usesEvenOddFillRule = true
+        color.setFill()
+        triangleUp.fill()
+        context.restoreGState()
+        
+        /// Triangle Down
+        let triangleDown = UIBezierPath()
+        triangleDown.move(to:    CGPoint(x: targetFrame.midX + 0.0, y: targetFrame.maxY + 0))
+        triangleDown.addLine(to: CGPoint(x: targetFrame.midX + 3.5, y: targetFrame.maxY - 4))
+        triangleDown.addLine(to: CGPoint(x: targetFrame.midX - 3.5, y: targetFrame.maxY - 4))
+        triangleDown.addLine(to: CGPoint(x: targetFrame.midX + 0.0, y: targetFrame.maxY + 0))
+        triangleDown.close()
+        context.saveGState()
+        triangleDown.usesEvenOddFillRule = true
+        color.setFill()
+        triangleDown.fill()
+        context.restoreGState()
+    }
+    
     class func drawChevronUpDown(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
@@ -1768,7 +1795,7 @@ class IconKit: NSObject {
         return image
     }
     
-    class func imageOfRullerFill() -> UIImage {
+    class func imageOfSetSquareFill() -> UIImage {
         struct LocalCache {
             static var image: UIImage!
         }
@@ -1778,7 +1805,7 @@ class IconKit: NSObject {
         var image: UIImage
         
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 24, height: 24), false, 0)
-        IconKit.drawRullerFill()
+        IconKit.drawSetSquareFill()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         
@@ -2103,6 +2130,42 @@ class IconKit: NSObject {
         
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         IconKit.drawChevronUpDown(frame: CGRect(origin: .zero, size: size), resizing: resizing)
+        image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        LocalCache.image = image
+        return image
+    }
+    
+    class func imageOfSizeArrowVertical() -> UIImage {
+        struct LocalCache {
+            static var image: UIImage!
+        }
+        if LocalCache.image != nil {
+            return LocalCache.image
+        }
+        var image: UIImage
+        
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 7, height: 9), false, 0)
+        IconKit.drawSizeArrowVertical()
+        image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        LocalCache.image = image
+        return image
+    }
+    
+    class func imageOfSizeArrowHorizontal() -> UIImage {
+        struct LocalCache {
+            static var image: UIImage!
+        }
+        if LocalCache.image != nil {
+            return LocalCache.image
+        }
+        var image: UIImage
+        
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 9, height: 7), false, 0)
+        IconKit.drawSizeArrowHorizontal()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         

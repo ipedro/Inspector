@@ -9,6 +9,7 @@ import UIKit
 
 enum ElementInspectorPanel: Int, CaseIterable {
     case attributesInspector
+    case sizeInspector
     case viewHierarchyInspector
     
     var image: UIImage {
@@ -18,6 +19,9 @@ enum ElementInspectorPanel: Int, CaseIterable {
             
         case .viewHierarchyInspector:
             return IconKit.imageOfListBulletIndent()
+            
+        case .sizeInspector:
+            return IconKit.imageOfSetSquareFill()
         }
     }
 }

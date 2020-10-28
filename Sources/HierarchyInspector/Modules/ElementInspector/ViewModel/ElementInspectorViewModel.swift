@@ -49,14 +49,19 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         }
     }
     
-    private(set) lazy var elementPanels: [ElementInspectorPanel] = {
-        var array: [ElementInspectorPanel] = [.attributesInspector]
-        
-        if reference.isContainer {
-            array.append(.viewHierarchyInspector)
+    private(set) lazy var elementPanels: [ElementInspectorPanel] = ElementInspectorPanel.allCases.compactMap {
+        switch $0 {
+
+        case .attributesInspector:
+            return $0
+            
+        case .viewHierarchyInspector:
+            return reference.isContainer ? $0 : nil
+            
+        case .sizeInspector:
+            return $0
+            
         }
-        
-        return array
-    }()
+    }
     
 }

@@ -35,6 +35,7 @@
 		EB2629A82539DF3E00AE43AD /* NSTextAlignment+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2629A72539DF3E00AE43AD /* NSTextAlignment+CaseIterable.swift */; };
 		EB2629B22539DF5300AE43AD /* NSTextAlignment+SegmentedControlDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2629B12539DF5300AE43AD /* NSTextAlignment+SegmentedControlDisplayable.swift */; };
 		EB2629D8253A502F00AE43AD /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2629D7253A502F00AE43AD /* Manager.swift */; };
+		EB262CDB2549BFA300990AA4 /* SizeInspectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB262CDA2549BFA300990AA4 /* SizeInspectorViewController.swift */; };
 		EB2D96E925280AC000A5795B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D96E825280AC000A5795B /* AppDelegate.swift */; };
 		EB2D96EB25280AC000A5795B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D96EA25280AC000A5795B /* SceneDelegate.swift */; };
 		EB2D96ED25280AC000A5795B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2D96EC25280AC000A5795B /* ViewController.swift */; };
@@ -248,6 +249,7 @@
 		EB2629A72539DF3E00AE43AD /* NSTextAlignment+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTextAlignment+CaseIterable.swift"; sourceTree = "<group>"; };
 		EB2629B12539DF5300AE43AD /* NSTextAlignment+SegmentedControlDisplayable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTextAlignment+SegmentedControlDisplayable.swift"; sourceTree = "<group>"; };
 		EB2629D7253A502F00AE43AD /* Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
+		EB262CDA2549BFA300990AA4 /* SizeInspectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizeInspectorViewController.swift; sourceTree = "<group>"; };
 		EB2D96E625280AC000A5795B /* HierarchyInspectorExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HierarchyInspectorExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB2D96E825280AC000A5795B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EB2D96EA25280AC000A5795B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -485,6 +487,14 @@
 			path = ViewHierarchyReference;
 			sourceTree = "<group>";
 		};
+		EB262CD92549BF8800990AA4 /* SizeInspector */ = {
+			isa = PBXGroup;
+			children = (
+				EB262CDA2549BFA300990AA4 /* SizeInspectorViewController.swift */,
+			);
+			path = SizeInspector;
+			sourceTree = "<group>";
+		};
 		EB2D96E725280AC000A5795B /* HierarchyInspectorExample */ = {
 			isa = PBXGroup;
 			children = (
@@ -510,6 +520,7 @@
 		EB3166352537556A001A4A80 /* Submodules */ = {
 			isa = PBXGroup;
 			children = (
+				EB262CD92549BF8800990AA4 /* SizeInspector */,
 				EBAC35022530DE3700A992F5 /* AttributesInspector */,
 				EB9729592539C4F9004630FC /* AttributesInspectorSection */,
 				EBC045AD2531F66800C311E6 /* OptionSelector */,
@@ -1469,6 +1480,7 @@
 				EBAC35882530FE4C00A992F5 /* AttributesInspectorViewCode.swift in Sources */,
 				EBAC35962531023100A992F5 /* ElementInspectorViewController.swift in Sources */,
 				EBAC34EA2530ABBB00A992F5 /* ElementInspector.swift in Sources */,
+				EB262CDB2549BFA300990AA4 /* SizeInspectorViewController.swift in Sources */,
 				OBJ_94 /* LayerViewProtocol.swift in Sources */,
 				EBB0CB63252A6F3E005D4A53 /* ActionGroup.swift in Sources */,
 				EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift in Sources */,
