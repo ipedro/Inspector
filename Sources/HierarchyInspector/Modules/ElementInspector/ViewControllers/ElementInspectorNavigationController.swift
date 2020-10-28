@@ -23,6 +23,7 @@ final class ElementInspectorNavigationController: UINavigationController {
     }
     
     override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
+        // Async here is preventing weird popover behavior.
         DispatchQueue.main.async {
             self.preferredContentSize = container.preferredContentSize
         }

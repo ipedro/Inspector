@@ -51,7 +51,7 @@ final class ElementInspectorCoordinator: NSObject {
                 return .popover
             }
             
-            return .pageSheet
+            return .formSheet
         }()
         
         switch $0.modalPresentationStyle {
