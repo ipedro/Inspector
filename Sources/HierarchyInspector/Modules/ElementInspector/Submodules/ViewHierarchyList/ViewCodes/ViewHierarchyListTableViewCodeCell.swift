@@ -134,7 +134,7 @@ final class ViewHierarchyListTableViewCodeCell: UITableViewCell {
         
         $0.heightAnchor.constraint(equalToConstant: ElementInspector.configuration.appearance.horizontalMargins * 2).isActive = true
         
-        $0.widthAnchor.constraint(equalToConstant: ElementInspector.configuration.appearance.horizontalMargins * 2.5).isActive = true
+        $0.widthAnchor.constraint(equalToConstant: ElementInspector.configuration.appearance.horizontalMargins * 2.4).isActive = true
     }
     
     private lazy var containerStackView = UIStackView(

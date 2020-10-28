@@ -156,8 +156,18 @@ extension ViewHierarchyListItemViewModel: Hashable {
 
 private extension ViewHierarchyListItemViewModel {
     
-    static let thumbnailImageLostConnection = IconKit.imageOfWifiExlusionMark().withRenderingMode(.alwaysTemplate)
+    static let thumbnailImageLostConnection = IconKit.imageOfWifiExlusionMark(
+        CGSize(
+            width: ElementInspector.configuration.appearance.horizontalMargins * 1.5,
+            height: ElementInspector.configuration.appearance.horizontalMargins * 1.5
+        )
+    ).withRenderingMode(.alwaysTemplate)
     
-    static let thumbnailImageIsHidden = IconKit.imageOfEyeSlashFill().withRenderingMode(.alwaysTemplate)
+    static let thumbnailImageIsHidden = IconKit.imageOfEyeSlashFill(
+        CGSize(
+            width: ElementInspector.configuration.appearance.horizontalMargins * 1.5,
+            height: ElementInspector.configuration.appearance.horizontalMargins * 1.5
+        )
+    ).withRenderingMode(.alwaysTemplate)
     
 }
