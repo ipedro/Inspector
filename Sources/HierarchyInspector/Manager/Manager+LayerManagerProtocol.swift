@@ -14,21 +14,21 @@ extension HierarchyInspector.Manager: LayerManagerProtocol {
     // MARK: - Install
     
     public func installLayer(_ layer: ViewHierarchyLayer) {
-        viewHierarchyInspectorCoordinator.installLayer(layer)
+        viewHierarchyLayersCoordinator.installLayer(layer)
     }
 
     public func installAllLayers() {
-        viewHierarchyInspectorCoordinator.installAllLayers()
+        viewHierarchyLayersCoordinator.installAllLayers()
     }
 
     // MARK: - Remove
 
     public func removeAllLayers() {
-        viewHierarchyInspectorCoordinator.removeAllLayers()
+        viewHierarchyLayersCoordinator.removeAllLayers()
     }
 
     public func removeLayer(_ layer: ViewHierarchyLayer) {
-        viewHierarchyInspectorCoordinator.removeLayer(layer)
+        viewHierarchyLayersCoordinator.removeLayer(layer)
     }
     
 }

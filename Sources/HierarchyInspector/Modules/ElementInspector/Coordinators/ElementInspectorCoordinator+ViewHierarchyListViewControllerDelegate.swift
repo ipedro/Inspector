@@ -1,5 +1,5 @@
 //
-//  ElementInspectorCoordinator+ViewHierarchyListViewControllerDelegate.swift
+//  ElementInspectorCoordinator+ViewHierarchyInspectorViewControllerDelegate.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 07.10.20.
@@ -7,19 +7,19 @@
 
 import UIKit
 
-extension ElementInspectorCoordinator: ViewHierarchyListViewControllerDelegate {
-    func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController, didSegueTo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
+extension ElementInspectorCoordinator: ViewHierarchyInspectorViewControllerDelegate {
+    func viewHierarchyListViewController(_ viewController: ViewHierarchyInspectorViewController, didSegueTo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
         
         operationQueue.cancelAllOperations()
         
         addOperationToQueue(MainThreadOperation(name: "push hierarchy \(reference.elementName)", closure: { [weak self] in
             
-            self?.pushElementInspector(with: reference, selectedPanel: .viewHierarchy, animated: true)
+            self?.pushElementInspector(with: reference, selectedPanel: .viewHierarchyInspector, animated: true)
             
         }))
     }
     
-    func viewHierarchyListViewController(_ viewController: ViewHierarchyListViewController, didSelectInfo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
+    func viewHierarchyListViewController(_ viewController: ViewHierarchyInspectorViewController, didSelectInfo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
         
         operationQueue.cancelAllOperations()
         
@@ -28,11 +28,11 @@ extension ElementInspectorCoordinator: ViewHierarchyListViewControllerDelegate {
                 reference == rootReference,
                 let topElementInspector = self?.navigationController.topViewController as? ElementInspectorViewController
             else {
-                self?.pushElementInspector(with: reference, selectedPanel: .propertyInspector, animated: true)
+                self?.pushElementInspector(with: reference, selectedPanel: .attributesInspector, animated: true)
                 return
             }
             
-            topElementInspector.selectPanelIfAvailable(.propertyInspector)
+            topElementInspector.selectPanelIfAvailable(.attributesInspector)
             
         }))
     }

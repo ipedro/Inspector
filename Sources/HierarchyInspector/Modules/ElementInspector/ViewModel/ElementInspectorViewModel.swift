@@ -7,20 +7,6 @@
 
 import UIKit
 
-enum ElementInspectorPanel: Int, CaseIterable {
-    case propertyInspector, viewHierarchy
-    
-    var image: UIImage {
-        switch self {
-        case .propertyInspector:
-            return IconKit.imageOfSliderHorizontal()
-            
-        case .viewHierarchy:
-            return IconKit.imageOfListBulletIndent()
-        }
-    }
-}
-
 protocol ElementInspectorViewModelProtocol {
     var reference: ViewHierarchyReference { get }
     
@@ -64,10 +50,10 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     }
     
     private(set) lazy var elementPanels: [ElementInspectorPanel] = {
-        var array: [ElementInspectorPanel] = [.propertyInspector]
+        var array: [ElementInspectorPanel] = [.attributesInspector]
         
         if reference.isContainer {
-            array.append(.viewHierarchy)
+            array.append(.viewHierarchyInspector)
         }
         
         return array

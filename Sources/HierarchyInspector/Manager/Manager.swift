@@ -12,7 +12,7 @@ extension HierarchyInspector {
         
         var elementInspectorCoordinator: ElementInspectorCoordinator?
         
-        private(set) lazy var viewHierarchyInspectorCoordinator = ViewHierarchyInspectorCoordinator().then {
+        private(set) lazy var viewHierarchyLayersCoordinator = ViewHierarchyLayersCoordinator().then {
             $0.dataSource = self
             $0.delegate   = self
         }
@@ -38,7 +38,7 @@ extension HierarchyInspector {
             
             cachedViewHierarchySnapshot = nil
             
-            viewHierarchyInspectorCoordinator.invalidate()
+            viewHierarchyLayersCoordinator.invalidate()
         }
     }
 }
@@ -53,10 +53,10 @@ extension HierarchyInspector.Manager {
         }
         
         // layer actions
-        let layerActions = viewHierarchyInspectorCoordinator.layerActions(for: viewHierarchySnapshot)
+        let layerActions = viewHierarchyLayersCoordinator.layerActions(for: viewHierarchySnapshot)
         
         // other actions
-        var otherActions = viewHierarchyInspectorCoordinator.otherActions(for: viewHierarchySnapshot)
+        var otherActions = viewHierarchyLayersCoordinator.otherActions(for: viewHierarchySnapshot)
         
         guard
             let topMostContainer = hostViewController?.topMostContainerViewController as? HierarchyInspectorPresentable,

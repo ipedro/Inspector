@@ -1,5 +1,5 @@
 //
-//  Manager+ViewHierarchyInspectorCoordinatorDelegate.swift
+//  Manager+ViewHierarchyLayersCoordinatorDelegate.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 03.10.20.
@@ -7,10 +7,10 @@
 
 import UIKit
 
-// MARK: - ViewHierarchyInspectorCoordinatorDelegate
+// MARK: - ViewHierarchyLayersCoordinatorDelegate
 
-extension HierarchyInspector.Manager: ViewHierarchyInspectorCoordinatorDelegate {
-    func viewHierarchyInspectorCoordinator(_ coordinator: ViewHierarchyInspectorCoordinator, didSelect viewHierarchyReference: ViewHierarchyReference, from highlightView: HighlightView) {
+extension HierarchyInspector.Manager: ViewHierarchyLayersCoordinatorDelegate {
+    func viewHierarchyLayersCoordinator(_ coordinator: ViewHierarchyLayersCoordinator, didSelect viewHierarchyReference: ViewHierarchyReference, from highlightView: HighlightView) {
         presentElementInspector(for: viewHierarchyReference, from: highlightView.labelContentView, animated: true)
     }
 }

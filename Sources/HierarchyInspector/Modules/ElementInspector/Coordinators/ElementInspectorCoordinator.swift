@@ -29,7 +29,7 @@ final class ElementInspectorCoordinator: NSObject {
         self.rootReference = reference
     }
     
-    private(set) lazy var elementInspectorViewController = makeElementInspectorViewController(with: rootReference, showDismissBarButton: true, selectedPanel: .propertyInspector)
+    private(set) lazy var elementInspectorViewController = makeElementInspectorViewController(with: rootReference, showDismissBarButton: true, selectedPanel: .attributesInspector)
     
     private(set) lazy var navigationController = ElementInspectorNavigationController(rootViewController: elementInspectorViewController).then {
         $0.modalPresentationStyle = {
@@ -150,11 +150,11 @@ extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
 extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
     
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
-        topPropertyInspectorViewController?.selectColor(viewController.selectedColor)
+        topAttributesInspectorViewController?.selectColor(viewController.selectedColor)
     }
     
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
-        topPropertyInspectorViewController?.finishColorSelection()
+        topAttributesInspectorViewController?.finishColorSelection()
     }
     
 }
@@ -166,19 +166,19 @@ extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
 extension ElementInspectorCoordinator: OptionSelectorViewControllerDelegate {
     
     func optionSelectorViewController(_ viewController: OptionSelectorViewController, didSelectIndex selectedIndex: Int?) {
-        topPropertyInspectorViewController?.selectOptionAtIndex(selectedIndex)
+        topAttributesInspectorViewController?.selectOptionAtIndex(selectedIndex)
     }
     
 }
 
 private extension ElementInspectorCoordinator {
     
-    var topPropertyInspectorViewController: PropertyInspectorViewController? {
+    var topAttributesInspectorViewController: AttributesInspectorViewController? {
         guard let topElementInspectorViewController = navigationController.topViewController as? ElementInspectorViewController else {
             return nil
         }
         
-        return topElementInspectorViewController.children.first as? PropertyInspectorViewController
+        return topElementInspectorViewController.children.first as? AttributesInspectorViewController
     }
     
 }
@@ -196,7 +196,7 @@ extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
             
             let image = UIImage(data: imageData)
             
-            topPropertyInspectorViewController?.selectImage(image)
+            topAttributesInspectorViewController?.selectImage(image)
             break
         }
     }
