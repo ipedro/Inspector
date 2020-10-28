@@ -162,7 +162,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     private func installStatusView(icon glyph: Icon.Glyph, text: String) {
         statusContentView.subviews.forEach { $0.removeFromSuperview() }
         
-        let color = ElementInspector.configuration.appearance.secondaryTextColor
+        let color = backgroundStyle.contrastingColor
         
         let icon = Icon(glyph, color: color, size: CGSize(width: 36, height: 36))
         
@@ -172,22 +172,25 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             return
         }
         
-        let label = UILabel.init(.footnote, text, textAlignment: .center, textColor: color)
+        let label = UILabel(.footnote, text, textAlignment: .center, textColor: color)
         
         statusContentView.addArrangedSubview(label)
     }
     
     private func calculateFrame(with snapshotSize: CGSize) -> CGRect {
-        AVMakeRect(
+        let margins  = contentView.directionalLayoutMargins
+        let maxWidth = max(0, bounds.width - margins.leading - margins.trailing)
+        
+        return AVMakeRect(
             aspectRatio: CGSize(
                 width: 1,
-                height: snapshotSize.height / snapshotSize.width //snapshot.bounds.height / snapshot.bounds.width
+                height: snapshotSize.height / snapshotSize.width
             ),
             insideRect: CGRect(
                 origin: .zero,
                 size: CGSize(
-                    width:  max(0, bounds.width - contentView.directionalLayoutMargins.leading - contentView.directionalLayoutMargins.trailing),
-                    height: max(0, bounds.width - contentView.directionalLayoutMargins.leading - contentView.directionalLayoutMargins.trailing)
+                    width:  maxWidth,
+                    height: maxWidth
                 )
             )
         )

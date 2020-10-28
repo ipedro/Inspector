@@ -1257,7 +1257,7 @@ class IconKit: NSObject {
         context.restoreGState()
     }
     
-    class func drawInfoCircle(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) {
+    class func drawInfoCircleFill(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
         
@@ -1824,7 +1824,7 @@ class IconKit: NSObject {
         return image
     }
     
-    class func imageOfInfoCircle(_ size: CGSize = CGSize(width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) -> UIImage {
+    class func imageOfInfoCircleFill(_ size: CGSize = CGSize(width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) -> UIImage {
         struct LocalCache {
             static var image: UIImage!
         }
@@ -1834,7 +1834,7 @@ class IconKit: NSObject {
         var image: UIImage
         
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
-        IconKit.drawInfoCircle(frame: CGRect(origin: .zero, size: size), resizing: resizing)
+        IconKit.drawInfoCircleFill(frame: CGRect(origin: .zero, size: size), resizing: resizing)
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         

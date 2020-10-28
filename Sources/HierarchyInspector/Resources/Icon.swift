@@ -22,7 +22,7 @@ extension Icon {
                 IconKit.drawChevronDown(color: color, frame: frame, resizing: resizing)
                 
             case .infoCircle:
-                IconKit.drawInfoCircle(color: color, frame: frame, resizing: resizing)
+                IconKit.drawInfoCircleFill(color: color, frame: frame, resizing: resizing)
             
             case .wifiExlusionMark:
                 IconKit.drawWifiExlusionMark(color: color, frame: frame, resizing: resizing)
