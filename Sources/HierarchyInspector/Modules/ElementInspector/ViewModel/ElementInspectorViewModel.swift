@@ -13,7 +13,7 @@ enum ElementInspectorPanel: Int, CaseIterable {
     var image: UIImage {
         switch self {
         case .propertyInspector:
-            return IconKit.imageOfInfoCircleFill()
+            return IconKit.imageOfSliderHorizontal()
             
         case .viewHierarchy:
             return IconKit.imageOfListBulletIndent()
