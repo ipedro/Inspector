@@ -39,7 +39,7 @@ final class ElementInspectorViewController: UIViewController {
                 
                 view.setNeedsLayout()
                 
-                viewCode.contentView.installView(panelViewController.view)
+                viewCode.contentView.installView(panelViewController.view, priority: .required)
                 
                 panelViewController.didMove(toParent: self)
                 

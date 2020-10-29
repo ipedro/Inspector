@@ -52,6 +52,7 @@ final class AttributesInspectorViewCode: BaseView {
         super.setup()
         
         scrollView.installView(contentView)
+        
         installView(scrollView)
         
         backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor

@@ -88,6 +88,9 @@
 		EB80AFBB252B570200F0ECD5 /* NSObject+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */; };
 		EB8171242549BB71001EEA92 /* ElementInspectorPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB8171232549BB71001EEA92 /* ElementInspectorPanel.swift */; };
 		EB87FD8F253CD827001EA274 /* UIView+Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB87FD8E253CD827001EA274 /* UIView+Snapshot.swift */; };
+		EB89621F254AFC6600E632E3 /* LengthMeasurementView+ArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB89621E254AFC6600E632E3 /* LengthMeasurementView+ArrowView.swift */; };
+		EB896229254AFD5300E632E3 /* LengthMeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB896228254AFD5300E632E3 /* LengthMeasurementView.swift */; };
+		EB896253254B0E7A00E632E3 /* SizeInspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB896252254B0E7A00E632E3 /* SizeInspectorView.swift */; };
 		EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */; };
 		EB9729692539C54B004630FC /* AttributesInspectorSectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9729682539C54B004630FC /* AttributesInspectorSectionViewController.swift */; };
 		EB9DD3D4253CC8630054C8BA /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9DD3D3253CC8630054C8BA /* UIImage+Resize.swift */; };
@@ -305,6 +308,9 @@
 		EB80AFBA252B570200F0ECD5 /* NSObject+Create.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Create.swift"; sourceTree = "<group>"; };
 		EB8171232549BB71001EEA92 /* ElementInspectorPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorPanel.swift; sourceTree = "<group>"; };
 		EB87FD8E253CD827001EA274 /* UIView+Snapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Snapshot.swift"; sourceTree = "<group>"; };
+		EB89621E254AFC6600E632E3 /* LengthMeasurementView+ArrowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LengthMeasurementView+ArrowView.swift"; sourceTree = "<group>"; };
+		EB896228254AFD5300E632E3 /* LengthMeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LengthMeasurementView.swift; sourceTree = "<group>"; };
+		EB896252254B0E7A00E632E3 /* SizeInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizeInspectorView.swift; sourceTree = "<group>"; };
 		EB943FAD252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SFSafariViewController+HierarchyInspectableProtocol.swift"; sourceTree = "<group>"; };
 		EB9729682539C54B004630FC /* AttributesInspectorSectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributesInspectorSectionViewController.swift; sourceTree = "<group>"; };
 		EB9DD3D3253CC8630054C8BA /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
@@ -673,6 +679,16 @@
 			path = Enums;
 			sourceTree = "<group>";
 		};
+		EB89621D254AFC3A00E632E3 /* SizeInspectorView */ = {
+			isa = PBXGroup;
+			children = (
+				EB896228254AFD5300E632E3 /* LengthMeasurementView.swift */,
+				EB89621E254AFC6600E632E3 /* LengthMeasurementView+ArrowView.swift */,
+				EB896252254B0E7A00E632E3 /* SizeInspectorView.swift */,
+			);
+			path = SizeInspectorView;
+			sourceTree = "<group>";
+		};
 		EB943FAC252C864A0007A611 /* SFSafariViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -733,6 +749,7 @@
 				EBB06A542548D17B0036B299 /* Enums */,
 				EBD9DA47252FC66200851E23 /* SectionHeader */,
 				EBD9DA17252FA36900851E23 /* Separator */,
+				EB89621D254AFC3A00E632E3 /* SizeInspectorView */,
 				EB262A29253A5A1E00AE43AD /* ViewHierarchyReference */,
 			);
 			path = UI;
@@ -1422,6 +1439,7 @@
 				EB87FD8F253CD827001EA274 /* UIView+Snapshot.swift in Sources */,
 				EBA7D9D425308FEC00496F23 /* Icon.swift in Sources */,
 				EBD9DA19252FA37500851E23 /* SeparatorView.swift in Sources */,
+				EB896229254AFD5300E632E3 /* LengthMeasurementView.swift in Sources */,
 				EBC045B92531F6A400C311E6 /* OptionSelectorViewCode.swift in Sources */,
 				OBJ_81 /* HierarchyInspector.swift in Sources */,
 				EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */,
@@ -1450,6 +1468,7 @@
 				EB7062872534DC14004693E1 /* UISwitchSectionViewModel.swift in Sources */,
 				OBJ_88 /* Create.swift in Sources */,
 				EB0B953B25388A2700A35DE4 /* AttributesInspectorViewController+AttributesInspectorSectionViewControllerDelegate.swift in Sources */,
+				EB896253254B0E7A00E632E3 /* SizeInspectorView.swift in Sources */,
 				OBJ_89 /* HierarchyInspectorKeyCommandActionable.swift in Sources */,
 				EBC045BF2531F8A800C311E6 /* OptionSelectorViewModel.swift in Sources */,
 				EBD43279253AFAE300708C75 /* AsyncOperationProtocol.swift in Sources */,
@@ -1524,6 +1543,7 @@
 				EB5ED3A02533907600ABDCF7 /* UIView+Animation.swift in Sources */,
 				EB6651A425349FFD005B8FF2 /* ElementInspectorCoordinator+AttributesInspectorViewControllerDelegate.swift in Sources */,
 				EBC92E162533267200D7189A /* ViewHierarchyReference+ElementDescription.swift in Sources */,
+				EB89621F254AFC6600E632E3 /* LengthMeasurementView+ArrowView.swift in Sources */,
 				EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */,
 				EBCCF4EF253851A500A9363F /* ElementInspectorBasePanelViewController.swift in Sources */,
 				EB439C6225330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift in Sources */,

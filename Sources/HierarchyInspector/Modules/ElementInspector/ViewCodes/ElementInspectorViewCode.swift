@@ -27,6 +27,8 @@ final class ElementInspectorViewCode: BaseView {
         super.setup()
         
         contentView.installView(emptyLabel, .margins(.zero), .onBottom)
+        
+        installView(contentView, priority: .required)
     }
     
 }

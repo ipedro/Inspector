@@ -17,6 +17,8 @@ enum ViewBinding {
     
     case centerXY
     
+    case centerY
+    
     case margins(top: CGFloat, leading: CGFloat, bottom: CGFloat, trailing: CGFloat)
     
     case autoResizingMask(UIView.AutoresizingMask)
@@ -58,6 +60,11 @@ extension UIView {
         case .centerX:
             constraints = [
                 view.centerXAnchor.constraint(equalTo: centerXAnchor)
+            ]
+            
+        case .centerY:
+            constraints = [
+                view.centerYAnchor.constraint(equalTo: centerYAnchor)
             ]
         
         case .centerXY:

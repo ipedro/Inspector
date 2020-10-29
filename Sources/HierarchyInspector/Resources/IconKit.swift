@@ -1482,21 +1482,34 @@ class IconKit: NSObject {
         context.restoreGState()
     }
     
-    class func drawSizeArrowHorizontal(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 9, height: 7)) {
+    class func drawSizeArrowHorizontal(color: UIColor = .black, gapWidth: CGFloat = 0, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 9, height: 7)) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
         
-        /// Line
-        let line = UIBezierPath()
-        line.move(to:    CGPoint(x: targetFrame.maxX - 3.5, y: targetFrame.midY - 0.5))
-        line.addLine(to: CGPoint(x: targetFrame.maxX - 3.5, y: targetFrame.midY + 0.5))
-        line.addLine(to: CGPoint(x: targetFrame.minX + 3.5, y: targetFrame.midY + 0.5))
-        line.addLine(to: CGPoint(x: targetFrame.minX + 3.5, y: targetFrame.midY - 0.5))
-        line.close()
+        /// Line 1
+        let line1 = UIBezierPath()
+        line1.move(to:    CGPoint(x: targetFrame.midX - gapWidth / 2, y: targetFrame.midY - 0.5))
+        line1.addLine(to: CGPoint(x: targetFrame.midX - gapWidth / 2, y: targetFrame.midY + 0.5))
+        line1.addLine(to: CGPoint(x: targetFrame.minX + 3.5, y: targetFrame.midY + 0.5))
+        line1.addLine(to: CGPoint(x: targetFrame.minX + 3.5, y: targetFrame.midY - 0.5))
+        line1.close()
         context.saveGState()
-        line.usesEvenOddFillRule = true
+        line1.usesEvenOddFillRule = true
         color.setFill()
-        line.fill()
+        line1.fill()
+        context.restoreGState()
+        
+        /// Line 2
+        let line2 = UIBezierPath()
+        line2.move(to:    CGPoint(x: targetFrame.maxX - 3.5, y: targetFrame.midY - 0.5))
+        line2.addLine(to: CGPoint(x: targetFrame.maxX - 3.5, y: targetFrame.midY + 0.5))
+        line2.addLine(to: CGPoint(x: targetFrame.midX + gapWidth / 2, y: targetFrame.midY + 0.5))
+        line2.addLine(to: CGPoint(x: targetFrame.midX + gapWidth / 2, y: targetFrame.midY - 0.5))
+        line2.close()
+        context.saveGState()
+        line2.usesEvenOddFillRule = true
+        color.setFill()
+        line2.fill()
         context.restoreGState()
         
         /// Triangle Left
@@ -1526,21 +1539,34 @@ class IconKit: NSObject {
         context.restoreGState()
     }
     
-    class func drawSizeArrowVertical(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 7, height: 9)) {
+    class func drawSizeArrowVertical(color: UIColor = .black, gapHeight: CGFloat = 0, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 7, height: 9)) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
         
-        /// Line
-        let line = UIBezierPath()
-        line.move(to:    CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.minY + 4))
-        line.addLine(to: CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.maxY - 4))
-        line.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.maxY - 4))
-        line.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.minY + 4))
-        line.close()
+        /// Line 1
+        let line1 = UIBezierPath()
+        line1.move(to:    CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.minY + 4))
+        line1.addLine(to: CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.midY - gapHeight / 2))
+        line1.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.midY - gapHeight / 2))
+        line1.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.minY + 4))
+        line1.close()
         context.saveGState()
-        line.usesEvenOddFillRule = true
+        line1.usesEvenOddFillRule = true
         color.setFill()
-        line.fill()
+        line1.fill()
+        context.restoreGState()
+        
+        /// Line 2
+        let line2 = UIBezierPath()
+        line2.move(to:    CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.midY + gapHeight / 2))
+        line2.addLine(to: CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.maxY - 4))
+        line2.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.maxY - 4))
+        line2.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.midY + gapHeight / 2))
+        line2.close()
+        context.saveGState()
+        line2.usesEvenOddFillRule = true
+        color.setFill()
+        line2.fill()
         context.restoreGState()
         
         /// Triangle Up
