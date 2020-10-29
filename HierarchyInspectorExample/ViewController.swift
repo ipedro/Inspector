@@ -83,10 +83,12 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
                     
                 case .compact:
                     return "Compact"
-                    
+                
+                #if swift(>=5.3)
                 case .inline:
                     return "Inline"
-                    
+                #endif
+                
                 @unknown default:
                     return "\(self) (unsupported)"
                 }
@@ -169,11 +171,12 @@ extension ViewController: UIScrollViewDelegate {
 
 extension UIDatePickerStyle: CaseIterable {
     public static var allCases: [UIDatePickerStyle] {
+        #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             return [.automatic, .wheels, .compact, .inline]
-        } else {
-            return [.automatic, .wheels, .compact]
         }
+        #endif
+        return [.automatic, .wheels, .compact]
     }
     
     public typealias AllCases = [UIDatePickerStyle]
