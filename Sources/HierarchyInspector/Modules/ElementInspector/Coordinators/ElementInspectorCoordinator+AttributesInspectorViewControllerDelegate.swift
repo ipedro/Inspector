@@ -71,9 +71,11 @@ extension ElementInspectorCoordinator: AttributesInspectorViewControllerDelegate
     
     func attributesInspectorViewController(_ viewController: AttributesInspectorViewController, didTap imagePicker: ImagePicker) {
         let documentPicker = UIDocumentPickerViewController(documentTypes: [String(kUTTypeImage)], in: .import).then {
+            #if swift(>=5.0)
             if #available(iOS 13.0, *) {
                 $0.overrideUserInterfaceStyle = navigationController.overrideUserInterfaceStyle
             }
+            #endif
             
             $0.view.tintColor = ElementInspector.configuration.appearance.tintColor
             $0.delegate = self

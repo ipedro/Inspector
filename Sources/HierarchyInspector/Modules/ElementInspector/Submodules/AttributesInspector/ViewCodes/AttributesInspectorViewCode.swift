@@ -39,8 +39,10 @@ final class AttributesInspectorViewCode: BaseView {
         $0.keyboardDismissMode = .onDrag
     }
     
+    #if swift(>=5.0)
     @available(iOS 13.0, *)
     private lazy var hoverGestureRecognizer = UIHoverGestureRecognizer(target: self, action: #selector(hovering(_:)))
+    #endif
     
     private(set) var isPointerInUse = false {
         didSet {
@@ -68,6 +70,7 @@ final class AttributesInspectorViewCode: BaseView {
         contentView.directionalLayoutMargins = .margins(bottom: 30)
     }
     
+    #if swift(>=5.0)
     override func didMoveToWindow() {
         super.didMoveToWindow()
         
@@ -101,4 +104,5 @@ final class AttributesInspectorViewCode: BaseView {
             break
         }
     }
+    #endif
 }

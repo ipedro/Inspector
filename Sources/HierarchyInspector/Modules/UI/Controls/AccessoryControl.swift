@@ -33,9 +33,11 @@ final class AccessoryControl: BaseControl {
         
         #warning("TODO: move to theme")
         backgroundColor = {
+            #if swift(>=5.0)
             if #available(iOS 13.0, *) {
                 return UIColor.label.withAlphaComponent(0.085)
             }
+            #endif
             
             return UIColor.black.withAlphaComponent(0.085)
         }()

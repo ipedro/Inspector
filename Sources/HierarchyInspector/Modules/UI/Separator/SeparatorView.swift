@@ -21,11 +21,16 @@ final class SeparatorView: BaseView {
     }
     
     private lazy var separatorView = UIView().then {
+        #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             $0.backgroundColor = .separator
-        } else {
+        }
+        else {
             $0.backgroundColor = .lightGray
         }
+        #else
+        $0.backgroundColor = .lightGray
+        #endif
         
         $0.heightAnchor.constraint(equalToConstant: thickness).isActive = true
     }

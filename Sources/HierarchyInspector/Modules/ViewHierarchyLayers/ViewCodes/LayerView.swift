@@ -93,9 +93,11 @@ class LayerView: UIImageView, LayerViewProtocol {
             borderedView.layer.maskedCorners = superview.layer.maskedCorners
         }
         
+        #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             borderedView.layer.cornerCurve = superview.layer.cornerCurve
         }
+        #endif
     }
     
     public override func layoutSubviews() {

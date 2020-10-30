@@ -14,9 +14,11 @@ public extension HierarchyInspector.Configuration {
         // MARK: - Wireframe Style
         
         public var wireframeLayerColor: UIColor = {
+            #if swift(>=5.0)
             if #available(iOS 13.0, *) {
                 return .tertiarySystemFill
             }
+            #endif
             
             return .systemGray
         }()
