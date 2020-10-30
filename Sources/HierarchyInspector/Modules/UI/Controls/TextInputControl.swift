@@ -49,7 +49,7 @@ final class TextInputControl: BaseFormControl {
             textField.placeholder
         }
         set {
-            textField.placeholder = newValue?.localizedCapitalized
+            textField.placeholder = newValue
         }
     }
 

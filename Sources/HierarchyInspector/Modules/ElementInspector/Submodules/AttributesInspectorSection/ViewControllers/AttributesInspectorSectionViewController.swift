@@ -86,10 +86,10 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         )
                     }
                     
-                case let .subSection(title):
+                case let .group(title):
                     return SectionHeader(
                         .footnote,
-                        text: title.localizedCapitalized
+                        text: title
                     ).then {
                         $0.contentView.directionalLayoutMargins = .margins(
                             top: ElementInspector.configuration.appearance.horizontalMargins,
@@ -138,10 +138,11 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         $0.axis = axis
                     }
                     
-                case let .optionsList(title, options, selectedIndexProvider, _):
+                case let .optionsList(title, options, emptyTitle, selectedIndexProvider, _):
                     return OptionSelector(
                         title: title,
                         options: options,
+                        emptyTitle: emptyTitle,
                         selectedIndex: selectedIndexProvider()
                     ).then {
                         $0.delegate = self
@@ -197,7 +198,7 @@ extension AttributesInspectorSectionViewController {
                 case let (.segmentedControl(_, _, _, _, handler), segmentedControl as SegmentedControl):
                     handler?(segmentedControl.selectedIndex)
                     
-                case let (.optionsList(_, _, _, handler), optionSelector as OptionSelector):
+                case let (.optionsList(_, _, _, _, handler), optionSelector as OptionSelector):
                     handler?(optionSelector.selectedIndex)
                     
                 case let (.textInput(_, _, _, handler), textInputControl as TextInputControl):
@@ -207,7 +208,7 @@ extension AttributesInspectorSectionViewController {
                     handler?(imagePicker.selectedImage)
                     
                 case (.separator, _),
-                     (.subSection, _):
+                     (.group, _):
                      break
                     
                 case (.stepper, _),
@@ -260,7 +261,7 @@ extension AttributesInspectorSectionViewController {
             case let (.segmentedControl(_, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
                 segmentedControl.selectedIndex = selectedIndexProvider()
                 
-            case let (.optionsList(_, _, selectedIndexProvider, _), optionSelector as OptionSelector):
+            case let (.optionsList(_, _, _, selectedIndexProvider, _), optionSelector as OptionSelector):
                 optionSelector.selectedIndex = selectedIndexProvider()
                 
             case let (.textInput(_, valueProvider, placeholderProvider, _), textInputControl as TextInputControl):
@@ -268,7 +269,7 @@ extension AttributesInspectorSectionViewController {
                 textInputControl.value = valueProvider()
                 
             case (.separator, _),
-                 (.subSection, _):
+                 (.group, _):
                  break
             
             case (.stepper, _),

@@ -11,13 +11,15 @@ extension AttributesInspectorSection {
 
     final class UIImageViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        private enum Property: CaseIterable {
-            case image
-            case highlightedImage
-            case separator
-            case isHighlighted
-            case adjustsImageSizeForAccessibilityContentSizeCategory
+        private enum Property: String, CaseIterable {
+            case image                                               = "Image"
+            case highlightedImage                                    = "Highlighted Image"
+            case separator                                           = "Separator"
+            case isHighlighted                                       = "Highlighted"
+            case adjustsImageSizeForAccessibilityContentSizeCategory = "Adjusts Image Size"
         }
+        
+        let title = "Image"
         
         private(set) weak var imageView: UIImageView?
         
@@ -29,21 +31,19 @@ extension AttributesInspectorSection {
             self.imageView = imageView
         }
         
-        let title = "Image"
-        
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap {
+        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
             guard let imageView = imageView else {
                 return nil
             }
 
-            switch $0 {
+            switch property {
             
             case .separator:
-                return .separator
+                return .separator(title: property.rawValue)
                 
             case .image:
                 return .imagePicker(
-                    title: "image",
+                    title: property.rawValue,
                     image: { imageView.image }
                 ) { image in
                     imageView.image = image
@@ -51,7 +51,7 @@ extension AttributesInspectorSection {
                 
             case .highlightedImage:
                 return .imagePicker(
-                    title: "highlighted image",
+                    title: property.rawValue,
                     image: { imageView.highlightedImage }
                 ) { highlightedImage in
                     imageView.highlightedImage = highlightedImage
@@ -59,7 +59,7 @@ extension AttributesInspectorSection {
                 
             case .isHighlighted:
                 return .toggleButton(
-                    title: "highlighted",
+                    title: property.rawValue,
                     isOn: { imageView.isHighlighted }
                 ) { isHighlighted in
                     imageView.isHighlighted = isHighlighted
@@ -67,7 +67,7 @@ extension AttributesInspectorSection {
                 
             case .adjustsImageSizeForAccessibilityContentSizeCategory:
                 return .toggleButton(
-                    title: "adjusts image size",
+                    title: property.rawValue,
                     isOn: { imageView.adjustsImageSizeForAccessibilityContentSizeCategory }
                 ) { adjustsImageSizeForAccessibilityContentSizeCategory in
                     imageView.adjustsImageSizeForAccessibilityContentSizeCategory = adjustsImageSizeForAccessibilityContentSizeCategory

@@ -51,7 +51,7 @@ extension OptionSelectorViewModel: OptionSelectorViewModelProtocol {
     func title(for row: Int, in component: Int) -> String? {
         switch component {
         case .zero:
-            return options[row].description.localizedCapitalized
+            return options[row].description
             
         default:
             return nil

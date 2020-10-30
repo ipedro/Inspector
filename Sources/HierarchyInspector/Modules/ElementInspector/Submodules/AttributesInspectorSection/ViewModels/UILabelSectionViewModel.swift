@@ -11,26 +11,28 @@ extension AttributesInspectorSection {
         
     final class UILabelSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: CaseIterable {
-            case text
-            case color
-            case fontName
-            case fontSize
-            case adjustsFontSizeToFitWidth
-            case textAlignment
-            case numberOfLines
-            case groupBehavior
-            case isEnabled
-            case isHighlighted
-            case separator0
-            case baseline
-            case lineBreak
-            case autoShrink
-            case allowsDefaultTighteningForTruncation
-            case separator1
-            case highlightedTextColor
-            case shadowColor
+        enum Property: String, CaseIterable {
+            case text                                 = "Text"
+            case textColor                            = "Text Color"
+            case fontName                             = "Font Name"
+            case fontSize                             = "Font Size"
+            case adjustsFontSizeToFitWidth            = "Automatically Adjusts Font"
+            case textAlignment                        = "Alignment"
+            case numberOfLines                        = "Lines"
+            case groupBehavior                        = "Behavior"
+            case isEnabled                            = "Enabled"
+            case isHighlighted                        = "Highlighted"
+            case separator0                           = "Separator0"
+            case baseline                             = "Baseline"
+            case lineBreak                            = "Line Break"
+            case autoShrink                           = "Auto Shrink"
+            case allowsDefaultTighteningForTruncation = "Tighten Letter Spacing"
+            case separator1                           = "Separator1"
+            case highlightedTextColor                 = "Highlighted Color"
+            case shadowColor                          = "Shadow"
         }
+        
+        let title = "Label"
         
         private(set) weak var label: UILabel?
         
@@ -42,27 +44,25 @@ extension AttributesInspectorSection {
             self.label = label
         }
         
-        let title = "Label"
-        
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap {
+        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
             guard let label = label else {
                 return nil
             }
 
-            switch $0 {
+            switch property {
             
             case .text:
                 return .textInput(
-                    title: "text",
+                    title: property.rawValue,
                     value: { label.text },
-                    placeholder: { label.text ?? "text" }
+                    placeholder: { label.text ?? property.rawValue }
                 ) { text in
                     label.text = text
                 }
                 
-            case .color:
+            case .textColor:
                 return .colorPicker(
-                    title: "text color",
+                    title: property.rawValue,
                     color: { label.textColor }
                 ) { textColor in
                     label.textColor = textColor
@@ -70,6 +70,7 @@ extension AttributesInspectorSection {
                 
             case .fontName:
                 return .fontNamePicker(
+                    title: property.rawValue,
                     fontProvider: { label.font }
                 ) { font in
                     guard let font = font else {
@@ -81,6 +82,7 @@ extension AttributesInspectorSection {
                 
             case .fontSize:
                 return .fontSizeStepper(
+                    title: property.rawValue,
                     fontProvider: { label.font }
                 ) { font in
                     guard let font = font else {
@@ -92,7 +94,7 @@ extension AttributesInspectorSection {
                 
             case .adjustsFontSizeToFitWidth:
                 return .toggleButton(
-                    title: "automatically adjusts font",
+                    title: property.rawValue,
                     isOn: { label.adjustsFontSizeToFitWidth }
                 ) { adjustsFontSizeToFitWidth in
                     label.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
@@ -100,7 +102,7 @@ extension AttributesInspectorSection {
                 
             case .textAlignment:
                 return .segmentedControl(
-                    title: "alignment",
+                    title: property.rawValue,
                     options: NSTextAlignment.allCases,
                     selectedIndex: { NSTextAlignment.allCases.firstIndex(of: label.textAlignment) }
                 ) {
@@ -115,7 +117,7 @@ extension AttributesInspectorSection {
                 
             case .numberOfLines:
                 return .integerStepper(
-                    title: "lines",
+                    title: property.rawValue,
                     value: { label.numberOfLines },
                     range: { 0...100 },
                     stepValue: { 1 }
@@ -124,11 +126,11 @@ extension AttributesInspectorSection {
                 }
                 
             case .groupBehavior:
-                return .subSection(name: "behavior")
+                return .group(title: property.rawValue)
                 
             case .isEnabled:
                 return .toggleButton(
-                    title: "enabled",
+                    title: property.rawValue,
                     isOn: { label.isEnabled }
                 ) { isEnabled in
                     label.isEnabled = isEnabled
@@ -136,7 +138,7 @@ extension AttributesInspectorSection {
             
             case .isHighlighted:
                 return .toggleButton(
-                    title: "highlighted",
+                    title: property.rawValue,
                     isOn: { label.isHighlighted }
                 ) { isHighlighted in
                     label.isHighlighted = isHighlighted
@@ -144,7 +146,7 @@ extension AttributesInspectorSection {
                 
             case .separator0,
                  .separator1:
-                return .separator
+                return .separator(title: property.rawValue)
                 
             case .baseline:
                 return nil
@@ -157,7 +159,7 @@ extension AttributesInspectorSection {
                 
             case .allowsDefaultTighteningForTruncation:
                 return .toggleButton(
-                    title: "tighten letter spacing",
+                    title: property.rawValue,
                     isOn: { label.allowsDefaultTighteningForTruncation }
                 ) { allowsDefaultTighteningForTruncation in
                     label.allowsDefaultTighteningForTruncation = allowsDefaultTighteningForTruncation
@@ -165,7 +167,7 @@ extension AttributesInspectorSection {
                 
             case .highlightedTextColor:
                 return .colorPicker(
-                    title: "highlighted color",
+                    title: property.rawValue,
                     color: { label.highlightedTextColor }
                 ) { highlightedTextColor in
                     label.highlightedTextColor = highlightedTextColor
@@ -173,7 +175,7 @@ extension AttributesInspectorSection {
                 
             case .shadowColor:
                 return .colorPicker(
-                    title: "shadow",
+                    title: property.rawValue,
                     color: { label.shadowColor }
                 ) { shadowColor in
                     label.shadowColor = shadowColor

@@ -11,13 +11,15 @@ extension AttributesInspectorSection {
     
     final class UIActivityIndicatorViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: CaseIterable {
-            case style
-            case color
-            case groupBehavior
-            case isAnimating
-            case hidesWhenStopped
+        enum Property: String, CaseIterable {
+            case style            = "Style"
+            case color            = "Color"
+            case groupBehavior    = "Behavior"
+            case isAnimating      = "Animating"
+            case hidesWhenStopped = "Hides When Stopped"
         }
+        
+        let title = "Activity Indicator"
         
         private(set) weak var activityIndicatorView: UIActivityIndicatorView?
         
@@ -29,17 +31,15 @@ extension AttributesInspectorSection {
             self.activityIndicatorView = activityIndicatorView
         }
         
-        let title = "Activity Indicator"
-        
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap {
+        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
             guard let activityIndicatorView = activityIndicatorView else {
                 return nil
             }
 
-            switch $0 {
+            switch property {
             case .style:
                 return .optionsList(
-                    title: "style",
+                    title: property.rawValue,
                     options: UIActivityIndicatorView.Style.allCases,
                     selectedIndex: { UIActivityIndicatorView.Style.allCases.firstIndex(of: activityIndicatorView.style) }
                 ) {
@@ -47,11 +47,13 @@ extension AttributesInspectorSection {
                         return
                     }
                     
-                    activityIndicatorView.style = UIActivityIndicatorView.Style.allCases[newIndex]
+                    let style = UIActivityIndicatorView.Style.allCases[newIndex]
+                        
+                    activityIndicatorView.style = style
                 }
             case .color:
                 return .colorPicker(
-                    title: "color",
+                    title: property.rawValue,
                     color: { activityIndicatorView.color }
                 ) {
                     guard let color = $0 else {
@@ -62,11 +64,11 @@ extension AttributesInspectorSection {
                 }
                 
             case .groupBehavior:
-                return .subSection(name: "Behavior")
+                return .group(title: property.rawValue)
                 
             case .isAnimating:
                 return .toggleButton(
-                    title: "animating",
+                    title: property.rawValue,
                     isOn: { activityIndicatorView.isAnimating }
                 ) { isAnimating in
                     
@@ -81,7 +83,7 @@ extension AttributesInspectorSection {
                 
             case .hidesWhenStopped:
                 return .toggleButton(
-                    title: "hides when stopped",
+                    title: property.rawValue,
                     isOn: { activityIndicatorView.hidesWhenStopped }
                 ) { hidesWhenStopped in
                     activityIndicatorView.hidesWhenStopped = hidesWhenStopped

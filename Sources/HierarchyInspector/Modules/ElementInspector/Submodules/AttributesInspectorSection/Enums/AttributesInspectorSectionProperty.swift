@@ -9,44 +9,55 @@ import UIKit
 
 enum AttributesInspectorSectionProperty {
     
-    // Value providers
-    typealias BoolProvider              = (() -> Bool)
-    typealias DoubleProvider            = (() -> Double)
-    typealias IntProvider               = (() -> Int?)
-    typealias StringProvider            = (() -> String?)
-    typealias ColorProvider             = (() -> UIColor?)
-    typealias ImageProvider             = (() -> UIImage?)
-    typealias ClosedRangeDoubleProvider = (() -> ClosedRange<Double>)
+    // MARK: - Value providers
     
-    // Value change handlers
-    typealias StringHandler  = ((String?)  -> Void)
-    typealias DoubleHandler  = ((Double)   -> Void)
-    typealias ColorHandler   = ((UIColor?) -> Void)
-    typealias ImageHandler   = ((UIImage?) -> Void)
-    typealias BoolHandler    = ((Bool)     -> Void)
-    typealias IntHandler     = ((Int?)     -> Void)
+    typealias BoolProvider               = (() -> Bool)
+    typealias CGFloatClosedRangeProvider = (() -> ClosedRange<CGFloat>)
+    typealias CGFloatProvider            = (() -> CGFloat)
+    typealias ColorProvider              = (() -> UIColor?)
+    typealias DoubleClosedRangeProvider  = (() -> ClosedRange<Double>)
+    typealias DoubleProvider             = (() -> Double)
+    typealias FloatClosedRangeProvider   = (() -> ClosedRange<Float>)
+    typealias FloatProvider              = (() -> Float)
+    typealias FontProvider               = (() -> UIFont?)
+    typealias ImageProvider              = (() -> UIImage?)
+    typealias IntClosedRangeProvider     = (() -> ClosedRange<Int>)
+    typealias IntProvider                = (() -> Int)
+    typealias SelectionProvider          = (() -> Int?)
+    typealias StringProvider             = (() -> String?)
+    
+    // MARK: - Value change handlers
+    
+    typealias BoolHandler                = ((Bool)     -> Void)
+    typealias CGFloatHandler             = ((CGFloat)  -> Void)
+    typealias ColorHandler               = ((UIColor?) -> Void)
+    typealias DoubleHandler              = ((Double)   -> Void)
+    typealias FloatHandler               = ((Float)    -> Void)
+    typealias FontHandler                = ((UIFont?)  -> Void)
+    typealias ImageHandler               = ((UIImage?) -> Void)
+    typealias IntHandler                 = ((Int)      -> Void)
+    typealias SelectionHandler           = ((Int?)     -> Void)
+    typealias StringHandler              = ((String?)  -> Void)
     
     // MARK: - Cases
     
-    case stepper(title: String, value: DoubleProvider, range: ClosedRangeDoubleProvider, stepValue: DoubleProvider, isDecimalValue: Bool, handler: DoubleHandler?)
-    
     case colorPicker(title: String, color: ColorProvider, handler: ColorHandler?)
+    
+    case group(title: String)
     
     case imagePicker(title: String, image: ImageProvider, handler: ImageHandler?)
     
-    case toggleButton(title: String, isOn: BoolProvider, handler: BoolHandler?)
+    case optionsList(title: String, options: [CustomStringConvertible], emptyTitle: String = "Unspecified", selectedIndex: SelectionProvider, handler: SelectionHandler?)
     
-    case segmentedControl(title: String, options: [SegmentedControlDisplayable], axis: NSLayoutConstraint.Axis = .vertical, selectedIndex: IntProvider, handler: IntHandler?)
+    case segmentedControl(title: String, options: [SegmentedControlDisplayable], axis: NSLayoutConstraint.Axis = .vertical, selectedIndex: SelectionProvider, handler: SelectionHandler?)
     
-    case optionsList(title: String, options: [CustomStringConvertible], selectedIndex: IntProvider, handler: IntHandler?)
+    case separator(title: String)
+    
+    case stepper(title: String, value: DoubleProvider, range: DoubleClosedRangeProvider, stepValue: DoubleProvider, isDecimalValue: Bool, handler: DoubleHandler?)
     
     case textInput(title: String, value: StringProvider, placeholder: StringProvider, handler:StringHandler?)
     
-    case subSection(name: String)
-    
-    case separator(identifier: UUID)
-    
-    static let separator = AttributesInspectorSectionProperty.separator(identifier: UUID())
+    case toggleButton(title: String, isOn: BoolProvider, handler: BoolHandler?)
     
 }
 
@@ -70,7 +81,7 @@ extension AttributesInspectorSectionProperty: Hashable {
              .imagePicker:
             return true
             
-        case .subSection,
+        case .group,
              .separator:
             return false
             
@@ -84,7 +95,7 @@ extension AttributesInspectorSectionProperty: Hashable {
              .colorPicker(_, _, .some),
              .toggleButton(_, _, .some),
              .segmentedControl(_, _, _, _, .some),
-             .optionsList(_, _, _, .some),
+             .optionsList(_, _, _, _, .some),
              .textInput(_, _, _, .some),
              .imagePicker(_, _, .some):
             return true
@@ -95,7 +106,7 @@ extension AttributesInspectorSectionProperty: Hashable {
              .segmentedControl,
              .optionsList,
              .textInput,
-             .subSection,
+             .group,
              .separator,
              .imagePicker:
             return false
@@ -118,10 +129,10 @@ extension AttributesInspectorSectionProperty {
     
     static func integerStepper(
         title: String,
-        value: @escaping (() -> Int),
-        range: @escaping (() -> ClosedRange<Int>),
-        stepValue: @escaping (() -> Int),
-        handler: ((Int) -> Void)?
+        value: @escaping IntProvider,
+        range: @escaping IntClosedRangeProvider,
+        stepValue: @escaping IntProvider,
+        handler: IntHandler?
     ) -> AttributesInspectorSectionProperty {
         .stepper(
             title: title,
@@ -136,10 +147,10 @@ extension AttributesInspectorSectionProperty {
     
     static func cgFloatStepper(
         title: String,
-        value: @escaping (() -> CGFloat),
-        range: @escaping (() -> ClosedRange<CGFloat>),
-        stepValue: @escaping (() -> CGFloat),
-        handler: ((CGFloat) -> Void)?
+        value: @escaping CGFloatProvider,
+        range: @escaping CGFloatClosedRangeProvider,
+        stepValue: @escaping CGFloatProvider,
+        handler: CGFloatHandler?
     ) -> AttributesInspectorSectionProperty {
         .stepper(
             title: title,
@@ -151,7 +162,6 @@ extension AttributesInspectorSectionProperty {
             handler?(CGFloat(doubleValue))
         }
     }
-    
     
     static func floatStepper(
         title: String,
@@ -177,23 +187,27 @@ extension AttributesInspectorSectionProperty {
 
 extension AttributesInspectorSectionProperty {
     
-    private typealias FontReference = (fontName: String, displayName: String)
-    
-    #warning("TODO: Add system font support in FontNamePicker")
     static func fontNamePicker(
-        title: String = "font name",
-        fontProvider: @escaping (() -> UIFont?),
-        handler: @escaping (UIFont?) -> ()
+        title: String,
+        emptyTitle: String = "System Font",
+        fontProvider: @escaping FontProvider,
+        handler: @escaping FontHandler
     ) -> AttributesInspectorSectionProperty {
+        
+        typealias FontReference = (fontName: String, displayName: String)
+        
         let availableFonts: [FontReference] = {
             
-            var array = [FontReference("", "—")]
+            var array = [FontReference("", emptyTitle)]
             
             UIFont.familyNames.forEach { familyName in
                 
                 let familyNames = UIFont.fontNames(forFamilyName: familyName)
                 
-                if familyNames.count == 1, let fontName = familyNames.first {
+                if
+                    familyNames.count == 1,
+                    let fontName = familyNames.first
+                {
                     array.append((fontName: fontName, displayName: familyName))
                     return
                 }
@@ -201,7 +215,8 @@ extension AttributesInspectorSectionProperty {
                 familyNames.forEach { fontName in
                     guard
                         let lastName = fontName.split(separator: "-").last,
-                        lastName.replacingOccurrences(of: " ", with: "").caseInsensitiveCompare(familyName.replacingOccurrences(of: " ", with: "")) != .orderedSame
+                        lastName.replacingOccurrences(of: " ", with: "")
+                        .caseInsensitiveCompare(familyName.replacingOccurrences(of: " ", with: "")) != .orderedSame
                     else {
                         array.append((fontName: fontName, displayName: fontName))
                         return
@@ -217,6 +232,7 @@ extension AttributesInspectorSectionProperty {
         return .optionsList(
             title: title,
             options: availableFonts.map { $0.displayName },
+            emptyTitle: emptyTitle,
             selectedIndex: { availableFonts.firstIndex { $0.fontName == fontProvider()?.fontName } }
         ) {
             guard let newIndex = $0 else {
@@ -237,10 +253,11 @@ extension AttributesInspectorSectionProperty {
     }
     
     static func fontSizeStepper(
-        title: String = "font size",
-        fontProvider: @escaping (() -> UIFont?),
-        handler: @escaping (UIFont?) -> ()
+        title: String,
+        fontProvider: @escaping FontProvider,
+        handler: @escaping FontHandler
     ) -> AttributesInspectorSectionProperty {
+        
         .cgFloatStepper(
             title: title,
             value: { fontProvider()?.pointSize ?? 0 },
@@ -253,4 +270,43 @@ extension AttributesInspectorSectionProperty {
             handler(newFont)
         }
     }
+    
+}
+
+// MARK: - Data Detector Types
+
+extension AttributesInspectorSectionProperty {
+    
+    static func dataDetectorType(
+        textView: UITextView,
+        dataDetectorType: UIDataDetectorTypes
+    ) -> AttributesInspectorSectionProperty {
+        
+        .toggleButton(
+            title: dataDetectorType.description,
+            isOn: { textView.dataDetectorTypes.contains(dataDetectorType) }
+        ) { isOn in
+            
+            var dataDetectorTypes: UIDataDetectorTypes? {
+                
+                var dataDetectors = textView.dataDetectorTypes
+                
+                switch isOn {
+                case true:
+                    _ = dataDetectors.insert(dataDetectorType).memberAfterInsert
+                    
+                case false:
+                    dataDetectors.remove(dataDetectorType)
+                }
+                
+                return dataDetectors
+            }
+                
+            let newDataDetectorTypes = dataDetectorTypes ?? []
+            
+            textView.dataDetectorTypes = newDataDetectorTypes
+        }
+        
+    }
+    
 }

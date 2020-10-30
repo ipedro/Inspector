@@ -11,24 +11,26 @@ extension AttributesInspectorSection {
     
     final class UIViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: CaseIterable {
-            case contentMode
-            case semanticContentAttribute
-            case tag
-            case groupInteraction
-            case isUserInteractionEnabled
-            case isMultipleTouchEnabled
-            case groupAlphaAndColors
-            case alpha
-            case backgroundColor
-            case tintColor
-            case groupDrawing
-            case isOpaque
-            case isHidden
-            case clearsContextBeforeDrawing
-            case clipsToBounds
-            case autoresizesSubviews
+        enum Property: String, CaseIterable {
+            case contentMode                = "Content Mode"
+            case semanticContentAttribute   = "Semantic Content"
+            case tag                        = "Tag"
+            case groupInteraction           = "Interaction"
+            case isUserInteractionEnabled   = "User Interaction Enabled"
+            case isMultipleTouchEnabled     = "Multiple Touch Enabled"
+            case groupAlphaAndColors        = "Alpha And Colors"
+            case alpha                      = "Alpha"
+            case backgroundColor            = "Background"
+            case tintColor                  = "Tint"
+            case groupDrawing               = "Drawing"
+            case isOpaque                   = "Opaque"
+            case isHidden                   = "Hidden"
+            case clearsContextBeforeDrawing = "Clears Graphic Context"
+            case clipsToBounds              = "Clips To Bounds"
+            case autoresizesSubviews        = "Autoresize Subviews"
         }
+        
+        let title = "View"
         
         private(set) weak var view: UIView?
         
@@ -36,17 +38,15 @@ extension AttributesInspectorSection {
             self.view = view
         }
         
-        let title = "View"
-        
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap {
+        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
             guard let view = view else {
                 return nil
             }
 
-            switch $0 {
+            switch property {
             case .contentMode:
                 return .optionsList(
-                    title: "content mode",
+                    title: property.rawValue,
                     options: UIView.ContentMode.allCases,
                     selectedIndex: { UIView.ContentMode.allCases.firstIndex(of: view.contentMode) }
                 ) {
@@ -61,7 +61,7 @@ extension AttributesInspectorSection {
 
             case .semanticContentAttribute:
                 return .optionsList(
-                    title: "semantic content",
+                    title: property.rawValue,
                     options: UISemanticContentAttribute.allCases,
                     selectedIndex: { UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute) }
                 ) {
@@ -76,7 +76,7 @@ extension AttributesInspectorSection {
 
             case .tag:
                 return .integerStepper(
-                    title: "tag",
+                    title: property.rawValue,
                     value: { view.tag },
                     range: { 0...100 },
                     stepValue: { 1 }
@@ -85,11 +85,11 @@ extension AttributesInspectorSection {
                 }
 
             case .groupInteraction:
-                return .subSection(name: "Interaction")
+                return .group(title: property.rawValue)
                 
             case .isUserInteractionEnabled:
                 return .toggleButton(
-                    title: "user interaction enabled",
+                    title: property.rawValue,
                     isOn: { view.isUserInteractionEnabled }
                 ) { isUserInteractionEnabled in
                     view.isUserInteractionEnabled = isUserInteractionEnabled
@@ -97,18 +97,18 @@ extension AttributesInspectorSection {
 
             case .isMultipleTouchEnabled:
                 return .toggleButton(
-                    title: "multiple touch",
+                    title: property.rawValue,
                     isOn: { view.isMultipleTouchEnabled }
                 ) { isMultipleTouchEnabled in
                     view.isMultipleTouchEnabled = isMultipleTouchEnabled
                 }
             
             case .groupAlphaAndColors:
-                return .separator
+                return .separator(title: property.rawValue)
             
             case .alpha:
                 return .cgFloatStepper(
-                    title: "alpha",
+                    title: property.rawValue,
                     value: { view.alpha },
                     range: { 0...1 },
                     stepValue: { 0.05 }
@@ -118,7 +118,7 @@ extension AttributesInspectorSection {
 
             case .backgroundColor:
                 return .colorPicker(
-                    title: "background",
+                    title: property.rawValue,
                     color: { view.backgroundColor }
                 ) { backgroundColor in
                     view.backgroundColor = backgroundColor
@@ -126,18 +126,18 @@ extension AttributesInspectorSection {
 
             case .tintColor:
                 return .colorPicker(
-                    title: "tint",
+                    title: property.rawValue,
                     color: { view.tintColor }
                 ) { tintColor in
                     view.tintColor = tintColor
                 }
                 
             case .groupDrawing:
-                return .subSection(name: "drawing")
+                return .group(title: property.rawValue)
                 
             case .isOpaque:
                 return .toggleButton(
-                    title: "opaque",
+                    title: property.rawValue,
                     isOn: { view.isOpaque }
                 ) { isOpaque in
                     view.isOpaque = isOpaque
@@ -145,7 +145,7 @@ extension AttributesInspectorSection {
 
             case .isHidden:
                 return .toggleButton(
-                    title: "hidden",
+                    title: property.rawValue,
                     isOn: { view.isHidden }
                 ) { isHidden in
                     view.isHidden = isHidden
@@ -153,7 +153,7 @@ extension AttributesInspectorSection {
 
             case .clearsContextBeforeDrawing:
                 return .toggleButton(
-                    title: "clears graphic context",
+                    title: property.rawValue,
                     isOn: { view.clearsContextBeforeDrawing }
                 ) { clearsContextBeforeDrawing in
                     view.clearsContextBeforeDrawing = clearsContextBeforeDrawing
@@ -161,7 +161,7 @@ extension AttributesInspectorSection {
 
             case .clipsToBounds:
                 return .toggleButton(
-                    title: "clips to bounds",
+                    title: property.rawValue,
                     isOn: { view.clipsToBounds }
                 ) { clipsToBounds in
                     view.clipsToBounds = clipsToBounds
@@ -169,7 +169,7 @@ extension AttributesInspectorSection {
 
             case .autoresizesSubviews:
                 return .toggleButton(
-                    title: "autoresize subviews",
+                    title: property.rawValue,
                     isOn: { view.autoresizesSubviews }
                 ) { autoresizesSubviews in
                     view.autoresizesSubviews = autoresizesSubviews

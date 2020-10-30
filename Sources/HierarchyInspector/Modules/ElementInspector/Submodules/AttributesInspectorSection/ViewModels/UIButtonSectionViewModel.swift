@@ -11,22 +11,24 @@ extension AttributesInspectorSection {
     
     final class UIButtonSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: CaseIterable {
-            case fontName
-            case fontPointSize
-            case titleText
-            case currentTitleColor
-            case currentTitleShadowColor
-            case image
-            case backgroundImage
-            case isPointerInteractionEnabled
-            case adjustsImageSizeForAccessibilityContentSizeCategory
-            case groupDrawing
-            case reversesTitleShadowWhenHighlighted
-            case showsTouchWhenHighlighted
-            case adjustsImageWhenHighlighted
-            case adjustsImageWhenDisabled
+        enum Property: String, CaseIterable {
+            case fontName                                            = "Font Name"
+            case fontPointSize                                       = "Font Point Size"
+            case titleText                                           = "Title"
+            case currentTitleColor                                   = "Text Color"
+            case currentTitleShadowColor                             = "Shadow Color"
+            case image                                               = "Image"
+            case backgroundImage                                     = "Background Image"
+            case isPointerInteractionEnabled                         = "Pointer Interaction Enabled"
+            case adjustsImageSizeForAccessibilityContentSizeCategory = "Adjusts Image Size"
+            case groupDrawing                                        = "Drawing"
+            case reversesTitleShadowWhenHighlighted                  = "Reverses On Highlight"
+            case showsTouchWhenHighlighted                           = "Shows Touch On Highlight"
+            case adjustsImageWhenHighlighted                         = "Highlighted Adjusts Image"
+            case adjustsImageWhenDisabled                            = "Disabled Adjusts Image"
         }
+        
+        let title = "Button"
         
         private(set) weak var button: UIButton?
         
@@ -38,17 +40,16 @@ extension AttributesInspectorSection {
             self.button = button
         }
         
-        let title = "Button"
-        
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap {
+        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
             guard let button = button else {
                 return nil
             }
             
-            switch $0 {
+            switch property {
             
             case .fontName:
                 return .fontNamePicker(
+                    title: property.rawValue,
                     fontProvider: {
                         button.titleLabel?.font
                     },
@@ -59,6 +60,7 @@ extension AttributesInspectorSection {
                 
             case .fontPointSize:
                 return .fontSizeStepper(
+                    title: property.rawValue,
                     fontProvider: {
                         button.titleLabel?.font
                     },
@@ -69,16 +71,16 @@ extension AttributesInspectorSection {
             
             case .titleText:
                 return .textInput(
-                    title: "title",
+                    title: property.rawValue,
                     value: { button.title(for: button.state) },
-                    placeholder: { button.title(for: button.state) ?? "Title" }
+                    placeholder: { button.title(for: button.state) ?? property.rawValue }
                 ) { title in
                     button.setTitle(title, for: button.state)
                 }
                 
             case .currentTitleColor:
                 return .colorPicker(
-                    title: "text color",
+                    title: property.rawValue,
                     color: { button.currentTitleColor }
                 ) { currentTitleColor in
                     button.setTitleColor(currentTitleColor, for: button.state)
@@ -86,7 +88,7 @@ extension AttributesInspectorSection {
             
             case .currentTitleShadowColor:
                 return .colorPicker(
-                    title: "shadow color",
+                    title: property.rawValue,
                     color: { button.currentTitleShadowColor }
                 ) { currentTitleShadowColor in
                     button.setTitleShadowColor(currentTitleShadowColor, for: button.state)
@@ -94,7 +96,7 @@ extension AttributesInspectorSection {
             
             case .image:
                 return .imagePicker(
-                    title: "image",
+                    title: property.rawValue,
                     image: { button.image(for: button.state) }
                 ) { image in
                     button.setImage(image, for: button.state)
@@ -102,7 +104,7 @@ extension AttributesInspectorSection {
             
             case .backgroundImage:
                 return .imagePicker(
-                    title: "background image",
+                    title: property.rawValue,
                     image: { button.backgroundImage(for: button.state) }
                 ) { backgroundImage in
                     button.setBackgroundImage(backgroundImage, for: button.state)
@@ -112,7 +114,7 @@ extension AttributesInspectorSection {
                 #if swift(>=5.0)
                 if #available(iOS 13.4, *) {
                     return .toggleButton(
-                        title: "pointer interaction enabled",
+                        title: property.rawValue,
                         isOn: { button.isPointerInteractionEnabled }
                     ) { isPointerInteractionEnabled in
                         button.isPointerInteractionEnabled = isPointerInteractionEnabled
@@ -123,18 +125,18 @@ extension AttributesInspectorSection {
              
             case .adjustsImageSizeForAccessibilityContentSizeCategory:
                 return .toggleButton(
-                    title: "adjusts image size",
+                    title: property.rawValue,
                     isOn: { button.adjustsImageSizeForAccessibilityContentSizeCategory }
                 ) { adjustsImageSizeForAccessibilityContentSizeCategory in
                     button.adjustsImageSizeForAccessibilityContentSizeCategory = adjustsImageSizeForAccessibilityContentSizeCategory
                 }
                 
             case .groupDrawing:
-                return .subSection(name: "drawing")
+                return .group(title: property.rawValue)
                 
             case .reversesTitleShadowWhenHighlighted:
                 return .toggleButton(
-                    title: "reverses on highlight",
+                    title: property.rawValue,
                     isOn: { button.reversesTitleShadowWhenHighlighted }
                 ) { reversesTitleShadowWhenHighlighted in
                     button.reversesTitleShadowWhenHighlighted = reversesTitleShadowWhenHighlighted
@@ -142,7 +144,7 @@ extension AttributesInspectorSection {
                 
             case .showsTouchWhenHighlighted:
                 return .toggleButton(
-                    title: "shows touch on highlight",
+                    title: property.rawValue,
                     isOn: { button.showsTouchWhenHighlighted }
                 ) { showsTouchWhenHighlighted in
                     button.showsTouchWhenHighlighted = showsTouchWhenHighlighted
@@ -150,7 +152,7 @@ extension AttributesInspectorSection {
                 
             case .adjustsImageWhenHighlighted:
                 return .toggleButton(
-                    title: "highglighted adjusts image",
+                    title: property.rawValue,
                     isOn: { button.adjustsImageWhenHighlighted }
                 ) { adjustsImageWhenHighlighted in
                     button.adjustsImageWhenHighlighted = adjustsImageWhenHighlighted
@@ -159,7 +161,7 @@ extension AttributesInspectorSection {
                 
             case .adjustsImageWhenDisabled:
                 return .toggleButton(
-                    title: "disabled adjusts image",
+                    title: property.rawValue,
                     isOn: { button.adjustsImageWhenDisabled }
                 ) { adjustsImageWhenDisabled in
                     button.adjustsImageWhenDisabled = adjustsImageWhenDisabled

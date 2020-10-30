@@ -24,7 +24,11 @@ final class OptionSelector: BaseFormControl {
         }
     }
     
-    private lazy var icon = Icon(.chevronUpDown, color: ElementInspector.configuration.appearance.secondaryTextColor, size: CGSize(width: 14, height: 14))
+    private lazy var icon = Icon(
+        .chevronUpDown,
+        color: ElementInspector.configuration.appearance.secondaryTextColor,
+        size: CGSize(width: 14, height: 14)
+    )
     
     private lazy var valueLabel = UILabel(.footnote).then {
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
@@ -47,22 +51,25 @@ final class OptionSelector: BaseFormControl {
     
     let options: [CustomStringConvertible]
     
+    let emptyTitle: String
+    
     var selectedIndex: Int? {
         didSet {
             updateViews()
         }
     }
     
-    func updateSelectedIndex(_ selectedIndex: Int?) {
-        self.selectedIndex = selectedIndex
-        
-        sendActions(for: .valueChanged)
-    }
-    
-    init(title: String?, options: [CustomStringConvertible], selectedIndex: Int? = nil) {
+    init(
+        title: String?,
+        options: [CustomStringConvertible],
+        emptyTitle: String,
+        selectedIndex: Int? = nil
+    ) {
         self.options = options
         
         self.selectedIndex = selectedIndex
+        
+        self.emptyTitle = emptyTitle
 
         super.init(title: title)
     }
@@ -81,14 +88,20 @@ final class OptionSelector: BaseFormControl {
         updateViews()
     }
     
-    func updateViews() {
+    func updateSelectedIndex(_ selectedIndex: Int?) {
+        self.selectedIndex = selectedIndex
+        
+        sendActions(for: .valueChanged)
+    }
+    
+    private func updateViews() {
         
         guard let selectedIndex = selectedIndex else {
-            valueLabel.text = "–"
+            valueLabel.text = emptyTitle
             return
         }
         
-        valueLabel.text = options[selectedIndex].description.localizedCapitalized
+        valueLabel.text = options[selectedIndex].description
     }
     
     @objc private func tap() {

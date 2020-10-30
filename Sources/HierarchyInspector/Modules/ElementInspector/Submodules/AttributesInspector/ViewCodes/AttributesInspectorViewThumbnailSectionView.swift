@@ -23,7 +23,7 @@ final class AttributesInspectorViewThumbnailSectionView: BaseView {
     )
     
     private lazy var backgroundAppearanceControl = SegmentedControl(
-        title: "preview background",
+        title: "Preview Background",
         options: ThumbnailBackgroundStyle.allCases.map { $0.image },
         selectedIndex: thumbnailView.backgroundStyle.rawValue
     ).then {
@@ -32,12 +32,12 @@ final class AttributesInspectorViewThumbnailSectionView: BaseView {
     }
     
     private(set) lazy var isHighlightingViewsControl = ToggleControl(
-        title: "highlight views",
+        title: "Highlight Views",
         isOn: true
     )
     
     private(set) lazy var isLiveUpdatingControl = ToggleControl(
-        title: "live update",
+        title: "Live Update",
         isOn: true
     ).then {
         $0.isShowingSeparator = false

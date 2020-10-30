@@ -65,7 +65,7 @@ class BaseFormControl: BaseControl {
             titleLabel.text
         }
         set {
-            titleLabel.text = newValue?.localizedCapitalized
+            titleLabel.text = newValue
         }
     }
     

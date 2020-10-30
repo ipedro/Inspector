@@ -11,13 +11,15 @@ extension AttributesInspectorSection {
         
     final class UISwitchSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        private enum Property: CaseIterable {
-            case title
-            case preferredStyle
-            case isOn
-            case onTintColor
-            case thumbTintColor
+        private enum Property: String, CaseIterable {
+            case title          = "Title"
+            case preferredStyle = "Preferred Style"
+            case isOn           = "State"
+            case onTintColor    = "On Tint"
+            case thumbTintColor = "Thumb Tint"
         }
+        
+        let title = "Switch"
         
         private(set) weak var switchControl: UISwitch?
         
@@ -29,21 +31,19 @@ extension AttributesInspectorSection {
             self.switchControl = switchControl
         }
         
-        let title = "Switch"
-        
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap {
+        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
             guard let switchControl = switchControl else {
                 return nil
             }
 
-            switch $0 {
+            switch property {
             case .title:
                 #if swift(>=5.3)
                 if #available(iOS 14.0, *) {
                     return .textInput(
-                        title: "title",
+                        title: property.rawValue,
                         value: { switchControl.title },
-                        placeholder: { switchControl.title ?? "title" }
+                        placeholder: { switchControl.title ?? property.rawValue }
                     ) { title in
                         switchControl.title = title
                     }
@@ -55,7 +55,7 @@ extension AttributesInspectorSection {
                 #if swift(>=5.3)
                 if #available(iOS 14.0, *) {
                     return .segmentedControl(
-                        title: "preferred style",
+                        title: property.rawValue,
                         options: UISwitch.Style.allCases,
                         selectedIndex: { UISwitch.Style.allCases.firstIndex(of: switchControl.preferredStyle) },
                         handler: {
@@ -74,7 +74,7 @@ extension AttributesInspectorSection {
                     
             case .isOn:
                 return .toggleButton(
-                    title: "state",
+                    title: property.rawValue,
                     isOn: { switchControl.isOn }
                 ) { isOn in
                     switchControl.setOn(isOn, animated: true)
@@ -83,7 +83,7 @@ extension AttributesInspectorSection {
                     
             case .onTintColor:
                 return .colorPicker(
-                    title: "on tint",
+                    title: property.rawValue,
                     color: { switchControl.onTintColor }
                 ) { onTintColor in
                     switchControl.onTintColor = onTintColor
@@ -91,7 +91,7 @@ extension AttributesInspectorSection {
                     
             case .thumbTintColor:
                 return .colorPicker(
-                    title: "thumb tint",
+                    title: property.rawValue,
                     color: { switchControl.thumbTintColor }
                 ) { thumbTintColor in
                     switchControl.thumbTintColor = thumbTintColor

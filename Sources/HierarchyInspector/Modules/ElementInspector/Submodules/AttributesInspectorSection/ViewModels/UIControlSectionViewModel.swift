@@ -11,14 +11,16 @@ extension AttributesInspectorSection {
 
     final class UIControlSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        private enum Property: CaseIterable {
-            case contentHorizontalAlignment
-            case contentVerticalAlignment
-            case groupState
-            case isSelected
-            case isEnabled
-            case isHighlighted
+        private enum Property: String, CaseIterable {
+            case contentHorizontalAlignment = "Horizontal Alignment"
+            case contentVerticalAlignment   = "Vertical Alignment"
+            case groupState                 = "State"
+            case isSelected                 = "Selected"
+            case isEnabled                  = "Enabled"
+            case isHighlighted              = "Highlighted"
         }
+        
+        let title = "Control"
         
         private(set) weak var control: UIControl?
         
@@ -30,17 +32,15 @@ extension AttributesInspectorSection {
             self.control = control
         }
         
-        let title = "Control"
-        
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap {
+        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
             guard let control = control else {
                 return nil
             }
 
-            switch $0 {
+            switch property {
             case .contentHorizontalAlignment:
                 return .segmentedControl(
-                    title: "horizontal alignment",
+                    title: property.rawValue,
                     options: UIControl.ContentHorizontalAlignment.allCases,
                     selectedIndex: { UIControl.ContentHorizontalAlignment.allCases.firstIndex(of: control.contentHorizontalAlignment) }
                 ) {
@@ -57,7 +57,7 @@ extension AttributesInspectorSection {
                 let knownCases = UIControl.ContentVerticalAlignment.allCases.filter { $0.image?.withRenderingMode(.alwaysTemplate) != nil }
 
                 return .segmentedControl(
-                    title: "vertical alignment",
+                    title: property.rawValue,
                     options: knownCases.compactMap { $0.image },
                     selectedIndex: { knownCases.firstIndex(of: control.contentVerticalAlignment) }
                 ) {
@@ -71,11 +71,11 @@ extension AttributesInspectorSection {
                 }
 
             case .groupState:
-                return .subSection(name: "state")
+                return .group(title: property.rawValue)
 
             case .isSelected:
                 return .toggleButton(
-                    title: "selected",
+                    title: property.rawValue,
                     isOn: { control.isSelected }
                 ) { isSelected in
                     control.isSelected = isSelected
@@ -83,7 +83,7 @@ extension AttributesInspectorSection {
 
             case .isEnabled:
                 return .toggleButton(
-                    title: "enabled",
+                    title: property.rawValue,
                     isOn: { control.isEnabled }
                 ) { isEnabled in
                     control.isEnabled = isEnabled
@@ -91,7 +91,7 @@ extension AttributesInspectorSection {
 
             case .isHighlighted:
                 return .toggleButton(
-                    title: "highlighted",
+                    title: property.rawValue,
                     isOn: { control.isHighlighted }
                 ) { isHighlighted in
                     control.isHighlighted = isHighlighted

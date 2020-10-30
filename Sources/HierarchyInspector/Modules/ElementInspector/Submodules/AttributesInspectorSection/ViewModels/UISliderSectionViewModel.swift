@@ -11,20 +11,22 @@ extension AttributesInspectorSection {
 
     final class UISliderSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: CaseIterable {
-            case value
-            case minimumValue
-            case maximumValue
-            case separator0
-            case minimumValueImage
-            case maximumValueImage
-            case separator1
-            case minimumTrackTintColor
-            case maxTrack
-            case thumbTintColor
-            case groupEvent
-            case isContinuous
+        enum Property: String, CaseIterable {
+            case value                 = "Value"
+            case minimumValue          = "Minimum"
+            case maximumValue          = "Maximum"
+            case groupImages           = "Images"
+            case minimumValueImage     = "Min Image"
+            case maximumValueImage     = "Max Image"
+            case groupColors           = "Colors"
+            case minimumTrackTintColor = "Min Track"
+            case maxTrack              = "Max Track"
+            case thumbTintColor        = "Thumb Tint"
+            case groupEvent            = "Event"
+            case isContinuous          = "Continuous updates"
         }
+        
+        let title = "Slider"
         
         private(set) weak var slider: UISlider?
         
@@ -36,20 +38,18 @@ extension AttributesInspectorSection {
             self.slider = slider
         }
         
-        let title = "Slider"
-        
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap {
+        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
             guard let slider = slider else {
                 return nil
             }
             
             let stepValueProvider = { max(0.01, (slider.maximumValue - slider.minimumValue) / 100) }
 
-            switch $0 {
+            switch property {
                 
             case .value:
                 return .floatStepper(
-                    title: "value",
+                    title: property.rawValue,
                     value: { slider.value },
                     range: { min(slider.minimumValue, slider.maximumValue)...max(slider.minimumValue, slider.maximumValue) },
                     stepValue: stepValueProvider
@@ -60,7 +60,7 @@ extension AttributesInspectorSection {
             
             case .minimumValue:
                 return .floatStepper(
-                    title: "minimum",
+                    title: property.rawValue,
                     value: { slider.minimumValue },
                     range: { 0...max(0, slider.maximumValue) } ,
                     stepValue: stepValueProvider
@@ -70,7 +70,7 @@ extension AttributesInspectorSection {
             
             case .maximumValue:
                 return .floatStepper(
-                    title: "maximum",
+                    title: property.rawValue,
                     value: { slider.maximumValue },
                     range: { slider.minimumValue...Float.infinity },
                     stepValue: stepValueProvider
@@ -78,13 +78,12 @@ extension AttributesInspectorSection {
                     slider.maximumValue = maximumValue
                 }
             
-            case .separator0,
-                 .separator1:
-                return .separator
+            case .groupImages:
+                return .separator(title: property.rawValue)
             
             case .minimumValueImage:
                 return .imagePicker(
-                    title: "min image",
+                    title: property.rawValue,
                      image: { slider.minimumValueImage}
                 ) { minimumValueImage in
                     slider.minimumValueImage = minimumValueImage
@@ -92,15 +91,18 @@ extension AttributesInspectorSection {
             
             case .maximumValueImage:
                 return .imagePicker(
-                    title: "max image",
+                    title: property.rawValue,
                     image: { slider.maximumValueImage }
                 ) { maximumValueImage in
                     slider.maximumValueImage = maximumValueImage
                 }
             
+            case .groupColors:
+                return .separator(title: property.rawValue)
+            
             case .minimumTrackTintColor:
                 return .colorPicker(
-                    title: "min track",
+                    title: property.rawValue,
                     color: { slider.minimumTrackTintColor }
                 ) { minimumTrackTintColor in
                     slider.minimumTrackTintColor = minimumTrackTintColor
@@ -108,7 +110,7 @@ extension AttributesInspectorSection {
             
             case .maxTrack:
                 return .colorPicker(
-                    title: "max track",
+                    title: property.rawValue,
                     color: { slider.maximumTrackTintColor }
                 ) { maximumTrackTintColor in
                     slider.maximumTrackTintColor = maximumTrackTintColor
@@ -116,18 +118,18 @@ extension AttributesInspectorSection {
             
             case .thumbTintColor:
                 return .colorPicker(
-                    title: "thumb tint",
+                    title: property.rawValue,
                     color: { slider.thumbTintColor }
                 ) { thumbTintColor in
                     slider.thumbTintColor = thumbTintColor
                 }
             
             case .groupEvent:
-                return .subSection(name: "Event")
+                return .group(title: property.rawValue)
                 
             case .isContinuous:
                 return .toggleButton(
-                    title: "continuous updates",
+                    title: property.rawValue,
                     isOn: { slider.isContinuous }
                 ) { isContinuous in
                     slider.isContinuous = isContinuous

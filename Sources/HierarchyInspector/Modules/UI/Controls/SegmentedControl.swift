@@ -13,7 +13,7 @@ protocol SegmentedControlDisplayable {
 
 extension String: SegmentedControlDisplayable {
     var displayItem: Any {
-        localizedCapitalized
+        self
     }
 }
 

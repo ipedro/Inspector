@@ -17,6 +17,7 @@ enum AttributesInspectorSection {
     case slider
     case `switch`
     case stackView
+    case textView
     case view
     
     var targetClass: AnyClass {
@@ -36,20 +37,23 @@ enum AttributesInspectorSection {
         case .label:
             return UILabel.self
             
+        case .scrollView:
+            return UIScrollView.self
+            
         case .slider:
             return UISlider.self
-            
-        case .stackView:
-            return UIStackView.self
             
         case .switch:
             return UISwitch.self
             
+        case .stackView:
+            return UIStackView.self
+        
+        case .textView:
+            return UITextView.self
+            
         case .view:
             return UIView.self
-            
-        case .scrollView:
-            return UIScrollView.self
         }
     }
     
@@ -71,21 +75,25 @@ enum AttributesInspectorSection {
         case .label:
             return UILabelSectionViewModel(view: referenceView)
             
+        case .scrollView:
+            return UIScrollViewSectionViewModel(view: referenceView)
+            
         case .slider:
             return UISliderSectionViewModel(view: referenceView)
-            
-        case .stackView:
-            return UIStackViewSectionViewModel(view: referenceView)
             
         case .switch:
             return UISwitchSectionViewModel(view: referenceView)
             
+        case .stackView:
+            return UIStackViewSectionViewModel(view: referenceView)
+            
+        case .textView:
+            return UITextViewSectionViewModel(view: referenceView)
+            
         case .view:
             return UIViewSectionViewModel(view: referenceView)
-            
-        case .scrollView:
-            return UIScrollViewSectionViewModel(view: referenceView)
         }
+        
     }
 }
 

@@ -11,13 +11,15 @@ extension AttributesInspectorSection {
         
     final class UIStackViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: CaseIterable {
-            case axis
-            case alignment
-            case distribution
-            case spacing
-            case isBaselineRelativeArrangement
+        enum Property: String, CaseIterable {
+            case axis                          = "Axis"
+            case alignment                     = "Alignment"
+            case distribution                  = "Distribution"
+            case spacing                       = "Spacing"
+            case isBaselineRelativeArrangement = "Baseline Relative"
         }
+        
+        let title = "Stack View"
         
         private(set) weak var stackView: UIStackView?
         
@@ -29,17 +31,15 @@ extension AttributesInspectorSection {
             self.stackView = stackView
         }
         
-        let title = "Stack View"
-        
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap {
+        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
             guard let stackView = stackView else {
                 return nil
             }
 
-            switch $0 {
+            switch property {
             case .axis:
                 return .segmentedControl(
-                    title: "axis",
+                    title: property.rawValue,
                     options: NSLayoutConstraint.Axis.allCases,
                     axis: .horizontal,
                     selectedIndex: { NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis) }
@@ -55,7 +55,7 @@ extension AttributesInspectorSection {
                 
             case .alignment:
                 return .optionsList(
-                    title: "alignment",
+                    title: property.rawValue,
                     options: UIStackView.Alignment.allCases,
                     selectedIndex: { UIStackView.Alignment.allCases.firstIndex(of: stackView.alignment) }
                 ) {
@@ -70,7 +70,7 @@ extension AttributesInspectorSection {
                 
             case .distribution:
                 return .optionsList(
-                    title: "distribution",
+                    title: property.rawValue,
                     options: UIStackView.Distribution.allCases,
                     selectedIndex: { UIStackView.Distribution.allCases.firstIndex(of: stackView.distribution) }
                 ) {
@@ -85,7 +85,7 @@ extension AttributesInspectorSection {
                 
             case .spacing:
                 return .cgFloatStepper(
-                    title: "spacing",
+                    title: property.rawValue,
                     value: { stackView.spacing },
                     range: { 0 ... .infinity },
                     stepValue: { 1 }
@@ -95,7 +95,7 @@ extension AttributesInspectorSection {
             
             case .isBaselineRelativeArrangement:
                 return .toggleButton(
-                    title: "baseline relative",
+                    title: property.rawValue,
                     isOn: { stackView.isBaselineRelativeArrangement }
                 ) { isBaselineRelativeArrangement in
                     stackView.isBaselineRelativeArrangement = isBaselineRelativeArrangement

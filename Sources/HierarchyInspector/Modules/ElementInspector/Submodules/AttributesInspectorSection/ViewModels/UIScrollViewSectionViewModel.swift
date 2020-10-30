@@ -11,29 +11,31 @@ extension AttributesInspectorSection {
     
     final class UIScrollViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: CaseIterable {
-            case sectionIndicators
-            case indicators
-            case showsHorizontalScrollIndicator
-            case showsVerticalScrollIndicator
-            case sectionScrolling
-            case isScrollEnabled
-            case pagingEnabled
-            case isDirectionalLockEnabled
-            case sectionBounce
-            case bounces
-            case bouncesZoom
-            case alwaysBounceHorizontal
-            case bounceVertically
-            case sectionZoom
-            case zoomScale
-            case minimumZoomScale
-            case maximumZoomScale
-            case sectionContentTouch
-            case delaysContentTouches
-            case canCancelContentTouches
-            case keyboardDismissMode
+        enum Property: String, CaseIterable {
+            case groupIndicators                = "Indicators"
+            case indicatorStyle                 = "Indicator Style"
+            case showsHorizontalScrollIndicator = "shows Horizontal Scroll Indicator"
+            case showsVerticalScrollIndicator   = "shows Vertical Scroll Indicator"
+            case groupScrolling                 = "Scrolling"
+            case isScrollEnabled                = "Scroll Enabled"
+            case pagingEnabled                  = "pagingEnabled"
+            case isDirectionalLockEnabled       = "DirectionalLockEnabled"
+            case groupBounce                    = "groupBounce"
+            case bounces                        = "bounces"
+            case bouncesZoom                    = "bouncesZoom"
+            case alwaysBounceHorizontal         = "alwaysBounceHorizontal"
+            case bounceVertically               = "bounceVertically"
+            case groupZoom                      = "groupZoom"
+            case zoomScale                      = "zoomScale"
+            case minimumZoomScale               = "minimumZoomScale"
+            case maximumZoomScale               = "maximumZoomScale"
+            case groupContentTouch              = "groupContentTouch"
+            case delaysContentTouches           = "delaysContentTouches"
+            case canCancelContentTouches        = "canCancelContentTouches"
+            case keyboardDismissMode            = "keyboardDismissMode"
         }
+        
+        let title = "Scroll View"
         
         private(set) weak var scrollView: UIScrollView?
         
@@ -45,21 +47,19 @@ extension AttributesInspectorSection {
             self.scrollView = scrollView
         }
         
-        let title = "Scroll View"
-        
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap {
+        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
             guard let scrollView = scrollView else {
                 return nil
             }
             
-            switch $0 {
+            switch property {
             
-            case .sectionIndicators:
-                return .subSection(name: "Indicators")
+            case .groupIndicators:
+                return .group(title: property.rawValue)
                 
-            case .indicators:
+            case .indicatorStyle:
                 return .optionsList(
-                    title: "Indicator Style",
+                    title: property.rawValue,
                     options: UIScrollView.IndicatorStyle.allCases,
                     selectedIndex: { UIScrollView.IndicatorStyle.allCases.firstIndex(of: scrollView.indicatorStyle) }
                 ) {
@@ -67,12 +67,14 @@ extension AttributesInspectorSection {
                         return
                     }
                     
-                    scrollView.indicatorStyle = UIScrollView.IndicatorStyle.allCases[newIndex]
+                    let indicatorStyle = UIScrollView.IndicatorStyle.allCases[newIndex]
+                    
+                    scrollView.indicatorStyle = indicatorStyle
                 }
                 
             case .showsHorizontalScrollIndicator:
                 return .toggleButton(
-                    title: "Show Horizontal Indicator",
+                    title: property.rawValue,
                     isOn: { scrollView.showsHorizontalScrollIndicator }
                 ) { showsHorizontalScrollIndicator in
                     scrollView.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
@@ -80,18 +82,18 @@ extension AttributesInspectorSection {
                 
             case .showsVerticalScrollIndicator:
                 return .toggleButton(
-                    title: "Show Vertical Indicator",
+                    title: property.rawValue,
                     isOn: { scrollView.showsVerticalScrollIndicator }
                 ) { showsVerticalScrollIndicator in
                     scrollView.showsVerticalScrollIndicator = showsVerticalScrollIndicator
                 }
                 
-            case .sectionScrolling:
-                return .subSection(name: "Scrolling")
+            case .groupScrolling:
+                return .group(title: property.rawValue)
                 
             case .isScrollEnabled:
                 return .toggleButton(
-                    title: "Scrolling Enabled",
+                    title: property.rawValue,
                     isOn: { scrollView.isScrollEnabled }
                 ) { isScrollEnabled in
                     scrollView.isScrollEnabled = isScrollEnabled
@@ -99,7 +101,7 @@ extension AttributesInspectorSection {
                 
             case .pagingEnabled:
                 return .toggleButton(
-                    title: "Paging Enabled",
+                    title: property.rawValue,
                     isOn: { scrollView.isPagingEnabled }
                 ) { isPagingEnabled in
                     scrollView.isPagingEnabled = isPagingEnabled
@@ -107,18 +109,18 @@ extension AttributesInspectorSection {
                 
             case .isDirectionalLockEnabled:
                 return .toggleButton(
-                    title: "Direction Lock Enabled",
+                    title: property.rawValue,
                     isOn: { scrollView.isDirectionalLockEnabled }
                 ) { isDirectionalLockEnabled in
                     scrollView.isDirectionalLockEnabled = isDirectionalLockEnabled
                 }
                 
-            case .sectionBounce:
-                return .subSection(name: "Bounce")
+            case .groupBounce:
+                return .group(title: property.rawValue)
                 
             case .bounces:
                 return .toggleButton(
-                    title: "Bounce On Scroll",
+                    title: property.rawValue,
                     isOn: { scrollView.bounces }
                 ) { bounces in
                     scrollView.bounces = bounces
@@ -126,7 +128,7 @@ extension AttributesInspectorSection {
                 
             case .bouncesZoom:
                 return .toggleButton(
-                    title: "Bounce On Zoom",
+                    title: property.rawValue,
                     isOn: { scrollView.bouncesZoom }
                 ) { bouncesZoom in
                     scrollView.bouncesZoom = bouncesZoom
@@ -134,7 +136,7 @@ extension AttributesInspectorSection {
                 
             case .alwaysBounceHorizontal:
                 return .toggleButton(
-                    title: "Bounce Horizontally",
+                    title: property.rawValue,
                     isOn: { scrollView.alwaysBounceHorizontal }
                 ) { alwaysBounceHorizontal in
                     scrollView.alwaysBounceHorizontal = alwaysBounceHorizontal
@@ -142,18 +144,18 @@ extension AttributesInspectorSection {
                 
             case .bounceVertically:
                 return .toggleButton(
-                    title: "Bounce Vertically",
+                    title: property.rawValue,
                     isOn: { scrollView.alwaysBounceVertical }
                 ) { alwaysBounceVertical in
                     scrollView.alwaysBounceVertical = alwaysBounceVertical
                 }
                 
-            case .sectionZoom:
-                return .separator
+            case .groupZoom:
+                return .separator(title: property.rawValue)
                 
             case .zoomScale:
                 return .cgFloatStepper(
-                    title: "Zoom",
+                    title: property.rawValue,
                     value: { scrollView.zoomScale },
                     range: { min(scrollView.minimumZoomScale, scrollView.maximumZoomScale)...max(scrollView.minimumZoomScale, scrollView.maximumZoomScale) },
                     stepValue: { 0.1 }
@@ -163,7 +165,7 @@ extension AttributesInspectorSection {
                 
             case .minimumZoomScale:
                 return .cgFloatStepper(
-                    title: "Minimum Scale",
+                    title: property.rawValue,
                     value: { scrollView.minimumZoomScale },
                     range: { 0...max(0, scrollView.maximumZoomScale) },
                     stepValue: { 0.1 }
@@ -173,7 +175,7 @@ extension AttributesInspectorSection {
                 
             case .maximumZoomScale:
                 return .cgFloatStepper(
-                    title: "Maximum Scale",
+                    title: property.rawValue,
                     value: { scrollView.maximumZoomScale },
                     range: { scrollView.minimumZoomScale...CGFloat.infinity },
                     stepValue: { 0.1 }
@@ -181,12 +183,12 @@ extension AttributesInspectorSection {
                     scrollView.maximumZoomScale = maximumZoomScale
                 }
                 
-            case .sectionContentTouch:
-                return .subSection(name: "Content Touch")
+            case .groupContentTouch:
+                return .group(title: property.rawValue)
                 
             case .delaysContentTouches:
                 return .toggleButton(
-                    title: "Delay Touch Down",
+                    title: property.rawValue,
                     isOn: { scrollView.delaysContentTouches }
                 ) { delaysContentTouches in
                     scrollView.delaysContentTouches = delaysContentTouches
@@ -194,7 +196,7 @@ extension AttributesInspectorSection {
                 
             case .canCancelContentTouches:
                 return .toggleButton(
-                    title: "Can Cancel On Scroll",
+                    title: property.rawValue,
                     isOn: { scrollView.canCancelContentTouches }
                 ) { canCancelContentTouches in
                     scrollView.canCancelContentTouches = canCancelContentTouches
@@ -202,7 +204,7 @@ extension AttributesInspectorSection {
                 
             case .keyboardDismissMode:
                 return .optionsList(
-                    title: "Keyboard",
+                    title: property.rawValue,
                     options: UIScrollView.KeyboardDismissMode.allCases,
                     selectedIndex: { UIScrollView.KeyboardDismissMode.allCases.firstIndex(of: scrollView.keyboardDismissMode) }
                 ) {
@@ -210,7 +212,9 @@ extension AttributesInspectorSection {
                         return
                     }
                     
-                    scrollView.keyboardDismissMode = UIScrollView.KeyboardDismissMode.allCases[newIndex]
+                    let keyboardDismissMode = UIScrollView.KeyboardDismissMode.allCases[newIndex]
+                    
+                    scrollView.keyboardDismissMode = keyboardDismissMode
                 }
                 
             }
