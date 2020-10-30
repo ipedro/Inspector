@@ -144,6 +144,26 @@
 		EBD9A502254C59DA00BCE4FF /* UIScrollView.IndicatorStyle+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A501254C59D900BCE4FF /* UIScrollView.IndicatorStyle+CustomStringConvertible.swift */; };
 		EBD9A511254C5A2C00BCE4FF /* UIScrollView.KeyboardDismissMode+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A510254C5A2C00BCE4FF /* UIScrollView.KeyboardDismissMode+CaseIterable.swift */; };
 		EBD9A51B254C5A3800BCE4FF /* UIScrollView.KeyboardDismissMode+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A51A254C5A3800BCE4FF /* UIScrollView.KeyboardDismissMode+CustomStringConvertible.swift */; };
+		EBD9A525254C5BC800BCE4FF /* UITextViewSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A524254C5BC800BCE4FF /* UITextViewSectionViewModel.swift */; };
+		EBD9A530254C6F6200BCE4FF /* UITextContentType+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A52F254C6F6200BCE4FF /* UITextContentType+CaseIterable.swift */; };
+		EBD9A53A254C6F7B00BCE4FF /* UITextContentType+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A539254C6F7B00BCE4FF /* UITextContentType+CustomStringConvertible.swift */; };
+		EBD9A545254C70CB00BCE4FF /* UITextAutocapitalizationType+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A544254C70CB00BCE4FF /* UITextAutocapitalizationType+CaseIterable.swift */; };
+		EBD9A54F254C70D600BCE4FF /* UITextAutocapitalizationType+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A54E254C70D500BCE4FF /* UITextAutocapitalizationType+CustomStringConvertible.swift */; };
+		EBD9A55E254C727D00BCE4FF /* UITextAutocorrectionType+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A55D254C727D00BCE4FF /* UITextAutocorrectionType+CaseIterable.swift */; };
+		EBD9A564254C728C00BCE4FF /* UITextAutocorrectionType+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A563254C728C00BCE4FF /* UITextAutocorrectionType+CustomStringConvertible.swift */; };
+		EBD9A56F254C78E400BCE4FF /* UITextSmartDashesType+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A56E254C78E400BCE4FF /* UITextSmartDashesType+CaseIterable.swift */; };
+		EBD9A579254C790100BCE4FF /* UITextSmartDashesType+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A578254C790100BCE4FF /* UITextSmartDashesType+CustomStringConvertible.swift */; };
+		EBD9A585254C79D600BCE4FF /* UITextSmartQuotesType+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A584254C79C000BCE4FF /* UITextSmartQuotesType+CustomStringConvertible.swift */; };
+		EBD9A592254C7A2D00BCE4FF /* UITextSmartQuotesType+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A583254C79AF00BCE4FF /* UITextSmartQuotesType+CaseIterable.swift */; };
+		EBD9A595254C7AB200BCE4FF /* UITextSpellCheckingType+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A594254C7AB200BCE4FF /* UITextSpellCheckingType+CaseIterable.swift */; };
+		EBD9A59F254C7ACB00BCE4FF /* UITextSpellCheckingType+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A59E254C7ACB00BCE4FF /* UITextSpellCheckingType+CustomStringConvertible.swift */; };
+		EBD9A5AA254C7C4700BCE4FF /* UIKeyboardType+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A5A9254C7C4700BCE4FF /* UIKeyboardType+CaseIterable.swift */; };
+		EBD9A5B4254C7C5400BCE4FF /* UIKeyboardType+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A5B3254C7C5400BCE4FF /* UIKeyboardType+CustomStringConvertible.swift */; };
+		EBD9A5BF254C7D2700BCE4FF /* UIKeyboardAppearance+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A5BE254C7D2700BCE4FF /* UIKeyboardAppearance+CaseIterable.swift */; };
+		EBD9A5C5254C7D3100BCE4FF /* UIKeyboardAppearance+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A5C4254C7D3100BCE4FF /* UIKeyboardAppearance+CustomStringConvertible.swift */; };
+		EBD9A5D0254C7DC500BCE4FF /* UIReturnKeyType+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A5CF254C7DC500BCE4FF /* UIReturnKeyType+CaseIterable.swift */; };
+		EBD9A5D6254C7DF600BCE4FF /* UIReturnKeyType+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A5D5254C7DF500BCE4FF /* UIReturnKeyType+CustomStringConvertible.swift */; };
+		EBD9A5EB254CA36800BCE4FF /* UIDataDetectorTypes+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A5EA254CA36800BCE4FF /* UIDataDetectorTypes+CustomStringConvertible.swift */; };
 		EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */; };
 		EBD9DA01252F919900851E23 /* StepperControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA00252F919900851E23 /* StepperControl.swift */; };
 		EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */; };
@@ -367,6 +387,26 @@
 		EBD9A501254C59D900BCE4FF /* UIScrollView.IndicatorStyle+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView.IndicatorStyle+CustomStringConvertible.swift"; sourceTree = "<group>"; };
 		EBD9A510254C5A2C00BCE4FF /* UIScrollView.KeyboardDismissMode+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView.KeyboardDismissMode+CaseIterable.swift"; sourceTree = "<group>"; };
 		EBD9A51A254C5A3800BCE4FF /* UIScrollView.KeyboardDismissMode+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView.KeyboardDismissMode+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EBD9A524254C5BC800BCE4FF /* UITextViewSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewSectionViewModel.swift; sourceTree = "<group>"; };
+		EBD9A52F254C6F6200BCE4FF /* UITextContentType+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextContentType+CaseIterable.swift"; sourceTree = "<group>"; };
+		EBD9A539254C6F7B00BCE4FF /* UITextContentType+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextContentType+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EBD9A544254C70CB00BCE4FF /* UITextAutocapitalizationType+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextAutocapitalizationType+CaseIterable.swift"; sourceTree = "<group>"; };
+		EBD9A54E254C70D500BCE4FF /* UITextAutocapitalizationType+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextAutocapitalizationType+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EBD9A55D254C727D00BCE4FF /* UITextAutocorrectionType+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextAutocorrectionType+CaseIterable.swift"; sourceTree = "<group>"; };
+		EBD9A563254C728C00BCE4FF /* UITextAutocorrectionType+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextAutocorrectionType+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EBD9A56E254C78E400BCE4FF /* UITextSmartDashesType+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextSmartDashesType+CaseIterable.swift"; sourceTree = "<group>"; };
+		EBD9A578254C790100BCE4FF /* UITextSmartDashesType+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextSmartDashesType+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EBD9A583254C79AF00BCE4FF /* UITextSmartQuotesType+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextSmartQuotesType+CaseIterable.swift"; sourceTree = "<group>"; };
+		EBD9A584254C79C000BCE4FF /* UITextSmartQuotesType+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextSmartQuotesType+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EBD9A594254C7AB200BCE4FF /* UITextSpellCheckingType+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextSpellCheckingType+CaseIterable.swift"; sourceTree = "<group>"; };
+		EBD9A59E254C7ACB00BCE4FF /* UITextSpellCheckingType+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextSpellCheckingType+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EBD9A5A9254C7C4700BCE4FF /* UIKeyboardType+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKeyboardType+CaseIterable.swift"; sourceTree = "<group>"; };
+		EBD9A5B3254C7C5400BCE4FF /* UIKeyboardType+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKeyboardType+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EBD9A5BE254C7D2700BCE4FF /* UIKeyboardAppearance+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKeyboardAppearance+CaseIterable.swift"; sourceTree = "<group>"; };
+		EBD9A5C4254C7D3100BCE4FF /* UIKeyboardAppearance+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKeyboardAppearance+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EBD9A5CF254C7DC500BCE4FF /* UIReturnKeyType+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIReturnKeyType+CaseIterable.swift"; sourceTree = "<group>"; };
+		EBD9A5D5254C7DF500BCE4FF /* UIReturnKeyType+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIReturnKeyType+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EBD9A5EA254CA36800BCE4FF /* UIDataDetectorTypes+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDataDetectorTypes+CustomStringConvertible.swift"; sourceTree = "<group>"; };
 		EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleControl.swift; sourceTree = "<group>"; };
 		EBD9DA00252F919900851E23 /* StepperControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperControl.swift; sourceTree = "<group>"; };
 		EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
@@ -728,6 +768,7 @@
 				EBBE8C372538E87200CD699D /* UIImageViewSectionViewModel.swift */,
 				EBBE8C412538EBBA00CD699D /* UILabelSectionViewModel.swift */,
 				EB0B261C254C49810063DB8C /* UIScrollViewSectionViewModel.swift */,
+				EBD9A524254C5BC800BCE4FF /* UITextViewSectionViewModel.swift */,
 				EBBE8C4B25398FAC00CD699D /* UISliderSectionViewModel.swift */,
 				EB439BAA25322F95004CCBCA /* UIStackViewSectionViewModel.swift */,
 				EB7062862534DC14004693E1 /* UISwitchSectionViewModel.swift */,
@@ -975,6 +1016,95 @@
 				EBD9A51A254C5A3800BCE4FF /* UIScrollView.KeyboardDismissMode+CustomStringConvertible.swift */,
 			);
 			path = UIScrollView.KeyboardDismissMode;
+			sourceTree = "<group>";
+		};
+		EBD9A52E254C6F5300BCE4FF /* UITextContentType */ = {
+			isa = PBXGroup;
+			children = (
+				EBD9A52F254C6F6200BCE4FF /* UITextContentType+CaseIterable.swift */,
+				EBD9A539254C6F7B00BCE4FF /* UITextContentType+CustomStringConvertible.swift */,
+			);
+			path = UITextContentType;
+			sourceTree = "<group>";
+		};
+		EBD9A543254C70BA00BCE4FF /* UITextAutocapitalizationType */ = {
+			isa = PBXGroup;
+			children = (
+				EBD9A544254C70CB00BCE4FF /* UITextAutocapitalizationType+CaseIterable.swift */,
+				EBD9A54E254C70D500BCE4FF /* UITextAutocapitalizationType+CustomStringConvertible.swift */,
+			);
+			path = UITextAutocapitalizationType;
+			sourceTree = "<group>";
+		};
+		EBD9A55C254C726E00BCE4FF /* UITextAutocorrectionType */ = {
+			isa = PBXGroup;
+			children = (
+				EBD9A55D254C727D00BCE4FF /* UITextAutocorrectionType+CaseIterable.swift */,
+				EBD9A563254C728C00BCE4FF /* UITextAutocorrectionType+CustomStringConvertible.swift */,
+			);
+			path = UITextAutocorrectionType;
+			sourceTree = "<group>";
+		};
+		EBD9A56D254C78D900BCE4FF /* UITextSmartDashesType */ = {
+			isa = PBXGroup;
+			children = (
+				EBD9A56E254C78E400BCE4FF /* UITextSmartDashesType+CaseIterable.swift */,
+				EBD9A578254C790100BCE4FF /* UITextSmartDashesType+CustomStringConvertible.swift */,
+			);
+			path = UITextSmartDashesType;
+			sourceTree = "<group>";
+		};
+		EBD9A582254C79A600BCE4FF /* UITextSmartQuotesType */ = {
+			isa = PBXGroup;
+			children = (
+				EBD9A583254C79AF00BCE4FF /* UITextSmartQuotesType+CaseIterable.swift */,
+				EBD9A584254C79C000BCE4FF /* UITextSmartQuotesType+CustomStringConvertible.swift */,
+			);
+			path = UITextSmartQuotesType;
+			sourceTree = "<group>";
+		};
+		EBD9A593254C7AA900BCE4FF /* UITextSpellCheckingType */ = {
+			isa = PBXGroup;
+			children = (
+				EBD9A594254C7AB200BCE4FF /* UITextSpellCheckingType+CaseIterable.swift */,
+				EBD9A59E254C7ACB00BCE4FF /* UITextSpellCheckingType+CustomStringConvertible.swift */,
+			);
+			path = UITextSpellCheckingType;
+			sourceTree = "<group>";
+		};
+		EBD9A5A8254C7C3C00BCE4FF /* UIKeyboardType */ = {
+			isa = PBXGroup;
+			children = (
+				EBD9A5A9254C7C4700BCE4FF /* UIKeyboardType+CaseIterable.swift */,
+				EBD9A5B3254C7C5400BCE4FF /* UIKeyboardType+CustomStringConvertible.swift */,
+			);
+			path = UIKeyboardType;
+			sourceTree = "<group>";
+		};
+		EBD9A5BD254C7D1500BCE4FF /* UIKayboardAppearance */ = {
+			isa = PBXGroup;
+			children = (
+				EBD9A5BE254C7D2700BCE4FF /* UIKeyboardAppearance+CaseIterable.swift */,
+				EBD9A5C4254C7D3100BCE4FF /* UIKeyboardAppearance+CustomStringConvertible.swift */,
+			);
+			path = UIKayboardAppearance;
+			sourceTree = "<group>";
+		};
+		EBD9A5CE254C7DB800BCE4FF /* UIReturnKeyType */ = {
+			isa = PBXGroup;
+			children = (
+				EBD9A5CF254C7DC500BCE4FF /* UIReturnKeyType+CaseIterable.swift */,
+				EBD9A5D5254C7DF500BCE4FF /* UIReturnKeyType+CustomStringConvertible.swift */,
+			);
+			path = UIReturnKeyType;
+			sourceTree = "<group>";
+		};
+		EBD9A5E9254CA35F00BCE4FF /* UIDataDetectorTypes */ = {
+			isa = PBXGroup;
+			children = (
+				EBD9A5EA254CA36800BCE4FF /* UIDataDetectorTypes+CustomStringConvertible.swift */,
+			);
+			path = UIDataDetectorTypes;
 			sourceTree = "<group>";
 		};
 		EBD9D9DF252F6E6D00851E23 /* Controls */ = {
@@ -1249,10 +1379,14 @@
 				EBA245DC252881AC00D4AFD9 /* UIAlertController */,
 				EBD9DA24252FB4D500851E23 /* UIColor */,
 				EB5ED3852533901100ABDCF7 /* UIControl */,
+				EBD9A5E9254CA35F00BCE4FF /* UIDataDetectorTypes */,
 				EBC92E1B25332A4A00D7189A /* UIFont */,
 				EB9DD3D2253CC8530054C8BA /* UIImage */,
+				EBD9A5BD254C7D1500BCE4FF /* UIKayboardAppearance */,
+				EBD9A5A8254C7C3C00BCE4FF /* UIKeyboardType */,
 				EBD9DA0C252FA14900851E23 /* UILabel */,
 				EBA245E1252881B400D4AFD9 /* UINavigationController */,
+				EBD9A5CE254C7DB800BCE4FF /* UIReturnKeyType */,
 				EBD9A4FA254C59BF00BCE4FF /* UIScrollView.IndicatorStyle */,
 				EBD9A50F254C5A2200BCE4FF /* UIScrollView.KeyboardDismissMode */,
 				EB439B442532136F004CCBCA /* UISemanticContentAttribute */,
@@ -1263,6 +1397,12 @@
 				EB0B95692538943200A35DE4 /* UISwitch */,
 				EBA245E6252881BA00D4AFD9 /* UITabBarController */,
 				EB439B8825321746004CCBCA /* UITableView */,
+				EBD9A543254C70BA00BCE4FF /* UITextAutocapitalizationType */,
+				EBD9A55C254C726E00BCE4FF /* UITextAutocorrectionType */,
+				EBD9A52E254C6F5300BCE4FF /* UITextContentType */,
+				EBD9A56D254C78D900BCE4FF /* UITextSmartDashesType */,
+				EBD9A582254C79A600BCE4FF /* UITextSmartQuotesType */,
+				EBD9A593254C7AA900BCE4FF /* UITextSpellCheckingType */,
 				EBC92E412533563B00D7189A /* UITextView */,
 				EBA245C82528818D00D4AFD9 /* UIView */,
 				EB439B59253213CA004CCBCA /* UIView.ContentMode */,
@@ -1437,9 +1577,11 @@
 				EBD432B1253B008900708C75 /* Manager+ElementInspectorCoordinatorDelegate.swift in Sources */,
 				EB9DD3D4253CC8630054C8BA /* UIImage+Resize.swift in Sources */,
 				OBJ_70 /* Layer+AlertControllerActionable.swift in Sources */,
+				EBD9A5D6254C7DF600BCE4FF /* UIReturnKeyType+CustomStringConvertible.swift in Sources */,
 				OBJ_71 /* Layer+CustomStringConvertible.swift in Sources */,
 				OBJ_72 /* Layer+Hashable.swift in Sources */,
 				EBD9A502254C59DA00BCE4FF /* UIScrollView.IndicatorStyle+CustomStringConvertible.swift in Sources */,
+				EBD9A5B4254C7C5400BCE4FF /* UIKeyboardType+CustomStringConvertible.swift in Sources */,
 				EBC9E1B82538B47A000F3E60 /* TextInputControl.swift in Sources */,
 				EBAC35042530DE8300A992F5 /* AttributesInspectorViewModel.swift in Sources */,
 				EB5ED3C325339CEF00ABDCF7 /* ColorDisplayControl.swift in Sources */,
@@ -1447,9 +1589,12 @@
 				EBD9DA42252FC49900851E23 /* SectionHeader.swift in Sources */,
 				EBAC35452530E3C400A992F5 /* AttributesInspectorSectionProperty.swift in Sources */,
 				EB7EAAF22529BFC0000001BE /* Array+UniqueValues.swift in Sources */,
+				EBD9A53A254C6F7B00BCE4FF /* UITextContentType+CustomStringConvertible.swift in Sources */,
 				EBCCF4FC2538524900A9363F /* ElementInspectorPanelViewControllerProtocol.swift in Sources */,
+				EBD9A530254C6F6200BCE4FF /* UITextContentType+CaseIterable.swift in Sources */,
 				EBBE8C422538EBBA00CD699D /* UILabelSectionViewModel.swift in Sources */,
 				OBJ_74 /* Layer+PresetLayers.swift in Sources */,
+				EBD9A564254C728C00BCE4FF /* UITextAutocorrectionType+CustomStringConvertible.swift in Sources */,
 				EB439C02253238EC004CCBCA /* UIStackView.Alignment+CaseIterable.swift in Sources */,
 				EBB0CB22252A6C3D005D4A53 /* Configuration.swift in Sources */,
 				EBD432C4253B011F00708C75 /* Manager+ViewHierarchyInspectorCoordinatorDelegate.swift in Sources */,
@@ -1459,16 +1604,20 @@
 				EB439C1325323926004CCBCA /* NSLayoutConstraint.Axis+CaseIterable.swift in Sources */,
 				OBJ_77 /* UINavigationController+HierarchyInspectorPresentable.swift in Sources */,
 				EBBE8C382538E87200CD699D /* UIImageViewSectionViewModel.swift in Sources */,
+				EBD9A595254C7AB200BCE4FF /* UITextSpellCheckingType+CaseIterable.swift in Sources */,
 				OBJ_78 /* UIView+Convenience.swift in Sources */,
 				EBC92E432533564D00D7189A /* UITextView+Init.swift in Sources */,
+				EBD9A56F254C78E400BCE4FF /* UITextSmartDashesType+CaseIterable.swift in Sources */,
 				EB0B261D254C49810063DB8C /* UIScrollViewSectionViewModel.swift in Sources */,
 				EB5ED3CD2533AB3100ABDCF7 /* UIButtonSectionViewModel.swift in Sources */,
 				EBD432A7253B005000708C75 /* Manager+ViewHierarchyInspectorCoordinatorDataSource.swift in Sources */,
 				OBJ_79 /* UIView+HierarchyInspectableView.swift in Sources */,
+				EBD9A525254C5BC800BCE4FF /* UITextViewSectionViewModel.swift in Sources */,
 				EB0B956B2538944800A35DE4 /* UISwitch.Style+CaseIterable.swift in Sources */,
 				EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */,
 				EB15C9222531A53B00D100E6 /* Console.swift in Sources */,
 				EB439BB6253237D0004CCBCA /* UIControl.ContentHorizontalAlignment+CaseIterable.swift in Sources */,
+				EBD9A5D0254C7DC500BCE4FF /* UIReturnKeyType+CaseIterable.swift in Sources */,
 				EB439C2B25323D12004CCBCA /* UIColor+RGBA.swift in Sources */,
 				EB87FD8F253CD827001EA274 /* UIView+Snapshot.swift in Sources */,
 				EBA7D9D425308FEC00496F23 /* Icon.swift in Sources */,
@@ -1490,6 +1639,7 @@
 				EB5ED3742533896600ABDCF7 /* UIControl.ContentHorizontalAlignment+SegmentedControlDisplayable.swift in Sources */,
 				EB80AFBB252B570200F0ECD5 /* NSObject+Create.swift in Sources */,
 				EB5DB3A4252D09D400CE0398 /* UIStackView+Init.swift in Sources */,
+				EBD9A59F254C7ACB00BCE4FF /* UITextSpellCheckingType+CustomStringConvertible.swift in Sources */,
 				EB324619252B1E6100406111 /* ViewHierarchyReference.swift in Sources */,
 				EB06E5752548F20C008637E1 /* NSObject+ClassesForCoder.swift in Sources */,
 				EB048F5C2539D7B300A91D5A /* AttributesInspectorSectionViewModelProtocol.swift in Sources */,
@@ -1504,6 +1654,7 @@
 				OBJ_88 /* Create.swift in Sources */,
 				EB0B953B25388A2700A35DE4 /* AttributesInspectorViewController+AttributesInspectorSectionViewControllerDelegate.swift in Sources */,
 				EB896253254B0E7A00E632E3 /* SizeInspectorView.swift in Sources */,
+				EBD9A5EB254CA36800BCE4FF /* UIDataDetectorTypes+CustomStringConvertible.swift in Sources */,
 				OBJ_89 /* HierarchyInspectorKeyCommandActionable.swift in Sources */,
 				EBC045BF2531F8A800C311E6 /* OptionSelectorViewModel.swift in Sources */,
 				EBD43279253AFAE300708C75 /* AsyncOperationProtocol.swift in Sources */,
@@ -1511,6 +1662,7 @@
 				OBJ_90 /* HierarchyInspectableProtocol.swift in Sources */,
 				EBD9DA30252FB76900851E23 /* OptionSelector.swift in Sources */,
 				EB439C1D2532393A004CCBCA /* NSLayoutConstraint.Axis+SegmentedControlDisplayable.swift in Sources */,
+				EBD9A55E254C727D00BCE4FF /* UITextAutocorrectionType+CaseIterable.swift in Sources */,
 				EB5ED3AB25339C8200ABDCF7 /* AccessoryControl.swift in Sources */,
 				EBF88CD5252DA25D00AE9F12 /* ViewHierarchyInspectorViewCode.swift in Sources */,
 				EB7EAAC22529B8B4000001BE /* Action.swift in Sources */,
@@ -1538,12 +1690,15 @@
 				EB262CDB2549BFA300990AA4 /* SizeInspectorViewController.swift in Sources */,
 				OBJ_94 /* LayerViewProtocol.swift in Sources */,
 				EBB0CB63252A6F3E005D4A53 /* ActionGroup.swift in Sources */,
+				EBD9A5AA254C7C4700BCE4FF /* UIKeyboardType+CaseIterable.swift in Sources */,
 				EB2D971F252810A100A5795B /* UITabBarController+HierarchyInspectorPresentable.swift in Sources */,
+				EBD9A54F254C70D600BCE4FF /* UITextAutocapitalizationType+CustomStringConvertible.swift in Sources */,
 				EB74DD92252DD3820025FC8D /* ViewHierarchyInspectorItemViewModel.swift in Sources */,
 				EB2629D8253A502F00AE43AD /* Manager.swift in Sources */,
 				EB6651B82534A05E005B8FF2 /* ElementInspectorCoordinator+ElementInspectorViewControllerDelegate.swift in Sources */,
 				OBJ_97 /* EmptyView.swift in Sources */,
 				EB5ED3B525339CA000ABDCF7 /* BaseFormControl.swift in Sources */,
+				EBD9A579254C790100BCE4FF /* UITextSmartDashesType+CustomStringConvertible.swift in Sources */,
 				EB439B8F25321766004CCBCA /* UIViewSectionViewModel.swift in Sources */,
 				EB439B5B253213DF004CCBCA /* UIView.ContentMode+CaseIterable.swift in Sources */,
 				EBA246282528D71300D4AFD9 /* ViewHierarchyLayersCoordinator.swift in Sources */,
@@ -1554,8 +1709,10 @@
 				EB0B95752538945800A35DE4 /* UISwitch.Style+SegmentedControlDisplayable.swift in Sources */,
 				EBF88CCE252DA25100AE9F12 /* ViewHierarchyInspectorViewModel.swift in Sources */,
 				EB439B9D253217D3004CCBCA /* UIControlSectionViewModel.swift in Sources */,
+				EBD9A585254C79D600BCE4FF /* UITextSmartQuotesType+CustomStringConvertible.swift in Sources */,
 				OBJ_99 /* LayerViewComponent.swift in Sources */,
 				EB439B65253213EF004CCBCA /* UIView.ContentMode+CustomStringConvertible.swift in Sources */,
+				EBD9A5BF254C7D2700BCE4FF /* UIKeyboardAppearance+CaseIterable.swift in Sources */,
 				EBA246372528ECAA00D4AFD9 /* LayerConstructorProtocol.swift in Sources */,
 				EBC524AB252F5F2F0054C6AA /* BaseControl.swift in Sources */,
 				EB439BD92532383D004CCBCA /* UIControl.ContentVerticalAlignment+CustomStringConvertible.swift in Sources */,
@@ -1573,6 +1730,7 @@
 				EB439C5825330E87004CCBCA /*  UIActivityIndicatorView.Style+CaseIterable.swift in Sources */,
 				EBAC359C2531024E00A992F5 /* ElementInspectorViewCode.swift in Sources */,
 				EB3C4B4A252E776A00AFABF8 /* NSDirectionalEdgeInsets+Init.swift in Sources */,
+				EBD9A592254C7A2D00BCE4FF /* UITextSmartQuotesType+CaseIterable.swift in Sources */,
 				EBF3294525310EC800EABA17 /* ElementInspectorViewModel.swift in Sources */,
 				EB9729692539C54B004630FC /* AttributesInspectorSectionViewController.swift in Sources */,
 				EB439C352532F2E1004CCBCA /* UIActivityIndicatorViewSectionViewModel.swift in Sources */,
@@ -1581,10 +1739,12 @@
 				EBC92E162533267200D7189A /* ViewHierarchyReference+ElementDescription.swift in Sources */,
 				EB89621F254AFC6600E632E3 /* LengthMeasurementView+ArrowView.swift in Sources */,
 				EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */,
+				EBD9A5C5254C7D3100BCE4FF /* UIKeyboardAppearance+CustomStringConvertible.swift in Sources */,
 				EBCCF4EF253851A500A9363F /* ElementInspectorBasePanelViewController.swift in Sources */,
 				EB439C6225330E92004CCBCA /* UIActivityIndicatorView.Style+CustomStringConvertible.swift in Sources */,
 				EBC92E1D25332A5100D7189A /* UIFont+Traits.swift in Sources */,
 				EB439BAB25322F95004CCBCA /* UIStackViewSectionViewModel.swift in Sources */,
+				EBD9A545254C70CB00BCE4FF /* UITextAutocapitalizationType+CaseIterable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
