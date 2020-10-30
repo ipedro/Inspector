@@ -61,11 +61,7 @@ final class AttributesInspectorViewCode: BaseView {
         
         contentView.addArrangedSubview(headerContentView)
         
-        let widthConstraint = contentView.widthAnchor.constraint(equalTo: widthAnchor).then {
-            $0.priority = .defaultHigh
-        }
-        
-        widthConstraint.isActive = true
+        contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         
         contentView.directionalLayoutMargins = .margins(bottom: 30)
     }

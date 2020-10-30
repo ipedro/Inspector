@@ -22,8 +22,15 @@ final class ToggleControl: BaseFormControl {
     override var isEnabled: Bool {
         didSet {
             switchControl.isEnabled = isEnabled
+            
+            guard isEnabled else {
+                return
+            }
+            
+            updateViews()
         }
     }
+    
     
     private lazy var switchControl = UISwitch().then {
         $0.addTarget(self, action: #selector(toggleOn), for: .valueChanged)
@@ -46,17 +53,8 @@ final class ToggleControl: BaseFormControl {
 
         switchControl.onTintColor = .systemPurple
         
-        #if swift(>=5.3)
-        if #available(iOS 14.0, *) {
-            switchControl.preferredStyle = .checkbox
-            switchControl.thumbTintColor = .quaternaryLabel
-        }
-        #elseif swift(>=5.0)
-        if #available(iOS 13.0, *) {
-            switchControl.thumbTintColor = .quaternaryLabel
-        }
-        #endif
-
+        switchControl.thumbTintColor = ElementInspector.configuration.appearance.quaternaryTextColor
+        
         contentView.addArrangedSubview(switchControl)
         
         updateViews()

@@ -61,6 +61,16 @@ extension ElementInspector {
             return UIColor.darkText.withAlphaComponent(0.3)
         }()
         
+        var quaternaryTextColor: UIColor = {
+            #if swift(>=5.0)
+            if #available(iOS 13.0, *) {
+                return .quaternaryLabel
+            }
+            #endif
+            
+            return UIColor.darkText.withAlphaComponent(0.15)
+        }()
+        
         var margins: NSDirectionalEdgeInsets {
             .margins(
                 horizontal: horizontalMargins,

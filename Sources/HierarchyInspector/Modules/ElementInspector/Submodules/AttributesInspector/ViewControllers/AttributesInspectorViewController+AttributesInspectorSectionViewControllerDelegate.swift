@@ -41,9 +41,9 @@ extension AttributesInspectorViewController: AttributesInspectorSectionViewContr
         displayLink?.isPaused = true
         
         UIView.animate(
-            withDuration: 0.4,
+            withDuration: 0.55,
             delay: 0,
-            usingSpringWithDamping: 0.88,
+            usingSpringWithDamping: 0.9,
             initialSpringVelocity: 0,
             options: .beginFromCurrentState,
             animations: { [weak self] in
