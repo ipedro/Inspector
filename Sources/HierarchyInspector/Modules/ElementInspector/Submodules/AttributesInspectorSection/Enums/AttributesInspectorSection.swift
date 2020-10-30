@@ -14,6 +14,7 @@ enum AttributesInspectorSection {
     case imageView
     case label
     case scrollView
+    case segmentedControl
     case slider
     case `switch`
     case stackView
@@ -40,6 +41,9 @@ enum AttributesInspectorSection {
             
         case .scrollView:
             return UIScrollView.self
+            
+        case .segmentedControl:
+            return UISegmentedControl.self
             
         case .slider:
             return UISlider.self
@@ -81,6 +85,9 @@ enum AttributesInspectorSection {
             
         case .scrollView:
             return UIScrollViewSectionViewModel(view: referenceView)
+            
+        case .segmentedControl:
+            return UISegmentedControlSectionViewModel(view: referenceView)
             
         case .slider:
             return UISliderSectionViewModel(view: referenceView)

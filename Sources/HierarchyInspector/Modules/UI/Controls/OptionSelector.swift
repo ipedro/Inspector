@@ -79,9 +79,9 @@ final class OptionSelector: BaseFormControl {
     override func setup() {
         super.setup()
         
-        contentContainerView.distribution = .fillEqually
-        
         contentView.addArrangedSubview(accessoryControl)
+        
+        accessoryControl.widthAnchor.constraint(greaterThanOrEqualTo: contentContainerView.widthAnchor, multiplier: 1 / 2).isActive = true
         
         tintColor = valueLabel.textColor
         
