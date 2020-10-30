@@ -19,7 +19,7 @@ class BaseFormControl: BaseControl {
         }
     }
     
-    private lazy var contentContainerView = UIStackView(
+    private(set) lazy var contentContainerView = UIStackView(
         axis: .horizontal,
         arrangedSubviews: [
             titleLabel,

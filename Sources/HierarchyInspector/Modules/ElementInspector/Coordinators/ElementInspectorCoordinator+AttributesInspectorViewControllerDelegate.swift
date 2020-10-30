@@ -35,7 +35,7 @@ extension ElementInspectorCoordinator: AttributesInspectorViewControllerDelegate
                 $0.overrideUserInterfaceStyle = navigationController.overrideUserInterfaceStyle
                 $0.modalPresentationStyle = .popover
                 $0.popoverPresentationController?.sourceView = colorPicker
-                $0.popoverPresentationController?.permittedArrowDirections = permittedPopoverArrowDirections
+                $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
             }
             
             viewController.present(colorPicker, animated: true)
@@ -61,8 +61,8 @@ extension ElementInspectorCoordinator: AttributesInspectorViewControllerDelegate
             rootViewController: optionSelectorViewController
         ).then {
             $0.modalPresentationStyle = .popover
-            $0.popoverPresentationController?.sourceView = optionSelector
-            $0.popoverPresentationController?.permittedArrowDirections = permittedPopoverArrowDirections
+            $0.popoverPresentationController?.sourceView = optionSelector.accessoryControl
+            $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
             $0.popoverPresentationController?.delegate = self
         }
         
@@ -79,7 +79,7 @@ extension ElementInspectorCoordinator: AttributesInspectorViewControllerDelegate
             $0.delegate = self
             $0.modalPresentationStyle = .popover
             $0.popoverPresentationController?.sourceView = imagePicker
-            $0.popoverPresentationController?.permittedArrowDirections = permittedPopoverArrowDirections
+            $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
             $0.popoverPresentationController?.delegate = self
         }
         

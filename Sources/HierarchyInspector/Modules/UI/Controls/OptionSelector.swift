@@ -31,8 +31,6 @@ final class OptionSelector: BaseFormControl {
     )
     
     private lazy var valueLabel = UILabel(.footnote).then {
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         $0.adjustsFontSizeToFitWidth = true
         $0.minimumScaleFactor = 0.6
     }
@@ -80,6 +78,8 @@ final class OptionSelector: BaseFormControl {
 
     override func setup() {
         super.setup()
+        
+        contentContainerView.distribution = .fillEqually
         
         contentView.addArrangedSubview(accessoryControl)
         

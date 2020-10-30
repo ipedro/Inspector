@@ -15,7 +15,6 @@ final class TextInputControl: BaseFormControl {
         $0.borderStyle = .none
         $0.font = .preferredFont(forTextStyle: .footnote)
         $0.textAlignment = .right
-        $0.setContentHuggingPriority(.required, for: .horizontal)
         $0.adjustsFontSizeToFitWidth = true
         $0.addTarget(self, action: #selector(editText), for: .allEditingEvents)
         $0.widthAnchor.constraint(lessThanOrEqualToConstant: 250).isActive = true
@@ -78,7 +77,23 @@ final class TextInputControl: BaseFormControl {
         textField.text = value
     }
     
-    @objc private func editText() {
+    override var canBecomeFirstResponder: Bool {
+        textField.canBecomeFirstResponder
+    }
+    
+    override var canBecomeFocused: Bool {
+        textField.canBecomeFocused
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+        textField.becomeFirstResponder()
+    }
+}
+
+private extension TextInputControl {
+    
+    @objc
+    func editText() {
         guard value != textField.text else {
             return
         }

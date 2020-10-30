@@ -17,6 +17,7 @@ enum AttributesInspectorSection {
     case slider
     case `switch`
     case stackView
+    case textField
     case textView
     case view
     
@@ -49,6 +50,9 @@ enum AttributesInspectorSection {
         case .stackView:
             return UIStackView.self
         
+        case .textField:
+            return UITextField.self
+            
         case .textView:
             return UITextView.self
             
@@ -86,6 +90,9 @@ enum AttributesInspectorSection {
             
         case .stackView:
             return UIStackViewSectionViewModel(view: referenceView)
+            
+        case .textField:
+            return UITextFieldSectionViewModel(view: referenceView)
             
         case .textView:
             return UITextViewSectionViewModel(view: referenceView)
