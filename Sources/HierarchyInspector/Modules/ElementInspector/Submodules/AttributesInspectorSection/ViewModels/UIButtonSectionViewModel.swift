@@ -12,8 +12,11 @@ extension AttributesInspectorSection {
     final class UIButtonSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
         enum Property: String, CaseIterable {
+            case type                                                = "Type"
             case fontName                                            = "Font Name"
             case fontPointSize                                       = "Font Point Size"
+            case groupState                                          = "State"
+            case stateConfig                                         = "State Config"
             case titleText                                           = "Title"
             case currentTitleColor                                   = "Text Color"
             case currentTitleShadowColor                             = "Shadow Color"
@@ -38,7 +41,11 @@ extension AttributesInspectorSection {
             }
             
             self.button = button
+            
+            self.selectedControlState = button.state
         }
+        
+        private var selectedControlState: UIControl.State
         
         private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
             guard let button = button else {
@@ -47,6 +54,14 @@ extension AttributesInspectorSection {
             
             switch property {
             
+            case .type:
+                return .optionsList(
+                    title: property.rawValue,
+                    options: UIButton.ButtonType.allCases,
+                    selectedIndex: { UIButton.ButtonType.allCases.firstIndex(of: button.buttonType) },
+                    handler: nil
+                )
+                
             case .fontName:
                 return .fontNamePicker(
                     title: property.rawValue,
@@ -68,46 +83,65 @@ extension AttributesInspectorSection {
                         button.titleLabel?.font = font
                     }
                 )
-            
+                
+            case .groupState:
+                return .group(title: property.rawValue)
+                
+            case .stateConfig:
+                return .optionsList(
+                    title: property.rawValue,
+                    options: UIControl.State.configurableButtonStates,
+                    selectedIndex: { UIControl.State.configurableButtonStates.firstIndex(of: self.selectedControlState) }
+                ) { [weak self] in
+                    
+                    guard let newIndex = $0 else {
+                        return
+                    }
+                        
+                    let selectedStateConfig = UIControl.State.configurableButtonStates[newIndex]
+                    
+                    self?.selectedControlState = selectedStateConfig
+                }
+                
             case .titleText:
                 return .textInput(
                     title: property.rawValue,
-                    value: { button.title(for: button.state) },
-                    placeholder: { button.title(for: button.state) ?? property.rawValue }
+                    value: { button.title(for: self.selectedControlState) },
+                    placeholder: { button.title(for: self.selectedControlState) ?? property.rawValue }
                 ) { title in
-                    button.setTitle(title, for: button.state)
+                    button.setTitle(title, for: self.selectedControlState)
                 }
                 
             case .currentTitleColor:
                 return .colorPicker(
                     title: property.rawValue,
-                    color: { button.currentTitleColor }
+                    color: { button.titleColor(for: self.selectedControlState) }
                 ) { currentTitleColor in
-                    button.setTitleColor(currentTitleColor, for: button.state)
+                    button.setTitleColor(currentTitleColor, for: self.selectedControlState)
                 }
             
             case .currentTitleShadowColor:
                 return .colorPicker(
                     title: property.rawValue,
-                    color: { button.currentTitleShadowColor }
+                    color: { button.titleShadowColor(for: self.selectedControlState) }
                 ) { currentTitleShadowColor in
-                    button.setTitleShadowColor(currentTitleShadowColor, for: button.state)
+                    button.setTitleShadowColor(currentTitleShadowColor, for: self.selectedControlState)
                 }
             
             case .image:
                 return .imagePicker(
                     title: property.rawValue,
-                    image: { button.image(for: button.state) }
+                    image: { button.image(for: self.selectedControlState) }
                 ) { image in
-                    button.setImage(image, for: button.state)
+                    button.setImage(image, for: self.selectedControlState)
                 }
             
             case .backgroundImage:
                 return .imagePicker(
                     title: property.rawValue,
-                    image: { button.backgroundImage(for: button.state) }
+                    image: { button.backgroundImage(for: self.selectedControlState) }
                 ) { backgroundImage in
-                    button.setBackgroundImage(backgroundImage, for: button.state)
+                    button.setBackgroundImage(backgroundImage, for: self.selectedControlState)
                 }
             
             case .isPointerInteractionEnabled:
@@ -171,5 +205,16 @@ extension AttributesInspectorSection {
             
         }
     }
+    
+}
+
+fileprivate extension UIControl.State {
+    
+    static let configurableButtonStates: [UIControl.State] = [
+        .normal,
+        .highlighted,
+        .selected,
+        .disabled
+    ]
     
 }
