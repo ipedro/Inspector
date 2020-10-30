@@ -24,6 +24,7 @@
 		EB048F5C2539D7B300A91D5A /* AttributesInspectorSectionViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB439B7E25321644004CCBCA /* AttributesInspectorSectionViewModelProtocol.swift */; };
 		EB06E56F2548F17A008637E1 /* AttributesInspectorSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB06E56E2548F17A008637E1 /* AttributesInspectorSection.swift */; };
 		EB06E5752548F20C008637E1 /* NSObject+ClassesForCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB06E5742548F20C008637E1 /* NSObject+ClassesForCoder.swift */; };
+		EB0B261D254C49810063DB8C /* UIScrollViewSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B261C254C49810063DB8C /* UIScrollViewSectionViewModel.swift */; };
 		EB0B95192538896A00A35DE4 /* ViewHierarchyInspectorViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B95182538896A00A35DE4 /* ViewHierarchyInspectorViewController+UITableViewDataSource.swift */; };
 		EB0B95232538897500A35DE4 /* ViewHierarchyInspectorViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B95222538897500A35DE4 /* ViewHierarchyInspectorViewController+UITableViewDelegate.swift */; };
 		EB0B953B25388A2700A35DE4 /* AttributesInspectorViewController+AttributesInspectorSectionViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB0B953A25388A2700A35DE4 /* AttributesInspectorViewController+AttributesInspectorSectionViewControllerDelegate.swift */; };
@@ -241,6 +242,7 @@
 /* Begin PBXFileReference section */
 		EB06E56E2548F17A008637E1 /* AttributesInspectorSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributesInspectorSection.swift; sourceTree = "<group>"; };
 		EB06E5742548F20C008637E1 /* NSObject+ClassesForCoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+ClassesForCoder.swift"; sourceTree = "<group>"; };
+		EB0B261C254C49810063DB8C /* UIScrollViewSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewSectionViewModel.swift; sourceTree = "<group>"; };
 		EB0B95182538896A00A35DE4 /* ViewHierarchyInspectorViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyInspectorViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
 		EB0B95222538897500A35DE4 /* ViewHierarchyInspectorViewController+UITableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyInspectorViewController+UITableViewDelegate.swift"; sourceTree = "<group>"; };
 		EB0B953A25388A2700A35DE4 /* AttributesInspectorViewController+AttributesInspectorSectionViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributesInspectorViewController+AttributesInspectorSectionViewControllerDelegate.swift"; sourceTree = "<group>"; };
@@ -721,6 +723,7 @@
 				EB439BAA25322F95004CCBCA /* UIStackViewSectionViewModel.swift */,
 				EB7062862534DC14004693E1 /* UISwitchSectionViewModel.swift */,
 				EB439B8E25321766004CCBCA /* UIViewSectionViewModel.swift */,
+				EB0B261C254C49810063DB8C /* UIScrollViewSectionViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1428,6 +1431,7 @@
 				EBBE8C382538E87200CD699D /* UIImageViewSectionViewModel.swift in Sources */,
 				OBJ_78 /* UIView+Convenience.swift in Sources */,
 				EBC92E432533564D00D7189A /* UITextView+Init.swift in Sources */,
+				EB0B261D254C49810063DB8C /* UIScrollViewSectionViewModel.swift in Sources */,
 				EB5ED3CD2533AB3100ABDCF7 /* UIButtonSectionViewModel.swift in Sources */,
 				EBD432A7253B005000708C75 /* Manager+ViewHierarchyInspectorCoordinatorDataSource.swift in Sources */,
 				OBJ_79 /* UIView+HierarchyInspectableView.swift in Sources */,

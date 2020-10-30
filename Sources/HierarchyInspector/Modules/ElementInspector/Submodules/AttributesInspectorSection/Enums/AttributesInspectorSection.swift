@@ -13,9 +13,10 @@ enum AttributesInspectorSection {
     case control
     case imageView
     case label
+    case scrollView
     case slider
-    case stackView
     case `switch`
+    case stackView
     case view
     
     var targetClass: AnyClass {
@@ -46,6 +47,9 @@ enum AttributesInspectorSection {
             
         case .view:
             return UIView.self
+            
+        case .scrollView:
+            return UIScrollView.self
         }
     }
     
@@ -78,6 +82,9 @@ enum AttributesInspectorSection {
             
         case .view:
             return UIViewSectionViewModel(view: referenceView)
+            
+        case .scrollView:
+            return UIScrollViewSectionViewModel(view: referenceView)
         }
     }
 }
