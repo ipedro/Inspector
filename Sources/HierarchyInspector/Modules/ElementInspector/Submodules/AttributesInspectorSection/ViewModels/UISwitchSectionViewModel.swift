@@ -43,7 +43,7 @@ extension AttributesInspectorSection {
                     return .textInput(
                         title: property.rawValue,
                         value: { switchControl.title },
-                        placeholder: { switchControl.title ?? property.rawValue }
+                        placeholder: { switchControl.title.isNilOrEmpty ? property.rawValue : switchControl.title }
                     ) { title in
                         switchControl.title = title
                     }

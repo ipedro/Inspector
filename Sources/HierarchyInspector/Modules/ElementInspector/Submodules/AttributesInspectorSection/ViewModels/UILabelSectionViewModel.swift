@@ -55,7 +55,7 @@ extension AttributesInspectorSection {
                 return .textInput(
                     title: property.rawValue,
                     value: { label.text },
-                    placeholder: { label.text ?? property.rawValue }
+                    placeholder: { label.text.isNilOrEmpty ? property.rawValue : label.text }
                 ) { text in
                     label.text = text
                 }
