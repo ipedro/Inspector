@@ -51,7 +51,7 @@ extension AttributesInspectorSection {
                 return .floatStepper(
                     title: "value",
                     value: { slider.value },
-                    range: { slider.minimumValue...slider.maximumValue },
+                    range: { min(slider.minimumValue, slider.maximumValue)...max(slider.minimumValue, slider.maximumValue) },
                     stepValue: stepValueProvider
                 ) { value in
                     slider.value = value
@@ -62,7 +62,7 @@ extension AttributesInspectorSection {
                 return .floatStepper(
                     title: "minimum",
                     value: { slider.minimumValue },
-                    range: { 0...slider.maximumValue} ,
+                    range: { 0...max(0, slider.maximumValue) } ,
                     stepValue: stepValueProvider
                 ) { minimumValue in
                     slider.minimumValue = minimumValue
