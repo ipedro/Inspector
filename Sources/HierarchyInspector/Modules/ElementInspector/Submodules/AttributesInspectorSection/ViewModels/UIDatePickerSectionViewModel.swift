@@ -82,6 +82,7 @@ extension AttributesInspectorSection {
                     
                     let datePickerMode = UIDatePicker.Mode.allCases[newIndex]
                     
+                    #if swift(>=5.3)
                     if #available(iOS 14.0, *) {
                         if
                             datePickerMode == .countDownTimer,
@@ -90,6 +91,7 @@ extension AttributesInspectorSection {
                             return
                         }
                     }
+                    #endif
                     
                     datePicker.datePickerMode = datePickerMode
                     
@@ -194,10 +196,10 @@ extension UIDatePickerStyle: CustomStringConvertible {
         #if swift(>=5.3)
         case .compact:
             return "Compact"
-        #endif
         
         case .inline:
             return "Inline"
+        #endif
             
         @unknown default:
             return "Unknown"
