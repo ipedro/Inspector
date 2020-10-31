@@ -47,7 +47,7 @@ enum AttributesInspectorSectionProperty {
     
     case imagePicker(title: String, image: ImageProvider, handler: ImageHandler?)
     
-    case optionsList(title: String, options: [CustomStringConvertible], emptyTitle: String = "Unspecified", selectedIndex: SelectionProvider, handler: SelectionHandler?)
+    case optionsList(title: String, options: [CustomStringConvertible], axis: NSLayoutConstraint.Axis = .horizontal, emptyTitle: String = "Unspecified", selectedIndex: SelectionProvider, handler: SelectionHandler?)
     
     case segmentedControl(title: String, options: [SegmentedControlDisplayable], axis: NSLayoutConstraint.Axis = .vertical, selectedIndex: SelectionProvider, handler: SelectionHandler?)
     
@@ -95,7 +95,7 @@ extension AttributesInspectorSectionProperty: Hashable {
              .colorPicker(_, _, .some),
              .toggleButton(_, _, .some),
              .segmentedControl(_, _, _, _, .some),
-             .optionsList(_, _, _, _, .some),
+             .optionsList(_, _, _, _, _, .some),
              .textInput(_, _, _, .some),
              .imagePicker(_, _, .some):
             return true
@@ -232,6 +232,7 @@ extension AttributesInspectorSectionProperty {
         return .optionsList(
             title: title,
             options: availableFonts.map { $0.displayName },
+            axis: .vertical,
             emptyTitle: emptyTitle,
             selectedIndex: { availableFonts.firstIndex { $0.fontName == fontProvider()?.fontName } }
         ) {

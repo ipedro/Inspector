@@ -138,13 +138,14 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         $0.axis = axis
                     }
                     
-                case let .optionsList(title, options, emptyTitle, selectedIndexProvider, _):
+                case let .optionsList(title, options, axis, emptyTitle, selectedIndexProvider, _):
                     return OptionSelector(
                         title: title,
                         options: options,
                         emptyTitle: emptyTitle,
                         selectedIndex: selectedIndexProvider()
                     ).then {
+                        $0.axis = axis
                         $0.delegate = self
                     }
                 }
@@ -198,7 +199,7 @@ extension AttributesInspectorSectionViewController {
                 case let (.segmentedControl(_, _, _, _, handler), segmentedControl as SegmentedControl):
                     handler?(segmentedControl.selectedIndex)
                     
-                case let (.optionsList(_, _, _, _, handler), optionSelector as OptionSelector):
+                case let (.optionsList(_, _, _, _, _, handler), optionSelector as OptionSelector):
                     handler?(optionSelector.selectedIndex)
                     
                 case let (.textInput(_, _, _, handler), textInputControl as TextInputControl):
@@ -261,7 +262,7 @@ extension AttributesInspectorSectionViewController {
             case let (.segmentedControl(_, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
                 segmentedControl.selectedIndex = selectedIndexProvider()
                 
-            case let (.optionsList(_, _, _, selectedIndexProvider, _), optionSelector as OptionSelector):
+            case let (.optionsList(_, _, _, _, selectedIndexProvider, _), optionSelector as OptionSelector):
                 optionSelector.selectedIndex = selectedIndexProvider()
                 
             case let (.textInput(_, valueProvider, placeholderProvider, _), textInputControl as TextInputControl):

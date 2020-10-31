@@ -11,6 +11,7 @@ enum AttributesInspectorSection {
     case activityIndicator
     case button
     case control
+    case datePicker
     case imageView
     case label
     case scrollView
@@ -32,6 +33,9 @@ enum AttributesInspectorSection {
             
         case .control:
             return UIControl.self
+            
+        case .datePicker:
+            return UIDatePicker.self
             
         case .imageView:
             return UIImageView.self
@@ -76,6 +80,9 @@ enum AttributesInspectorSection {
             
         case .control:
             return UIControlSectionViewModel(view: referenceView)
+            
+        case .datePicker:
+            return UIDatePickerSectionViewModel(view: referenceView)
             
         case .imageView:
             return UIImageViewSectionViewModel(view: referenceView)

@@ -174,6 +174,7 @@
 		EBD9A629254CCEA300BCE4FF /* UIControl.State+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A628254CCEA300BCE4FF /* UIControl.State+CustomStringConvertible.swift */; };
 		EBD9A652254CCF7D00BCE4FF /* UIButton.ButtonType+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A651254CCF7D00BCE4FF /* UIButton.ButtonType+CaseIterable.swift */; };
 		EBD9A65C254CCF9000BCE4FF /* UIButton.ButtonType+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A65B254CCF9000BCE4FF /* UIButton.ButtonType+CustomStringConvertible.swift */; };
+		EBD9A66E254CDDEF00BCE4FF /* UIDatePickerSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9A66D254CDDEF00BCE4FF /* UIDatePickerSectionViewModel.swift */; };
 		EBD9D9E1252F6E7D00851E23 /* ToggleControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */; };
 		EBD9DA01252F919900851E23 /* StepperControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA00252F919900851E23 /* StepperControl.swift */; };
 		EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */; };
@@ -427,6 +428,7 @@
 		EBD9A628254CCEA300BCE4FF /* UIControl.State+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl.State+CustomStringConvertible.swift"; sourceTree = "<group>"; };
 		EBD9A651254CCF7D00BCE4FF /* UIButton.ButtonType+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton.ButtonType+CaseIterable.swift"; sourceTree = "<group>"; };
 		EBD9A65B254CCF9000BCE4FF /* UIButton.ButtonType+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton.ButtonType+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		EBD9A66D254CDDEF00BCE4FF /* UIDatePickerSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDatePickerSectionViewModel.swift; sourceTree = "<group>"; };
 		EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleControl.swift; sourceTree = "<group>"; };
 		EBD9DA00252F919900851E23 /* StepperControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperControl.swift; sourceTree = "<group>"; };
 		EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
@@ -786,6 +788,7 @@
 			isa = PBXGroup;
 			children = (
 				EB439C342532F2E1004CCBCA /* UIActivityIndicatorViewSectionViewModel.swift */,
+				EBD9A66D254CDDEF00BCE4FF /* UIDatePickerSectionViewModel.swift */,
 				EB5ED3CC2533AB3000ABDCF7 /* UIButtonSectionViewModel.swift */,
 				EB439B9C253217D3004CCBCA /* UIControlSectionViewModel.swift */,
 				EBD9A621254CB47A00BCE4FF /* UISegmentedControlSectionViewModel.swift */,
@@ -1725,6 +1728,7 @@
 				OBJ_85 /* Texts.swift in Sources */,
 				OBJ_86 /* ViewHierarchySnapshot.swift in Sources */,
 				EB164FE7253CBD3800DC05E9 /* MainThreadAsyncOperation.swift in Sources */,
+				EBD9A66E254CDDEF00BCE4FF /* UIDatePickerSectionViewModel.swift in Sources */,
 				EBD9DA4E2530414700851E23 /* IconKit.swift in Sources */,
 				EBD9DA26252FB4DF00851E23 /* UIColor+Hex.swift in Sources */,
 				EB439BED253238A4004CCBCA /* UIStackView.Distribution+CaseIterable.swift in Sources */,

@@ -69,6 +69,8 @@ final class TextInputControl: BaseFormControl {
         
         contentView.addArrangedSubview(accessoryControl)
         
+        accessoryControl.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor).isActive = true
+        
         updateViews()
     }
     

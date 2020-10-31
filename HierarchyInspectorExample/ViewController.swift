@@ -73,28 +73,11 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
         datePickerSegmentedControl.removeAllSegments()
         
         UIDatePickerStyle.allCases.forEach { style in
-            var title: String {
-                switch style {
-                case .automatic:
-                    return "Automatic"
-                    
-                case .wheels:
-                    return "Wheels"
-                    
-                case .compact:
-                    return "Compact"
-                
-                #if swift(>=5.3)
-                case .inline:
-                    return "Inline"
-                #endif
-                
-                @unknown default:
-                    return "\(self) (unsupported)"
-                }
-            }
-            
-            datePickerSegmentedControl.insertSegment(withTitle: title, at: datePickerSegmentedControl.numberOfSegments, animated: false)
+            datePickerSegmentedControl.insertSegment(
+                withTitle: style.description,
+                at: datePickerSegmentedControl.numberOfSegments,
+                animated: false
+            )
         }
         
         datePickerSegmentedControl.selectedSegmentIndex = 0
@@ -107,11 +90,20 @@ class ViewController: UIViewController, HierarchyInspectorPresentable {
 extension ViewController {
 
     @IBAction func changeDatePickerStyle(_ sender: UISegmentedControl) {
-        guard let style = UIDatePickerStyle(rawValue: sender.selectedSegmentIndex) else {
+        guard let datePickerStyle = UIDatePickerStyle(rawValue: sender.selectedSegmentIndex) else {
             return
         }
         
-        datePicker.preferredDatePickerStyle = style
+        if #available(iOS 14.0, *) {
+            if
+                datePicker.datePickerMode == .countDownTimer,
+                datePickerStyle == .inline || datePickerStyle == .compact
+            {
+                datePicker.datePickerMode = .dateAndTime
+            }
+        }
+        
+        datePicker.preferredDatePickerStyle = datePickerStyle
         
     }
     
@@ -167,19 +159,6 @@ extension ViewController: UIScrollViewDelegate {
         
         inspectBarButton.alpha = inspectBarButtonAlpha
     }
-}
-
-extension UIDatePickerStyle: CaseIterable {
-    public static var allCases: [UIDatePickerStyle] {
-        #if swift(>=5.3)
-        if #available(iOS 14.0, *) {
-            return [.automatic, .wheels, .compact, .inline]
-        }
-        #endif
-        return [.automatic, .wheels, .compact]
-    }
-    
-    public typealias AllCases = [UIDatePickerStyle]
 }
 
 extension ViewController: HierarchyInspectorKeyCommandPresentable {

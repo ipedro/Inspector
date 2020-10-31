@@ -41,7 +41,6 @@ extension AttributesInspectorSection {
                 return .segmentedControl(
                     title: property.rawValue,
                     options: NSLayoutConstraint.Axis.allCases,
-                    axis: .horizontal,
                     selectedIndex: { NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis) }
                 ) {
                     guard let newIndex = $0 else {
