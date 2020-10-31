@@ -29,17 +29,9 @@ final class AccessoryControl: BaseControl {
         layer.cornerRadius = ElementInspector.configuration.appearance.verticalMargins / 2
         
         setContentHuggingPriority(.required, for: .horizontal)
+        
         setContentHuggingPriority(.required, for: .vertical)
         
-        #warning("TODO: move to theme")
-        backgroundColor = {
-            #if swift(>=5.0)
-            if #available(iOS 13.0, *) {
-                return UIColor.label.withAlphaComponent(0.085)
-            }
-            #endif
-            
-            return UIColor.black.withAlphaComponent(0.085)
-        }()
+        backgroundColor = ElementInspector.configuration.appearance.accessoryControlBackgroundColor
     }
 }

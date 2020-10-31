@@ -9,6 +9,17 @@ import UIKit
 
 extension UIColor {
     
+    typealias Hex = UInt32
+    
+    convenience init(hex: Hex, alpha: CGFloat = 1.0) {
+        let mask = 0x000000FF
+        let r = Int(hex >> 16) & mask
+        let g = Int(hex >> 8) & mask
+        let b = Int(hex) & mask
+        
+        self.init(red: CGFloat(r) / 255.0, green: CGFloat(g) / 255.0, blue: CGFloat(b) / 255.0, alpha: alpha)
+    }
+    
     // MARK: - From UIColor to String
     
     var hexDescription: String? {
@@ -41,7 +52,16 @@ extension UIColor {
         let whitePercentage = Int(white * 100)
         let alphaPercentage = Int(alpha * 100)
         
-        return "White \(whitePercentage)% (\(alphaPercentage)%)"
+        switch whitePercentage {
+        case 50:
+            return "Gray (\(alphaPercentage)%)"
+            
+        case let percentage where percentage < 50:
+            return " \(100 - percentage)% Black (\(alphaPercentage)%)"
+            
+        default:
+            return "\(whitePercentage)% White (\(alphaPercentage)%)"
+        }
     }
 
     private func toHex(alpha: Bool = false) -> String? {

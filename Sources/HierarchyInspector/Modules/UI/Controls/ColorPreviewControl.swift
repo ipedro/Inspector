@@ -1,5 +1,5 @@
 //
-//  ColorPicker.swift
+//  ColorPreviewControl.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 08.10.20.
@@ -7,18 +7,18 @@
 
 import UIKit
 
-protocol ColorPickerDelegate: AnyObject {
-    func colorPickerDidTap(_ colorPicker: ColorPicker)
+protocol ColorPreviewControlDelegate: AnyObject {
+    func colorPreviewControlDidTap(_ colorPreviewControl: ColorPreviewControl)
 }
 
-final class ColorPicker: BaseFormControl {
+final class ColorPreviewControl: BaseFormControl {
     // MARK: - Properties
     
-    weak var delegate: ColorPickerDelegate?
+    weak var delegate: ColorPreviewControlDelegate?
     
     var selectedColor: UIColor? {
         didSet {
-            didUpdateColor()
+            updateViews()
         }
     }
     
@@ -40,12 +40,12 @@ final class ColorPicker: BaseFormControl {
     private lazy var colorDisplayControl = ColorDisplayControl().then {
         $0.color = selectedColor
         
-        $0.heightAnchor.constraint(equalToConstant: 16).isActive = true
+        $0.heightAnchor.constraint(equalToConstant: 20).isActive = true
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor, multiplier: 2).isActive = true
     }
     
-    private lazy var colorDisplayLabel = UILabel(.footnote).then {
-        $0.font = $0.font?.withTraits(traits: .traitMonoSpace)
+    private lazy var colorDisplayLabel = UILabel(.footnote, textColor: ElementInspector.configuration.appearance.textColor).then {
+//        $0.font = $0.font?.withTraits(traits: .traitMonoSpace)
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
     
@@ -72,34 +72,64 @@ final class ColorPicker: BaseFormControl {
         
         contentView.addArrangedSubview(accessoryControl)
         
-        didUpdateColor()
-        
         #if swift(>=5.3)
         colorDisplayControl.isEnabled = true
         #else
         accessoryControl.isUserInteractionEnabled = false
         colorDisplayLabel.textColor = .systemPurple
         accessoryControl.backgroundColor = nil
-        
         var margins = accessoryControl.contentView.directionalLayoutMargins
         margins.leading = 0
         margins.trailing = 0
         
         accessoryControl.contentView.directionalLayoutMargins = margins
         #endif
+        
+        updateViews()
+        
     }
     
-    private func didUpdateColor() {
+    private func updateViews() {
         colorDisplayControl.color = selectedColor
         
         colorDisplayLabel.text = selectedColor?.hexDescription ?? "No color"
     }
     
     @objc private func tapColor() {
-        delegate?.colorPickerDidTap(self)
+        delegate?.colorPreviewControlDidTap(self)
     }
 }
 
-extension ColorPicker {
+extension ColorPreviewControl {
     
+    final class ColorDisplayControl: BaseControl {
+        
+        var color: UIColor? {
+            didSet {
+                colorBackgroundView.backgroundColor = color
+            }
+        }
+        
+        private lazy var colorBackgroundView = UIView().then {
+            $0.backgroundColor = nil
+            $0.isUserInteractionEnabled = false
+        }
+        
+        override func setup() {
+            super.setup()
+            
+            backgroundColor = ElementInspector.configuration.appearance.tertiaryTextColor
+            
+            layer.cornerRadius = 5
+            
+            layer.masksToBounds = true
+            
+            installView(colorBackgroundView)
+        }
+        
+        override func draw(_ rect: CGRect) {
+            IconKit.drawColorGrid(frame: bounds, resizing: .aspectFill)
+        }
+    }
+
 }

@@ -10,6 +10,7 @@ import UIKit
 final class SectionHeader: BaseView {
     
     private(set) lazy var textLabel = UILabel().then {
+        $0.textColor = ElementInspector.configuration.appearance.textColor
         $0.numberOfLines = 0
         $0.adjustsFontSizeToFitWidth = true
         $0.preferredMaxLayoutWidth = 200

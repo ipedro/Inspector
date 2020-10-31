@@ -1,5 +1,5 @@
 //
-//  ImagePicker.swift
+//  ImagePreviewControl.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 08.10.20.
@@ -7,14 +7,14 @@
 
 import UIKit
 
-protocol ImagePickerDelegate: AnyObject {
-    func imagePickerDidTap(_ imagePicker: ImagePicker)
+protocol ImagePreviewControlDelegate: AnyObject {
+    func imagePreviewControlDidTap(_ imagePreviewControl: ImagePreviewControl)
 }
 
-final class ImagePicker: BaseFormControl {
+final class ImagePreviewControl: BaseFormControl {
     // MARK: - Properties
     
-    weak var delegate: ImagePickerDelegate?
+    weak var delegate: ImagePreviewControlDelegate?
     
     var selectedImage: UIImage? {
         didSet {
@@ -55,7 +55,7 @@ final class ImagePicker: BaseFormControl {
         $0.contentMode = .scaleAspectFit
     }
     
-    private lazy var imageNameLabel = UILabel(.footnote).then {
+    private lazy var imageNameLabel = UILabel(.footnote, textColor: ElementInspector.configuration.appearance.textColor).then {
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
     
@@ -112,6 +112,6 @@ final class ImagePicker: BaseFormControl {
     }
     
     @objc private func tapImage() {
-        delegate?.imagePickerDidTap(self)
+        delegate?.imagePreviewControlDidTap(self)
     }
 }

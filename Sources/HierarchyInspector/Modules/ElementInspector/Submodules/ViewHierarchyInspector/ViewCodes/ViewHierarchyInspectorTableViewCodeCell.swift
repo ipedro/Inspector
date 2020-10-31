@@ -90,6 +90,7 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
     }
     
     private lazy var elementNameLabel = UILabel().then {
+        $0.textColor = ElementInspector.configuration.appearance.textColor
         $0.layer.shouldRasterize = true
         $0.layer.rasterizationScale = UIScreen.main.scale
         

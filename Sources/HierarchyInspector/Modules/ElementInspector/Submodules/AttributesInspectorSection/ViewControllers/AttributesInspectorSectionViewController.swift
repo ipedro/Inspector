@@ -10,13 +10,13 @@ import UIKit
 protocol AttributesInspectorSectionViewControllerDelegate: OperationQueueManagerProtocol {
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  didTap colorPicker: ColorPicker)
+                                                  didTap colorPicker: ColorPreviewControl)
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  didTap imagePicker: ImagePicker)
+                                                  didTap imagePicker: ImagePreviewControl)
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  didTap optionSelector: OptionSelector)
+                                                  didTap optionSelector: OptionListControl)
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
                                                   didUpdate property: AttributesInspectorSectionProperty)
@@ -99,7 +99,7 @@ final class AttributesInspectorSectionViewController: UIViewController {
                     }
                     
                 case let .imagePicker(title, imageProvider, _):
-                    return ImagePicker(title: title, image: imageProvider()).then {
+                    return ImagePreviewControl(title: title, image: imageProvider()).then {
                         $0.delegate = self
                     }
                     
@@ -116,7 +116,7 @@ final class AttributesInspectorSectionViewController: UIViewController {
                     )
                     
                 case let .colorPicker(title, colorProvider, _):
-                    return ColorPicker(
+                    return ColorPreviewControl(
                         title: title,
                         color: colorProvider()
                     ).then {
@@ -139,7 +139,7 @@ final class AttributesInspectorSectionViewController: UIViewController {
                     }
                     
                 case let .optionsList(title, options, axis, emptyTitle, selectedIndexProvider, _):
-                    return OptionSelector(
+                    return OptionListControl(
                         title: title,
                         options: options,
                         emptyTitle: emptyTitle,
@@ -190,7 +190,7 @@ extension AttributesInspectorSectionViewController {
                 case let (.stepper(_, _, _, _, _, handler), stepperControl as StepperControl):
                     handler?(stepperControl.value)
                     
-                case let (.colorPicker(_, _, handler), colorPicker as ColorPicker):
+                case let (.colorPicker(_, _, handler), colorPicker as ColorPreviewControl):
                     handler?(colorPicker.selectedColor)
                     
                 case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
@@ -199,13 +199,13 @@ extension AttributesInspectorSectionViewController {
                 case let (.segmentedControl(_, _, _, _, handler), segmentedControl as SegmentedControl):
                     handler?(segmentedControl.selectedIndex)
                     
-                case let (.optionsList(_, _, _, _, _, handler), optionSelector as OptionSelector):
+                case let (.optionsList(_, _, _, _, _, handler), optionSelector as OptionListControl):
                     handler?(optionSelector.selectedIndex)
                     
                 case let (.textInput(_, _, _, handler), textInputControl as TextInputControl):
                     handler?(textInputControl.value)
                     
-                case let (.imagePicker(_, _, handler), imagePicker as ImagePicker):
+                case let (.imagePicker(_, _, handler), imagePicker as ImagePreviewControl):
                     handler?(imagePicker.selectedImage)
                     
                 case (.separator, _),
@@ -250,10 +250,10 @@ extension AttributesInspectorSectionViewController {
                 stepperControl.range     = rangeProvider()
                 stepperControl.stepValue = stepValueProvider()
                 
-            case let (.colorPicker(_, selectedColorProvider, _), colorPicker as ColorPicker):
+            case let (.colorPicker(_, selectedColorProvider, _), colorPicker as ColorPreviewControl):
                 colorPicker.selectedColor = selectedColorProvider()
                 
-            case let (.imagePicker(_, imageProvider, _), imagePicker as ImagePicker):
+            case let (.imagePicker(_, imageProvider, _), imagePicker as ImagePreviewControl):
                 imagePicker.selectedImage = imageProvider()
                 
             case let (.toggleButton(_, isOnProvider, _), toggleControl as ToggleControl):
@@ -262,7 +262,7 @@ extension AttributesInspectorSectionViewController {
             case let (.segmentedControl(_, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
                 segmentedControl.selectedIndex = selectedIndexProvider()
                 
-            case let (.optionsList(_, _, _, _, selectedIndexProvider, _), optionSelector as OptionSelector):
+            case let (.optionsList(_, _, _, _, selectedIndexProvider, _), optionSelector as OptionListControl):
                 optionSelector.selectedIndex = selectedIndexProvider()
                 
             case let (.textInput(_, valueProvider, placeholderProvider, _), textInputControl as TextInputControl):
@@ -288,27 +288,27 @@ extension AttributesInspectorSectionViewController {
     }
 }
 
-// MARK: - ColorPickerDelegate
+// MARK: - ColorPreviewControlDelegate
 
-extension AttributesInspectorSectionViewController: ColorPickerDelegate {
-    func colorPickerDidTap(_ colorPicker: ColorPicker) {
-        delegate?.attributesInspectorSectionViewController(self, didTap: colorPicker)
+extension AttributesInspectorSectionViewController: ColorPreviewControlDelegate {
+    func colorPreviewControlDidTap(_ colorPreviewControl: ColorPreviewControl) {
+        delegate?.attributesInspectorSectionViewController(self, didTap: colorPreviewControl)
     }
 }
 
-// MARK: - OptionSelectorDelegate
+// MARK: - OptionListControlDelegate
 
-extension AttributesInspectorSectionViewController: OptionSelectorDelegate {
-    func optionSelectorDidTap(_ optionSelector: OptionSelector) {
-        delegate?.attributesInspectorSectionViewController(self, didTap: optionSelector)
+extension AttributesInspectorSectionViewController: OptionListControlDelegate {
+    func optionListControlDidTap(_ optionListControl: OptionListControl) {
+        delegate?.attributesInspectorSectionViewController(self, didTap: optionListControl)
     }
 }
 
-// MARK: - ImagePickerDelegate
+// MARK: - ImagePreviewControlDelegate
 
-extension AttributesInspectorSectionViewController: ImagePickerDelegate {
-    func imagePickerDidTap(_ imagePicker: ImagePicker) {
-        delegate?.attributesInspectorSectionViewController(self, didTap: imagePicker)
+extension AttributesInspectorSectionViewController: ImagePreviewControlDelegate {
+    func imagePreviewControlDidTap(_ imagePreviewControl: ImagePreviewControl) {
+        delegate?.attributesInspectorSectionViewController(self, didTap: imagePreviewControl)
     }
 }
 

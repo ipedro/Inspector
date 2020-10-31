@@ -20,9 +20,7 @@ final class AttributesInspectorViewCode: BaseView {
     }
     
     #warning("move text style to ElementInspector.configuration.appearance")
-    private(set) lazy var elementDescriptionLabel =  UILabel(.caption2, numberOfLines: 0).then {
-        $0.alpha = 0.5
-    }
+    private(set) lazy var elementDescriptionLabel =  UILabel(.caption2, textColor: ElementInspector.configuration.appearance.secondaryTextColor, numberOfLines: 0)
     
     private(set) lazy var headerContentView = UIStackView(
         axis: .vertical,

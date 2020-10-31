@@ -9,7 +9,7 @@ import UIKit
 
 class BaseFormControl: BaseControl {
 
-    private(set) lazy var titleLabel = UILabel(.footnote).then {
+    private(set) lazy var titleLabel = UILabel(.footnote, textColor: ElementInspector.configuration.appearance.textColor).then {
         $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
     }
     

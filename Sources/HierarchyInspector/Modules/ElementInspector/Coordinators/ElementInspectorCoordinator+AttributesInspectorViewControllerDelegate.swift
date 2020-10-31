@@ -22,7 +22,7 @@ extension ElementInspectorCoordinator: AttributesInspectorViewControllerDelegate
         delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
     }
     
-    func attributesInspectorViewController(_ viewController: AttributesInspectorViewController, didTap colorPicker: ColorPicker) {
+    func attributesInspectorViewController(_ viewController: AttributesInspectorViewController, didTap colorPicker: ColorPreviewControl) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             let colorPicker = UIColorPickerViewController().then {
@@ -32,7 +32,7 @@ extension ElementInspectorCoordinator: AttributesInspectorViewControllerDelegate
                     $0.selectedColor = selectedColor
                 }
                 
-                $0.overrideUserInterfaceStyle = navigationController.overrideUserInterfaceStyle
+                $0.overrideUserInterfaceStyle = .dark
                 $0.modalPresentationStyle = .popover
                 $0.popoverPresentationController?.sourceView = colorPicker.accessoryControl
                 $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
@@ -45,7 +45,7 @@ extension ElementInspectorCoordinator: AttributesInspectorViewControllerDelegate
         #endif
     }
     
-    func attributesInspectorViewController(_ viewController: AttributesInspectorViewController, didTap optionSelector: OptionSelector) {
+    func attributesInspectorViewController(_ viewController: AttributesInspectorViewController, didTap optionSelector: OptionListControl) {
         
         let viewModel = OptionSelectorViewModel(
             title: optionSelector.title,
@@ -60,6 +60,12 @@ extension ElementInspectorCoordinator: AttributesInspectorViewControllerDelegate
         let navigationController = ElementInspectorNavigationController(
             rootViewController: optionSelectorViewController
         ).then {
+            #if swift(>=5.0)
+            if #available(iOS 13.0, *) {
+                $0.overrideUserInterfaceStyle = .dark
+            }
+            #endif
+            
             $0.modalPresentationStyle = .popover
             $0.popoverPresentationController?.sourceView = optionSelector.accessoryControl
             $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
@@ -69,11 +75,11 @@ extension ElementInspectorCoordinator: AttributesInspectorViewControllerDelegate
         viewController.present(navigationController, animated: true)
     }
     
-    func attributesInspectorViewController(_ viewController: AttributesInspectorViewController, didTap imagePicker: ImagePicker) {
+    func attributesInspectorViewController(_ viewController: AttributesInspectorViewController, didTap imagePicker: ImagePreviewControl) {
         let documentPicker = UIDocumentPickerViewController(documentTypes: [String(kUTTypeImage)], in: .import).then {
             #if swift(>=5.0)
             if #available(iOS 13.0, *) {
-                $0.overrideUserInterfaceStyle = navigationController.overrideUserInterfaceStyle
+                $0.overrideUserInterfaceStyle = .dark
             }
             #endif
             

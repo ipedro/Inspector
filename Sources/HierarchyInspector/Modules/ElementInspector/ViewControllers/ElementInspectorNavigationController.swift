@@ -15,11 +15,7 @@ final class ElementInspectorNavigationController: UINavigationController {
         
         view.backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor
         
-        #if swift(>=5.0)
-        if #available(iOS 13.0, *) {
-            overrideUserInterfaceStyle = .dark
-        }
-        #endif
+        navigationBar.barStyle = .black
     }
     
     override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {

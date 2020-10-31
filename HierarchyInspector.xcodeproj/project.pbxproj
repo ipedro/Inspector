@@ -75,7 +75,6 @@
 		EB5ED3A02533907600ABDCF7 /* UIView+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED38E2533902700ABDCF7 /* UIView+Animation.swift */; };
 		EB5ED3AB25339C8200ABDCF7 /* AccessoryControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3AA25339C8200ABDCF7 /* AccessoryControl.swift */; };
 		EB5ED3B525339CA000ABDCF7 /* BaseFormControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3B425339CA000ABDCF7 /* BaseFormControl.swift */; };
-		EB5ED3C325339CEF00ABDCF7 /* ColorDisplayControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3C225339CEF00ABDCF7 /* ColorDisplayControl.swift */; };
 		EB5ED3CD2533AB3100ABDCF7 /* UIButtonSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5ED3CC2533AB3000ABDCF7 /* UIButtonSectionViewModel.swift */; };
 		EB66519225349327005B8FF2 /* AttributesInspectorViewThumbnailSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB66519125349327005B8FF2 /* AttributesInspectorViewThumbnailSectionView.swift */; };
 		EB6651A425349FFD005B8FF2 /* ElementInspectorCoordinator+AttributesInspectorViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6651A325349FFD005B8FF2 /* ElementInspectorCoordinator+AttributesInspectorViewControllerDelegate.swift */; };
@@ -115,7 +114,7 @@
 		EBB0CB22252A6C3D005D4A53 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB21252A6C3D005D4A53 /* Configuration.swift */; };
 		EBB0CB2C252A6C99005D4A53 /* Configuration.KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */; };
 		EBB0CB63252A6F3E005D4A53 /* ActionGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAD92529B90B000001BE /* ActionGroup.swift */; };
-		EBBE8C2A2538D7B100CD699D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C292538D7B100CD699D /* ImagePicker.swift */; };
+		EBBE8C2A2538D7B100CD699D /* ImagePreviewControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C292538D7B100CD699D /* ImagePreviewControl.swift */; };
 		EBBE8C382538E87200CD699D /* UIImageViewSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C372538E87200CD699D /* UIImageViewSectionViewModel.swift */; };
 		EBBE8C422538EBBA00CD699D /* UILabelSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C412538EBBA00CD699D /* UILabelSectionViewModel.swift */; };
 		EBBE8C4C25398FAD00CD699D /* UISliderSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C4B25398FAC00CD699D /* UISliderSectionViewModel.swift */; };
@@ -180,9 +179,9 @@
 		EBD9DA07252F9AAF00851E23 /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */; };
 		EBD9DA0E252FA15500851E23 /* UILabel+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA0D252FA15500851E23 /* UILabel+Init.swift */; };
 		EBD9DA19252FA37500851E23 /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA18252FA37500851E23 /* SeparatorView.swift */; };
-		EBD9DA1F252FA60400851E23 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA1E252FA60400851E23 /* ColorPicker.swift */; };
+		EBD9DA1F252FA60400851E23 /* ColorPreviewControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA1E252FA60400851E23 /* ColorPreviewControl.swift */; };
 		EBD9DA26252FB4DF00851E23 /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA25252FB4DF00851E23 /* UIColor+Hex.swift */; };
-		EBD9DA30252FB76900851E23 /* OptionSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA2F252FB76900851E23 /* OptionSelector.swift */; };
+		EBD9DA30252FB76900851E23 /* OptionListControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA2F252FB76900851E23 /* OptionListControl.swift */; };
 		EBD9DA42252FC49900851E23 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA41252FC49900851E23 /* SectionHeader.swift */; };
 		EBD9DA4E2530414700851E23 /* IconKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD9DA4D2530414700851E23 /* IconKit.swift */; };
 		EBE3039B252DB7BC00A8F1C6 /* ViewHierarchyInspectorTableViewCodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE3039A252DB7BC00A8F1C6 /* ViewHierarchyInspectorTableViewCodeCell.swift */; };
@@ -330,7 +329,6 @@
 		EB5ED38E2533902700ABDCF7 /* UIView+Animation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Animation.swift"; sourceTree = "<group>"; };
 		EB5ED3AA25339C8200ABDCF7 /* AccessoryControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessoryControl.swift; sourceTree = "<group>"; };
 		EB5ED3B425339CA000ABDCF7 /* BaseFormControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseFormControl.swift; sourceTree = "<group>"; };
-		EB5ED3C225339CEF00ABDCF7 /* ColorDisplayControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorDisplayControl.swift; sourceTree = "<group>"; };
 		EB5ED3CC2533AB3000ABDCF7 /* UIButtonSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonSectionViewModel.swift; sourceTree = "<group>"; };
 		EB66519125349327005B8FF2 /* AttributesInspectorViewThumbnailSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributesInspectorViewThumbnailSectionView.swift; sourceTree = "<group>"; };
 		EB6651A325349FFD005B8FF2 /* ElementInspectorCoordinator+AttributesInspectorViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ElementInspectorCoordinator+AttributesInspectorViewControllerDelegate.swift"; sourceTree = "<group>"; };
@@ -370,7 +368,7 @@
 		EBB06A552548D1900036B299 /* ThumbnailBackgroundStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailBackgroundStyle.swift; sourceTree = "<group>"; };
 		EBB0CB21252A6C3D005D4A53 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.KeyCommands.swift; sourceTree = "<group>"; };
-		EBBE8C292538D7B100CD699D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		EBBE8C292538D7B100CD699D /* ImagePreviewControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewControl.swift; sourceTree = "<group>"; };
 		EBBE8C372538E87200CD699D /* UIImageViewSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewSectionViewModel.swift; sourceTree = "<group>"; };
 		EBBE8C412538EBBA00CD699D /* UILabelSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelSectionViewModel.swift; sourceTree = "<group>"; };
 		EBBE8C4B25398FAC00CD699D /* UISliderSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISliderSectionViewModel.swift; sourceTree = "<group>"; };
@@ -434,9 +432,9 @@
 		EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
 		EBD9DA0D252FA15500851E23 /* UILabel+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Init.swift"; sourceTree = "<group>"; };
 		EBD9DA18252FA37500851E23 /* SeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorView.swift; sourceTree = "<group>"; };
-		EBD9DA1E252FA60400851E23 /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
+		EBD9DA1E252FA60400851E23 /* ColorPreviewControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPreviewControl.swift; sourceTree = "<group>"; };
 		EBD9DA25252FB4DF00851E23 /* UIColor+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
-		EBD9DA2F252FB76900851E23 /* OptionSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionSelector.swift; sourceTree = "<group>"; };
+		EBD9DA2F252FB76900851E23 /* OptionListControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionListControl.swift; sourceTree = "<group>"; };
 		EBD9DA41252FC49900851E23 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		EBD9DA4D2530414700851E23 /* IconKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconKit.swift; sourceTree = "<group>"; };
 		EBE3039A252DB7BC00A8F1C6 /* ViewHierarchyInspectorTableViewCodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyInspectorTableViewCodeCell.swift; sourceTree = "<group>"; };
@@ -1201,10 +1199,9 @@
 			isa = PBXGroup;
 			children = (
 				EB5ED3AA25339C8200ABDCF7 /* AccessoryControl.swift */,
-				EB5ED3C225339CEF00ABDCF7 /* ColorDisplayControl.swift */,
-				EBD9DA1E252FA60400851E23 /* ColorPicker.swift */,
-				EBBE8C292538D7B100CD699D /* ImagePicker.swift */,
-				EBD9DA2F252FB76900851E23 /* OptionSelector.swift */,
+				EBD9DA1E252FA60400851E23 /* ColorPreviewControl.swift */,
+				EBBE8C292538D7B100CD699D /* ImagePreviewControl.swift */,
+				EBD9DA2F252FB76900851E23 /* OptionListControl.swift */,
 				EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */,
 				EBD9DA00252F919900851E23 /* StepperControl.swift */,
 				EBC9E1B72538B47A000F3E60 /* TextInputControl.swift */,
@@ -1675,7 +1672,6 @@
 				EBC9E1B82538B47A000F3E60 /* TextInputControl.swift in Sources */,
 				EBD9A611254CA55E00BCE4FF /* UITextField.ViewMode+CustomStringConvertible.swift in Sources */,
 				EBAC35042530DE8300A992F5 /* AttributesInspectorViewModel.swift in Sources */,
-				EB5ED3C325339CEF00ABDCF7 /* ColorDisplayControl.swift in Sources */,
 				EB439C4B25330D8E004CCBCA /* ElementInspectorNavigationController.swift in Sources */,
 				EBD9DA42252FC49900851E23 /* SectionHeader.swift in Sources */,
 				EBAC35452530E3C400A992F5 /* AttributesInspectorSectionProperty.swift in Sources */,
@@ -1722,7 +1718,7 @@
 				EB943FAE252C864A0007A611 /* SFSafariViewController+HierarchyInspectableProtocol.swift in Sources */,
 				OBJ_82 /* Configuration.Appearance.swift in Sources */,
 				OBJ_84 /* ViewHierarchyLayer.swift in Sources */,
-				EBD9DA1F252FA60400851E23 /* ColorPicker.swift in Sources */,
+				EBD9DA1F252FA60400851E23 /* ColorPreviewControl.swift in Sources */,
 				EB06E56F2548F17A008637E1 /* AttributesInspectorSection.swift in Sources */,
 				EBD9A61C254CACAF00BCE4FF /* Optional+NilOrEmpty.swift in Sources */,
 				OBJ_85 /* Texts.swift in Sources */,
@@ -1756,7 +1752,7 @@
 				EBD43279253AFAE300708C75 /* AsyncOperationProtocol.swift in Sources */,
 				EB31664825384995001A4A80 /* NSObjectProtocoll+Debounce.swift in Sources */,
 				OBJ_90 /* HierarchyInspectableProtocol.swift in Sources */,
-				EBD9DA30252FB76900851E23 /* OptionSelector.swift in Sources */,
+				EBD9DA30252FB76900851E23 /* OptionListControl.swift in Sources */,
 				EB439C1D2532393A004CCBCA /* NSLayoutConstraint.Axis+SegmentedControlDisplayable.swift in Sources */,
 				EBD9A55E254C727D00BCE4FF /* UITextAutocorrectionType+CaseIterable.swift in Sources */,
 				EB5ED3AB25339C8200ABDCF7 /* AccessoryControl.swift in Sources */,
@@ -1814,7 +1810,7 @@
 				EBC524AB252F5F2F0054C6AA /* BaseControl.swift in Sources */,
 				EB439BD92532383D004CCBCA /* UIControl.ContentVerticalAlignment+CustomStringConvertible.swift in Sources */,
 				OBJ_100 /* LoaderView.swift in Sources */,
-				EBBE8C2A2538D7B100CD699D /* ImagePicker.swift in Sources */,
+				EBBE8C2A2538D7B100CD699D /* ImagePreviewControl.swift in Sources */,
 				EBB0CB2C252A6C99005D4A53 /* Configuration.KeyCommands.swift in Sources */,
 				EBE303A9252DC13E00A8F1C6 /* UITableView+Convenience.swift in Sources */,
 				EB439BCF25323823004CCBCA /* UIControl.ContentVerticalAlignment+CaseIterable.swift in Sources */,

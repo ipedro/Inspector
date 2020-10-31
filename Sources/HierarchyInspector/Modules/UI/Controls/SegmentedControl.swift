@@ -54,6 +54,7 @@ final class SegmentedControl: BaseFormControl {
         if #available(iOS 13.0, *) {
             $0.selectedSegmentTintColor = ElementInspector.configuration.appearance.tintColor
             $0.setTitleTextAttributes([.foregroundColor: ElementInspector.configuration.appearance.textColor], for: .selected)
+            $0.overrideUserInterfaceStyle = .dark
         }
         else {
             $0.tintColor = .systemPurple

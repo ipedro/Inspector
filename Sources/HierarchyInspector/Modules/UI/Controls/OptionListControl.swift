@@ -1,5 +1,5 @@
 //
-//  OptionSelector.swift
+//  OptionListControl.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 08.10.20.
@@ -7,14 +7,14 @@
 
 import UIKit
 
-protocol OptionSelectorDelegate: AnyObject {
-    func optionSelectorDidTap(_ optionSelector: OptionSelector)
+protocol OptionListControlDelegate: AnyObject {
+    func optionListControlDidTap(_ optionListControl: OptionListControl)
 }
 
-final class OptionSelector: BaseFormControl {
+final class OptionListControl: BaseFormControl {
     // MARK: - Properties
     
-    weak var delegate: OptionSelectorDelegate?
+    weak var delegate: OptionListControlDelegate?
     
     override var isEnabled: Bool {
         didSet {
@@ -30,7 +30,7 @@ final class OptionSelector: BaseFormControl {
         size: CGSize(width: 14, height: 14)
     )
     
-    private lazy var valueLabel = UILabel(.footnote).then {
+    private lazy var valueLabel = UILabel(.footnote, textColor: ElementInspector.configuration.appearance.textColor).then {
         $0.adjustsFontSizeToFitWidth = true
         $0.minimumScaleFactor = 0.6
     }
@@ -105,6 +105,6 @@ final class OptionSelector: BaseFormControl {
     }
     
     @objc private func tap() {
-        delegate?.optionSelectorDidTap(self)
+        delegate?.optionListControlDidTap(self)
     }
 }

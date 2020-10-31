@@ -13,6 +13,7 @@ final class TextInputControl: BaseFormControl {
     
     private lazy var textField = UITextField().then {
         $0.addTarget(self, action: #selector(editText), for: .allEditingEvents)
+        $0.textColor = ElementInspector.configuration.appearance.textColor
         $0.adjustsFontSizeToFitWidth = true
         $0.borderStyle = .none
         $0.font = .preferredFont(forTextStyle: .footnote)

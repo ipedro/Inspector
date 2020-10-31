@@ -28,47 +28,25 @@ extension ElementInspector {
         
         let verticalMargins: CGFloat = 13
         
-        var tintColor: UIColor = .systemPurple
+        var tintColor: UIColor = UIColor(hex: 0xBF5AF2)
+        
+        var accessoryControlBackgroundColor = UIColor(hex: 0x3D3D42)
         
         var textColor: UIColor = {
-            #if swift(>=5.0)
-            if #available(iOS 13.0, *) {
-                return .label
-            }
-            #endif
-            
-            return .darkText
+            return .white
         }()
         
         var secondaryTextColor: UIColor = {
-            #if swift(>=5.0)
-            if #available(iOS 13.0, *) {
-                return .secondaryLabel
-            }
-            #endif
-            
-            return UIColor.darkText.withAlphaComponent(0.6)
+            return UIColor(white: 1, alpha: 0.6)
         }()
         
         
         var tertiaryTextColor: UIColor = {
-            #if swift(>=5.0)
-            if #available(iOS 13.0, *) {
-                return .tertiaryLabel
-            }
-            #endif
-            
-            return UIColor.darkText.withAlphaComponent(0.3)
+            return UIColor(white: 1, alpha: 0.3)
         }()
         
         var quaternaryTextColor: UIColor = {
-            #if swift(>=5.0)
-            if #available(iOS 13.0, *) {
-                return .quaternaryLabel
-            }
-            #endif
-            
-            return UIColor.darkText.withAlphaComponent(0.15)
+            return UIColor(white: 1, alpha: 0.15)
         }()
         
         var margins: NSDirectionalEdgeInsets {
@@ -86,23 +64,11 @@ extension ElementInspector {
         }
         
         var panelBackgroundColor: UIColor = {
-            #if swift(>=5.0)
-            if #available(iOS 13.0, *) {
-                return .secondarySystemBackground
-            }
-            #endif
-            
-            return .groupTableViewBackground
+            return UIColor(hex: 0x2C2C2E)
         }()
         
         var panelHighlightBackgroundColor: UIColor = {
-            #if swift(>=5.0)
-            if #available(iOS 13.0, *) {
-                return .tertiarySystemBackground
-            }
-            #endif
-            
-            return .white
+            return UIColor(hex: 0x3A3A3C)
         }()
         
         func titleFont(forRelativeDepth relativeDepth: Int) -> UIFont {

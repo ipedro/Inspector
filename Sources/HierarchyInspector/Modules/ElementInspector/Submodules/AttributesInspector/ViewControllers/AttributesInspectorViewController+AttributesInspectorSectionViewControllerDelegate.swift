@@ -77,21 +77,21 @@ extension AttributesInspectorViewController: AttributesInspectorSectionViewContr
     }
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  didTap imagePicker: ImagePicker) {
+                                                  didTap imagePicker: ImagePreviewControl) {
         selectedImagePicker = imagePicker
         
         delegate?.attributesInspectorViewController(self, didTap: imagePicker)
     }
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  didTap colorPicker: ColorPicker) {
+                                                  didTap colorPicker: ColorPreviewControl) {
         selectedColorPicker = colorPicker
         
         delegate?.attributesInspectorViewController(self, didTap: colorPicker)
     }
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  didTap optionSelector: OptionSelector) {
+                                                  didTap optionSelector: OptionListControl) {
         selectedOptionSelector = optionSelector
         
         delegate?.attributesInspectorViewController(self, didTap: optionSelector)

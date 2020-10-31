@@ -10,13 +10,13 @@ import UIKit
 protocol AttributesInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     
     func attributesInspectorViewController(_ viewController: AttributesInspectorViewController,
-                                           didTap colorPicker: ColorPicker)
+                                           didTap colorPicker: ColorPreviewControl)
     
     func attributesInspectorViewController(_ viewController: AttributesInspectorViewController,
-                                           didTap imagePicker: ImagePicker)
+                                           didTap imagePicker: ImagePreviewControl)
     
     func attributesInspectorViewController(_ viewController: AttributesInspectorViewController,
-                                           didTap optionSelector: OptionSelector)
+                                           didTap optionSelector: OptionListControl)
     
     func attributesInspectorViewController(_ viewController: AttributesInspectorViewController,
                                            showLayerInspectorViewsInside reference: ViewHierarchyReference)
@@ -34,11 +34,11 @@ final class AttributesInspectorViewController: ElementInspectorPanelViewControll
     
     private var viewModel: AttributesInspectorViewModelProtocol!
     
-    var selectedColorPicker: ColorPicker?
+    var selectedColorPicker: ColorPreviewControl?
     
-    var selectedImagePicker: ImagePicker?
+    var selectedImagePicker: ImagePreviewControl?
     
-    var selectedOptionSelector: OptionSelector?
+    var selectedOptionSelector: OptionListControl?
     
     private(set) var displayLink: CADisplayLink? {
         didSet {
