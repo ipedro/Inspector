@@ -40,7 +40,7 @@ extension AttributesInspectorSection {
             case .title:
                 #if swift(>=5.3)
                 if #available(iOS 14.0, *) {
-                    return .textInput(
+                    return .textField(
                         title: property.rawValue,
                         value: { switchControl.title },
                         placeholder: { switchControl.title.isNilOrEmpty ? property.rawValue : switchControl.title }

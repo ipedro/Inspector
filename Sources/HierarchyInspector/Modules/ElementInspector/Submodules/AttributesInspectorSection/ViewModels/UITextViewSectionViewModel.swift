@@ -64,7 +64,7 @@ extension AttributesInspectorSection {
                 
             #warning("TODO: create text view control")
             case .text:
-                return .textInput(
+                return .textField(
                     title: property.rawValue,
                     value: { textView.text },
                     placeholder: { textView.text.isNilOrEmpty ? property.rawValue : textView.text }

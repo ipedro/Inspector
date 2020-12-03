@@ -128,7 +128,7 @@
 		EBC92E162533267200D7189A /* ViewHierarchyReference+ElementDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E152533267200D7189A /* ViewHierarchyReference+ElementDescription.swift */; };
 		EBC92E1D25332A5100D7189A /* UIFont+Traits.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E1C25332A5100D7189A /* UIFont+Traits.swift */; };
 		EBC92E432533564D00D7189A /* UITextView+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC92E422533564D00D7189A /* UITextView+Init.swift */; };
-		EBC9E1B82538B47A000F3E60 /* TextInputControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC9E1B72538B47A000F3E60 /* TextInputControl.swift */; };
+		EBC9E1B82538B47A000F3E60 /* TextFieldControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC9E1B72538B47A000F3E60 /* TextFieldControl.swift */; };
 		EBCCF4EF253851A500A9363F /* ElementInspectorBasePanelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB31665225384DB0001A4A80 /* ElementInspectorBasePanelViewController.swift */; };
 		EBCCF4FC2538524900A9363F /* ElementInspectorPanelViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBCCF4E62538513B00A9363F /* ElementInspectorPanelViewControllerProtocol.swift */; };
 		EBD43227253AF4AF00708C75 /* MainThreadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD43226253AF4AF00708C75 /* MainThreadOperation.swift */; };
@@ -385,7 +385,7 @@
 		EBC92E152533267200D7189A /* ViewHierarchyReference+ElementDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyReference+ElementDescription.swift"; sourceTree = "<group>"; };
 		EBC92E1C25332A5100D7189A /* UIFont+Traits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Traits.swift"; sourceTree = "<group>"; };
 		EBC92E422533564D00D7189A /* UITextView+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Init.swift"; sourceTree = "<group>"; };
-		EBC9E1B72538B47A000F3E60 /* TextInputControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputControl.swift; sourceTree = "<group>"; };
+		EBC9E1B72538B47A000F3E60 /* TextFieldControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldControl.swift; sourceTree = "<group>"; };
 		EBCCF4E62538513B00A9363F /* ElementInspectorPanelViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementInspectorPanelViewControllerProtocol.swift; sourceTree = "<group>"; };
 		EBD43226253AF4AF00708C75 /* MainThreadOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainThreadOperation.swift; sourceTree = "<group>"; };
 		EBD43234253AF7CA00708C75 /* ViewHierarchyLayersCoordinator+HierarchyLayerActionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewHierarchyLayersCoordinator+HierarchyLayerActionProtocol.swift"; sourceTree = "<group>"; };
@@ -1220,7 +1220,7 @@
 				EBD9DA2F252FB76900851E23 /* OptionListControl.swift */,
 				EBD9DA06252F9AAF00851E23 /* SegmentedControl.swift */,
 				EBD9DA00252F919900851E23 /* StepperControl.swift */,
-				EBC9E1B72538B47A000F3E60 /* TextInputControl.swift */,
+				EBC9E1B72538B47A000F3E60 /* TextFieldControl.swift */,
 				EBD9D9E0252F6E7D00851E23 /* ToggleControl.swift */,
 			);
 			path = Controls;
@@ -1686,7 +1686,7 @@
 				EBD9A502254C59DA00BCE4FF /* UIScrollView.IndicatorStyle+CustomStringConvertible.swift in Sources */,
 				EBD9A600254CA4D900BCE4FF /* UITextField.BorderStyle+SegmentedControlDisplayable.swift in Sources */,
 				EBD9A5B4254C7C5400BCE4FF /* UIKeyboardType+CustomStringConvertible.swift in Sources */,
-				EBC9E1B82538B47A000F3E60 /* TextInputControl.swift in Sources */,
+				EBC9E1B82538B47A000F3E60 /* TextFieldControl.swift in Sources */,
 				EBD9A611254CA55E00BCE4FF /* UITextField.ViewMode+CustomStringConvertible.swift in Sources */,
 				EBAC35042530DE8300A992F5 /* AttributesInspectorViewModel.swift in Sources */,
 				EB439C4B25330D8E004CCBCA /* ElementInspectorNavigationController.swift in Sources */,

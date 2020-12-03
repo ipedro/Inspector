@@ -55,7 +55,7 @@ enum AttributesInspectorSectionProperty {
     
     case stepper(title: String, value: DoubleProvider, range: DoubleClosedRangeProvider, stepValue: DoubleProvider, isDecimalValue: Bool, handler: DoubleHandler?)
     
-    case textInput(title: String, value: StringProvider, placeholder: StringProvider, handler:StringHandler?)
+    case textField(title: String, value: StringProvider, placeholder: StringProvider, handler:StringHandler?)
     
     case toggleButton(title: String, isOn: BoolProvider, handler: BoolHandler?)
     
@@ -77,7 +77,7 @@ extension AttributesInspectorSectionProperty: Hashable {
              .toggleButton,
              .segmentedControl,
              .optionsList,
-             .textInput,
+             .textField,
              .imagePicker:
             return true
             
@@ -96,7 +96,7 @@ extension AttributesInspectorSectionProperty: Hashable {
              .toggleButton(_, _, .some),
              .segmentedControl(_, _, _, _, .some),
              .optionsList(_, _, _, _, _, .some),
-             .textInput(_, _, _, .some),
+             .textField(_, _, _, .some),
              .imagePicker(_, _, .some):
             return true
             
@@ -105,7 +105,7 @@ extension AttributesInspectorSectionProperty: Hashable {
              .toggleButton,
              .segmentedControl,
              .optionsList,
-             .textInput,
+             .textField,
              .group,
              .separator,
              .imagePicker:

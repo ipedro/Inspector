@@ -52,7 +52,7 @@ extension AttributesInspectorSection {
             switch property {
             
             case .text:
-                return .textInput(
+                return .textField(
                     title: property.rawValue,
                     value: { label.text },
                     placeholder: { label.text.isNilOrEmpty ? property.rawValue : label.text }

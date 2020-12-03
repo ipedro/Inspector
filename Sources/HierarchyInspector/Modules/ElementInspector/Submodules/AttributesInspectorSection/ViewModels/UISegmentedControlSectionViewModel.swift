@@ -114,7 +114,7 @@ extension AttributesInspectorSection {
                 }
                 
             case .segmentTitle:
-                return .textInput(
+                return .textField(
                     title: property.rawValue,
                     value: { [weak self] in
                         

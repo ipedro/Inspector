@@ -103,8 +103,8 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         $0.delegate = self
                     }
                     
-                case let .textInput(title, value, placeholder, _):
-                    return TextInputControl(title: title, value: value(), placeholder: placeholder())
+                case let .textField(title, value, placeholder, _):
+                    return TextFieldControl(title: title, value: value(), placeholder: placeholder())
                     
                 case let .stepper(title, valueProvider, rangeProvider, stepValueProvider, isDecimal, _):
                     return StepperControl(
@@ -202,8 +202,8 @@ extension AttributesInspectorSectionViewController {
                 case let (.optionsList(_, _, _, _, _, handler), optionSelector as OptionListControl):
                     handler?(optionSelector.selectedIndex)
                     
-                case let (.textInput(_, _, _, handler), textInputControl as TextInputControl):
-                    handler?(textInputControl.value)
+                case let (.textField(_, _, _, handler), textFieldControl as TextFieldControl):
+                    handler?(textFieldControl.value)
                     
                 case let (.imagePicker(_, _, handler), imagePicker as ImagePreviewControl):
                     handler?(imagePicker.selectedImage)
@@ -217,7 +217,7 @@ extension AttributesInspectorSectionViewController {
                      (.toggleButton, _),
                      (.segmentedControl, _),
                      (.optionsList, _),
-                     (.textInput, _),
+                     (.textField, _),
                      (.imagePicker, _):
                     assertionFailure("shouldn't happen")
                     break
@@ -265,9 +265,9 @@ extension AttributesInspectorSectionViewController {
             case let (.optionsList(_, _, _, _, selectedIndexProvider, _), optionSelector as OptionListControl):
                 optionSelector.selectedIndex = selectedIndexProvider()
                 
-            case let (.textInput(_, valueProvider, placeholderProvider, _), textInputControl as TextInputControl):
-                textInputControl.placeholder = placeholderProvider()
-                textInputControl.value = valueProvider()
+            case let (.textField(_, valueProvider, placeholderProvider, _), textFieldControl as TextFieldControl):
+                textFieldControl.placeholder = placeholderProvider()
+                textFieldControl.value = valueProvider()
                 
             case (.separator, _),
                  (.group, _):
@@ -278,7 +278,7 @@ extension AttributesInspectorSectionViewController {
                  (.toggleButton, _),
                  (.segmentedControl, _),
                  (.optionsList, _),
-                 (.textInput, _),
+                 (.textField, _),
                  (.imagePicker, _):
                 assertionFailure("shouldn't happen")
                 break

@@ -1,5 +1,5 @@
 //
-//  TextInputControl.swift
+//  TextFieldControl.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 08.10.20.
@@ -7,8 +7,7 @@
 
 import UIKit
 
-
-final class TextInputControl: BaseFormControl {
+final class TextFieldControl: BaseFormControl {
     // MARK: - Properties
     
     private lazy var textField = UITextField().then {
@@ -93,7 +92,7 @@ final class TextInputControl: BaseFormControl {
     }
 }
 
-private extension TextInputControl {
+private extension TextFieldControl {
     
     @objc
     func editText() {
