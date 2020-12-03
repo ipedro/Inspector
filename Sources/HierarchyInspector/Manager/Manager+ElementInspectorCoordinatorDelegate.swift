@@ -21,19 +21,23 @@ extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
     
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference) {
         viewHierarchyLayersCoordinator.hideAllHighlightViews(false, containedIn: reference)
-        
         elementInspectorCoordinator = nil
     }
 }
 
 extension HierarchyInspector.Manager {
     
-    func presentElementInspector(for reference: ViewHierarchyReference, from sourceView: UIView, animated: Bool) {
-        guard let hostViewController = hostViewController else {
+    func presentElementInspector(for reference: ViewHierarchyReference, animated: Bool, from sourceView: UIView?) {
+        guard
+            let hostViewController = hostViewController,
+            let window = hostViewController.view.window
+        else {
             return
         }
         
-        let coordinator = ElementInspectorCoordinator(reference: reference).then {
+        let windowReference = ViewHierarchyReference(root: window)
+        
+        let coordinator = ElementInspectorCoordinator(reference: reference, rootReference: windowReference).then {
             $0.delegate = self
         }
         

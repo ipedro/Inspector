@@ -56,18 +56,9 @@ extension HierarchyInspector.Manager {
         let layerActions = viewHierarchyLayersCoordinator.layerActions(for: viewHierarchySnapshot)
         
         // other actions
-        var otherActions = viewHierarchyLayersCoordinator.otherActions(for: viewHierarchySnapshot)
+        let toggleAllLayersActions = viewHierarchyLayersCoordinator.toggleAllLayersActions(for: viewHierarchySnapshot)
         
-        guard
-            let topMostContainer = hostViewController?.topMostContainerViewController as? HierarchyInspectorPresentable,
-            topMostContainer !== hostViewController
-        else {
-            return [layerActions, otherActions]
-        }
-        
-        otherActions.actions.append(.inspect(vc: topMostContainer))
-        
-        return [layerActions, otherActions]
+        return [layerActions, toggleAllLayersActions]
     }
     
 }

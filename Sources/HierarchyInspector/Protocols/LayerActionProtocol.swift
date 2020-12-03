@@ -10,7 +10,7 @@ import Foundation
 protocol LayerActionProtocol {
     func layerActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup
     
-    func otherActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup
+    func toggleAllLayersActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup
     
     func layerAction(_ layer: ViewHierarchyLayer, isEmpty: Bool) -> Action
 }

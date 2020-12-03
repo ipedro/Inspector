@@ -20,6 +20,8 @@ enum Action {
     
     case inspect(vc: HierarchyInspectorPresentable)
     
+    case inspectWindow(vc: HierarchyInspectorPresentable)
+    
     var title: String {
         switch self {
         case let .emptyLayer(title),
@@ -37,6 +39,9 @@ enum Action {
             
         case .openHierarchyInspector:
             return Texts.openHierarchyInspector
+            
+        case let .inspectWindow(fromVC):
+            return Texts.inspect(String(describing: fromVC.classForCoder))
         }
     }
     
@@ -49,7 +54,8 @@ enum Action {
              .toggleLayer,
              .showAllLayers,
              .hideVisibleLayers,
-             .inspect:
+             .inspect,
+             .inspectWindow:
             return nil
         }
     }
@@ -79,6 +85,15 @@ extension Action {
         case let .openHierarchyInspector(fromViewController):
             return UIAlertAction(title: title, style: .default) { _ in
                 fromViewController.presentHierarchyInspector(animated: true)
+            }
+            
+        case let .inspectWindow(vc):
+            guard let window = vc.view.window else {
+                return nil
+            }
+            
+            return UIAlertAction(title: title, style: .default) { _ in
+                vc.hierarchyInspectorManager.presentElementInspector(for: ViewHierarchyReference(root: window), animated: true, from: nil)
             }
         }
     }

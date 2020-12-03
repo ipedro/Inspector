@@ -11,6 +11,6 @@ import UIKit
 
 extension HierarchyInspector.Manager: ViewHierarchyLayersCoordinatorDelegate {
     func viewHierarchyLayersCoordinator(_ coordinator: ViewHierarchyLayersCoordinator, didSelect viewHierarchyReference: ViewHierarchyReference, from highlightView: HighlightView) {
-        presentElementInspector(for: viewHierarchyReference, from: highlightView.labelContentView, animated: true)
+        presentElementInspector(for: viewHierarchyReference, animated: true, from: highlightView.labelContentView)
     }
 }

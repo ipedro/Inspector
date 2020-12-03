@@ -137,6 +137,12 @@ extension HierarchyInspectorKeyCommandPresentable {
                 
             case let .inspect(vc):
                 vc.presentHierarchyInspector(animated: true)
+                
+            case let .inspectWindow(vc: vc):
+                guard let window = vc.view.window else {
+                    return
+                }
+                vc.hierarchyInspectorManager.presentElementInspector(for: ViewHierarchyReference(root: window), animated: true, from: nil)
             }
             
             return

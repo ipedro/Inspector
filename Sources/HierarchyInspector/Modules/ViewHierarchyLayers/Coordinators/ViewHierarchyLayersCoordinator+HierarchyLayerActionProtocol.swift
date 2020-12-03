@@ -44,7 +44,7 @@ extension ViewHierarchyLayersCoordinator: LayerActionProtocol {
         }
     }
     
-    func otherActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup {
+    func toggleAllLayersActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup {
         ActionGroup(
             title: nil,
             actions: {

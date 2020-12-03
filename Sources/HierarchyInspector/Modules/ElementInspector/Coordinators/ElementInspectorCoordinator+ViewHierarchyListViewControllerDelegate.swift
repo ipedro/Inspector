@@ -39,10 +39,11 @@ extension ElementInspectorCoordinator: ViewHierarchyInspectorViewControllerDeleg
     
     private func pushElementInspector(with reference: ViewHierarchyReference, selectedPanel: ElementInspectorPanel?, animated: Bool) {
         
-        let elementInspectorViewController = makeElementInspectorViewController(
+        let elementInspectorViewController = Self.makeElementInspectorViewController(
             with: reference,
             showDismissBarButton: false,
-            selectedPanel: selectedPanel
+            selectedPanel: selectedPanel,
+            delegate: self
         )
         
         navigationController.pushViewController(elementInspectorViewController, animated: animated)

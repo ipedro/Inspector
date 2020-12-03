@@ -23,45 +23,94 @@ final class ElementInspectorCoordinator: NSObject {
     
     let rootReference: ViewHierarchyReference
     
-    private(set) lazy var operationQueue = OperationQueue.main
+    let reference: ViewHierarchyReference
     
-    init(reference: ViewHierarchyReference) {
-        self.rootReference = reference
-    }
-    
-    private(set) lazy var elementInspectorViewController = makeElementInspectorViewController(with: rootReference, showDismissBarButton: true, selectedPanel: .attributesInspector)
-    
-    private(set) lazy var navigationController = ElementInspectorNavigationController(rootViewController: elementInspectorViewController).then {
-        $0.modalPresentationStyle = {
-            guard let window = rootReference.view?.window else {
-                return .pageSheet
-            }
-            
-            guard window.traitCollection.userInterfaceIdiom != .phone else {
-                return .pageSheet
-            }
-            
-            let referenceViewArea = rootReference.frame.height * rootReference.frame.width
-            
-            let windowArea = window.frame.height * window.frame.width
-            
-            let occupiedRatio = referenceViewArea / windowArea
-            
-            if occupiedRatio <= 0.35 {
-                return .popover
-            }
-            
-            return .formSheet
-        }()
-        
+    private(set) lazy var navigationController = Self.makeNavigationController(reference: reference, rootReference: rootReference, delegate: self).then {
         switch $0.modalPresentationStyle {
         case .popover:
-            $0.popoverPresentationController?.sourceView = rootReference.view
             $0.popoverPresentationController?.delegate = self
             
         default:
             $0.presentationController?.delegate = self
         }
+    }
+    
+    private(set) lazy var operationQueue = OperationQueue.main
+    
+    init(reference: ViewHierarchyReference, rootReference: ViewHierarchyReference) {
+        self.rootReference = rootReference
+        self.reference = reference
+    }
+    
+    static func makeNavigationController(reference: ViewHierarchyReference, rootReference: ViewHierarchyReference, delegate: ElementInspectorViewControllerDelegate) -> ElementInspectorNavigationController {
+        let navigationController = ElementInspectorNavigationController().then {
+            $0.modalPresentationStyle = {
+                guard let window = rootReference.view?.window else {
+                    return .pageSheet
+                }
+                
+                guard window.traitCollection.userInterfaceIdiom != .phone else {
+                    return .pageSheet
+                }
+                
+                let referenceViewArea = rootReference.frame.height * rootReference.frame.width
+                
+                let windowArea = window.frame.height * window.frame.width
+                
+                let occupiedRatio = referenceViewArea / windowArea
+                
+                if occupiedRatio <= 0.35 {
+                    return .popover
+                }
+                
+                return .formSheet
+            }()
+            
+            switch $0.modalPresentationStyle {
+            case .popover:
+                $0.popoverPresentationController?.sourceView = rootReference.view
+                
+            default:
+                break
+            }
+        }
+        
+        let populatedReferences = rootReference.flattenedViewHierarchy.filter { $0.view === reference.view }
+        
+        guard let populatedReference = populatedReferences.first else {
+            let rootViewController = makeElementInspectorViewController(with: rootReference, showDismissBarButton: true, selectedPanel: .attributesInspector, delegate: delegate)
+            navigationController.viewControllers = [rootViewController]
+            
+            return navigationController
+        }
+        
+        navigationController.viewControllers = {
+            var array = [UIViewController]()
+            
+            var reference: ViewHierarchyReference? = populatedReference
+            
+            while reference != nil {
+                
+                guard let currentReference = reference else {
+                    break
+                }
+                
+                let viewController = makeElementInspectorViewController(
+                    with: currentReference,
+                    showDismissBarButton: currentReference === rootReference,
+                    selectedPanel: .attributesInspector,
+                    delegate: delegate
+                )
+                
+                array.append(viewController)
+                
+                reference = currentReference.parent
+            }
+            
+            return array.reversed()
+        }()
+        
+        return navigationController
     }
     
     var permittedPopoverArrowDirections: UIPopoverArrowDirection {
@@ -96,7 +145,12 @@ final class ElementInspectorCoordinator: NSObject {
         delegate?.elementInspectorCoordinator(self, didFinishWith: rootReference)
     }
     
-    func makeElementInspectorViewController(with reference: ViewHierarchyReference, showDismissBarButton: Bool, selectedPanel: ElementInspectorPanel?) -> ElementInspectorViewController {
+    static func makeElementInspectorViewController(
+        with reference: ViewHierarchyReference,
+        showDismissBarButton: Bool, selectedPanel: ElementInspectorPanel?,
+        delegate: ElementInspectorViewControllerDelegate
+    ) -> ElementInspectorViewController {
+        
         let viewModel = ElementInspectorViewModel(
             reference: reference,
             showDismissBarButton: showDismissBarButton,
@@ -104,7 +158,7 @@ final class ElementInspectorCoordinator: NSObject {
         )
         
         let viewController = ElementInspectorViewController.create(viewModel: viewModel)
-        viewController.delegate = self
+        viewController.delegate = delegate
         
         return viewController
     }

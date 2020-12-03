@@ -20,7 +20,11 @@ final class ElementInspectorViewController: UIViewController {
     
     private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(host: self)
     
-    private var viewModel: ElementInspectorViewModelProtocol!
+    private var viewModel: ElementInspectorViewModelProtocol! {
+        didSet {
+            title = viewModel.reference.elementName
+        }
+    }
     
     override var preferredContentSize: CGSize {
         didSet {
@@ -89,8 +93,6 @@ final class ElementInspectorViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        title = viewModel.reference.elementName
         
         navigationItem.rightBarButtonItem = viewCode.inspectBarButtonItem
         

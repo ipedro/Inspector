@@ -7,18 +7,12 @@
 
 import UIKit
 
-struct ViewHierarchyReference {
+final class ViewHierarchyReference {
     weak var view: UIView?
     
     let canPresentOnTop: Bool
     
     let canHostInspectorView: Bool
-    
-    private(set) var children: [ViewHierarchyReference] {
-        didSet {
-            deepestAbsoulteLevel = children.map { $0.depth }.max() ?? depth
-        }
-    }
     
     let viewIdentifier: ObjectIdentifier
     
@@ -32,9 +26,13 @@ struct ViewHierarchyReference {
     
     let accessibilityIdentifier: String?
     
-    let isContainer: Bool
+    let parent: ViewHierarchyReference?
     
-    private(set) var deepestAbsoulteLevel: Int
+    private(set) lazy var isContainer: Bool = children.isEmpty == false
+    
+    private(set) lazy var deepestAbsoulteLevel: Int = children.map { $0.depth }.max() ?? depth
+    
+    private(set) lazy var children: [ViewHierarchyReference] = view?.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1, parent: self) } ?? []
     
     var deepestRelativeLevel: Int {
         deepestAbsoulteLevel - depth
@@ -47,14 +45,16 @@ struct ViewHierarchyReference {
                 return
             }
             
-            children = view.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1) }
+            children = view.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1, parent: self) }
         }
     }
     
-    init(root: UIView, depth: Int = 0) {
+    init(root: UIView, depth: Int = 0, parent: ViewHierarchyReference? = nil) {
         self.view = root
         
         self.depth = depth
+        
+        self.parent = parent
         
         viewIdentifier = ObjectIdentifier(root)
         
@@ -71,12 +71,6 @@ struct ViewHierarchyReference {
         accessibilityIdentifier = root.accessibilityIdentifier
         
         canHostInspectorView = root.canHostInspectorView
-        
-        children = root.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1) }
-        
-        isContainer = children.isEmpty == false
-        
-        deepestAbsoulteLevel = children.map { $0.depth }.max() ?? depth
     }
 }
 
@@ -101,6 +95,10 @@ extension ViewHierarchyReference: ViewHierarchyProtocol {
 // MARK: - Hashable
 
 extension ViewHierarchyReference: Hashable {
+    static func == (lhs: ViewHierarchyReference, rhs: ViewHierarchyReference) -> Bool {
+        lhs.hashValue == rhs.hashValue
+    }
+    
     func hash(into hasher: inout Hasher) {
         viewIdentifier.hash(into: &hasher)
     }
