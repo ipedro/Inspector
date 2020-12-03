@@ -80,6 +80,9 @@
 		EB6651A425349FFD005B8FF2 /* ElementInspectorCoordinator+AttributesInspectorViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6651A325349FFD005B8FF2 /* ElementInspectorCoordinator+AttributesInspectorViewControllerDelegate.swift */; };
 		EB6651AE2534A033005B8FF2 /* ElementInspectorCoordinator+ViewHierarchyListViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6651AD2534A032005B8FF2 /* ElementInspectorCoordinator+ViewHierarchyListViewControllerDelegate.swift */; };
 		EB6651B82534A05E005B8FF2 /* ElementInspectorCoordinator+ElementInspectorViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6651B72534A05E005B8FF2 /* ElementInspectorCoordinator+ElementInspectorViewControllerDelegate.swift */; };
+		EB6C0E16257924B5000F92B5 /* MKMapViewSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6C0E15257924B5000F92B5 /* MKMapViewSectionViewModel.swift */; };
+		EB6C0E1D25792AB9000F92B5 /* CaseIterable+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6C0E1C25792AB9000F92B5 /* CaseIterable+CaseIterable.swift */; };
+		EB6C0E2725792AC7000F92B5 /* CaseIterable+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6C0E2625792AC7000F92B5 /* CaseIterable+CustomStringConvertible.swift */; };
 		EB7062872534DC14004693E1 /* UISwitchSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7062862534DC14004693E1 /* UISwitchSectionViewModel.swift */; };
 		EB7062A52534F2BD004693E1 /* ViewHierarchyReferenceThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7062A42534F2BD004693E1 /* ViewHierarchyReferenceThumbnailView.swift */; };
 		EB74DD92252DD3820025FC8D /* ViewHierarchyInspectorItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB74DD91252DD3820025FC8D /* ViewHierarchyInspectorItemViewModel.swift */; };
@@ -334,6 +337,9 @@
 		EB6651A325349FFD005B8FF2 /* ElementInspectorCoordinator+AttributesInspectorViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ElementInspectorCoordinator+AttributesInspectorViewControllerDelegate.swift"; sourceTree = "<group>"; };
 		EB6651AD2534A032005B8FF2 /* ElementInspectorCoordinator+ViewHierarchyListViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ElementInspectorCoordinator+ViewHierarchyListViewControllerDelegate.swift"; sourceTree = "<group>"; };
 		EB6651B72534A05E005B8FF2 /* ElementInspectorCoordinator+ElementInspectorViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ElementInspectorCoordinator+ElementInspectorViewControllerDelegate.swift"; sourceTree = "<group>"; };
+		EB6C0E15257924B5000F92B5 /* MKMapViewSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKMapViewSectionViewModel.swift; sourceTree = "<group>"; };
+		EB6C0E1C25792AB9000F92B5 /* CaseIterable+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+CaseIterable.swift"; sourceTree = "<group>"; };
+		EB6C0E2625792AC7000F92B5 /* CaseIterable+CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+CustomStringConvertible.swift"; sourceTree = "<group>"; };
 		EB7062862534DC14004693E1 /* UISwitchSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISwitchSectionViewModel.swift; sourceTree = "<group>"; };
 		EB7062A42534F2BD004693E1 /* ViewHierarchyReferenceThumbnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyReferenceThumbnailView.swift; sourceTree = "<group>"; };
 		EB74DD91252DD3820025FC8D /* ViewHierarchyInspectorItemViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewHierarchyInspectorItemViewModel.swift; sourceTree = "<group>"; };
@@ -734,6 +740,15 @@
 			path = UIControl;
 			sourceTree = "<group>";
 		};
+		EB6C0E1B25792A9F000F92B5 /* MKMapView */ = {
+			isa = PBXGroup;
+			children = (
+				EB6C0E1C25792AB9000F92B5 /* CaseIterable+CaseIterable.swift */,
+				EB6C0E2625792AC7000F92B5 /* CaseIterable+CustomStringConvertible.swift */,
+			);
+			path = MKMapView;
+			sourceTree = "<group>";
+		};
 		EB80AFB9252B56F100F0ECD5 /* NSObject */ = {
 			isa = PBXGroup;
 			children = (
@@ -786,6 +801,7 @@
 			isa = PBXGroup;
 			children = (
 				EB439C342532F2E1004CCBCA /* UIActivityIndicatorViewSectionViewModel.swift */,
+				EB6C0E15257924B5000F92B5 /* MKMapViewSectionViewModel.swift */,
 				EBD9A66D254CDDEF00BCE4FF /* UIDatePickerSectionViewModel.swift */,
 				EB5ED3CC2533AB3000ABDCF7 /* UIButtonSectionViewModel.swift */,
 				EB439B9C253217D3004CCBCA /* UIControlSectionViewModel.swift */,
@@ -1457,6 +1473,7 @@
 			children = (
 				EBA245D2252881A100D4AFD9 /* Array */,
 				EBA245C32528817A00D4AFD9 /* Layer */,
+				EB6C0E1B25792A9F000F92B5 /* MKMapView */,
 				EB3C4B48252E775B00AFABF8 /* NSDirectionalEdgeInsets */,
 				EB439C112532391B004CCBCA /* NSLayoutConstraint.Axis */,
 				EB80AFB9252B56F100F0ECD5 /* NSObject */,
@@ -1736,12 +1753,14 @@
 				EB06E5752548F20C008637E1 /* NSObject+ClassesForCoder.swift in Sources */,
 				EB048F5C2539D7B300A91D5A /* AttributesInspectorSectionViewModelProtocol.swift in Sources */,
 				EB439B50253213AB004CCBCA /* UISemanticContentAttribute+CaseIterable.swift in Sources */,
+				EB6C0E2725792AC7000F92B5 /* CaseIterable+CustomStringConvertible.swift in Sources */,
 				EBD9A51B254C5A3800BCE4FF /* UIScrollView.KeyboardDismissMode+CustomStringConvertible.swift in Sources */,
 				EBD43235253AF7CA00708C75 /* ViewHierarchyLayersCoordinator+HierarchyLayerActionProtocol.swift in Sources */,
 				EBD9DA0E252FA15500851E23 /* UILabel+Init.swift in Sources */,
 				EB439C0C25323905004CCBCA /* UIStackView.Alignment+CustomStringConvertible.swift in Sources */,
 				EB8171242549BB71001EEA92 /* ElementInspectorPanel.swift in Sources */,
 				OBJ_87 /* Actionable.swift in Sources */,
+				EB6C0E16257924B5000F92B5 /* MKMapViewSectionViewModel.swift in Sources */,
 				EB7062872534DC14004693E1 /* UISwitchSectionViewModel.swift in Sources */,
 				OBJ_88 /* Create.swift in Sources */,
 				EB0B953B25388A2700A35DE4 /* AttributesInspectorViewController+AttributesInspectorSectionViewControllerDelegate.swift in Sources */,
@@ -1759,6 +1778,7 @@
 				EBF88CD5252DA25D00AE9F12 /* ViewHierarchyInspectorViewCode.swift in Sources */,
 				EB7EAAC22529B8B4000001BE /* Action.swift in Sources */,
 				EBD43227253AF4AF00708C75 /* MainThreadOperation.swift in Sources */,
+				EB6C0E1D25792AB9000F92B5 /* CaseIterable+CaseIterable.swift in Sources */,
 				OBJ_91 /* ViewHierarchyProtocol.swift in Sources */,
 				EBE3039B252DB7BC00A8F1C6 /* ViewHierarchyInspectorTableViewCodeCell.swift in Sources */,
 				EB439BF7253238BA004CCBCA /* UIStackView.Distribution+CustomStringConvertible.swift in Sources */,

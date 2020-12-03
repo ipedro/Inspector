@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MapKit
 
 enum AttributesInspectorSection {
     case activityIndicator
@@ -14,6 +15,7 @@ enum AttributesInspectorSection {
     case datePicker
     case imageView
     case label
+    case mapView
     case scrollView
     case segmentedControl
     case slider
@@ -42,6 +44,9 @@ enum AttributesInspectorSection {
             
         case .label:
             return UILabel.self
+            
+        case .mapView:
+            return MKMapView.self
             
         case .scrollView:
             return UIScrollView.self
@@ -89,6 +94,9 @@ enum AttributesInspectorSection {
             
         case .label:
             return UILabelSectionViewModel(view: referenceView)
+            
+        case .mapView:
+            return MKMapViewSectionViewModel(view: referenceView)
             
         case .scrollView:
             return UIScrollViewSectionViewModel(view: referenceView)
