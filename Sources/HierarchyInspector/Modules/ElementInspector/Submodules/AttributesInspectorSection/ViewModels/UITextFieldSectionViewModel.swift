@@ -65,8 +65,8 @@ extension AttributesInspectorSection {
             case .text:
                 return .textField(
                     title: property.rawValue,
-                    value: { textField.text },
-                    placeholder: { textField.text.isNilOrEmpty ? property.rawValue : textField.text }
+                    placeholder: { textField.text.isNilOrEmpty ? property.rawValue : textField.text },
+                    value: { textField.text }
                 ) { text in
                     textField.text = text
                 }
@@ -121,8 +121,8 @@ extension AttributesInspectorSection {
             case .placeholder:
                 return .textField(
                     title: property.rawValue,
-                    value: { textField.placeholder },
-                    placeholder: { textField.placeholder.isNilOrEmpty ? property.rawValue : textField.placeholder }
+                    placeholder: { textField.placeholder.isNilOrEmpty ? property.rawValue : textField.placeholder },
+                    value: { textField.placeholder }
                 ) { placeholder in
                     textField.placeholder = placeholder
                 }
@@ -152,8 +152,8 @@ extension AttributesInspectorSection {
             case .borderStyle:
                 return .segmentedControl(
                     title: property.rawValue,
-                    options: UITextField.BorderStyle.allCases,
                     axis: .vertical,
+                    options: UITextField.BorderStyle.allCases,
                     selectedIndex: { UITextField.BorderStyle.allCases.firstIndex(of: textField.borderStyle) }
                 ) {
                     guard let newIndex = $0 else {

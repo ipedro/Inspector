@@ -33,6 +33,13 @@ enum ViewBinding {
         .margins(top: vertical, leading: horizontal, bottom: vertical, trailing: horizontal)
     }
     
+    static func insets(_ insets: UIEdgeInsets) -> ViewBinding {
+        .margins(top: insets.top, leading: insets.left, bottom: insets.bottom, trailing: insets.right)
+    }
+    
+    static func insets(_ insets: NSDirectionalEdgeInsets) -> ViewBinding {
+        .margins(top: insets.top, leading: insets.leading, bottom: insets.bottom, trailing: insets.trailing)
+    }
 }
 
 extension UIView {

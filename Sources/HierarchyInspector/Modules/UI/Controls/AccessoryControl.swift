@@ -28,9 +28,9 @@ final class AccessoryControl: BaseControl {
         
         layer.cornerRadius = ElementInspector.configuration.appearance.verticalMargins / 2
         
-        setContentHuggingPriority(.required, for: .horizontal)
+        setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
-        setContentHuggingPriority(.required, for: .vertical)
+        setContentHuggingPriority(.defaultHigh, for: .vertical)
         
         backgroundColor = ElementInspector.configuration.appearance.accessoryControlBackgroundColor
     }

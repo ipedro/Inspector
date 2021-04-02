@@ -62,12 +62,13 @@ extension AttributesInspectorSection {
             
             switch property {
                 
-            #warning("TODO: create text view control")
             case .text:
-                return .textField(
+                let originalText = textView.text
+                
+                return .textView(
                     title: property.rawValue,
-                    value: { textView.text },
-                    placeholder: { textView.text.isNilOrEmpty ? property.rawValue : textView.text }
+                    placeholder: { originalText },
+                    value: { textView.text }
                 ) { text in
                     textView.text = text
                 }

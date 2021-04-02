@@ -105,8 +105,8 @@ extension AttributesInspectorSection {
             case .segmentPicker:
                 return .optionsList(
                     title: property.rawValue,
-                    options: segmentsOptions,
                     emptyTitle: "No Segments",
+                    options: segmentsOptions,
                     selectedIndex: { [weak self] in self?.selectedSegment }
                 ) { [weak self] selectedSegment in
                     
@@ -116,6 +116,7 @@ extension AttributesInspectorSection {
             case .segmentTitle:
                 return .textField(
                     title: property.rawValue,
+                    placeholder: { property.rawValue },
                     value: { [weak self] in
                         
                         guard let selectedSegment = self?.selectedSegment else {
@@ -123,8 +124,7 @@ extension AttributesInspectorSection {
                         }
                         
                         return segmentedControl.titleForSegment(at: selectedSegment)
-                    },
-                    placeholder: { property.rawValue }
+                    }
                 ) { [weak self] segmentTitle in
                     
                     guard let selectedSegment = self?.selectedSegment else {

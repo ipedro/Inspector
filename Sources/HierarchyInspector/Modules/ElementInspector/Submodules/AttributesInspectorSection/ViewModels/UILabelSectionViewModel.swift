@@ -52,10 +52,12 @@ extension AttributesInspectorSection {
             switch property {
             
             case .text:
-                return .textField(
+                let originalText = label.text
+                
+                return .textView(
                     title: property.rawValue,
-                    value: { label.text },
-                    placeholder: { label.text.isNilOrEmpty ? property.rawValue : label.text }
+                    placeholder: { originalText },
+                    value: { label.text }
                 ) { text in
                     label.text = text
                 }

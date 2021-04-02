@@ -31,7 +31,7 @@ class BaseControl: UIControl {
         axis: .horizontal,
         spacing: spacing
     ).then {
-        installView($0)
+        installView($0, priority: .required)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

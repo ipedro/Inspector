@@ -129,7 +129,7 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         isOn: isOnProvider()
                     )
                     
-                case let .segmentedControl(title, options, axis, selectedIndexProvider, _):
+                case let .segmentedControl(title, axis, options, selectedIndexProvider, _):
                     return SegmentedControl(
                         title: title,
                         options: options,
@@ -138,7 +138,7 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         $0.axis = axis
                     }
                     
-                case let .optionsList(title, options, axis, emptyTitle, selectedIndexProvider, _):
+                case let .optionsList(title, emptyTitle, axis, options, selectedIndexProvider, _):
                     return OptionListControl(
                         title: title,
                         options: options,
@@ -148,6 +148,13 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         $0.axis = axis
                         $0.delegate = self
                     }
+                    
+                case let .textView(title, placeholderProvider, stringProvider, handler):
+                    return TextViewControl(
+                        title: title,
+                        value: stringProvider(),
+                        placeholder: placeholderProvider()
+                    )
                 }
             }()
             
@@ -204,7 +211,10 @@ extension AttributesInspectorSectionViewController {
                     
                 case let (.textField(_, _, _, handler), textFieldControl as TextFieldControl):
                     handler?(textFieldControl.value)
-                    
+                
+                case let (.textView(_, _, _, handler), textViewControl as TextViewControl):
+                    handler?(textViewControl.value)
+                
                 case let (.imagePicker(_, _, handler), imagePicker as ImagePreviewControl):
                     handler?(imagePicker.selectedImage)
                     
@@ -218,6 +228,7 @@ extension AttributesInspectorSectionViewController {
                      (.segmentedControl, _),
                      (.optionsList, _),
                      (.textField, _),
+                     (.textView, _),
                      (.imagePicker, _):
                     assertionFailure("shouldn't happen")
                     break
@@ -245,29 +256,41 @@ extension AttributesInspectorSectionViewController {
             
             switch (property, inputView) {
             
-            case let (.stepper(_, valueProvider, rangeProvider, stepValueProvider, _, _), stepperControl as StepperControl):
+            case let (.stepper(title, valueProvider, rangeProvider, stepValueProvider, _, _), stepperControl as StepperControl):
                 stepperControl.value     = valueProvider()
+                stepperControl.title     = title
                 stepperControl.range     = rangeProvider()
                 stepperControl.stepValue = stepValueProvider()
                 
-            case let (.colorPicker(_, selectedColorProvider, _), colorPicker as ColorPreviewControl):
+            case let (.colorPicker(title, selectedColorProvider, _), colorPicker as ColorPreviewControl):
                 colorPicker.selectedColor = selectedColorProvider()
+                colorPicker.title = title
                 
-            case let (.imagePicker(_, imageProvider, _), imagePicker as ImagePreviewControl):
+            case let (.imagePicker(title, imageProvider, _), imagePicker as ImagePreviewControl):
                 imagePicker.selectedImage = imageProvider()
+                imagePicker.title = title
                 
-            case let (.toggleButton(_, isOnProvider, _), toggleControl as ToggleControl):
+            case let (.toggleButton(title, isOnProvider, _), toggleControl as ToggleControl):
                 toggleControl.isOn = isOnProvider()
+                toggleControl.title = title
                 
-            case let (.segmentedControl(_, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
+            case let (.segmentedControl(title, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
                 segmentedControl.selectedIndex = selectedIndexProvider()
+                segmentedControl.title = title
                 
-            case let (.optionsList(_, _, _, _, selectedIndexProvider, _), optionSelector as OptionListControl):
+            case let (.optionsList(title, _, _, _, selectedIndexProvider, _), optionSelector as OptionListControl):
                 optionSelector.selectedIndex = selectedIndexProvider()
+                optionSelector.title = title
                 
-            case let (.textField(_, valueProvider, placeholderProvider, _), textFieldControl as TextFieldControl):
+            case let (.textField(title, valueProvider, placeholderProvider, _), textFieldControl as TextFieldControl):
                 textFieldControl.placeholder = placeholderProvider()
                 textFieldControl.value = valueProvider()
+                textFieldControl.title = title
+                
+            case let (.textView(title, placeholderProvider, valueProvider, _), textViewControl as TextViewControl):
+                textViewControl.placeholder = placeholderProvider()
+                textViewControl.value = valueProvider()
+                textViewControl.title = title
                 
             case (.separator, _),
                  (.group, _):
@@ -279,6 +302,7 @@ extension AttributesInspectorSectionViewController {
                  (.segmentedControl, _),
                  (.optionsList, _),
                  (.textField, _),
+                 (.textView, _),
                  (.imagePicker, _):
                 assertionFailure("shouldn't happen")
                 break

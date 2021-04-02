@@ -106,8 +106,8 @@ extension AttributesInspectorSection {
             case .titleText:
                 return .textField(
                     title: property.rawValue,
-                    value: { button.title(for: self.selectedControlState) },
-                    placeholder: { button.title(for: self.selectedControlState) ?? property.rawValue }
+                    placeholder: { button.title(for: self.selectedControlState) ?? property.rawValue },
+                    value: { button.title(for: self.selectedControlState) }
                 ) { title in
                     button.setTitle(title, for: self.selectedControlState)
                 }
