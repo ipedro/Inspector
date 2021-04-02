@@ -81,6 +81,10 @@ final class AttributesInspectorViewCode: BaseView {
             window.addGestureRecognizer(hoverGestureRecognizer)
             hoverGestureRecognizer.isEnabled = true
         }
+        
+        if #available(iOS 14.0, *) {
+            hoverGestureRecognizer.isEnabled = ProcessInfo().isiOSAppOnMac == false
+        }
     }
     
     @available(iOS 13.0, *)
