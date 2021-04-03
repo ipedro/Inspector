@@ -161,6 +161,8 @@ extension ViewController: UIScrollViewDelegate {
     }
 }
 
+// MARK: - HierarchyInspectorKeyCommandPresentable
+
 extension ViewController: HierarchyInspectorKeyCommandPresentable {
     var hirearchyInspectorKeyCommandsSelector: Selector? {
         #selector(keyCommand(_:))
@@ -182,4 +184,58 @@ extension ViewController: HierarchyInspectorKeyCommandPresentable {
     func keyCommand(_ sender: Any) {
         hierarchyInspectorKeyCommandHandler(sender)
     }
+}
+
+// MARK: - UIDatePickerStyle CaseIterable
+
+@available(iOS 13.4, *)
+extension UIDatePickerStyle: CaseIterable {
+    public typealias AllCases = [UIDatePickerStyle]
+    
+    public static let allCases: [UIDatePickerStyle] = {
+        #if swift(>=5.3)
+        if #available(iOS 14.0, *) {
+            return [
+                .automatic,
+                .wheels,
+                .compact,
+                .inline
+            ]
+        }
+        #endif
+        return [
+            .automatic,
+            .wheels,
+            .compact
+        ]
+    }()
+}
+
+// MARK: - UIDatePickerStyle CustomStringConvertible
+@available(iOS 13.4, *)
+extension UIDatePickerStyle: CustomStringConvertible {
+    
+    public var description: String {
+        switch self {
+        
+        case .automatic:
+            return "Automatic"
+            
+        case .wheels:
+            return "Wheels"
+        
+        #if swift(>=5.3)
+        case .compact:
+            return "Compact"
+        
+        case .inline:
+            return "Inline"
+        #endif
+            
+        @unknown default:
+            return "Unknown"
+            
+        }
+    }
+    
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum ElementInspectorPanel: Int, CaseIterable {
+enum ElementInspectorPanel: Int, Swift.CaseIterable {
     case attributesInspector
     case sizeInspector
     case viewHierarchyInspector

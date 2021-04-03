@@ -53,6 +53,7 @@
 		EB339734257D4CB200413940 /* AttributesInspectorSectionProperty+Stepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB339733257D4CB200413940 /* AttributesInspectorSectionProperty+Stepper.swift */; };
 		EB33973E257D4CF900413940 /* AttributesInspectorSectionProperty+TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB33973D257D4CF900413940 /* AttributesInspectorSectionProperty+TextView.swift */; };
 		EB339748257D4D6E00413940 /* AttributesInspectorSectionProperty+Typealiases.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB339747257D4D6E00413940 /* AttributesInspectorSectionProperty+Typealiases.swift */; };
+		EB36614A261849EF00BFC5B3 /* Icon.Glyph.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB366149261849EF00BFC5B3 /* Icon.Glyph.swift */; };
 		EB3661542618606C00BFC5B3 /* CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661532618606C00BFC5B3 /* CustomStringConvertible.swift */; };
 		EB3661692618646E00BFC5B3 /* CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661682618646E00BFC5B3 /* CaseIterable.swift */; };
 		EB3661792618694B00BFC5B3 /* UIDatePicker.Mode+CaseIterable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661782618694B00BFC5B3 /* UIDatePicker.Mode+CaseIterable.swift */; };
@@ -321,6 +322,7 @@
 		EB339733257D4CB200413940 /* AttributesInspectorSectionProperty+Stepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributesInspectorSectionProperty+Stepper.swift"; sourceTree = "<group>"; };
 		EB33973D257D4CF900413940 /* AttributesInspectorSectionProperty+TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributesInspectorSectionProperty+TextView.swift"; sourceTree = "<group>"; };
 		EB339747257D4D6E00413940 /* AttributesInspectorSectionProperty+Typealiases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributesInspectorSectionProperty+Typealiases.swift"; sourceTree = "<group>"; };
+		EB366149261849EF00BFC5B3 /* Icon.Glyph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icon.Glyph.swift; sourceTree = "<group>"; };
 		EB3661532618606C00BFC5B3 /* CustomStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStringConvertible.swift; sourceTree = "<group>"; };
 		EB3661682618646E00BFC5B3 /* CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaseIterable.swift; sourceTree = "<group>"; };
 		EB3661782618694B00BFC5B3 /* UIDatePicker.Mode+CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDatePicker.Mode+CaseIterable.swift"; sourceTree = "<group>"; };
@@ -761,17 +763,17 @@
 			path = UIActivityIndicatorView.Style;
 			sourceTree = "<group>";
 		};
-		EB5DB399252D03A100CE0398 /* ViewCodes */ = {
+		EB5DB399252D03A100CE0398 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_46 /* LayerViewComponent.swift */,
-				OBJ_47 /* LoaderView.swift */,
 				OBJ_44 /* EmptyView.swift */,
 				OBJ_45 /* HighlightView.swift */,
 				OBJ_48 /* LayerView.swift */,
+				OBJ_46 /* LayerViewComponent.swift */,
+				OBJ_47 /* LoaderView.swift */,
 				OBJ_49 /* WireframeView.swift */,
 			);
-			path = ViewCodes;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		EB5DB3A2252D09C300CE0398 /* UIStackView */ = {
@@ -821,14 +823,14 @@
 			path = Enums;
 			sourceTree = "<group>";
 		};
-		EB89621D254AFC3A00E632E3 /* SizeInspectorView */ = {
+		EB89621D254AFC3A00E632E3 /* SizeInspectorViews */ = {
 			isa = PBXGroup;
 			children = (
 				EB896228254AFD5300E632E3 /* LengthMeasurementView.swift */,
 				EB89621E254AFC6600E632E3 /* LengthMeasurementView+ArrowView.swift */,
 				EB896252254B0E7A00E632E3 /* SizeInspectorView.swift */,
 			);
-			path = SizeInspectorView;
+			path = SizeInspectorViews;
 			sourceTree = "<group>";
 		};
 		EB943FAC252C864A0007A611 /* SFSafariViewController */ = {
@@ -844,7 +846,7 @@
 			children = (
 				EBAC35432530E39800A992F5 /* Enums */,
 				EB0B95542538923800A35DE4 /* Protocols */,
-				EB97295F2539C51D004630FC /* ViewCodes */,
+				EB97295F2539C51D004630FC /* Views */,
 				EB048F232539D5DB00A91D5A /* ViewControllers */,
 				EB97295A2539C50E004630FC /* ViewModels */,
 			);
@@ -873,12 +875,12 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
-		EB97295F2539C51D004630FC /* ViewCodes */ = {
+		EB97295F2539C51D004630FC /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				EBAC353D2530E36400A992F5 /* AttributesInspectorSectionViewCode.swift */,
 			);
-			path = ViewCodes;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		EB9DD3D2253CC8530054C8BA /* UIImage */ = {
@@ -889,18 +891,18 @@
 			path = UIImage;
 			sourceTree = "<group>";
 		};
-		EB9ED73F252E4E3800BF7D60 /* UI */ = {
+		EB9ED73F252E4E3800BF7D60 /* CommonUI */ = {
 			isa = PBXGroup;
 			children = (
-				EBC524B8252F60070054C6AA /* Base */,
+				EBC524B8252F60070054C6AA /* Bases */,
 				EBD9D9DF252F6E6D00851E23 /* Controls */,
 				EBB06A542548D17B0036B299 /* Enums */,
 				EBD9DA47252FC66200851E23 /* SectionHeader */,
-				EBD9DA17252FA36900851E23 /* Separator */,
-				EB89621D254AFC3A00E632E3 /* SizeInspectorView */,
+				EBD9DA17252FA36900851E23 /* SeparatorView */,
+				EB89621D254AFC3A00E632E3 /* SizeInspectorViews */,
 				EB262A29253A5A1E00AE43AD /* ViewHierarchyReference */,
 			);
-			path = UI;
+			path = CommonUI;
 			sourceTree = "<group>";
 		};
 		EBA245C32528817A00D4AFD9 /* Layer */ = {
@@ -979,19 +981,19 @@
 			path = Manager;
 			sourceTree = "<group>";
 		};
-		EBA7D9BA2530846000496F23 /* ViewHierarchyLayers */ = {
+		EBA7D9BA2530846000496F23 /* HierarchyLayers */ = {
 			isa = PBXGroup;
 			children = (
 				EB2629ED253A533E00AE43AD /* Coordinators */,
-				EB5DB399252D03A100CE0398 /* ViewCodes */,
+				EB5DB399252D03A100CE0398 /* Views */,
 			);
-			path = ViewHierarchyLayers;
+			path = HierarchyLayers;
 			sourceTree = "<group>";
 		};
 		EBAC34F42530DDF300A992F5 /* ViewHierarchyInspector */ = {
 			isa = PBXGroup;
 			children = (
-				EBF88CD3252DA25400AE9F12 /* ViewCodes */,
+				EBF88CD3252DA25400AE9F12 /* Views */,
 				EBF88CBD252DA1BB00AE9F12 /* ViewControllers */,
 				EBF88CCC252DA24400AE9F12 /* ViewModels */,
 			);
@@ -1001,7 +1003,7 @@
 		EBAC35022530DE3700A992F5 /* AttributesInspector */ = {
 			isa = PBXGroup;
 			children = (
-				EBF3295A2531109600EABA17 /* ViewCodes */,
+				EBF3295A2531109600EABA17 /* Views */,
 				EBF3295F2531109C00EABA17 /* ViewControllers */,
 				EBF32964253110A100EABA17 /* ViewModels */,
 			);
@@ -1027,12 +1029,12 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
-		EBAC35AB2531091800A992F5 /* ViewCodes */ = {
+		EBAC35AB2531091800A992F5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				EBAC359B2531024E00A992F5 /* ElementInspectorViewCode.swift */,
 			);
-			path = ViewCodes;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		EBB06A542548D17B0036B299 /* Enums */ = {
@@ -1063,14 +1065,14 @@
 			path = OptionSelector;
 			sourceTree = "<group>";
 		};
-		EBC524B8252F60070054C6AA /* Base */ = {
+		EBC524B8252F60070054C6AA /* Bases */ = {
 			isa = PBXGroup;
 			children = (
 				EBC524AA252F5F2F0054C6AA /* BaseControl.swift */,
 				EB9ED74A252E4F5900BF7D60 /* BaseView.swift */,
 				EB5ED3B425339CA000ABDCF7 /* BaseFormControl.swift */,
 			);
-			path = Base;
+			path = Bases;
 			sourceTree = "<group>";
 		};
 		EBC92E142533266600D7189A /* ViewHierarchyReference */ = {
@@ -1289,12 +1291,12 @@
 			path = UILabel;
 			sourceTree = "<group>";
 		};
-		EBD9DA17252FA36900851E23 /* Separator */ = {
+		EBD9DA17252FA36900851E23 /* SeparatorView */ = {
 			isa = PBXGroup;
 			children = (
 				EBD9DA18252FA37500851E23 /* SeparatorView.swift */,
 			);
-			path = Separator;
+			path = SeparatorView;
 			sourceTree = "<group>";
 		};
 		EBD9DA24252FB4D500851E23 /* UIColor */ = {
@@ -1319,18 +1321,19 @@
 			children = (
 				OBJ_30 /* Texts.swift */,
 				EBA7D9D325308FEC00496F23 /* Icon.swift */,
+				EB366149261849EF00BFC5B3 /* Icon.Glyph.swift */,
 				EBD9DA4D2530414700851E23 /* IconKit.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		EBF3295A2531109600EABA17 /* ViewCodes */ = {
+		EBF3295A2531109600EABA17 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				EB66519125349327005B8FF2 /* AttributesInspectorViewThumbnailSectionView.swift */,
 				EBAC35872530FE4C00A992F5 /* AttributesInspectorViewCode.swift */,
 			);
-			path = ViewCodes;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		EBF3295F2531109C00EABA17 /* ViewControllers */ = {
@@ -1361,9 +1364,10 @@
 		EBF88CBA252DA18300AE9F12 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				EB9ED73F252E4E3800BF7D60 /* UI */,
-				EBA7D9BA2530846000496F23 /* ViewHierarchyLayers */,
+				EB9ED73F252E4E3800BF7D60 /* CommonUI */,
 				EBF88CBB252DA18D00AE9F12 /* ElementInspector */,
+				EBA7D9BA2530846000496F23 /* HierarchyLayers */,
+				EB366122261785E800BFC5B3 /* HierarchySearch */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -1376,7 +1380,7 @@
 				EB8171222549BB64001EEA92 /* Enums */,
 				EB31665125384DA5001A4A80 /* Protocols */,
 				EB3166352537556A001A4A80 /* Submodules */,
-				EBAC35AB2531091800A992F5 /* ViewCodes */,
+				EBAC35AB2531091800A992F5 /* Views */,
 				EBAC35A62531091000A992F5 /* ViewControllers */,
 				EBF3296D2531144700EABA17 /* ViewModel */,
 			);
@@ -1413,13 +1417,13 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
-		EBF88CD3252DA25400AE9F12 /* ViewCodes */ = {
+		EBF88CD3252DA25400AE9F12 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				EBE3039A252DB7BC00A8F1C6 /* ViewHierarchyInspectorTableViewCodeCell.swift */,
 				EBF88CD4252DA25D00AE9F12 /* ViewHierarchyInspectorViewCode.swift */,
 			);
-			path = ViewCodes;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		OBJ_26 /* Models */ = {
@@ -1850,6 +1854,7 @@
 				EB439BF7253238BA004CCBCA /* UIStackView.Distribution+CustomStringConvertible.swift in Sources */,
 				EBC045AF2531F68000C311E6 /* OptionSelectorViewController.swift in Sources */,
 				EBD43249253AF85F00708C75 /* ViewHierarchyLayersCoordinator+LayerReferenceManagerProtocol.swift in Sources */,
+				EB36614A261849EF00BFC5B3 /* Icon.Glyph.swift in Sources */,
 				OBJ_92 /* LayerManagerProtocol.swift in Sources */,
 				EBD9A5F6254CA4D000BCE4FF /* UITextField.BorderStyle+CaseIterable.swift in Sources */,
 				OBJ_93 /* HierarchyInspectorPresentable.swift in Sources */,

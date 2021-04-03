@@ -128,7 +128,7 @@ enum AttributesInspectorSection {
 
 // MARK: - CaseIterable
 
-extension AttributesInspectorSection: CaseIterable {
+extension AttributesInspectorSection: Swift.CaseIterable {
     
     static func allCases(matching object: NSObject) -> [AttributesInspectorSection] {
         allCases.matching(object)

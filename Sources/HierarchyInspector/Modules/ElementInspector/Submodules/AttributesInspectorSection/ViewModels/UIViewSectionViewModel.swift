@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
     
     final class UIViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: String, CaseIterable {
+        enum Property: String, Swift.CaseIterable {
             case contentMode                = "Content Mode"
             case semanticContentAttribute   = "Semantic Content"
             case tag                        = "Tag"

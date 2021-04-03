@@ -1960,6 +1960,42 @@ class IconKit: NSObject {
         context.restoreGState()
     }
     
+    class func drawSearch(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
+        //// General Declarations
+        let context = UIGraphicsGetCurrentContext()!
+        
+        //// Resize to Target Frame
+        context.saveGState()
+        let resizedFrame: CGRect = resizing.apply(rect: CGRect(x: 0, y: 0, width: 19, height: 19), target: targetFrame)
+        context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
+        context.scaleBy(x: resizedFrame.width / 19, y: resizedFrame.height / 19)
+        
+        //// Bezier Drawing
+        let bezierPath = UIBezierPath()
+        bezierPath.move(to: CGPoint(x: 7.71, y: 15.27))
+        bezierPath.addCurve(to: CGPoint(x: 12.26, y: 13.78), controlPoint1: CGPoint(x: 9.41, y: 15.27), controlPoint2: CGPoint(x: 10.98, y: 14.71))
+        bezierPath.addLine(to: CGPoint(x: 17.22, y: 18.71))
+        bezierPath.addCurve(to: CGPoint(x: 17.97, y: 19), controlPoint1: CGPoint(x: 17.43, y: 18.9), controlPoint2: CGPoint(x: 17.7, y: 19))
+        bezierPath.addCurve(to: CGPoint(x: 19, y: 17.97), controlPoint1: CGPoint(x: 18.57, y: 19), controlPoint2: CGPoint(x: 19, y: 18.54))
+        bezierPath.addCurve(to: CGPoint(x: 18.7, y: 17.24), controlPoint1: CGPoint(x: 19, y: 17.7), controlPoint2: CGPoint(x: 18.91, y: 17.43))
+        bezierPath.addLine(to: CGPoint(x: 13.77, y: 12.33))
+        bezierPath.addCurve(to: CGPoint(x: 15.4, y: 7.64), controlPoint1: CGPoint(x: 14.8, y: 11.03), controlPoint2: CGPoint(x: 15.4, y: 9.4))
+        bezierPath.addCurve(to: CGPoint(x: 7.71, y: 0), controlPoint1: CGPoint(x: 15.4, y: 3.43), controlPoint2: CGPoint(x: 11.95, y: 0))
+        bezierPath.addCurve(to: CGPoint(x: 0, y: 7.64), controlPoint1: CGPoint(x: 3.47, y: 0), controlPoint2: CGPoint(x: 0, y: 3.42))
+        bezierPath.addCurve(to: CGPoint(x: 7.71, y: 15.27), controlPoint1: CGPoint(x: 0, y: 11.84), controlPoint2: CGPoint(x: 3.47, y: 15.27))
+        bezierPath.close()
+        bezierPath.move(to: CGPoint(x: 7.71, y: 13.8))
+        bezierPath.addCurve(to: CGPoint(x: 1.47, y: 7.64), controlPoint1: CGPoint(x: 4.29, y: 13.8), controlPoint2: CGPoint(x: 1.47, y: 11.02))
+        bezierPath.addCurve(to: CGPoint(x: 7.71, y: 1.47), controlPoint1: CGPoint(x: 1.47, y: 4.25), controlPoint2: CGPoint(x: 4.29, y: 1.47))
+        bezierPath.addCurve(to: CGPoint(x: 13.93, y: 7.64), controlPoint1: CGPoint(x: 11.12, y: 1.47), controlPoint2: CGPoint(x: 13.93, y: 4.25))
+        bezierPath.addCurve(to: CGPoint(x: 7.71, y: 13.8), controlPoint1: CGPoint(x: 13.93, y: 11.02), controlPoint2: CGPoint(x: 11.12, y: 13.8))
+        bezierPath.close()
+        color.setFill()
+        bezierPath.fill()
+        
+        context.restoreGState()
+
+    }
     
     //MARK: - Canvas Images
     
@@ -2559,6 +2595,23 @@ class IconKit: NSObject {
         return image
     }
     
+    class func imageOfSearch(_ size: CGSize = CGSize(width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) -> UIImage {
+        struct LocalCache {
+            static var image: UIImage!
+        }
+        if LocalCache.image != nil {
+            return LocalCache.image
+        }
+        var image: UIImage
+        
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        IconKit.drawSearch(frame: CGRect(origin: .zero, size: size), resizing: resizing)
+        image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        LocalCache.image = image
+        return image
+    }
     
     //MARK: - Resizing Behavior
     

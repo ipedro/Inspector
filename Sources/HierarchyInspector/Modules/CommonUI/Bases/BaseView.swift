@@ -26,6 +26,8 @@ class BaseView: UIView {
     // MARK: - View Lifecycle
     
     func setup() {
+        preservesSuperviewLayoutMargins = true
+        
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             layer.cornerCurve = .continuous

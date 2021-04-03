@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
 
     final class UISliderSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: String, CaseIterable {
+        enum Property: String, Swift.CaseIterable {
             case value                 = "Value"
             case minimumValue          = "Minimum"
             case maximumValue          = "Maximum"

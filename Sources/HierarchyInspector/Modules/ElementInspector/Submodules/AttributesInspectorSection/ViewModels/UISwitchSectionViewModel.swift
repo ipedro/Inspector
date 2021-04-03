@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
         
     final class UISwitchSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        private enum Property: String, CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case title          = "Title"
             case preferredStyle = "Preferred Style"
             case isOn           = "State"

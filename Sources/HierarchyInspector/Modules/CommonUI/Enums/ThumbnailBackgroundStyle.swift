@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum ThumbnailBackgroundStyle: Int, CaseIterable {
+enum ThumbnailBackgroundStyle: Int, Swift.CaseIterable {
     case light, medium, dark
     
     var color: UIColor {

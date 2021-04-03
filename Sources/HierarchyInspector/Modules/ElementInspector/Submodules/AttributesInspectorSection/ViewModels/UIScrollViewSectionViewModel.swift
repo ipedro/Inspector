@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
     
     final class UIScrollViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: String, CaseIterable {
+        enum Property: String, Swift.CaseIterable {
             case groupIndicators                = "Indicators"
             case indicatorStyle                 = "Indicator Style"
             case showsHorizontalScrollIndicator = "Show Horizontal Indicator"

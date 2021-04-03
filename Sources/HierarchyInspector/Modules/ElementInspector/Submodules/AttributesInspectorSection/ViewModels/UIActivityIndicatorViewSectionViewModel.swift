@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
     
     final class UIActivityIndicatorViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: String, CaseIterable {
+        enum Property: String, Swift.CaseIterable {
             case style            = "Style"
             case color            = "Color"
             case groupBehavior    = "Behavior"

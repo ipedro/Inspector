@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
 
     final class UISegmentedControlSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        private enum Property: String, CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case selectedSegmentTintColor = "Selected Tint"
             case isMomentary              = "Momentary"
             case isSpringLoaded           = "Spring Loaded"

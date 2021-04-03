@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
     
     final class MKMapViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: String, CaseIterable {
+        enum Property: String, Swift.CaseIterable {
             case type                  = "Type"
             case groupAllows           = "Allows"
             case isZoomEnabled         = "Zooming"

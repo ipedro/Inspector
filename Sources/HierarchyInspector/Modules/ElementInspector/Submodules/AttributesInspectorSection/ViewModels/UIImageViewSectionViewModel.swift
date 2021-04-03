@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
 
     final class UIImageViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        private enum Property: String, CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case image                                               = "Image"
             case highlightedImage                                    = "Highlighted Image"
             case separator                                           = "Separator"

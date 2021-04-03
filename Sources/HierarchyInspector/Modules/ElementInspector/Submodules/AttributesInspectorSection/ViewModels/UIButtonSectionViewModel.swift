@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
     
     final class UIButtonSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: String, CaseIterable {
+        enum Property: String, Swift.CaseIterable {
             case type                                                = "Type"
             case fontName                                            = "Font Name"
             case fontPointSize                                       = "Font Point Size"

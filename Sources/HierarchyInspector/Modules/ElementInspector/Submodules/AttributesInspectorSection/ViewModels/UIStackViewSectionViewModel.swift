@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
         
     final class UIStackViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: String, CaseIterable {
+        enum Property: String, Swift.CaseIterable {
             case axis                          = "Axis"
             case alignment                     = "Alignment"
             case distribution                  = "Distribution"

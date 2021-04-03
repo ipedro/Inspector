@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
 
     final class UIControlSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        private enum Property: String, CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case contentHorizontalAlignment = "Horizontal Alignment"
             case contentVerticalAlignment   = "Vertical Alignment"
             case groupState                 = "State"

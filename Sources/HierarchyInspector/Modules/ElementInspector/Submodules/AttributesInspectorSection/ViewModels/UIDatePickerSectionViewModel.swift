@@ -11,7 +11,7 @@ extension AttributesInspectorSection {
     
     final class UIDatePickerSectionViewModel: AttributesInspectorSectionViewModelProtocol {
         
-        enum Property: String, CaseIterable {
+        enum Property: String, Swift.CaseIterable {
             case datePickerStyle = "Style"
             case datePickerMode  = "Mode"
             case locale          = "Locale"
@@ -119,92 +119,4 @@ extension AttributesInspectorSection {
             
         }
     }
-}
-
-extension UIDatePicker.Mode: CaseIterable {
-    public typealias AllCases = [UIDatePicker.Mode]
-    
-    public static let allCases: [UIDatePicker.Mode] = [
-        .time,
-        .date,
-        .dateAndTime,
-        .countDownTimer
-    ]
-    
-}
-
-extension UIDatePicker.Mode: CustomStringConvertible {
-    
-    public var description: String {
-        switch self {
-        
-        case .time:
-            return "Time"
-            
-        case .date:
-            return "Date"
-            
-        case .dateAndTime:
-            return "Date And Time"
-            
-        case .countDownTimer:
-            return "Count Down Timer"
-            
-        @unknown default:
-            return "Unknown"
-            
-        }
-    }
-    
-}
-
-@available(iOS 13.4, *)
-extension UIDatePickerStyle: CaseIterable {
-    public typealias AllCases = [UIDatePickerStyle]
-    
-    public static var allCases: [UIDatePickerStyle] {
-        #if swift(>=5.3)
-        if #available(iOS 14.0, *) {
-            return [
-                .automatic,
-                .wheels,
-                .compact,
-                .inline
-            ]
-        }
-        #endif
-        return [
-            .automatic,
-            .wheels,
-            .compact
-        ]
-    }
-}
-
-@available(iOS 13.4, *)
-extension UIDatePickerStyle: CustomStringConvertible {
-    
-    public var description: String {
-        switch self {
-        
-        case .automatic:
-            return "Automatic"
-            
-        case .wheels:
-            return "Wheels"
-        
-        #if swift(>=5.3)
-        case .compact:
-            return "Compact"
-        
-        case .inline:
-            return "Inline"
-        #endif
-            
-        @unknown default:
-            return "Unknown"
-            
-        }
-    }
-    
 }

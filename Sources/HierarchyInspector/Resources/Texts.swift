@@ -25,7 +25,7 @@ enum Texts {
     
     static let hideVisibleLayers = "Hide visible layers"
     
-    static let hierarchyInspector = "🧬\nHierarchy Inspector"
+    static let hierarchyInspector = "Hierarchy Inspector"
     
     static let noLayers = "No Layers"
     
