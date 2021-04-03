@@ -1,5 +1,5 @@
 //
-//  ViewHierarchyInspectorViewController.swift
+//  ViewHierarchyPanelViewController+UITableViewDelegate.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 07.10.20.
@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - UITableViewDelegate
 
-extension ViewHierarchyInspectorViewController: UITableViewDelegate {
+extension ElementInspector.ViewHierarchyPanelViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
             return false
@@ -55,9 +55,9 @@ extension ViewHierarchyInspectorViewController: UITableViewDelegate {
 
 // MARK: - Helpers
 
-private extension ViewHierarchyInspectorViewController {
+private extension ElementInspector.ViewHierarchyPanelViewController {
     
-    func updateTableView(_ indexPath: IndexPath, with actions: [ViewHierarchyInspectorAction]) {
+    func updateTableView(_ indexPath: IndexPath, with actions: [ElementInspector.ViewHierarchyInspectorAction]) {
         guard actions.isEmpty == false else {
             return
         }

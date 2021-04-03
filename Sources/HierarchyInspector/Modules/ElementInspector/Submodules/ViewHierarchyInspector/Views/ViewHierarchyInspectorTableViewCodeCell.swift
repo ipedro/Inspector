@@ -19,7 +19,7 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var viewModel: ViewHierarchyInspectorItemViewModelProtocol? {
+    var viewModel: ElementInspectorViewHierarchyPanelViewModelProtocol? {
         didSet {
             
             // Name

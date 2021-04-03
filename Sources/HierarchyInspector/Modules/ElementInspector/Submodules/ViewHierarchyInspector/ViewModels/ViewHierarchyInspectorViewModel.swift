@@ -7,19 +7,6 @@
 
 import UIKit
 
-enum ViewHierarchyInspectorAction {
-    case inserted([IndexPath])
-    case deleted([IndexPath])
-    
-    var lastIndexPath: IndexPath? {
-        switch self {
-            case let .inserted(indexPaths),
-                 let .deleted(indexPaths):
-                return indexPaths.last
-        }
-    }
-}
-
 protocol ViewHierarchyInspectorViewModelDelegate: AnyObject {
     func viewHierarchyListViewModelDidLoad(_ viewModel: ViewHierarchyInspectorViewModelProtocol)
 }
@@ -33,12 +20,12 @@ protocol ViewHierarchyInspectorViewModelProtocol {
     
     var numberOfRows: Int { get }
     
-    func itemViewModel(for indexPath: IndexPath) -> ViewHierarchyInspectorItemViewModelProtocol?
+    func itemViewModel(for indexPath: IndexPath) -> ElementInspectorViewHierarchyPanelViewModelProtocol?
     
     /// Toggle if a container displays its subviews or hides them.
     /// - Parameter indexPath: row with
     /// - Returns: Actions related to affected index paths
-    func toggleContainer(at indexPath: IndexPath) -> [ViewHierarchyInspectorAction]
+    func toggleContainer(at indexPath: IndexPath) -> [ElementInspector.ViewHierarchyInspectorAction]
     
     func clearCachedThumbnail(for indexPath: IndexPath)
     
@@ -50,7 +37,7 @@ final class ViewHierarchyInspectorViewModel: NSObject {
     
     let rootReference: ViewHierarchyReference
     
-    private(set) var childViewModels: [ViewHierarchyInspectorItemViewModel] {
+    private(set) var childViewModels: [ElementInspector.ViewHierarchyPanelViewModel] {
         didSet {
             updateVisibleChildViews()
         }
@@ -58,24 +45,24 @@ final class ViewHierarchyInspectorViewModel: NSObject {
     
     private static func makeViewModels(
         reference: ViewHierarchyReference,
-        parent: ViewHierarchyInspectorItemViewModel?,
+        parent: ElementInspector.ViewHierarchyPanelViewModel?,
         rootDepth: Int
-    ) -> [ViewHierarchyInspectorItemViewModel] {
-        let viewModel = ViewHierarchyInspectorItemViewModel(
+    ) -> [ElementInspector.ViewHierarchyPanelViewModel] {
+        let viewModel = ElementInspector.ViewHierarchyPanelViewModel(
             reference: reference,
             parent: parent,
             rootDepth: rootDepth,
             isCollapsed: reference.depth > rootDepth + 1
         )
         
-        let childrenViewModels: [[ViewHierarchyInspectorItemViewModel]] = reference.children.map {
+        let childrenViewModels: [[ElementInspector.ViewHierarchyPanelViewModel]] = reference.children.map {
             makeViewModels(reference: $0, parent: viewModel, rootDepth: rootDepth)
         }
         
         return [viewModel] + childrenViewModels.flatMap { $0 }
     }
     
-    private lazy var visibleChildViewModels: [ViewHierarchyInspectorItemViewModel] = []
+    private lazy var visibleChildViewModels: [ElementInspector.ViewHierarchyPanelViewModel] = []
     
     init(reference: ViewHierarchyReference) {
         rootReference = reference
@@ -147,7 +134,7 @@ extension ViewHierarchyInspectorViewModel: ViewHierarchyInspectorViewModelProtoc
         
     }
     
-    func itemViewModel(for indexPath: IndexPath) -> ViewHierarchyInspectorItemViewModelProtocol? {
+    func itemViewModel(for indexPath: IndexPath) -> ElementInspectorViewHierarchyPanelViewModelProtocol? {
         let visibleChildViewModels = self.visibleChildViewModels
         
         guard indexPath.row < visibleChildViewModels.count else {
@@ -157,7 +144,7 @@ extension ViewHierarchyInspectorViewModel: ViewHierarchyInspectorViewModelProtoc
         return visibleChildViewModels[indexPath.row]
     }
     
-    func toggleContainer(at indexPath: IndexPath) -> [ViewHierarchyInspectorAction] {
+    func toggleContainer(at indexPath: IndexPath) -> [ElementInspector.ViewHierarchyInspectorAction] {
         guard indexPath.row < visibleChildViewModels.count else {
             return []
         }
@@ -198,7 +185,7 @@ extension ViewHierarchyInspectorViewModel: ViewHierarchyInspectorViewModelProtoc
             insertedIndexPaths.append(IndexPath(row: row, section: 0))
         }
         
-        var actions = [ViewHierarchyInspectorAction]()
+        var actions = [ElementInspector.ViewHierarchyInspectorAction]()
         
         if insertedIndexPaths.isEmpty == false {
             actions.append(.inserted(insertedIndexPaths))

@@ -1,5 +1,5 @@
 //
-//  AttributesInspectorViewController+AttributesInspectorSectionViewControllerDelegate.swift
+//  ElementInspector.AttributesInspectorViewController+AttributesInspectorSectionViewControllerDelegate.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 09.10.20.
@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - AttributesInspectorSectionViewDelegate
 
-extension AttributesInspectorViewController: AttributesInspectorSectionViewControllerDelegate {
+extension ElementInspector.AttributesInspectorViewController: AttributesInspectorSectionViewControllerDelegate {
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
                                                   willUpdate property: AttributesInspectorSectionProperty) {

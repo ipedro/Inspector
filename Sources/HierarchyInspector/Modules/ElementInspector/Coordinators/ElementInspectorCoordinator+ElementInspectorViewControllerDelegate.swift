@@ -7,8 +7,6 @@
 
 import UIKit
 
-// MARK: - ElementInspectorViewControllerDelegate
-
 extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
                                         viewControllerFor panel: ElementInspectorPanel,
@@ -17,12 +15,12 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
         switch panel {
         
         case .attributesInspector:
-            return AttributesInspectorViewController.create(viewModel: AttributesInspectorViewModel(reference: reference)).then {
+            return ElementInspector.AttributesInspectorViewController.create(viewModel: AttributesInspectorViewModel(reference: reference)).then {
                 $0.delegate = self
             }
             
         case .viewHierarchyInspector:
-            return ViewHierarchyInspectorViewController.create(viewModel: ViewHierarchyInspectorViewModel(reference: reference)).then {
+            return ElementInspector.ViewHierarchyPanelViewController.create(viewModel: ViewHierarchyInspectorViewModel(reference: reference)).then {
                 $0.delegate = self
             }
             

@@ -227,12 +227,12 @@ extension ElementInspectorCoordinator: OptionSelectorViewControllerDelegate {
 
 private extension ElementInspectorCoordinator {
     
-    var topAttributesInspectorViewController: AttributesInspectorViewController? {
+    var topAttributesInspectorViewController: ElementInspector.AttributesInspectorViewController? {
         guard let topElementInspectorViewController = navigationController.topViewController as? ElementInspectorViewController else {
             return nil
         }
         
-        return topElementInspectorViewController.children.first as? AttributesInspectorViewController
+        return topElementInspectorViewController.children.first as? ElementInspector.AttributesInspectorViewController
     }
     
 }

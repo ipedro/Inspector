@@ -1,5 +1,5 @@
 //
-//  ElementInspectorCoordinator+ViewHierarchyInspectorViewControllerDelegate.swift
+//  ElementInspectorCoordinator+ElementInspectorViewHierarchyInspectorViewControllerDelegate.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 07.10.20.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-extension ElementInspectorCoordinator: ViewHierarchyInspectorViewControllerDelegate {
-    func viewHierarchyListViewController(_ viewController: ViewHierarchyInspectorViewController, didSegueTo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
+extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorViewControllerDelegate {
+    func viewHierarchyListViewController(_ viewController: ElementInspector.ViewHierarchyPanelViewController, didSegueTo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
         
         operationQueue.cancelAllOperations()
         
@@ -19,7 +19,7 @@ extension ElementInspectorCoordinator: ViewHierarchyInspectorViewControllerDeleg
         }))
     }
     
-    func viewHierarchyListViewController(_ viewController: ViewHierarchyInspectorViewController, didSelectInfo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
+    func viewHierarchyListViewController(_ viewController: ElementInspector.ViewHierarchyPanelViewController, didSelectInfo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
         
         operationQueue.cancelAllOperations()
         

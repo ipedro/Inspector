@@ -1,5 +1,5 @@
 //
-//  ViewHierarchyInspectorViewController.swift
+//  ViewHierarchyPanelViewController+UITableViewDataSource.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 07.10.20.
@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - UITableViewDataSource
 
-extension ViewHierarchyInspectorViewController: UITableViewDataSource {
+extension ElementInspector.ViewHierarchyPanelViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.numberOfRows
     }
