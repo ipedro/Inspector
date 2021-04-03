@@ -88,7 +88,7 @@ extension AttributesInspectorSectionProperty {
              .segmentedControl(_, _, _, _, .some),
              .optionsList(_, _, _, _, _, .some),
              .textField(_, _, _, .some),
-             .textView(_, _, _, _),
+             .textView(_, _, _, .some),
              .imagePicker(_, _, .some):
             return true
             
