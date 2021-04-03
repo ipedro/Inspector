@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIStackView.Alignment: CustomStringConvertible {
-    public var description: String {
+    var description: String {
         switch self {
         case .fill:
             return "Fill"

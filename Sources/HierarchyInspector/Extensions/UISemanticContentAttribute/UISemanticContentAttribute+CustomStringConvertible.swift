@@ -8,7 +8,7 @@
 import UIKit
 
 extension UISemanticContentAttribute: CustomStringConvertible {
-    public var description: String {
+    var description: String {
         switch self {
         case .unspecified:
             return "Unspecified"

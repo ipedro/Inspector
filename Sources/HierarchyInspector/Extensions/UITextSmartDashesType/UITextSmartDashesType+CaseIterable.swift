@@ -9,7 +9,7 @@ import UIKit
 
 extension UITextSmartDashesType: CaseIterable {
     
-    public typealias AllCases = [UITextSmartDashesType]
+    typealias AllCases = [UITextSmartDashesType]
     
     public static let allCases: [UITextSmartDashesType] = [
         .default,

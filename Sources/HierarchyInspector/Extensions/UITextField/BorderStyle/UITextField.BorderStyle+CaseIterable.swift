@@ -9,7 +9,7 @@ import UIKit
 
 extension UITextField.BorderStyle: CaseIterable {
     
-    public typealias AllCases = [UITextField.BorderStyle]
+    typealias AllCases = [UITextField.BorderStyle]
     
     public static let allCases: [UITextField.BorderStyle] = [
         .none,

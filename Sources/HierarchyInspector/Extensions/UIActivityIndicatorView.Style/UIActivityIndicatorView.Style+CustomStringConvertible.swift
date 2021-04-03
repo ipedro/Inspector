@@ -10,7 +10,7 @@ import UIKit
 extension UIActivityIndicatorView.Style: CustomStringConvertible {
     
     #if swift(>=5.0)
-    public var description: String {
+    var description: String {
         switch self {
         case .medium:
             return "Medium"
@@ -32,7 +32,7 @@ extension UIActivityIndicatorView.Style: CustomStringConvertible {
         }
     }
     #else
-    public var description: String {
+    var description: String {
         switch self {
         case .whiteLarge:
             return "White Large"

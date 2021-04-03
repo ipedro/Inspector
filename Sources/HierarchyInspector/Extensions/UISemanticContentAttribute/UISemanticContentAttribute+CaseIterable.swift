@@ -8,15 +8,13 @@
 import UIKit
 
 extension UISemanticContentAttribute: CaseIterable {
-    public typealias AllCases = [UISemanticContentAttribute]
+    typealias AllCases = [UISemanticContentAttribute]
     
-    public static var allCases: [UISemanticContentAttribute] {
-        [
-            .unspecified,
-            .playback,
-            .spatial,
-            .forceLeftToRight,
-            .forceRightToLeft
-        ]
-    }
+    static let allCases: [UISemanticContentAttribute] = [
+        .unspecified,
+        .playback,
+        .spatial,
+        .forceLeftToRight,
+        .forceRightToLeft
+    ]
 }

@@ -8,7 +8,7 @@
 import UIKit
 
 extension UITextContentType: CustomStringConvertible {
-    public var description: String {
+    var description: String {
         #if swift(>=4.2)
         if #available(iOS 12.0, *) {
             switch self {

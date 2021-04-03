@@ -8,9 +8,9 @@
 import UIKit
 
 extension UITextContentType: CaseIterable {
-    public typealias AllCases = [UITextContentType]
+    typealias AllCases = [UITextContentType]
     
-    public static var allCases: [UITextContentType] {
+    static let allCases: [UITextContentType] = {
         
         #if swift(>=4.2)
         if #available(iOS 12.0, *) {
@@ -84,5 +84,5 @@ extension UITextContentType: CaseIterable {
         ]
         #endif
         return []
-    }
+    }()
 }

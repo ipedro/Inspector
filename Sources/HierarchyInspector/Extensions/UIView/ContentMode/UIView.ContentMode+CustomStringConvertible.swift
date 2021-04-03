@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIView.ContentMode: CustomStringConvertible {
-    public var description: String {
+    var description: String {
         switch self {
         case .scaleToFill:
             return "Scale To Fill"

@@ -8,23 +8,21 @@
 import UIKit
 
 extension UIView.ContentMode: CaseIterable {
-    public typealias AllCases = [UIView.ContentMode]
+    typealias AllCases = [UIView.ContentMode]
     
-    public static var allCases: [UIView.ContentMode] {
-        [
-            .scaleToFill,
-            .scaleAspectFit,
-            .scaleAspectFill,
-            .redraw,
-            .center,
-            .top,
-            .bottom,
-            .left,
-            .right,
-            .topLeft,
-            .topRight,
-            .bottomLeft,
-            .bottomRight
-        ]
-    }
+    static let allCases: [UIView.ContentMode] = [
+        .scaleToFill,
+        .scaleAspectFit,
+        .scaleAspectFill,
+        .redraw,
+        .center,
+        .top,
+        .bottom,
+        .left,
+        .right,
+        .topLeft,
+        .topRight,
+        .bottomLeft,
+        .bottomRight
+    ]
 }

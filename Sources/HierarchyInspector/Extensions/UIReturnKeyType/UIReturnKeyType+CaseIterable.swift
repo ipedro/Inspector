@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIReturnKeyType: CaseIterable {
-    public typealias AllCases = [UIReturnKeyType]
+    typealias AllCases = [UIReturnKeyType]
     
     public static let allCases: [UIReturnKeyType] = [
         .default,

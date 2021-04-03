@@ -9,7 +9,7 @@ import UIKit
 
 extension UITextAutocapitalizationType: CaseIterable {
     
-    public typealias AllCases = [UITextAutocapitalizationType]
+    typealias AllCases = [UITextAutocapitalizationType]
     
     public static let allCases: [UITextAutocapitalizationType] = [
         .none,

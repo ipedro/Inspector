@@ -9,9 +9,9 @@ import UIKit
 
 extension UIButton.ButtonType: CaseIterable {
     
-    public typealias AllCases = [UIButton.ButtonType]
+    typealias AllCases = [UIButton.ButtonType]
     
-    public static var allCases: [UIButton.ButtonType] {
+    static let allCases: [UIButton.ButtonType] = {
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             return [
@@ -33,6 +33,6 @@ extension UIButton.ButtonType: CaseIterable {
             .infoDark,
             .contactAdd
         ]
-    }
+    }()
     
 }

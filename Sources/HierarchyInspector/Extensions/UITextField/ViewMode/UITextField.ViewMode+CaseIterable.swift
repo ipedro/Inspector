@@ -8,7 +8,7 @@
 import UIKit
 
 extension UITextField.ViewMode: CaseIterable {
-    public typealias AllCases = [UITextField.ViewMode]
+    typealias AllCases = [UITextField.ViewMode]
     
     public static let allCases: [UITextField.ViewMode] = [
         .never,

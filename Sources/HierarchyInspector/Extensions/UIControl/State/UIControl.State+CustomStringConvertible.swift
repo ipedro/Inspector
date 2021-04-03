@@ -9,7 +9,7 @@ import UIKit
 
 extension UIControl.State: CustomStringConvertible {
     
-    public var description: String {
+    var description: String {
         switch self {
         case .normal:
             return "Default"

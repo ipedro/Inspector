@@ -9,7 +9,7 @@ import UIKit
 
 extension UIScrollView.KeyboardDismissMode: CustomStringConvertible {
     
-    public var description: String {
+    var description: String {
         switch self {
         case .none:
             return "Do Not Dismiss"

@@ -10,7 +10,7 @@ import UIKit
 #if swift(>=5.3)
 @available(iOS 14.0, *)
 extension UISwitch.Style: CaseIterable {
-    public typealias AllCases = [UISwitch.Style]
+    typealias AllCases = [UISwitch.Style]
     
     public static let allCases: [UISwitch.Style] = [
         .automatic,

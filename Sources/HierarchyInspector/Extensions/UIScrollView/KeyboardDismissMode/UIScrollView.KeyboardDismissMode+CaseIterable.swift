@@ -9,7 +9,7 @@ import UIKit
 
 extension UIScrollView.KeyboardDismissMode: CaseIterable {
     
-    public typealias AllCases = [UIScrollView.KeyboardDismissMode]
+    typealias AllCases = [UIScrollView.KeyboardDismissMode]
     
     public static let allCases: [UIScrollView.KeyboardDismissMode] = [
         .none,

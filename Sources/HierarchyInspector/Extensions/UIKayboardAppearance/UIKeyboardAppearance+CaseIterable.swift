@@ -9,7 +9,7 @@ import UIKit
 
 extension UIKeyboardAppearance: CaseIterable {
     
-    public typealias AllCases = [UIKeyboardAppearance]
+    typealias AllCases = [UIKeyboardAppearance]
     
     public static let allCases: [UIKeyboardAppearance] = [
         .default,

@@ -11,7 +11,7 @@ import Foundation
 
 extension ViewHierarchyLayer: CustomStringConvertible {
     
-    public var description: String {
+    var description: String {
         guard name.contains(",+") || name.contains(",-") else {
             return name
         }

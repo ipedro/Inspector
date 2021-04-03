@@ -9,7 +9,7 @@ import UIKit
 
 extension UIButton.ButtonType: CustomStringConvertible {
     
-    public var description: String {
+    var description: String {
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             switch self {

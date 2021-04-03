@@ -9,7 +9,7 @@ import UIKit
 
 extension UIScrollView.IndicatorStyle: CustomStringConvertible {
     
-    public var description: String {
+    var description: String {
         switch self {
         case .default:
             return "Default Style"

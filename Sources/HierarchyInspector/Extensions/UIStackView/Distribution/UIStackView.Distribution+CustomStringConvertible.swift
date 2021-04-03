@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIStackView.Distribution: CustomStringConvertible {
-    public var description: String {
+    var description: String {
         switch self {
         case .fill:
             return "Fill"

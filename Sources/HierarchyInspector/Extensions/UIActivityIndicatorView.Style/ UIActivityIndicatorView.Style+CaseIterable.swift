@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIActivityIndicatorView.Style: CaseIterable {
-    public typealias AllCases = [UIActivityIndicatorView.Style]
+    typealias AllCases = [UIActivityIndicatorView.Style]
     
     #if swift(>=5.0)
     public static let allCases: [UIActivityIndicatorView.Style] = {

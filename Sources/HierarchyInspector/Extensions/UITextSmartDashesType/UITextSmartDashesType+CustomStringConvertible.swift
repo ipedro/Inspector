@@ -9,7 +9,7 @@ import UIKit
 
 extension UITextSmartDashesType: CustomStringConvertible {
     
-    public var description: String {
+    var description: String {
         switch self {
         case .default:
             return "Default"
