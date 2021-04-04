@@ -12,7 +12,7 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard
             let firstVisibleSection = viewCode.tableView.indexPathsForVisibleRows?.first?.section,
-            let headerView = headers[firstVisibleSection]
+            let headerView = viewCode.tableView.headerView(forSection: firstVisibleSection)
         else {
             return
         }
@@ -37,11 +37,15 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        dequeueHeaderView(in: section)
+        let header = tableView.dequeueReusableHeaderFooterView(HierarchyInspectorHeaderView.self)
+        header.title = viewModel.titleForHeader(in: section)
+        
+        return header
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        Console.print(indexPath)
+        viewModel.selectRow(at: indexPath)
+        close()
     }
     
 }

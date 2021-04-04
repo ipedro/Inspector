@@ -7,20 +7,20 @@
 
 import UIKit
 
-final class HierarchyInspectorHeaderView: BaseView {
+final class HierarchyInspectorHeaderView: UITableViewHeaderFooterView {
     
     var title: String? = nil {
         didSet {
-            textLabel.text = title
+            titleLabel.text = title
             
             switch title {
             case .none:
-                textLabel.isHidden = true
-                contentView.directionalLayoutMargins = ElementInspector.appearance.margins
+                titleLabel.isHidden = true
+                stackView.directionalLayoutMargins = ElementInspector.appearance.margins
                 
             case .some:
-                textLabel.isHidden = false
-                contentView.directionalLayoutMargins = .horizontalMargins(ElementInspector.appearance.horizontalMargins)
+                titleLabel.isHidden = false
+                stackView.directionalLayoutMargins = .horizontalMargins(ElementInspector.appearance.horizontalMargins)
             }
         }
     }
@@ -29,19 +29,37 @@ final class HierarchyInspectorHeaderView: BaseView {
         color: ElementInspector.appearance.tertiaryTextColor
     )
     
-    private(set) lazy var textLabel = UILabel(
+    private lazy var stackView = UIStackView(
+        axis: .vertical,
+        arrangedSubviews: [
+            separatorView,
+            titleLabel
+        ],
+        spacing: ElementInspector.appearance.verticalMargins
+    )
+    
+    private(set) lazy var titleLabel = UILabel(
         .caption1,
         textColor: ElementInspector.appearance.tertiaryTextColor
     ).then {
         $0.font = $0.font.bold()
     }
     
-    override func setup() {
-        super.setup()
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
         
-        contentView.addArrangedSubview(separatorView)
-        contentView.addArrangedSubview(textLabel)
-        contentView.spacing = ElementInspector.appearance.verticalMargins
+        setup()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setup() {
+        
+        backgroundView = UIView()
+        
+        contentView.installView(stackView)
     }
     
 }

@@ -21,6 +21,11 @@ enum Action {
     case inspect(vc: HierarchyInspectorPresentable)
     
     case inspectWindow(vc: HierarchyInspectorPresentable)
+}
+
+// MARK: - Properties
+
+extension Action {
     
     var title: String {
         switch self {
@@ -59,41 +64,33 @@ enum Action {
             return nil
         }
     }
-}
-
-extension Action {
-    var alertAction: UIAlertAction? {
+    var closure: (() -> Void)? {
         switch self {
-        case let .emptyLayer(title):
-            return UIAlertAction(title: title, style: .default, handler: nil).then {
-                $0.isEnabled = false
-            }
+        case .emptyLayer:
+            return nil
             
         case let .toggleLayer(_, closure),
              let .showAllLayers(closure),
              let .hideVisibleLayers(closure):
-            
-            return UIAlertAction(title: title, style: .default) { _ in
-                closure()
-            }
+            return closure
             
         case let .inspect(vc):
-            return UIAlertAction(title: title, style: .default) { _ in
-                vc.presentHierarchyInspector(animated: true)
-            }
+            return { vc.presentHierarchyInspector(animated: true) }
             
         case let .openHierarchyInspector(fromViewController):
-            return UIAlertAction(title: title, style: .default) { _ in
-                fromViewController.presentHierarchyInspector(animated: true)
-            }
+            return { fromViewController.presentHierarchyInspector(animated: true) }
             
         case let .inspectWindow(vc):
             guard let window = vc.view.window else {
                 return nil
             }
             
-            return UIAlertAction(title: title, style: .default) { _ in
-                vc.hierarchyInspectorManager.presentElementInspector(for: ViewHierarchyReference(root: window), animated: true, from: nil)
+            return {
+                vc.hierarchyInspectorManager.presentElementInspector(
+                    for: ViewHierarchyReference(root: window),
+                    animated: true,
+                    from: nil
+                )
             }
         }
     }

@@ -19,10 +19,14 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     private(set) var viewModel: HierarchyInspectorViewModelProtocol!
     
     private(set) lazy var viewCode = HierarchyInspectorView().then {
+        $0.searchView.textField.addTarget(self, action: #selector(search(_:)), for: .allEditingEvents)
+        
+        $0.tableView.register(HierarchyInspectorTableViewCell.self)
+        $0.tableView.registerHeaderFooter(HierarchyInspectorHeaderView.self)
+        $0.tableView.delegate = self
+        $0.tableView.dataSource = self
         $0.delegate = self
     }
-    
-    private(set) lazy var headers = [Int: HierarchyInspectorHeaderView]()
     
     private var needsSetup = true
     
@@ -65,25 +69,29 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
             viewCode.animate(.in)
         }
         
-        viewCode.tableView.delegate = self
-        viewCode.tableView.dataSource = self
+        reloadData()
         
         DispatchQueue.main.async {
             _ = self.viewCode.searchView.becomeFirstResponder()
         }
     }
     
-    func dequeueHeaderView(in section: Int) -> HierarchyInspectorHeaderView? {
-        if let headerView = headers[section] {
-            return headerView
-        }
+    func reloadData() {
+        viewModel.loadData()
         
-        let headerView = HierarchyInspectorHeaderView()
-        headerView.title = viewModel.titleForHeader(in: section)
+        viewCode.searchView.separatorView.isSafelyHidden = viewModel.isEmpty
         
-        headers[section] = headerView
+        viewCode.tableView.isSafelyHidden = viewModel.isEmpty
         
-        return headerView
+        viewCode.tableView.reloadData()
+    }
+    
+    func close() {
+        view.endEditing(true)
+        
+        dismiss(animated: true)
+        
+        viewCode.animate(.out)
     }
 }
 
@@ -101,16 +109,17 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
             self.viewCode.keyboardFrame = properties.keyboardFrame
         }
     }
+    
+    func search(_ sender: Any) {
+        viewModel.searchQuery = viewCode.searchView.textField.text
+        reloadData()
+    }
 }
 
 // MARK: - HierarchyInspectorViewDelegate
 
 extension HierarchyInspectorViewController: HierarchyInspectorViewDelegate {
-    
     func hierarchyInspectorViewDidTapOutside(_ view: HierarchyInspectorView) {
-        view.endEditing(true)
-        dismiss(animated: true)
-        viewCode.animate(.out)
+        close()
     }
-    
 }
