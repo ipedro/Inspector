@@ -1398,10 +1398,6 @@
 		EBD9DA4C2530413600851E23 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_30 /* Texts.swift */,
-				EBA7D9D325308FEC00496F23 /* Icon.swift */,
-				EB366149261849EF00BFC5B3 /* Icon.Glyph.swift */,
-				EBD9DA4D2530414700851E23 /* IconKit.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1438,6 +1434,24 @@
 				EBF3294425310EC800EABA17 /* ElementInspectorViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		EBF5B5A9261A40AD00BA9573 /* Strings */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_30 /* Texts.swift */,
+			);
+			path = Strings;
+			sourceTree = "<group>";
+		};
+		EBF5B5AE261A40BC00BA9573 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				EBA7D9D325308FEC00496F23 /* Icon.swift */,
+				EB366149261849EF00BFC5B3 /* Icon.Glyph.swift */,
+				EBD9DA4D2530414700851E23 /* IconKit.swift */,
+			);
+			path = Icons;
 			sourceTree = "<group>";
 		};
 		EBF88CBA252DA18300AE9F12 /* Modules */ = {
@@ -1599,11 +1613,13 @@
 				OBJ_25 /* HierarchyInspector.swift */,
 				EBB0CB35252A6CD0005D4A53 /* Configuration */,
 				OBJ_9 /* Extensions */,
+				EBF5B5AE261A40BC00BA9573 /* Icons */,
 				EBA2462D2528DC8100D4AFD9 /* Manager */,
 				OBJ_26 /* Models */,
 				EBF88CBA252DA18300AE9F12 /* Modules */,
 				OBJ_32 /* Protocols */,
 				EBD9DA4C2530413600851E23 /* Resources */,
+				EBF5B5A9261A40AD00BA9573 /* Strings */,
 			);
 			name = HierarchyInspector;
 			path = Sources/HierarchyInspector;
