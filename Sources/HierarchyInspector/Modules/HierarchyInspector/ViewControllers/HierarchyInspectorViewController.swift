@@ -16,13 +16,13 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         return viewController
     }
     
-    private var viewModel: HierarchyInspectorViewModelProtocol!
+    private(set) var viewModel: HierarchyInspectorViewModelProtocol!
     
-    private lazy var viewCode = HierarchyInspectorView().then {
+    private(set) lazy var viewCode = HierarchyInspectorView().then {
         $0.delegate = self
     }
     
-    private lazy var headers = [Int: HierarchyInspectorHeaderView]()
+    private(set) lazy var headers = [Int: HierarchyInspectorHeaderView]()
     
     private var needsSetup = true
     
@@ -73,83 +73,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         }
     }
     
-}
-
-private extension HierarchyInspectorViewController {
-    @objc func keyboardWillHide(_ notification: Notification) {
-        animateWithKeyboard(notification: notification) { properties in
-            self.viewCode.keyboardFrame = nil
-        }
-    }
-    
-    @objc func keyboardWillShow(_ notification: Notification) {
-        animateWithKeyboard(notification: notification) { properties in
-            self.viewCode.keyboardFrame = properties.keyboardFrame
-        }
-    }
-    
-}
-
-// MARK: - UITableViewDataSource
-
-extension HierarchyInspectorViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        viewModel.numberOfSections
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.numberOfRows(in: section)
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(HierarchyInspectorTableViewCell.self, for: indexPath)
-        cell.textLabel?.text = viewModel.titleForRow(at: indexPath)
-        cell.directionalLayoutMargins = .allMargins(ElementInspector.appearance.horizontalMargins)
-        
-        return cell
-    }
-}
-
-// MARK: - UITableViewDelegate
-
-extension HierarchyInspectorViewController: UITableViewDelegate {
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard
-            let firstVisibleSection = viewCode.tableView.indexPathsForVisibleRows?.first?.section,
-            let headerView = headers[firstVisibleSection]
-        else {
-            return
-        }
-        
-        for cell in viewCode.tableView.visibleCells {
-            guard let cell = cell as? HierarchyInspectorTableViewCell else {
-                return
-            }
-            
-            let headerHeight: CGFloat = headerView.frame.height
-            
-            let hiddenFrameHeight = scrollView.contentOffset.y + headerHeight - cell.frame.origin.y
-            
-            if hiddenFrameHeight >= 0 || hiddenFrameHeight <= cell.frame.size.height {
-                cell.maskCellFromTop(margin: hiddenFrameHeight)
-            }
-            else {
-                break
-            }
-            
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        dequeueHeaderView(in: section)
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        Console.print(indexPath)
-    }
-    
-    private func dequeueHeaderView(in section: Int) -> HierarchyInspectorHeaderView? {
+    func dequeueHeaderView(in section: Int) -> HierarchyInspectorHeaderView? {
         if let headerView = headers[section] {
             return headerView
         }
@@ -160,6 +84,22 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
         headers[section] = headerView
         
         return headerView
+    }
+}
+
+// MARK: - Keyboard Handlers
+
+@objc private extension HierarchyInspectorViewController {
+    func keyboardWillHide(_ notification: Notification) {
+        animateWithKeyboard(notification: notification) { properties in
+            self.viewCode.keyboardFrame = nil
+        }
+    }
+    
+    func keyboardWillShow(_ notification: Notification) {
+        animateWithKeyboard(notification: notification) { properties in
+            self.viewCode.keyboardFrame = properties.keyboardFrame
+        }
     }
 }
 

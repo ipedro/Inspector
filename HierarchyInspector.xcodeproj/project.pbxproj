@@ -139,6 +139,8 @@
 		EBB0CB2C252A6C99005D4A53 /* Configuration.KeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */; };
 		EBB0CB63252A6F3E005D4A53 /* ActionGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7EAAD92529B90B000001BE /* ActionGroup.swift */; };
 		EBB945F826194C690007AAB0 /* HierarchyInspectorHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB945F726194C690007AAB0 /* HierarchyInspectorHeaderView.swift */; };
+		EBB9460226196BBD0007AAB0 /* HierarchyInspectorViewController+UITableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB9460126196BBD0007AAB0 /* HierarchyInspectorViewController+UITableViewDelegate.swift */; };
+		EBB9460C26196C0E0007AAB0 /* HierarchyInspectorViewController+UITableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB9460B26196C0E0007AAB0 /* HierarchyInspectorViewController+UITableViewDataSource.swift */; };
 		EBBE8C2A2538D7B100CD699D /* ImagePreviewControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C292538D7B100CD699D /* ImagePreviewControl.swift */; };
 		EBBE8C382538E87200CD699D /* UIImageViewSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C372538E87200CD699D /* UIImageViewSectionViewModel.swift */; };
 		EBBE8C422538EBBA00CD699D /* UILabelSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBE8C412538EBBA00CD699D /* UILabelSectionViewModel.swift */; };
@@ -418,6 +420,8 @@
 		EBB0CB21252A6C3D005D4A53 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		EBB0CB2B252A6C99005D4A53 /* Configuration.KeyCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.KeyCommands.swift; sourceTree = "<group>"; };
 		EBB945F726194C690007AAB0 /* HierarchyInspectorHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyInspectorHeaderView.swift; sourceTree = "<group>"; };
+		EBB9460126196BBD0007AAB0 /* HierarchyInspectorViewController+UITableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HierarchyInspectorViewController+UITableViewDelegate.swift"; sourceTree = "<group>"; };
+		EBB9460B26196C0E0007AAB0 /* HierarchyInspectorViewController+UITableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HierarchyInspectorViewController+UITableViewDataSource.swift"; sourceTree = "<group>"; };
 		EBBE8C292538D7B100CD699D /* ImagePreviewControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewControl.swift; sourceTree = "<group>"; };
 		EBBE8C372538E87200CD699D /* UIImageViewSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewSectionViewModel.swift; sourceTree = "<group>"; };
 		EBBE8C412538EBBA00CD699D /* UILabelSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelSectionViewModel.swift; sourceTree = "<group>"; };
@@ -701,6 +705,8 @@
 			isa = PBXGroup;
 			children = (
 				EB36614326178DB100BFC5B3 /* HierarchyInspectorViewController.swift */,
+				EBB9460B26196C0E0007AAB0 /* HierarchyInspectorViewController+UITableViewDataSource.swift */,
+				EBB9460126196BBD0007AAB0 /* HierarchyInspectorViewController+UITableViewDelegate.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -1816,6 +1822,7 @@
 				EB0B95192538896A00A35DE4 /* ViewHierarchyPanelViewController+UITableViewDataSource.swift in Sources */,
 				OBJ_69 /* Layer+AdditiveArithmetic.swift in Sources */,
 				EBD9DA01252F919900851E23 /* StepperControl.swift in Sources */,
+				EBB9460C26196C0E0007AAB0 /* HierarchyInspectorViewController+UITableViewDataSource.swift in Sources */,
 				EB36619C261869FF00BFC5B3 /* UIDatePickerStyle+CaseIterable.swift in Sources */,
 				EBD432B1253B008900708C75 /* Manager+ElementInspectorCoordinatorDelegate.swift in Sources */,
 				EB9DD3D4253CC8630054C8BA /* UIImage+Resize.swift in Sources */,
@@ -1917,6 +1924,7 @@
 				EBC045BF2531F8A800C311E6 /* OptionSelectorViewModel.swift in Sources */,
 				EBD43279253AFAE300708C75 /* AsyncOperationProtocol.swift in Sources */,
 				EB31664825384995001A4A80 /* NSObjectProtocoll+Debounce.swift in Sources */,
+				EBB9460226196BBD0007AAB0 /* HierarchyInspectorViewController+UITableViewDelegate.swift in Sources */,
 				OBJ_90 /* HierarchyInspectableProtocol.swift in Sources */,
 				EB366197261869FC00BFC5B3 /* UIDatePickerStyle+CustomStringConvertible.swift in Sources */,
 				EB36614426178DB100BFC5B3 /* HierarchyInspectorViewController.swift in Sources */,
