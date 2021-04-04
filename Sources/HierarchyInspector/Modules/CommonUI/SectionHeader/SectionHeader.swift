@@ -10,7 +10,7 @@ import UIKit
 final class SectionHeader: BaseView {
     
     private(set) lazy var textLabel = UILabel().then {
-        $0.textColor = ElementInspector.configuration.appearance.textColor
+        $0.textColor = ElementInspector.appearance.textColor
         $0.numberOfLines = 0
         $0.adjustsFontSizeToFitWidth = true
         $0.preferredMaxLayoutWidth = 200
@@ -41,7 +41,7 @@ final class SectionHeader: BaseView {
         _ textStyle: UIFont.TextStyle = .title3,
         text: String?,
         withTraits traits: UIFontDescriptor.SymbolicTraits? = nil,
-        margins: NSDirectionalEdgeInsets = ElementInspector.configuration.appearance.margins
+        margins: NSDirectionalEdgeInsets = ElementInspector.appearance.margins
     ) {
         self.init(frame: .zero)
         

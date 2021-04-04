@@ -31,10 +31,10 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     var backgroundStyle: ThumbnailBackgroundStyle {
         get {
-            ElementInspector.configuration.appearance.thumbnailBackgroundStyle
+            ElementInspector.appearance.thumbnailBackgroundStyle
         }
         set {
-            ElementInspector.configuration.appearance.thumbnailBackgroundStyle = newValue
+            ElementInspector.appearance.thumbnailBackgroundStyle = newValue
             backgroundColor = newValue.color
         }
     }
@@ -59,7 +59,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     private lazy var statusContentView = UIStackView(
         axis: .vertical,
-        spacing: ElementInspector.configuration.appearance.verticalMargins / 2,
+        spacing: ElementInspector.appearance.verticalMargins / 2,
         margins: contentView.directionalLayoutMargins
     ).then {
         $0.alignment = .center
@@ -75,7 +75,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     override func setup() {
         super.setup()
         
-        contentView.directionalLayoutMargins = .margins(ElementInspector.configuration.appearance.horizontalMargins)
+        contentView.directionalLayoutMargins = .allMargins(ElementInspector.appearance.horizontalMargins)
         
         clipsToBounds = true
         
@@ -85,7 +85,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         
         isUserInteractionEnabled = false
         
-        installView(gridImageView, .margins(.zero), .onBottom)
+        installView(gridImageView, .margins(.zero), position: .behind)
         
         contentView.installView(statusContentView, .centerXY)
         

@@ -22,16 +22,16 @@ final class AccessoryControl: BaseControl {
         
         contentView.axis = .horizontal
         
-        contentView.spacing = ElementInspector.configuration.appearance.verticalMargins / 2
+        contentView.spacing = ElementInspector.appearance.verticalMargins / 2
         
         contentView.directionalLayoutMargins = .margins(horizontal: 12, vertical: 9) // matches UIStepper
         
-        layer.cornerRadius = ElementInspector.configuration.appearance.verticalMargins / 2
+        layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
         
         setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
         setContentHuggingPriority(.defaultHigh, for: .vertical)
         
-        backgroundColor = ElementInspector.configuration.appearance.accessoryControlBackgroundColor
+        backgroundColor = ElementInspector.appearance.accessoryControlBackgroundColor
     }
 }

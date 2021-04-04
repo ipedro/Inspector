@@ -25,7 +25,7 @@ extension ElementInspector {
         private(set) lazy var viewCode = ViewHierarchyInspectorViewCode(
             frame: CGRect(
                 origin: .zero,
-                size: ElementInspector.configuration.appearance.panelPreferredCompressedSize
+                size: ElementInspector.appearance.panelPreferredCompressedSize
             )
         )
         
@@ -73,7 +73,7 @@ extension ElementInspector {
             let contentInset  = viewCode.tableView.contentInset
             
             return CGSize(
-                width: ElementInspector.configuration.appearance.panelPreferredCompressedSize.width,
+                width: ElementInspector.appearance.panelPreferredCompressedSize.width,
                 height: contentHeight + contentInset.top + contentInset.bottom
             )
         }

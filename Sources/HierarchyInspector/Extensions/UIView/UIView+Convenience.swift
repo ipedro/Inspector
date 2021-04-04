@@ -7,8 +7,8 @@
 
 import UIKit
 
-enum ViewPosition {
-    case onTop, onBottom
+enum ViewInstallationPosition {
+    case inFront, behind
 }
 
 enum ViewBinding {
@@ -19,7 +19,12 @@ enum ViewBinding {
     
     case centerY
     
-    case margins(top: CGFloat, leading: CGFloat, bottom: CGFloat, trailing: CGFloat)
+    case margins(
+            top: CGFloat? = nil,
+            leading: CGFloat? = nil,
+            bottom: CGFloat? = nil,
+            trailing: CGFloat? = nil
+         )
     
     case autoResizingMask(UIView.AutoresizingMask)
     
@@ -52,52 +57,37 @@ extension UIView {
         subviews.filter { $0 is LayerViewProtocol == false }
     }
     
-    func installView(_ view: UIView, _ binding: ViewBinding = .margins(.zero), _ position: ViewPosition = .onTop, priority: UILayoutPriority = .defaultHigh) {
+    func installView(
+        _ view: UIView,
+        _ viewBinding: ViewBinding = .margins(.zero),
+        position: ViewInstallationPosition = .inFront,
+        priority: UILayoutPriority = .defaultHigh
+    ) {
         switch position {
-        case .onTop:
+        case .inFront:
             addSubview(view)
             
-        case .onBottom:
+        case .behind:
             insertSubview(view, at: .zero)
         }
         
-        let constraints: [NSLayoutConstraint]
-        
-        switch binding {
-        case .centerX:
-            constraints = [
-                view.centerXAnchor.constraint(equalTo: centerXAnchor)
-            ]
-            
-        case .centerY:
-            constraints = [
-                view.centerYAnchor.constraint(equalTo: centerYAnchor)
-            ]
-        
-        case .centerXY:
-            constraints = [
-                view.centerXAnchor.constraint(equalTo: centerXAnchor),
-                view.centerYAnchor.constraint(equalTo: centerYAnchor)
-            ]
-        
+        switch viewBinding {
         case let .autoResizingMask(mask):
             view.autoresizingMask = mask
-            return
             
-        case let .margins(top, leading, bottom, trailing):
-            constraints = [
-                view.topAnchor.constraint(equalTo: topAnchor, constant: top),
-                view.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leading),
-                view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -bottom),
-                view.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -trailing)
-            ]
+        case .centerX,
+             .centerY,
+             .centerXY,
+             .margins:
+            let constraints = viewBinding.constraints(for: view, inside: self)
+            
+            view.translatesAutoresizingMaskIntoConstraints = false
+            
+            constraints.forEach {
+                $0.priority = priority
+                $0.isActive = true
+            }
         }
-        
-        constraints.forEach { $0.priority = priority }
-        
-        view.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate(constraints)
     }
     
     /**
@@ -110,6 +100,49 @@ extension UIView {
         set {
             isHidden = false
             isHidden = newValue
+        }
+    }
+}
+
+private extension ViewBinding {
+    func constraints(for view: UIView, inside superview: UIView) -> [NSLayoutConstraint] {
+        switch self {
+        case .centerX:
+            return [
+                view.centerXAnchor.constraint(equalTo: superview.centerXAnchor)
+            ]
+            
+        case .centerY:
+            return [
+                view.centerYAnchor.constraint(equalTo: superview.centerYAnchor)
+            ]
+        
+        case .centerXY:
+            return [
+                view.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+                view.centerYAnchor.constraint(equalTo: superview.centerYAnchor)
+            ]
+        
+        case .autoResizingMask:
+            return []
+            
+        case let .margins(top, leading, bottom, trailing):
+            var constraints = [NSLayoutConstraint]()
+            
+            if let top = top {
+                constraints.append(view.topAnchor.constraint(equalTo: superview.topAnchor, constant: top))
+            }
+            if let leading = leading {
+                constraints.append(view.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: leading))
+            }
+            if let bottom = bottom {
+                constraints.append(view.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -bottom))
+            }
+            if let trailing = trailing {
+                constraints.append(view.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -trailing))
+            }
+            
+            return constraints
         }
     }
 }

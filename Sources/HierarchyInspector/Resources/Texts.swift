@@ -17,9 +17,7 @@ enum Texts {
         "\(viewCount) inspectable views in \(className)"
     }
     
-    static func layers(_ count: Int) -> String {
-        "\(count) Layers"
-    }
+    static let layers = "View Hierarchy Layers"
     
     static let closeInspector = "Close"
     

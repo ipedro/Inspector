@@ -52,8 +52,8 @@ final class SegmentedControl: BaseFormControl {
         $0.addTarget(self, action: #selector(changeSegment), for: .valueChanged)
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {
-            $0.selectedSegmentTintColor = ElementInspector.configuration.appearance.tintColor
-            $0.setTitleTextAttributes([.foregroundColor: ElementInspector.configuration.appearance.textColor], for: .selected)
+            $0.selectedSegmentTintColor = ElementInspector.appearance.tintColor
+            $0.setTitleTextAttributes([.foregroundColor: ElementInspector.appearance.textColor], for: .selected)
             $0.overrideUserInterfaceStyle = .dark
         }
         else {

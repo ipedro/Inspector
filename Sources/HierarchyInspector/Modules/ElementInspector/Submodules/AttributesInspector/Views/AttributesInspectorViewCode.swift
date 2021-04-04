@@ -14,13 +14,13 @@ protocol AttributesInspectorViewCodeDelegate: AnyObject {
 final class AttributesInspectorViewCode: BaseView {
     weak var delegate: AttributesInspectorViewCodeDelegate?
     
-    #warning("move header style to ElementInspector.configuration.appearance")
+    #warning("move header style to ElementInspector.appearance")
     private(set) lazy var elementNameLabel = SectionHeader(.title3, text: nil, withTraits: .traitBold).then {
         $0.contentView.directionalLayoutMargins = .zero
     }
     
-    #warning("move text style to ElementInspector.configuration.appearance")
-    private(set) lazy var elementDescriptionLabel =  UILabel(.caption2, textColor: ElementInspector.configuration.appearance.secondaryTextColor, numberOfLines: 0)
+    #warning("move text style to ElementInspector.appearance")
+    private(set) lazy var elementDescriptionLabel =  UILabel(.caption2, textColor: ElementInspector.appearance.secondaryTextColor, numberOfLines: 0)
     
     private(set) lazy var headerContentView = UIStackView(
         axis: .vertical,
@@ -28,8 +28,8 @@ final class AttributesInspectorViewCode: BaseView {
             elementNameLabel,
             elementDescriptionLabel
         ],
-        spacing: ElementInspector.configuration.appearance.verticalMargins / 2,
-        margins: ElementInspector.configuration.appearance.margins
+        spacing: ElementInspector.appearance.verticalMargins / 2,
+        margins: ElementInspector.appearance.margins
     )
     
     private(set) lazy var scrollView = UIScrollView().then {
@@ -55,7 +55,7 @@ final class AttributesInspectorViewCode: BaseView {
         
         installView(scrollView)
         
-        backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor
+        backgroundColor = ElementInspector.appearance.panelBackgroundColor
         
         contentView.addArrangedSubview(headerContentView)
         

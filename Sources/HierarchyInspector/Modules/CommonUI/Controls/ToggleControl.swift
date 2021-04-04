@@ -53,7 +53,7 @@ final class ToggleControl: BaseFormControl {
 
         switchControl.onTintColor = .systemPurple
         
-        switchControl.thumbTintColor = ElementInspector.configuration.appearance.quaternaryTextColor
+        switchControl.thumbTintColor = ElementInspector.appearance.quaternaryTextColor
         
         contentView.addArrangedSubview(switchControl)
         

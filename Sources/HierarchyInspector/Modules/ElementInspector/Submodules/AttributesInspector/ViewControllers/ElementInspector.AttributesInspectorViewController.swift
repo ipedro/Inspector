@@ -121,7 +121,7 @@ extension ElementInspector {
         
         func calculatePreferredContentSize() -> CGSize {
             viewCode.contentView.systemLayoutSizeFitting(
-                ElementInspector.configuration.appearance.panelPreferredCompressedSize,
+                ElementInspector.appearance.panelPreferredCompressedSize,
                 withHorizontalFittingPriority: .defaultHigh,
                 verticalFittingPriority: .fittingSizeLevel
             )

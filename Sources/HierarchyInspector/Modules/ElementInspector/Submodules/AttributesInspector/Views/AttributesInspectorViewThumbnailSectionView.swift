@@ -19,7 +19,7 @@ final class AttributesInspectorViewThumbnailSectionView: BaseView {
             isHighlightingViewsControl,
             isLiveUpdatingControl
         ],
-        margins: ElementInspector.configuration.appearance.margins
+        margins: ElementInspector.appearance.margins
     )
     
     private lazy var backgroundAppearanceControl = SegmentedControl(
@@ -95,7 +95,7 @@ final class AttributesInspectorViewThumbnailSectionView: BaseView {
         
         switch thumbnailView.state {
         case .frameIsEmpty, .isHidden, .lostConnection:
-            thumbnailHeightConstraint.constant = ElementInspector.configuration.appearance.horizontalMargins * 4
+            thumbnailHeightConstraint.constant = ElementInspector.appearance.horizontalMargins * 4
             
         default:
             thumbnailHeightConstraint.constant = calculateContentHeight()

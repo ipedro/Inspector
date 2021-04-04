@@ -64,7 +64,7 @@ final class ElementInspectorViewController: UIViewController {
     private lazy var viewCode = ElementInspectorViewCode(
         frame: CGRect(
             origin: .zero,
-            size: ElementInspector.configuration.appearance.panelPreferredCompressedSize
+            size: ElementInspector.appearance.panelPreferredCompressedSize
         )
     ).then {
         $0.segmentedControl.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)

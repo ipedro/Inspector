@@ -62,9 +62,9 @@ final class LengthMeasurementView: BaseView {
         
         contentView.alignment = .center
         
-        contentView.directionalLayoutMargins = .margins(2)
+        contentView.directionalLayoutMargins = .allMargins(2)
         
-        contentView.spacing = ElementInspector.configuration.appearance.verticalMargins
+        contentView.spacing = ElementInspector.appearance.verticalMargins
         
         contentView.addArrangedSubview(valueLabel)
         

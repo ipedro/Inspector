@@ -57,9 +57,11 @@ final class StepperControl: BaseFormControl {
     private lazy var stepperControl = UIStepper().then {
         $0.addTarget(self, action: #selector(step), for: .valueChanged)
         
+        #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             $0.overrideUserInterfaceStyle = .dark
         }
+        #endif
     }
     
     private lazy var counterLabel = UILabel().then {

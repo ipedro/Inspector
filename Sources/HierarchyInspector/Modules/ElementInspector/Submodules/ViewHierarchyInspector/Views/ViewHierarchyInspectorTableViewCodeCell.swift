@@ -44,7 +44,7 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
 
             // Containers Insets
 
-            let offset = ElementInspector.configuration.appearance.horizontalMargins * (CGFloat(viewModel?.relativeDepth ?? 0) + 1)
+            let offset = ElementInspector.appearance.horizontalMargins * (CGFloat(viewModel?.relativeDepth ?? 0) + 1)
 
             separatorInset = UIEdgeInsets(top: 0, left: offset, bottom: 0, right: 0)
             directionalLayoutMargins = .margins(leading: offset)
@@ -56,10 +56,10 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         didSet {
             switch isEvenRow {
             case true:
-                backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor
+                backgroundColor = ElementInspector.appearance.panelBackgroundColor
                 
             case false:
-                backgroundColor = ElementInspector.configuration.appearance.panelHighlightBackgroundColor
+                backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
             }
         }
     }
@@ -90,7 +90,7 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
     }
     
     private lazy var elementNameLabel = UILabel().then {
-        $0.textColor = ElementInspector.configuration.appearance.textColor
+        $0.textColor = ElementInspector.appearance.textColor
         $0.layer.shouldRasterize = true
         $0.layer.rasterizationScale = UIScreen.main.scale
         
@@ -102,7 +102,7 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
     
     private lazy var descriptionLabel = UILabel(
         .caption2,
-        textColor: ElementInspector.configuration.appearance.secondaryTextColor,
+        textColor: ElementInspector.appearance.secondaryTextColor,
         numberOfLines: 0
     ).then {
         $0.layer.shouldRasterize = true
@@ -117,7 +117,7 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
     
     private lazy var thumbnailImageView = UIImageView().then {
         $0.contentMode = .center
-        $0.tintColor   = ElementInspector.configuration.appearance.thumbnailBackgroundStyle.contrastingColor
+        $0.tintColor   = ElementInspector.appearance.thumbnailBackgroundStyle.contrastingColor
     }
         
     private lazy var thumbnailContainerView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)).then {
@@ -127,15 +127,15 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         
         $0.layer.rasterizationScale = UIScreen.main.scale
         
-        $0.backgroundColor = ElementInspector.configuration.appearance.thumbnailBackgroundStyle.color
+        $0.backgroundColor = ElementInspector.appearance.thumbnailBackgroundStyle.color
         
         $0.clipsToBounds = true
         
-        $0.layer.cornerRadius = ElementInspector.configuration.appearance.verticalMargins
+        $0.layer.cornerRadius = ElementInspector.appearance.verticalMargins
         
-        $0.heightAnchor.constraint(equalToConstant: ElementInspector.configuration.appearance.horizontalMargins * 2).isActive = true
+        $0.heightAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
         
-        $0.widthAnchor.constraint(equalToConstant: ElementInspector.configuration.appearance.horizontalMargins * 2.4).isActive = true
+        $0.widthAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins * 2.4).isActive = true
     }
     
     private lazy var containerStackView = UIStackView(
@@ -144,7 +144,7 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
             elementNameLabel,
             textStackView
         ],
-        spacing: ElementInspector.configuration.appearance.verticalMargins / 2
+        spacing: ElementInspector.appearance.verticalMargins / 2
     )
     
     private lazy var textStackView = UIStackView(
@@ -153,13 +153,13 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
             thumbnailContainerView,
             descriptionLabel
         ],
-        spacing: ElementInspector.configuration.appearance.verticalMargins / 2
+        spacing: ElementInspector.appearance.verticalMargins / 2
     ).then {
         $0.alignment = .top
     }
     
     private lazy var customSelectedBackgroundView = UIView().then {
-        $0.backgroundColor = ElementInspector.configuration.appearance.tintColor.withAlphaComponent(0.1)
+        $0.backgroundColor = ElementInspector.appearance.tintColor.withAlphaComponent(0.1)
     }
     
     private func setup() {
@@ -173,7 +173,7 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         
         selectedBackgroundView = customSelectedBackgroundView
         
-        backgroundColor = ElementInspector.configuration.appearance.panelBackgroundColor
+        backgroundColor = ElementInspector.appearance.panelBackgroundColor
         
         setupContainerStackView()
         
@@ -184,10 +184,10 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         contentView.installView(
             containerStackView,
             .margins(
-                top: ElementInspector.configuration.appearance.verticalMargins,
+                top: ElementInspector.appearance.verticalMargins,
                 leading: 0,
-                bottom: ElementInspector.configuration.appearance.verticalMargins,
-                trailing: ElementInspector.configuration.appearance.verticalMargins
+                bottom: ElementInspector.appearance.verticalMargins,
+                trailing: ElementInspector.appearance.verticalMargins
             )
         )
     }
@@ -199,7 +199,7 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
 
         chevronDownIcon.trailingAnchor.constraint(
             equalTo: elementNameLabel.leadingAnchor,
-            constant: -(ElementInspector.configuration.appearance.verticalMargins / 3)
+            constant: -(ElementInspector.appearance.verticalMargins / 3)
         ).isActive = true
         
     }

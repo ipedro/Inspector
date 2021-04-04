@@ -21,7 +21,7 @@ final class TextViewControl: BaseFormControl {
         )
         $0.backgroundColor = nil
         $0.isScrollEnabled = false
-        $0.textColor = ElementInspector.configuration.appearance.textColor
+        $0.textColor = ElementInspector.appearance.textColor
         $0.font = .preferredFont(forTextStyle: .footnote)
         $0.delegate = self
     }
@@ -29,7 +29,7 @@ final class TextViewControl: BaseFormControl {
     private lazy var placeholderLabel = UILabel().then {
         $0.font = textView.font
         $0.numberOfLines = 0
-        $0.textColor = ElementInspector.configuration.appearance.secondaryTextColor
+        $0.textColor = ElementInspector.appearance.secondaryTextColor
     }
     
     private(set) lazy var accessoryControl = AccessoryControl().then {

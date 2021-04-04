@@ -10,34 +10,34 @@ import UIKit
 final class SeparatorView: BaseView {
     let thickness: CGFloat
     
-    init(thickness: CGFloat = 0.5, frame: CGRect = .zero) {
+    init(thickness: CGFloat = 0.5, color: UIColor? = nil, frame: CGRect = .zero) {
         self.thickness = thickness
         
         super.init(frame: frame)
+        
+        if let color = color {
+            backgroundColor = color
+            return
+        }
+        
+        #if swift(>=5.0)
+        if #available(iOS 13.0, *) {
+            backgroundColor = .separator
+        }
+        else {
+            backgroundColor = .lightGray
+        }
+        #else
+        backgroundColor = .lightGray
+        #endif
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var separatorView = UIView().then {
-        #if swift(>=5.0)
-        if #available(iOS 13.0, *) {
-            $0.backgroundColor = .separator
-        }
-        else {
-            $0.backgroundColor = .lightGray
-        }
-        #else
-        $0.backgroundColor = .lightGray
-        #endif
-        
-        $0.heightAnchor.constraint(equalToConstant: thickness).isActive = true
-    }
-    
     override func setup() {
         super.setup()
-        
-        contentView.addArrangedSubview(separatorView)
+        heightAnchor.constraint(equalToConstant: thickness).isActive = true
     }
 }

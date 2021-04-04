@@ -47,7 +47,7 @@ extension HierarchyInspector {
 
 extension HierarchyInspector.Manager {
     
-    var availableActions: [ActionGroup] {
+    var availableActions: ActionGroups {
         guard let viewHierarchySnapshot = self.viewHierarchySnapshot else {
             return []
         }

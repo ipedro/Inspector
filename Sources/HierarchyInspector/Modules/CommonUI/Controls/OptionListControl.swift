@@ -26,11 +26,11 @@ final class OptionListControl: BaseFormControl {
     
     private lazy var icon = Icon(
         .chevronUpDown,
-        color: ElementInspector.configuration.appearance.secondaryTextColor,
+        color: ElementInspector.appearance.secondaryTextColor,
         size: CGSize(width: 14, height: 14)
     )
     
-    private lazy var valueLabel = UILabel(.footnote, textColor: ElementInspector.configuration.appearance.textColor).then {
+    private lazy var valueLabel = UILabel(.footnote, textColor: ElementInspector.appearance.textColor).then {
         $0.adjustsFontSizeToFitWidth = true
         $0.minimumScaleFactor = 0.6
     }
@@ -39,7 +39,7 @@ final class OptionListControl: BaseFormControl {
         $0.contentView.addArrangedSubview(valueLabel)
         $0.contentView.addArrangedSubview(icon)
         $0.contentView.alignment = .center
-        $0.contentView.spacing = ElementInspector.configuration.appearance.verticalMargins
+        $0.contentView.spacing = ElementInspector.appearance.verticalMargins
         $0.addGestureRecognizer(tapGestureRecognizer)
     }
     

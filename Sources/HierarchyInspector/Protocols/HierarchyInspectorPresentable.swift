@@ -20,7 +20,7 @@ public protocol HierarchyInspectorPresentable: HierarchyInspectableProtocol {
 public extension HierarchyInspectorPresentable {
     
     func presentHierarchyInspector(animated: Bool) {
-        presentHierarchyInspector(animated: animated, inspecting: false)
+        presentHierarchyInspector(animated: animated, isInspecting: false)
     }
     
 }
@@ -32,24 +32,27 @@ extension HierarchyInspectorPresentable {
         presentingViewController is UIAlertController == false
     }
     
-    func presentHierarchyInspector(animated: Bool, inspecting: Bool) {
-        guard canPresentHierarchyInspector else {
+    func presentHierarchyInspector(animated: Bool, isInspecting: Bool) {
+        guard
+            canPresentHierarchyInspector,
+            let viewHierarchySnapshot = hierarchyInspectorManager.viewHierarchySnapshot
+        else {
             return
         }
         
         let start = Date()
         
-        guard
-            let alertController = makeAlertController(
-                with: hierarchyInspectorManager.availableActions,
-                in: hierarchyInspectorManager.viewHierarchySnapshot,
-                inspecting: inspecting
+        let viewController = HierarchyInspectorViewController.create(
+            viewModel: HierarchyInspectorViewModel(
+                layerActionGroups: hierarchyInspectorManager.availableActions,
+                snapshot: viewHierarchySnapshot
             )
-        else {
-            return
+        ).then {
+            $0.modalPresentationStyle = .overCurrentContext
+            $0.modalTransitionStyle   = .crossDissolve
         }
         
-        present(alertController, animated: true) {
+        present(viewController, animated: true) {
             let elaspedTime = Date().timeIntervalSince(start)
             
             print("Presented Hierarchy Inspector in \(elaspedTime) seconds")
@@ -57,7 +60,7 @@ extension HierarchyInspectorPresentable {
     }
     
     private func makeAlertController(
-        with actionGroups: [ActionGroup],
+        with actionGroups: ActionGroups,
         in snapshot: ViewHierarchySnapshot?,
         inspecting: Bool
     ) -> UIAlertController? {
@@ -98,7 +101,7 @@ extension HierarchyInspectorPresentable {
                     title: inspecting ? Texts.stopInspecting : Texts.inspect(alertController.classForCoder),
                     style: .default
                 ) { [weak self] action in
-                    self?.presentHierarchyInspector(animated: true, inspecting: !inspecting)
+                    self?.presentHierarchyInspector(animated: true, isInspecting: !inspecting)
                 }
             )
         }

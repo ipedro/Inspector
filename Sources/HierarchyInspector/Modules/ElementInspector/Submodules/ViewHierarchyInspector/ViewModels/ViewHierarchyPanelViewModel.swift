@@ -55,8 +55,8 @@ extension ElementInspector {
         let reference: ViewHierarchyReference
         
         static let thumbSize = CGSize(
-            width: ElementInspector.configuration.appearance.horizontalMargins * 2,
-            height: ElementInspector.configuration.appearance.horizontalMargins * 2
+            width: ElementInspector.appearance.horizontalMargins * 2,
+            height: ElementInspector.appearance.horizontalMargins * 2
         )
         
         var cachedThumbnailImage: UIImage?
@@ -79,7 +79,7 @@ extension ElementInspector {
 
 extension ElementInspector.ViewHierarchyPanelViewModel: ElementInspectorViewHierarchyPanelViewModelProtocol {
     var titleFont: UIFont {
-        ElementInspector.configuration.appearance.titleFont(forRelativeDepth: relativeDepth)
+        ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth)
     }
     
     var isHidden: Bool {
@@ -160,15 +160,15 @@ private extension ElementInspector.ViewHierarchyPanelViewModel {
     
     static let thumbnailImageLostConnection = IconKit.imageOfWifiExlusionMark(
         CGSize(
-            width: ElementInspector.configuration.appearance.horizontalMargins * 1.5,
-            height: ElementInspector.configuration.appearance.horizontalMargins * 1.5
+            width: ElementInspector.appearance.horizontalMargins * 1.5,
+            height: ElementInspector.appearance.horizontalMargins * 1.5
         )
     ).withRenderingMode(.alwaysTemplate)
     
     static let thumbnailImageIsHidden = IconKit.imageOfEyeSlashFill(
         CGSize(
-            width: ElementInspector.configuration.appearance.horizontalMargins * 1.5,
-            height: ElementInspector.configuration.appearance.horizontalMargins * 1.5
+            width: ElementInspector.appearance.horizontalMargins * 1.5,
+            height: ElementInspector.appearance.horizontalMargins * 1.5
         )
     ).withRenderingMode(.alwaysTemplate)
     

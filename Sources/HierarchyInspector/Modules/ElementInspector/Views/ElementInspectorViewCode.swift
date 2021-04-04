@@ -26,7 +26,7 @@ final class ElementInspectorViewCode: BaseView {
     override func setup() {
         super.setup()
         
-        contentView.installView(emptyLabel, .margins(.zero), .onBottom)
+        contentView.installView(emptyLabel, .margins(.zero), position: .behind)
         
         installView(contentView, priority: .required)
     }

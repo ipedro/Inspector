@@ -9,19 +9,18 @@ import UIKit
 
 enum ElementInspector {
     static var configuration = Configuration()
+    
+    static var appearance = Appearance()
 }
 
 extension ElementInspector {
     struct Configuration {
         let animationDuration: TimeInterval = 0.2
-        
-        var appearance = Appearance()
     }
 }
 
 extension ElementInspector {
     struct Appearance {
-        
         var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
         
         let horizontalMargins: CGFloat = 26

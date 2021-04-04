@@ -78,10 +78,10 @@ extension Icon {
     static func chevronDownIcon() -> Icon {
         Icon(
             .chevronDown,
-            color: ElementInspector.configuration.appearance.textColor.withAlphaComponent(0.7),
+            color: ElementInspector.appearance.textColor.withAlphaComponent(0.7),
             size: CGSize(
-                width: ElementInspector.configuration.appearance.verticalMargins,
-                height: ElementInspector.configuration.appearance.verticalMargins
+                width: ElementInspector.appearance.verticalMargins,
+                height: ElementInspector.appearance.verticalMargins
             )
         ).then {
             $0.alpha = 0.8

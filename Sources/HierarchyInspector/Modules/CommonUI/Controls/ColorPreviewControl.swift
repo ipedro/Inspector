@@ -44,7 +44,7 @@ final class ColorPreviewControl: BaseFormControl {
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor, multiplier: 2).isActive = true
     }
     
-    private lazy var colorDisplayLabel = UILabel(.footnote, textColor: ElementInspector.configuration.appearance.textColor).then {
+    private lazy var colorDisplayLabel = UILabel(.footnote, textColor: ElementInspector.appearance.textColor).then {
 //        $0.font = $0.font?.withTraits(traits: .traitMonoSpace)
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
@@ -118,7 +118,7 @@ extension ColorPreviewControl {
         override func setup() {
             super.setup()
             
-            backgroundColor = ElementInspector.configuration.appearance.tertiaryTextColor
+            backgroundColor = ElementInspector.appearance.tertiaryTextColor
             
             layer.cornerRadius = 5
             

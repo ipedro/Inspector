@@ -154,7 +154,7 @@ extension HierarchyInspectorKeyCommandPresentable {
 
 extension HierarchyInspector.Manager {
     
-    var availableActionsForKeyCommand: [ActionGroup] {
+    var availableActionsForKeyCommand: ActionGroups {
         var array = availableActions
         
         guard let hostViewController = hostViewController as? HierarchyInspectorPresentable else {

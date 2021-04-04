@@ -81,7 +81,7 @@ final class LoaderView: LayerViewComponent {
                 color: .white
             )
             
-            element.installView(inspectorView, .autoResizingMask, .onTop)
+            element.installView(inspectorView, .autoResizingMask, position: .inFront)
         }
         
         installView(highlightView, .autoResizingMask)

@@ -7,15 +7,18 @@
 
 import UIKit
 
+typealias ActionGroups = [ActionGroup]
+
 struct ActionGroup {
     var title: String?
     
-    var displayName: String {
-        guard let title = title else {
-            return "✻"
-        }
-        
-        return "✻ \(title) ✻"
+    var displayName: String? {
+        title
+//        guard let title = title else {
+//            return "✻"
+//        }
+//        
+//        return "✻ \(title) ✻"
     }
     
     var actions: [Action]
