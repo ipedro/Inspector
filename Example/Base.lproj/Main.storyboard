@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="7XO-Xn-Xen">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--🧬 Hierarchy Inspector-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="HierarchyInspectorExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="SAS-7K-iyc">
+                                <rect key="frame" x="0.0" y="148.5" width="414" height="664.5"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="lP5-3a-gfG">
+                                        <rect key="frame" x="30" y="40" width="354" height="1891"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" pointerInteraction="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bmx-Wi-bnN" customClass="CustomButton" customModule="HierarchyInspectorExample" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="354" height="47"/>
+                                                <color key="backgroundColor" name="AccentColor"/>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                                <inset key="contentEdgeInsets" minX="20" minY="13" maxX="20" maxY="12"/>
+                                                <state key="normal" title="🔍 Open Hierarchy Inspector">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <state key="highlighted">
+                                                    <color key="titleColor" systemColor="systemTealColor"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="openInspector:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Us4-aa-1LF"/>
+                                                </connections>
+                                            </button>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Jke-NT-miV">
+                                                <rect key="frame" x="0.0" y="87" width="354" height="24"/>
+                                                <color key="tintColor" systemColor="systemGray4Color"/>
+                                            </imageView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="3mM-H5-FNd">
+                                                <rect key="frame" x="0.0" y="151" width="354" height="37"/>
+                                                <subviews>
+                                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="gp4-7X-RIQ">
+                                                        <rect key="frame" x="-2" y="0.0" width="301" height="38"/>
+                                                        <connections>
+                                                            <action selector="rotateActivityIndicator:" destination="BYZ-38-t0r" eventType="valueChanged" id="CTe-n5-yPd"/>
+                                                        </connections>
+                                                    </slider>
+                                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="IzO-Ib-DQu">
+                                                        <rect key="frame" x="317" y="0.0" width="37" height="37"/>
+                                                        <color key="tintColor" systemColor="labelColor"/>
+                                                        <color key="color" systemColor="systemPurpleColor"/>
+                                                    </activityIndicatorView>
+                                                </subviews>
+                                            </stackView>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NNN-1F-at6">
+                                                <rect key="frame" x="0.0" y="228" width="354" height="170"/>
+                                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+                                                <color key="textColor" systemColor="labelColor"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W9f-3k-Q4n">
+                                                <rect key="frame" x="0.0" y="438" width="354" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="aGv-4R-5fS">
+                                                <rect key="frame" x="0.0" y="498.5" width="354" height="24"/>
+                                                <color key="tintColor" systemColor="systemGray4Color"/>
+                                            </imageView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="wp0-kU-4b8">
+                                                <rect key="frame" x="0.0" y="562.5" width="354" height="40"/>
+                                                <subviews>
+                                                    <textField opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="749" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enable me" borderStyle="roundedRect" placeholder="Text field" textAlignment="natural" clearsOnBeginEditing="YES" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="Juj-gq-NVu">
+                                                        <rect key="frame" x="0.0" y="0.0" width="285" height="40"/>
+                                                        <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="40" id="kSJ-Sc-yll"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="2aJ-1h-1vj">
+                                                        <rect key="frame" x="305" y="4.5" width="51" height="31"/>
+                                                        <color key="onTintColor" name="AccentColor"/>
+                                                        <connections>
+                                                            <action selector="toggleTextField:" destination="BYZ-38-t0r" eventType="valueChanged" id="c2b-Fo-kyu"/>
+                                                        </connections>
+                                                    </switch>
+                                                </subviews>
+                                            </stackView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="73c-Xy-UWQ">
+                                                <rect key="frame" x="0.0" y="642.5" width="354" height="152.5"/>
+                                                <string key="text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="XfD-00-cAC">
+                                                <rect key="frame" x="0.0" y="835" width="354" height="24"/>
+                                                <color key="tintColor" systemColor="systemGray4Color"/>
+                                            </imageView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="FRI-vZ-Suo">
+                                                <rect key="frame" x="0.0" y="899" width="354" height="276"/>
+                                                <subviews>
+                                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="P52-4f-6lf">
+                                                        <rect key="frame" x="0.0" y="0.0" width="354" height="41"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="40" id="ujn-zZ-Pcv"/>
+                                                        </constraints>
+                                                        <segments>
+                                                            <segment title="First Segment"/>
+                                                            <segment title="Second segment"/>
+                                                        </segments>
+                                                        <connections>
+                                                            <action selector="changeDatePickerStyle:" destination="BYZ-38-t0r" eventType="valueChanged" id="d5X-kU-9l0"/>
+                                                        </connections>
+                                                    </segmentedControl>
+                                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="XGs-9g-XMz">
+                                                        <rect key="frame" x="0.0" y="60" width="354" height="216"/>
+                                                    </datePicker>
+                                                </subviews>
+                                            </stackView>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Yaa-hu-quS">
+                                                <rect key="frame" x="0.0" y="1215" width="354" height="24"/>
+                                                <color key="tintColor" systemColor="systemGray4Color"/>
+                                            </imageView>
+                                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="hQ1-am-2yh">
+                                                <rect key="frame" x="0.0" y="1279" width="354" height="500"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="500" id="ejb-MB-Bos"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.clipsToBounds" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="24"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </mapView>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tTH-Ha-1xL" userLabel="Spacer View">
+                                                <rect key="frame" x="0.0" y="1819" width="354" height="0.0"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" id="3bL-jB-p6u"/>
+                                                </constraints>
+                                            </view>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="QwP-ZP-xcb">
+                                                <rect key="frame" x="0.0" y="1859" width="354" height="32"/>
+                                                <color key="tintColor" name="AccentColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="32" id="ASJ-s9-lOd"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="hQ1-am-2yh" firstAttribute="width" secondItem="lP5-3a-gfG" secondAttribute="width" id="5GA-m4-Wcr"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                                <viewLayoutGuide key="safeArea" id="cKx-l3-Yrh"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="lP5-3a-gfG" secondAttribute="trailing" id="9DC-Xq-mxJ"/>
+                                    <constraint firstItem="5up-NG-7DP" firstAttribute="bottom" secondItem="lP5-3a-gfG" secondAttribute="bottom" constant="-70" id="CUx-RD-Ul9"/>
+                                    <constraint firstItem="lP5-3a-gfG" firstAttribute="top" secondItem="SAS-7K-iyc" secondAttribute="top" constant="40" id="h8B-RT-Tpg"/>
+                                    <constraint firstItem="lP5-3a-gfG" firstAttribute="centerX" secondItem="SAS-7K-iyc" secondAttribute="centerX" id="mK7-DH-GfT"/>
+                                    <constraint firstItem="lP5-3a-gfG" firstAttribute="leading" secondItem="5up-NG-7DP" secondAttribute="leading" constant="30" id="vCR-HM-Tmu"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="5up-NG-7DP"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="rvK-73-DzP"/>
+                                <connections>
+                                    <outlet property="delegate" destination="8bC-Xf-vdC" id="8ci-83-5vC"/>
+                                </connections>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemGray6Color"/>
+                        <constraints>
+                            <constraint firstItem="SAS-7K-iyc" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="IrY-9C-QZL"/>
+                            <constraint firstItem="SAS-7K-iyc" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="IvT-iK-ALs"/>
+                            <constraint firstItem="SAS-7K-iyc" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="k4r-PO-ytY"/>
+                            <constraint firstItem="SAS-7K-iyc" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="wX3-1W-V4u"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="🧬 Hierarchy Inspector" id="lPw-0c-guy">
+                        <barButtonItem key="rightBarButtonItem" id="JZf-2w-S1S">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="rjK-Zh-gDA" customClass="CustomButton" customModule="HierarchyInspectorExample" customModuleProvider="target">
+                                <rect key="frame" x="286" y="6" width="108" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" name="AccentColor"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                                <inset key="contentEdgeInsets" minX="6" minY="4" maxX="6" maxY="4"/>
+                                <state key="normal" title="🔍 Open">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="openInspector:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Fec-FG-0J6"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="activityIndicator" destination="IzO-Ib-DQu" id="lXr-09-qJ4"/>
+                        <outlet property="datePicker" destination="XGs-9g-XMz" id="Hwj-wf-pUL"/>
+                        <outlet property="datePickerSegmentedControl" destination="P52-4f-6lf" id="2zM-Bq-MOr"/>
+                        <outlet property="inspectBarButton" destination="rjK-Zh-gDA" id="6Oj-OG-4iq"/>
+                        <outlet property="inspectButton" destination="bmx-Wi-bnN" id="zbj-22-Skx"/>
+                        <outlet property="scrollView" destination="SAS-7K-iyc" id="Lac-y8-eJ1"/>
+                        <outlet property="textField" destination="Juj-gq-NVu" id="3KG-HR-xO3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1960.8695652173915" y="138.61607142857142"/>
+        </scene>
+        <!--Inspector-->
+        <scene sceneID="PL9-8R-fXx">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Vmb-ZK-Aaj" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Inspector" image="TabBarIcon" id="2Ki-oj-dQl"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="99r-xO-ddw">
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="M9f-TW-60a"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CBC-8l-sdM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1050.7246376811595" y="138.61607142857142"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="se2-LI-GOU">
+            <objects>
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="7XO-Xn-Xen" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="dIA-X3-9RI">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="Vmb-ZK-Aaj" kind="relationship" relationship="viewControllers" id="XVX-c3-Z5J"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="RdW-GK-GBi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="140.57971014492756" y="138.61607142857142"/>
+        </scene>
+    </scenes>
+    <color key="tintColor" name="AccentColor"/>
+    <resources>
+        <image name="TabBarIcon" width="25" height="24"/>
+        <namedColor name="AccentColor">
+            <color red="0.68599998950958252" green="0.32199999690055847" blue="0.87100005149841309" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray4Color">
+            <color red="0.81960784313725488" green="0.81960784313725488" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGray6Color">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemPurpleColor">
+            <color red="0.68627450980392157" green="0.32156862745098042" blue="0.87058823529411766" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemTealColor">
+            <color red="0.35294117647058826" green="0.78431372549019607" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
