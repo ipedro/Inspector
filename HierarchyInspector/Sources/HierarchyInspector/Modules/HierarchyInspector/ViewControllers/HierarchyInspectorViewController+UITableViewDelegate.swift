@@ -36,6 +36,10 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
         }
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        viewModel.heightForRow(at: indexPath)
+    }
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(HierarchyInspectorHeaderView.self)
         header.title = viewModel.titleForHeader(in: section)
@@ -44,8 +48,18 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.selectRow(at: indexPath)
-        close()
+        guard let viewHierarchyReference = viewModel.selectRow(at: indexPath) else {
+            dismiss(animated: true)
+            return
+        }
+        
+        dismiss(animated: false) { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            self.delegate?.hierarchyInspectorViewController(self, didSelect: viewHierarchyReference)
+        }
     }
     
 }

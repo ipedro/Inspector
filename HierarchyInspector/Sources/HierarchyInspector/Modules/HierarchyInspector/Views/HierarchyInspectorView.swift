@@ -83,6 +83,24 @@ final class HierarchyInspectorView: BaseView {
         ]
     )
     
+    @objc func updateTableViewHeight() {
+        let height = round(tableViewContentSize.height + tableView.contentInset.verticalInsets)
+        
+        guard tableViewHeightConstraint.constant != height else {
+            return
+        }
+        
+        tableViewHeightConstraint.constant = height
+    }
+    
+    var tableViewContentSize: CGSize = .zero {
+        didSet {
+            Self.cancelPreviousPerformRequests(withTarget: self, selector: #selector(updateTableViewHeight), object: nil)
+            perform(#selector(updateTableViewHeight), with: nil, afterDelay: 0.01)
+            
+        }
+    }
+    
     private lazy var tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: .zero).then {
         $0.priority = .defaultLow
         $0.isActive = true
@@ -115,12 +133,17 @@ final class HierarchyInspectorView: BaseView {
         
         contentView.addSubview(blurView)
         
-        NSLayoutConstraint.activate([
+        [
             blurView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: verticalMargin),
             blurView.leadingAnchor.constraint(equalTo: readableContentGuide.leadingAnchor, constant: horizontalMargin),
             blurView.trailingAnchor.constraint(equalTo: readableContentGuide.trailingAnchor, constant: -horizontalMargin),
             bottomAnchorConstraint
-        ])
+        ]
+        .forEach {
+            $0.priority = .defaultHigh
+            $0.isActive = true
+        }
+        
     }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
@@ -135,15 +158,6 @@ final class HierarchyInspectorView: BaseView {
         }
         
         return false
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        tableViewHeightConstraint.constant =
-            tableView.contentSize.height +
-            tableView.contentInset.top +
-            tableView.contentInset.bottom
     }
     
     func animate(
@@ -162,5 +176,11 @@ final class HierarchyInspectorView: BaseView {
         ) {
             self.transform = animation.endTransform
         }
+    }
+}
+
+fileprivate extension UIEdgeInsets {
+    var verticalInsets: CGFloat {
+        top + bottom
     }
 }

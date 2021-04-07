@@ -19,6 +19,23 @@ final class HierarchyInspectorTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private let defaultLayoutMargins: NSDirectionalEdgeInsets = .allMargins(ElementInspector.appearance.horizontalMargins)
+    
+    var viewModel: HierarchyInspectorCellViewModelProtocol? {
+        didSet {
+            textLabel?.text         = viewModel?.title
+            textLabel?.font         = viewModel?.titleFont
+            detailTextLabel?.text   = viewModel?.subtitle
+            imageView?.image        = viewModel?.image
+            
+            let depth = CGFloat(viewModel?.depth ?? 0)
+            var margins = defaultLayoutMargins
+            margins.leading += depth * 5
+            
+            directionalLayoutMargins = margins
+        }
+    }
+    
     func setup() {
         backgroundView = UIView()
         

@@ -40,6 +40,29 @@ extension HierarchyInspector {
             
             viewHierarchyLayersCoordinator.invalidate()
         }
+        
+        func present(animated: Bool) {
+            guard
+                let viewHierarchySnapshot = viewHierarchySnapshot,
+                let hostViewController = hostViewController
+            else {
+                #warning("TODO: handle error")
+                return
+            }
+            
+            let viewModel = HierarchyInspectorViewModel(
+                layerActionGroupsProvider: { self.availableActions },
+                snapshot: viewHierarchySnapshot
+            )
+            
+            let viewController = HierarchyInspectorViewController.create(viewModel: viewModel).then {
+                $0.modalPresentationStyle = .overCurrentContext
+                $0.modalTransitionStyle = .crossDissolve
+                $0.delegate = self
+            }
+            
+            hostViewController.present(viewController, animated: animated)
+        }
     }
 }
 
@@ -76,7 +99,7 @@ extension HierarchyInspector.Manager {
         }
         
         guard let cachedSnapshot = cachedViewHierarchySnapshot, Date() <= cachedSnapshot.expiryDate else {
-            guard let snapshot = makeSnapshot() else {
+            guard let snapshot = makeViewHierarchySnapshot() else {
                 Console.print("\(hostViewController.classForCoder) could not caculate snapshot")
                 return nil
             }
@@ -99,12 +122,12 @@ extension HierarchyInspector.Manager {
         hostViewController?.hierarchyInspectorLayers.uniqueValues ?? [.allViews]
     }
     
-    private func makeSnapshot() -> ViewHierarchySnapshot? {
-        guard let hostView = hostViewController?.view else {
+    private func makeViewHierarchySnapshot() -> ViewHierarchySnapshot? {
+        guard let hostWindow = hostViewController?.view.window else {
             return nil
         }
         
-        let snapshot = ViewHierarchySnapshot(availableLayers: viewHierarchyLayers, in: hostView)
+        let snapshot = ViewHierarchySnapshot(availableLayers: viewHierarchyLayers, in: hostWindow)
         
         return snapshot
     }

@@ -12,12 +12,12 @@ protocol HierarchyInspectorViewModelProtocol: HierarchyInspectorViewModelSection
     var searchQuery: String? { get set }
 }
 
-struct HierarchyInspectorCellViewModel {
-    var title: String
-    var titleFont: UIFont
-    var subtitle: String?
-    var image: UIImage?
-    var depth: Int
+protocol HierarchyInspectorCellViewModelProtocol {
+    var title: String { get }
+    var titleFont: UIFont { get }
+    var subtitle: String? { get }
+    var image: UIImage? { get }
+    var depth: Int { get }
 }
 
 protocol HierarchyInspectorViewModelSectionProtocol {
@@ -29,9 +29,11 @@ protocol HierarchyInspectorViewModelSectionProtocol {
     
     func titleForHeader(in section: Int) -> String?
     
-    func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel
+    func heightForRow(at indexPath: IndexPath) -> CGFloat
     
-    func selectRow(at indexPath: IndexPath)
+    func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModelProtocol
+    
+    func selectRow(at indexPath: IndexPath) -> ViewHierarchyReference?
     
     func loadData()
 }
@@ -84,7 +86,7 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
         }
     }
     
-    func selectRow(at indexPath: IndexPath) {
+    func selectRow(at indexPath: IndexPath) -> ViewHierarchyReference? {
         switch isSearching {
         case true:
             return snapshotViewModel.selectRow(at: indexPath)
@@ -124,7 +126,7 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
         }
     }
     
-    func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
+    func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModelProtocol {
         switch isSearching {
         case true:
             return snapshotViewModel.cellViewModelForRow(at: indexPath)
@@ -133,10 +135,29 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
             return layerActionsViewModel.cellViewModelForRow(at: indexPath)
         }
     }
+    
+    func heightForRow(at indexPath: IndexPath) -> CGFloat {
+        switch isSearching {
+        case true:
+            return snapshotViewModel.heightForRow(at: indexPath)
+            
+        case false:
+            return layerActionsViewModel.heightForRow(at: indexPath)
+        }
+    }
 }
 
 extension HierarchyInspectorViewModel {
     final class LayerActionsViewModel: HierarchyInspectorViewModelSectionProtocol {
+        
+        struct CellViewModel: HierarchyInspectorCellViewModelProtocol {
+            let title: String
+            let titleFont: UIFont = .preferredFont(forTextStyle: .callout)
+            let subtitle: String? = nil
+            let image: UIImage? = nil
+            let depth: Int = 0
+        }
+        
         private(set) lazy var layerActionGroups = ActionGroups()
         
         let layerActionGroupsProvider: () -> ActionGroups
@@ -159,8 +180,10 @@ extension HierarchyInspectorViewModel {
             layerActionGroups = layerActionGroupsProvider()
         }
         
-        func selectRow(at indexPath: IndexPath) {
+        func selectRow(at indexPath: IndexPath) -> ViewHierarchyReference? {
             action(at: indexPath).closure?()
+            
+            return nil
         }
         
         var numberOfSections: Int {
@@ -175,17 +198,13 @@ extension HierarchyInspectorViewModel {
             actionGroup(in: section).title
         }
         
-        func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
+        func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModelProtocol {
             let action = self.action(at: indexPath)
             
-            return HierarchyInspectorCellViewModel(
-                title: action.title,
-                titleFont: .preferredFont(forTextStyle: .callout),
-                subtitle: nil,
-                image: nil,
-                depth: 0
-            )
+            return CellViewModel(title: action.title)
         }
+        
+        func heightForRow(at indexPath: IndexPath) -> CGFloat { 44 }
         
         private func actionGroup(in section: Int) -> ActionGroup {
             layerActionGroups[section]
@@ -199,6 +218,16 @@ extension HierarchyInspectorViewModel {
 
 extension HierarchyInspectorViewModel {
     final class SnapshotViewModel: HierarchyInspectorViewModelSectionProtocol {
+        
+        struct CellViewModel: HierarchyInspectorCellViewModelProtocol {
+            let title: String
+            let titleFont: UIFont = .preferredFont(forTextStyle: .footnote)
+            let subtitle: String?
+            let image: UIImage?
+            let depth: Int
+            let reference: ViewHierarchyReference
+        }
+        
         var searchQuery: String? {
             didSet {
                 loadData()
@@ -207,7 +236,7 @@ extension HierarchyInspectorViewModel {
         
         let snapshot: ViewHierarchySnapshot
         
-        private var searchResults = [HierarchyInspectorCellViewModel]()
+        private var searchResults = [CellViewModel]()
         
         init(snapshot: ViewHierarchySnapshot) {
             self.snapshot = snapshot
@@ -217,8 +246,8 @@ extension HierarchyInspectorViewModel {
         
         let numberOfSections = 1
         
-        func selectRow(at indexPath: IndexPath) {
-            Console.print(indexPath)
+        func selectRow(at indexPath: IndexPath) ->ViewHierarchyReference? {
+            searchResults[indexPath.row].reference
         }
         
         func numberOfRows(in section: Int) -> Int {
@@ -229,9 +258,11 @@ extension HierarchyInspectorViewModel {
             "\(searchResults.count) Search results in \(snapshot.viewHierarchy.elementName)"
         }
         
-        func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
+        func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModelProtocol {
             searchResults[indexPath.row]
         }
+        
+        func heightForRow(at indexPath: IndexPath) -> CGFloat { 66 }
         
         func loadData() {
             guard let searchQuery = searchQuery else {
@@ -243,7 +274,7 @@ extension HierarchyInspectorViewModel {
             
             searchResults = flattenedViewHierarchy.filter {
                 $0.elementName.localizedCaseInsensitiveContains(searchQuery)
-            }.map({ element -> HierarchyInspectorCellViewModel in
+            }.map({ element -> CellViewModel in
                 
                 let title: String = {
                     if
@@ -277,12 +308,12 @@ extension HierarchyInspectorViewModel {
                     return firstMatch.image
                 }()
                 
-                return HierarchyInspectorCellViewModel(
+                return CellViewModel(
                     title: title,
-                    titleFont: .preferredFont(forTextStyle: .footnote),
                     subtitle: element.elementDescription,
                     image: image,
-                    depth: element.depth
+                    depth: element.depth,
+                    reference: element
                 )
             })
         }

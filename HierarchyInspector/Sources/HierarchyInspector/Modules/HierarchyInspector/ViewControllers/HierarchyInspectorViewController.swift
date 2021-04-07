@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol HierarchyInspectorViewControllerDelegate: AnyObject {
+    func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController, didSelect viewHierarchyReference: ViewHierarchyReference)
+}
+
 final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatable {
 
     static func create(viewModel: HierarchyInspectorViewModelProtocol) -> HierarchyInspectorViewController {
@@ -15,6 +19,8 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         
         return viewController
     }
+    
+    weak var delegate: HierarchyInspectorViewControllerDelegate?
     
     private(set) var viewModel: HierarchyInspectorViewModelProtocol!
     
@@ -39,6 +45,8 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        viewCode.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow(_:)),
@@ -52,6 +60,21 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
             name: UIResponder.keyboardWillHideNotification,
             object: nil
         )
+    }
+    
+    deinit {
+        viewCode.tableView.removeObserver(self, forKeyPath: .contentSize, context: nil)
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        guard
+            keyPath == .contentSize,
+            let contentSize = change?[.newKey] as? CGSize
+        else {
+            return
+        }
+        
+        viewCode.tableViewContentSize = contentSize
     }
     
     override var canBecomeFirstResponder: Bool {
@@ -84,16 +107,19 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         viewCode.searchView.separatorView.isSafelyHidden = viewModel.isEmpty
         
         viewCode.tableView.isSafelyHidden = viewModel.isEmpty
-        
+                
+        viewCode.layoutIfNeeded()
         viewCode.tableView.reloadData()
     }
     
-    func close() {
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
         view.endEditing(true)
         
-        dismiss(animated: true)
+        super.dismiss(animated: flag, completion: completion)
         
-        viewCode.animate(.out)
+        if flag  {
+            viewCode.animate(.out)
+        }
     }
 }
 
@@ -128,6 +154,10 @@ extension HierarchyInspectorViewController: HierarchyInspectorViewDelegate {
         
         isClosing = true
         
-        close()
+        dismiss(animated: true)
     }
+}
+
+fileprivate extension String {
+    static let contentSize = "contentSize"
 }
