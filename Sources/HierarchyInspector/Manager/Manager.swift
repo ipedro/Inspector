@@ -44,12 +44,13 @@ extension HierarchyInspector {
         }
         
         func present(animated: Bool) {
-            asyncOperation(name: "present") { [weak self] in
+            asyncOperation { [weak self] in
                 guard
                     let self = self,
                     let hostViewController = self.hostViewController,
-                    let windowHierarchySnapshot = self.makeWindowHierarchySnapshot() else {
-                    #warning("TODO: handle error?")
+                    hostViewController.presentingViewController == nil,
+                    let windowHierarchySnapshot = self.makeWindowHierarchySnapshot()
+                else {
                     return
                 }
                 
@@ -151,7 +152,7 @@ extension HierarchyInspector.Manager {
 
 extension HierarchyInspector.Manager: AsyncOperationProtocol {
     
-    func asyncOperation(name: String, execute closure: @escaping Closure) {
+    func asyncOperation(name: String = #function, execute closure: @escaping Closure) {
         let asyncOperation = MainThreadAsyncOperation(name: name, closure: closure)
         
         operationQueue.addOperation(asyncOperation)

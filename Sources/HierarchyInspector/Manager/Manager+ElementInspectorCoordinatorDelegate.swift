@@ -35,7 +35,7 @@ extension HierarchyInspector.Manager {
             return
         }
         
-        asyncOperation(name: "presentElementInspector") { [weak self] in
+        asyncOperation { [weak self] in
             guard let self = self else {
                 return
             }
