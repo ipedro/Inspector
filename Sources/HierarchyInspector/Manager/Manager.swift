@@ -123,11 +123,11 @@ extension HierarchyInspector.Manager {
     }
     
     private func makeViewHierarchySnapshot() -> ViewHierarchySnapshot? {
-        guard let hostWindow = hostViewController?.view.window else {
+        guard let hostView = hostViewController?.view else {
             return nil
         }
         
-        let snapshot = ViewHierarchySnapshot(availableLayers: viewHierarchyLayers, in: hostWindow)
+        let snapshot = ViewHierarchySnapshot(availableLayers: viewHierarchyLayers, in: hostView)
         
         return snapshot
     }
