@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "HierarchyInspector",
+        "repositoryURL": "/Users/pedro/Developer/HierarchyInspector",
+        "state": {
+          "branch": "develop",
+          "revision": "b47d0f9f3c7aec025ede7f56fe63e7698d7ddb88",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

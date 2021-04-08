@@ -14,7 +14,7 @@
 		EB5E1FE7261A48EC002301F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE6261A48EC002301F5 /* Assets.xcassets */; };
 		EB5E1FEA261A48EC002301F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE8261A48EC002301F5 /* LaunchScreen.storyboard */; };
 		EB5E2004261A4EC9002301F5 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E2003261A4EC9002301F5 /* CustomButton.swift */; };
-		EB5E2013261A50B8002301F5 /* HierarchyInspector in Frameworks */ = {isa = PBXBuildFile; productRef = EB5E2012261A50B8002301F5 /* HierarchyInspector */; };
+		EBAB46C0261F7ED500375668 /* HierarchyInspector in Frameworks */ = {isa = PBXBuildFile; productRef = EBAB46BF261F7ED500375668 /* HierarchyInspector */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,7 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB5E2013261A50B8002301F5 /* HierarchyInspector in Frameworks */,
+				EBAB46C0261F7ED500375668 /* HierarchyInspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,7 +89,7 @@
 			);
 			name = HierarchyInspectorExample;
 			packageProductDependencies = (
-				EB5E2012261A50B8002301F5 /* HierarchyInspector */,
+				EBAB46BF261F7ED500375668 /* HierarchyInspector */,
 			);
 			productName = HierarchyInspectorExample;
 			productReference = EB5E1FDA261A48EB002301F5 /* HierarchyInspectorExample.app */;
@@ -119,7 +119,7 @@
 			);
 			mainGroup = EB5E1FD1261A48EB002301F5;
 			packageReferences = (
-				EB5E2011261A50B8002301F5 /* XCRemoteSwiftPackageReference "HierarchyInspector" */,
+				EBAB46BE261F7ED500375668 /* XCRemoteSwiftPackageReference "HierarchyInspector" */,
 			);
 			productRefGroup = EB5E1FDB261A48EB002301F5 /* Products */;
 			projectDirPath = "";
@@ -359,9 +359,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		EB5E2011261A50B8002301F5 /* XCRemoteSwiftPackageReference "HierarchyInspector" */ = {
+		EBAB46BE261F7ED500375668 /* XCRemoteSwiftPackageReference "HierarchyInspector" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "file:///Users/pedro/Developer/HierarchyInspector/";
+			repositoryURL = "file:///Users/pedro/Developer/HierarchyInspector";
 			requirement = {
 				branch = develop;
 				kind = branch;
@@ -370,9 +370,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EB5E2012261A50B8002301F5 /* HierarchyInspector */ = {
+		EBAB46BF261F7ED500375668 /* HierarchyInspector */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EB5E2011261A50B8002301F5 /* XCRemoteSwiftPackageReference "HierarchyInspector" */;
+			package = EBAB46BE261F7ED500375668 /* XCRemoteSwiftPackageReference "HierarchyInspector" */;
 			productName = HierarchyInspector;
 		};
 /* End XCSwiftPackageProductDependency section */
