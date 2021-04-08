@@ -29,6 +29,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         
         $0.searchView.textField.addTarget(self, action: #selector(search(_:)), for: .allEditingEvents)
         
+        $0.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
         $0.tableView.register(HierarchyInspectorTableViewCell.self)
         $0.tableView.registerHeaderFooter(HierarchyInspectorHeaderView.self)
         $0.tableView.delegate = self
@@ -46,8 +47,6 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewCode.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
-
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow(_:)),
