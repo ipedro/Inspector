@@ -181,7 +181,11 @@ extension HierarchyInspectorViewModel {
         }
         
         func selectRow(at indexPath: IndexPath) -> ViewHierarchyReference? {
-            action(at: indexPath).closure?()
+            let selectedAction = action(at: indexPath)
+            
+            DispatchQueue.main.async {
+                selectedAction.closure?()
+            }
             
             return nil
         }

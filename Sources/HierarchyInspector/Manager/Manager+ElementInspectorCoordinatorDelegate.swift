@@ -35,18 +35,24 @@ extension HierarchyInspector.Manager {
             return
         }
         
-        let windowReference = ViewHierarchyReference(root: window)
-        
-        let coordinator = ElementInspectorCoordinator(reference: reference, rootReference: windowReference).then {
-            $0.delegate = self
+        asyncOperation(name: "presentElementInspector") { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            let windowReference = ViewHierarchyReference(root: window)
+            
+            let coordinator = ElementInspectorCoordinator(reference: reference, rootReference: windowReference).then {
+                $0.delegate = self
+            }
+            
+            self.elementInspectorCoordinator = coordinator
+            
+            let elementInspectorNavigationController = coordinator.start()
+            elementInspectorNavigationController.popoverPresentationController?.sourceView = sourceView
+            
+            hostViewController.present(elementInspectorNavigationController, animated: animated)
         }
-        
-        elementInspectorCoordinator = coordinator
-        
-        let elementInspectorNavigationController = coordinator.start()
-        elementInspectorNavigationController.popoverPresentationController?.sourceView = sourceView
-        
-        hostViewController.present(elementInspectorNavigationController, animated: animated)
     }
 
 }

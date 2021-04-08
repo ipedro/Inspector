@@ -25,13 +25,14 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     private(set) var viewModel: HierarchyInspectorViewModelProtocol!
     
     private(set) lazy var viewCode = HierarchyInspectorView().then {
+        $0.delegate = self
+        
         $0.searchView.textField.addTarget(self, action: #selector(search(_:)), for: .allEditingEvents)
         
         $0.tableView.register(HierarchyInspectorTableViewCell.self)
         $0.tableView.registerHeaderFooter(HierarchyInspectorHeaderView.self)
         $0.tableView.delegate = self
         $0.tableView.dataSource = self
-        $0.delegate = self
     }
     
     private var needsSetup = true
@@ -109,6 +110,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         viewCode.tableView.isSafelyHidden = viewModel.isEmpty
                 
         viewCode.layoutIfNeeded()
+        
         viewCode.tableView.reloadData()
     }
     

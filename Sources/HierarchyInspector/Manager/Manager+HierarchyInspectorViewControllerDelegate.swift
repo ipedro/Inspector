@@ -10,6 +10,7 @@ import UIKit
 extension HierarchyInspector.Manager: HierarchyInspectorViewControllerDelegate {
     
     func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController, didSelect viewHierarchyReference: ViewHierarchyReference) {
+        
         presentElementInspector(
             for: viewHierarchyReference,
             animated: true,

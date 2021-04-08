@@ -8,5 +8,7 @@
 import Foundation
 
 protocol AsyncOperationProtocol {
+    var operationQueue: OperationQueue { get }
+    
     func asyncOperation(name: String, execute closure: @escaping Closure)
 }

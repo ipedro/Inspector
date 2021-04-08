@@ -163,7 +163,8 @@ final class HierarchyInspectorView: BaseView {
     func animate(
         _ animation: Animation,
         duration: TimeInterval = CATransaction.animationDuration(),
-        delay: TimeInterval = .zero
+        delay: TimeInterval = .zero,
+        completion: ((Bool) -> Void)? = nil
     ) {
         transform = animation.startTransform
         
@@ -172,10 +173,10 @@ final class HierarchyInspectorView: BaseView {
             delay: delay,
             usingSpringWithDamping: animation.damping,
             initialSpringVelocity: animation.velocity,
-            options: animation.options
-        ) {
-            self.transform = animation.endTransform
-        }
+            options: animation.options,
+            animations: { self.transform = animation.endTransform },
+            completion: completion
+        )
     }
 }
 

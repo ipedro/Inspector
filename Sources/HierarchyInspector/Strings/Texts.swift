@@ -17,7 +17,7 @@ enum Texts {
         "\(viewCount) inspectable views in \(className)"
     }
     
-    static let layers = "View Hierarchy Layers"
+    static let highlightViews = "Highlight Views"
     
     static let closeInspector = "Close"
     

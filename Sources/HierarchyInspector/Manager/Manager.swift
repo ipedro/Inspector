@@ -10,6 +10,8 @@ import UIKit
 extension HierarchyInspector {
     public final class Manager: Create {
         
+        lazy var operationQueue: OperationQueue = OperationQueue.main
+        
         var elementInspectorCoordinator: ElementInspectorCoordinator?
         
         private(set) lazy var viewHierarchyLayersCoordinator = ViewHierarchyLayersCoordinator().then {
@@ -42,26 +44,28 @@ extension HierarchyInspector {
         }
         
         func present(animated: Bool) {
-            guard
-                let viewHierarchySnapshot = viewHierarchySnapshot,
-                let hostViewController = hostViewController
-            else {
-                #warning("TODO: handle error")
-                return
+            asyncOperation(name: "present") { [weak self] in
+                guard
+                    let self = self,
+                    let hostViewController = self.hostViewController,
+                    let windowHierarchySnapshot = self.makeWindowHierarchySnapshot() else {
+                    #warning("TODO: handle error?")
+                    return
+                }
+                
+                let viewModel = HierarchyInspectorViewModel(
+                    layerActionGroupsProvider: { self.availableActions },
+                    snapshot: windowHierarchySnapshot
+                )
+                
+                let viewController = HierarchyInspectorViewController.create(viewModel: viewModel).then {
+                    $0.modalPresentationStyle = .overCurrentContext
+                    $0.modalTransitionStyle = .crossDissolve
+                    $0.delegate = self
+                }
+                
+                hostViewController.present(viewController, animated: animated)
             }
-            
-            let viewModel = HierarchyInspectorViewModel(
-                layerActionGroupsProvider: { self.availableActions },
-                snapshot: viewHierarchySnapshot
-            )
-            
-            let viewController = HierarchyInspectorViewController.create(viewModel: viewModel).then {
-                $0.modalPresentationStyle = .overCurrentContext
-                $0.modalTransitionStyle = .crossDissolve
-                $0.delegate = self
-            }
-            
-            hostViewController.present(viewController, animated: animated)
         }
     }
 }
@@ -130,5 +134,26 @@ extension HierarchyInspector.Manager {
         let snapshot = ViewHierarchySnapshot(availableLayers: viewHierarchyLayers, in: hostView)
         
         return snapshot
+    }
+    
+    private func makeWindowHierarchySnapshot() -> ViewHierarchySnapshot? {
+        guard let hostWindow = hostViewController?.view.window else {
+            return nil
+        }
+        
+        let snapshot = ViewHierarchySnapshot(availableLayers: viewHierarchyLayers, in: hostWindow)
+        
+        return snapshot
+    }
+}
+
+// MARK: - AsyncOperationProtocol
+
+extension HierarchyInspector.Manager: AsyncOperationProtocol {
+    
+    func asyncOperation(name: String, execute closure: @escaping Closure) {
+        let asyncOperation = MainThreadAsyncOperation(name: name, closure: closure)
+        
+        operationQueue.addOperation(asyncOperation)
     }
 }

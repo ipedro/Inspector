@@ -21,7 +21,7 @@ extension ViewHierarchyLayersCoordinator: LayerActionProtocol {
         actions.append(layerAction(.internalViews, isEmpty: false))
         
         return ActionGroup(
-            title: actions.isEmpty ? Texts.noLayers : Texts.layers,
+            title: actions.isEmpty ? Texts.noLayers : Texts.highlightViews,
             actions: Array(actions.prefix(maxCount))
         )
     }
