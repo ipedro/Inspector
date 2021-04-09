@@ -24,8 +24,6 @@ extension ElementInspector.ViewHierarchyPanelViewController: UITableViewDelegate
         }
         
         self.delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference, from: self.viewModel.rootReference)
-        
-        viewModel.clearCachedThumbnail(for: indexPath)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -42,8 +40,6 @@ extension ElementInspector.ViewHierarchyPanelViewController: UITableViewDelegate
         }
         
         delegate?.viewHierarchyListViewController(self, didSegueTo: selectedItemViewModel.reference, from: viewModel.rootReference)
-        
-        viewModel.clearCachedThumbnail(for: indexPath)
     }
     
     private func toggleContainer(at indexPath: IndexPath) {

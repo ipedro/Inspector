@@ -72,6 +72,27 @@ final class ViewHierarchyReference {
         
         canHostInspectorView = root.canHostInspectorView
     }
+    
+    func iconImage(with: CGSize) -> UIImage? {
+        guard let view = view else {
+            return nil
+        }
+        
+        if
+            let imageView = view as? UIImageView,
+            let image = imageView.image
+        {
+            return image.resized(with)
+        }
+        
+        let matches = AttributesInspectorSection.allCases(matching: view)
+        
+        guard let firstMatch = matches.first else {
+            return nil
+        }
+        
+        return firstMatch.image
+    }
 }
 
 // MARK: - ViewHierarchyProtocol {

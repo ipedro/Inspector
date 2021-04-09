@@ -27,13 +27,13 @@ extension ElementInspector {
                 origin: .zero,
                 size: ElementInspector.appearance.panelPreferredCompressedSize
             )
-        )
-        
-        var viewModel: ViewHierarchyInspectorViewModelProtocol! {
-            didSet {
-                viewModel.delegate = self
-            }
+        ).then {
+            $0.tableView.dataSource = self
+            $0.tableView.delegate = self
+            $0.tableView.reloadData()
         }
+        
+        var viewModel: ViewHierarchyInspectorViewModelProtocol!
         
         // MARK: - Init
         
@@ -60,14 +60,6 @@ extension ElementInspector {
             updatePreferredContentSize()
         }
         
-        override func viewDidAppear(_ animated: Bool) {
-            super.viewDidAppear(animated)
-            
-            viewModel.loadOperations().forEach {
-                delegate?.addOperationToQueue($0)
-            }
-        }
-        
         func calculatePreferredContentSize() -> CGSize {
             let contentHeight = viewCode.tableView.estimatedRowHeight * CGFloat(viewModel.numberOfRows)
             let contentInset  = viewCode.tableView.contentInset
@@ -78,15 +70,5 @@ extension ElementInspector {
             )
         }
         
-    }
-}
-
-extension ElementInspector.ViewHierarchyPanelViewController: ViewHierarchyInspectorViewModelDelegate {
-    func viewHierarchyListViewModelDidLoad(_ viewModel: ViewHierarchyInspectorViewModelProtocol) {
-        viewCode.activityIndicatorView.stopAnimating()
-        
-        viewCode.tableView.dataSource = self
-        viewCode.tableView.delegate = self
-        viewCode.tableView.reloadData()
     }
 }

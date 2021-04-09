@@ -9,14 +9,8 @@ import UIKit
 
 final class ViewHierarchyInspectorViewCode: BaseView {
     
-    private(set) lazy var activityIndicatorView = UIActivityIndicatorView(style: .whiteLarge).then {
-        $0.color = ElementInspector.appearance.tertiaryTextColor
-        $0.startAnimating()
-    }
-    
     private(set) lazy var tableView = UITableView().then {
         $0.register(ViewHierarchyInspectorTableViewCodeCell.self)
-        $0.backgroundView     = activityIndicatorView
         $0.backgroundColor    = backgroundColor
         $0.isOpaque           = true
         $0.rowHeight          = UITableView.automaticDimension

@@ -44,7 +44,8 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
 
             // Containers Insets
 
-            let offset = ElementInspector.appearance.horizontalMargins * (CGFloat(viewModel?.relativeDepth ?? 0) + 1)
+            let relativeDepth = CGFloat(viewModel?.relativeDepth ?? 0)
+            let offset = (ElementInspector.appearance.verticalMargins * relativeDepth) + ElementInspector.appearance.horizontalMargins
 
             separatorInset = UIEdgeInsets(top: 0, left: offset, bottom: 0, right: 0)
             directionalLayoutMargins = .margins(leading: offset)
@@ -120,22 +121,24 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         $0.tintColor   = ElementInspector.appearance.thumbnailBackgroundStyle.contrastingColor
     }
         
-    private lazy var thumbnailContainerView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)).then {
+    private lazy var thumbnailContainerView = UIView().then {
         $0.installView(thumbnailImageView, .centerXY)
+        
+        let appearance = ElementInspector.appearance
         
         $0.layer.shouldRasterize = true
         
         $0.layer.rasterizationScale = UIScreen.main.scale
         
-        $0.backgroundColor = ElementInspector.appearance.thumbnailBackgroundStyle.color
+        $0.backgroundColor = appearance.quaternaryTextColor
         
         $0.clipsToBounds = true
         
-        $0.layer.cornerRadius = ElementInspector.appearance.verticalMargins
+        $0.layer.cornerRadius = appearance.verticalMargins
         
-        $0.heightAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins * 2).isActive = true
+        $0.heightAnchor.constraint(equalToConstant: appearance.horizontalMargins * 2).isActive = true
         
-        $0.widthAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins * 2.4).isActive = true
+        $0.widthAnchor.constraint(equalTo: $0.heightAnchor).isActive = true
     }
     
     private lazy var containerStackView = UIStackView(
@@ -153,9 +156,9 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
             thumbnailContainerView,
             descriptionLabel
         ],
-        spacing: ElementInspector.appearance.verticalMargins / 2
+        spacing: ElementInspector.appearance.verticalMargins
     ).then {
-        $0.alignment = .top
+        $0.alignment = .center
     }
     
     private lazy var customSelectedBackgroundView = UIView().then {

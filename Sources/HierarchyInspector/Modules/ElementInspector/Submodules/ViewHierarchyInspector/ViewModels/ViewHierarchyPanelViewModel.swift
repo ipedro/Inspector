@@ -14,8 +14,6 @@ protocol ElementInspectorViewHierarchyPanelViewModelProtocol: AnyObject {
     
     var thumbnailImage: UIImage? { get }
     
-    var hasCachedThumbnailImage: Bool { get }
-    
     var title: String { get }
     
     var titleFont: UIFont { get }
@@ -31,8 +29,6 @@ protocol ElementInspectorViewHierarchyPanelViewModelProtocol: AnyObject {
     var showDisclosureIndicator: Bool { get }
     
     var relativeDepth: Int { get }
-    
-    func clearCachedThumbnail()
 }
 
 extension ElementInspector {
@@ -50,6 +46,10 @@ extension ElementInspector {
         
         let rootDepth: Int
         
+        
+        
+        private(set) lazy var thumbnailImage: UIImage? = reference.iconImage(with: Self.thumbSize)
+        
         // MARK: - Properties
         
         let reference: ViewHierarchyReference
@@ -58,8 +58,6 @@ extension ElementInspector {
             width: ElementInspector.appearance.horizontalMargins * 2,
             height: ElementInspector.appearance.horizontalMargins * 2
         )
-        
-        var cachedThumbnailImage: UIImage?
         
         init(
             reference: ViewHierarchyReference,
@@ -87,7 +85,7 @@ extension ElementInspector.ViewHierarchyPanelViewModel: ElementInspectorViewHier
     }
     
     var showDisclosureIndicator: Bool {
-        relativeDepth >= 5 && isContainer
+        false
     }
     
     var isCollapsed: Bool {
@@ -111,35 +109,6 @@ extension ElementInspector.ViewHierarchyPanelViewModel: ElementInspectorViewHier
         reference.depth - rootDepth
     }
     
-    var thumbnailImage: UIImage? {
-        cachedThumbnailImage
-    }
-    
-    var hasCachedThumbnailImage: Bool {
-        cachedThumbnailImage != nil
-    }
-    
-    func clearCachedThumbnail() {
-        cachedThumbnailImage = nil
-    }
-    
-    func loadThumbnail() {
-        guard cachedThumbnailImage == nil else {
-            return
-        }
-        
-        guard let referenceView = reference.view else {
-            cachedThumbnailImage = Self.thumbnailImageLostConnection
-            return
-        }
-        
-        guard referenceView.isHidden == false, referenceView.frame.isEmpty == false else {
-            cachedThumbnailImage = Self.thumbnailImageIsHidden
-            return
-        }
-        
-        cachedThumbnailImage = referenceView.snapshot(afterScreenUpdates: false, with: Self.thumbSize)
-    }
 }
 
 // MARK: - Hashable

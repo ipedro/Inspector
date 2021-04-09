@@ -7,13 +7,7 @@
 
 import UIKit
 
-protocol ViewHierarchyInspectorViewModelDelegate: AnyObject {
-    func viewHierarchyListViewModelDidLoad(_ viewModel: ViewHierarchyInspectorViewModelProtocol)
-}
-
 protocol ViewHierarchyInspectorViewModelProtocol {
-    var delegate: ViewHierarchyInspectorViewModelDelegate? { get set }
-    
     var title: String { get }
     
     var rootReference: ViewHierarchyReference { get }
@@ -26,15 +20,9 @@ protocol ViewHierarchyInspectorViewModelProtocol {
     /// - Parameter indexPath: row with
     /// - Returns: Actions related to affected index paths
     func toggleContainer(at indexPath: IndexPath) -> [ElementInspector.ViewHierarchyInspectorAction]
-    
-    func clearCachedThumbnail(for indexPath: IndexPath)
-    
-    func loadOperations() -> [MainThreadOperation]
 }
 
 final class ViewHierarchyInspectorViewModel: NSObject {
-    var delegate: ViewHierarchyInspectorViewModelDelegate?
-    
     let rootReference: ViewHierarchyReference
     
     private(set) var childViewModels: [ElementInspector.ViewHierarchyPanelViewModel] {
@@ -52,7 +40,7 @@ final class ViewHierarchyInspectorViewModel: NSObject {
             reference: reference,
             parent: parent,
             rootDepth: rootDepth,
-            isCollapsed: reference.depth > rootDepth + 1
+            isCollapsed: reference.depth > rootDepth + 5
         )
         
         let childrenViewModels: [[ElementInspector.ViewHierarchyPanelViewModel]] = reference.children.map {
@@ -80,58 +68,12 @@ final class ViewHierarchyInspectorViewModel: NSObject {
 }
 
 extension ViewHierarchyInspectorViewModel: ViewHierarchyInspectorViewModelProtocol {
-    func loadOperations() -> [MainThreadOperation] {
-        var operations = childViewModels.enumerated().map { row, childViewModel -> MainThreadOperation in
-            
-            let operation = MainThreadOperation(name: childViewModel.title) {
-                childViewModel.loadThumbnail()
-            }
-            
-            operation.completionBlock = {
-                Console.print(#function, "Loaded thumbnail for row \(row)")
-            }
-            
-            return operation
-        }
-        
-        let delegateOperation = MainThreadOperation(name: "delegate") { [weak self] in
-            guard let self = self else {
-                return
-            }
-            
-            self.delegate?.viewHierarchyListViewModelDidLoad(self)
-        }
-        
-        operations.append(delegateOperation)
-        
-        return operations
-    }
-    
     var title: String {
         "More info"
     }
     
     var numberOfRows: Int {
         visibleChildViewModels.count
-    }
-    
-    func clearCachedThumbnail(for indexPath: IndexPath) {
-        guard let selectedItemViewModel = itemViewModel(for: indexPath) else {
-            return
-        }
-        
-        for row in indexPath.row...numberOfRows {
-            
-            guard
-                let rowViewModel = itemViewModel(for: IndexPath(row: row, section: .zero)),
-                rowViewModel.relativeDepth > selectedItemViewModel.relativeDepth || rowViewModel === selectedItemViewModel
-            else {
-                return
-            }
-            
-            rowViewModel.clearCachedThumbnail()
-        }
-        
     }
     
     func itemViewModel(for indexPath: IndexPath) -> ElementInspectorViewHierarchyPanelViewModelProtocol? {

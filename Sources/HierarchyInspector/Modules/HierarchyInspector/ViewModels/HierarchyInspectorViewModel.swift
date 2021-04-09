@@ -291,31 +291,15 @@ extension HierarchyInspectorViewModel {
                     return element.elementName
                 }()
                 
-                let image: UIImage? = {
-                    guard let object = element.view else {
-                        return nil
-                    }
-                    
-                    if
-                        let imageView = object as? UIImageView,
-                        let image = imageView.image
-                        {
-                        return image.resized(CGSize(width: 28, height: 28))
-                    }
-                    
-                    let matches = AttributesInspectorSection.allCases(matching: object)
-                    
-                    guard let firstMatch = matches.first else {
-                        return nil
-                    }
-                    
-                    return firstMatch.image
-                }()
-                
                 return CellViewModel(
                     title: title,
                     subtitle: element.elementDescription,
-                    image: image,
+                    image: element.iconImage(
+                        with: CGSize(
+                            width: ElementInspector.appearance.horizontalMargins,
+                            height: ElementInspector.appearance.horizontalMargins
+                        )
+                    ),
                     depth: element.depth,
                     reference: element
                 )
@@ -323,10 +307,6 @@ extension HierarchyInspectorViewModel {
         }
         
     }
-}
-
-extension UIImage {
-    
 }
 
 extension AttributesInspectorSection {
