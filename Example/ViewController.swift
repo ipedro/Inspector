@@ -8,18 +8,18 @@
 import UIKit
 import HierarchyInspector
 
-class ViewController: UIViewController, HierarchyInspectorPresentable {
+class ViewController: HierarchyInspectableViewController {
     // MARK: - HierarchyInspectorPresentable
     
-    private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(host: self)
-    
-    var hierarchyInspectorLayers: [ViewHierarchyLayer] = [
-        .controls,
-        .buttons,
-        .staticTexts + .images,
-        .textViews + .textFields,
-        .stackViews + .containerViews
-    ]
+    override var hierarchyInspectorLayers: [ViewHierarchyLayer] {
+        [
+            .controls,
+            .buttons,
+            .staticTexts + .images,
+            .textViews + .textFields,
+            .stackViews + .containerViews
+        ]
+    }
     
     var hierarchyInspectorColorScheme: ViewHierarchyColorScheme = .colorScheme { view in
         switch view {
@@ -156,31 +156,6 @@ extension ViewController: UIScrollViewDelegate {
         }
         
         inspectBarButton.alpha = inspectBarButtonAlpha
-    }
-}
-
-// MARK: - HierarchyInspectorKeyCommandPresentable
-
-extension ViewController: HierarchyInspectorKeyCommandPresentable {
-    var hirearchyInspectorKeyCommandsSelector: Selector? {
-        #selector(keyCommand(_:))
-    }
-    
-    override var keyCommands: [UIKeyCommand]? {
-        guard let presentedViewController = presentedViewController else {
-            return hierarchyInspectorKeyCommands
-        }
-        
-        return presentedViewController.keyCommands
-    }
-    
-    override var canBecomeFirstResponder: Bool {
-        true
-    }
-    
-    @objc
-    func keyCommand(_ sender: Any) {
-        hierarchyInspectorKeyCommandHandler(sender)
     }
 }
 
