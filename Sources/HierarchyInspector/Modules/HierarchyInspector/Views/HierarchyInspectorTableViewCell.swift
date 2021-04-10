@@ -33,8 +33,13 @@ final class HierarchyInspectorTableViewCell: UITableViewCell {
             margins.leading += depth * 5
             
             directionalLayoutMargins = margins
-            contentView.alpha = viewModel?.isEnabled == true ? 1 : 0.4
+            separatorInset = .insets(left: margins.leading, right: defaultLayoutMargins.trailing)
+            
+            contentView.alpha = viewModel?.isEnabled == true ? 1 : ElementInspector.appearance.disabledAlpha
             selectionStyle = viewModel?.isEnabled == true ? .default : .none
+            
+            setNeedsLayout()
+            invalidateIntrinsicContentSize()
         }
     }
     
@@ -57,10 +62,10 @@ final class HierarchyInspectorTableViewCell: UITableViewCell {
         }
         
         let heightAnchor = imageView?.heightAnchor.constraint(equalToConstant: 32).then {
-            $0.priority = .defaultHigh
+            $0.priority  = .defaultHigh
         }
         
-        widthAnchor?.isActive = true
+        widthAnchor?.isActive  = true
         heightAnchor?.isActive = true
         
         textLabel?.textColor = ElementInspector.appearance.textColor

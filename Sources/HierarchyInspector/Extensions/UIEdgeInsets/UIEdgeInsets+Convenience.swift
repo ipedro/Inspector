@@ -1,6 +1,6 @@
 //
 //  UIEdgeInsets+Convenience.swift
-//  
+//  HierarhcyInspector
 //
 //  Created by Pedro on 10.04.21.
 //
@@ -13,4 +13,5 @@ extension UIEdgeInsets {
         self.init(top: top, left: left, bottom: bottom, right: right)
     }
     
+    var verticalInsets: CGFloat { top + bottom }
 }

@@ -27,7 +27,7 @@ extension ViewHierarchyLayersCoordinator: AsyncOperationProtocol {
             window.installView(loaderView, .centerXY)
             
             UIView.animate(
-                withDuration: 0.33,
+                withDuration: ElementInspector.configuration.animationDuration,
                 delay: 0,
                 usingSpringWithDamping: 0.85,
                 initialSpringVelocity: 30,
@@ -44,7 +44,7 @@ extension ViewHierarchyLayersCoordinator: AsyncOperationProtocol {
             loaderView.done()
             
             UIView.animate(
-                withDuration: 0.33,
+                withDuration: ElementInspector.configuration.animationDuration,
                 delay: 1,
                 options: [.curveEaseInOut, .beginFromCurrentState],
                 animations: {

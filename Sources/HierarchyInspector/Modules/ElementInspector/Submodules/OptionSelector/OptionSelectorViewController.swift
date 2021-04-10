@@ -82,9 +82,7 @@ extension OptionSelectorViewController: UIPickerViewDelegate {
         return SectionHeader(.callout, text: title)
     }
     
-    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-        50
-    }
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat { 50 }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch component {

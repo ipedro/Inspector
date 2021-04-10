@@ -23,13 +23,12 @@ final class AttributesInspectorSectionViewCode: BaseView {
     private(set) lazy var sectionHeader = SectionHeader(
         .callout,
         text: nil,
-        withTraits: .traitBold
-    ).then {
-        $0.contentView.directionalLayoutMargins = .margins(
+        withTraits: .traitBold,
+        margins: .margins(
             horizontal: .zero,
             vertical: ElementInspector.appearance.verticalMargins / 2
         )
-    }
+    )
     
     var isCollapsed: Bool = false {
         didSet {

@@ -30,8 +30,6 @@ protocol HierarchyInspectorViewModelSectionProtocol {
     
     func titleForHeader(in section: Int) -> String?
     
-    func heightForRow(at indexPath: IndexPath) -> CGFloat
-    
     func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModelProtocol
     
     func selectRow(at indexPath: IndexPath) -> ViewHierarchyReference?
@@ -51,7 +49,8 @@ final class HierarchyInspectorViewModel {
     
     var searchQuery: String? {
         didSet {
-            snapshotViewModel.searchQuery = searchQuery?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let trimmedQuery = searchQuery?.trimmingCharacters(in: .whitespacesAndNewlines)
+            snapshotViewModel.searchQuery = trimmedQuery?.isEmpty == false ? trimmedQuery : nil
         }
     }
     
@@ -136,16 +135,6 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
             return layerActionsViewModel.cellViewModelForRow(at: indexPath)
         }
     }
-    
-    func heightForRow(at indexPath: IndexPath) -> CGFloat {
-        switch isSearching {
-        case true:
-            return snapshotViewModel.heightForRow(at: indexPath)
-            
-        case false:
-            return layerActionsViewModel.heightForRow(at: indexPath)
-        }
-    }
 }
 
 extension HierarchyInspectorViewModel {
@@ -213,8 +202,6 @@ extension HierarchyInspectorViewModel {
             )
         }
         
-        func heightForRow(at indexPath: IndexPath) -> CGFloat { 44 }
-        
         private func actionGroup(in section: Int) -> ActionGroup {
             layerActionGroups[section]
         }
@@ -271,8 +258,6 @@ extension HierarchyInspectorViewModel {
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModelProtocol {
             searchResults[indexPath.row]
         }
-        
-        func heightForRow(at indexPath: IndexPath) -> CGFloat { 66 }
         
         func loadData() {
             guard let searchQuery = searchQuery else {

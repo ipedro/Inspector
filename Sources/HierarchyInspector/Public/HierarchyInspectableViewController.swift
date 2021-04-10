@@ -1,6 +1,6 @@
 //
 //  HierarchyInspectableViewController.swift
-//  
+//  HierarhcyInspector
 //
 //  Created by Pedro on 08.04.21.
 //

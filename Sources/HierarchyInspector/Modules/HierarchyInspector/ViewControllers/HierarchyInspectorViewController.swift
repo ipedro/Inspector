@@ -29,7 +29,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     private(set) lazy var viewCode = HierarchyInspectorView().then {
         $0.delegate = self
         
-        $0.searchView.textField.addTarget(self, action: #selector(search(_:)), for: .allEditingEvents)
+        $0.searchView.textField.addTarget(self, action: #selector(search), for: .editingChanged)
         $0.searchView.textField.delegate = self
         
         $0.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
@@ -37,6 +37,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         $0.tableView.registerHeaderFooter(HierarchyInspectorHeaderView.self)
         $0.tableView.delegate = self
         $0.tableView.dataSource = self
+        $0.tableView.keyboardSelectionDelegate = self
     }
     
     private var needsSetup = true
@@ -51,28 +52,80 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         viewCode.tableView.removeObserver(self, forKeyPath: .contentSize, context: nil)
     }
     
-    @objc func changeFocus() {
-        guard viewCode.tableView.isFirstResponder else {
+    @objc
+    func upArrow() {
+        toggleFirstResponder()
+        viewCode.tableView.selectRow(at: viewCode.tableView.indexPathForLastRowInLastSection)
+    }
+    
+    @objc
+    func downArrow() {
+        toggleFirstResponder()
+        viewCode.tableView.selectRow(at: .first)
+    }
+    
+    @objc
+    func toggleFirstResponder() {
+        switch viewCode.searchView.isFirstResponder {
+        case true:
             viewCode.searchView.resignFirstResponder()
             viewCode.tableView.becomeFirstResponder()
-            return
-        }
         
-        viewCode.tableView.resignFirstResponder()
-        viewCode.searchView.becomeFirstResponder()
+        case false:
+            viewCode.tableView.resignFirstResponder()
+            viewCode.searchView.becomeFirstResponder()
+        }
     }
     
     // MARK: - Overrides
+    
+    private lazy var searchKeyCommands: [UIKeyCommand] = {
+        var keyCommands = CharacterSet.urlQueryAllowed.allCharacters().map {
+            UIKeyCommand(
+                input: String($0),
+                action: #selector(type)
+            )
+        }
+        
+        keyCommands.append(
+            UIKeyCommand(
+                input: UIKeyCommand.inputBackspace,
+                action: #selector(backspace)
+            )
+        )
+        
+        return keyCommands
+    }()
+    
+    private func addSearchKeyCommandListeners() {
+        searchKeyCommands.forEach { addKeyCommand($0) }
+    }
+    private func removeSearchKeyCommandListeners() {
+        searchKeyCommands.forEach { removeKeyCommand($0) }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // key commands
+        
         addKeyCommand(UIViewController.dismissModalKeyCommand)
         addKeyCommand(
             UIKeyCommand(
                 input: UIKeyCommand.inputTab,
-                action: #selector(changeFocus)
+                action: #selector(downArrow)
+            )
+        )
+        addKeyCommand(
+            UIKeyCommand(
+                input: UIKeyCommand.inputUpArrow,
+                action: #selector(upArrow)
+            )
+        )
+        addKeyCommand(
+            UIKeyCommand(
+                input: UIKeyCommand.inputDownArrow,
+                action: #selector(downArrow)
             )
         )
         
@@ -123,7 +176,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         reloadData()
         
         DispatchQueue.main.async {
-            self.viewCode.searchView.becomeFirstResponder()
+            self.toggleFirstResponder()
         }
     }
     
@@ -145,8 +198,10 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         viewCode.searchView.separatorView.isSafelyHidden = viewModel.isEmpty
         
         viewCode.tableView.isSafelyHidden = viewModel.isEmpty
-                
-        viewCode.layoutIfNeeded()
+        
+        DispatchQueue.main.async {
+            self.viewCode.layoutIfNeeded()
+        }
         
         viewCode.tableView.reloadData()
     }
@@ -168,9 +223,51 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         }
     }
     
-    func search(_ sender: Any) {
-        viewModel.searchQuery = viewCode.searchView.textField.text
+    func type(_ sender: Any) {
+        guard
+            let keyCommand = sender as? UIKeyCommand,
+            let keyCommandInput = keyCommand.input
+        else {
+            return
+        }
+        
+        let character: String = {
+            switch keyCommand.modifierFlags {
+            case .alphaShift:
+                return keyCommandInput
+            default:
+                return keyCommandInput.lowercased()
+            }
+        }()
+        
+        let searchQuery: String = {
+            guard let searchQuery = viewCode.searchView.query else {
+                return character
+            }
+            return searchQuery + character
+        }()
+        
+        viewCode.searchView.query = searchQuery
+        search()
+    }
+    
+    func backspace() {
+        if
+            var query = viewCode.searchView.query,
+            query.isEmpty == false
+        {
+            viewCode.searchView.query = String(query.removeLast())
+        }
+        
+        search()
+    }
+    
+    func search() {
+        viewCode.searchView.becomeFirstResponder()
+        viewModel.searchQuery = viewCode.searchView.query
         reloadData()
+        
+        viewCode.tableView.flashScrollIndicators()
     }
 }
 
@@ -196,10 +293,24 @@ extension HierarchyInspectorViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard string != UIKeyCommand.inputTab else {
             DispatchQueue.main.async {
-                self.changeFocus()
+                self.toggleFirstResponder()
             }
             return false
         }
         return true
+    }
+}
+
+// MARK: - KeyboardTableViewSelectionDelegate
+
+extension HierarchyInspectorViewController: KeyboardTableViewSelectionDelegate {
+    func tableViewDidBecomeFirstResponder(_ tableView: UITableView) {
+        addSearchKeyCommandListeners()
+    }
+    
+    func tableViewDidResignFirstResponder(_ tableView: UITableView) {
+        tableView.indexPathsForSelectedRows?.forEach { tableView.deselectRow(at: $0, animated: false) }
+        removeSearchKeyCommandListeners()
+        viewCode.searchView.becomeFirstResponder()
     }
 }

@@ -24,7 +24,9 @@ final class HierarchyInspectorView: BaseView {
                     return .zero
                 }
                 
-                return frame.height - safeAreaInsets.bottom - keyboardFrame.origin.y
+                let globalFrame = convert(frame, to: nil)
+                
+                return globalFrame.height + globalFrame.origin.y - safeAreaInsets.bottom - keyboardFrame.origin.y
             }()
             
             bottomAnchorConstraint.constant = (visibleHeight + verticalMargin) * -1
@@ -91,9 +93,7 @@ final class HierarchyInspectorView: BaseView {
     
     var tableViewContentSize: CGSize = .zero {
         didSet {
-            Self.cancelPreviousPerformRequests(withTarget: self, selector: #selector(updateTableViewHeight), object: nil)
-            perform(#selector(updateTableViewHeight), with: nil, afterDelay: 0.01)
-            
+            debounce(#selector(updateTableViewHeight), after: 0.01)
         }
     }
     
@@ -158,7 +158,7 @@ final class HierarchyInspectorView: BaseView {
     
     func animate(
         _ animation: Animation,
-        duration: TimeInterval = CATransaction.animationDuration(),
+        duration: TimeInterval = ElementInspector.configuration.animationDuration,
         delay: TimeInterval = .zero,
         completion: ((Bool) -> Void)? = nil
     ) {
@@ -173,11 +173,5 @@ final class HierarchyInspectorView: BaseView {
             animations: { self.transform = animation.endTransform },
             completion: completion
         )
-    }
-}
-
-fileprivate extension UIEdgeInsets {
-    var verticalInsets: CGFloat {
-        top + bottom
     }
 }

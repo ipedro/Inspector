@@ -31,7 +31,7 @@ enum Texts {
     
     static let openingHierarchyInspector = "Opening..."
     
-    static let showAllLayers = "Show all layers"
+    static let showAllLayers = "Highlight all layers"
     
     static let stopInspecting = "Stop inspecting me"
     

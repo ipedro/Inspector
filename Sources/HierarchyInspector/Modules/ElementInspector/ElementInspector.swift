@@ -15,7 +15,7 @@ enum ElementInspector {
 
 extension ElementInspector {
     struct Configuration {
-        let animationDuration: TimeInterval = 0.2
+        let animationDuration: TimeInterval = CATransaction.animationDuration()
     }
 }
 
@@ -35,18 +35,19 @@ extension ElementInspector {
             return .white
         }()
         
-        var secondaryTextColor: UIColor = {
-            return UIColor(white: 1, alpha: 0.6)
-        }()
+        var secondaryTextColor: UIColor {
+            textColor.withAlphaComponent(disabledAlpha * 2)
+        }
         
+        var tertiaryTextColor: UIColor {
+            textColor.withAlphaComponent(disabledAlpha)
+        }
         
-        var tertiaryTextColor: UIColor = {
-            return UIColor(white: 1, alpha: 0.3)
-        }()
+        var quaternaryTextColor: UIColor {
+            textColor.withAlphaComponent(disabledAlpha / 2)
+        }
         
-        var quaternaryTextColor: UIColor = {
-            return UIColor(white: 1, alpha: 0.15)
-        }()
+        var disabledAlpha: CGFloat = 0.3
         
         var margins: NSDirectionalEdgeInsets {
             .margins(
@@ -76,13 +77,13 @@ extension ElementInspector {
                 return UIFont.preferredFont(forTextStyle: .title3).bold()
 
             case 1:
-                return UIFont.preferredFont(forTextStyle: .body).bold()
+                return UIFont.preferredFont(forTextStyle: .headline).bold()
 
             case 2:
-                return UIFont.preferredFont(forTextStyle: .callout).bold()
+                return UIFont.preferredFont(forTextStyle: .body).bold()
 
             case 3:
-                return UIFont.preferredFont(forTextStyle: .subheadline).bold()
+                return UIFont.preferredFont(forTextStyle: .callout).bold()
 
             default:
                 return UIFont.preferredFont(forTextStyle: .footnote)

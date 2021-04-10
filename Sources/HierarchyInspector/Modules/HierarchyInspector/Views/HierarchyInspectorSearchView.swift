@@ -9,6 +9,15 @@ import UIKit
 
 final class HierarchyInspectorSearchView: BaseView {
     
+    var query: String? {
+        get {
+            textField.text
+        }
+        set {
+            textField.text = newValue
+        }
+    }
+    
     private lazy var searchIcon = Icon(
         .search,
         color: ElementInspector.appearance.textColor.withAlphaComponent(0.73),
@@ -40,6 +49,10 @@ final class HierarchyInspectorSearchView: BaseView {
     
     override var canBecomeFirstResponder: Bool {
         textField.canBecomeFirstResponder
+    }
+    
+    override var isFirstResponder: Bool {
+        textField.isFirstResponder
     }
     
     @discardableResult

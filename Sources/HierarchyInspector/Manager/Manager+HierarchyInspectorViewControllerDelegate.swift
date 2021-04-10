@@ -1,6 +1,6 @@
 //
 //  Manager+HierarchyInspectorViewControllerDelegate.swift
-//  
+//  HierarhcyInspector
 //
 //  Created by Pedro Almeida on 07.04.21.
 //

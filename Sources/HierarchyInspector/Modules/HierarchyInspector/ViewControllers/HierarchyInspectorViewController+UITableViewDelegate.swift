@@ -40,10 +40,6 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
         viewModel.cellViewModelForRow(at: indexPath).isEnabled ? indexPath : nil
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        viewModel.heightForRow(at: indexPath)
-    }
-    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(HierarchyInspectorHeaderView.self)
         header.title = viewModel.titleForHeader(in: section)
