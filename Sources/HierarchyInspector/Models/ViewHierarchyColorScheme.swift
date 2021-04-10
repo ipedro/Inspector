@@ -20,6 +20,17 @@ public struct ViewHierarchyColorScheme {
         case is UIStackView:
             return .systemBlue
             
+        case is UIWindow:
+            return .darkGray
+            
+        case is UITableView,
+             is UICollectionView:
+            return .systemYellow
+            
+        case is UITableViewCell,
+             is UICollectionViewCell:
+            return .systemOrange
+            
         default:
             return .systemTeal
         }
