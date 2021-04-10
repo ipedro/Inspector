@@ -32,10 +32,8 @@ extension UITextView {
             self.textColor = textColor
         }
         
-        self.textContainerInset = UIEdgeInsets(
-            top: 0,
+        self.textContainerInset = .insets(
             left: -textContainer.lineFragmentPadding,
-            bottom: 0,
             right: -textContainer.lineFragmentPadding
         )
     }
