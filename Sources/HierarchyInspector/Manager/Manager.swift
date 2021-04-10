@@ -44,11 +44,9 @@ extension HierarchyInspector {
         }
         
         func present(animated: Bool) {
-            asyncOperation { [weak self] in
+            asyncOperation {
                 guard
-                    let self = self,
-                    let hostViewController = self.hostViewController,
-                    hostViewController.presentingViewController == nil,
+                    let hostViewController = self.hostViewController?.presentedViewController ?? self.hostViewController,
                     let windowHierarchySnapshot = self.makeWindowHierarchySnapshot()
                 else {
                     return

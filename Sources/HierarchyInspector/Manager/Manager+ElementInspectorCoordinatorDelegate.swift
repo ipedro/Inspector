@@ -35,11 +35,7 @@ extension HierarchyInspector.Manager {
             return
         }
         
-        asyncOperation { [weak self] in
-            guard let self = self else {
-                return
-            }
-            
+        asyncOperation {
             let windowReference = ViewHierarchyReference(root: window)
             
             let coordinator = ElementInspectorCoordinator(reference: reference, rootReference: windowReference).then {

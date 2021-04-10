@@ -25,7 +25,11 @@ final class ElementInspectorCoordinator: NSObject {
     
     let reference: ViewHierarchyReference
     
-    private(set) lazy var navigationController = Self.makeNavigationController(reference: reference, rootReference: rootReference, delegate: self).then {
+    private(set) lazy var navigationController = Self.makeNavigationController(
+        reference: reference,
+        rootReference: rootReference,
+        delegate: self
+    ).then {
         switch $0.modalPresentationStyle {
         case .popover:
             $0.popoverPresentationController?.delegate = self
@@ -42,43 +46,52 @@ final class ElementInspectorCoordinator: NSObject {
         self.reference = reference
     }
     
-    static func makeNavigationController(reference: ViewHierarchyReference, rootReference: ViewHierarchyReference, delegate: ElementInspectorViewControllerDelegate) -> ElementInspectorNavigationController {
-        let navigationController = ElementInspectorNavigationController().then {
-            $0.modalPresentationStyle = {
-                guard let window = rootReference.view?.window else {
-                    return .pageSheet
-                }
-                
-                guard window.traitCollection.userInterfaceIdiom != .phone else {
-                    return .pageSheet
-                }
-                
-                let referenceViewArea = rootReference.frame.height * rootReference.frame.width
-                
-                let windowArea = window.frame.height * window.frame.width
-                
-                let occupiedRatio = referenceViewArea / windowArea
-                
-                if occupiedRatio <= 0.35 {
-                    return .popover
-                }
-                
-                return .formSheet
-            }()
-            
-            switch $0.modalPresentationStyle {
-            case .popover:
-                $0.popoverPresentationController?.sourceView = rootReference.view
-                
-            default:
-                break
+    static func makeNavigationController(
+        reference: ViewHierarchyReference,
+        rootReference: ViewHierarchyReference,
+        delegate: ElementInspectorViewControllerDelegate
+    ) -> ElementInspectorNavigationController {
+        let navigationController = ElementInspectorNavigationController()
+        navigationController.modalPresentationStyle = {
+            guard let window = rootReference.view?.window else {
+                return .pageSheet
             }
+            
+            guard window.traitCollection.userInterfaceIdiom != .phone else {
+                return .pageSheet
+            }
+            
+            let referenceViewArea = rootReference.frame.height * rootReference.frame.width
+            
+            let windowArea = window.frame.height * window.frame.width
+            
+            let occupiedRatio = referenceViewArea / windowArea
+            
+            if occupiedRatio <= 0.35 {
+                return .popover
+            }
+            
+            return .formSheet
+        }()
+        
+        switch navigationController.modalPresentationStyle {
+        case .popover:
+            navigationController.popoverPresentationController?.sourceView = rootReference.view
+            
+        default:
+            break
         }
         
         let populatedReferences = rootReference.flattenedViewHierarchy.filter { $0.view === reference.view }
         
         guard let populatedReference = populatedReferences.first else {
-            let rootViewController = makeElementInspectorViewController(with: rootReference, showDismissBarButton: true, selectedPanel: .attributesInspector, delegate: delegate)
+            let rootViewController = makeElementInspectorViewController(
+                with: rootReference,
+                showDismissBarButton: true,
+                selectedPanel: .attributesInspector,
+                delegate: delegate
+            )
+            
             navigationController.viewControllers = [rootViewController]
             
             return navigationController
