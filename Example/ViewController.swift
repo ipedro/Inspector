@@ -21,13 +21,15 @@ class ViewController: HierarchyInspectableViewController {
         ]
     }
     
-    var hierarchyInspectorColorScheme: ViewHierarchyColorScheme = .colorScheme { view in
-        switch view {
-        case is CustomButton:
-            return .systemOrange
-            
-        default:
-            return ViewHierarchyColorScheme.default.color(for: view)
+    override var hierarchyInspectorColorScheme: ViewHierarchyColorScheme {
+        .colorScheme { view in
+            switch view {
+            case is CustomButton:
+                return .systemPink
+                
+            default:
+                return ViewHierarchyColorScheme.default.color(for: view)
+            }
         }
     }
     
