@@ -18,6 +18,8 @@ open class HierarchyInspectableViewController: UIViewController, HierarchyInspec
         action: #selector(inspectBarButtonHander(_:))
     )
     
+    open var hierarchyInspectorColorScheme: ViewHierarchyColorScheme { .default }
+    
     open var hierarchyInspectorLayers: [ViewHierarchyLayer] { [.allViews] }
     
     open var shouldPresentHierarchyInspectorOnShake = true {
