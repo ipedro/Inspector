@@ -40,3 +40,16 @@ public extension ViewHierarchyLayer {
     static let webViews                   : ViewHierarchyLayer = .layer(name: "Web views")                  { $0 is WKWebView || $0.superview is WKWebView }
     
 }
+
+
+// MARK: - Internal Layers
+
+extension ViewHierarchyLayer {
+    
+    static let wireframes = ViewHierarchyLayer(name: "Wireframes", showLabels: false) { _ in true }
+    
+    static let internalViews = ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsSystemViews: true) { $0.isSystemView }
+    
+    static let icons: ViewHierarchyLayer = .layer(name: "Icons") { $0 is Icon }
+    
+}

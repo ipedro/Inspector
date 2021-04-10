@@ -54,13 +54,3 @@ public struct ViewHierarchyLayer {
     }
     
 }
-
-// MARK: - Internal Layers
-
-extension ViewHierarchyLayer {
-    
-    static let wireframes = ViewHierarchyLayer(name: "Wireframes", showLabels: false) { _ in true }
-    
-    static let internalViews = ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsSystemViews: true) { $0.isSystemView }
-    
-}
