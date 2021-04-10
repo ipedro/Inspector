@@ -12,13 +12,19 @@ protocol HierarchyInspectorViewModelProtocol: HierarchyInspectorViewModelSection
     var searchQuery: String? { get set }
 }
 
-protocol HierarchyInspectorCellViewModelProtocol {
-    var title: String { get }
-    var titleFont: UIFont { get }
-    var subtitle: String? { get }
-    var image: UIImage? { get }
-    var depth: Int { get }
-    var isEnabled: Bool { get }
+enum HierarchyInspectorCellViewModel {
+    case layerAction(HierarchyInspectorLayerAcionCellViewModelProtocol)
+    case snaphot(HierarchyInspectorSnapshotCellViewModelProtocol)
+    
+    var cellClassForCoder: AnyClass {
+        switch self {
+        case .layerAction:
+            return HierarchyInspectorLayerActionCell.classForCoder()
+            
+        case .snaphot:
+            return HierarchyInspectorSnapshotCell.classForCoder()
+        }
+    }
 }
 
 protocol HierarchyInspectorViewModelSectionProtocol {
@@ -30,9 +36,11 @@ protocol HierarchyInspectorViewModelSectionProtocol {
     
     func titleForHeader(in section: Int) -> String?
     
-    func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModelProtocol
+    func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel
     
     func selectRow(at indexPath: IndexPath) -> ViewHierarchyReference?
+    
+    func isRowEnabled(at indexPath: IndexPath) -> Bool
     
     func loadData()
 }
@@ -66,6 +74,16 @@ final class HierarchyInspectorViewModel {
 // MARK: - HierarchyInspectorViewModelProtocol
 
 extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
+    func isRowEnabled(at indexPath: IndexPath) -> Bool {
+        switch isSearching {
+        case true:
+            return snapshotViewModel.isRowEnabled(at: indexPath)
+            
+        case false:
+            return layerActionsViewModel.isRowEnabled(at: indexPath)
+        }
+    }
+    
     var isEmpty: Bool {
         switch isSearching {
         case true:
@@ -126,7 +144,7 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
         }
     }
     
-    func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModelProtocol {
+    func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
         switch isSearching {
         case true:
             return snapshotViewModel.cellViewModelForRow(at: indexPath)
@@ -134,170 +152,6 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
         case false:
             return layerActionsViewModel.cellViewModelForRow(at: indexPath)
         }
-    }
-}
-
-extension HierarchyInspectorViewModel {
-    final class LayerActionsViewModel: HierarchyInspectorViewModelSectionProtocol {
-        
-        struct CellViewModel: HierarchyInspectorCellViewModelProtocol {
-            let title: String
-            var isEnabled: Bool
-            let titleFont: UIFont = .preferredFont(forTextStyle: .callout)
-            let subtitle: String? = nil
-            let image: UIImage? = nil
-            let depth: Int = 0
-        }
-        
-        private(set) lazy var layerActionGroups = ActionGroups()
-        
-        let layerActionGroupsProvider: () -> ActionGroups
-        
-        init(layerActionGroupsProvider: @escaping () -> ActionGroups) {
-            self.layerActionGroupsProvider = layerActionGroupsProvider
-        }
-        
-        var isEmpty: Bool {
-            var totalActionCount = 0
-            
-            for group in layerActionGroups {
-                totalActionCount += group.actions.count
-            }
-            
-            return totalActionCount == 0
-        }
-        
-        func loadData() {
-            layerActionGroups = layerActionGroupsProvider()
-        }
-        
-        func selectRow(at indexPath: IndexPath) -> ViewHierarchyReference? {
-            let selectedAction = action(at: indexPath)
-            
-            DispatchQueue.main.async {
-                selectedAction.closure?()
-            }
-            
-            return nil
-        }
-        
-        var numberOfSections: Int {
-            layerActionGroups.count
-        }
-        
-        func numberOfRows(in section: Int) -> Int {
-            actionGroup(in: section).actions.count
-        }
-        
-        func titleForHeader(in section: Int) -> String? {
-            actionGroup(in: section).title
-        }
-        
-        func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModelProtocol {
-            let action = self.action(at: indexPath)
-            
-            return CellViewModel(
-                title: action.title,
-                isEnabled: action.isEnabled
-            )
-        }
-        
-        private func actionGroup(in section: Int) -> ActionGroup {
-            layerActionGroups[section]
-        }
-        
-        private func action(at indexPath: IndexPath) -> Action {
-            actionGroup(in: indexPath.section).actions[indexPath.row]
-        }
-    }
-}
-
-extension HierarchyInspectorViewModel {
-    final class SnapshotViewModel: HierarchyInspectorViewModelSectionProtocol {
-        
-        struct CellViewModel: HierarchyInspectorCellViewModelProtocol {
-            let title: String
-            var isEnabled: Bool
-            let titleFont: UIFont = .preferredFont(forTextStyle: .footnote)
-            let subtitle: String?
-            let image: UIImage?
-            let depth: Int
-            let reference: ViewHierarchyReference
-        }
-        
-        var searchQuery: String? {
-            didSet {
-                loadData()
-            }
-        }
-        
-        let snapshot: ViewHierarchySnapshot
-        
-        private var searchResults = [CellViewModel]()
-        
-        init(snapshot: ViewHierarchySnapshot) {
-            self.snapshot = snapshot
-        }
-        
-        var isEmpty: Bool { searchResults.isEmpty }
-        
-        let numberOfSections = 1
-        
-        func selectRow(at indexPath: IndexPath) ->ViewHierarchyReference? {
-            searchResults[indexPath.row].reference
-        }
-        
-        func numberOfRows(in section: Int) -> Int {
-            searchResults.count
-        }
-        
-        func titleForHeader(in section: Int) -> String? {
-            "\(searchResults.count) Search results in \(snapshot.viewHierarchy.elementName)"
-        }
-        
-        func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModelProtocol {
-            searchResults[indexPath.row]
-        }
-        
-        func loadData() {
-            guard let searchQuery = searchQuery else {
-                searchResults = []
-                return
-            }
-            
-            let flattenedViewHierarchy = [snapshot.viewHierarchy] + snapshot.flattenedViewHierarchy
-            
-            searchResults = flattenedViewHierarchy.filter {
-                $0.elementName.localizedCaseInsensitiveContains(searchQuery)
-            }.map({ element -> CellViewModel in
-                
-                let title: String = {
-                    if
-                        let textElement = element.view as? TextElement,
-                        let text = textElement.content
-                    {
-                        return "\"\(text)\""
-                    }
-                    
-                    return element.elementName
-                }()
-                
-                return CellViewModel(
-                    title: title,
-                    isEnabled: true,
-                    subtitle: element.elementDescription,
-                    image: element.iconImage(
-                        with: CGSize(
-                            width: ElementInspector.appearance.horizontalMargins,
-                            height: ElementInspector.appearance.horizontalMargins
-                        )
-                    ),
-                    depth: element.depth,
-                    reference: element
-                )
-            })
-        }
-        
     }
 }
 

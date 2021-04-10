@@ -17,10 +17,22 @@ extension HierarchyInspectorViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(HierarchyInspectorTableViewCell.self, for: indexPath)
+        let cell: UITableViewCell = {
+            switch viewModel.cellViewModelForRow(at: indexPath) {
+            case let .layerAction(cellViewModel):
+                let cell = tableView.dequeueReusableCell(HierarchyInspectorLayerActionCell.self, for: indexPath)
+                cell.viewModel = cellViewModel
+                return cell
+                
+            case let .snaphot(cellViewModel):
+                let cell = tableView.dequeueReusableCell(HierarchyInspectorSnapshotCell.self, for: indexPath)
+                cell.viewModel = cellViewModel
+                return cell
+            }
+            
+        }()
         
-        cell.viewModel = viewModel.cellViewModelForRow(at: indexPath)
-        
+        cell.isSelected = tableView.indexPathForSelectedRow == indexPath
         return cell
     }
 }

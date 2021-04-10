@@ -33,7 +33,8 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         $0.searchView.textField.delegate = self
         
         $0.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
-        $0.tableView.register(HierarchyInspectorTableViewCell.self)
+        $0.tableView.register(HierarchyInspectorLayerActionCell.self)
+        $0.tableView.register(HierarchyInspectorSnapshotCell.self)
         $0.tableView.registerHeaderFooter(HierarchyInspectorHeaderView.self)
         $0.tableView.delegate = self
         $0.tableView.dataSource = self
@@ -198,11 +199,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         viewCode.searchView.separatorView.isSafelyHidden = viewModel.isEmpty
         
         viewCode.tableView.isSafelyHidden = viewModel.isEmpty
-        
-        DispatchQueue.main.async {
-            self.viewCode.layoutIfNeeded()
-        }
-        
+                
         viewCode.tableView.reloadData()
     }
     
@@ -235,30 +232,18 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
             switch keyCommand.modifierFlags {
             case .alphaShift:
                 return keyCommandInput
+                
             default:
                 return keyCommandInput.lowercased()
             }
         }()
         
-        let searchQuery: String = {
-            guard let searchQuery = viewCode.searchView.query else {
-                return character
-            }
-            return searchQuery + character
-        }()
-        
-        viewCode.searchView.query = searchQuery
+        viewCode.searchView.insertText(character)
         search()
     }
     
     func backspace() {
-        if
-            var query = viewCode.searchView.query,
-            query.isEmpty == false
-        {
-            viewCode.searchView.query = String(query.removeLast())
-        }
-        
+        viewCode.searchView.deleteBackward()
         search()
     }
     
@@ -267,7 +252,16 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         viewModel.searchQuery = viewCode.searchView.query
         reloadData()
         
-        viewCode.tableView.flashScrollIndicators()
+        DispatchQueue.main.async {
+            self.viewCode.tableView.scrollToRow(
+                at: IndexPath(
+                    row: NSNotFound,
+                    section: .zero
+                ),
+                at: .top,
+                animated: false
+            )
+        }
     }
 }
 
@@ -291,7 +285,7 @@ fileprivate extension String {
 
 extension HierarchyInspectorViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard string != UIKeyCommand.inputTab else {
+        if string == UIKeyCommand.inputTab {
             DispatchQueue.main.async {
                 self.toggleFirstResponder()
             }

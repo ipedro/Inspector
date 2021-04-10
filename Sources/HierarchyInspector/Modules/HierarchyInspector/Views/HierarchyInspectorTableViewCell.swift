@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class HierarchyInspectorTableViewCell: UITableViewCell {
+class HierarchyInspectorTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
@@ -19,62 +19,23 @@ final class HierarchyInspectorTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let defaultLayoutMargins: NSDirectionalEdgeInsets = .allMargins(ElementInspector.appearance.horizontalMargins)
-    
-    var viewModel: HierarchyInspectorCellViewModelProtocol? {
-        didSet {
-            textLabel?.text         = viewModel?.title
-            textLabel?.font         = viewModel?.titleFont
-            detailTextLabel?.text   = viewModel?.subtitle
-            imageView?.image        = viewModel?.image
-            
-            let depth = CGFloat(viewModel?.depth ?? 0)
-            var margins = defaultLayoutMargins
-            margins.leading += depth * 5
-            
-            directionalLayoutMargins = margins
-            separatorInset = .insets(left: margins.leading, right: defaultLayoutMargins.trailing)
-            
-            contentView.alpha = viewModel?.isEnabled == true ? 1 : ElementInspector.appearance.disabledAlpha
-            selectionStyle = viewModel?.isEnabled == true ? .default : .none
-            
-            setNeedsLayout()
-            invalidateIntrinsicContentSize()
-        }
-    }
+    let defaultLayoutMargins: NSDirectionalEdgeInsets = .allMargins(ElementInspector.appearance.horizontalMargins)
     
     func setup() {
         backgroundView = UIView()
-        
         backgroundColor = nil
         
-        imageView?.tintColor = ElementInspector.appearance.textColor
-        imageView?.layer.cornerRadius = 6
-        imageView?.clipsToBounds = true
-        imageView?.backgroundColor = ElementInspector.appearance.quaternaryTextColor
-        imageView?.contentMode = .center
-        
-        detailTextLabel?.textColor = ElementInspector.appearance.secondaryTextColor
-        detailTextLabel?.numberOfLines = 2
-        
-        let widthAnchor = imageView?.widthAnchor.constraint(equalToConstant: 32).then {
-            $0.priority = .defaultHigh
-        }
-        
-        let heightAnchor = imageView?.heightAnchor.constraint(equalToConstant: 32).then {
-            $0.priority  = .defaultHigh
-        }
-        
-        widthAnchor?.isActive  = true
-        heightAnchor?.isActive = true
+        directionalLayoutMargins = defaultLayoutMargins
+        separatorInset = .insets(left: defaultLayoutMargins.leading, right: defaultLayoutMargins.trailing)
         
         textLabel?.textColor = ElementInspector.appearance.textColor
+        detailTextLabel?.textColor = ElementInspector.appearance.secondaryTextColor
         
         selectedBackgroundView = UIView().then {
-            let colorView = UIView()
+            let colorView = BaseView()
             colorView.backgroundColor = ElementInspector.appearance.tintColor
             colorView.clipsToBounds = true
-            colorView.layer.cornerRadius = 7
+            colorView.layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
             
             $0.installView(
                 colorView,
@@ -104,5 +65,11 @@ final class HierarchyInspectorTableViewCell: UITableViewCell {
         ]
         
         return mask
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        layer.mask = nil
     }
 }

@@ -9,15 +9,6 @@ import UIKit
 
 final class HierarchyInspectorSearchView: BaseView {
     
-    var query: String? {
-        get {
-            textField.text
-        }
-        set {
-            textField.text = newValue
-        }
-    }
-    
     private lazy var searchIcon = Icon(
         .search,
         color: ElementInspector.appearance.textColor.withAlphaComponent(0.73),
@@ -76,4 +67,25 @@ final class HierarchyInspectorSearchView: BaseView {
         installView(separatorView, .margins(leading: .zero, bottom: .zero, trailing: .zero))
     }
     
+}
+
+// MARK: - APIs
+
+extension HierarchyInspectorSearchView {
+    
+    var query: String? {
+        textField.text
+    }
+    
+    var hasText: Bool {
+        textField.hasText
+    }
+    
+    func insertText(_ text: String) {
+        textField.insertText(text)
+    }
+    
+    func deleteBackward() {
+        textField.deleteBackward()
+    }
 }

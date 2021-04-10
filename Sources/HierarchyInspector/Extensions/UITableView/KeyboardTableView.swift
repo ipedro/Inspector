@@ -163,7 +163,7 @@ private extension KeyboardTableView {
             selectRow(at: indexPath, animated: false, scrollPosition: .none)
             scrollToRow(at: indexPath, at: scrollPosition, animated: true)
             
-            debounce(#selector(flashScrollIndicators), after: 0.1)
+            debounce(#selector(flashScrollIndicators), after: 0.2)
         }
     }
     

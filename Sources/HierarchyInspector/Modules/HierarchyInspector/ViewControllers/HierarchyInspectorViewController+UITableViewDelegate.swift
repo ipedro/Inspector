@@ -37,7 +37,7 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        viewModel.cellViewModelForRow(at: indexPath).isEnabled ? indexPath : nil
+        viewModel.isRowEnabled(at: indexPath) ? indexPath : nil
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

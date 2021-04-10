@@ -66,9 +66,13 @@ final class HierarchyInspectorView: BaseView {
         let blurView = UIVisualEffectView(effect: blur)
         blurView.translatesAutoresizingMaskIntoConstraints = false
         blurView.clipsToBounds = true
-        blurView.layer.cornerRadius = 12
+        blurView.layer.cornerRadius = ElementInspector.appearance.verticalMargins
         blurView.layer.borderColor = ElementInspector.appearance.tertiaryTextColor.cgColor
         blurView.layer.borderWidth = 1
+        
+        if #available(iOS 13.0, *) {
+            blurView.layer.cornerCurve = .continuous
+        }
         
         return blurView
     }()
@@ -82,13 +86,14 @@ final class HierarchyInspectorView: BaseView {
     )
     
     @objc func updateTableViewHeight() {
-        let height = round(tableViewContentSize.height + tableView.contentInset.verticalInsets)
+        let height = tableViewContentSize.height + tableView.contentInset.verticalInsets
         
         guard tableViewHeightConstraint.constant != height else {
             return
         }
         
         tableViewHeightConstraint.constant = height
+        layoutIfNeeded()
     }
     
     var tableViewContentSize: CGSize = .zero {
