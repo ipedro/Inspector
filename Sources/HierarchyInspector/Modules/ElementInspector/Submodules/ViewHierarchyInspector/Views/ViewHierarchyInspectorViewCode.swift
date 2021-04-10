@@ -13,10 +13,8 @@ final class ViewHierarchyInspectorViewCode: BaseView {
         $0.register(ViewHierarchyInspectorTableViewCodeCell.self)
         $0.backgroundColor    = backgroundColor
         $0.isOpaque           = true
-        $0.rowHeight          = UITableView.automaticDimension
         $0.tableFooterView    = UIView()
         $0.separatorStyle     = .none
-        $0.estimatedRowHeight = 115
         $0.contentInset       = UIEdgeInsets(
             top: 0,
             left: 0,

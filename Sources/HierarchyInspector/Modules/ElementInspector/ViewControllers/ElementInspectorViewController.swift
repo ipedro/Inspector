@@ -15,10 +15,23 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController)
 }
 
-final class ElementInspectorViewController: UIViewController {
-    weak var delegate: ElementInspectorViewControllerDelegate?
+final class ElementInspectorViewController: HierarchyInspectableViewController {
     
-    private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(host: self)
+    // MARK: - HierarchyInspectorPresentable
+
+    override var hierarchyInspectorLayers: [ViewHierarchyLayer] {
+        [
+            .buttons,
+            .controls,
+            .staticTexts + .icons + .images,
+            .stackViews,
+            .tableViewCells,
+            .containerViews,
+            .allViews
+        ]
+    }
+    
+    weak var delegate: ElementInspectorViewControllerDelegate?
     
     private var viewModel: ElementInspectorViewModelProtocol! {
         didSet {
@@ -69,9 +82,6 @@ final class ElementInspectorViewController: UIViewController {
     ).then {
         $0.segmentedControl.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
         
-        $0.inspectBarButtonItem.target = self
-        $0.inspectBarButtonItem.action = #selector(toggleInspect)
-        
         $0.dismissBarButtonItem.target = self
         $0.dismissBarButtonItem.action = #selector(close)
     }
@@ -94,14 +104,18 @@ final class ElementInspectorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.rightBarButtonItem = viewCode.inspectBarButtonItem
+        navigationItem.rightBarButtonItem = inspectBarButtonItem
         
         if viewModel.showDismissBarButton {
             navigationItem.leftBarButtonItem = viewCode.dismissBarButtonItem
         }
         
         viewModel.elementPanels.reversed().forEach {
-            viewCode.segmentedControl.insertSegment(with: $0.image.withRenderingMode(.alwaysTemplate), at: 0, animated: false)
+            viewCode.segmentedControl.insertSegment(
+                with: $0.image.withRenderingMode(.alwaysTemplate),
+                at: .zero,
+                animated: false
+            )
         }
         
         viewCode.segmentedControl.selectedSegmentIndex = viewModel.selectedPanelSegmentIndex
@@ -188,34 +202,8 @@ private extension ElementInspectorViewController {
     }
     
     @objc
-    func toggleInspect() {
-        presentHierarchyInspector(animated: true)
-    }
-    
-    @objc
     func close() {
         self.delegate?.elementInspectorViewControllerDidFinish(self)
     }
     
-}
-
-
-// MARK: - HierarchyInspectorPresentable
-
-extension ElementInspectorViewController: HierarchyInspectorPresentable {
-    var hierarchyInspectorLayers: [ViewHierarchyLayer] {
-        [
-            .buttons,
-            .controls,
-            .staticTexts + .icons + .images,
-            .stackViews,
-            .tableViewCells,
-            .containerViews,
-            .allViews
-        ]
-    }
-}
-
-extension ViewHierarchyLayer {
-    static let icons: ViewHierarchyLayer = .layer(name: "Icons") { $0 is Icon }
 }

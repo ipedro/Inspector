@@ -11,8 +11,6 @@ final class ElementInspectorViewCode: BaseView {
     
     private(set) lazy var segmentedControl = UISegmentedControl()
     
-    private(set) lazy var inspectBarButtonItem = UIBarButtonItem(title: "🧬", style: .plain, target: nil, action: nil)
-    
     private(set) lazy var dismissBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
     
     private(set) lazy var emptyLabel = UILabel(
