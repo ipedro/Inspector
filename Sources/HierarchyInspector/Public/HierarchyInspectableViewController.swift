@@ -11,6 +11,13 @@ open class HierarchyInspectableViewController: UIViewController, HierarchyInspec
     
     public private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(host: self)
     
+    public private(set) lazy var inspectBarButtonItem = UIBarButtonItem(
+        title: "🧬",
+        style: .plain,
+        target: self,
+        action: #selector(inspectBarButtonHander(_:))
+    )
+    
     open var hierarchyInspectorLayers: [ViewHierarchyLayer] { [.allViews] }
     
     open var shouldPresentHierarchyInspectorOnShake = true {
@@ -53,7 +60,7 @@ open class HierarchyInspectableViewController: UIViewController, HierarchyInspec
 
 extension HierarchyInspectableViewController: HierarchyInspectorKeyCommandPresentable {
     public var hirearchyInspectorKeyCommandsSelector: Selector? {
-        #selector(keyCommand(_:))
+        #selector(keyCommandHandler(_:))
     }
     
     open override var keyCommands: [UIKeyCommand]? {
@@ -64,8 +71,14 @@ extension HierarchyInspectableViewController: HierarchyInspectorKeyCommandPresen
         return presentedViewController.keyCommands
     }
     
-    @objc
-    func keyCommand(_ sender: Any) {
+}
+
+@objc private extension HierarchyInspectableViewController {
+    func keyCommandHandler(_ sender: Any) {
         hierarchyInspectorKeyCommandHandler(sender)
+    }
+    
+    func inspectBarButtonHander(_ sender: Any) {
+        presentHierarchyInspector(animated: true)
     }
 }
