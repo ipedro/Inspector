@@ -1,5 +1,5 @@
 //
-//  ViewHierarchyPanelViewController+UITableViewDelegate.swift
+//  ElementViewHierarchyViewController+UITableViewDelegate.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 07.10.20.
@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - UITableViewDelegate
 
-extension ElementInspector.ViewHierarchyPanelViewController: UITableViewDelegate {
+extension ElementViewHierarchyViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
             return false
@@ -51,7 +51,7 @@ extension ElementInspector.ViewHierarchyPanelViewController: UITableViewDelegate
 
 // MARK: - Helpers
 
-private extension ElementInspector.ViewHierarchyPanelViewController {
+private extension ElementViewHierarchyViewController {
     
     func updateTableView(_ indexPath: IndexPath, with actions: [ElementInspector.ViewHierarchyInspectorAction]) {
         guard actions.isEmpty == false else {
@@ -62,7 +62,7 @@ private extension ElementInspector.ViewHierarchyPanelViewController {
         
         var insertedIndexPaths = [IndexPath]()
         
-        if let cell = tableView.cellForRow(at: indexPath) as? ViewHierarchyInspectorTableViewCodeCell {
+        if let cell = tableView.cellForRow(at: indexPath) as? ElementViewHierarchyInspectorTableViewCodeCell {
             cell.toggleCollapse(animated: true)
         }
         
@@ -99,7 +99,7 @@ private extension ElementInspector.ViewHierarchyPanelViewController {
             animations: { [weak self] in
             
                 self?.viewCode.tableView.indexPathsForVisibleRows?.forEach { indexPath in
-                    guard let cell = self?.viewCode.tableView.cellForRow(at: indexPath) as? ViewHierarchyInspectorTableViewCodeCell else {
+                    guard let cell = self?.viewCode.tableView.cellForRow(at: indexPath) as? ElementViewHierarchyInspectorTableViewCodeCell else {
                         return
                     }
                     

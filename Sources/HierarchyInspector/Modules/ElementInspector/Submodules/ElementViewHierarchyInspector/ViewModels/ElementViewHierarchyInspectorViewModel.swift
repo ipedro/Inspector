@@ -1,5 +1,5 @@
 //
-//  ViewHierarchyInspectorViewModel.swift
+//  ElementViewHierarchyInspectorViewModel.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 07.10.20.
@@ -7,14 +7,14 @@
 
 import UIKit
 
-protocol ViewHierarchyInspectorViewModelProtocol {
+protocol ElementViewHierarchyInspectorViewModelProtocol {
     var title: String { get }
     
     var rootReference: ViewHierarchyReference { get }
     
     var numberOfRows: Int { get }
     
-    func itemViewModel(for indexPath: IndexPath) -> ElementInspectorViewHierarchyPanelViewModelProtocol?
+    func itemViewModel(for indexPath: IndexPath) -> ElementViewHierarchyPanelViewModelProtocol?
     
     /// Toggle if a container displays its subviews or hides them.
     /// - Parameter indexPath: row with
@@ -22,10 +22,10 @@ protocol ViewHierarchyInspectorViewModelProtocol {
     func toggleContainer(at indexPath: IndexPath) -> [ElementInspector.ViewHierarchyInspectorAction]
 }
 
-final class ViewHierarchyInspectorViewModel: NSObject {
+final class ElementViewHierarchyInspectorViewModel: NSObject {
     let rootReference: ViewHierarchyReference
     
-    private(set) var childViewModels: [ElementInspector.ViewHierarchyPanelViewModel] {
+    private(set) var childViewModels: [ElementViewHierarchyPanelViewModel] {
         didSet {
             updateVisibleChildViews()
         }
@@ -33,24 +33,24 @@ final class ViewHierarchyInspectorViewModel: NSObject {
     
     private static func makeViewModels(
         reference: ViewHierarchyReference,
-        parent: ElementInspector.ViewHierarchyPanelViewModel?,
+        parent: ElementViewHierarchyPanelViewModel?,
         rootDepth: Int
-    ) -> [ElementInspector.ViewHierarchyPanelViewModel] {
-        let viewModel = ElementInspector.ViewHierarchyPanelViewModel(
+    ) -> [ElementViewHierarchyPanelViewModel] {
+        let viewModel = ElementViewHierarchyPanelViewModel(
             reference: reference,
             parent: parent,
             rootDepth: rootDepth,
             isCollapsed: reference.depth > rootDepth + 5
         )
         
-        let childrenViewModels: [[ElementInspector.ViewHierarchyPanelViewModel]] = reference.children.map {
+        let childrenViewModels: [[ElementViewHierarchyPanelViewModel]] = reference.children.map {
             makeViewModels(reference: $0, parent: viewModel, rootDepth: rootDepth)
         }
         
         return [viewModel] + childrenViewModels.flatMap { $0 }
     }
     
-    private lazy var visibleChildViewModels: [ElementInspector.ViewHierarchyPanelViewModel] = []
+    private lazy var visibleChildViewModels: [ElementViewHierarchyPanelViewModel] = []
     
     init(reference: ViewHierarchyReference) {
         rootReference = reference
@@ -67,7 +67,7 @@ final class ViewHierarchyInspectorViewModel: NSObject {
     }
 }
 
-extension ViewHierarchyInspectorViewModel: ViewHierarchyInspectorViewModelProtocol {
+extension ElementViewHierarchyInspectorViewModel: ElementViewHierarchyInspectorViewModelProtocol {
     var title: String {
         "More info"
     }
@@ -76,7 +76,7 @@ extension ViewHierarchyInspectorViewModel: ViewHierarchyInspectorViewModelProtoc
         visibleChildViewModels.count
     }
     
-    func itemViewModel(for indexPath: IndexPath) -> ElementInspectorViewHierarchyPanelViewModelProtocol? {
+    func itemViewModel(for indexPath: IndexPath) -> ElementViewHierarchyPanelViewModelProtocol? {
         let visibleChildViewModels = self.visibleChildViewModels
         
         guard indexPath.row < visibleChildViewModels.count else {

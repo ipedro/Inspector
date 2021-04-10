@@ -1,5 +1,5 @@
 //
-//  ViewHierarchyInspectorTableViewCodeCell.swift
+//  ElementViewHierarchyInspectorTableViewCodeCell.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 07.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
+final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -19,7 +19,7 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var viewModel: ElementInspectorViewHierarchyPanelViewModelProtocol? {
+    var viewModel: ElementViewHierarchyPanelViewModelProtocol? {
         didSet {
             
             // Name
@@ -47,7 +47,7 @@ final class ViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
             let relativeDepth = CGFloat(viewModel?.relativeDepth ?? 0)
             let offset = (ElementInspector.appearance.verticalMargins * relativeDepth) + ElementInspector.appearance.horizontalMargins
 
-            separatorInset = UIEdgeInsets(top: 0, left: offset, bottom: 0, right: 0)
+            separatorInset = .insets(left: offset)
             directionalLayoutMargins = .margins(leading: offset)
             containerStackView.directionalLayoutMargins = directionalLayoutMargins
         }

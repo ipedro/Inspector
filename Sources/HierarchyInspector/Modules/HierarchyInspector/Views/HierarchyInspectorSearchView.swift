@@ -42,6 +42,7 @@ final class HierarchyInspectorSearchView: BaseView {
         textField.canBecomeFirstResponder
     }
     
+    @discardableResult
     override func becomeFirstResponder() -> Bool {
         super.becomeFirstResponder()
         

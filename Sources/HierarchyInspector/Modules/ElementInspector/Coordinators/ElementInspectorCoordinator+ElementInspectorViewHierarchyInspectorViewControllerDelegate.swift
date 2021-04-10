@@ -8,7 +8,7 @@
 import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorViewControllerDelegate {
-    func viewHierarchyListViewController(_ viewController: ElementInspector.ViewHierarchyPanelViewController, didSegueTo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
+    func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController, didSegueTo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
         
         operationQueue.cancelAllOperations()
         
@@ -19,7 +19,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorVie
         }))
     }
     
-    func viewHierarchyListViewController(_ viewController: ElementInspector.ViewHierarchyPanelViewController, didSelectInfo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
+    func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController, didSelectInfo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
         
         operationQueue.cancelAllOperations()
         

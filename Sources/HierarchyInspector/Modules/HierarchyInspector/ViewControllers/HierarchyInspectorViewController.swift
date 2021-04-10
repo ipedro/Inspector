@@ -20,6 +20,8 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         return viewController
     }
     
+    // MARK: - Properties
+    
     weak var delegate: HierarchyInspectorViewControllerDelegate?
     
     private(set) var viewModel: HierarchyInspectorViewModelProtocol!
@@ -28,6 +30,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         $0.delegate = self
         
         $0.searchView.textField.addTarget(self, action: #selector(search(_:)), for: .allEditingEvents)
+        $0.searchView.textField.delegate = self
         
         $0.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
         $0.tableView.register(HierarchyInspectorTableViewCell.self)
@@ -44,9 +47,36 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         view = viewCode
     }
     
+    deinit {
+        viewCode.tableView.removeObserver(self, forKeyPath: .contentSize, context: nil)
+    }
+    
+    @objc func changeFocus() {
+        guard viewCode.tableView.isFirstResponder else {
+            viewCode.searchView.resignFirstResponder()
+            viewCode.tableView.becomeFirstResponder()
+            return
+        }
+        
+        viewCode.tableView.resignFirstResponder()
+        viewCode.searchView.becomeFirstResponder()
+    }
+    
+    // MARK: - Overrides
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // key commands
+        addKeyCommand(UIViewController.dismissModalKeyCommand)
+        addKeyCommand(
+            UIKeyCommand(
+                input: UIKeyCommand.inputTab,
+                action: #selector(changeFocus)
+            )
+        )
+        
+        // keyboard event listeners
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow(_:)),
@@ -60,10 +90,6 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
             name: UIResponder.keyboardWillHideNotification,
             object: nil
         )
-    }
-    
-    deinit {
-        viewCode.tableView.removeObserver(self, forKeyPath: .contentSize, context: nil)
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -97,20 +123,8 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         reloadData()
         
         DispatchQueue.main.async {
-            _ = self.viewCode.searchView.becomeFirstResponder()
+            self.viewCode.searchView.becomeFirstResponder()
         }
-    }
-    
-    func reloadData() {
-        viewModel.loadData()
-        
-        viewCode.searchView.separatorView.isSafelyHidden = viewModel.isEmpty
-        
-        viewCode.tableView.isSafelyHidden = viewModel.isEmpty
-                
-        viewCode.layoutIfNeeded()
-        
-        viewCode.tableView.reloadData()
     }
     
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
@@ -122,6 +136,21 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
             viewCode.animate(.out)
         }
     }
+    
+    // MARK: - Private Methods
+    
+    private func reloadData() {
+        viewModel.loadData()
+        
+        viewCode.searchView.separatorView.isSafelyHidden = viewModel.isEmpty
+        
+        viewCode.tableView.isSafelyHidden = viewModel.isEmpty
+                
+        viewCode.layoutIfNeeded()
+        
+        viewCode.tableView.reloadData()
+    }
+    
 }
 
 // MARK: - Keyboard Handlers
@@ -161,4 +190,16 @@ extension HierarchyInspectorViewController: HierarchyInspectorViewDelegate {
 
 fileprivate extension String {
     static let contentSize = "contentSize"
+}
+
+extension HierarchyInspectorViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard string != UIKeyCommand.inputTab else {
+            DispatchQueue.main.async {
+                self.changeFocus()
+            }
+            return false
+        }
+        return true
+    }
 }

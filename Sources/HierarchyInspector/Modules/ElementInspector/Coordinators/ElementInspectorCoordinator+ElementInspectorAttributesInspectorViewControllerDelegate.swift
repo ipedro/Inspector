@@ -1,5 +1,5 @@
 //
-//  ElementInspectorCoordinator+ElementInspectorAttributesInspectorViewControllerDelegate.swift
+//  ElementInspectorCoordinator+ElementAttributesInspectorViewControllerDelegate.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 07.10.20.
@@ -8,19 +8,19 @@
 import UIKit
 import MobileCoreServices
 
-extension ElementInspectorCoordinator: ElementInspectorAttributesInspectorViewControllerDelegate {
+extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerDelegate {
     
-    func attributesInspectorViewController(_ viewController: ElementInspector.AttributesInspectorViewController,
+    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
                                            showLayerInspectorViewsInside reference: ViewHierarchyReference) {
         delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
     }
     
-    func attributesInspectorViewController(_ viewController: ElementInspector.AttributesInspectorViewController,
+    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
                                            hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
         delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
     }
     
-    func attributesInspectorViewController(_ viewController: ElementInspector.AttributesInspectorViewController, didTap colorPicker: ColorPreviewControl) {
+    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController, didTap colorPicker: ColorPreviewControl) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             let colorPicker = UIColorPickerViewController().then {
@@ -43,7 +43,7 @@ extension ElementInspectorCoordinator: ElementInspectorAttributesInspectorViewCo
         #endif
     }
     
-    func attributesInspectorViewController(_ viewController: ElementInspector.AttributesInspectorViewController, didTap optionSelector: OptionListControl) {
+    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController, didTap optionSelector: OptionListControl) {
         
         let viewModel = OptionSelectorViewModel(
             title: optionSelector.title,
@@ -73,7 +73,7 @@ extension ElementInspectorCoordinator: ElementInspectorAttributesInspectorViewCo
         viewController.present(navigationController, animated: true)
     }
     
-    func attributesInspectorViewController(_ viewController: ElementInspector.AttributesInspectorViewController, didTap imagePicker: ImagePreviewControl) {
+    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController, didTap imagePicker: ImagePreviewControl) {
         let documentPicker = UIDocumentPickerViewController(documentTypes: [String(kUTTypeImage)], in: .import).then {
             #if swift(>=5.0)
             if #available(iOS 13.0, *) {

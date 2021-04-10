@@ -1,5 +1,5 @@
 //
-//  SizeInspectorViewController.swift
+//  ElementSizeInspectorViewController.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 28.10.20.
@@ -7,21 +7,23 @@
 
 import UIKit
 
-final class SizeInspectorViewController: ElementInspectorPanelViewController {
+#warning("WIP")
+
+final class ElementSizeInspectorViewController: ElementInspectorPanelViewController {
     func calculatePreferredContentSize() -> CGSize {
         #warning("implement")
         
         return preferredContentSize
     }
     
-    private lazy var viewCode = SizeInspectorViewCode()
+    private lazy var viewCode = ElementSizeInspectorViewCode()
     
     override func loadView() {
         view = viewCode
     }
 }
 
-final class SizeInspectorViewCode: BaseView {
+final class ElementSizeInspectorViewCode: BaseView {
     
     private lazy var inspectorView = SizeInspectorView()
     

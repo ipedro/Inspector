@@ -1,5 +1,5 @@
 //
-//  ElementInspector.ViewHierarchyPanelViewModel.swift
+//  ElementViewHierarchyPanelViewModel.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 07.10.20.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-protocol ElementInspectorViewHierarchyPanelViewModelProtocol: AnyObject {
-    var parent: ElementInspectorViewHierarchyPanelViewModelProtocol? { get set }
+protocol ElementViewHierarchyPanelViewModelProtocol: AnyObject {
+    var parent: ElementViewHierarchyPanelViewModelProtocol? { get set }
     
     var reference: ViewHierarchyReference { get }
     
@@ -31,51 +31,49 @@ protocol ElementInspectorViewHierarchyPanelViewModelProtocol: AnyObject {
     var relativeDepth: Int { get }
 }
 
-extension ElementInspector {
-    final class ViewHierarchyPanelViewModel {
-        
-        let identifier = UUID()
-        
-        weak var parent: ElementInspectorViewHierarchyPanelViewModelProtocol?
-        
-        private var _isCollapsed: Bool
-        
-        private(set) lazy var title = reference.elementName
-        
-        private(set) lazy var subtitle = reference.elementDescription
-        
-        let rootDepth: Int
-        
-        
-        
-        private(set) lazy var thumbnailImage: UIImage? = reference.iconImage(with: Self.thumbSize)
-        
-        // MARK: - Properties
-        
-        let reference: ViewHierarchyReference
-        
-        static let thumbSize = CGSize(
-            width: ElementInspector.appearance.horizontalMargins * 2,
-            height: ElementInspector.appearance.horizontalMargins * 2
-        )
-        
-        init(
-            reference: ViewHierarchyReference,
-            parent: ElementInspectorViewHierarchyPanelViewModelProtocol? = nil,
-            rootDepth: Int,
-            isCollapsed: Bool
-        ) {
-            self.parent = parent
-            self.reference = reference
-            self.rootDepth = rootDepth
-            self._isCollapsed = isCollapsed
-        }
+
+final class ElementViewHierarchyPanelViewModel {
+    
+    let identifier = UUID()
+    
+    weak var parent: ElementViewHierarchyPanelViewModelProtocol?
+    
+    private var _isCollapsed: Bool
+    
+    private(set) lazy var title = reference.elementName
+    
+    private(set) lazy var subtitle = reference.elementDescription
+    
+    let rootDepth: Int
+    
+    private(set) lazy var thumbnailImage: UIImage? = reference.iconImage(with: Self.thumbSize)
+    
+    // MARK: - Properties
+    
+    let reference: ViewHierarchyReference
+    
+    static let thumbSize = CGSize(
+        width: ElementInspector.appearance.horizontalMargins * 2,
+        height: ElementInspector.appearance.horizontalMargins * 2
+    )
+    
+    init(
+        reference: ViewHierarchyReference,
+        parent: ElementViewHierarchyPanelViewModelProtocol? = nil,
+        rootDepth: Int,
+        isCollapsed: Bool
+    ) {
+        self.parent = parent
+        self.reference = reference
+        self.rootDepth = rootDepth
+        self._isCollapsed = isCollapsed
     }
 }
 
-// MARK: - ElementInspectorViewHierarchyPanelViewModelProtocol
 
-extension ElementInspector.ViewHierarchyPanelViewModel: ElementInspectorViewHierarchyPanelViewModelProtocol {
+// MARK: - ElementViewHierarchyPanelViewModelProtocol
+
+extension ElementViewHierarchyPanelViewModel: ElementViewHierarchyPanelViewModelProtocol {
     var titleFont: UIFont {
         ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth)
     }
@@ -113,8 +111,8 @@ extension ElementInspector.ViewHierarchyPanelViewModel: ElementInspectorViewHier
 
 // MARK: - Hashable
 
-extension ElementInspector.ViewHierarchyPanelViewModel: Hashable {
-    static func == (lhs: ElementInspector.ViewHierarchyPanelViewModel, rhs: ElementInspector.ViewHierarchyPanelViewModel) -> Bool {
+extension ElementViewHierarchyPanelViewModel: Hashable {
+    static func == (lhs: ElementViewHierarchyPanelViewModel, rhs: ElementViewHierarchyPanelViewModel) -> Bool {
         lhs.identifier == rhs.identifier
     }
     
@@ -125,7 +123,7 @@ extension ElementInspector.ViewHierarchyPanelViewModel: Hashable {
 
 // MARK: - Images
 
-private extension ElementInspector.ViewHierarchyPanelViewModel {
+private extension ElementViewHierarchyPanelViewModel {
     
     static let thumbnailImageLostConnection = IconKit.imageOfWifiExlusionMark(
         CGSize(

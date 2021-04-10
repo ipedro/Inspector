@@ -15,17 +15,17 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
         switch panel {
         
         case .attributesInspector:
-            return ElementInspector.AttributesInspectorViewController.create(viewModel: AttributesInspectorViewModel(reference: reference)).then {
+            return ElementAttributesInspectorViewController.create(viewModel: AttributesInspectorViewModel(reference: reference)).then {
                 $0.delegate = self
             }
             
         case .viewHierarchyInspector:
-            return ElementInspector.ViewHierarchyPanelViewController.create(viewModel: ViewHierarchyInspectorViewModel(reference: reference)).then {
+            return ElementViewHierarchyViewController.create(viewModel: ElementViewHierarchyInspectorViewModel(reference: reference)).then {
                 $0.delegate = self
             }
             
         case .sizeInspector:
-            return SizeInspectorViewController()
+            return ElementSizeInspectorViewController()
         }
     }
     

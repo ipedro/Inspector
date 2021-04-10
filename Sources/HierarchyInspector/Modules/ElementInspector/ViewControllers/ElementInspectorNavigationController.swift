@@ -16,7 +16,13 @@ final class ElementInspectorNavigationController: UINavigationController {
         view.backgroundColor = ElementInspector.appearance.panelBackgroundColor
         
         navigationBar.barStyle = .black
+        
+        addKeyCommand(UIViewController.dismissModalKeyCommand)
+        
+        becomeFirstResponder()
     }
+    
+    override var canBecomeFirstResponder: Bool { true }
     
     override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
         // Async here is preventing weird popover behavior.

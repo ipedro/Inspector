@@ -18,7 +18,7 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
 final class ElementInspectorViewController: HierarchyInspectableViewController {
     
     // MARK: - HierarchyInspectorPresentable
-
+    
     override var hierarchyInspectorLayers: [ViewHierarchyLayer] {
         [
             .buttons,
@@ -104,6 +104,8 @@ final class ElementInspectorViewController: HierarchyInspectableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.titleView = viewCode.segmentedControl
+        
         navigationItem.rightBarButtonItem = inspectBarButtonItem
         
         if viewModel.showDismissBarButton {
@@ -123,8 +125,6 @@ final class ElementInspectorViewController: HierarchyInspectableViewController {
         if let selectedPanel = viewModel.selectedPanel {
             installPanel(selectedPanel)
         }
-        
-        navigationItem.titleView = viewCode.segmentedControl
     }
     
     // MARK: - Content Size
