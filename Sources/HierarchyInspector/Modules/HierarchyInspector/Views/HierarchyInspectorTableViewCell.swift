@@ -33,6 +33,8 @@ final class HierarchyInspectorTableViewCell: UITableViewCell {
             margins.leading += depth * 5
             
             directionalLayoutMargins = margins
+            contentView.alpha = viewModel?.isEnabled == true ? 1 : 0.4
+            selectionStyle = viewModel?.isEnabled == true ? .default : .none
         }
     }
     

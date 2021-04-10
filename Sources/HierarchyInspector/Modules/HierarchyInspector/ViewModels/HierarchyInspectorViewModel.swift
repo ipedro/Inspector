@@ -18,6 +18,7 @@ protocol HierarchyInspectorCellViewModelProtocol {
     var subtitle: String? { get }
     var image: UIImage? { get }
     var depth: Int { get }
+    var isEnabled: Bool { get }
 }
 
 protocol HierarchyInspectorViewModelSectionProtocol {
@@ -152,6 +153,7 @@ extension HierarchyInspectorViewModel {
         
         struct CellViewModel: HierarchyInspectorCellViewModelProtocol {
             let title: String
+            var isEnabled: Bool
             let titleFont: UIFont = .preferredFont(forTextStyle: .callout)
             let subtitle: String? = nil
             let image: UIImage? = nil
@@ -205,7 +207,10 @@ extension HierarchyInspectorViewModel {
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModelProtocol {
             let action = self.action(at: indexPath)
             
-            return CellViewModel(title: action.title)
+            return CellViewModel(
+                title: action.title,
+                isEnabled: action.isEnabled
+            )
         }
         
         func heightForRow(at indexPath: IndexPath) -> CGFloat { 44 }
@@ -225,6 +230,7 @@ extension HierarchyInspectorViewModel {
         
         struct CellViewModel: HierarchyInspectorCellViewModelProtocol {
             let title: String
+            var isEnabled: Bool
             let titleFont: UIFont = .preferredFont(forTextStyle: .footnote)
             let subtitle: String?
             let image: UIImage?
@@ -293,6 +299,7 @@ extension HierarchyInspectorViewModel {
                 
                 return CellViewModel(
                     title: title,
+                    isEnabled: true,
                     subtitle: element.elementDescription,
                     image: element.iconImage(
                         with: CGSize(

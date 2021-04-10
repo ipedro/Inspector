@@ -26,6 +26,15 @@ enum Action {
 // MARK: - Properties
 
 extension Action {
+    var isEnabled: Bool {
+        switch self {
+        case .emptyLayer:
+            return false
+            
+        default:
+            return true
+        }
+    }
     
     var title: String {
         switch self {

@@ -36,6 +36,10 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
         }
     }
     
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        viewModel.cellViewModelForRow(at: indexPath).isEnabled ? indexPath : nil
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         viewModel.heightForRow(at: indexPath)
     }
