@@ -47,7 +47,9 @@ protocol HierarchyInspectorViewModelSectionProtocol {
 
 final class HierarchyInspectorViewModel {
     
-    let layerActionsViewModel: LayerActionsViewModel
+    typealias ActionGroupsProvider = (() -> ActionGroups?)
+    
+    let actionGroupsViewModel: ActionGroupsViewModel
     
     let snapshotViewModel: SnapshotViewModel
     
@@ -63,10 +65,10 @@ final class HierarchyInspectorViewModel {
     }
     
     init(
-        layerActionGroupsProvider: @escaping (() -> ActionGroups),
+        actionGroupsProvider: @escaping ActionGroupsProvider,
         snapshot: ViewHierarchySnapshot
     ) {
-        layerActionsViewModel = LayerActionsViewModel(layerActionGroupsProvider: layerActionGroupsProvider)
+        actionGroupsViewModel = ActionGroupsViewModel(actionGroupsProvider: actionGroupsProvider)
         snapshotViewModel = SnapshotViewModel(snapshot: snapshot)
     }
 }
@@ -80,7 +82,7 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
             return snapshotViewModel.isRowEnabled(at: indexPath)
             
         case false:
-            return layerActionsViewModel.isRowEnabled(at: indexPath)
+            return actionGroupsViewModel.isRowEnabled(at: indexPath)
         }
     }
     
@@ -90,7 +92,7 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
             return snapshotViewModel.isEmpty
             
         case false:
-            return layerActionsViewModel.isEmpty
+            return actionGroupsViewModel.isEmpty
         }
     }
     
@@ -100,7 +102,7 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
             return snapshotViewModel.loadData()
             
         case false:
-            return layerActionsViewModel.loadData()
+            return actionGroupsViewModel.loadData()
         }
     }
     
@@ -110,7 +112,7 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
             return snapshotViewModel.selectRow(at: indexPath)
             
         case false:
-            return layerActionsViewModel.selectRow(at: indexPath)
+            return actionGroupsViewModel.selectRow(at: indexPath)
         }
     }
     
@@ -120,7 +122,7 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
             return snapshotViewModel.numberOfSections
             
         case false:
-            return layerActionsViewModel.numberOfSections
+            return actionGroupsViewModel.numberOfSections
         }
     }
     
@@ -130,7 +132,7 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
             return snapshotViewModel.numberOfRows(in: section)
             
         case false:
-            return layerActionsViewModel.numberOfRows(in: section)
+            return actionGroupsViewModel.numberOfRows(in: section)
         }
     }
     
@@ -140,7 +142,7 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
             return snapshotViewModel.titleForHeader(in: section)
             
         case false:
-            return layerActionsViewModel.titleForHeader(in: section)
+            return actionGroupsViewModel.titleForHeader(in: section)
         }
     }
     
@@ -150,7 +152,7 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
             return snapshotViewModel.cellViewModelForRow(at: indexPath)
             
         case false:
-            return layerActionsViewModel.cellViewModelForRow(at: indexPath)
+            return actionGroupsViewModel.cellViewModelForRow(at: indexPath)
         }
     }
 }

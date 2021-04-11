@@ -14,6 +14,8 @@ extension HierarchyInspector {
         
         var elementInspectorCoordinator: ElementInspectorCoordinator?
         
+        var hierarchyInspectorCoordinator: HierarchyInspectorCoordinator?
+        
         private(set) lazy var viewHierarchyLayersCoordinator = ViewHierarchyLayersCoordinator().then {
             $0.dataSource = self
             $0.delegate   = self
@@ -41,30 +43,27 @@ extension HierarchyInspector {
             cachedViewHierarchySnapshot = nil
             
             viewHierarchyLayersCoordinator.invalidate()
+            
+            elementInspectorCoordinator = nil
+            
+            hierarchyInspectorCoordinator = nil
         }
         
         func present(animated: Bool) {
-            asyncOperation {
-                guard
-                    let hostViewController = self.hostViewController?.presentedViewController ?? self.hostViewController,
-                    let windowHierarchySnapshot = self.makeWindowHierarchySnapshot()
-                else {
-                    return
-                }
-                
-                let viewModel = HierarchyInspectorViewModel(
-                    layerActionGroupsProvider: { self.availableActions },
-                    snapshot: windowHierarchySnapshot
-                )
-                
-                let viewController = HierarchyInspectorViewController.create(viewModel: viewModel).then {
-                    $0.modalPresentationStyle = .overCurrentContext
-                    $0.modalTransitionStyle = .crossDissolve
-                    $0.delegate = self
-                }
-                
-                hostViewController.present(viewController, animated: animated)
+            guard let windowHierarchySnapshot = self.makeWindowHierarchySnapshot() else {
+                return
             }
+            
+            let coordinator = HierarchyInspectorCoordinator(
+                hierarchySnapshot: windowHierarchySnapshot,
+                actionGroupsProvider: { [weak self] in self?.availableActions }
+            ).then {
+                $0.delegate = self
+            }
+            
+            hostViewController?.present(coordinator.start(), animated: true)
+            
+            hierarchyInspectorCoordinator = coordinator
         }
     }
 }

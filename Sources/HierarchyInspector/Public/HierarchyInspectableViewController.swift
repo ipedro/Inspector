@@ -61,7 +61,7 @@ open class HierarchyInspectableViewController: UIViewController, HierarchyInspec
 // MARK: - HierarchyInspectorKeyCommandPresentable
 
 extension HierarchyInspectableViewController: HierarchyInspectorKeyCommandPresentable {
-    public var hirearchyInspectorKeyCommandsSelector: Selector? {
+    public var hirearchyInspectorKeyCommandsSelector: Selector {
         #selector(keyCommandHandler(_:))
     }
     

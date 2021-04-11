@@ -30,6 +30,8 @@ final class ElementInspectorCoordinator: NSObject {
         rootReference: rootReference,
         delegate: self
     ).then {
+        $0.dismissDelegate = self
+        
         switch $0.modalPresentationStyle {
         case .popover:
             $0.popoverPresentationController?.delegate = self
@@ -176,6 +178,14 @@ final class ElementInspectorCoordinator: NSObject {
         return viewController
     }
     
+}
+
+extension ElementInspectorCoordinator: ElementInspectorNavigationControllerDismissDelegate {
+    func elementInspectorNavigationControllerDidFinish(_ navigationController: ElementInspectorNavigationController) {
+        navigationController.dismiss(animated: true) { [weak self] in
+            self?.finish()
+        }
+    }
 }
 
 // MARK: - UIAdaptivePresentationControllerDelegate

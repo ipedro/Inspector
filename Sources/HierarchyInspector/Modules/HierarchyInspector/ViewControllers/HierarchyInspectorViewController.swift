@@ -9,6 +9,8 @@ import UIKit
 
 protocol HierarchyInspectorViewControllerDelegate: AnyObject {
     func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController, didSelect viewHierarchyReference: ViewHierarchyReference)
+    
+    func hierarchyInspectorViewControllerDidFinish(_ viewController: HierarchyInspectorViewController)
 }
 
 final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatable {
@@ -263,19 +265,17 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
             )
         }
     }
+    
+    func escapeKey() {
+        delegate?.hierarchyInspectorViewControllerDidFinish(self)
+    }
 }
 
 // MARK: - HierarchyInspectorViewDelegate
 
 extension HierarchyInspectorViewController: HierarchyInspectorViewDelegate {
     func hierarchyInspectorViewDidTapOutside(_ view: HierarchyInspectorView) {
-        if isClosing {
-            return
-        }
-        
-        isClosing = true
-        
-        dismiss(animated: true)
+        delegate?.hierarchyInspectorViewControllerDidFinish(self)
     }
 }
 
@@ -295,16 +295,25 @@ extension HierarchyInspectorViewController: UITextFieldDelegate {
     }
 }
 
-// MARK: - KeyboardTableViewSelectionDelegate
+// MARK: - UITableViewKeyCommandsDelegate
 
-extension HierarchyInspectorViewController: KeyboardTableViewSelectionDelegate {
-    func tableViewDidBecomeFirstResponder(_ tableView: UITableView) {
+extension HierarchyInspectorViewController: UITableViewKeyCommandsDelegate {
+    func tableViewDidBecomeFirstResponder(_ tableView: UIKeyCommandTableView) {
         addSearchKeyCommandListeners()
     }
     
-    func tableViewDidResignFirstResponder(_ tableView: UITableView) {
+    func tableViewDidResignFirstResponder(_ tableView: UIKeyCommandTableView) {
         tableView.indexPathsForSelectedRows?.forEach { tableView.deselectRow(at: $0, animated: false) }
         removeSearchKeyCommandListeners()
         viewCode.searchView.becomeFirstResponder()
     }
+    
+    func tableViewKeyCommandSelectionBelowBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior {
+        .resignFirstResponder
+    }
+    
+    func tableViewKeyCommandSelectionAboveBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior {
+        .resignFirstResponder
+    }
+    
 }

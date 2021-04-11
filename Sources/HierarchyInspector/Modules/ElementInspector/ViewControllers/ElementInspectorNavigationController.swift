@@ -7,7 +7,14 @@
 
 import UIKit
 
+protocol ElementInspectorNavigationControllerDismissDelegate: AnyObject {
+    func elementInspectorNavigationControllerDidFinish(_ navigationController: ElementInspectorNavigationController)
+}
+
 final class ElementInspectorNavigationController: UINavigationController {
+    
+    weak var dismissDelegate: ElementInspectorNavigationControllerDismissDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -29,6 +36,10 @@ final class ElementInspectorNavigationController: UINavigationController {
         DispatchQueue.main.async {
             self.preferredContentSize = container.preferredContentSize
         }
+    }
+    
+    @objc private func finish() {
+        dismissDelegate?.elementInspectorNavigationControllerDidFinish(self)
     }
     
 }

@@ -9,106 +9,91 @@ import UIKit
 
 public protocol HierarchyInspectorKeyCommandPresentable: HierarchyInspectorPresentable {
     
-    var hirearchyInspectorKeyCommandsSelector: Selector? { get }
+    var hirearchyInspectorKeyCommandsSelector: Selector { get }
     
     var hierarchyInspectorKeyCommands: [UIKeyCommand] { get }
     
-    var hierarchyInspectorKeyModifierFlags: UIKeyModifierFlags? { get }
+    var hierarchyInspectorLayerToggleModifierFlags: UIKeyModifierFlags { get }
+    
+    var hierarchyInspectorPresentationKeyCommandOptions: UIKeyCommand.Options { get }
 }
 
 // MARK: - KeyCommands
 
 extension HierarchyInspectorKeyCommandPresentable {
     
-    public var hierarchyInspectorKeyModifierFlags: UIKeyModifierFlags? {
-        [.control]
+    private var keyCommandSettings: HierarchyInspector.Configuration.KeyCommandSettings {
+        HierarchyInspector.configuration.keyCommands
     }
     
-    public var hierarchyInspectorPresentationKeyModifierFlags: UIKeyModifierFlags? {
-        guard var modifierFlags = hierarchyInspectorKeyModifierFlags else {
-            return nil
-        }
-        
-        modifierFlags.insert(HierarchyInspector.configuration.keyCommands.presentationModfifierFlags)
-        
-        return modifierFlags
+    public var hierarchyInspectorLayerToggleModifierFlags: UIKeyModifierFlags {
+        keyCommandSettings.layerToggleModifierFlags
+    }
+    
+    public var hierarchyInspectorPresentationKeyCommandOptions: UIKeyCommand.Options {
+        keyCommandSettings.presentationOptions
     }
     
     public var hierarchyInspectorKeyCommands: [UIKeyCommand] {
-        guard
-            let modifierFlags = hierarchyInspectorKeyModifierFlags,
-            let aSelector = hirearchyInspectorKeyCommandsSelector
-        else {
-            return []
-        }
+        let modifierFlags = hierarchyInspectorLayerToggleModifierFlags
+        let aSelector = hirearchyInspectorKeyCommandsSelector
         
         var keyCommands = [UIKeyCommand]()
         
-        let keyCommandsInputRange = HierarchyInspector.configuration.keyCommands.keyCommandsInputRange
-        
-        var index = 0
+        var index = keyCommandSettings.layerToggleInputRange.lowerBound
         
         for actionGroup in hierarchyInspectorManager.availableActionsForKeyCommand {
             
             for action in actionGroup.actions {
                 
-                var input: String? {
-                    switch action {
-                    case .emptyLayer:
-                        return nil
-                        
-                    case .showAllLayers, .hideVisibleLayers:
-                        return HierarchyInspector.configuration.keyCommands.openHierarchyInspectorInput
-                        
-                    default:
-                        return String(keyCommandsInputRange.lowerBound + index)
-                    }
-                }
-                
-                guard let keyInput = input else {
+                switch action {
+                case .emptyLayer:
                     continue
-                }
-                
-                var actionModifierFlags: UIKeyModifierFlags {
-                    guard var actionFlags = action.modifierFlags else {
-                        return modifierFlags
+                    
+                case .openHierarchyInspector:
+                    keyCommands.append(
+                        UIKeyCommand(
+                            keyCommandSettings.presentationOptions,
+                            action: aSelector
+                        )
+                    )
+                    
+                case .showAllLayers,
+                     .hideVisibleLayers:
+                    keyCommands.append(
+                        UIKeyCommand(
+                            input: keyCommandSettings.allLayersToggleInput,
+                            modifierFlags: keyCommandSettings.layerToggleModifierFlags,
+                            action: aSelector,
+                            discoverabilityTitle: action.title
+                        )
+                    )
+                    
+                case .inspect,
+                     .inspectWindow,
+                     .toggleLayer:
+                    
+                    guard keyCommandSettings.layerToggleInputRange.contains(index) else {
+                        break
                     }
                     
-                    actionFlags.insert(modifierFlags)
-                    
-                    return actionFlags
-                }
-                
-                keyCommands.append(
-                    UIKeyCommand(
-                        input: keyInput,
-                        modifierFlags: actionModifierFlags,
-                        action: aSelector,
-                        discoverabilityTitle: action.title
+                    keyCommands.append(
+                        UIKeyCommand(
+                            input: String(index),
+                            modifierFlags: keyCommandSettings.layerToggleModifierFlags,
+                            action: aSelector,
+                            discoverabilityTitle: action.title
+                        )
                     )
-                )
-                
-                if index == keyCommandsInputRange.upperBound - 1 {
-                    break
+                    
+                    index += 1
                 }
                 
-                index += 1
             }
             
         }
         
-        keyCommands.sort { lhs, rhs -> Bool in
-            guard
-                let lhsInput = lhs.input,
-                let rhsInput = rhs.input
-            else {
-                return true
-            }
-            
-            return lhsInput < rhsInput
-        }
-        
-        return keyCommands
+        return keyCommands.sortedByInputKey()
     }
     
     /// Interprets key commands into HierarchyInspector actions.
@@ -121,30 +106,7 @@ extension HierarchyInspectorKeyCommandPresentable {
         let flattenedActions = hierarchyInspectorManager.availableActionsForKeyCommand.flatMap { $0.actions }
         
         for action in flattenedActions where action.title == keyCommand.discoverabilityTitle {
-            
-            switch action {
-            
-            case .emptyLayer:
-                break
-            
-            case let .toggleLayer(_, closure),
-                 let .showAllLayers(closure),
-                 let .hideVisibleLayers(closure):
-                closure()
-                
-            case let .openHierarchyInspector(fromViewController):
-                fromViewController.presentHierarchyInspector(animated: true)
-                
-            case let .inspect(vc):
-                vc.presentHierarchyInspector(animated: true)
-                
-            case let .inspectWindow(vc: vc):
-                guard let window = vc.view.window else {
-                    return
-                }
-                vc.hierarchyInspectorManager.presentElementInspector(for: ViewHierarchyReference(root: window), animated: true, from: nil)
-            }
-            
+            action.closure?()
             return
         }
     
@@ -173,4 +135,22 @@ extension HierarchyInspector.Manager {
         return array
     }
     
+}
+
+private extension Array where Element == UIKeyCommand {
+    func sortedByInputKey() -> Self {
+        var copy = self
+        copy.sort { lhs, rhs -> Bool in
+            guard
+                let lhsInput = lhs.input,
+                let rhsInput = rhs.input
+            else {
+                return true
+            }
+            
+            return lhsInput < rhsInput
+        }
+        
+        return copy
+    }
 }

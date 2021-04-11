@@ -37,7 +37,7 @@ final class HierarchyInspectorView: BaseView {
     
     private(set) lazy var searchView = HierarchyInspectorSearchView()
     
-    private(set) lazy var tableView = KeyboardTableView().then {
+    private(set) lazy var tableView = UIKeyCommandTableView().then {
         $0.indicatorStyle = .white
         $0.backgroundColor = nil
         $0.tableFooterView = UIView()

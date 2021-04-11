@@ -1,5 +1,5 @@
 //
-//  HierarchyInspectorViewModel+LayerActionsViewModel.swift
+//  HierarchyInspectorViewModel+ActionGroupsViewModel.swift
 //  
 //
 //  Created by Pedro on 10.04.21.
@@ -8,7 +8,7 @@
 import UIKit
 
 extension HierarchyInspectorViewModel {
-    final class LayerActionsViewModel: HierarchyInspectorViewModelSectionProtocol {
+    final class ActionGroupsViewModel: HierarchyInspectorViewModelSectionProtocol {
         
         struct Details: HierarchyInspectorLayerAcionCellViewModelProtocol {
             let title: String
@@ -17,10 +17,10 @@ extension HierarchyInspectorViewModel {
         
         private(set) lazy var layerActionGroups = ActionGroups()
         
-        let layerActionGroupsProvider: () -> ActionGroups
+        let provider: ActionGroupsProvider
         
-        init(layerActionGroupsProvider: @escaping () -> ActionGroups) {
-            self.layerActionGroupsProvider = layerActionGroupsProvider
+        init(actionGroupsProvider: @escaping ActionGroupsProvider) {
+            provider = actionGroupsProvider
         }
         
         var isEmpty: Bool {
@@ -34,7 +34,7 @@ extension HierarchyInspectorViewModel {
         }
         
         func loadData() {
-            layerActionGroups = layerActionGroupsProvider()
+            layerActionGroups = provider() ?? []
         }
         
         func selectRow(at indexPath: IndexPath) -> ViewHierarchyReference? {
