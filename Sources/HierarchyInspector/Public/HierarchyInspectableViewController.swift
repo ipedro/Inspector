@@ -20,7 +20,7 @@ open class HierarchyInspectableViewController: UIViewController, HierarchyInspec
     
     open var hierarchyInspectorColorScheme: ViewHierarchyColorScheme { .default }
     
-    open var hierarchyInspectorLayers: [ViewHierarchyLayer] { [.allViews] }
+    open var hierarchyInspectorLayers: [ViewHierarchyLayer] { [] }
     
     open var shouldPresentHierarchyInspectorOnShake = true {
         didSet {

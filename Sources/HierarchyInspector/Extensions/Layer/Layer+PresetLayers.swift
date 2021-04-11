@@ -13,8 +13,6 @@ import WebKit
 
 #warning("TODO: add layers documentation")
 public extension ViewHierarchyLayer {
-    
-    static let allViews                   : ViewHierarchyLayer = .layer(name: "All views")                  { _ in true }
     static let activityIndicators         : ViewHierarchyLayer = .layer(name: "Activity indicators")        { $0 is UIActivityIndicatorView }
     static let buttons                    : ViewHierarchyLayer = .layer(name: "Buttons")                    { $0 is UIButton }
     static let collectionViews            : ViewHierarchyLayer = .layer(name: "Collection views")           { $0 is UICollectionView }
@@ -45,6 +43,7 @@ public extension ViewHierarchyLayer {
 // MARK: - Internal Layers
 
 extension ViewHierarchyLayer {
+    static let allViews: ViewHierarchyLayer = .layer(name: "All views") { _ in true }
     
     static let wireframes = ViewHierarchyLayer(name: "Wireframes", showLabels: false) { _ in true }
     

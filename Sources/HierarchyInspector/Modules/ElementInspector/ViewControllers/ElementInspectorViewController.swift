@@ -26,8 +26,7 @@ final class ElementInspectorViewController: HierarchyInspectableViewController {
             .staticTexts + .icons + .images,
             .stackViews,
             .tableViewCells,
-            .containerViews,
-            .allViews
+            .containerViews
         ]
     }
     

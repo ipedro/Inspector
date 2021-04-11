@@ -121,7 +121,9 @@ extension HierarchyInspector.Manager {
     }
     
     private var viewHierarchyLayers: [ViewHierarchyLayer] {
-        hostViewController?.hierarchyInspectorLayers.uniqueValues ?? [.allViews]
+        var userLayers = hostViewController?.hierarchyInspectorLayers.uniqueValues ?? []
+        
+        return userLayers + [.allViews]
     }
     
     private func makeViewHierarchySnapshot() -> ViewHierarchySnapshot? {

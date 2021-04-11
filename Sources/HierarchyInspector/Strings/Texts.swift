@@ -21,7 +21,7 @@ enum Texts {
     
     static let closeInspector = "Close"
     
-    static let hideVisibleLayers = "Hide visible layers"
+    static let hideVisibleLayers = "Stop highlighting all views"
     
     static let hierarchyInspector = "Hierarchy Inspector"
     
@@ -31,7 +31,7 @@ enum Texts {
     
     static let openingHierarchyInspector = "Opening..."
     
-    static let showAllLayers = "Highlight all layers"
+    static let showAllLayers = "Highlight all views"
     
     static let stopInspecting = "Stop inspecting me"
     
