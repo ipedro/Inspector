@@ -12,7 +12,7 @@ extension UIViewController {
     static func dismissModalKeyCommand(action: Selector) -> UIKeyCommand {
         UIKeyCommand(
             .discoverabilityTitle(
-                title: "Close modal view",
+                title: Texts.dismissView,
                 key: .escape
             ),
             action: action

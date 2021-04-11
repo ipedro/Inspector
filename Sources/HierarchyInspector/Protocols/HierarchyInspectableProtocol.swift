@@ -23,6 +23,15 @@ public extension HierarchyInspectableProtocol {
 // MARK: - View Controller Hierarchy
 
 extension HierarchyInspectableProtocol {
+    
+    var allAvailableLayers: [ViewHierarchyLayer] {
+        var layers = hierarchyInspectorLayers ?? []
+        layers.append(.internalViews)
+        layers.append(.allViews)
+        
+        return layers.uniqueValues
+    }
+    
     var topMostContainerViewController: HierarchyInspectableProtocol {
         var topController: HierarchyInspectableProtocol = self
         

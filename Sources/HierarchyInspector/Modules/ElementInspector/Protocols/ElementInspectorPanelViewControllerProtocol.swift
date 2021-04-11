@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ElementInspectorPanelViewControllerProtocol.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 15.10.20.

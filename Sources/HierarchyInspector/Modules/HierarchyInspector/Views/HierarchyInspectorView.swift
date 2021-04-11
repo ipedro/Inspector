@@ -38,14 +38,21 @@ final class HierarchyInspectorView: BaseView {
     private(set) lazy var searchView = HierarchyInspectorSearchView()
     
     private(set) lazy var tableView = UIKeyCommandTableView().then {
+        $0.keyboardDismissMode = .onDrag
         $0.indicatorStyle = .white
         $0.backgroundColor = nil
         $0.tableFooterView = UIView()
         $0.separatorColor = ElementInspector.appearance.quaternaryTextColor
+        
+        $0.register(HierarchyInspectorLayerActionCell.self)
+        $0.register(HierarchyInspectorSnapshotCell.self)
+        $0.registerHeaderFooter(HierarchyInspectorHeaderView.self)
+        
         $0.separatorInset = .insets(
             left: ElementInspector.appearance.horizontalMargins,
             right: ElementInspector.appearance.horizontalMargins
         )
+        
         $0.contentInset = .insets(
             top: -searchView.separatorView.thickness,
             bottom: ElementInspector.appearance.verticalMargins

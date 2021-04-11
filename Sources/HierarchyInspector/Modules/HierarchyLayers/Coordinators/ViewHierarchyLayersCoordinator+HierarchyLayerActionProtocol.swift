@@ -14,11 +14,9 @@ extension ViewHierarchyLayersCoordinator: LayerActionProtocol {
         
         let maxCount = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
         
-        var actions = snapshot.availableLayers.map { layer in
+        let actions = snapshot.availableLayers.map { layer in
             layerAction(layer, isEmpty: snapshot.populatedLayers.contains(layer) == false)
         }
-        
-        actions.append(layerAction(.internalViews, isEmpty: false))
         
         return ActionGroup(
             title: actions.isEmpty ? Texts.noLayers : Texts.highlightViews,

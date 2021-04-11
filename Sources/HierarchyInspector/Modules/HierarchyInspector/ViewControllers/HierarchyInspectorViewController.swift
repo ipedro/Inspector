@@ -35,9 +35,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         $0.searchView.textField.delegate = self
         
         $0.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
-        $0.tableView.register(HierarchyInspectorLayerActionCell.self)
-        $0.tableView.register(HierarchyInspectorSnapshotCell.self)
-        $0.tableView.registerHeaderFooter(HierarchyInspectorHeaderView.self)
+        
         $0.tableView.delegate = self
         $0.tableView.dataSource = self
         $0.tableView.keyCommandsDelegate = self
@@ -50,11 +48,9 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     }
     
     deinit {
-        guard isViewLoaded else {
-            return
+        if isViewLoaded {
+            viewCode.tableView.removeObserver(self, forKeyPath: .contentSize, context: nil)
         }
-        
-        viewCode.tableView.removeObserver(self, forKeyPath: .contentSize, context: nil)
     }
     
     @objc
@@ -62,7 +58,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         toggleFirstResponder()
         
         if viewCode.tableView.isFirstResponder {
-            viewCode.tableView.selectRow(at: viewCode.tableView.indexPathForLastRowInLastSection)
+            viewCode.tableView.selectRowIfPossible(at: viewCode.tableView.indexPathForLastRowInLastSection)
         }
     }
     
@@ -71,7 +67,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         toggleFirstResponder()
         
         if viewCode.tableView.isFirstResponder {
-            viewCode.tableView.selectRow(at: .first)
+            viewCode.tableView.selectRowIfPossible(at: .first)
         }
     }
     
@@ -113,26 +109,23 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         super.viewDidLoad()
         
         // key commands
-        
-        addKeyCommand(UIViewController.dismissModalKeyCommand(action: #selector(escapeKey)))
+        addKeyCommand(UIViewController.dismissModalKeyCommand(action: #selector(finish)))
         addKeyCommand(UIKeyCommand(.tab,       action: #selector(toggleResponderAndSelectFirstRow)))
         addKeyCommand(UIKeyCommand(.arrowDown, action: #selector(toggleResponderAndSelectFirstRow)))
         addKeyCommand(UIKeyCommand(.arrowUp,   action: #selector(toggleResponderAndSelectLastRow)))
+        addKeyCommand(
+            UIKeyCommand(
+                .discoverabilityTitle(
+                    title: Texts.dismissView,
+                    key: HierarchyInspector.configuration.keyCommands.presentationOptions
+                ),
+                action: #selector(finish)
+            )
+        )
         
         // keyboard event listeners
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillShow(_:)),
-            name: UIResponder.keyboardWillShowNotification,
-            object: nil
-        )
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillHide(_:)),
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil
-        )
+        addKeyboardNotificationObserver(with: #selector(keyboardWillShow(_:)), to: .willShow)
+        addKeyboardNotificationObserver(with: #selector(keyboardWillHide(_:)), to: .willHide)
     }
     
     override func observeValue(
@@ -258,7 +251,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         }
     }
     
-    func escapeKey() {
+    func finish() {
         delegate?.hierarchyInspectorViewControllerDidFinish(self)
     }
 }

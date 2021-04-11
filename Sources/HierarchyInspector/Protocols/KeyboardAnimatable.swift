@@ -9,14 +9,42 @@ import UIKit
 
 protocol KeyboardAnimatable: UIViewController {}
 
-struct KeyboardAnimationProperties {
-    let duration: TimeInterval
-    let keyboardFrame: CGRect
-    let curveValue: Int
-    let curve: UIView.AnimationCurve
+enum KeyboardEvent {
+    case willShow
+    case didShow
+    case willHide
+    case didHide
+    case willChangeFrame
+    case didChangeFrame
+    
+    fileprivate var notificationName: Notification.Name {
+        switch self {
+        
+        case .willShow:
+            return UIResponder.keyboardWillShowNotification
+        
+        case .didShow:
+            return UIResponder.keyboardDidShowNotification
+        
+        case .willHide:
+            return UIResponder.keyboardWillHideNotification
+        
+        case .didHide:
+            return UIResponder.keyboardDidHideNotification
+            
+        case .willChangeFrame:
+            return UIResponder.keyboardWillChangeFrameNotification
+        
+        case .didChangeFrame:
+            return UIResponder.keyboardDidChangeFrameNotification
+        }
+    }
 }
 
 extension KeyboardAnimatable {
+    
+    typealias Properties = (duration: TimeInterval, keyboardFrame: CGRect, curveValue: Int, curve: UIView.AnimationCurve)
+    
     var durationKey: String { UIResponder.keyboardAnimationDurationUserInfoKey }
     
     var frameKey: String { UIResponder.keyboardFrameEndUserInfoKey }
@@ -25,7 +53,15 @@ extension KeyboardAnimatable {
     
     var keyboardIsLocalKey: String { UIResponder.keyboardIsLocalUserInfoKey }
     
-    func animateWithKeyboard(notification: Notification, animations: @escaping ((_ properties: KeyboardAnimationProperties) -> Void)) {
+    func addKeyboardNotificationObserver(with selector: Selector, to keyboardEvent: KeyboardEvent) {
+        NotificationCenter.default.addObserver(self, selector: selector, name: keyboardEvent.notificationName, object: nil)
+    }
+    
+    func removeKeyboardNotificationObserver(with selector: Selector, to keyboardEvent: KeyboardEvent) {
+        NotificationCenter.default.removeObserver(self, name: keyboardEvent.notificationName, object: nil)
+    }
+    
+    func animateWithKeyboard(notification: Notification, animations: @escaping ((_ properties: Properties) -> Void)) {
         guard
             let userInfo = notification.userInfo,
             userInfo[keyboardIsLocalKey] as? Bool == true,
@@ -37,7 +73,7 @@ extension KeyboardAnimatable {
             return
         }
         
-        let properties = KeyboardAnimationProperties(
+        let properties: Properties = (
             duration: duration,
             keyboardFrame: keyboardFrame,
             curveValue: curveValue,

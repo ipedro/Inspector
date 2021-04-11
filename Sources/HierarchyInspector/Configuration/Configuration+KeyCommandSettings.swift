@@ -19,7 +19,7 @@ public extension HierarchyInspector.Configuration {
         
         public var presentationOptions: UIKeyCommand.Options = .discoverabilityTitle(
             title: Texts.openHierarchyInspector,
-            key: .command(.shift(.key("O")))
+            key: .control(.shift(.key("0")))
         )
         
     }

@@ -104,91 +104,20 @@ class UIKeyCommandTableView: UITableView {
         return IndexPath(row: lastRow, section: lastSection)
     }
     
-    private func lastRow(in section: Int) -> Int? {
-        switch validate(IndexPath(row: .zero, section: section)) {
-        case .failure:
-            return nil
-            
-        case .success:
-            return numberOfRows(inSection: section) - 1
-        }
-    }
-    
     /// Tries to select and scroll to the row at the given index in section 0.
     /// Does not require the index to be in bounds. Does nothing if out of bounds.
-    func selectRow(at indexPath: IndexPath?) {
+    func selectRowIfPossible(at indexPath: IndexPath?) {
         guard let indexPath = indexPath else {
             return
         }
         
         switch validate(indexPath) {
-        case let .failure(reason):
-            switch reason {
-            case .sectionBelowBounds:
-                switch keyCommandsDelegate?.tableViewKeyCommandSelectionBelowBounds(self) {
-                case .none, .doNothing:
-                    break
-                    
-                case .resignFirstResponder:
-                    resignFirstResponder()
-                    
-                case .wrapAround:
-                    selectRow(at: indexPathForLastRowInLastSection)
-                }
-                
-            case .sectionAboveBounds:
-                switch keyCommandsDelegate?.tableViewKeyCommandSelectionAboveBounds(self) {
-                case .none, .doNothing:
-                    break
-                    
-                case .resignFirstResponder:
-                    resignFirstResponder()
-                    
-                case .wrapAround:
-                    selectRow(at: .first)
-                }
-                
-            case .rowAboveBounds:
-                selectRow(at: indexPath.nextSection())
-                
-            case .rowBelowBounds:
-                let section = indexPath.section - 1
-                
-                if let row = lastRow(in: section) {
-                    selectRow(at: IndexPath(row: row, section: section))
-                }
-                else {
-                    selectRow(at: IndexPath(row: .zero, section: section))
-                }
-            }
             
         case .success:
-            var selectedIndexPath: IndexPath? {
-                guard let delegate = delegate else {
-                    return indexPath
-                }
-                
-                return delegate.tableView?(self, willSelectRowAt: indexPath)
-            }
+            handleValidSelection(with: indexPath)
             
-            guard let validIndexPath = selectedIndexPath else {
-                switch indexPathForSelectedRow?.compare(indexPath) {
-                case .orderedDescending:
-                    selectRow(at: indexPath.previousRow())
-                    
-                case .none:
-                    selectRow(at: indexPath.nextRow())
-                    
-                case .orderedSame:
-                    return
-                    
-                case .orderedAscending:
-                    selectRow(at: indexPath.nextRow())
-                }
-                return
-            }
-            
-            _selectRow(at: validIndexPath)
+        case let .failure(reason):
+            handleInvalidSelection(with: indexPath, reason: reason)
         }
     }
     
@@ -198,8 +127,84 @@ class UIKeyCommandTableView: UITableView {
 
 private extension UIKeyCommandTableView {
     
-    func _selectRow(at indexPath: IndexPath) {
-        switch visibilityForRow(at: indexPath) {
+    func lastRow(in section: Int) -> Int? {
+        switch validate(IndexPath(row: .zero, section: section)) {
+        case .failure:
+            return nil
+            
+        case .success:
+            return numberOfRows(inSection: section) - 1
+        }
+    }
+    
+    func handleValidSelection(with indexPath: IndexPath) {
+        var selectedIndexPath: IndexPath? {
+            guard let delegate = delegate else {
+                return indexPath
+            }
+            
+            return delegate.tableView?(self, willSelectRowAt: indexPath)
+        }
+        
+        if let validIndexPath = selectedIndexPath {
+            return performRowSelection(at: validIndexPath)
+        }
+        
+        switch indexPathForSelectedRow?.compare(indexPath) {
+        case .orderedSame:
+            return
+        
+        case .orderedDescending:
+            selectRowIfPossible(at: indexPath.previousRow())
+            
+        case .none, .orderedAscending:
+            selectRowIfPossible(at: indexPath.nextRow())
+        }
+    }
+    
+    func handleInvalidSelection(with indexPath: IndexPath, reason: IndexPath.InvalidReason) {
+        switch reason {
+        case .sectionBelowBounds:
+            switch keyCommandsDelegate?.tableViewKeyCommandSelectionBelowBounds(self) {
+            case .none, .doNothing:
+                break
+                
+            case .resignFirstResponder:
+                resignFirstResponder()
+                
+            case .wrapAround:
+                selectRowIfPossible(at: indexPathForLastRowInLastSection)
+            }
+            
+        case .sectionAboveBounds:
+            switch keyCommandsDelegate?.tableViewKeyCommandSelectionAboveBounds(self) {
+            case .none, .doNothing:
+                break
+                
+            case .resignFirstResponder:
+                resignFirstResponder()
+                
+            case .wrapAround:
+                selectRowIfPossible(at: .first)
+            }
+            
+        case .rowAboveBounds:
+            selectRowIfPossible(at: indexPath.nextSection())
+            
+        case .rowBelowBounds:
+            let section = indexPath.section - 1
+            
+            if let row = lastRow(in: section) {
+                selectRowIfPossible(at: IndexPath(row: row, section: section))
+            }
+            else {
+                selectRowIfPossible(at: IndexPath(row: .zero, section: section))
+            }
+        }
+    }
+    
+    func performRowSelection(at indexPath: IndexPath) {
+        switch isRowVisible(at: indexPath) {
         case .fullyVisible:
             selectRow(at: indexPath, animated: false, scrollPosition: .none)
             
@@ -242,30 +247,41 @@ private extension UIKeyCommandTableView {
     }
 
     func activateSelection() {
-        guard let indexPathForSelectedRow = indexPathForSelectedRow else {
-            return
+        var selectableIndexPath: IndexPath? {
+            guard let indexPathForSelectedRow = indexPathForSelectedRow else {
+                return nil
+            }
+            
+            guard let delegate = delegate else {
+                return indexPathForSelectedRow
+            }
+            
+            return delegate.tableView?(self, willSelectRowAt: indexPathForSelectedRow)
         }
-        delegate?.tableView?(self, didSelectRowAt: indexPathForSelectedRow)
+        
+        if let selectedIndexPath = selectableIndexPath {
+            delegate?.tableView?(self, didSelectRowAt: selectedIndexPath)
+        }
     }
     
     func selectPrevious() {
         guard let currentSelection = indexPathForSelectedRow else {
-            return selectRow(at: indexPathForLastRowInLastSection)
+            return selectRowIfPossible(at: indexPathForLastRowInLastSection)
         }
         
-        selectRow(at: currentSelection.previousRow())
+        selectRowIfPossible(at: currentSelection.previousRow())
     }
 
     func selectNext() {
         guard let currentSelection = indexPathForSelectedRow else {
-            return selectRow(at: .first)
+            return selectRowIfPossible(at: .first)
         }
         
-        selectRow(at: currentSelection.nextRow())
+        selectRowIfPossible(at: currentSelection.nextRow())
     }
 }
 
-// MARK: - Cell Visibility
+// MARK: - Row Visibility
 
 private extension UIKeyCommandTableView {
     
@@ -276,7 +292,7 @@ private extension UIKeyCommandTableView {
     }
 
     /// Whether the given row is fully visible, or if not if it’s above or below the viewport.
-    func visibilityForRow(at indexPath: IndexPath) -> RowVisibility {
+    func isRowVisible(at indexPath: IndexPath) -> RowVisibility {
         let rowRect = rectForRow(at: indexPath)
         
         if bounds.inset(by: adjustedContentInset).contains(rowRect) {
@@ -289,4 +305,3 @@ private extension UIKeyCommandTableView {
     }
     
 }
-

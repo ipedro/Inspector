@@ -35,4 +35,5 @@ enum Texts {
     
     static let stopInspecting = "Stop inspecting me"
     
+    static let dismissView = "Dismiss View"
 }
