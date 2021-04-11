@@ -25,6 +25,8 @@ final class ElementInspectorCoordinator: NSObject {
     
     let reference: ViewHierarchyReference
     
+    weak var sourceView: UIView?
+    
     private(set) lazy var navigationController = Self.makeNavigationController(
         reference: reference,
         rootReference: rootReference,
@@ -35,6 +37,7 @@ final class ElementInspectorCoordinator: NSObject {
         switch $0.modalPresentationStyle {
         case .popover:
             $0.popoverPresentationController?.delegate = self
+            $0.popoverPresentationController?.sourceView = sourceView
             
         default:
             $0.presentationController?.delegate = self
@@ -43,9 +46,14 @@ final class ElementInspectorCoordinator: NSObject {
     
     private(set) lazy var operationQueue = OperationQueue.main
     
-    init(reference: ViewHierarchyReference, rootReference: ViewHierarchyReference) {
+    init(
+        reference: ViewHierarchyReference,
+        rootReference: ViewHierarchyReference,
+        sourceView: UIView?
+    ) {
         self.rootReference = rootReference
         self.reference = reference
+        self.sourceView = sourceView ?? rootReference.view
     }
     
     static func makeNavigationController(
@@ -75,14 +83,6 @@ final class ElementInspectorCoordinator: NSObject {
             
             return .formSheet
         }()
-        
-        switch navigationController.modalPresentationStyle {
-        case .popover:
-            navigationController.popoverPresentationController?.sourceView = rootReference.view
-            
-        default:
-            break
-        }
         
         let populatedReferences = rootReference.flattenedViewHierarchy.filter { $0.view === reference.view }
         
@@ -149,7 +149,7 @@ final class ElementInspectorCoordinator: NSObject {
         }
     }
     
-    func start() -> UINavigationController {
+    func start() -> UIViewController {
         navigationController
     }
     

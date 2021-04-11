@@ -50,7 +50,10 @@ extension HierarchyInspector {
         }
         
         func present(animated: Bool) {
-            guard let windowHierarchySnapshot = self.makeWindowHierarchySnapshot() else {
+            guard
+                hierarchyInspectorCoordinator == nil,
+                let windowHierarchySnapshot = self.makeWindowHierarchySnapshot()
+            else {
                 return
             }
             

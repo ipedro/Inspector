@@ -29,26 +29,25 @@ extension HierarchyInspector.Manager {
     
     func presentElementInspector(for reference: ViewHierarchyReference, animated: Bool, from sourceView: UIView?) {
         guard
-            let hostViewController = hostViewController,
-            let window = hostViewController.view.window
+            let window = hostViewController?.view.window,
+            elementInspectorCoordinator == nil
         else {
             return
         }
         
-        asyncOperation {
-            let windowReference = ViewHierarchyReference(root: window)
-            
-            let coordinator = ElementInspectorCoordinator(reference: reference, rootReference: windowReference).then {
-                $0.delegate = self
-            }
-            
-            self.elementInspectorCoordinator = coordinator
-            
-            let elementInspectorNavigationController = coordinator.start()
-            elementInspectorNavigationController.popoverPresentationController?.sourceView = sourceView
-            
-            hostViewController.present(elementInspectorNavigationController, animated: animated)
+        let windowReference = ViewHierarchyReference(root: window)
+        
+        let coordinator = ElementInspectorCoordinator(
+            reference: reference,
+            rootReference: windowReference,
+            sourceView: sourceView
+        ).then {
+            $0.delegate = self
         }
+        
+        self.elementInspectorCoordinator = coordinator
+        
+        hostViewController?.present(coordinator.start(), animated: animated)
     }
 
 }
