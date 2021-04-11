@@ -58,7 +58,7 @@ final class HierarchyInspectorCoordinator: NSObject {
 extension HierarchyInspectorCoordinator: HierarchyInspectorViewControllerDelegate {
     
     func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController,
-                                          didSelect viewHierarchyReference: ViewHierarchyReference) {
+                                          didSelect viewHierarchyReference: ViewHierarchyReference?) {
         finish(with: viewHierarchyReference)
     }
     

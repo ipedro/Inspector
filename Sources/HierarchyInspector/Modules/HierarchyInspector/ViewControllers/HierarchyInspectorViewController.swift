@@ -8,7 +8,7 @@
 import UIKit
 
 protocol HierarchyInspectorViewControllerDelegate: AnyObject {
-    func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController, didSelect viewHierarchyReference: ViewHierarchyReference)
+    func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController, didSelect viewHierarchyReference: ViewHierarchyReference?)
     
     func hierarchyInspectorViewControllerDidFinish(_ viewController: HierarchyInspectorViewController)
 }
