@@ -7,9 +7,7 @@
 
 import UIKit
 
-protocol AttributesInspectorViewModelProtocol {
-    var reference: ViewHierarchyReference { get}
-    
+protocol AttributesInspectorViewModelProtocol: ElementViewHierarchyPanelViewModelProtocol {
     var sectionViewModels: [AttributesInspectorSectionViewModelProtocol] { get }
     
     var isHighlightingViews: Bool { get }
@@ -17,7 +15,7 @@ protocol AttributesInspectorViewModelProtocol {
     var isLiveUpdating: Bool { get set }
 }
 
-final class AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
+final class AttributesInspectorViewModel {
     var isHighlightingViews: Bool {
         reference.isHidingHighlightViews == false
     }
@@ -40,4 +38,34 @@ final class AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
         self.reference = reference
         self.isLiveUpdating = true
     }
+}
+
+// MARK: - AttributesInspectorViewModelProtocol
+
+extension AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
+    var parent: ElementViewHierarchyPanelViewModelProtocol? {
+        get { nil }
+        set { }
+    }
+    
+    var thumbnailImage: UIImage? { reference.iconImage() }
+    
+    var title: String { reference.elementName }
+    
+    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
+    
+    var subtitle: String { reference.elementDescription }
+    
+    var isContainer: Bool { false }
+    
+    var isCollapsed: Bool {
+        get { true }
+        set { }
+    }
+    
+    var isHidden: Bool { false }
+    
+    var accessoryType: UITableViewCell.AccessoryType { .none }
+    
+    var relativeDepth: Int { .zero }
 }

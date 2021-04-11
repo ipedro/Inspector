@@ -87,11 +87,9 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewCode.elementNameLabel.text = viewModel.reference.elementName
-        
-        viewCode.elementDescriptionLabel.text = viewModel.reference.elementDescription
-        
         viewCode.contentView.addArrangedSubview(thumbnailSectionViewCode)
+        
+        viewCode.headerCell.viewModel = viewModel
         
         loadSections()
     }

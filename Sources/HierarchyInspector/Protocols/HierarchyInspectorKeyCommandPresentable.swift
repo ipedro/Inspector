@@ -35,7 +35,6 @@ extension HierarchyInspectorKeyCommandPresentable {
     }
     
     public var hierarchyInspectorKeyCommands: [UIKeyCommand] {
-        let modifierFlags = hierarchyInspectorLayerToggleModifierFlags
         let aSelector = hirearchyInspectorKeyCommandsSelector
         
         var keyCommands = [UIKeyCommand]()

@@ -15,7 +15,7 @@ extension ElementViewHierarchyViewController: UITableViewDelegate {
             return false
         }
         
-        return itemViewModel.isContainer == true || itemViewModel.showDisclosureIndicator
+        return itemViewModel.isContainer == true || itemViewModel.accessoryType == .detailDisclosureButton
     }
     
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
@@ -35,7 +35,7 @@ extension ElementViewHierarchyViewController: UITableViewDelegate {
             return
         }
         
-        guard selectedItemViewModel.showDisclosureIndicator else {
+        guard selectedItemViewModel.accessoryType == .detailDisclosureButton else {
             return toggleContainer(at: indexPath)
         }
         

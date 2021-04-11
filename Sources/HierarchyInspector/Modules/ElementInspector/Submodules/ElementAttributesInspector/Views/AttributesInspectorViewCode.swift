@@ -14,23 +14,12 @@ protocol AttributesInspectorViewCodeDelegate: AnyObject {
 final class AttributesInspectorViewCode: BaseView {
     weak var delegate: AttributesInspectorViewCodeDelegate?
     
-    #warning("move header style to ElementInspector.appearance")
-    private(set) lazy var elementNameLabel = SectionHeader(.title3, text: nil, withTraits: .traitBold).then {
-        $0.contentView.directionalLayoutMargins = .zero
+    private(set) lazy var headerCell = ElementViewHierarchyInspectorTableViewCodeCell(
+        style: .subtitle,
+        reuseIdentifier: nil
+    ).then {
+        $0.isUserInteractionEnabled = false
     }
-    
-    #warning("move text style to ElementInspector.appearance")
-    private(set) lazy var elementDescriptionLabel =  UILabel(.caption2, textColor: ElementInspector.appearance.secondaryTextColor, numberOfLines: 0)
-    
-    private(set) lazy var headerContentView = UIStackView(
-        axis: .vertical,
-        arrangedSubviews: [
-            elementNameLabel,
-            elementDescriptionLabel
-        ],
-        spacing: ElementInspector.appearance.verticalMargins / 2,
-        margins: ElementInspector.appearance.margins
-    )
     
     private(set) lazy var scrollView = UIScrollView().then {
         $0.alwaysBounceVertical = true
@@ -57,7 +46,7 @@ final class AttributesInspectorViewCode: BaseView {
         
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
         
-        contentView.addArrangedSubview(headerContentView)
+        contentView.addArrangedSubview(headerCell.contentView)
         
         contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         

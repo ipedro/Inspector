@@ -25,7 +25,7 @@ public extension HierarchyInspectableProtocol {
 extension HierarchyInspectableProtocol {
     
     var allAvailableLayers: [ViewHierarchyLayer] {
-        var layers = hierarchyInspectorLayers ?? []
+        var layers = hierarchyInspectorLayers
         layers.append(.internalViews)
         layers.append(.allViews)
         

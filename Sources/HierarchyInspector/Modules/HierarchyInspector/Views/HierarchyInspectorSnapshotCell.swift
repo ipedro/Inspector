@@ -49,18 +49,9 @@ final class HierarchyInspectorSnapshotCell: HierarchyInspectorTableViewCell {
         imageView?.backgroundColor = ElementInspector.appearance.quaternaryTextColor
         imageView?.contentMode = .center
         
-        imageView?.layer.cornerRadius = 6
+        imageView?.layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
         if #available(iOS 13.0, *) {
             imageView?.layer.cornerCurve = .continuous
-        }
-        
-        [
-            imageView?.widthAnchor.constraint(equalToConstant: 32),
-            imageView?.heightAnchor.constraint(equalToConstant: 32)
-        ]
-        .forEach {
-            $0?.priority = .defaultHigh
-            $0?.isActive = true
         }
     }
     

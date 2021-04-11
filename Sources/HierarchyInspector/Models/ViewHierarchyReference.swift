@@ -26,7 +26,7 @@ final class ViewHierarchyReference {
     
     let accessibilityIdentifier: String?
     
-    let parent: ViewHierarchyReference?
+    var parent: ViewHierarchyReference?
     
     private(set) lazy var isContainer: Bool = children.isEmpty == false
     
@@ -73,7 +73,7 @@ final class ViewHierarchyReference {
         canHostInspectorView = root.canHostInspectorView
     }
     
-    func iconImage(with: CGSize) -> UIImage? {
+    func iconImage(with size: CGSize = .defaultElementIconSize) -> UIImage? {
         guard let view = view else {
             return nil
         }
@@ -82,7 +82,7 @@ final class ViewHierarchyReference {
             let imageView = view as? UIImageView,
             let image = imageView.image
         {
-            return image.resized(with)
+            return image.resized(size)
         }
         
         let matches = AttributesInspectorSection.allCases(matching: view)
@@ -91,8 +91,15 @@ final class ViewHierarchyReference {
             return nil
         }
         
-        return firstMatch.image
+        return firstMatch.image.resized(size)
     }
+}
+
+extension CGSize {
+    static let defaultElementIconSize = CGSize(
+        width: ElementInspector.appearance.verticalMargins * 3,
+        height: ElementInspector.appearance.verticalMargins * 3
+    )
 }
 
 // MARK: - ViewHierarchyProtocol {

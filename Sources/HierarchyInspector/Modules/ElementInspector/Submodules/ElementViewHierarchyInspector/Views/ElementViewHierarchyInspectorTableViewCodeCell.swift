@@ -30,13 +30,13 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
             
             thumbnailImageView.image = viewModel?.thumbnailImage
             
-            accessoryType = viewModel?.showDisclosureIndicator == true ? .detailDisclosureButton : .detailButton
+            accessoryType = viewModel?.accessoryType ?? .none
 
             // Collapsed
 
             isCollapsed = viewModel?.isCollapsed == true
             
-            chevronDownIcon.isSafelyHidden = viewModel?.isContainer != true || viewModel?.showDisclosureIndicator == true
+            chevronDownIcon.isSafelyHidden = viewModel?.isContainer != true || viewModel?.accessoryType == .disclosureIndicator
 
             // Description
 
@@ -118,43 +118,30 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
     
     private lazy var thumbnailImageView = UIImageView().then {
         $0.contentMode = .center
-        $0.tintColor   = ElementInspector.appearance.thumbnailBackgroundStyle.contrastingColor
-    }
-        
-    private lazy var thumbnailContainerView = UIView().then {
-        $0.installView(thumbnailImageView, .centerXY)
-        
-        let appearance = ElementInspector.appearance
-        
-        $0.layer.shouldRasterize = true
-        
-        $0.layer.rasterizationScale = UIScreen.main.scale
-        
-        $0.backgroundColor = appearance.quaternaryTextColor
+        $0.tintColor = ElementInspector.appearance.textColor
+        $0.backgroundColor = ElementInspector.appearance.quaternaryTextColor
         
         $0.clipsToBounds = true
         
-        $0.layer.cornerRadius = appearance.verticalMargins
+        $0.layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
         
-        $0.heightAnchor.constraint(equalToConstant: appearance.horizontalMargins * 2).isActive = true
-        
-        $0.widthAnchor.constraint(equalTo: $0.heightAnchor).isActive = true
+        $0.setContentHuggingPriority(.required, for: .horizontal)
     }
     
-    private lazy var containerStackView = UIStackView(
+    private lazy var textStackView = UIStackView(
         axis: .vertical,
         arrangedSubviews: [
             elementNameLabel,
-            textStackView
+            descriptionLabel
         ],
         spacing: ElementInspector.appearance.verticalMargins / 2
     )
     
-    private lazy var textStackView = UIStackView(
+    private(set) lazy var containerStackView = UIStackView(
         axis: .horizontal,
         arrangedSubviews: [
-            thumbnailContainerView,
-            descriptionLabel
+            thumbnailImageView,
+            textStackView
         ],
         spacing: ElementInspector.appearance.verticalMargins
     ).then {
@@ -188,7 +175,7 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
             containerStackView,
             .margins(
                 top: ElementInspector.appearance.verticalMargins,
-                leading: 0,
+                leading: .zero,
                 bottom: ElementInspector.appearance.verticalMargins,
                 trailing: ElementInspector.appearance.verticalMargins
             )

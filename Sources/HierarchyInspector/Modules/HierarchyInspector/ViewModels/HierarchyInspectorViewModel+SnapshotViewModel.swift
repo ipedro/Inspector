@@ -84,12 +84,7 @@ extension HierarchyInspectorViewModel {
                     title: title,
                     isEnabled: true,
                     subtitle: element.elementDescription,
-                    image: element.iconImage(
-                        with: CGSize(
-                            width: ElementInspector.appearance.horizontalMargins,
-                            height: ElementInspector.appearance.horizontalMargins
-                        )
-                    ),
+                    image: element.iconImage(),
                     depth: element.depth,
                     reference: element
                 )

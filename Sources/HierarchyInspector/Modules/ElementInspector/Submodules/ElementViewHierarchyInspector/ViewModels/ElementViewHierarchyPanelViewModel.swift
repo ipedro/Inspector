@@ -26,7 +26,7 @@ protocol ElementViewHierarchyPanelViewModelProtocol: AnyObject {
     
     var isHidden: Bool { get }
     
-    var showDisclosureIndicator: Bool { get }
+    var accessoryType: UITableViewCell.AccessoryType { get }
     
     var relativeDepth: Int { get }
 }
@@ -46,16 +46,11 @@ final class ElementViewHierarchyPanelViewModel {
     
     let rootDepth: Int
     
-    private(set) lazy var thumbnailImage: UIImage? = reference.iconImage(with: Self.thumbSize)
+    private(set) lazy var thumbnailImage: UIImage? = reference.iconImage()
     
     // MARK: - Properties
     
     let reference: ViewHierarchyReference
-    
-    static let thumbSize = CGSize(
-        width: ElementInspector.appearance.horizontalMargins * 2,
-        height: ElementInspector.appearance.horizontalMargins * 2
-    )
     
     init(
         reference: ViewHierarchyReference,
@@ -82,8 +77,8 @@ extension ElementViewHierarchyPanelViewModel: ElementViewHierarchyPanelViewModel
         parent?.isCollapsed == true || parent?.isHidden == true
     }
     
-    var showDisclosureIndicator: Bool {
-        false
+    var accessoryType: UITableViewCell.AccessoryType {
+        .detailButton
     }
     
     var isCollapsed: Bool {
