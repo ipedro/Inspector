@@ -1,5 +1,5 @@
 //
-//  KeyboardTableView.swift
+//  UIKeyCommandTableView.swift
 //  HierarhcyInspector
 //
 //  Created by Pedro on 10.04.21.
@@ -10,16 +10,22 @@
 
 import UIKit
 
-protocol KeyboardTableViewSelectionDelegate: AnyObject {
-    func tableViewDidBecomeFirstResponder(_ tableView: UITableView)
-    func tableViewDidResignFirstResponder(_ tableView: UITableView)
+protocol UITableViewKeyCommandsDelegate: AnyObject {
+    func tableViewDidBecomeFirstResponder(_ tableView: UIKeyCommandTableView)
+    func tableViewDidResignFirstResponder(_ tableView: UIKeyCommandTableView)
+    func tableViewKeyCommandSelectionBelowBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior
+    func tableViewKeyCommandSelectionAboveBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior
 }
 
 /// A table view that allows navigation and selection using a hardware keyboard.
 /// Only supports a single section.
-class KeyboardTableView: UITableView {
+class UIKeyCommandTableView: UITableView {
     
-    weak var keyboardSelectionDelegate: KeyboardTableViewSelectionDelegate?
+    enum OutOfBoundsBehavior {
+        case resignFirstResponder, wrapAround, doNothing
+    }
+    
+    weak var keyCommandsDelegate: UITableViewKeyCommandsDelegate?
     
     override var canBecomeFirstResponder: Bool {
         !isHidden && totalNumberOfRows > 0
@@ -31,7 +37,7 @@ class KeyboardTableView: UITableView {
         
         if hasBecomeFirstResponder {
             DispatchQueue.main.async {
-                self.keyboardSelectionDelegate?.tableViewDidBecomeFirstResponder(self)
+                self.keyCommandsDelegate?.tableViewDidBecomeFirstResponder(self)
             }
         }
         
@@ -44,21 +50,41 @@ class KeyboardTableView: UITableView {
         
         if hasResignedFirstResponder {
             DispatchQueue.main.async {
-                self.keyboardSelectionDelegate?.tableViewDidResignFirstResponder(self)
+                self.keyCommandsDelegate?.tableViewDidResignFirstResponder(self)
             }
         }
         
         return hasResignedFirstResponder
     }
     
+    var selectPreviousKeyCommandOptions: [UIKeyCommand.Options] = [.arrowUp]
+    
+    var selectNextKeyCommandOptions: [UIKeyCommand.Options] = [.arrowDown]
+    
+    var activateSelectionKeyCommandOptions: [UIKeyCommand.Options] = [.spaceBar, .return]
+    
+    var clearSelectionKeyCommandOptions: [UIKeyCommand.Options] = []
+    
     override var keyCommands: [UIKeyCommand]? {
-        [
-            UIKeyCommand(input: UIKeyCommand.inputUpArrow,   action: #selector(selectPrevious)),
-            UIKeyCommand(input: UIKeyCommand.inputDownArrow, action: #selector(selectNext)),
-            //UIKeyCommand(input: UIKeyCommand.inputEscape,    action: #selector(clearSelection)),
-            UIKeyCommand(input: UIKeyCommand.inputSpaceBar,  action: #selector(activateSelection)),
-            UIKeyCommand(input: UIKeyCommand.inputReturn,    action: #selector(activateSelection))
-        ]
+        var keyCommands = [UIKeyCommand]()
+        
+        selectPreviousKeyCommandOptions.forEach {
+            keyCommands.append(UIKeyCommand($0, action: #selector(selectPrevious)))
+        }
+        
+        selectNextKeyCommandOptions.forEach {
+            keyCommands.append(UIKeyCommand($0, action: #selector(selectNext)))
+        }
+        
+        activateSelectionKeyCommandOptions.forEach {
+            keyCommands.append(UIKeyCommand($0, action: #selector(activateSelection)))
+        }
+        
+        clearSelectionKeyCommandOptions.forEach {
+            keyCommands.append(UIKeyCommand($0, action: #selector(clearSelection)))
+        }
+        
+        return keyCommands
     }
     
     var totalNumberOfRows: Int {
@@ -99,10 +125,28 @@ class KeyboardTableView: UITableView {
         case let .failure(reason):
             switch reason {
             case .sectionBelowBounds:
-                resignFirstResponder() //selectRow(at: indexPathForLastRowInLastSection)
+                switch keyCommandsDelegate?.tableViewKeyCommandSelectionBelowBounds(self) {
+                case .none, .doNothing:
+                    break
+                    
+                case .resignFirstResponder:
+                    resignFirstResponder()
+                    
+                case .wrapAround:
+                    selectRow(at: indexPathForLastRowInLastSection)
+                }
                 
             case .sectionAboveBounds:
-                resignFirstResponder() //selectRow(at: .first)
+                switch keyCommandsDelegate?.tableViewKeyCommandSelectionAboveBounds(self) {
+                case .none, .doNothing:
+                    break
+                    
+                case .resignFirstResponder:
+                    resignFirstResponder()
+                    
+                case .wrapAround:
+                    selectRow(at: .first)
+                }
                 
             case .rowAboveBounds:
                 selectRow(at: indexPath.nextSection())
@@ -152,7 +196,7 @@ class KeyboardTableView: UITableView {
 
 // MARK: - Selection
 
-private extension KeyboardTableView {
+private extension UIKeyCommandTableView {
     
     func _selectRow(at indexPath: IndexPath) {
         switch visibilityForRow(at: indexPath) {
@@ -191,7 +235,7 @@ private extension KeyboardTableView {
 // MARK: - Key Command Handlers
 
 @objc
-private extension KeyboardTableView {
+private extension UIKeyCommandTableView {
     
     func clearSelection() {
         selectRow(at: nil, animated: false, scrollPosition: .none)
@@ -223,7 +267,7 @@ private extension KeyboardTableView {
 
 // MARK: - Cell Visibility
 
-private extension KeyboardTableView {
+private extension UIKeyCommandTableView {
     
     /// Whether a row is fully visible, or if not if it’s above or below the viewport.
     enum RowVisibility {

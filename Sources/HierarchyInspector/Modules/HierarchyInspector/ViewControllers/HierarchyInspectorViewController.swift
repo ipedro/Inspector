@@ -40,31 +40,39 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         $0.tableView.registerHeaderFooter(HierarchyInspectorHeaderView.self)
         $0.tableView.delegate = self
         $0.tableView.dataSource = self
-        $0.tableView.keyboardSelectionDelegate = self
+        $0.tableView.keyCommandsDelegate = self
     }
     
     private var needsSetup = true
-    
-    private var isClosing = false
     
     override func loadView() {
         view = viewCode
     }
     
     deinit {
+        guard isViewLoaded else {
+            return
+        }
+        
         viewCode.tableView.removeObserver(self, forKeyPath: .contentSize, context: nil)
     }
     
     @objc
-    func upArrow() {
+    func toggleResponderAndSelectLastRow() {
         toggleFirstResponder()
-        viewCode.tableView.selectRow(at: viewCode.tableView.indexPathForLastRowInLastSection)
+        
+        if viewCode.tableView.isFirstResponder {
+            viewCode.tableView.selectRow(at: viewCode.tableView.indexPathForLastRowInLastSection)
+        }
     }
     
     @objc
-    func downArrow() {
+    func toggleResponderAndSelectFirstRow() {
         toggleFirstResponder()
-        viewCode.tableView.selectRow(at: .first)
+        
+        if viewCode.tableView.isFirstResponder {
+            viewCode.tableView.selectRow(at: .first)
+        }
     }
     
     @objc
@@ -84,17 +92,11 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     
     private lazy var searchKeyCommands: [UIKeyCommand] = {
         var keyCommands = CharacterSet.urlQueryAllowed.allCharacters().map {
-            UIKeyCommand(
-                input: String($0),
-                action: #selector(type)
-            )
+            UIKeyCommand(.key($0), action: #selector(type))
         }
         
         keyCommands.append(
-            UIKeyCommand(
-                input: UIKeyCommand.inputBackspace,
-                action: #selector(backspace)
-            )
+            UIKeyCommand(.backspace, action: #selector(backspaceKey))
         )
         
         return keyCommands
@@ -112,25 +114,10 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         
         // key commands
         
-        addKeyCommand(UIViewController.dismissModalKeyCommand)
-        addKeyCommand(
-            UIKeyCommand(
-                input: UIKeyCommand.inputTab,
-                action: #selector(downArrow)
-            )
-        )
-        addKeyCommand(
-            UIKeyCommand(
-                input: UIKeyCommand.inputUpArrow,
-                action: #selector(upArrow)
-            )
-        )
-        addKeyCommand(
-            UIKeyCommand(
-                input: UIKeyCommand.inputDownArrow,
-                action: #selector(downArrow)
-            )
-        )
+        addKeyCommand(UIViewController.dismissModalKeyCommand(action: #selector(escapeKey)))
+        addKeyCommand(UIKeyCommand(.tab,       action: #selector(toggleResponderAndSelectFirstRow)))
+        addKeyCommand(UIKeyCommand(.arrowDown, action: #selector(toggleResponderAndSelectFirstRow)))
+        addKeyCommand(UIKeyCommand(.arrowUp,   action: #selector(toggleResponderAndSelectLastRow)))
         
         // keyboard event listeners
         NotificationCenter.default.addObserver(
@@ -148,7 +135,12 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         )
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey : Any]?,
+        context: UnsafeMutableRawPointer?
+    ) {
         guard
             keyPath == .contentSize,
             let contentSize = change?[.newKey] as? CGSize
@@ -244,7 +236,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         search()
     }
     
-    func backspace() {
+    func backspaceKey() {
         viewCode.searchView.deleteBackward()
         search()
     }

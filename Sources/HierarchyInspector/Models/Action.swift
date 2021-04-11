@@ -1,5 +1,5 @@
 //
-//  Manager.Action.swift
+//  Action.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 04.10.20.
@@ -59,20 +59,6 @@ extension Action {
         }
     }
     
-    var modifierFlags: UIKeyModifierFlags? {
-        switch self {
-        case .openHierarchyInspector:
-            return HierarchyInspector.configuration.keyCommands.presentationModfifierFlags
-            
-        case .emptyLayer,
-             .toggleLayer,
-             .showAllLayers,
-             .hideVisibleLayers,
-             .inspect,
-             .inspectWindow:
-            return nil
-        }
-    }
     var closure: (() -> Void)? {
         switch self {
         case .emptyLayer:

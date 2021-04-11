@@ -9,13 +9,14 @@ import UIKit
 
 extension UIViewController {
     
-    static var dismissModalKeyCommand = UIKeyCommand(
-        input: UIKeyCommand.inputEscape,
-        action: #selector(dismissAnimated),
-        title: "Close modal view"
-    )
-    
-    @objc func dismissAnimated() {
-        dismiss(animated: true)
+    static func dismissModalKeyCommand(action: Selector) -> UIKeyCommand {
+        UIKeyCommand(
+            .discoverabilityTitle(
+                title: "Close modal view",
+                key: .escape
+            ),
+            action: action
+        )
     }
+    
 }

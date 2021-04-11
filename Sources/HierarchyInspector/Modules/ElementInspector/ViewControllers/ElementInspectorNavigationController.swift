@@ -24,7 +24,7 @@ final class ElementInspectorNavigationController: UINavigationController {
         
         navigationBar.barStyle = .black
         
-        addKeyCommand(UIViewController.dismissModalKeyCommand)
+        addKeyCommand(UIViewController.dismissModalKeyCommand(action: #selector(finish)))
         
         becomeFirstResponder()
     }

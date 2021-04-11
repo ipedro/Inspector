@@ -13,6 +13,6 @@ public extension HierarchyInspector {
         
         public var appearance = Appearance()
         
-        public var keyCommands = KeyCommands()
+        public var keyCommands = KeyCommandSettings()
     }
 }
