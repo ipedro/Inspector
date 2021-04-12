@@ -82,7 +82,7 @@ extension UIKitComponents: HierarchyInspectableElementProtocol {
         }
     }
     
-    func viewModel(with referenceView: UIView) -> HiearchyInspectableElementViewModelProtocol? {
+    func viewModel(with referenceView: UIView) -> HierarchyInspectableElementViewModelProtocol? {
         switch self {
             
         case .activityIndicator:

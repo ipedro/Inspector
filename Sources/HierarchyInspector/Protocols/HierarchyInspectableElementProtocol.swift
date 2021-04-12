@@ -11,7 +11,7 @@ public protocol HierarchyInspectableElementProtocol {
     
     var targetClass: AnyClass { get }
     
-    func viewModel(with referenceView: UIView) -> HiearchyInspectableElementViewModelProtocol?
+    func viewModel(with referenceView: UIView) -> HierarchyInspectableElementViewModelProtocol?
     
     var icon: UIImage? { get }
     

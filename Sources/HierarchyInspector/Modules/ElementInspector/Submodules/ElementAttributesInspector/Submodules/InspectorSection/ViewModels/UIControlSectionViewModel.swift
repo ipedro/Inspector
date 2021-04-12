@@ -9,7 +9,7 @@ import UIKit
 
 extension UIKitComponents {
 
-    final class UIControlInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
+    final class UIControlInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
         
         private enum Property: String, Swift.CaseIterable {
             case contentHorizontalAlignment = "Horizontal Alignment"

@@ -20,7 +20,7 @@ enum MyCustomHierarchyInspectableElements: HierarchyInspectableElementProtocol, 
         }
     }
     
-    func viewModel(with referenceView: UIView) -> HiearchyInspectableElementViewModelProtocol? {
+    func viewModel(with referenceView: UIView) -> HierarchyInspectableElementViewModelProtocol? {
         switch self {
         case .customButton:
             return CustomButtonInspectableViewModel(view: referenceView)

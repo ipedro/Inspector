@@ -36,9 +36,9 @@ final class AttributesInspectorSectionViewController: UIViewController {
         $0.delegate = self
     }
     
-    private var viewModel: HiearchyInspectableElementViewModelProtocol!
+    private var viewModel: HierarchyInspectableElementViewModelProtocol!
     
-    static func create(viewModel: HiearchyInspectableElementViewModelProtocol) -> AttributesInspectorSectionViewController {
+    static func create(viewModel: HierarchyInspectableElementViewModelProtocol) -> AttributesInspectorSectionViewController {
         let viewController = AttributesInspectorSectionViewController()
         viewController.viewModel = viewModel
         

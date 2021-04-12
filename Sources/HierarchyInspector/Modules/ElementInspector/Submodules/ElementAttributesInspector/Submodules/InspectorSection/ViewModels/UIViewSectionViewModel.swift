@@ -9,7 +9,7 @@ import UIKit
 
 extension UIKitComponents {
     
-    final class UIViewInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
+    final class UIViewInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case contentMode                = "Content Mode"

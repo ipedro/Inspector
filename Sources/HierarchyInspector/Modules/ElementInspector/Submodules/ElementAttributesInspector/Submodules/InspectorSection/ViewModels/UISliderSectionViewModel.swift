@@ -9,7 +9,7 @@ import UIKit
 
 extension UIKitComponents {
 
-    final class UISliderInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
+    final class UISliderInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case value                 = "Value"

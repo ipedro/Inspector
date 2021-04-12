@@ -1,5 +1,5 @@
 //
-//  HiearchyInspectableElementViewModelProtocol.swift
+//  HierarchyInspectableElementViewModelProtocol.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 03.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol HiearchyInspectableElementViewModelProtocol: AnyObject {
+public protocol HierarchyInspectableElementViewModelProtocol: AnyObject {
     
     var title: String { get }
     
