@@ -13,7 +13,7 @@ public protocol HierarchyInspectableElementProtocol {
     
     func viewModel(with referenceView: UIView) -> HierarchyInspectableElementViewModelProtocol?
     
-    var icon: UIImage? { get }
+    func icon(with referenceView: UIView) -> UIImage?
     
 }
 

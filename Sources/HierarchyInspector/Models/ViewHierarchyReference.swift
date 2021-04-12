@@ -8,7 +8,7 @@
 import UIKit
 
 final class ViewHierarchyReference {
-    weak var view: UIView?
+    weak var rootView: UIView?
     
     let canPresentOnTop: Bool
     
@@ -32,7 +32,7 @@ final class ViewHierarchyReference {
     
     private(set) lazy var deepestAbsoulteLevel: Int = children.map { $0.depth }.max() ?? depth
     
-    private(set) lazy var children: [ViewHierarchyReference] = view?.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1, parent: self) } ?? []
+    private(set) lazy var children: [ViewHierarchyReference] = rootView?.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1, parent: self) } ?? []
     
     var deepestRelativeLevel: Int {
         deepestAbsoulteLevel - depth
@@ -40,7 +40,7 @@ final class ViewHierarchyReference {
     
     var depth: Int {
         didSet {
-            guard let view = view else {
+            guard let view = rootView else {
                 children = []
                 return
             }
@@ -50,7 +50,7 @@ final class ViewHierarchyReference {
     }
     
     init(root: UIView, depth: Int = 0, parent: ViewHierarchyReference? = nil) {
-        self.view = root
+        self.rootView = root
         
         self.depth = depth
         
@@ -113,7 +113,7 @@ extension ViewHierarchyReference: Hashable {
 
 extension ViewHierarchyReference {
     var isHidingHighlightViews: Bool {
-        guard let view = view else {
+        guard let view = rootView else {
             return false
         }
         

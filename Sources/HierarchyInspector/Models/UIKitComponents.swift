@@ -133,7 +133,7 @@ extension UIKitComponents: HierarchyInspectableElementProtocol {
         
     }
     
-    var icon: UIImage? {
+    func icon(with referenceView: UIView) -> UIImage? {
         switch self {
         
         case .activityIndicator:
@@ -146,7 +146,13 @@ extension UIKitComponents: HierarchyInspectableElementProtocol {
             return .moduleImage(named: "UIDatePicker_32_Normal")
             
         case .imageView:
-            return .moduleImage(named: "UIImageView-32_Normal")
+            guard
+                let imageView = referenceView as? UIImageView,
+                let image = imageView.image
+            else {
+                return .moduleImage(named: "UIImageView-32_Normal")
+            }
+            return image
             
         case .label:
             return .moduleImage(named: "UILabel_32-Dark_Normal")
@@ -161,7 +167,13 @@ extension UIKitComponents: HierarchyInspectableElementProtocol {
             return .moduleImage(named: "Toggle-32_Normal")
             
         case .stackView:
-            return .moduleImage(named: "VStack-32_Normal")
+            guard
+                let stackView = referenceView as? UIStackView,
+                stackView.axis == .horizontal
+            else {
+                return .moduleImage(named: "VStack-32_Normal")
+            }
+            return .moduleImage(named: "HStack-32_Normal")
             
         case .textField:
             return .moduleImage(named: "TextField-32_Normal")

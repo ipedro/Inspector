@@ -73,7 +73,7 @@ extension HierarchyInspectorViewModel {
                 
                 let title: String = {
                     if
-                        let textElement = element.view as? TextElement,
+                        let textElement = element.rootView as? TextElement,
                         let text = textElement.content
                     {
                         return "\"\(text)\""
@@ -87,7 +87,7 @@ extension HierarchyInspectorViewModel {
                     title: title,
                     isEnabled: true,
                     subtitle: element.elementDescription,
-                    image: snapshot.iconImage(for: element.view),
+                    image: snapshot.iconImage(for: element.rootView),
                     depth: element.depth,
                     reference: element
                 )

@@ -106,6 +106,10 @@ extension HierarchyInspector.Manager {
         snapshot(of: hostViewController?.view)
     }
     
+    var windowHierarchySnapshot: ViewHierarchySnapshot? {
+        snapshot(of: hostViewController?.view.window)
+    }
+    
     private func snapshot(of view: UIView?) -> ViewHierarchySnapshot? {
         guard let view = view else {
             return nil

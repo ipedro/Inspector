@@ -14,7 +14,7 @@ protocol HighlightViewDelegate: AnyObject {
 extension HighlightViewDelegate {
     
     func hideAllHighlightViews(_ hide: Bool, containedIn reference: ViewHierarchyReference) {
-        guard let referenceView = reference.view else {
+        guard let referenceView = reference.rootView else {
             return
         }
         

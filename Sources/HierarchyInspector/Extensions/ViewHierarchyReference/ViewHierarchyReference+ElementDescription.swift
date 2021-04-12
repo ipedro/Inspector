@@ -13,7 +13,7 @@ extension ViewHierarchyReference {
         var strings = [String?]()
         
         var constraints: String? {
-            guard let view = view else {
+            guard let view = rootView else {
                 return nil
             }
             return "\(view.constraints.count) constraints"
@@ -27,7 +27,7 @@ extension ViewHierarchyReference {
         }
         
         var frame: String? {
-            guard let view = view else {
+            guard let view = rootView else {
                 return nil
             }
             
@@ -35,7 +35,7 @@ extension ViewHierarchyReference {
         }
         
         var className: String? {
-            guard let view = view else {
+            guard let view = rootView else {
                 return nil
             }
             

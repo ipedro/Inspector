@@ -41,7 +41,7 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
             reference: reference,
             parent: parent,
             rootDepth: rootDepth,
-            thumbnailImage: snapshot.iconImage(for: reference.view),
+            thumbnailImage: snapshot.iconImage(for: reference.rootView),
             isCollapsed: reference.depth > rootDepth + 5
         )
         

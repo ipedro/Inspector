@@ -44,7 +44,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorVie
             showDismissBarButton: false,
             selectedPanel: selectedPanel,
             delegate: self,
-            inspectableElements: snapshot.inspectableElements
+            inspectableElements: windowSnapshot.inspectableElements
         )
         
         navigationController.pushViewController(elementInspectorViewController, animated: animated)

@@ -146,7 +146,7 @@ private extension ElementAttributesInspectorViewController {
     
     @objc
     func refresh() {
-        guard viewModel.reference.view != nil else {
+        guard viewModel.reference.rootView != nil else {
             stopLiveUpdatingSnaphost()
             return
         }

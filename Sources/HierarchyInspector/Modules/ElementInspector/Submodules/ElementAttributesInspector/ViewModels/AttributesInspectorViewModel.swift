@@ -27,7 +27,7 @@ final class AttributesInspectorViewModel {
     let snapshot: ViewHierarchySnapshot
     
     private(set) lazy var sectionViewModels: [HierarchyInspectableElementViewModelProtocol] = {
-        guard let referenceView = reference.view else {
+        guard let referenceView = reference.rootView else {
             return []
         }
         
@@ -58,7 +58,7 @@ extension AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
         set { }
     }
     
-    var thumbnailImage: UIImage? { snapshot.iconImage(for: reference.view) }
+    var thumbnailImage: UIImage? { snapshot.iconImage(for: reference.rootView) }
     
     var title: String { reference.elementName }
     

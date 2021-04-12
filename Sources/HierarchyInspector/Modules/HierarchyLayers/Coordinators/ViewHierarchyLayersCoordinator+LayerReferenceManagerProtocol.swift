@@ -52,7 +52,7 @@ extension ViewHierarchyLayersCoordinator: LayerReferenceManagerProtocol {
         
         newReferences.forEach {
             guard
-                let referenceView = $0.view,
+                let referenceView = $0.rootView,
                 let inspectorView = newValue[$0]
             else {
                 return
@@ -108,7 +108,7 @@ extension ViewHierarchyLayersCoordinator: LayerReferenceManagerProtocol {
                 references.forEach { viewReference in
                     guard
                         highlightViews[viewReference] == nil,
-                        let element = viewReference.view
+                        let element = viewReference.rootView
                     else {
                         return
                     }
@@ -123,7 +123,7 @@ extension ViewHierarchyLayersCoordinator: LayerReferenceManagerProtocol {
                 references.forEach { viewReference in
                     guard
                         highlightViews[viewReference] == nil,
-                        let element = viewReference.view
+                        let element = viewReference.rootView
                     else {
                         return
                     }

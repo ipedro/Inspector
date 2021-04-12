@@ -27,7 +27,7 @@ enum MyCustomHierarchyInspectableElements: HierarchyInspectableElementProtocol, 
         }
     }
     
-    var icon: UIImage? {
+    func icon(with referenceView: UIView) -> UIImage? {
         switch self {
         case .customButton:
             return #imageLiteral(resourceName: "CustomButton_32")

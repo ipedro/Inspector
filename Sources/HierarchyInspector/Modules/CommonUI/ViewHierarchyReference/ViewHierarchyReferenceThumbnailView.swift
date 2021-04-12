@@ -197,7 +197,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     }
     
     func updateViews(afterScreenUpdates: Bool = true) {
-        guard let referenceView = reference.view else {
+        guard let referenceView = reference.rootView else {
             state = .lostConnection
             return
         }

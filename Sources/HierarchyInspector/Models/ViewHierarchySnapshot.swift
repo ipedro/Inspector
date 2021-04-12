@@ -40,7 +40,7 @@ struct ViewHierarchySnapshot {
         
         flattenedViewHierarchy = viewHierarchy.flattenedInspectableViews
         
-        let inspectableViews = viewHierarchy.flattenedInspectableViews.compactMap { $0.view }
+        let inspectableViews = viewHierarchy.flattenedInspectableViews.compactMap { $0.rootView }
         
         populatedLayers = availableLayers.filter { $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false }
         
@@ -48,35 +48,33 @@ struct ViewHierarchySnapshot {
     }
     
     var inspectableViews: [UIView] {
-        viewHierarchy.flattenedInspectableViews.compactMap { $0.view }
+        viewHierarchy.flattenedInspectableViews.compactMap { $0.rootView }
     }
     
     func iconImage(for view: UIView?, with size: CGSize = .defaultElementIconSize) -> UIImage {
-        
-        let defaultImage = UIImage.moduleImage(named: "EmptyView-32_Normal")
-        
-        guard let view = view else {
-            return defaultImage
-        }
-        
-        if
-            let imageView = view as? UIImageView,
-            let image = imageView.image
-        {
-            return image.resized(size)
-        }
-        
-        let images = inspectableElements.compactMap { section -> UIImage? in
-            guard
-                section.targets(object: view),
-                let image = section.icon?.resized(size)
-            else {
-                return nil
+        iconImage(for: view).resized(size)
+    }
+    
+    private func iconImage(for view: UIView?) -> UIImage {
+        switch view {
+        case is BaseView:
+            return UIImage.moduleImage(named: "InternalView-32_Normal").withRenderingMode(.alwaysTemplate)
+            
+        case is BaseControl:
+            return UIImage.moduleImage(named: "InternalView-32_Normal").withRenderingMode(.alwaysOriginal)
+         
+        case let view?:
+            for inspector in inspectableElements where inspector.targets(object: view) {
+                if let icon = inspector.icon(with: view) {
+                    return icon
+                }
             }
-            return image
+            
+        default:
+            break
         }
         
-        return images.first ?? defaultImage
+        return UIImage.moduleImage(named: "EmptyView-32_Normal")
     }
     
 }
