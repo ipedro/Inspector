@@ -36,7 +36,11 @@ class UIKeyCommandTableView: UITableView {
         let hasBecomeFirstResponder = super.becomeFirstResponder()
         
         if hasBecomeFirstResponder {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                
                 self.keyCommandsDelegate?.tableViewDidBecomeFirstResponder(self)
             }
         }
@@ -49,7 +53,11 @@ class UIKeyCommandTableView: UITableView {
         let hasResignedFirstResponder = super.resignFirstResponder()
         
         if hasResignedFirstResponder {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                
                 self.keyCommandsDelegate?.tableViewDidResignFirstResponder(self)
             }
         }
@@ -88,13 +96,7 @@ class UIKeyCommandTableView: UITableView {
     }
     
     var totalNumberOfRows: Int {
-        var rows = 0
-        
-        for section in 0..<numberOfSections {
-            rows += numberOfRows(inSection: section)
-        }
-        
-        return rows
+        (0 ..< numberOfSections).map { numberOfRows(inSection: $0) }.reduce(0, +)
     }
     
     var indexPathForLastRowInLastSection: IndexPath {
