@@ -44,6 +44,9 @@ final class HierarchyInspectorView: BaseView {
         $0.tableFooterView = UIView()
         $0.separatorColor = ElementInspector.appearance.quaternaryTextColor
         
+        $0.rowHeight = UITableView.automaticDimension
+        $0.estimatedRowHeight = 100
+        
         $0.register(HierarchyInspectorLayerActionCell.self)
         $0.register(HierarchyInspectorSnapshotCell.self)
         $0.registerHeaderFooter(HierarchyInspectorHeaderView.self)

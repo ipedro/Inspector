@@ -25,6 +25,10 @@ class HierarchyInspectorTableViewCell: UITableViewCell {
         backgroundView = UIView()
         backgroundColor = nil
         
+        // removes autoresize masks in favor of constraint based layout.
+        // fixes a height calculation bug.
+        installView(contentView)
+        
         directionalLayoutMargins = defaultLayoutMargins
         separatorInset = .insets(left: defaultLayoutMargins.leading, right: defaultLayoutMargins.trailing)
         
