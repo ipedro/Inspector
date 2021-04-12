@@ -26,6 +26,7 @@ extension ElementAttributesInspectorViewController: AttributesInspectorSectionVi
                 }
                 
                 sectionViewController.updateValues()
+                self?.updateHeaderView()
             }
         }
         

@@ -52,7 +52,7 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
         }
     }
     
-    private lazy var viewCode = AttributesInspectorViewCode().then {
+    private(set) lazy var viewCode = AttributesInspectorViewCode().then {
         $0.delegate = self
     }
     
@@ -89,7 +89,7 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
         
         viewCode.contentView.addArrangedSubview(thumbnailSectionViewCode)
         
-        viewCode.headerCell.viewModel = viewModel
+        updateHeaderView()
         
         var directionalLayoutMargins = viewCode.headerCell.containerStackView.directionalLayoutMargins
         directionalLayoutMargins.trailing = 44
@@ -130,6 +130,10 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
     
     deinit {
         stopLiveUpdatingSnaphost()
+    }
+    
+    func updateHeaderView() {
+        viewCode.headerCell.viewModel = viewModel
     }
 }
 
