@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
 
-    final class UISliderSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UISliderInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case value                 = "Value"
@@ -38,7 +38,7 @@ extension AttributesInspectorSection {
             self.slider = slider
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let slider = slider else {
                 return nil
             }

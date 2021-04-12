@@ -1,5 +1,5 @@
 //
-//  NSTextAlignment+SegmentedControlDisplayable.swift
+//  NSTextAlignment+CustomImageConvertible.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 16.10.20.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-extension NSTextAlignment: SegmentedControlDisplayable {
-    var displayItem: Any {
+extension NSTextAlignment: CustomImageConvertible {
+    var image: UIImage? {
         switch self {
         case .left:
             return IconKit.imageOfTextAlignmentLeft()
@@ -26,7 +26,7 @@ extension NSTextAlignment: SegmentedControlDisplayable {
             return IconKit.imageOfTextAlignmentNatural()
             
         @unknown default:
-            return UIImage()
+            return nil
         }
     }
 }

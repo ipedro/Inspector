@@ -157,62 +157,6 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
     }
 }
 
-extension AttributesInspectorSection {
-    
-    private func bundleImage(named imageName: String) -> UIImage {
-        guard let image = UIImage(named: imageName, in: .module, compatibleWith: nil) else {
-            fatalError("Couldn't find iamge named \(imageName)")
-        }
-        
-        return image
-    }
-    
-    var image: UIImage {
-        switch self {
-        
-        case .activityIndicator:
-            return bundleImage(named: "UIActivityIndicator_32_Dark_Normal")
-            
-        case .button:
-            return bundleImage(named: "UIButton_32-Dark_Normal")
-            
-        case .datePicker:
-            return bundleImage(named: "UIDatePicker_32_Normal")
-            
-        case .imageView:
-            return bundleImage(named: "UIImageView-32_Normal")
-            
-        case .label:
-            return bundleImage(named: "UILabel_32-Dark_Normal")
-            
-        case .scrollView:
-            return bundleImage(named: "UIScrollView_32_Normal")
-            
-        case .segmentedControl:
-            return bundleImage(named: "UISegmentedControl_32_Normal")
-            
-        case .switch:
-            return bundleImage(named: "Toggle-32_Normal")
-            
-        case .stackView:
-            return bundleImage(named: "VStack-32_Normal")
-            
-        case .textField:
-            return bundleImage(named: "TextField-32_Normal")
-            
-        case .textView:
-            return bundleImage(named: "TextView-32_Normal")
-            
-        case .mapView,
-             .control,
-             .slider,
-             .view:
-            return bundleImage(named: "EmptyView-32_Normal")
-            
-        }
-    }
-}
-
 protocol TextElement: UIView {
     var content: String? { get }
 }

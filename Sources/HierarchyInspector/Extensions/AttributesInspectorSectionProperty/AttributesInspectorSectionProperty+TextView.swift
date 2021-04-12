@@ -1,5 +1,5 @@
 //
-//  AttributesInspectorSectionProperty+TextView.swift
+//  HiearchyInspectableElementProperty+TextView.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 06.12.20.
@@ -7,12 +7,12 @@
 
 import UIKit
 
-extension AttributesInspectorSectionProperty {
+public extension HiearchyInspectableElementProperty {
     
     static func dataDetectorType(
         textView: UITextView,
         dataDetectorType: UIDataDetectorTypes
-    ) -> AttributesInspectorSectionProperty {
+    ) -> HiearchyInspectableElementProperty {
         
         .toggleButton(
             title: dataDetectorType.description,

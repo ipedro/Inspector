@@ -12,12 +12,12 @@ import UIKit
 extension ElementAttributesInspectorViewController: AttributesInspectorSectionViewControllerDelegate {
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  willUpdate property: AttributesInspectorSectionProperty) {
+                                                  willUpdate property: HiearchyInspectableElementProperty) {
         displayLink?.isPaused = true
     }
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  didUpdate property: AttributesInspectorSectionProperty) {
+                                                  didUpdate property: HiearchyInspectableElementProperty) {
         
         let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
             self?.children.forEach {

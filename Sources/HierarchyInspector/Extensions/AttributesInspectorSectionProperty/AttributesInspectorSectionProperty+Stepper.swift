@@ -1,5 +1,5 @@
 //
-//  AttributesInspectorSectionProperty+Stepper.swift
+//  HiearchyInspectableElementProperty+Stepper.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 06.12.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension AttributesInspectorSectionProperty {
+public extension HiearchyInspectableElementProperty {
     
     static func integerStepper(
         title: String,
@@ -15,7 +15,7 @@ extension AttributesInspectorSectionProperty {
         range: @escaping IntClosedRangeProvider,
         stepValue: @escaping IntProvider,
         handler: IntHandler?
-    ) -> AttributesInspectorSectionProperty {
+    ) -> HiearchyInspectableElementProperty {
         .stepper(
             title: title,
             value: { Double(value()) },
@@ -33,7 +33,7 @@ extension AttributesInspectorSectionProperty {
         range: @escaping CGFloatClosedRangeProvider,
         stepValue: @escaping CGFloatProvider,
         handler: CGFloatHandler?
-    ) -> AttributesInspectorSectionProperty {
+    ) -> HiearchyInspectableElementProperty {
         .stepper(
             title: title,
             value: { Double(value()) },
@@ -51,7 +51,7 @@ extension AttributesInspectorSectionProperty {
         range: @escaping (() -> ClosedRange<Float>),
         stepValue: @escaping (() -> Float),
         handler: ((Float) -> Void)?
-    ) -> AttributesInspectorSectionProperty {
+    ) -> HiearchyInspectableElementProperty {
         .stepper(
             title: title,
             value: { Double(value()) },

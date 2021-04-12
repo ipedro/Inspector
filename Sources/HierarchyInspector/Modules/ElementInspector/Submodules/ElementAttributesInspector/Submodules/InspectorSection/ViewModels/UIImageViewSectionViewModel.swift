@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
 
-    final class UIImageViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UIImageViewInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         private enum Property: String, Swift.CaseIterable {
             case image                                               = "Image"
@@ -31,7 +31,7 @@ extension AttributesInspectorSection {
             self.imageView = imageView
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let imageView = imageView else {
                 return nil
             }

@@ -1,5 +1,5 @@
 //
-//  AttributesInspectorSectionProperty.swift
+//  HiearchyInspectableElementProperty.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 09.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum AttributesInspectorSectionProperty {
+public enum HiearchyInspectableElementProperty {
     
     case colorPicker(title: String,
                      color: ColorProvider,
@@ -22,13 +22,19 @@ enum AttributesInspectorSectionProperty {
     case optionsList(title: String,
                      emptyTitle: String = "Unspecified",
                      axis: NSLayoutConstraint.Axis = .horizontal,
-                     options: [CustomStringConvertible],
+                     options: [String],
                      selectedIndex: SelectionProvider,
                      handler: SelectionHandler?)
     
-    case segmentedControl(title: String,
+    case textButtonGroup(title: String,
+                         axis: NSLayoutConstraint.Axis = .vertical,
+                         texts: [String],
+                         selectedIndex: SelectionProvider,
+                         handler: SelectionHandler?)
+    
+    case imageButtonGroup(title: String,
                           axis: NSLayoutConstraint.Axis = .vertical,
-                          options: [SegmentedControlDisplayable],
+                          images: [UIImage],
                           selectedIndex: SelectionProvider,
                           handler: SelectionHandler?)
     
@@ -57,7 +63,7 @@ enum AttributesInspectorSectionProperty {
     
 }
 
-extension AttributesInspectorSectionProperty {
+extension HiearchyInspectableElementProperty {
     
     var isControl: Bool {
         switch self {
@@ -65,7 +71,8 @@ extension AttributesInspectorSectionProperty {
         case .stepper,
              .colorPicker,
              .toggleButton,
-             .segmentedControl,
+             .textButtonGroup,
+             .imageButtonGroup,
              .optionsList,
              .textField,
              .textView,
@@ -85,7 +92,8 @@ extension AttributesInspectorSectionProperty {
         case .stepper(_, _, _, _, _, .some),
              .colorPicker(_, _, .some),
              .toggleButton(_, _, .some),
-             .segmentedControl(_, _, _, _, .some),
+             .textButtonGroup(_, _, _, _, .some),
+             .imageButtonGroup(_, _, _, _, .some),
              .optionsList(_, _, _, _, _, .some),
              .textField(_, _, _, .some),
              .textView(_, _, _, .some),
@@ -95,7 +103,8 @@ extension AttributesInspectorSectionProperty {
         case .stepper,
              .colorPicker,
              .toggleButton,
-             .segmentedControl,
+             .textButtonGroup,
+             .imageButtonGroup,
              .optionsList,
              .textField,
              .textView,

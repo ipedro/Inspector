@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
         
-    final class UIStackViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UIStackViewInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case axis                          = "Axis"
@@ -31,16 +31,16 @@ extension AttributesInspectorSection {
             self.stackView = stackView
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let stackView = stackView else {
                 return nil
             }
 
             switch property {
             case .axis:
-                return .segmentedControl(
+                return .textButtonGroup(
                     title: property.rawValue,
-                    options: NSLayoutConstraint.Axis.allCases,
+                    texts: NSLayoutConstraint.Axis.allCases.map { $0.description },
                     selectedIndex: { NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis) }
                 ) {
                     guard let newIndex = $0 else {
@@ -55,7 +55,7 @@ extension AttributesInspectorSection {
             case .alignment:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIStackView.Alignment.allCases,
+                    options: UIStackView.Alignment.allCases.map { $0.description },
                     selectedIndex: { UIStackView.Alignment.allCases.firstIndex(of: stackView.alignment) }
                 ) {
                     guard let newIndex = $0 else {
@@ -70,7 +70,7 @@ extension AttributesInspectorSection {
             case .distribution:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIStackView.Distribution.allCases,
+                    options: UIStackView.Distribution.allCases.map { $0.description },
                     selectedIndex: { UIStackView.Distribution.allCases.firstIndex(of: stackView.distribution) }
                 ) {
                     guard let newIndex = $0 else {

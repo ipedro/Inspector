@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
     
-    final class UIScrollViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UIScrollViewInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case groupIndicators                = "Indicators"
@@ -47,7 +47,7 @@ extension AttributesInspectorSection {
             self.scrollView = scrollView
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let scrollView = scrollView else {
                 return nil
             }
@@ -60,7 +60,7 @@ extension AttributesInspectorSection {
             case .indicatorStyle:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIScrollView.IndicatorStyle.allCases,
+                    options: UIScrollView.IndicatorStyle.allCases.map { $0.description },
                     selectedIndex: { UIScrollView.IndicatorStyle.allCases.firstIndex(of: scrollView.indicatorStyle) }
                 ) {
                     guard let newIndex = $0 else {
@@ -205,7 +205,7 @@ extension AttributesInspectorSection {
             case .keyboardDismissMode:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIScrollView.KeyboardDismissMode.allCases,
+                    options: UIScrollView.KeyboardDismissMode.allCases.map { $0.description },
                     selectedIndex: { UIScrollView.KeyboardDismissMode.allCases.firstIndex(of: scrollView.keyboardDismissMode) }
                 ) {
                     guard let newIndex = $0 else {

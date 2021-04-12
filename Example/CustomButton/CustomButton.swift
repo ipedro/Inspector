@@ -8,16 +8,30 @@
 import UIKit
 
 final class CustomButton: UIButton {
+    
+    var animateOnTouch = true
+    
+    var cornerRadius: CGFloat = 20 {
+        didSet {
+            setNeedsLayout()
+            layoutIfNeeded()
+        }
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         
         layer.cornerCurve = .continuous
         
-        layer.cornerRadius = frame.height / 3
+        layer.cornerRadius = cornerRadius
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
+        
+        guard animateOnTouch else {
+            return
+        }
         
         scale(.in, for: event)
     }
@@ -25,11 +39,19 @@ final class CustomButton: UIButton {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         
+        guard animateOnTouch else {
+            return
+        }
+        
         scale(.out, for: event)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event )
+        
+        guard animateOnTouch else {
+            return
+        }
         
         scale(.out, for: event)
     }

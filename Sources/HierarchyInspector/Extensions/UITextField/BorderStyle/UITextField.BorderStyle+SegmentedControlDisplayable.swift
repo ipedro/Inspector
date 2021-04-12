@@ -1,5 +1,5 @@
 //
-//  UITextField.BorderStyle+SegmentedControlDisplayable.swift
+//  UITextField.BorderStyle+CustomImageConvertible.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 30.10.20.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-extension UITextField.BorderStyle: SegmentedControlDisplayable {
-    var displayItem: Any {
+extension UITextField.BorderStyle: CustomImageConvertible {
+    var image: UIImage? {
         switch self {
         
         case .none:
@@ -24,7 +24,7 @@ extension UITextField.BorderStyle: SegmentedControlDisplayable {
             return IconKit.imageOfBorderStyleRoundedRect()
             
         @unknown default:
-            return UIImage()
+            return nil
             
         }
     }

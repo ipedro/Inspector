@@ -116,11 +116,17 @@ extension HierarchyInspector.Manager {
             let cachedSnapshot = cachedSnapshots[view],
             Date() <= cachedSnapshot.expiryDate
         else {
-            let allAvailableLayers = hostViewController?.allAvailableLayers ?? []
-            let snapshots = ViewHierarchySnapshot(availableLayers: allAvailableLayers, in: view)
-            cachedSnapshots[view] = snapshots
+            let layers = hostViewController?.allAvailableLayers ?? []
+            let attributeInspectorSections = hostViewController?.allAvailableAttributeInspectorSections ?? []
+            let snapshot = ViewHierarchySnapshot(
+                availableLayers: layers,
+                availableAttributeInspectorSections: attributeInspectorSections,
+                in: view
+            )
             
-            return snapshots
+            cachedSnapshots[view] = snapshot
+            
+            return snapshot
         }
         
         return cachedSnapshot

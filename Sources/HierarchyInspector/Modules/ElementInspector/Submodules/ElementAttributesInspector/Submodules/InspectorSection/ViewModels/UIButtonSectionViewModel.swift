@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
     
-    final class UIButtonSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UIButtonInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case type                                                = "Type"
@@ -47,7 +47,7 @@ extension AttributesInspectorSection {
         
         private var selectedControlState: UIControl.State
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let button = button else {
                 return nil
             }
@@ -57,7 +57,7 @@ extension AttributesInspectorSection {
             case .type:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIButton.ButtonType.allCases,
+                    options: UIButton.ButtonType.allCases.map { $0.description },
                     selectedIndex: { UIButton.ButtonType.allCases.firstIndex(of: button.buttonType) },
                     handler: nil
                 )
@@ -90,7 +90,7 @@ extension AttributesInspectorSection {
             case .stateConfig:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIControl.State.configurableButtonStates,
+                    options: UIControl.State.configurableButtonStates.map { $0.description },
                     selectedIndex: { UIControl.State.configurableButtonStates.firstIndex(of: self.selectedControlState) }
                 ) { [weak self] in
                     

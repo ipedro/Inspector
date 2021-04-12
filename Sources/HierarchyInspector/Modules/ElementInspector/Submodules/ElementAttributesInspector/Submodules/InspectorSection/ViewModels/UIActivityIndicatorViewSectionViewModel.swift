@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
     
-    final class UIActivityIndicatorViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UIActivityIndicatorViewInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case style            = "Style"
@@ -31,7 +31,7 @@ extension AttributesInspectorSection {
             self.activityIndicatorView = activityIndicatorView
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let activityIndicatorView = activityIndicatorView else {
                 return nil
             }
@@ -40,7 +40,7 @@ extension AttributesInspectorSection {
             case .style:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIActivityIndicatorView.Style.allCases,
+                    options: UIActivityIndicatorView.Style.allCases.map { $0.description },
                     selectedIndex: { UIActivityIndicatorView.Style.allCases.firstIndex(of: activityIndicatorView.style) }
                 ) {
                     guard let newIndex = $0 else {

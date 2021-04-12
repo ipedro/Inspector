@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
     
-    final class UIViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UIViewInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case contentMode                = "Content Mode"
@@ -38,7 +38,7 @@ extension AttributesInspectorSection {
             self.view = view
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let view = view else {
                 return nil
             }
@@ -47,7 +47,7 @@ extension AttributesInspectorSection {
             case .contentMode:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIView.ContentMode.allCases,
+                    options: UIView.ContentMode.allCases.map { $0.description },
                     selectedIndex: { UIView.ContentMode.allCases.firstIndex(of: view.contentMode) }
                 ) {
                     guard let newIndex = $0 else {
@@ -62,7 +62,7 @@ extension AttributesInspectorSection {
             case .semanticContentAttribute:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UISemanticContentAttribute.allCases,
+                    options: UISemanticContentAttribute.allCases.map { $0.description },
                     selectedIndex: { UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute) }
                 ) {
                     guard let newIndex = $0 else {

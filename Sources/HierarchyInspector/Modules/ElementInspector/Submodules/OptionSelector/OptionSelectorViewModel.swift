@@ -20,13 +20,13 @@ protocol OptionSelectorViewModelProtocol {
 }
 
 final class OptionSelectorViewModel {
-    let options: [CustomStringConvertible]
+    let options: [Swift.CustomStringConvertible]
     
     var selectedIndex: Int?
     
     let title: String?
     
-    init(title: String?, options: [CustomStringConvertible], selectedIndex: Int?) {
+    init(title: String?, options: [Swift.CustomStringConvertible], selectedIndex: Int?) {
         self.title = title
         self.options = options
         self.selectedIndex = selectedIndex

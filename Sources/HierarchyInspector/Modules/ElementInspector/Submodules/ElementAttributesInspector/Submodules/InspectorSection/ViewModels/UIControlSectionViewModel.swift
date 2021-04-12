@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
 
-    final class UIControlSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UIControlInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         private enum Property: String, Swift.CaseIterable {
             case contentHorizontalAlignment = "Horizontal Alignment"
@@ -32,33 +32,35 @@ extension AttributesInspectorSection {
             self.control = control
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let control = control else {
                 return nil
             }
 
             switch property {
             case .contentHorizontalAlignment:
-                return .segmentedControl(
+                let allCases = UIControl.ContentHorizontalAlignment.allCases.withImages
+                
+                return .imageButtonGroup(
                     title: property.rawValue,
-                    options: UIControl.ContentHorizontalAlignment.allCases,
-                    selectedIndex: { UIControl.ContentHorizontalAlignment.allCases.firstIndex(of: control.contentHorizontalAlignment) }
+                    images: allCases.compactMap { $0.image },
+                    selectedIndex: { allCases.firstIndex(of: control.contentHorizontalAlignment) }
                 ) {
                     guard let newIndex = $0 else {
                         return
                     }
 
-                    let contentHorizontalAlignment = UIControl.ContentHorizontalAlignment.allCases[newIndex]
-
+                    let contentHorizontalAlignment = allCases[newIndex]
+                    
                     control.contentHorizontalAlignment = contentHorizontalAlignment
                 }
 
             case .contentVerticalAlignment:
                 let knownCases = UIControl.ContentVerticalAlignment.allCases.filter { $0.image?.withRenderingMode(.alwaysTemplate) != nil }
 
-                return .segmentedControl(
+                return .imageButtonGroup(
                     title: property.rawValue,
-                    options: knownCases.compactMap { $0.image },
+                    images: knownCases.compactMap { $0.image },
                     selectedIndex: { knownCases.firstIndex(of: control.contentVerticalAlignment) }
                 ) {
                     guard let newIndex = $0 else {

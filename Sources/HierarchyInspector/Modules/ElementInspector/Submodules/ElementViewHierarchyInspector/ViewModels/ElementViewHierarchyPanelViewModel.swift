@@ -46,7 +46,7 @@ final class ElementViewHierarchyPanelViewModel {
     
     let rootDepth: Int
     
-    private(set) lazy var thumbnailImage: UIImage? = reference.iconImage()
+    let thumbnailImage: UIImage?
     
     // MARK: - Properties
     
@@ -56,11 +56,13 @@ final class ElementViewHierarchyPanelViewModel {
         reference: ViewHierarchyReference,
         parent: ElementViewHierarchyPanelViewModelProtocol? = nil,
         rootDepth: Int,
+        thumbnailImage: UIImage?,
         isCollapsed: Bool
     ) {
         self.parent = parent
         self.reference = reference
         self.rootDepth = rootDepth
+        self.thumbnailImage = thumbnailImage
         self._isCollapsed = isCollapsed
     }
 }

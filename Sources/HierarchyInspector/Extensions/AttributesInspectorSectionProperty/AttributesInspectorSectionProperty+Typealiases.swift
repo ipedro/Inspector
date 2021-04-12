@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - Providers
 
-extension AttributesInspectorSectionProperty {
+public extension HiearchyInspectableElementProperty {
     
     typealias BoolProvider               = (() -> Bool)
     typealias CGFloatClosedRangeProvider = (() -> ClosedRange<CGFloat>)
@@ -30,7 +30,7 @@ extension AttributesInspectorSectionProperty {
 
 // MARK: - Value handlers
 
-extension AttributesInspectorSectionProperty {
+public extension HiearchyInspectableElementProperty {
     
     typealias BoolHandler      = ((Bool)     -> Void)
     typealias CGFloatHandler   = ((CGFloat)  -> Void)

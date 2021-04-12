@@ -1,5 +1,5 @@
 //
-//  UIControl.ContentVerticalAlignment+Images.swift
+//  UIControl.ContentVerticalAlignment+CustomImageConvertible.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 10.10.20.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-extension UIControl.ContentVerticalAlignment {
-    public var image: UIImage? {
+extension UIControl.ContentVerticalAlignment: CustomImageConvertible {
+    var image: UIImage? {
         switch self {
         case .center:
             return IconKit.imageOfVerticalAlignmentCenter()

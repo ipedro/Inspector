@@ -80,11 +80,12 @@ extension HierarchyInspectorViewModel {
                     return element.elementName
                 }()
                 
+                
                 return Details(
                     title: title,
                     isEnabled: true,
                     subtitle: element.elementDescription,
-                    image: element.iconImage(),
+                    image: snapshot.iconImage(for: element.view),
                     depth: element.depth,
                     reference: element
                 )

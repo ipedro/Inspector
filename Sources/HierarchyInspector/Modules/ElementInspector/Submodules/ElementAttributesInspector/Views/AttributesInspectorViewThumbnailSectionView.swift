@@ -24,7 +24,7 @@ final class AttributesInspectorViewThumbnailSectionView: BaseView {
     
     private lazy var backgroundAppearanceControl = SegmentedControl(
         title: "Preview Background",
-        options: ThumbnailBackgroundStyle.allCases.map { $0.image },
+        images: ThumbnailBackgroundStyle.allCases.map { $0.image },
         selectedIndex: thumbnailView.backgroundStyle.rawValue
     ).then {
         $0.axis = .horizontal

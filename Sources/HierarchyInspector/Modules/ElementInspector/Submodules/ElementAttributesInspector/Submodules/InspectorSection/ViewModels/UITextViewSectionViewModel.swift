@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
     
-    final class UITextViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UITextViewInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case text                               = "Text"
@@ -55,7 +55,7 @@ extension AttributesInspectorSection {
             self.textView = textView
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let textView = textView else {
                 return nil
             }
@@ -114,16 +114,18 @@ extension AttributesInspectorSection {
                 }
             
             case .textAlignment:
-                return .segmentedControl(
+                let allCases = NSTextAlignment.allCases.withImages
+                
+                return .imageButtonGroup(
                     title: property.rawValue,
-                    options: NSTextAlignment.allCases,
-                    selectedIndex: { NSTextAlignment.allCases.firstIndex(of: textView.textAlignment) }
+                    images: allCases.compactMap { $0.image },
+                    selectedIndex: { allCases.firstIndex(of: textView.textAlignment) }
                 ) {
                     guard let newIndex = $0 else {
                         return
                     }
                     
-                    let textAlignment = NSTextAlignment.allCases[newIndex]
+                    let textAlignment = allCases[newIndex]
                     
                     textView.textAlignment = textAlignment
                 }
@@ -177,7 +179,7 @@ extension AttributesInspectorSection {
             case .textContentType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextContentType.allCases,
+                    options: UITextContentType.allCases.map { $0.description },
                     selectedIndex: {
                         guard let textContentType = textView.textContentType else {
                             return nil
@@ -198,7 +200,7 @@ extension AttributesInspectorSection {
             case .autocapitalizationType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextAutocapitalizationType.allCases,
+                    options: UITextAutocapitalizationType.allCases.map { $0.description },
                     selectedIndex: { UITextAutocapitalizationType.allCases.firstIndex(of: textView.autocapitalizationType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -213,7 +215,7 @@ extension AttributesInspectorSection {
             case .autocorrectionType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextAutocorrectionType.allCases,
+                    options: UITextAutocorrectionType.allCases.map { $0.description },
                     selectedIndex: { UITextAutocorrectionType.allCases.firstIndex(of: textView.autocorrectionType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -228,7 +230,7 @@ extension AttributesInspectorSection {
             case .smartDashesType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextSmartDashesType.allCases,
+                    options: UITextSmartDashesType.allCases.map { $0.description },
                     selectedIndex: { UITextSmartDashesType.allCases.firstIndex(of: textView.smartDashesType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -243,7 +245,7 @@ extension AttributesInspectorSection {
             case .smartQuotesType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextSmartQuotesType.allCases,
+                    options: UITextSmartQuotesType.allCases.map { $0.description },
                     selectedIndex: { UITextSmartQuotesType.allCases.firstIndex(of: textView.smartQuotesType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -258,7 +260,7 @@ extension AttributesInspectorSection {
             case .spellCheckingType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextSpellCheckingType.allCases,
+                    options: UITextSpellCheckingType.allCases.map { $0.description },
                     selectedIndex: { UITextSpellCheckingType.allCases.firstIndex(of: textView.spellCheckingType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -273,7 +275,7 @@ extension AttributesInspectorSection {
             case .keyboardType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIKeyboardType.allCases,
+                    options: UIKeyboardType.allCases.map { $0.description },
                     selectedIndex: { UIKeyboardType.allCases.firstIndex(of: textView.keyboardType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -288,7 +290,7 @@ extension AttributesInspectorSection {
             case .keyboardAppearance:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIKeyboardAppearance.allCases,
+                    options: UIKeyboardAppearance.allCases.map { $0.description },
                     selectedIndex: { UIKeyboardAppearance.allCases.firstIndex(of: textView.keyboardAppearance) }
                 ) {
                     guard let newIndex = $0 else {
@@ -303,7 +305,7 @@ extension AttributesInspectorSection {
             case .returnKey:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIReturnKeyType.allCases,
+                    options: UIReturnKeyType.allCases.map { $0.description },
                     selectedIndex: { UIReturnKeyType.allCases.firstIndex(of: textView.returnKeyType) }
                 ) {
                     guard let newIndex = $0 else {

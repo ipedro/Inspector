@@ -19,10 +19,10 @@ protocol AttributesInspectorSectionViewControllerDelegate: OperationQueueManager
                                                   didTap optionSelector: OptionListControl)
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  didUpdate property: AttributesInspectorSectionProperty)
+                                                  didUpdate property: HiearchyInspectableElementProperty)
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  willUpdate property: AttributesInspectorSectionProperty)
+                                                  willUpdate property: HiearchyInspectableElementProperty)
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
                                                   didToggle isCollapsed: Bool)
@@ -36,9 +36,9 @@ final class AttributesInspectorSectionViewController: UIViewController {
         $0.delegate = self
     }
     
-    private var viewModel: AttributesInspectorSectionViewModelProtocol!
+    private var viewModel: HiearchyInspectableElementViewModelProtocol!
     
-    static func create(viewModel: AttributesInspectorSectionViewModelProtocol) -> AttributesInspectorSectionViewController {
+    static func create(viewModel: HiearchyInspectableElementViewModelProtocol) -> AttributesInspectorSectionViewController {
         let viewController = AttributesInspectorSectionViewController()
         viewController.viewModel = viewModel
         
@@ -72,11 +72,11 @@ final class AttributesInspectorSectionViewController: UIViewController {
         }
     }
     
-    private lazy var inputViews: [AttributesInspectorSectionProperty: UIView] = {
-        var dict = [AttributesInspectorSectionProperty: UIView]()
+    private lazy var inputViews: [HiearchyInspectableElementProperty: UIView] = {
+        var dict = [HiearchyInspectableElementProperty: UIView]()
         
         for (index, property) in viewModel.properties.enumerated() {
-            let element: UIView = {
+            let element: UIView? = {
                 switch property {
                 case .separator:
                     return SeparatorView().then {
@@ -129,15 +129,24 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         isOn: isOnProvider()
                     )
                     
-                case let .segmentedControl(title, axis, options, selectedIndexProvider, _):
+                case let .imageButtonGroup(title, axis, images, selectedIndexProvider, _):
                     return SegmentedControl(
                         title: title,
-                        options: options,
+                        images: images,
                         selectedIndex: selectedIndexProvider()
                     ).then {
                         $0.axis = axis
                     }
                     
+                case let .textButtonGroup(title, axis, texts, selectedIndexProvider, _):
+                    return SegmentedControl(
+                        title: title,
+                        texts: texts,
+                        selectedIndex: selectedIndexProvider()
+                    ).then {
+                        $0.axis = axis
+                    }
+                
                 case let .optionsList(title, emptyTitle, axis, options, selectedIndexProvider, _):
                     return OptionListControl(
                         title: title,
@@ -203,7 +212,8 @@ extension AttributesInspectorSectionViewController {
                 case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
                     handler?(toggleControl.isOn)
                     
-                case let (.segmentedControl(_, _, _, _, handler), segmentedControl as SegmentedControl):
+                case let (.textButtonGroup(_, _, _, _, handler), segmentedControl as SegmentedControl),
+                     let (.imageButtonGroup(_, _, _, _, handler), segmentedControl as SegmentedControl):
                     handler?(segmentedControl.selectedIndex)
                     
                 case let (.optionsList(_, _, _, _, _, handler), optionSelector as OptionListControl):
@@ -225,7 +235,8 @@ extension AttributesInspectorSectionViewController {
                 case (.stepper, _),
                      (.colorPicker, _),
                      (.toggleButton, _),
-                     (.segmentedControl, _),
+                     (.textButtonGroup, _),
+                     (.imageButtonGroup, _),
                      (.optionsList, _),
                      (.textField, _),
                      (.textView, _),
@@ -274,7 +285,8 @@ extension AttributesInspectorSectionViewController {
                 toggleControl.isOn = isOnProvider()
                 toggleControl.title = title
                 
-            case let (.segmentedControl(title, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
+            case let (.imageButtonGroup(title, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl),
+                 let (.textButtonGroup(title, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
                 segmentedControl.selectedIndex = selectedIndexProvider()
                 segmentedControl.title = title
                 
@@ -299,7 +311,8 @@ extension AttributesInspectorSectionViewController {
             case (.stepper, _),
                  (.colorPicker, _),
                  (.toggleButton, _),
-                 (.segmentedControl, _),
+                 (.imageButtonGroup, _),
+                 (.textButtonGroup, _),
                  (.optionsList, _),
                  (.textField, _),
                  (.textView, _),

@@ -12,6 +12,8 @@ public protocol HierarchyInspectableProtocol: UIViewController {
     var hierarchyInspectorLayers: [ViewHierarchyLayer] { get }
     
     var hierarchyInspectorColorScheme: ViewHierarchyColorScheme { get }
+    
+    var hierarchyInspectorElements: [HiearchyInspectableElementProtocol] { get }
 }
 
 // MARK: - Default Values
@@ -30,6 +32,14 @@ extension HierarchyInspectableProtocol {
         layers.append(.allViews)
         
         return layers.uniqueValues
+    }
+    
+    var allAvailableAttributeInspectorSections: [HiearchyInspectableElementProtocol] {
+        var sections = [HiearchyInspectableElementProtocol]()
+        sections.append(contentsOf: hierarchyInspectorElements)
+        sections.append(contentsOf: UIKitComponents.defaultComponents)
+        
+        return sections
     }
     
     var topMostContainerViewController: HierarchyInspectableProtocol {

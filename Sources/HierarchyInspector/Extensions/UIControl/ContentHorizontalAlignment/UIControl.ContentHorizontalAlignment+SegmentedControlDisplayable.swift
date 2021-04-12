@@ -1,5 +1,5 @@
 //
-//  UIControl.ContentHorizontalAlignment+SegmentedControlDisplayable.swift
+//  UIControl.ContentHorizontalAlignment+CustomImageConvertible.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 10.10.20.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-extension UIControl.ContentHorizontalAlignment: SegmentedControlDisplayable {
-    var displayItem: Any {
+extension UIControl.ContentHorizontalAlignment: CustomImageConvertible {
+    var image: UIImage? {
         switch self {
         case .leading:
             return IconKit.imageOfHorizontalAlignmentLeading()
@@ -29,7 +29,7 @@ extension UIControl.ContentHorizontalAlignment: SegmentedControlDisplayable {
             return IconKit.imageOfHorizontalAlignmentFill()
             
         @unknown default:
-            return UIImage()
+            return nil
         }
     }
 }

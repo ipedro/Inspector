@@ -34,17 +34,24 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
     private static func makeViewModels(
         reference: ViewHierarchyReference,
         parent: ElementViewHierarchyPanelViewModel?,
+        snapshot: ViewHierarchySnapshot,
         rootDepth: Int
     ) -> [ElementViewHierarchyPanelViewModel] {
         let viewModel = ElementViewHierarchyPanelViewModel(
             reference: reference,
             parent: parent,
             rootDepth: rootDepth,
+            thumbnailImage: snapshot.iconImage(for: reference.view),
             isCollapsed: reference.depth > rootDepth + 5
         )
         
-        let childrenViewModels: [[ElementViewHierarchyPanelViewModel]] = reference.children.map {
-            makeViewModels(reference: $0, parent: viewModel, rootDepth: rootDepth)
+        let childrenViewModels: [[ElementViewHierarchyPanelViewModel]] = reference.children.map { childReference in
+            makeViewModels(
+                reference: childReference,
+                parent: viewModel,
+                snapshot: snapshot,
+                rootDepth: rootDepth
+            )
         }
         
         return [viewModel] + childrenViewModels.flatMap { $0 }
@@ -52,12 +59,13 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
     
     private lazy var visibleChildViewModels: [ElementViewHierarchyPanelViewModel] = []
     
-    init(reference: ViewHierarchyReference) {
+    init(reference: ViewHierarchyReference, snapshot: ViewHierarchySnapshot) {
         rootReference = reference
         
         childViewModels = Self.makeViewModels(
             reference: rootReference,
             parent: nil,
+            snapshot: snapshot,
             rootDepth: rootReference.depth
         )
         

@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
 
-    final class UISegmentedControlSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UISegmentedControlInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         private enum Property: String, Swift.CaseIterable {
             case selectedSegmentTintColor = "Selected Tint"
@@ -63,7 +63,7 @@ extension AttributesInspectorSection {
         
         private var selectedSegment: Int?
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let segmentedControl = segmentedControl else {
                 return nil
             }
@@ -106,7 +106,7 @@ extension AttributesInspectorSection {
                 return .optionsList(
                     title: property.rawValue,
                     emptyTitle: "No Segments",
-                    options: segmentsOptions,
+                    options: segmentsOptions.map { $0.description },
                     selectedIndex: { [weak self] in self?.selectedSegment }
                 ) { [weak self] selectedSegment in
                     

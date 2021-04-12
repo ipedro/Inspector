@@ -8,7 +8,7 @@
 import UIKit
 
 protocol AttributesInspectorViewModelProtocol: ElementViewHierarchyPanelViewModelProtocol {
-    var sectionViewModels: [AttributesInspectorSectionViewModelProtocol] { get }
+    var sectionViewModels: [HiearchyInspectableElementViewModelProtocol] { get }
     
     var isHighlightingViews: Bool { get }
     
@@ -24,18 +24,28 @@ final class AttributesInspectorViewModel {
     
     let reference: ViewHierarchyReference
     
-    private(set) lazy var sectionViewModels: [AttributesInspectorSectionViewModelProtocol] = {
+    let snapshot: ViewHierarchySnapshot
+    
+    private(set) lazy var sectionViewModels: [HiearchyInspectableElementViewModelProtocol] = {
         guard let referenceView = reference.view else {
             return []
         }
         
-        return AttributesInspectorSection.allCases(matching: referenceView).compactMap {
-            $0.viewModel(with: referenceView)
+        return snapshot.availableAttributeInspectorSections.compactMap { section in
+            guard section.targets(object: referenceView) else {
+                return nil
+            }
+            
+            return section.viewModel(with: referenceView)
         }
     }()
     
-    init(reference: ViewHierarchyReference) {
+    init(
+        reference: ViewHierarchyReference,
+        snapshot: ViewHierarchySnapshot
+    ) {
         self.reference = reference
+        self.snapshot = snapshot
         self.isLiveUpdating = true
     }
 }
@@ -48,7 +58,7 @@ extension AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
         set { }
     }
     
-    var thumbnailImage: UIImage? { reference.iconImage() }
+    var thumbnailImage: UIImage? { snapshot.iconImage(for: reference.view) }
     
     var title: String { reference.elementName }
     

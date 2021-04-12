@@ -23,7 +23,7 @@ extension ElementViewHierarchyViewController: UITableViewDelegate {
             return
         }
         
-        self.delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference, from: self.viewModel.rootReference)
+        self.delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference, from: viewModel.rootReference)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -25,8 +25,16 @@ struct ViewHierarchySnapshot {
     
     let flattenedViewHierarchy: [ViewHierarchyReference]
     
-    init(availableLayers: [ViewHierarchyLayer], in rootView: UIView) {
+    let availableAttributeInspectorSections: [HiearchyInspectableElementProtocol]
+    
+    init(
+        availableLayers: [ViewHierarchyLayer],
+        availableAttributeInspectorSections: [HiearchyInspectableElementProtocol],
+        in rootView: UIView
+    ) {
         self.availableLayers = availableLayers.uniqueValues
+        
+        self.availableAttributeInspectorSections = availableAttributeInspectorSections
         
         viewHierarchy = ViewHierarchyReference(root: rootView)
         
@@ -42,4 +50,33 @@ struct ViewHierarchySnapshot {
     var inspectableViews: [UIView] {
         viewHierarchy.flattenedInspectableViews.compactMap { $0.view }
     }
+    
+    func iconImage(for view: UIView?, with size: CGSize = .defaultElementIconSize) -> UIImage {
+        
+        let defaultImage = UIImage.moduleImage(named: "EmptyView-32_Normal")
+        
+        guard let view = view else {
+            return defaultImage
+        }
+        
+        if
+            let imageView = view as? UIImageView,
+            let image = imageView.image
+        {
+            return image.resized(size)
+        }
+        
+        let images = availableAttributeInspectorSections.compactMap { section -> UIImage? in
+            guard
+                section.targets(object: view),
+                let image = section.icon?.resized(size)
+            else {
+                return nil
+            }
+            return image
+        }
+        
+        return images.first ?? defaultImage
+    }
+    
 }

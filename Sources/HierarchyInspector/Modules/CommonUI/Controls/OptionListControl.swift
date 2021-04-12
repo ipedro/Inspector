@@ -47,7 +47,7 @@ final class OptionListControl: BaseFormControl {
     
     // MARK: - Init
     
-    let options: [CustomStringConvertible]
+    let options: [Swift.CustomStringConvertible]
     
     let emptyTitle: String
     
@@ -59,7 +59,7 @@ final class OptionListControl: BaseFormControl {
     
     init(
         title: String?,
-        options: [CustomStringConvertible],
+        options: [Swift.CustomStringConvertible],
         emptyTitle: String,
         selectedIndex: Int? = nil
     ) {

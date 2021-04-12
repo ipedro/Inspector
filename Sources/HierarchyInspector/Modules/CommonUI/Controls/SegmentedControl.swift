@@ -7,26 +7,10 @@
 
 import UIKit
 
-protocol SegmentedControlDisplayable {
-    var displayItem: Any { get }
-}
-
-extension String: SegmentedControlDisplayable {
-    var displayItem: Any {
-        self
-    }
-}
-
-extension UIImage: SegmentedControlDisplayable {
-    var displayItem: Any {
-        self
-    }
-}
-
 final class SegmentedControl: BaseFormControl {
     // MARK: - Properties
     
-    let options: [SegmentedControlDisplayable]
+    let options: [Any]
     
     override var isEnabled: Bool {
         didSet {
@@ -48,7 +32,7 @@ final class SegmentedControl: BaseFormControl {
         }
     }
     
-    private lazy var segmentedControl = UISegmentedControl(items: options.map { $0.displayItem }).then {
+    private lazy var segmentedControl = UISegmentedControl(items: options).then {
         $0.addTarget(self, action: #selector(changeSegment), for: .valueChanged)
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {
@@ -66,8 +50,16 @@ final class SegmentedControl: BaseFormControl {
     
     // MARK: - Init
     
-    init(title: String?, options: [SegmentedControlDisplayable], selectedIndex: Int?) {
-        self.options = options
+    init(title: String?, images: [UIImage], selectedIndex: Int?) {
+        self.options = images
+        
+        super.init(title: title)
+        
+        self.selectedIndex = selectedIndex
+    }
+    
+    init(title: String?, texts: [String], selectedIndex: Int?) {
+        self.options = texts
         
         super.init(title: title)
         

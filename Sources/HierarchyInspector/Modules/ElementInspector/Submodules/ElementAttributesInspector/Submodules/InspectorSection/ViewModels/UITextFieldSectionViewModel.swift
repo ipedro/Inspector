@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
     
-    final class UITextFieldSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UITextFieldInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case text                          = "Text"
@@ -55,7 +55,7 @@ extension AttributesInspectorSection {
             self.textField = textField
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let textField = textField else {
                 return nil
             }
@@ -104,16 +104,18 @@ extension AttributesInspectorSection {
                 }
                 
             case .textAlignment:
-                return .segmentedControl(
+                let allCases = NSTextAlignment.allCases.withImages
+                
+                return .imageButtonGroup(
                     title: property.rawValue,
-                    options: NSTextAlignment.allCases,
-                    selectedIndex: { NSTextAlignment.allCases.firstIndex(of: textField.textAlignment) }
+                    images: allCases.compactMap { $0.image },
+                    selectedIndex: { allCases.firstIndex(of: textField.textAlignment) }
                 ) {
                     guard let newIndex = $0 else {
                         return
                     }
                     
-                    let textAlignment = NSTextAlignment.allCases[newIndex]
+                    let textAlignment = allCases[newIndex]
                     
                     textField.textAlignment = textAlignment
                 }
@@ -150,17 +152,19 @@ extension AttributesInspectorSection {
                 return .separator(title: property.rawValue)
                 
             case .borderStyle:
-                return .segmentedControl(
+                let allCases = UITextField.BorderStyle.allCases.withImages
+                
+                return .imageButtonGroup(
                     title: property.rawValue,
                     axis: .vertical,
-                    options: UITextField.BorderStyle.allCases,
-                    selectedIndex: { UITextField.BorderStyle.allCases.firstIndex(of: textField.borderStyle) }
+                    images: allCases.compactMap { $0.image },
+                    selectedIndex: { allCases.firstIndex(of: textField.borderStyle) }
                 ) {
                     guard let newIndex = $0 else {
                         return
                     }
                     
-                    let borderStyle = UITextField.BorderStyle.allCases[newIndex]
+                    let borderStyle = allCases[newIndex]
                     
                     textField.borderStyle = borderStyle
                 }
@@ -171,7 +175,7 @@ extension AttributesInspectorSection {
             case .clearButton:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextField.ViewMode.allCases,
+                    options: UITextField.ViewMode.allCases.map { $0.description },
                     selectedIndex: { UITextField.ViewMode.allCases.firstIndex(of: textField.clearButtonMode) }
                 ) {
                     guard let newIndex = $0 else {
@@ -218,7 +222,7 @@ extension AttributesInspectorSection {
             case .textContentType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextContentType.allCases,
+                    options: UITextContentType.allCases.map { $0.description },
                     selectedIndex: {
                         guard let textContentType = textField.textContentType else {
                             return nil
@@ -239,7 +243,7 @@ extension AttributesInspectorSection {
             case .autocapitalizationType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextAutocapitalizationType.allCases,
+                    options: UITextAutocapitalizationType.allCases.map { $0.description },
                     selectedIndex: { UITextAutocapitalizationType.allCases.firstIndex(of: textField.autocapitalizationType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -254,7 +258,7 @@ extension AttributesInspectorSection {
             case .autocorrectionType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextAutocorrectionType.allCases,
+                    options: UITextAutocorrectionType.allCases.map { $0.description },
                     selectedIndex: { UITextAutocorrectionType.allCases.firstIndex(of: textField.autocorrectionType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -269,7 +273,7 @@ extension AttributesInspectorSection {
             case .smartDashesType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextSmartDashesType.allCases,
+                    options: UITextSmartDashesType.allCases.map { $0.description },
                     selectedIndex: { UITextSmartDashesType.allCases.firstIndex(of: textField.smartDashesType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -284,7 +288,7 @@ extension AttributesInspectorSection {
             case .smartQuotesType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextSmartQuotesType.allCases,
+                    options: UITextSmartQuotesType.allCases.map { $0.description },
                     selectedIndex: { UITextSmartQuotesType.allCases.firstIndex(of: textField.smartQuotesType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -299,7 +303,7 @@ extension AttributesInspectorSection {
             case .spellCheckingType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UITextSpellCheckingType.allCases,
+                    options: UITextSpellCheckingType.allCases.map { $0.description },
                     selectedIndex: { UITextSpellCheckingType.allCases.firstIndex(of: textField.spellCheckingType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -314,7 +318,7 @@ extension AttributesInspectorSection {
             case .keyboardType:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIKeyboardType.allCases,
+                    options: UIKeyboardType.allCases.map { $0.description },
                     selectedIndex: { UIKeyboardType.allCases.firstIndex(of: textField.keyboardType) }
                 ) {
                     guard let newIndex = $0 else {
@@ -329,7 +333,7 @@ extension AttributesInspectorSection {
             case .keyboardAppearance:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIKeyboardAppearance.allCases,
+                    options: UIKeyboardAppearance.allCases.map { $0.description },
                     selectedIndex: { UIKeyboardAppearance.allCases.firstIndex(of: textField.keyboardAppearance) }
                 ) {
                     guard let newIndex = $0 else {
@@ -344,7 +348,7 @@ extension AttributesInspectorSection {
             case .returnKey:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIReturnKeyType.allCases,
+                    options: UIReturnKeyType.allCases.map { $0.description },
                     selectedIndex: { UIReturnKeyType.allCases.firstIndex(of: textField.returnKeyType) }
                 ) {
                     guard let newIndex = $0 else {

@@ -1,5 +1,5 @@
 //
-//  AttributesInspectorSectionProperty+Hashable.swift
+//  HiearchyInspectableElementProperty+Hashable.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 06.12.20.
@@ -7,17 +7,20 @@
 
 import Foundation
 
-extension AttributesInspectorSectionProperty: Hashable {
+extension HiearchyInspectableElementProperty: Hashable {
     
     private var idenfitifer: String {
         String(describing: self)
     }
     
-    static func == (lhs: AttributesInspectorSectionProperty, rhs: AttributesInspectorSectionProperty) -> Bool {
+    public static func == (
+        lhs: HiearchyInspectableElementProperty,
+        rhs: HiearchyInspectableElementProperty
+    ) -> Bool {
         lhs.idenfitifer == rhs.idenfitifer
     }
     
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         idenfitifer.hash(into: &hasher)
     }
     

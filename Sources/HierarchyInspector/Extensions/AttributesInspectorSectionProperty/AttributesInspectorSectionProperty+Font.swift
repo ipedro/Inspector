@@ -1,5 +1,5 @@
 //
-//  AttributesInspectorSectionProperty+Font.swift
+//  HiearchyInspectableElementProperty+Font.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 06.12.20.
@@ -7,14 +7,14 @@
 
 import UIKit
 
-extension AttributesInspectorSectionProperty {
+public extension HiearchyInspectableElementProperty {
     
     static func fontNamePicker(
         title: String,
         emptyTitle: String = "System Font",
         fontProvider: @escaping FontProvider,
         handler: @escaping FontHandler
-    ) -> AttributesInspectorSectionProperty {
+    ) -> HiearchyInspectableElementProperty {
         
         typealias FontReference = (fontName: String, displayName: String)
         
@@ -79,7 +79,7 @@ extension AttributesInspectorSectionProperty {
         title: String,
         fontProvider: @escaping FontProvider,
         handler: @escaping FontHandler
-    ) -> AttributesInspectorSectionProperty {
+    ) -> HiearchyInspectableElementProperty {
         
         .cgFloatStepper(
             title: title,

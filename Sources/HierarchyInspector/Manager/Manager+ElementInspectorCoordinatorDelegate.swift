@@ -28,24 +28,19 @@ extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
 extension HierarchyInspector.Manager {
     
     func presentElementInspector(for reference: ViewHierarchyReference, animated: Bool, from sourceView: UIView?) {
-        guard
-            let window = hostViewController?.view.window,
-            elementInspectorCoordinator == nil
-        else {
+        guard let viewHierarchySnapshot = viewHierarchySnapshot else {
             return
         }
         
-        let windowReference = ViewHierarchyReference(root: window)
-        
         let coordinator = ElementInspectorCoordinator(
             reference: reference,
-            rootReference: windowReference,
+            snapshot: viewHierarchySnapshot,
             sourceView: sourceView
         ).then {
             $0.delegate = self
         }
         
-        self.elementInspectorCoordinator = coordinator
+        elementInspectorCoordinator = coordinator
         
         hostViewController?.present(coordinator.start(), animated: animated)
     }

@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
         
-    final class UISwitchSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UISwitchInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         private enum Property: String, Swift.CaseIterable {
             case title          = "Title"
@@ -31,7 +31,7 @@ extension AttributesInspectorSection {
             self.switchControl = switchControl
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let switchControl = switchControl else {
                 return nil
             }
@@ -54,9 +54,9 @@ extension AttributesInspectorSection {
             case .preferredStyle:
                 #if swift(>=5.3)
                 if #available(iOS 14.0, *) {
-                    return .segmentedControl(
+                    return .textButtonGroup(
                         title: property.rawValue,
-                        options: UISwitch.Style.allCases,
+                        texts: UISwitch.Style.allCases.map { $0.description },
                         selectedIndex: { UISwitch.Style.allCases.firstIndex(of: switchControl.preferredStyle) },
                         handler: {
                             guard let newIndex = $0 else {

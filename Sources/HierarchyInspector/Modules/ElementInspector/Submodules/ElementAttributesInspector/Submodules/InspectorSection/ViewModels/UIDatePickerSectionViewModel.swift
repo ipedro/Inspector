@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
     
-    final class UIDatePickerSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UIDatePickerInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case datePickerStyle = "Style"
@@ -34,7 +34,7 @@ extension AttributesInspectorSection {
         
         private lazy var validMinuteIntervals = minuteIntervalRange.filter { 60 % $0 == 0 }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let datePicker = datePicker else {
                 return nil
             }
@@ -46,7 +46,7 @@ extension AttributesInspectorSection {
                 if #available(iOS 13.4, *) {
                     return .optionsList(
                         title: property.rawValue,
-                        options: UIDatePickerStyle.allCases,
+                        options: UIDatePickerStyle.allCases.map { $0.description },
                         selectedIndex: { UIDatePickerStyle.allCases.firstIndex(of: datePicker.datePickerStyle ) }
                     ) {
                         guard let newIndex = $0 else {
@@ -73,7 +73,7 @@ extension AttributesInspectorSection {
             case .datePickerMode:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIDatePicker.Mode.allCases,
+                    options: UIDatePicker.Mode.allCases.map { $0.description },
                     selectedIndex: { UIDatePicker.Mode.allCases.firstIndex(of: datePicker.datePickerMode) }
                 ) {
                     guard let newIndex = $0 else {

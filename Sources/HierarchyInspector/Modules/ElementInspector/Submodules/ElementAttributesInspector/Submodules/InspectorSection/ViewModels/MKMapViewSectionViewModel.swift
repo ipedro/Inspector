@@ -7,9 +7,9 @@
 
 import MapKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
     
-    final class MKMapViewSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class MKMapViewInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case type                  = "Type"
@@ -38,7 +38,7 @@ extension AttributesInspectorSection {
             self.mapView = mapView
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let mapView = mapView else {
                 return nil
             }
@@ -48,7 +48,7 @@ extension AttributesInspectorSection {
             case .type:
                 return .optionsList(
                     title: property.rawValue,
-                    options: MKMapType.allCases,
+                    options: MKMapType.allCases.map { $0.description },
                     selectedIndex: { MKMapType.allCases.firstIndex(of: mapView.mapType) }
                 ) {
                     guard let newIndex = $0 else {

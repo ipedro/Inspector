@@ -1,5 +1,5 @@
 //
-//  CaseIterable+CustomStringConvertible.swift
+//  MKMapView+CustomStringConvertible.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 03.12.20.

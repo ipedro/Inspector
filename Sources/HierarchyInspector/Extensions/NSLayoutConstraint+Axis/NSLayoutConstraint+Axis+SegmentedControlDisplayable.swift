@@ -1,5 +1,5 @@
 //
-//  NSLayoutConstraint.Axis+SegmentedControlDisplayable.swift
+//  NSLayoutConstraint.Axis+CustomStringConvertible.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 10.10.20.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-extension NSLayoutConstraint.Axis: SegmentedControlDisplayable {
-    var displayItem: Any {
+extension NSLayoutConstraint.Axis: CustomStringConvertible {
+    var description: String {
         switch self {
         case .horizontal:
             return "Horizontal"

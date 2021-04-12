@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension AttributesInspectorSection {
+extension UIKitComponents {
         
-    final class UILabelSectionViewModel: AttributesInspectorSectionViewModelProtocol {
+    final class UILabelInspectableViewModel: HiearchyInspectableElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case text                                 = "Text"
@@ -44,7 +44,7 @@ extension AttributesInspectorSection {
             self.label = label
         }
         
-        private(set) lazy var properties: [AttributesInspectorSectionProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
             guard let label = label else {
                 return nil
             }
@@ -103,16 +103,18 @@ extension AttributesInspectorSection {
                 }
                 
             case .textAlignment:
-                return .segmentedControl(
+                let allCases = NSTextAlignment.allCases.withImages
+                
+                return .imageButtonGroup(
                     title: property.rawValue,
-                    options: NSTextAlignment.allCases,
-                    selectedIndex: { NSTextAlignment.allCases.firstIndex(of: label.textAlignment) }
+                    images: allCases.compactMap { $0.image },
+                    selectedIndex: { allCases.firstIndex(of: label.textAlignment) }
                 ) {
                     guard let newIndex = $0 else {
                         return
                     }
                     
-                    let textAlignment = NSTextAlignment.allCases[newIndex]
+                    let textAlignment = allCases[newIndex]
                     
                     label.textAlignment = textAlignment
                 }
