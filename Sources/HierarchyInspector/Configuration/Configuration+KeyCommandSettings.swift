@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UIKeyCommandOptions
 
 public extension HierarchyInspector.Configuration {
 

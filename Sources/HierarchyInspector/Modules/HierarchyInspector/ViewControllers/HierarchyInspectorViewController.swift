@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UIKeyCommandTableView
 
 protocol HierarchyInspectorViewControllerDelegate: AnyObject {
     func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController, didSelect viewHierarchyReference: ViewHierarchyReference?)

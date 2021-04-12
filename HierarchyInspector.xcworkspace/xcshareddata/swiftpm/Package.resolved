@@ -2,12 +2,21 @@
   "object": {
     "pins": [
       {
-        "package": "HierarchyInspector",
-        "repositoryURL": "/Users/pedro/Developer/HierarchyInspector",
+        "package": "UIKeyCommandOptions",
+        "repositoryURL": "https://github.com/ipedro/UIKeyCommandOptions.git",
         "state": {
-          "branch": "develop",
-          "revision": "b47d0f9f3c7aec025ede7f56fe63e7698d7ddb88",
-          "version": null
+          "branch": null,
+          "revision": "6400960b929ce53ef88959569fc8ab05f8ee34cb",
+          "version": "0.1.1"
+        }
+      },
+      {
+        "package": "UIKeyCommandTableView",
+        "repositoryURL": "https://github.com/ipedro/UIKeyCommandTableView.git",
+        "state": {
+          "branch": null,
+          "revision": "fdaf8709d75258919a53f79b7f4df1578647ea8e",
+          "version": "0.1.1"
         }
       }
     ]
