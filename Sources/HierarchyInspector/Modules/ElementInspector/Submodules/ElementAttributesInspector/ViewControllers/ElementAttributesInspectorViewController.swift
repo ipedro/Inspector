@@ -91,6 +91,10 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
         
         viewCode.headerCell.viewModel = viewModel
         
+        var directionalLayoutMargins = viewCode.headerCell.containerStackView.directionalLayoutMargins
+        directionalLayoutMargins.trailing = 44
+        viewCode.headerCell.containerStackView.directionalLayoutMargins = directionalLayoutMargins
+        
         loadSections()
     }
     

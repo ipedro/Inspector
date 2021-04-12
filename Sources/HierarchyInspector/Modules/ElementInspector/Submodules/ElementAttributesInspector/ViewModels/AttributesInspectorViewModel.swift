@@ -31,7 +31,7 @@ final class AttributesInspectorViewModel {
             return []
         }
         
-        return snapshot.availableAttributeInspectorSections.compactMap { section in
+        return snapshot.inspectableElements.compactMap { section in
             guard section.targets(object: referenceView) else {
                 return nil
             }

@@ -1,5 +1,5 @@
 //
-//  HiearchyInspectableElementProtocol.swift
+//  HierarchyInspectableElementProtocol.swift
 //  
 //
 //  Created by Pedro on 12.04.21.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol HiearchyInspectableElementProtocol {
+public protocol HierarchyInspectableElementProtocol {
     
     var targetClass: AnyClass { get }
     
@@ -17,7 +17,7 @@ public protocol HiearchyInspectableElementProtocol {
     
 }
 
-extension HiearchyInspectableElementProtocol {
+extension HierarchyInspectableElementProtocol {
     
     func targets(object: NSObject) -> Bool {
         for anyClass in object.classesForCoder where anyClass == targetClass {

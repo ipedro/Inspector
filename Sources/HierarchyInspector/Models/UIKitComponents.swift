@@ -25,14 +25,14 @@ enum UIKitComponents: Swift.CaseIterable {
     case textView
     case view
     
-    static var defaultComponents: AllCases {
+    static var standard: AllCases {
         Self.allCases
     }
 }
 
 // MARK: - HierarchyInspectableElementProtocol
 
-extension UIKitComponents: HiearchyInspectableElementProtocol {
+extension UIKitComponents: HierarchyInspectableElementProtocol {
     var targetClass: AnyClass {
         switch self {
         case .activityIndicator:

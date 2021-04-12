@@ -50,7 +50,7 @@ final class AttributesInspectorViewCode: BaseView {
         
         contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         
-        contentView.directionalLayoutMargins = .margins(bottom: 30)
+        contentView.directionalLayoutMargins = .margins(bottom: ElementInspector.appearance.verticalMargins)
     }
     
     #if swift(>=5.0)

@@ -24,7 +24,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     
     let showDismissBarButton: Bool
     
-    let attributesInspectorSections: [HiearchyInspectableElementProtocol]
+    let inspectableElements: [HierarchyInspectableElementProtocol]
     
     var selectedPanel: ElementInspectorPanel?
     
@@ -43,11 +43,11 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         reference: ViewHierarchyReference,
         showDismissBarButton: Bool,
         selectedPanel: ElementInspectorPanel?,
-        attributesInspectorSections: [HiearchyInspectableElementProtocol]
+        inspectableElements: [HierarchyInspectableElementProtocol]
     ) {
         self.reference = reference
         self.showDismissBarButton = showDismissBarButton
-        self.attributesInspectorSections = attributesInspectorSections
+        self.inspectableElements = inspectableElements
         
         if let selectedPanel = selectedPanel, elementPanels.contains(selectedPanel) {
             self.selectedPanel = selectedPanel

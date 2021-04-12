@@ -48,8 +48,7 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
             let offset = (ElementInspector.appearance.verticalMargins * relativeDepth) + ElementInspector.appearance.horizontalMargins
 
             separatorInset = .insets(left: offset)
-            directionalLayoutMargins = .margins(leading: offset)
-            containerStackView.directionalLayoutMargins = directionalLayoutMargins
+            containerStackView.directionalLayoutMargins = .margins(leading: offset)
         }
     }
     

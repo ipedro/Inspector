@@ -92,7 +92,7 @@ final class ElementInspectorCoordinator: NSObject {
                 showDismissBarButton: true,
                 selectedPanel: .attributesInspector,
                 delegate: delegate,
-                attributesInspectorSections: snapshot.availableAttributeInspectorSections
+                inspectableElements: snapshot.inspectableElements
             )
             
             navigationController.viewControllers = [rootViewController]
@@ -116,7 +116,7 @@ final class ElementInspectorCoordinator: NSObject {
                     showDismissBarButton: currentReference === snapshot.viewHierarchy,
                     selectedPanel: .attributesInspector,
                     delegate: delegate,
-                    attributesInspectorSections: snapshot.availableAttributeInspectorSections
+                    inspectableElements: snapshot.inspectableElements
                 )
                 
                 array.append(viewController)
@@ -167,14 +167,14 @@ final class ElementInspectorCoordinator: NSObject {
         showDismissBarButton: Bool,
         selectedPanel: ElementInspectorPanel?,
         delegate: ElementInspectorViewControllerDelegate,
-        attributesInspectorSections: [HiearchyInspectableElementProtocol]
+        inspectableElements: [HierarchyInspectableElementProtocol]
     ) -> ElementInspectorViewController {
         
         let viewModel = ElementInspectorViewModel(
             reference: reference,
             showDismissBarButton: showDismissBarButton,
             selectedPanel: selectedPanel,
-            attributesInspectorSections: attributesInspectorSections
+            inspectableElements: inspectableElements
         )
         
         let viewController = ElementInspectorViewController.create(viewModel: viewModel)
