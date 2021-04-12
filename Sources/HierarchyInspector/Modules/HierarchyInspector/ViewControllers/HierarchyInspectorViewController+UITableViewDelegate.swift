@@ -48,7 +48,13 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        delegate?.hierarchyInspectorViewController(self, didSelect: viewModel?.selectRow(at: indexPath))
+        viewModel?.selectRow(at: indexPath) { [weak self] reference in
+            guard let self = self else {
+                return
+            }
+            
+            self.delegate?.hierarchyInspectorViewController(self, didSelect: reference)
+        }
     }
     
 }

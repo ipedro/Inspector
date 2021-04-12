@@ -1,6 +1,6 @@
 //
 //  HierarchyInspectorViewModel+SnapshotViewModel.swift
-//  
+//  HierarchyInspector
 //
 //  Created by Pedro on 10.04.21.
 //
@@ -8,7 +8,7 @@
 import UIKit
 
 extension HierarchyInspectorViewModel {
-    final class SnapshotViewModel: HierarchyInspectorViewModelSectionProtocol {
+    final class SnapshotViewModel: HierarchyInspectorSectionViewModelProtocol {
         
         struct Details: HierarchyInspectorSnapshotCellViewModelProtocol {
             let title: String
@@ -37,8 +37,10 @@ extension HierarchyInspectorViewModel {
         
         let numberOfSections = 1
         
-        func selectRow(at indexPath: IndexPath) ->ViewHierarchyReference? {
-            searchResults[indexPath.row].reference
+        func selectRow(at indexPath: IndexPath, completion: @escaping ((ViewHierarchyReference?) -> Void)) {
+            let reference = searchResults[indexPath.row].reference
+            
+            completion(reference)
         }
         
         func isRowEnabled(at indexPath: IndexPath) -> Bool {

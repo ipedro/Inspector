@@ -270,7 +270,11 @@ fileprivate extension String {
 }
 
 extension HierarchyInspectorViewController: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
         if string == UIKeyCommand.inputTab {
             DispatchQueue.main.async {
                 self.toggleFirstResponder()

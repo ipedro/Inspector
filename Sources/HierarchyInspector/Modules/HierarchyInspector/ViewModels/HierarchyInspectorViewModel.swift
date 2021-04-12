@@ -7,27 +7,12 @@
 
 import UIKit
 
-protocol HierarchyInspectorViewModelProtocol: HierarchyInspectorViewModelSectionProtocol {
+protocol HierarchyInspectorViewModelProtocol: HierarchyInspectorSectionViewModelProtocol {
     var isSearching: Bool { get }
     var searchQuery: String? { get set }
 }
 
-enum HierarchyInspectorCellViewModel {
-    case layerAction(HierarchyInspectorLayerAcionCellViewModelProtocol)
-    case snaphot(HierarchyInspectorSnapshotCellViewModelProtocol)
-    
-    var cellClassForCoder: AnyClass {
-        switch self {
-        case .layerAction:
-            return HierarchyInspectorLayerActionCell.classForCoder()
-            
-        case .snaphot:
-            return HierarchyInspectorSnapshotCell.classForCoder()
-        }
-    }
-}
-
-protocol HierarchyInspectorViewModelSectionProtocol {
+protocol HierarchyInspectorSectionViewModelProtocol {
     var numberOfSections: Int { get }
     
     var isEmpty: Bool { get }
@@ -38,7 +23,7 @@ protocol HierarchyInspectorViewModelSectionProtocol {
     
     func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel
     
-    func selectRow(at indexPath: IndexPath) -> ViewHierarchyReference?
+    func selectRow(at indexPath: IndexPath, completion: @escaping ((ViewHierarchyReference?) -> Void))
     
     func isRowEnabled(at indexPath: IndexPath) -> Bool
     
@@ -69,7 +54,7 @@ final class HierarchyInspectorViewModel {
         snapshot: ViewHierarchySnapshot
     ) {
         actionGroupsViewModel = ActionGroupsViewModel(actionGroupsProvider: actionGroupsProvider)
-        snapshotViewModel = SnapshotViewModel(snapshot: snapshot)
+        snapshotViewModel     = SnapshotViewModel(snapshot: snapshot)
     }
 }
 
@@ -106,13 +91,13 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
         }
     }
     
-    func selectRow(at indexPath: IndexPath) -> ViewHierarchyReference? {
+    func selectRow(at indexPath: IndexPath, completion: @escaping ((ViewHierarchyReference?) -> Void)) {
         switch isSearching {
         case true:
-            return snapshotViewModel.selectRow(at: indexPath)
+        return snapshotViewModel.selectRow(at: indexPath, completion: completion)
             
         case false:
-            return actionGroupsViewModel.selectRow(at: indexPath)
+        return actionGroupsViewModel.selectRow(at: indexPath, completion: completion)
         }
     }
     

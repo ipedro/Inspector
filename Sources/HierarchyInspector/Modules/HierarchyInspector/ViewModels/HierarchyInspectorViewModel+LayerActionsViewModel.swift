@@ -1,6 +1,6 @@
 //
 //  HierarchyInspectorViewModel+ActionGroupsViewModel.swift
-//  
+//  HierarchyInspector
 //
 //  Created by Pedro on 10.04.21.
 //
@@ -8,7 +8,7 @@
 import UIKit
 
 extension HierarchyInspectorViewModel {
-    final class ActionGroupsViewModel: HierarchyInspectorViewModelSectionProtocol {
+    final class ActionGroupsViewModel: HierarchyInspectorSectionViewModelProtocol {
         
         struct Details: HierarchyInspectorLayerAcionCellViewModelProtocol {
             let title: String
@@ -37,14 +37,12 @@ extension HierarchyInspectorViewModel {
             layerActionGroups = provider() ?? []
         }
         
-        func selectRow(at indexPath: IndexPath) -> ViewHierarchyReference? {
-            let selectedAction = action(at: indexPath)
+        func selectRow(at indexPath: IndexPath, completion: @escaping ((ViewHierarchyReference?) -> Void)) {
+            action(at: indexPath).closure?()
             
             DispatchQueue.main.async {
-                selectedAction.closure?()
+                completion(nil)
             }
-            
-            return nil
         }
         
         func isRowEnabled(at indexPath: IndexPath) -> Bool {
