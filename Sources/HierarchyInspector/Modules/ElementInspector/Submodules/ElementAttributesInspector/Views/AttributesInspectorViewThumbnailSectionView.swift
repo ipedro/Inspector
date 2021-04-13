@@ -19,7 +19,7 @@ final class AttributesInspectorViewThumbnailSectionView: BaseView {
             isHighlightingViewsControl,
             isLiveUpdatingControl
         ],
-        margins: ElementInspector.appearance.margins
+        margins: ElementInspector.appearance.directionalInsets
     )
     
     private lazy var backgroundAppearanceControl = SegmentedControl(

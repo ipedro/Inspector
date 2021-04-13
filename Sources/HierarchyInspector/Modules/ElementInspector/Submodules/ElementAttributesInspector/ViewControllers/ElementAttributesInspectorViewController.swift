@@ -91,9 +91,9 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
         
         updateHeaderView()
         
-        var directionalLayoutMargins = viewCode.headerCell.containerStackView.directionalLayoutMargins
+        var directionalLayoutMargins = viewCode.referenceDetailView.contentView.directionalLayoutMargins
         directionalLayoutMargins.trailing = 44
-        viewCode.headerCell.containerStackView.directionalLayoutMargins = directionalLayoutMargins
+        viewCode.referenceDetailView.contentView.directionalLayoutMargins = directionalLayoutMargins
         
         loadSections()
     }
@@ -133,7 +133,7 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
     }
     
     func updateHeaderView() {
-        viewCode.headerCell.viewModel = viewModel
+        viewCode.referenceDetailView.viewModel = viewModel
     }
 }
 

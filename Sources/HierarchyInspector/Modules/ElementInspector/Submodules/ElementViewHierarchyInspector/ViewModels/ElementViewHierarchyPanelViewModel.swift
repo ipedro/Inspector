@@ -7,28 +7,12 @@
 
 import UIKit
 
-protocol ElementViewHierarchyPanelViewModelProtocol: AnyObject {
+protocol ElementViewHierarchyPanelViewModelProtocol: ViewHierarchyReferenceDetailViewModelProtocol & AnyObject {
     var parent: ElementViewHierarchyPanelViewModelProtocol? { get set }
     
     var reference: ViewHierarchyReference { get }
     
-    var thumbnailImage: UIImage? { get }
-    
-    var title: String { get }
-    
-    var titleFont: UIFont { get }
-    
-    var subtitle: String { get }
-    
-    var isContainer: Bool { get }
-    
-    var isCollapsed: Bool { get set }
-    
-    var isHidden: Bool { get }
-    
     var accessoryType: UITableViewCell.AccessoryType { get }
-    
-    var relativeDepth: Int { get }
 }
 
 
@@ -46,7 +30,7 @@ final class ElementViewHierarchyPanelViewModel {
     
     let rootDepth: Int
     
-    let thumbnailImage: UIImage?
+    var thumbnailImage: UIImage?
     
     // MARK: - Properties
     
@@ -104,6 +88,9 @@ extension ElementViewHierarchyPanelViewModel: ElementViewHierarchyPanelViewModel
         reference.depth - rootDepth
     }
     
+    var isChevronHidden: Bool {
+        isContainer != true || accessoryType == .disclosureIndicator
+    }
 }
 
 // MARK: - Hashable

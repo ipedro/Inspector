@@ -14,6 +14,8 @@ protocol ElementViewHierarchyInspectorViewModelProtocol {
     
     var numberOfRows: Int { get }
     
+    func reloadIcons()
+    
     func itemViewModel(for indexPath: IndexPath) -> ElementViewHierarchyPanelViewModelProtocol?
     
     /// Toggle if a container displays its subviews or hides them.
@@ -59,8 +61,11 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
     
     private lazy var visibleChildViewModels: [ElementViewHierarchyPanelViewModel] = []
     
+    let snapshot: ViewHierarchySnapshot
+    
     init(reference: ViewHierarchyReference, snapshot: ViewHierarchySnapshot) {
-        rootReference = reference
+        self.rootReference = reference
+        self.snapshot = snapshot
         
         childViewModels = Self.makeViewModels(
             reference: rootReference,
@@ -82,6 +87,12 @@ extension ElementViewHierarchyInspectorViewModel: ElementViewHierarchyInspectorV
     
     var numberOfRows: Int {
         visibleChildViewModels.count
+    }
+    
+    func reloadIcons() {
+        childViewModels.forEach { childViewModel in
+            childViewModel.thumbnailImage = snapshot.iconImage(for: childViewModel.reference.rootView)
+        }
     }
     
     func itemViewModel(for indexPath: IndexPath) -> ElementViewHierarchyPanelViewModelProtocol? {

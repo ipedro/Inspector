@@ -29,7 +29,6 @@ final class ElementViewHierarchyViewController: ElementInspectorPanelViewControl
     ).then {
         $0.tableView.dataSource = self
         $0.tableView.delegate = self
-        $0.tableView.reloadData()
     }
     
     var viewModel: ElementViewHierarchyInspectorViewModelProtocol!
@@ -52,11 +51,14 @@ final class ElementViewHierarchyViewController: ElementInspectorPanelViewControl
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        viewCode.tableView.indexPathsForSelectedRows?.forEach {
-            viewCode.tableView.deselectRow(at: $0, animated: animated)
-        }
+        reloadData()
         
         updatePreferredContentSize()
+    }
+    
+    func reloadData() {
+        viewModel.reloadIcons()
+        viewCode.tableView.reloadData()
     }
     
     func calculatePreferredContentSize() -> CGSize {

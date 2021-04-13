@@ -14,12 +14,7 @@ protocol AttributesInspectorViewCodeDelegate: AnyObject {
 final class AttributesInspectorViewCode: BaseView {
     weak var delegate: AttributesInspectorViewCodeDelegate?
     
-    private(set) lazy var headerCell = ElementViewHierarchyInspectorTableViewCodeCell(
-        style: .subtitle,
-        reuseIdentifier: nil
-    ).then {
-        $0.isUserInteractionEnabled = false
-    }
+    private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView()
     
     private(set) lazy var scrollView = UIScrollView().then {
         $0.alwaysBounceVertical = true
@@ -46,7 +41,7 @@ final class AttributesInspectorViewCode: BaseView {
         
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
         
-        contentView.addArrangedSubview(headerCell.contentView)
+        contentView.addArrangedSubview(referenceDetailView)
         
         contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         

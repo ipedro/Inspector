@@ -73,6 +73,8 @@ extension AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
         set { }
     }
     
+    var isChevronHidden: Bool { true }
+    
     var isHidden: Bool { false }
     
     var accessoryType: UITableViewCell.AccessoryType { .none }

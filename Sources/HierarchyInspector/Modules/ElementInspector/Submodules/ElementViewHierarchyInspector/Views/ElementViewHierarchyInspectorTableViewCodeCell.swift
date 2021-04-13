@@ -19,36 +19,14 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private lazy var referenceDetailView = ViewHierarchyReferenceDetailView()
+    
     var viewModel: ElementViewHierarchyPanelViewModelProtocol? {
         didSet {
             
-            // Name
-            
-            elementNameLabel.text = viewModel?.title
-
-            elementNameLabel.font = viewModel?.titleFont
-            
-            thumbnailImageView.image = viewModel?.thumbnailImage
+            referenceDetailView.viewModel = viewModel
             
             accessoryType = viewModel?.accessoryType ?? .none
-
-            // Collapsed
-
-            isCollapsed = viewModel?.isCollapsed == true
-            
-            chevronDownIcon.isSafelyHidden = viewModel?.isContainer != true || viewModel?.accessoryType == .disclosureIndicator
-
-            // Description
-
-            descriptionLabel.text = viewModel?.subtitle
-
-            // Containers Insets
-
-            let relativeDepth = CGFloat(viewModel?.relativeDepth ?? 0)
-            let offset = (ElementInspector.appearance.verticalMargins * relativeDepth) + ElementInspector.appearance.horizontalMargins
-
-            separatorInset = .insets(left: offset)
-            containerStackView.directionalLayoutMargins = .margins(leading: offset)
         }
     }
     
@@ -64,15 +42,9 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         }
     }
     
-    var isCollapsed = false {
-        didSet {
-            chevronDownIcon.transform = isCollapsed ? .init(rotationAngle: -(.pi / 2)) : .identity
-        }
-    }
-    
     func toggleCollapse(animated: Bool) {
         guard animated else {
-            isCollapsed.toggle()
+            referenceDetailView.isCollapsed.toggle()
             return
         }
         
@@ -82,69 +54,11 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
             options: [.beginFromCurrentState, .curveEaseInOut],
             animations: { [weak self] in
                 
-                self?.isCollapsed.toggle()
+                self?.referenceDetailView.isCollapsed.toggle()
                 
             },
             completion: nil
         )
-    }
-    
-    private lazy var elementNameLabel = UILabel().then {
-        $0.textColor = ElementInspector.appearance.textColor
-        $0.layer.shouldRasterize = true
-        $0.layer.rasterizationScale = UIScreen.main.scale
-        
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        $0.numberOfLines = 0
-        $0.adjustsFontSizeToFitWidth = true
-        $0.preferredMaxLayoutWidth = 200
-    }
-    
-    private lazy var descriptionLabel = UILabel(
-        .caption2,
-        textColor: ElementInspector.appearance.secondaryTextColor,
-        numberOfLines: 0
-    ).then {
-        $0.layer.shouldRasterize = true
-        $0.layer.rasterizationScale = UIScreen.main.scale
-        
-        $0.setContentCompressionResistancePriority(.required, for: .vertical)
-        $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
-        $0.preferredMaxLayoutWidth = 200
-    }
-    
-    private lazy var chevronDownIcon = Icon.chevronDownIcon()
-    
-    private lazy var thumbnailImageView = UIImageView().then {
-        $0.contentMode = .center
-        $0.tintColor = ElementInspector.appearance.textColor
-        $0.backgroundColor = ElementInspector.appearance.quaternaryTextColor
-        
-        $0.clipsToBounds = true
-        
-        $0.layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
-        
-        $0.setContentHuggingPriority(.required, for: .horizontal)
-    }
-    
-    private lazy var textStackView = UIStackView(
-        axis: .vertical,
-        arrangedSubviews: [
-            elementNameLabel,
-            descriptionLabel
-        ],
-        spacing: ElementInspector.appearance.verticalMargins / 2
-    )
-    
-    private(set) lazy var containerStackView = UIStackView(
-        axis: .horizontal,
-        arrangedSubviews: [
-            thumbnailImageView,
-            textStackView
-        ],
-        spacing: ElementInspector.appearance.verticalMargins
-    ).then {
-        $0.alignment = .center
     }
     
     private lazy var customSelectedBackgroundView = UIView().then {
@@ -156,49 +70,21 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         
         isOpaque = true
         
-        contentView.isUserInteractionEnabled = false
-        
-        contentView.clipsToBounds = true
+        clipsToBounds = true
         
         selectedBackgroundView = customSelectedBackgroundView
         
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
         
-        setupContainerStackView()
+        contentView.isUserInteractionEnabled = false
         
-        setupChevronDownIcon()
-    }
-    
-    private func setupContainerStackView() {
-        contentView.installView(
-            containerStackView,
-            .margins(
-                top: ElementInspector.appearance.verticalMargins,
-                leading: .zero,
-                bottom: ElementInspector.appearance.verticalMargins,
-                trailing: ElementInspector.appearance.verticalMargins
-            )
-        )
-    }
-    
-    private func setupChevronDownIcon() {
-        contentView.addSubview(chevronDownIcon)
-        
-        chevronDownIcon.centerYAnchor.constraint(equalTo: elementNameLabel.centerYAnchor).isActive = true
-
-        chevronDownIcon.trailingAnchor.constraint(
-            equalTo: elementNameLabel.leadingAnchor,
-            constant: -(ElementInspector.appearance.verticalMargins / 3)
-        ).isActive = true
-        
+        contentView.installView(referenceDetailView)
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
         viewModel = nil
-        
-        thumbnailImageView.image = nil
     }
     
 }

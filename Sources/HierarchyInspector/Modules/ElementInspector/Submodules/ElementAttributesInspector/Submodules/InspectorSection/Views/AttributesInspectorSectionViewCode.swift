@@ -51,7 +51,7 @@ final class AttributesInspectorSectionViewCode: BaseView {
         
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
         
-        contentView.directionalLayoutMargins = ElementInspector.appearance.margins
+        contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
         
         contentView.addArrangedSubview(sectionHeader)
         

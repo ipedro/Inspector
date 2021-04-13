@@ -16,7 +16,7 @@ final class HierarchyInspectorHeaderView: UITableViewHeaderFooterView {
             switch title {
             case .none:
                 titleLabel.isHidden = true
-                stackView.directionalLayoutMargins = ElementInspector.appearance.margins
+                stackView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
                 
             case .some:
                 titleLabel.isHidden = false
