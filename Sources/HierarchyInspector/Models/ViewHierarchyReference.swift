@@ -92,9 +92,7 @@ extension ViewHierarchyReference: ViewHierarchyProtocol {
     }
     
     var flattenedInspectableViews: [ViewHierarchyReference] {
-        let array = ([self] + flattenedViewHierarchy).filter { $0.canHostInspectorView }
-        
-        return array
+        flattenedViewHierarchy.filter { $0.canHostInspectorView }
     }
     
 }

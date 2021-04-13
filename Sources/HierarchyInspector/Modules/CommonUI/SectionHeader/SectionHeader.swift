@@ -7,6 +7,33 @@
 
 import UIKit
 
+extension SectionHeader {
+    static func attributesInspectorHeader(title: String? = nil) -> SectionHeader {
+        SectionHeader(
+            .callout,
+            text: title,
+            withTraits: .traitBold,
+            margins: .margins(
+                horizontal: .zero,
+                vertical: ElementInspector.appearance.verticalMargins / 2
+            )
+        )
+    }
+    
+    static func attributesInspectorGroup(title: String? = nil) -> SectionHeader {
+        SectionHeader(
+            .footnote,
+            text: title,
+            margins: .margins(
+                top: ElementInspector.appearance.horizontalMargins,
+                bottom: ElementInspector.appearance.verticalMargins
+            )
+        ).then {
+            $0.alpha = 1 / 3
+        }
+    }
+}
+
 final class SectionHeader: BaseView {
     
     private(set) lazy var textLabel = UILabel().then {

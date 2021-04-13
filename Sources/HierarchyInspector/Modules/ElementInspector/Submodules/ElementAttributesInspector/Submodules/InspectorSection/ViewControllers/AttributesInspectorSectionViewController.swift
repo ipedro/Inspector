@@ -87,16 +87,7 @@ final class AttributesInspectorSectionViewController: UIViewController {
                     }
                     
                 case let .group(title):
-                    return SectionHeader(
-                        .footnote,
-                        text: title,
-                        margins: .margins(
-                            top: ElementInspector.appearance.horizontalMargins,
-                            bottom: ElementInspector.appearance.verticalMargins
-                        )
-                    ).then {
-                        $0.alpha = 1 / 3
-                    }
+                    return SectionHeader.attributesInspectorGroup(title: title)
                     
                 case let .imagePicker(title, imageProvider, _):
                     return ImagePreviewControl(title: title, image: imageProvider()).then {

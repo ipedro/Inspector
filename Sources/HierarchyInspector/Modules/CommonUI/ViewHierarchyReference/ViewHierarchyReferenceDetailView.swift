@@ -7,8 +7,6 @@
 
 import UIKit
 
-// ellipsisCircleFill
-
 protocol ViewHierarchyReferenceDetailViewModelProtocol {
     var thumbnailImage: UIImage? { get }
     
@@ -57,7 +55,10 @@ final class ViewHierarchyReferenceDetailView: BaseView {
             let relativeDepth = CGFloat(viewModel?.relativeDepth ?? 0)
             let offset = (ElementInspector.appearance.verticalMargins * relativeDepth)
             
-            contentView.directionalLayoutMargins = .margins(leading: offset)
+            var directionalLayoutMargins = contentView.directionalLayoutMargins
+            directionalLayoutMargins.leading = offset
+            
+            contentView.directionalLayoutMargins = directionalLayoutMargins
         }
     }
     
@@ -100,8 +101,7 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         textColor: ElementInspector.appearance.secondaryTextColor,
         numberOfLines: 0
     ).then {
-        $0.setContentCompressionResistancePriority(.required, for: .vertical)
-        $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
+        $0.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
         $0.preferredMaxLayoutWidth = 200
     }
     
@@ -117,6 +117,7 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         $0.layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
         
         $0.setContentHuggingPriority(.required, for: .horizontal)
+        $0.setContentHuggingPriority(.required, for: .vertical)
     }
     
     private(set) lazy var textStackView = UIStackView(
@@ -137,7 +138,11 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         contentView.addArrangedSubview(thumbnailImageView)
         contentView.addArrangedSubview(textStackView)
         
-        installView(contentView, .insets(ElementInspector.appearance.directionalInsets), priority: .required)
+        installView(
+            contentView,
+            .insets(ElementInspector.appearance.directionalInsets),
+            priority: .required
+        )
     
         setupChevronDownIcon()
     }

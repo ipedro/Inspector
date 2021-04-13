@@ -29,7 +29,10 @@ class ElementInspectorBasePanelViewController: UIViewController {
     
     @objc
     func updatePreferredContentSize() {
-        guard let self = self as? ElementInspectorPanelViewController else {
+        guard
+            let self = self as? ElementInspectorPanelViewController,
+            modalPresentationStyle == .popover
+        else {
             return
         }
         

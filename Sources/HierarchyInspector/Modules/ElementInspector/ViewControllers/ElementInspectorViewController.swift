@@ -62,8 +62,6 @@ final class ElementInspectorViewController: HierarchyInspectableViewController {
                 viewCode.contentView.installView(panelViewController.view, priority: .required)
                 
                 panelViewController.didMove(toParent: self)
-                
-                view.layoutIfNeeded()
             }
             
             if let oldPanelViewController = oldValue {

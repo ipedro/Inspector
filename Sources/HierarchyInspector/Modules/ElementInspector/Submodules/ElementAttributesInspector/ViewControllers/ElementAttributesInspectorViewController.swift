@@ -40,7 +40,9 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
     
     var selectedOptionSelector: OptionListControl?
     
-    private(set) var displayLink: CADisplayLink? {
+    private var needsInitialSnapshotRender = true
+    
+    private var displayLink: CADisplayLink? {
         didSet {
             if let oldLink = oldValue {
                 oldLink.invalidate()
@@ -53,10 +55,12 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
     }
     
     private(set) lazy var viewCode = AttributesInspectorViewCode().then {
+        $0.contentView.addArrangedSubview(thumbnailSectionViewCode)
+        
         $0.delegate = self
     }
     
-    private(set) lazy var thumbnailSectionViewCode = AttributesInspectorViewThumbnailSectionView(
+    private(set) lazy var thumbnailSectionViewCode = AttributesInspectorThumbnailSectionView(
         reference: viewModel.reference,
         frame: .zero
     ).then {
@@ -69,6 +73,8 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
         $0.isHighlightingViewsControl.addTarget(self, action: #selector(toggleHighlightViews), for: .valueChanged)
         
         $0.isLiveUpdatingControl.addTarget(self, action: #selector(toggleLiveUpdate), for: .valueChanged)
+        
+        $0.referenceAccessoryButton.addTarget(self, action: #selector(tapThumbnailAccessory), for: .touchUpInside)
     }
     
     // MARK: - Init
@@ -89,17 +95,19 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewCode.contentView.addArrangedSubview(thumbnailSectionViewCode)
-        
-        updateHeaderView()
-        
         loadSections()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        renderInitialSnapshotIfNeeded()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        startLiveUpdatingSnaphost()
+        debounce(#selector(startLiveUpdatingSnaphost), after: ElementInspector.configuration.animationDuration)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -118,46 +126,64 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
         stopLiveUpdatingSnaphost()
     }
     
-    func calculatePreferredContentSize() -> CGSize {
-        viewCode.contentView.systemLayoutSizeFitting(
-            ElementInspector.appearance.panelPreferredCompressedSize,
-            withHorizontalFittingPriority: .defaultHigh,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-    }
-    
     deinit {
         stopLiveUpdatingSnaphost()
     }
     
-    func updateHeaderView() {
-        thumbnailSectionViewCode.referenceDetailView.viewModel = viewModel
+    func animatePanel(animations: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {
+        stopLiveUpdatingSnaphost()
+        
+        UIView.animate(
+            withDuration: ElementInspector.configuration.animationDuration * 2,
+            delay: 0.05,
+            usingSpringWithDamping: 0.9,
+            initialSpringVelocity: 0,
+            options: .beginFromCurrentState,
+            animations: animations
+        ) { [weak self] finished in
+            
+            completion?(finished)
+            
+            self?.startLiveUpdatingSnaphost()
+        }
     }
 }
 
 
-private extension ElementAttributesInspectorViewController {
+@objc extension ElementAttributesInspectorViewController {
+    
+    func updateHeaderDetails() {
+        thumbnailSectionViewCode.referenceDetailView.viewModel = viewModel
+    }
+        
+    func updateHeaderSnapshot() {
+        thumbnailSectionViewCode.updateSnapshot(afterScreenUpdates: false)
+    }
     
     func startLiveUpdatingSnaphost() {
         displayLink = CADisplayLink(target: self, selector: #selector(refresh))
     }
     
     func stopLiveUpdatingSnaphost() {
+        Self.cancelPreviousPerformRequests(
+            withTarget: self,
+            selector: #selector(startLiveUpdatingSnaphost),
+            object: nil
+        )
+        
         displayLink = nil
     }
     
-    @objc
     func refresh() {
         guard viewModel.reference.rootView != nil else {
-            stopLiveUpdatingSnaphost()
-            return
+            return stopLiveUpdatingSnaphost()
         }
         
         guard viewCode.isPointerInUse == false, viewModel.isLiveUpdating else {
             return
         }
         
-        let operation = MainThreadOperation(name: "udpate snapshot") { [weak self] in
+        let operation = MainThreadAsyncOperation(name: "udpate snapshot") { [weak self] in
             self?.thumbnailSectionViewCode.updateSnapshot(afterScreenUpdates: false)
         }
         
@@ -168,6 +194,14 @@ private extension ElementAttributesInspectorViewController {
 // MARK: - API
 
 extension ElementAttributesInspectorViewController {
+    
+    func calculatePreferredContentSize() -> CGSize {
+        viewCode.contentView.systemLayoutSizeFitting(
+            ElementInspector.appearance.panelPreferredCompressedSize,
+            withHorizontalFittingPriority: .defaultHigh,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+    }
     
     func selectImage(_ image: UIImage?) {
         selectedImagePicker?.updateSelectedImage(image)
@@ -195,7 +229,19 @@ extension ElementAttributesInspectorViewController {
 
 private extension ElementAttributesInspectorViewController {
     
+    func renderInitialSnapshotIfNeeded() {
+        guard needsInitialSnapshotRender else {
+            return
+        }
+        
+        needsInitialSnapshotRender = false
+        refresh()
+    }
+    
     func loadSections() {
+        updateHeaderDetails()
+        updateHeaderSnapshot()
+        
         viewModel.sectionViewModels.enumerated().forEach { index, sectionViewModel in
             
             let sectionViewController = AttributesInspectorSectionViewController.create(viewModel: sectionViewModel).then {
@@ -237,6 +283,12 @@ private extension ElementAttributesInspectorViewController {
         viewModel.isLiveUpdating.toggle()
     }
     
+    @objc
+    func tapThumbnailAccessory() {
+        animatePanel { [weak self] in
+            self?.thumbnailSectionViewCode.toggleAccessoryControls()
+        }
+    }
 }
 
 // MARK: - QueueManagerProtocol

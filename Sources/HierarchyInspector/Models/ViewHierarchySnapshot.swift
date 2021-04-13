@@ -64,10 +64,10 @@ struct ViewHierarchySnapshot {
             return UIImage.moduleImage(named: "InternalView-32_Normal").withRenderingMode(.alwaysOriginal)
          
         case let view?:
-            for inspector in inspectableElements where inspector.targets(object: view) {
-                if let icon = inspector.icon(with: view) {
-                    return icon
-                }
+            let icons = inspectableElements.targeting(element: view).compactMap { $0.icon(with: view) }
+            
+            if let firstIcon = icons.first {
+                return firstIcon
             }
             
         default:

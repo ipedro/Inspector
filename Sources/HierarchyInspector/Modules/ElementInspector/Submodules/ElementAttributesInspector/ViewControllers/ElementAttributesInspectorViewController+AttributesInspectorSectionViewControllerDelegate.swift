@@ -13,7 +13,7 @@ extension ElementAttributesInspectorViewController: AttributesInspectorSectionVi
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
                                                   willUpdate property: HiearchyInspectableElementProperty) {
-        displayLink?.isPaused = true
+        stopLiveUpdatingSnaphost()
     }
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
@@ -26,12 +26,14 @@ extension ElementAttributesInspectorViewController: AttributesInspectorSectionVi
                 }
                 
                 sectionViewController.updateValues()
-                self?.updateHeaderView()
+                self?.updateHeaderDetails()
             }
         }
         
-        updateOperation.completionBlock = { [weak self] in
-            self?.displayLink?.isPaused = false
+        updateOperation.completionBlock = {
+            DispatchQueue.main.async { [weak self] in
+                self?.startLiveUpdatingSnaphost()
+            }
         }
         
         delegate?.addOperationToQueue(updateOperation)
@@ -39,39 +41,36 @@ extension ElementAttributesInspectorViewController: AttributesInspectorSectionVi
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
                                                   didToggle isCollapsed: Bool) {
-        displayLink?.isPaused = true
+        stopLiveUpdatingSnaphost()
         
-        UIView.animate(
-            withDuration: 0.55,
-            delay: 0,
-            usingSpringWithDamping: 0.9,
-            initialSpringVelocity: 0,
-            options: .beginFromCurrentState,
-            animations: { [weak self] in
+        animatePanel(
+            animations: {
                 
-                guard isCollapsed else {
-                    viewController.isCollapsed.toggle()
-                    return
-                }
+                viewController.isCollapsed.toggle()
                 
-                self?.children.forEach {
-                    
-                    guard let sectionViewController = $0 as? AttributesInspectorSectionViewController else {
-                        return
-                    }
-                    
-                    if sectionViewController === viewController {
-                        sectionViewController.isCollapsed = !isCollapsed
-                    }
-                    else {
-                        sectionViewController.isCollapsed = isCollapsed
-                    }
-                    
-                }
+//                guard isCollapsed else {
+//                    viewController.isCollapsed.toggle()
+//                    return
+//                }
+//
+//                self?.children.forEach {
+//
+//                    guard let sectionViewController = $0 as? AttributesInspectorSectionViewController else {
+//                        return
+//                    }
+//
+//                    if sectionViewController === viewController {
+//                        sectionViewController.isCollapsed = !isCollapsed
+//                    }
+//                    else {
+//                        sectionViewController.isCollapsed = isCollapsed
+//                    }
+//
+//                }
                 
             },
             completion: { [weak self] _ in
-                self?.displayLink?.isPaused = false
+                self?.startLiveUpdatingSnaphost()
             }
         )
         

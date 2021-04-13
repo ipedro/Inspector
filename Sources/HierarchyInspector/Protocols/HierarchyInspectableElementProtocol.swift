@@ -17,13 +17,23 @@ public protocol HierarchyInspectableElementProtocol {
     
 }
 
-extension HierarchyInspectableElementProtocol {
+//extension HierarchyInspectableElementProtocol {
+//
+//    func targets(element: NSObject) -> Bool {
+//        element.classesForCoder.contains { $0 == targetClass }
+//    }
+//
+//}
+
+extension Sequence where Element == HierarchyInspectableElementProtocol {
     
-    func targets(object: NSObject) -> Bool {
-        for anyClass in object.classesForCoder where anyClass == targetClass {
-            return true
+    func targeting(element: NSObject) -> [HierarchyInspectableElementProtocol] {
+        
+        let validInspectors = element.classesForCoder.flatMap { aClass -> [HierarchyInspectableElementProtocol] in
+            filter { $0.targetClass == aClass }
         }
-        return false
+        
+        return validInspectors
     }
     
 }

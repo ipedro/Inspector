@@ -24,6 +24,8 @@ enum UIKitComponents: Swift.CaseIterable {
     case textField
     case textView
     case view
+    case window
+    case navigationBar
     
     static var standard: AllCases {
         Self.allCases
@@ -35,6 +37,12 @@ enum UIKitComponents: Swift.CaseIterable {
 extension UIKitComponents: HierarchyInspectableElementProtocol {
     var targetClass: AnyClass {
         switch self {
+        case .navigationBar:
+            return UINavigationBar.self
+            
+        case .window:
+            return UIWindow.self
+            
         case .activityIndicator:
             return UIActivityIndicatorView.self
             
@@ -84,6 +92,9 @@ extension UIKitComponents: HierarchyInspectableElementProtocol {
     
     func viewModel(with referenceView: UIView) -> HierarchyInspectableElementViewModelProtocol? {
         switch self {
+        case .window,
+             .navigationBar:
+            return nil
             
         case .activityIndicator:
             return UIActivityIndicatorViewInspectableViewModel(view: referenceView)
@@ -135,7 +146,12 @@ extension UIKitComponents: HierarchyInspectableElementProtocol {
     
     func icon(with referenceView: UIView) -> UIImage? {
         switch self {
-        
+        case .navigationBar:
+            return .moduleImage(named: "NavigationBar-32_Normal")
+            
+        case .window:
+            return .moduleImage(named: "UIWindow-32_Normal")
+            
         case .activityIndicator:
             return .moduleImage(named: "UIActivityIndicator_32_Dark_Normal")
             
@@ -146,10 +162,7 @@ extension UIKitComponents: HierarchyInspectableElementProtocol {
             return .moduleImage(named: "UIDatePicker_32_Normal")
             
         case .imageView:
-            guard
-                let imageView = referenceView as? UIImageView,
-                let image = imageView.image
-            else {
+            guard let image = (referenceView as? UIImageView)?.image else {
                 return .moduleImage(named: "UIImageView-32_Normal")
             }
             return image
@@ -167,10 +180,7 @@ extension UIKitComponents: HierarchyInspectableElementProtocol {
             return .moduleImage(named: "Toggle-32_Normal")
             
         case .stackView:
-            guard
-                let stackView = referenceView as? UIStackView,
-                stackView.axis == .horizontal
-            else {
+            guard (referenceView as? UIStackView)?.axis == .horizontal else {
                 return .moduleImage(named: "VStack-32_Normal")
             }
             return .moduleImage(named: "HStack-32_Normal")
@@ -181,8 +191,10 @@ extension UIKitComponents: HierarchyInspectableElementProtocol {
         case .textView:
             return .moduleImage(named: "TextView-32_Normal")
             
+        case .control:
+            return .moduleImage(named: "UIControl-32_Normal")
+            
         case .mapView,
-             .control,
              .slider,
              .view:
             return nil

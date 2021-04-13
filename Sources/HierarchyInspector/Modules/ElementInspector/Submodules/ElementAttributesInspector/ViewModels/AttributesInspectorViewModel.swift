@@ -31,12 +31,8 @@ final class AttributesInspectorViewModel {
             return []
         }
         
-        return snapshot.inspectableElements.compactMap { section in
-            guard section.targets(object: referenceView) else {
-                return nil
-            }
-            
-            return section.viewModel(with: referenceView)
+        return snapshot.inspectableElements.targeting(element: referenceView).compactMap {
+            $0.viewModel(with: referenceView)
         }
     }()
     

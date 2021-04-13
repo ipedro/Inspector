@@ -52,7 +52,7 @@ extension HierarchyInspector {
         func present(animated: Bool) {
             guard
                 hierarchyInspectorCoordinator == nil,
-                let windowHierarchySnapshot = snapshot(of: hostViewController?.view.window)
+                let windowHierarchySnapshot = windowHierarchySnapshot
             else {
                 return
             }

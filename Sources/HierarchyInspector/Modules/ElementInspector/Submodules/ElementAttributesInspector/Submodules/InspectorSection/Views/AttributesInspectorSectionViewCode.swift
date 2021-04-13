@@ -20,15 +20,7 @@ final class AttributesInspectorSectionViewCode: BaseView {
     
     private lazy var topSeparatorView = SeparatorView(thickness: 1)
     
-    private(set) lazy var sectionHeader = SectionHeader(
-        .callout,
-        text: nil,
-        withTraits: .traitBold,
-        margins: .margins(
-            horizontal: .zero,
-            vertical: ElementInspector.appearance.verticalMargins / 2
-        )
-    )
+    private(set) lazy var sectionHeader = SectionHeader.attributesInspectorHeader()
     
     var isCollapsed: Bool = false {
         didSet {

@@ -9,7 +9,9 @@ import UIKit
 
 open class HierarchyInspectableViewController: UIViewController, HierarchyInspectorPresentable {
     
-    public private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(host: self)
+    public private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(
+        host: self
+    )
     
     public private(set) lazy var inspectBarButtonItem = UIBarButtonItem(
         title: "🧬",
