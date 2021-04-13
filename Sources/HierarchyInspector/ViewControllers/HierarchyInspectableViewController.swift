@@ -48,6 +48,12 @@ open class HierarchyInspectableViewController: UIViewController, HierarchyInspec
         becomeFirstResponder()
     }
     
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        hierarchyInspectorManager.removeAllLayers()
+    }
+    
     override open func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         switch (event?.subtype, shouldPresentHierarchyInspectorOnShake) {
         case (.motionShake, true):
