@@ -26,7 +26,10 @@ final class ElementInspectorViewController: HierarchyInspectableViewController {
             .staticTexts + .icons + .images,
             .stackViews,
             .tableViewCells,
-            .containerViews
+            .containerViews,
+            .layer(name: "Base View", filter: { view -> Bool in
+                view is BaseView
+            })
         ]
     }
     
@@ -46,6 +49,7 @@ final class ElementInspectorViewController: HierarchyInspectableViewController {
     
     private var presentedPanelViewController: UIViewController? {
         didSet {
+            hierarchyInspectorManager.removeAllLayers()
             
             viewCode.emptyLabel.isHidden = presentedPanelViewController != nil
             

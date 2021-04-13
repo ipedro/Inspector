@@ -12,6 +12,12 @@ final class AttributesInspectorViewThumbnailSectionView: BaseView {
     
     let reference: ViewHierarchyReference
     
+    private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView().then {
+        var directionalLayoutMargins = $0.contentView.directionalLayoutMargins
+        directionalLayoutMargins.trailing = 44
+        $0.contentView.directionalLayoutMargins = directionalLayoutMargins
+    }
+    
     private lazy var controlsContainerView = UIStackView(
         axis: .vertical,
         arrangedSubviews: [
@@ -78,6 +84,8 @@ final class AttributesInspectorViewThumbnailSectionView: BaseView {
         setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
         setContentHuggingPriority(.defaultHigh, for: .vertical)
+        
+        contentView.addArrangedSubview(referenceDetailView)
         
         contentView.addArrangedSubview(thumbnailView)
         

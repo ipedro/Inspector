@@ -38,12 +38,20 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
     // MARK: - Remove
     
     public func removeAllLayers() {
+        guard isShowingLayers else {
+            return
+        }
+        
         asyncOperation(name: Texts.hideVisibleLayers) {
             self.destroyAllLayers()
         }
     }
 
     public func removeLayer(_ layer: ViewHierarchyLayer) {
+        guard isShowingLayers else {
+            return
+        }
+        
         asyncOperation(name: layer.unselectedActionTitle) {
             self.destroy(layer: layer)
         }

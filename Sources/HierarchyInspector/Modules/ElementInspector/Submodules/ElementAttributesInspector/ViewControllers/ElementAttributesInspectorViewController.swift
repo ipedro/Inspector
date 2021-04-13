@@ -60,6 +60,8 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
         reference: viewModel.reference,
         frame: .zero
     ).then {
+        $0.referenceDetailView.viewModel = viewModel
+        
         $0.isHighlightingViewsControl.isOn = viewModel.isHighlightingViews
         
         $0.isLiveUpdatingControl.isOn = viewModel.isLiveUpdating
@@ -90,10 +92,6 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
         viewCode.contentView.addArrangedSubview(thumbnailSectionViewCode)
         
         updateHeaderView()
-        
-        var directionalLayoutMargins = viewCode.referenceDetailView.contentView.directionalLayoutMargins
-        directionalLayoutMargins.trailing = 44
-        viewCode.referenceDetailView.contentView.directionalLayoutMargins = directionalLayoutMargins
         
         loadSections()
     }
@@ -133,7 +131,7 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
     }
     
     func updateHeaderView() {
-        viewCode.referenceDetailView.viewModel = viewModel
+        thumbnailSectionViewCode.referenceDetailView.viewModel = viewModel
     }
 }
 

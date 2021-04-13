@@ -14,8 +14,6 @@ protocol AttributesInspectorViewCodeDelegate: AnyObject {
 final class AttributesInspectorViewCode: BaseView {
     weak var delegate: AttributesInspectorViewCodeDelegate?
     
-    private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView()
-    
     private(set) lazy var scrollView = UIScrollView().then {
         $0.alwaysBounceVertical = true
         $0.keyboardDismissMode = .onDrag
@@ -40,8 +38,6 @@ final class AttributesInspectorViewCode: BaseView {
         installView(scrollView)
         
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
-        
-        contentView.addArrangedSubview(referenceDetailView)
         
         contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         
