@@ -7,7 +7,7 @@
 
 import UIKit
 
-open class HierarchyInspectableViewController: UIViewController, HierarchyInspectorPresentableViewControllerProtocol {
+open class HierarchyInspectableViewController: UIViewController, HierarchyInspectorPresentableViewControllerProtocol, AccessibilityIdentifiersProtocol {
     
     public private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(
         host: self
@@ -43,6 +43,8 @@ open class HierarchyInspectableViewController: UIViewController, HierarchyInspec
     open override func viewDidLoad() {
         super.viewDidLoad()
         
+        accessibilityIdentifiersConfiguration()
+        
         guard shouldPresentHierarchyInspectorOnShake else {
             return
         }
@@ -65,7 +67,6 @@ open class HierarchyInspectableViewController: UIViewController, HierarchyInspec
             break
         }
     }
-
 }
 
 // MARK: - HierarchyInspectorKeyCommandPresentable

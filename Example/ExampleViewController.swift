@@ -36,10 +36,9 @@ enum ExampleElementLibrary: HierarchyInspectorElementLibraryProtocol, CaseIterab
     }
 }
 
-// MARK: - Example Inspectable View Controller
+// MARK: - Example View Controller
 
-
-class ExampleViewController: HierarchyInspectableViewController, AccessibilityIdentifiersProtocol {
+class ExampleViewController: HierarchyInspectableViewController {
     // MARK: - HierarchyInspectableProtocol
     
     override var hierarchyInspectorElements: [HierarchyInspectorElementLibraryProtocol] {
