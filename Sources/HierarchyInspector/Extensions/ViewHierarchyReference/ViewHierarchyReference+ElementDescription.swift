@@ -23,7 +23,7 @@ extension ViewHierarchyReference {
             guard isContainer else {
                 return nil
             }
-            return "\(flattenedViewHierarchy.count) children. (\(children.count) subviews)"
+            return "\(flattenedSubviewReferences.count) children. (\(children.count) subviews)"
         }
         
         var frame: String? {

@@ -74,25 +74,22 @@ final class ViewHierarchyReference {
     }
 }
 
-extension CGSize {
-    static let defaultElementIconSize = CGSize(
-        width: ElementInspector.appearance.verticalMargins * 3,
-        height: ElementInspector.appearance.verticalMargins * 3
-    )
-}
-
 // MARK: - ViewHierarchyProtocol {
 
 extension ViewHierarchyReference: ViewHierarchyProtocol {
     
-    var flattenedViewHierarchy: [ViewHierarchyReference] {
-        let array = children.flatMap { [$0] + $0.flattenedViewHierarchy }
+    var flattenedSubviewReferences: [ViewHierarchyReference] {
+        let array = children.flatMap { [$0] + $0.flattenedSubviewReferences }
         
         return array
     }
     
-    var flattenedInspectableViews: [ViewHierarchyReference] {
-        flattenedViewHierarchy.filter { $0.canHostInspectorView }
+    var flattenedInspectableViewReferences: [ViewHierarchyReference] {
+        let flattenedViewHierarchy = [self] + flattenedSubviewReferences
+        
+        let inspectableViews = flattenedViewHierarchy.filter { $0.canHostInspectorView }
+        
+        return inspectableViews
     }
     
 }

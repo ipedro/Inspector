@@ -11,9 +11,7 @@ struct ViewHierarchySnapshot {
     
     // MARK: - Properties
     
-    static var cacheExpirationTimeInterval: TimeInterval = 0.5
-    
-    let expiryDate: Date = Date().addingTimeInterval(Self.cacheExpirationTimeInterval)
+    let expiryDate: Date = Date().addingTimeInterval(HierarchyInspector.configuration.cacheExpirationTimeInterval)
     
     let availableLayers: [ViewHierarchyLayer]
     
@@ -38,18 +36,20 @@ struct ViewHierarchySnapshot {
         
         viewHierarchy = ViewHierarchyReference(root: rootView)
         
-        flattenedViewHierarchy = viewHierarchy.flattenedInspectableViews
+        flattenedViewHierarchy = viewHierarchy.flattenedInspectableViewReferences
         
-        let inspectableViews = viewHierarchy.flattenedInspectableViews.compactMap { $0.rootView }
+        let inspectableViews = viewHierarchy.flattenedInspectableViewReferences.compactMap { $0.rootView }
         
         populatedLayers = availableLayers.filter { $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false }
         
         emptyLayers = Array(Set(availableLayers).subtracting(populatedLayers))
     }
     
-    var inspectableViews: [UIView] {
-        viewHierarchy.flattenedInspectableViews.compactMap { $0.rootView }
-    }
+}
+
+// MARK: - Icon
+
+extension ViewHierarchySnapshot {
     
     func iconImage(for view: UIView?, with size: CGSize = .defaultElementIconSize) -> UIImage {
         iconImage(for: view).resized(size)
@@ -77,4 +77,11 @@ struct ViewHierarchySnapshot {
         return UIImage.moduleImage(named: "EmptyView-32_Normal")
     }
     
+}
+
+private extension CGSize {
+    static let defaultElementIconSize = CGSize(
+        width:  ElementInspector.appearance.verticalMargins * 3,
+        height: ElementInspector.appearance.verticalMargins * 3
+    )
 }

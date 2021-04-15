@@ -17,14 +17,6 @@ public protocol HierarchyInspectableElementProtocol {
     
 }
 
-//extension HierarchyInspectableElementProtocol {
-//
-//    func targets(element: NSObject) -> Bool {
-//        element.classesForCoder.contains { $0 == targetClass }
-//    }
-//
-//}
-
 extension Sequence where Element == HierarchyInspectableElementProtocol {
     
     func targeting(element: NSObject) -> [HierarchyInspectableElementProtocol] {

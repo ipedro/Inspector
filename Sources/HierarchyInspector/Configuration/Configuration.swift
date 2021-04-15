@@ -14,5 +14,8 @@ public extension HierarchyInspector {
         public var appearance = Appearance()
         
         public var keyCommands = KeyCommandSettings()
+        
+        public var cacheExpirationTimeInterval: TimeInterval = 0.5
+        
     }
 }
