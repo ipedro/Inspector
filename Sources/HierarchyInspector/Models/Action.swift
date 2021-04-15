@@ -16,11 +16,11 @@ enum Action {
     
     case hideVisibleLayers(closure: Closure)
     
-    case openHierarchyInspector(from: HierarchyInspectorPresentable)
+    case openHierarchyInspector(from: HierarchyInspectorPresentableViewControllerProtocol)
     
-    case inspect(vc: HierarchyInspectorPresentable)
+    case inspect(vc: HierarchyInspectorPresentableViewControllerProtocol)
     
-    case inspectWindow(vc: HierarchyInspectorPresentable)
+    case inspectWindow(vc: HierarchyInspectorPresentableViewControllerProtocol)
 }
 
 // MARK: - Properties

@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol HierarchyInspectorKeyCommandPresentable: HierarchyInspectorPresentable {
+public protocol HierarchyInspectorKeyCommandPresentable: HierarchyInspectorPresentableViewControllerProtocol {
     
     var hirearchyInspectorKeyCommandsSelector: Selector { get }
     
@@ -118,7 +118,7 @@ extension HierarchyInspector.Manager {
     var availableActionsForKeyCommand: ActionGroups {
         var array = availableActions
         
-        guard let hostViewController = hostViewController as? HierarchyInspectorPresentable else {
+        guard let hostViewController = hostViewController as? HierarchyInspectorPresentableViewControllerProtocol else {
             return array
         }
         

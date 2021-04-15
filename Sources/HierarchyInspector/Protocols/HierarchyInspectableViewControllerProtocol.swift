@@ -1,5 +1,5 @@
 //
-//  HierarchyInspectableProtocol.swift
+//  HierarchyInspectableViewControllerProtocol.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol HierarchyInspectableProtocol: UIViewController {
+public protocol HierarchyInspectableViewControllerProtocol: UIViewController {
     
     var hierarchyInspectorLayers: [ViewHierarchyLayer] { get }
     
@@ -18,13 +18,13 @@ public protocol HierarchyInspectableProtocol: UIViewController {
 
 // MARK: - Default Values
 
-public extension HierarchyInspectableProtocol {
+public extension HierarchyInspectableViewControllerProtocol {
     var hierarchyInspectorColorScheme: ViewHierarchyColorScheme { .default }
 }
 
 // MARK: - View Controller Hierarchy
 
-extension HierarchyInspectableProtocol {
+extension HierarchyInspectableViewControllerProtocol {
     
     var availableLayers: [ViewHierarchyLayer] {
         var layers = hierarchyInspectorLayers
@@ -42,8 +42,8 @@ extension HierarchyInspectableProtocol {
         return elements
     }
     
-    var topMostContainerViewController: HierarchyInspectableProtocol {
-        var topController: HierarchyInspectableProtocol = self
+    var topMostContainerViewController: HierarchyInspectableViewControllerProtocol {
+        var topController: HierarchyInspectableViewControllerProtocol = self
         
         while topController.containerViewControllers.count > 1 {
             guard let vc = topController.containerViewControllers.first else {
@@ -56,12 +56,12 @@ extension HierarchyInspectableProtocol {
         return topController
     }
     
-    var containerViewControllers: [HierarchyInspectableProtocol] {
+    var containerViewControllers: [HierarchyInspectableViewControllerProtocol] {
         [
             splitViewController,
             tabBarController,
             navigationController,
             self
-        ].compactMap { $0 as? HierarchyInspectableProtocol }
+        ].compactMap { $0 as? HierarchyInspectableViewControllerProtocol }
     }
 }

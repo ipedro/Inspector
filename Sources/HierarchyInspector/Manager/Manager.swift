@@ -21,7 +21,7 @@ extension HierarchyInspector {
             $0.delegate   = self
         }
         
-        private(set) weak var hostViewController: HierarchyInspectableProtocol?
+        private(set) weak var hostViewController: HierarchyInspectableViewControllerProtocol?
         
         var shouldCacheViewHierarchySnapshot = true
         
@@ -29,7 +29,7 @@ extension HierarchyInspector {
         
         // MARK: - Init
         
-        public init(host: HierarchyInspectableProtocol) {
+        public init(host: HierarchyInspectableViewControllerProtocol) {
             self.hostViewController = host
         }
         

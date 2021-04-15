@@ -7,7 +7,7 @@
 
 import UIKit
 
-open class HierarchyInspectableViewController: UIViewController, HierarchyInspectorPresentable {
+open class HierarchyInspectableViewController: UIViewController, HierarchyInspectorPresentableViewControllerProtocol {
     
     public private(set) lazy var hierarchyInspectorManager = HierarchyInspector.Manager(
         host: self
