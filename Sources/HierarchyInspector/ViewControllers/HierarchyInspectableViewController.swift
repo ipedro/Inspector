@@ -43,7 +43,7 @@ open class HierarchyInspectableViewController: UIViewController, HierarchyInspec
     open override func viewDidLoad() {
         super.viewDidLoad()
         
-        accessibilityIdentifiersConfiguration()
+        accessibilityIdentifiersConfiguration(for: view)
         
         guard shouldPresentHierarchyInspectorOnShake else {
             return

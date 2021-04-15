@@ -105,8 +105,6 @@ class ExampleViewController: HierarchyInspectableViewController {
         
         scrollView.refreshControl = refreshControl
         
-        accessibilityIdentifiersConfiguration()
-        
         if #available(iOS 13.4, *) {
             setupSegmentedControl()
         } else {

@@ -213,7 +213,7 @@
                         <outlet property="inspectBarButton" destination="rjK-Zh-gDA" id="6Oj-OG-4iq"/>
                         <outlet property="inspectButton" destination="bmx-Wi-bnN" id="zbj-22-Skx"/>
                         <outlet property="longTextLabel" destination="73c-Xy-UWQ" id="Guz-9r-KNg"/>
-                        <outlet property="mapView" destination="hQ1-am-2yh" id="iWI-OW-9Mk"/>
+                        <outlet property="mapView" destination="hQ1-am-2yh" id="lfw-H6-sNF"/>
                         <outlet property="scrollView" destination="SAS-7K-iyc" id="Lac-y8-eJ1"/>
                         <outlet property="switch" destination="2aJ-1h-1vj" id="6oS-uu-KnD"/>
                         <outlet property="switchTextField" destination="Juj-gq-NVu" id="yub-TP-nY2"/>

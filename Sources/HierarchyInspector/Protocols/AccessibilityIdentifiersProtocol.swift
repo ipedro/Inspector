@@ -8,13 +8,13 @@
 import UIKit
 
 public protocol AccessibilityIdentifiersProtocol {
-    func accessibilityIdentifiersConfiguration()
+    func accessibilityIdentifiersConfiguration(for view: UIView)
 }
 
 public extension AccessibilityIdentifiersProtocol {
-    func accessibilityIdentifiersConfiguration() {
+    func accessibilityIdentifiersConfiguration(for view: UIView) {
         #if DEBUG
-        let mirror = Mirror(reflecting: self)
+        let mirror = Mirror(reflecting: view)
         mirror.subviewsAccessibilityIdentifiers()
 
         if let self = self as? UIViewController {
