@@ -108,11 +108,6 @@ class HighlightView: LayerView {
     
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
     
-    @objc
-    func tap() {
-        delegate?.highlightView(self, didTapWith: viewReference)
-    }
-    
     // MARK: - Init
     
     init(
@@ -183,7 +178,7 @@ class HighlightView: LayerView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        name = superview?.elementName ?? viewReference.elementName
+        updateElementName()
         
         updateLabelWidth()
         
@@ -194,9 +189,17 @@ class HighlightView: LayerView {
         color = colorScheme.color(for: superview)
     }
     
+    func updateElementName() {
+        name = superview?.elementName ?? viewReference.elementName
+    }
 }
 
 private extension HighlightView {
+    
+    @objc
+    func tap() {
+        delegate?.highlightView(self, didTapWith: viewReference)
+    }
     
     func updateLabelWidth() {
         labelWidthConstraint?.constant = frame.width * 4 / 3
