@@ -17,5 +17,7 @@ public extension HierarchyInspector {
         
         public var cacheExpirationTimeInterval: TimeInterval = 0.5
         
+        public var showAllViewSearchQuery = "*"
+        
     }
 }

@@ -65,12 +65,19 @@ extension HierarchyInspectorViewModel {
                 return
             }
             
-            let flattenedViewHierarchy = snapshot.inspectableReferences
-            
-            searchResults = flattenedViewHierarchy.filter {
-                ($0.elementName + $0.className).localizedCaseInsensitiveContains(searchQuery)
-            }.map({ element -> Details in
+            let matchingReferences: [ViewHierarchyReference] = {
+                let inspectableReferences = snapshot.inspectableReferences
                 
+                guard searchQuery != HierarchyInspector.configuration.showAllViewSearchQuery else {
+                    return inspectableReferences
+                }
+                
+                return inspectableReferences.filter {
+                    ($0.elementName + $0.className).localizedCaseInsensitiveContains(searchQuery)
+                }
+            }()
+            
+            searchResults = matchingReferences.map({ element -> Details in
                 let title: String = {
                     if
                         let textElement = element.rootView as? TextElement,
@@ -81,7 +88,6 @@ extension HierarchyInspectorViewModel {
                     
                     return element.elementName
                 }()
-                
                 
                 return Details(
                     title: title,
