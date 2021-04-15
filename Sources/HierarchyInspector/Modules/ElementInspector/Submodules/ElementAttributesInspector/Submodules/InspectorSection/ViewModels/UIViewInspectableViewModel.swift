@@ -15,6 +15,7 @@ extension UIKitComponents {
             case contentMode                = "Content Mode"
             case semanticContentAttribute   = "Semantic Content"
             case tag                        = "Tag"
+            case accessibilityIdentifier    = "Accessibility Identifier"
             case groupInteraction           = "Interaction"
             case isUserInteractionEnabled   = "User Interaction Enabled"
             case isMultipleTouchEnabled     = "Multiple Touch Enabled"
@@ -83,7 +84,16 @@ extension UIKitComponents {
                 ) { newValue in
                     view.tag = newValue
                 }
-
+                
+            case .accessibilityIdentifier:
+                return .textField(
+                    title: property.rawValue,
+                    placeholder: { view.accessibilityIdentifier ?? property.rawValue },
+                    value: { view.accessibilityIdentifier }
+                ) { accessibilityIdentifier in
+                    view.accessibilityIdentifier = accessibilityIdentifier
+                }
+                
             case .groupInteraction:
                 return .group(title: property.rawValue)
                 
