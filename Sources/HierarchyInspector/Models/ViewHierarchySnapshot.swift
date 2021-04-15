@@ -23,11 +23,11 @@ struct ViewHierarchySnapshot {
     
     let flattenedViewHierarchy: [ViewHierarchyReference]
     
-    let inspectableElements: [HierarchyInspectableElementProtocol]
+    let inspectableElements: [HierarchyInspectorElementLibraryProtocol]
     
     init(
         availableLayers: [ViewHierarchyLayer],
-        inspectableElements: [HierarchyInspectableElementProtocol],
+        inspectableElements: [HierarchyInspectorElementLibraryProtocol],
         in rootView: UIView
     ) {
         self.availableLayers = availableLayers.uniqueValues

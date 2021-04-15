@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension UIKitComponents {
+extension UIKitElementLibrary {
     
-    final class UIActivityIndicatorViewInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
+    final class UIActivityIndicatorViewInspectableViewModel: HierarchyInspectorElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case style            = "Style"

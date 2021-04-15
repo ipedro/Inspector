@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension UIKitComponents {
+extension UIKitElementLibrary {
     
-    final class UIScrollViewInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
+    final class UIScrollViewInspectableViewModel: HierarchyInspectorElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case groupIndicators                = "Indicators"

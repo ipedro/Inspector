@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension UIKitComponents {
+extension UIKitElementLibrary {
     
-    final class UIButtonInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
+    final class UIButtonInspectableViewModel: HierarchyInspectorElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case type                                                = "Type"

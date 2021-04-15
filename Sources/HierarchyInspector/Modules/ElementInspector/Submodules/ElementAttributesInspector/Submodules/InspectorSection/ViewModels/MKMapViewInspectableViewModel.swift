@@ -7,9 +7,9 @@
 
 import MapKit
 
-extension UIKitComponents {
+extension UIKitElementLibrary {
     
-    final class MKMapViewInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
+    final class MKMapViewInspectableViewModel: HierarchyInspectorElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case type                  = "Type"

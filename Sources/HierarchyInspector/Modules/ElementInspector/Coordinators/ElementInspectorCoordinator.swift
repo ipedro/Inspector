@@ -167,7 +167,7 @@ final class ElementInspectorCoordinator: NSObject {
         showDismissBarButton: Bool,
         selectedPanel: ElementInspectorPanel?,
         delegate: ElementInspectorViewControllerDelegate,
-        inspectableElements: [HierarchyInspectableElementProtocol]
+        inspectableElements: [HierarchyInspectorElementLibraryProtocol]
     ) -> ElementInspectorViewController {
         
         let viewModel = ElementInspectorViewModel(

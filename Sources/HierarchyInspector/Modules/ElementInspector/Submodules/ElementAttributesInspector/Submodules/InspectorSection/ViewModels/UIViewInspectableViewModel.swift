@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension UIKitComponents {
+extension UIKitElementLibrary {
     
-    final class UIViewInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
+    final class UIViewInspectableViewModel: HierarchyInspectorElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case contentMode                = "Content Mode"

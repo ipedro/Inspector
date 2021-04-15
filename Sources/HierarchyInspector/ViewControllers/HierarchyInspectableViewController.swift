@@ -24,7 +24,7 @@ open class HierarchyInspectableViewController: UIViewController, HierarchyInspec
     
     open var hierarchyInspectorLayers: [ViewHierarchyLayer] { [] }
     
-    open var hierarchyInspectorElements: [HierarchyInspectableElementProtocol] { [] }
+    open var hierarchyInspectorElements: [HierarchyInspectorElementLibraryProtocol] { [] }
     
     open var shouldPresentHierarchyInspectorOnShake = true {
         didSet {

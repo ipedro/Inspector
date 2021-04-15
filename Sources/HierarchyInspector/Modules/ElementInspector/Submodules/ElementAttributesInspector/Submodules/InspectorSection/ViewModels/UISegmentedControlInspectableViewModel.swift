@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension UIKitComponents {
+extension UIKitElementLibrary {
 
-    final class UISegmentedControlInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
+    final class UISegmentedControlInspectableViewModel: HierarchyInspectorElementViewModelProtocol {
         
         private enum Property: String, Swift.CaseIterable {
             case selectedSegmentTintColor = "Selected Tint"

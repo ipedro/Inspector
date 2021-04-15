@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension UIKitComponents {
+extension UIKitElementLibrary {
         
-    final class UILabelInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
+    final class UILabelInspectableViewModel: HierarchyInspectorElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case text                                 = "Text"

@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension UIKitComponents {
+extension UIKitElementLibrary {
     
-    final class UIDatePickerInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
+    final class UIDatePickerInspectableViewModel: HierarchyInspectorElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case datePickerStyle = "Style"

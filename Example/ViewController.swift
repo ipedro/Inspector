@@ -10,7 +10,7 @@ import HierarchyInspector
 
 // MARK: - Example Hiearchy Inspectable Elements
 
-enum MyCustomHierarchyInspectableElements: HierarchyInspectableElementProtocol, CaseIterable {
+enum MyCustomHierarchyInspectableElements: HierarchyInspectorElementLibraryProtocol, CaseIterable {
     case customButton
     
     var targetClass: AnyClass {
@@ -20,7 +20,7 @@ enum MyCustomHierarchyInspectableElements: HierarchyInspectableElementProtocol, 
         }
     }
     
-    func viewModel(with referenceView: UIView) -> HierarchyInspectableElementViewModelProtocol? {
+    func viewModel(with referenceView: UIView) -> HierarchyInspectorElementViewModelProtocol? {
         switch self {
         case .customButton:
             return CustomButtonInspectableViewModel(view: referenceView)
@@ -40,7 +40,7 @@ enum MyCustomHierarchyInspectableElements: HierarchyInspectableElementProtocol, 
 class ViewController: HierarchyInspectableViewController {
     // MARK: - HierarchyInspectableProtocol
     
-    override var hierarchyInspectorElements: [HierarchyInspectableElementProtocol] {
+    override var hierarchyInspectorElements: [HierarchyInspectorElementLibraryProtocol] {
         MyCustomHierarchyInspectableElements.allCases
     }
     

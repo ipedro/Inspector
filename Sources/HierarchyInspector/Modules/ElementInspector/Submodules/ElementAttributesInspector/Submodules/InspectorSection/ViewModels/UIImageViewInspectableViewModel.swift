@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension UIKitComponents {
+extension UIKitElementLibrary {
 
-    final class UIImageViewInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
+    final class UIImageViewInspectableViewModel: HierarchyInspectorElementViewModelProtocol {
         
         private enum Property: String, Swift.CaseIterable {
             case image                                               = "Image"

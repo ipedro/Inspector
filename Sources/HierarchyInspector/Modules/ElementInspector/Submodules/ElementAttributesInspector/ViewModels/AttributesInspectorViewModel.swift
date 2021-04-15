@@ -8,7 +8,7 @@
 import UIKit
 
 protocol AttributesInspectorViewModelProtocol: ElementViewHierarchyPanelViewModelProtocol {
-    var sectionViewModels: [HierarchyInspectableElementViewModelProtocol] { get }
+    var sectionViewModels: [HierarchyInspectorElementViewModelProtocol] { get }
     
     var isHighlightingViews: Bool { get }
     
@@ -26,7 +26,7 @@ final class AttributesInspectorViewModel {
     
     let snapshot: ViewHierarchySnapshot
     
-    private(set) lazy var sectionViewModels: [HierarchyInspectableElementViewModelProtocol] = {
+    private(set) lazy var sectionViewModels: [HierarchyInspectorElementViewModelProtocol] = {
         guard let referenceView = reference.rootView else {
             return []
         }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol HierarchyInspectableElementViewModelProtocol: AnyObject {
+public protocol HierarchyInspectorElementViewModelProtocol: AnyObject {
     
     var title: String { get }
     

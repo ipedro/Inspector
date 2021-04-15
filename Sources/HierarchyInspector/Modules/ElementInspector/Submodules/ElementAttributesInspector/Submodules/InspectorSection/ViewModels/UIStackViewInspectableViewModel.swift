@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension UIKitComponents {
+extension UIKitElementLibrary {
         
-    final class UIStackViewInspectableViewModel: HierarchyInspectableElementViewModelProtocol {
+    final class UIStackViewInspectableViewModel: HierarchyInspectorElementViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case axis                          = "Axis"

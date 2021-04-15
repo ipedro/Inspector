@@ -1,5 +1,5 @@
 //
-//  UIKitComponents.swift
+//  UIKitElementLibrary.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 28.10.20.
@@ -8,7 +8,7 @@
 import UIKit
 import MapKit
 
-enum UIKitComponents: Swift.CaseIterable {
+enum UIKitElementLibrary: Swift.CaseIterable {
     case activityIndicator
     case button
     case control
@@ -32,9 +32,9 @@ enum UIKitComponents: Swift.CaseIterable {
     }
 }
 
-// MARK: - HierarchyInspectableElementProtocol
+// MARK: - HierarchyInspectorElementLibraryProtocol
 
-extension UIKitComponents: HierarchyInspectableElementProtocol {
+extension UIKitElementLibrary: HierarchyInspectorElementLibraryProtocol {
     var targetClass: AnyClass {
         switch self {
         case .navigationBar:
@@ -90,7 +90,7 @@ extension UIKitComponents: HierarchyInspectableElementProtocol {
         }
     }
     
-    func viewModel(with referenceView: UIView) -> HierarchyInspectableElementViewModelProtocol? {
+    func viewModel(with referenceView: UIView) -> HierarchyInspectorElementViewModelProtocol? {
         switch self {
         case .window,
              .navigationBar:
