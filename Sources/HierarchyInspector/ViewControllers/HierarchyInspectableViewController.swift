@@ -50,8 +50,8 @@ open class HierarchyInspectableViewController: UIViewController, HierarchyInspec
         becomeFirstResponder()
     }
     
-    open override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    open override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         
         hierarchyInspectorManager.removeAllLayers()
     }
