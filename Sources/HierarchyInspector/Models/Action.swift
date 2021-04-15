@@ -27,13 +27,10 @@ enum Action {
 
 extension Action {
     var isEnabled: Bool {
-        switch self {
-        case .emptyLayer:
-            return false
-            
-        default:
+        guard case .emptyLayer = self else {
             return true
         }
+        return false
     }
     
     var title: String {

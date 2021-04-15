@@ -21,6 +21,18 @@ enum Texts {
         "\(count) Search results in \(elementName)"
     }
     
+    static func unselectedActionTitle(with description: String) -> String {
+        "☐ \(description)"
+    }
+
+    static func selectedActionTitle(with description: String) -> String {
+        "☑ \(description)"
+    }
+    
+    static func emptyActionTitle(with description: String) -> String {
+        "☐ No \(description) found"
+    }
+    
     static let viewLayers = "View Layers"
     
     static let closeInspector = "Close"

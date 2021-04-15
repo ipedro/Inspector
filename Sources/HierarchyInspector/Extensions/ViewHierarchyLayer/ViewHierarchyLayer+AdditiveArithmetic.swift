@@ -1,5 +1,5 @@
 //
-//  Layer+AdditiveArithmetic.swift
+//  ViewHierarchyLayer+AdditiveArithmetic.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 02.10.20.

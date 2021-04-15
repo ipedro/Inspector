@@ -1,5 +1,5 @@
 //
-//  UIAlertAction+Convenience.swift
+//  ViewHierarchyLayer+Actionable.swift
 //
 //
 //  Created by Pedro Almeida on 02.10.20.
@@ -12,15 +12,15 @@ import UIKit
 extension ViewHierarchyLayer: Actionable {
     
     var unselectedActionTitle: String {
-        "☐ \(description)"
+        Texts.unselectedActionTitle(with: description)
     }
     
     var selectedActionTitle: String {
-        "☑ \(description)"
+        Texts.selectedActionTitle(with: description)
     }
 
     var emptyActionTitle: String {
-        "☐ No \(description) found"
+        Texts.emptyActionTitle(with: description)
     }
     
 }
