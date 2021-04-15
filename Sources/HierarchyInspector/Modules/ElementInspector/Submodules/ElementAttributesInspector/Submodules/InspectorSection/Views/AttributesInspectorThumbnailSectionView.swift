@@ -32,6 +32,7 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
         $0.setImage(.moduleImage(named: "ellipsisCircle"), for: .normal)
         $0.setImage(.moduleImage(named: "ellipsisCircleFill"), for: .selected)
         $0.setContentHuggingPriority(.required, for: .horizontal)
+        $0.isSelected = true
     }
     
     private lazy var headerContainerView = UIStackView(
@@ -112,8 +113,6 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
     
     override func setup() {
         super.setup()
-        
-        toggleAccessoryControls()
         
         setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
