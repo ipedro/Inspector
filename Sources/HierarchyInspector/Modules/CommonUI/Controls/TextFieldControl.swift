@@ -8,6 +8,9 @@
 import UIKit
 
 final class TextFieldControl: BaseFormControl {
+    
+    private let defaultFont: UIFont = .preferredFont(forTextStyle: .footnote)
+    
     // MARK: - Properties
     
     private lazy var textField = UITextField().then {
@@ -15,7 +18,7 @@ final class TextFieldControl: BaseFormControl {
         $0.textColor = ElementInspector.appearance.textColor
         $0.adjustsFontSizeToFitWidth = true
         $0.borderStyle = .none
-        $0.font = .preferredFont(forTextStyle: .footnote)
+        $0.font = defaultFont
     }
         
     private(set) lazy var accessoryControl = AccessoryControl().then {
@@ -52,7 +55,7 @@ final class TextFieldControl: BaseFormControl {
             textField.attributedPlaceholder = NSAttributedString(
                 string: placeholder,
                 attributes: [
-                    .font : UIFont.preferredFont(forTextStyle: .footnote),
+                    .font : textField.font ?? defaultFont,
                     .foregroundColor: ElementInspector.appearance.tertiaryTextColor
                 ]
             )
