@@ -89,24 +89,24 @@ final class AttributesInspectorSectionViewController: UIViewController {
                 case let .group(title):
                     return SectionHeader.attributesInspectorGroup(title: title)
                     
-                case let .imagePicker(title, imageProvider, _):
+                case let .imagePicker(title: title, image: imageProvider, handler: _):
                     return ImagePreviewControl(title: title, image: imageProvider()).then {
                         $0.delegate = self
                     }
                     
-                case let .textField(title, value, placeholder, _):
+                case let .textField(title: title, placeholder: placeholder, value: value, handler: _):
                     return TextFieldControl(title: title, value: value(), placeholder: placeholder())
                     
-                case let .stepper(title, valueProvider, rangeProvider, stepValueProvider, isDecimal, _):
+                case let .stepper(title: title, value: valueProvider, range: rangeProvider, stepValue: stepValueProvider, isDecimalValue: isDecimalValue, handler: _):
                     return StepperControl(
                         title: title,
                         value: valueProvider(),
                         range: rangeProvider(),
                         stepValue: stepValueProvider(),
-                        isDecimalValue: isDecimal
+                        isDecimalValue: isDecimalValue
                     )
                     
-                case let .colorPicker(title, colorProvider, _):
+                case let .colorPicker(title: title, color: colorProvider, handler: _):
                     return ColorPreviewControl(
                         title: title,
                         color: colorProvider()
@@ -114,13 +114,13 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         $0.delegate = self
                     }
                     
-                case let .toggleButton(title, isOnProvider, _):
+                case let .toggleButton(title: title, isOn: isOnProvider, handler: _):
                     return ToggleControl(
                         title: title,
                         isOn: isOnProvider()
                     )
                     
-                case let .imageButtonGroup(title, axis, images, selectedIndexProvider, _):
+                case let .imageButtonGroup(title: title, axis: axis, images: images, selectedIndex: selectedIndexProvider, _):
                     return SegmentedControl(
                         title: title,
                         images: images,
@@ -129,7 +129,7 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         $0.axis = axis
                     }
                     
-                case let .textButtonGroup(title, axis, texts, selectedIndexProvider, _):
+                case let .textButtonGroup(title: title, axis: axis, texts: texts, selectedIndex: selectedIndexProvider, _):
                     return SegmentedControl(
                         title: title,
                         texts: texts,
@@ -138,7 +138,7 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         $0.axis = axis
                     }
                 
-                case let .optionsList(title, emptyTitle, axis, options, selectedIndexProvider, _):
+                case let .optionsList(title: title, emptyTitle: emptyTitle, axis: axis, options: options, selectedIndex: selectedIndexProvider, _):
                     return OptionListControl(
                         title: title,
                         options: options,
@@ -149,7 +149,7 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         $0.delegate = self
                     }
                     
-                case let .textView(title, placeholderProvider, stringProvider, handler):
+                case let .textView(title: title, placeholder: placeholderProvider, value: stringProvider, handler: _):
                     return TextViewControl(
                         title: title,
                         value: stringProvider(),
@@ -258,39 +258,39 @@ extension AttributesInspectorSectionViewController {
             
             switch (property, inputView) {
             
-            case let (.stepper(title, valueProvider, rangeProvider, stepValueProvider, _, _), stepperControl as StepperControl):
+            case let (.stepper(title: title, value: valueProvider, range: rangeProvider, stepValue: stepValueProvider, _, _), stepperControl as StepperControl):
                 stepperControl.value     = valueProvider()
                 stepperControl.title     = title
                 stepperControl.range     = rangeProvider()
                 stepperControl.stepValue = stepValueProvider()
                 
-            case let (.colorPicker(title, selectedColorProvider, _), colorPicker as ColorPreviewControl):
+            case let (.colorPicker(title: title, color: selectedColorProvider, _), colorPicker as ColorPreviewControl):
                 colorPicker.selectedColor = selectedColorProvider()
                 colorPicker.title = title
                 
-            case let (.imagePicker(title, imageProvider, _), imagePicker as ImagePreviewControl):
+            case let (.imagePicker(title: title, image: imageProvider, _), imagePicker as ImagePreviewControl):
                 imagePicker.selectedImage = imageProvider()
                 imagePicker.title = title
                 
-            case let (.toggleButton(title, isOnProvider, _), toggleControl as ToggleControl):
+            case let (.toggleButton(title: title, isOn: isOnProvider, _), toggleControl as ToggleControl):
                 toggleControl.isOn = isOnProvider()
                 toggleControl.title = title
                 
-            case let (.imageButtonGroup(title, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl),
-                 let (.textButtonGroup(title, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
+            case let (.imageButtonGroup(title: title, _, _, selectedIndex: selectedIndexProvider, _), segmentedControl as SegmentedControl),
+                 let (.textButtonGroup(title: title, _, _, selectedIndex: selectedIndexProvider, _), segmentedControl as SegmentedControl):
                 segmentedControl.selectedIndex = selectedIndexProvider()
                 segmentedControl.title = title
                 
-            case let (.optionsList(title, _, _, _, selectedIndexProvider, _), optionSelector as OptionListControl):
+            case let (.optionsList(title: title, _, _, _, selectedIndex: selectedIndexProvider, _), optionSelector as OptionListControl):
                 optionSelector.selectedIndex = selectedIndexProvider()
                 optionSelector.title = title
                 
-            case let (.textField(title, valueProvider, placeholderProvider, _), textFieldControl as TextFieldControl):
+            case let (.textField(title: title, placeholder: placeholderProvider, value: valueProvider, _), textFieldControl as TextFieldControl):
                 textFieldControl.placeholder = placeholderProvider()
                 textFieldControl.value = valueProvider()
                 textFieldControl.title = title
                 
-            case let (.textView(title, placeholderProvider, valueProvider, _), textViewControl as TextViewControl):
+            case let (.textView(title: title, placeholder: placeholderProvider, value: valueProvider, _), textViewControl as TextViewControl):
                 textViewControl.placeholder = placeholderProvider()
                 textViewControl.value = valueProvider()
                 textViewControl.title = title

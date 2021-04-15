@@ -11,7 +11,7 @@ final class TextFieldControl: BaseFormControl {
     // MARK: - Properties
     
     private lazy var textField = UITextField().then {
-        $0.addTarget(self, action: #selector(editText), for: .allEditingEvents)
+        $0.addTarget(self, action: #selector(editText), for: .editingChanged)
         $0.textColor = ElementInspector.appearance.textColor
         $0.adjustsFontSizeToFitWidth = true
         $0.borderStyle = .none
@@ -32,12 +32,11 @@ final class TextFieldControl: BaseFormControl {
     // MARK: - Init
     
     var value: String? {
-        didSet {
-            guard value != textField.text else {
-                return
-            }
-            
-            textField.text = value
+        get {
+            textField.text
+        }
+        set {
+            textField.text = newValue
         }
     }
     
@@ -51,11 +50,10 @@ final class TextFieldControl: BaseFormControl {
     }
 
     init(title: String?, value: String?, placeholder: String?) {
-        self.value = value
-
         super.init(title: title)
-        
-        self.placeholder = placeholder
+
+        textField.text = value
+        textField.placeholder = placeholder
     }
 
     required init?(coder: NSCoder) {
@@ -96,12 +94,6 @@ private extension TextFieldControl {
     
     @objc
     func editText() {
-        guard value != textField.text else {
-            return
-        }
-        
-        value = textField.text
-        
         sendActions(for: .valueChanged)
     }
 }
