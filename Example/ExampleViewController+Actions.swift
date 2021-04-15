@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  ExampleViewController+Actions.swift
 //  HierarchyInspectorExample
 //
 //  Created by Pedro Almeida on 03.10.20.
@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - Actions
 
-extension ViewController {
+extension ExampleViewController {
 
     @IBAction func changeDatePickerStyle(_ sender: UISegmentedControl) {
         guard let datePickerStyle = UIDatePickerStyle(rawValue: sender.selectedSegmentIndex) else {
@@ -53,7 +53,7 @@ extension ViewController {
 
 // MARK: - UIScrollViewDelegate
 
-extension ViewController: UIScrollViewDelegate {
+extension ExampleViewController: UIScrollViewDelegate {
     var inspectButtonFrame: CGRect {
         inspectButton.convert(inspectButton.bounds, to: scrollView)
     }

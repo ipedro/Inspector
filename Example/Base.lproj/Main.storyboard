@@ -12,13 +12,13 @@
         <!--🧬 Hierarchy Inspector-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="HierarchyInspectorExample" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ExampleViewController" customModule="HierarchyInspectorExample" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="SAS-7K-iyc">
-                                <rect key="frame" x="0.0" y="148.5" width="414" height="664.5"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="lP5-3a-gfG">
                                         <rect key="frame" x="30" y="40" width="354" height="1891"/>
@@ -47,6 +47,7 @@
                                                 <subviews>
                                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="gp4-7X-RIQ">
                                                         <rect key="frame" x="-2" y="0.0" width="301" height="38"/>
+                                                        <accessibility key="accessibilityConfiguration" identifier="activityIndicatorSlider"/>
                                                         <connections>
                                                             <action selector="rotateActivityIndicator:" destination="BYZ-38-t0r" eventType="valueChanged" id="CTe-n5-yPd"/>
                                                         </connections>
@@ -60,6 +61,7 @@
                                             </stackView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NNN-1F-at6">
                                                 <rect key="frame" x="0.0" y="228" width="354" height="170"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="textView"/>
                                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
                                                 <color key="textColor" systemColor="labelColor"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
@@ -206,12 +208,17 @@
                     </navigationItem>
                     <connections>
                         <outlet property="activityIndicator" destination="IzO-Ib-DQu" id="lXr-09-qJ4"/>
-                        <outlet property="datePicker" destination="XGs-9g-XMz" id="Hwj-wf-pUL"/>
-                        <outlet property="datePickerSegmentedControl" destination="P52-4f-6lf" id="2zM-Bq-MOr"/>
+                        <outlet property="datePicker" destination="XGs-9g-XMz" id="Xqp-dx-xnH"/>
+                        <outlet property="datePickerSegmentedControl" destination="P52-4f-6lf" id="blY-8C-zCp"/>
                         <outlet property="inspectBarButton" destination="rjK-Zh-gDA" id="6Oj-OG-4iq"/>
                         <outlet property="inspectButton" destination="bmx-Wi-bnN" id="zbj-22-Skx"/>
+                        <outlet property="longTextLabel" destination="73c-Xy-UWQ" id="Guz-9r-KNg"/>
+                        <outlet property="mapView" destination="hQ1-am-2yh" id="iWI-OW-9Mk"/>
                         <outlet property="scrollView" destination="SAS-7K-iyc" id="Lac-y8-eJ1"/>
+                        <outlet property="switch" destination="2aJ-1h-1vj" id="6oS-uu-KnD"/>
+                        <outlet property="switchTextField" destination="Juj-gq-NVu" id="yub-TP-nY2"/>
                         <outlet property="textField" destination="Juj-gq-NVu" id="3KG-HR-xO3"/>
+                        <outlet property="textStackView" destination="wp0-kU-4b8" id="mxj-5N-dXj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

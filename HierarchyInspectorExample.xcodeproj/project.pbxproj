@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		EB210C7B2624E4D00032B9AE /* CustomButtonInspectableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB210C7A2624E4D00032B9AE /* CustomButtonInspectableViewModel.swift */; };
-		EB210C812624E54E0032B9AE /* ViewController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB210C802624E54E0032B9AE /* ViewController+Actions.swift */; };
+		EB210C812624E54E0032B9AE /* ExampleViewController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB210C802624E54E0032B9AE /* ExampleViewController+Actions.swift */; };
 		EB210C862624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */; };
 		EB5E1FDE261A48EB002301F5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E1FDD261A48EB002301F5 /* AppDelegate.swift */; };
 		EB5E1FE0261A48EB002301F5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E1FDF261A48EB002301F5 /* SceneDelegate.swift */; };
-		EB5E1FE2261A48EB002301F5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E1FE1261A48EB002301F5 /* ViewController.swift */; };
+		EB5E1FE2261A48EB002301F5 /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E1FE1261A48EB002301F5 /* ExampleViewController.swift */; };
 		EB5E1FE5261A48EB002301F5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE3261A48EB002301F5 /* Main.storyboard */; };
 		EB5E1FE7261A48EC002301F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE6261A48EC002301F5 /* Assets.xcassets */; };
 		EB5E1FEA261A48EC002301F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE8261A48EC002301F5 /* LaunchScreen.storyboard */; };
@@ -22,12 +22,12 @@
 
 /* Begin PBXFileReference section */
 		EB210C7A2624E4D00032B9AE /* CustomButtonInspectableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonInspectableViewModel.swift; sourceTree = "<group>"; };
-		EB210C802624E54E0032B9AE /* ViewController+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Actions.swift"; sourceTree = "<group>"; };
+		EB210C802624E54E0032B9AE /* ExampleViewController+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExampleViewController+Actions.swift"; sourceTree = "<group>"; };
 		EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDatePickerStyle+Extensions.swift"; sourceTree = "<group>"; };
 		EB5E1FDA261A48EB002301F5 /* HierarchyInspectorExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HierarchyInspectorExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB5E1FDD261A48EB002301F5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EB5E1FDF261A48EB002301F5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		EB5E1FE1261A48EB002301F5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		EB5E1FE1261A48EB002301F5 /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		EB5E1FE4261A48EB002301F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EB5E1FE6261A48EC002301F5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EB5E1FE9261A48EC002301F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -79,8 +79,8 @@
 				EB5E1FDD261A48EB002301F5 /* AppDelegate.swift */,
 				EB5E1FDF261A48EB002301F5 /* SceneDelegate.swift */,
 				EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */,
-				EB5E1FE1261A48EB002301F5 /* ViewController.swift */,
-				EB210C802624E54E0032B9AE /* ViewController+Actions.swift */,
+				EB5E1FE1261A48EB002301F5 /* ExampleViewController.swift */,
+				EB210C802624E54E0032B9AE /* ExampleViewController+Actions.swift */,
 				EB5E1FE6261A48EC002301F5 /* Assets.xcassets */,
 				EB210C7E2624E5090032B9AE /* CustomButton */,
 				EB5E1FE8261A48EC002301F5 /* LaunchScreen.storyboard */,
@@ -166,11 +166,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB5E2004261A4EC9002301F5 /* CustomButton.swift in Sources */,
-				EB5E1FE2261A48EB002301F5 /* ViewController.swift in Sources */,
+				EB5E1FE2261A48EB002301F5 /* ExampleViewController.swift in Sources */,
 				EB210C862624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift in Sources */,
 				EB210C7B2624E4D00032B9AE /* CustomButtonInspectableViewModel.swift in Sources */,
 				EB5E1FDE261A48EB002301F5 /* AppDelegate.swift in Sources */,
-				EB210C812624E54E0032B9AE /* ViewController+Actions.swift in Sources */,
+				EB210C812624E54E0032B9AE /* ExampleViewController+Actions.swift in Sources */,
 				EB5E1FE0261A48EB002301F5 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

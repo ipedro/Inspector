@@ -1,16 +1,17 @@
 //
-//  ViewController.swift
+//  ExampleViewController.swift
 //  HierarchyInspectorExample
 //
 //  Created by Pedro Almeida on 03.10.20.
 //
 
-import UIKit
 import HierarchyInspector
+import UIKit
+import MapKit
 
 // MARK: - Example Hiearchy Inspectable Elements
 
-enum MyCustomHierarchyInspectableElements: HierarchyInspectorElementLibraryProtocol, CaseIterable {
+enum ExampleElementLibrary: HierarchyInspectorElementLibraryProtocol, CaseIterable {
     case customButton
     
     var targetClass: AnyClass {
@@ -37,11 +38,12 @@ enum MyCustomHierarchyInspectableElements: HierarchyInspectorElementLibraryProto
 
 // MARK: - Example Inspectable View Controller
 
-class ViewController: HierarchyInspectableViewController {
+
+class ExampleViewController: HierarchyInspectableViewController, AccessibilityIdentifiersProtocol {
     // MARK: - HierarchyInspectableProtocol
     
     override var hierarchyInspectorElements: [HierarchyInspectorElementLibraryProtocol] {
-        MyCustomHierarchyInspectableElements.allCases
+        ExampleElementLibrary.allCases
     }
     
     override var hierarchyInspectorLayers: [ViewHierarchyLayer] {
@@ -49,7 +51,6 @@ class ViewController: HierarchyInspectableViewController {
             .controls,
             .buttons,
             .staticTexts + .images,
-            .textViews + .textFields,
             .stackViews + .containerViews
         ]
     }
@@ -84,6 +85,16 @@ class ViewController: HierarchyInspectableViewController {
     
     @IBOutlet var textField: UITextField!
     
+    @IBOutlet weak var longTextLabel: UILabel!
+    
+    @IBOutlet weak var textStackView: UIStackView!
+    
+    @IBOutlet weak var switchTextField: UITextField!
+    
+    @IBOutlet weak var `switch`: UISwitch!
+    
+    @IBOutlet weak var mapView: MKMapView!
+    
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,6 +105,8 @@ class ViewController: HierarchyInspectableViewController {
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         
         scrollView.refreshControl = refreshControl
+        
+        accessibilityIdentifiersConfiguration()
         
         if #available(iOS 13.4, *) {
             setupSegmentedControl()
