@@ -19,6 +19,7 @@ final class TextFieldControl: BaseFormControl {
         $0.adjustsFontSizeToFitWidth = true
         $0.borderStyle = .none
         $0.font = defaultFont
+        $0.delegate = self
     }
         
     private(set) lazy var accessoryControl = AccessoryControl().then {
@@ -101,5 +102,13 @@ private extension TextFieldControl {
     @objc
     func editText() {
         sendActions(for: .valueChanged)
+    }
+}
+
+extension TextFieldControl: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        
+        return true
     }
 }

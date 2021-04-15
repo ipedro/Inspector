@@ -41,7 +41,7 @@ enum ExampleElementLibrary: HierarchyInspectorElementLibraryProtocol, CaseIterab
 class ExampleViewController: HierarchyInspectableViewController {
     // MARK: - HierarchyInspectableProtocol
     
-    override var hierarchyInspectorElements: [HierarchyInspectorElementLibraryProtocol] {
+    override var hierarchyInspectorElementLibraries: [HierarchyInspectorElementLibraryProtocol] {
         ExampleElementLibrary.allCases
     }
     

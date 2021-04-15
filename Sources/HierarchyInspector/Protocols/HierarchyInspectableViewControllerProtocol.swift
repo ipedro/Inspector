@@ -13,7 +13,7 @@ public protocol HierarchyInspectableViewControllerProtocol: UIViewController {
     
     var hierarchyInspectorColorScheme: ViewHierarchyColorScheme { get }
     
-    var hierarchyInspectorElements: [HierarchyInspectorElementLibraryProtocol] { get }
+    var hierarchyInspectorElementLibraries: [HierarchyInspectorElementLibraryProtocol] { get }
 }
 
 // MARK: - Default Values
@@ -36,7 +36,7 @@ extension HierarchyInspectableViewControllerProtocol {
     
     var availableElementLibraries: [HierarchyInspectorElementLibraryProtocol] {
         var elements = [HierarchyInspectorElementLibraryProtocol]()
-        elements.append(contentsOf: hierarchyInspectorElements)
+        elements.append(contentsOf: hierarchyInspectorElementLibraries)
         elements.append(contentsOf: UIKitElementLibrary.standard)
         
         return elements
