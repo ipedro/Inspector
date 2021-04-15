@@ -9,9 +9,7 @@ import UIKit
 
 protocol Actionable {
     
-    var unselectedActionTitle: String { get }
-    
-    var selectedActionTitle: String { get }
+    var title: String { get }
     
     var emptyActionTitle: String { get }
     

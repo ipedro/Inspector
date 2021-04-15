@@ -9,6 +9,7 @@ import UIKit
 
 protocol HierarchyInspectorLayerAcionCellViewModelProtocol {
     var title: String { get }
+    var icon: UIImage? { get }
     var isEnabled: Bool { get }
 }
 
@@ -17,6 +18,8 @@ final class HierarchyInspectorLayerActionCell: HierarchyInspectorTableViewCell {
     var viewModel: HierarchyInspectorLayerAcionCellViewModelProtocol? {
         didSet {
             textLabel?.text = viewModel?.title
+            
+            imageView?.image = viewModel?.icon
             
             contentView.alpha = viewModel?.isEnabled == true ? 1 : ElementInspector.appearance.disabledAlpha
             
@@ -27,6 +30,9 @@ final class HierarchyInspectorLayerActionCell: HierarchyInspectorTableViewCell {
     override func setup() {
         super.setup()
         
+        tintColor = ElementInspector.appearance.textColor
+        
+        textLabel?.textColor = ElementInspector.appearance.textColor
         textLabel?.font = .preferredFont(forTextStyle: .callout)
     }
 }

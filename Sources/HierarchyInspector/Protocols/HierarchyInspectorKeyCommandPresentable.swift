@@ -70,7 +70,8 @@ extension HierarchyInspectorKeyCommandPresentable {
                     
                 case .inspect,
                      .inspectWindow,
-                     .toggleLayer:
+                     .hideLayer,
+                     .showLayer:
                     
                     guard keyCommandSettings.layerToggleInputRange.contains(index) else {
                         break

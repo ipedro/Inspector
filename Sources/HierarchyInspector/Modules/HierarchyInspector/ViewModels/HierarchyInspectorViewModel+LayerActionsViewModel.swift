@@ -12,6 +12,7 @@ extension HierarchyInspectorViewModel {
         
         struct Details: HierarchyInspectorLayerAcionCellViewModelProtocol {
             let title: String
+            var icon: UIImage?
             var isEnabled: Bool
         }
         
@@ -67,6 +68,7 @@ extension HierarchyInspectorViewModel {
             return .layerAction(
                 Details(
                     title: action.title,
+                    icon: action.icon,
                     isEnabled: action.isEnabled
                 )
             )

@@ -31,12 +31,12 @@ extension ViewHierarchyLayersCoordinator: LayerActionProtocol {
         
         switch isShowingLayer(layer) {
         case true:
-            return .toggleLayer(layer.selectedActionTitle) { [weak self] in
+            return .showLayer(layer.title) { [weak self] in
                 self?.removeLayer(layer)
             }
             
         case false:
-            return .toggleLayer(layer.unselectedActionTitle) { [weak self] in
+            return .hideLayer(layer.title) { [weak self] in
                 self?.installLayer(layer)
             }
         }

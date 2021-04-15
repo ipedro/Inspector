@@ -10,7 +10,9 @@ import UIKit
 enum Action {
     case emptyLayer(_ title: String)
     
-    case toggleLayer(_ title: String, closure: Closure)
+    case showLayer(_ title: String, closure: Closure)
+    
+    case hideLayer(_ title: String, closure: Closure)
     
     case showAllLayers(closure: Closure)
     
@@ -36,7 +38,8 @@ extension Action {
     var title: String {
         switch self {
         case let .emptyLayer(title),
-             let .toggleLayer(title, _):
+             let .showLayer(title, _),
+             let .hideLayer(title, _):
             return title
             
         case .showAllLayers:
@@ -56,12 +59,34 @@ extension Action {
         }
     }
     
+    var icon: UIImage? {
+        switch self {
+        case .emptyLayer:
+            return .moduleImage(named: "LayerAction-Empty")
+        case .showLayer:
+            return .moduleImage(named: "LayerAction-Show")
+        case .hideLayer:
+            return .moduleImage(named: "LayerAction-Hide")
+        case .showAllLayers:
+            return .moduleImage(named: "LayerAction-ShowAll")
+        case .hideVisibleLayers:
+            return .moduleImage(named: "LayerAction-HideAll")
+        case .openHierarchyInspector:
+            return nil
+        case .inspect:
+            return nil
+        case .inspectWindow:
+            return nil
+        }
+    }
+    
     var closure: (() -> Void)? {
         switch self {
         case .emptyLayer:
             return nil
             
-        case let .toggleLayer(_, closure),
+        case let .showLayer(_, closure),
+             let .hideLayer(_, closure),
              let .showAllLayers(closure),
              let .hideVisibleLayers(closure):
             return closure

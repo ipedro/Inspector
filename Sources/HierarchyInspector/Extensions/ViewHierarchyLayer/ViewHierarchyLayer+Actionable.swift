@@ -11,16 +11,12 @@ import UIKit
 
 extension ViewHierarchyLayer: Actionable {
     
-    var unselectedActionTitle: String {
-        Texts.unselectedActionTitle(with: description)
-    }
-    
-    var selectedActionTitle: String {
-        Texts.selectedActionTitle(with: description)
+    var title: String {
+        description
     }
 
     var emptyActionTitle: String {
-        Texts.emptyActionTitle(with: description)
+        Texts.emptyLayer(with: description)
     }
     
 }

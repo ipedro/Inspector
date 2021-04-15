@@ -18,7 +18,7 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
             return
         }
         
-        asyncOperation(name: layer.selectedActionTitle) {
+        asyncOperation(name: layer.title) {
             self.create(layer: layer, for: viewHierarchySnapshot)
         }
     }
@@ -52,7 +52,7 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
             return
         }
         
-        asyncOperation(name: layer.unselectedActionTitle) {
+        asyncOperation(name: layer.title) {
             self.destroy(layer: layer)
         }
     }
