@@ -11,62 +11,61 @@ struct ViewHierarchySnapshot {
     
     // MARK: - Properties
     
-    let expiryDate: Date = Date().addingTimeInterval(HierarchyInspector.configuration.cacheExpirationTimeInterval)
+    static var cacheExpirationInterval: TimeInterval {
+        HierarchyInspector.configuration.cacheExpirationTimeInterval
+    }
+    
+    let expiryDate: Date = Date().addingTimeInterval(Self.cacheExpirationInterval)
     
     let availableLayers: [ViewHierarchyLayer]
     
     let populatedLayers: [ViewHierarchyLayer]
     
-    let emptyLayers: [ViewHierarchyLayer]
+    let rootReference: ViewHierarchyReference
     
-    let viewHierarchy: ViewHierarchyReference
+    let inspectableReferences: [ViewHierarchyReference]
     
-    let flattenedViewHierarchy: [ViewHierarchyReference]
-    
-    let inspectableElements: [HierarchyInspectorElementLibraryProtocol]
+    let elementLibraries: [HierarchyInspectorElementLibraryProtocol]
     
     init(
         availableLayers: [ViewHierarchyLayer],
-        inspectableElements: [HierarchyInspectorElementLibraryProtocol],
+        elementLibraries: [HierarchyInspectorElementLibraryProtocol],
         in rootView: UIView
     ) {
         self.availableLayers = availableLayers.uniqueValues
         
-        self.inspectableElements = inspectableElements
+        self.elementLibraries = elementLibraries
         
-        viewHierarchy = ViewHierarchyReference(root: rootView)
+        self.rootReference = ViewHierarchyReference(root: rootView)
         
-        flattenedViewHierarchy = viewHierarchy.flattenedInspectableViewReferences
+        self.inspectableReferences = rootReference.inspectableViewReferences
         
-        let inspectableViews = viewHierarchy.flattenedInspectableViewReferences.compactMap { $0.rootView }
+        let inspectableViews = rootReference.inspectableViewReferences.compactMap { $0.rootView }
         
-        populatedLayers = availableLayers.filter { $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false }
-        
-        emptyLayers = Array(Set(availableLayers).subtracting(populatedLayers))
+        self.populatedLayers = availableLayers.filter {
+            $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
+        }
     }
     
 }
 
-// MARK: - Icon
+// MARK: - Icon Image
 
 extension ViewHierarchySnapshot {
     
-    func iconImage(for view: UIView?, with size: CGSize = .defaultElementIconSize) -> UIImage {
+    func iconImage(for view: UIView?, with size: CGSize = .defaultIconSize) -> UIImage {
         iconImage(for: view).resized(size)
     }
     
     private func iconImage(for view: UIView?) -> UIImage {
         switch view {
-        case is BaseView:
-            return UIImage.moduleImage(named: "InternalView-32_Normal").withRenderingMode(.alwaysTemplate)
+        case is InternalViewProtocol:
+            return UIImage.internalViewIcon.withRenderingMode(view is UIControl ? .alwaysOriginal : .alwaysTemplate)
             
-        case is BaseControl:
-            return UIImage.moduleImage(named: "InternalView-32_Normal").withRenderingMode(.alwaysOriginal)
-         
         case let view?:
-            let icons = inspectableElements.targeting(element: view).compactMap { $0.icon(with: view) }
+            let candidateIcons = elementLibraries.targeting(element: view).compactMap { $0.icon(with: view) }
             
-            if let firstIcon = icons.first {
+            if let firstIcon = candidateIcons.first {
                 return firstIcon
             }
             
@@ -79,8 +78,12 @@ extension ViewHierarchySnapshot {
     
 }
 
+private extension UIImage {
+    static let internalViewIcon = UIImage.moduleImage(named: "InternalView-32_Normal")
+}
+
 private extension CGSize {
-    static let defaultElementIconSize = CGSize(
+    static let defaultIconSize = CGSize(
         width:  ElementInspector.appearance.verticalMargins * 3,
         height: ElementInspector.appearance.verticalMargins * 3
     )

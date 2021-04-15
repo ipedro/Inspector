@@ -98,6 +98,7 @@ protocol ViewHierarchySnapshotableProtocol {
     var viewHierarchySnapshot: ViewHierarchySnapshot? { get }
     
     var shouldCacheViewHierarchySnapshot: Bool { get }
+    
 }
 
 extension HierarchyInspector.Manager {
@@ -110,25 +111,27 @@ extension HierarchyInspector.Manager {
         snapshot(of: hostViewController?.view.window)
     }
     
-    private func snapshot(of view: UIView?) -> ViewHierarchySnapshot? {
-        guard let view = view else {
+    private func snapshot(of referenceView: UIView?) -> ViewHierarchySnapshot? {
+        guard let referenceView = referenceView else {
             return nil
         }
         
         guard
             shouldCacheViewHierarchySnapshot,
-            let cachedSnapshot = cachedSnapshots[view],
+            let cachedSnapshot = cachedSnapshots[referenceView],
             Date() <= cachedSnapshot.expiryDate
         else {
-            let layers = hostViewController?.allAvailableLayers ?? []
-            let inspectableElement = hostViewController?.allAvailableInspectableElements ?? []
+            let availableLayers = hostViewController?.availableLayers ?? []
+            
+            let availableElementLibraries = hostViewController?.availableElementLibraries ?? []
+            
             let snapshot = ViewHierarchySnapshot(
-                availableLayers: layers,
-                inspectableElements: inspectableElement,
-                in: view
+                availableLayers: availableLayers,
+                elementLibraries: availableElementLibraries,
+                in: referenceView
             )
             
-            cachedSnapshots[view] = snapshot
+            cachedSnapshots[referenceView] = snapshot
             
             return snapshot
         }
@@ -147,4 +150,5 @@ extension HierarchyInspector.Manager: AsyncOperationProtocol {
         
         operationQueue.addOperation(asyncOperation)
     }
+    
 }

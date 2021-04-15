@@ -13,13 +13,13 @@ protocol HighlightViewDelegate: AnyObject {
 
 extension HighlightViewDelegate {
     
-    func hideAllHighlightViews(_ hide: Bool, containedIn reference: ViewHierarchyReference) {
-        guard let referenceView = reference.rootView else {
+    func toggleHighlightViews(visibility isVisible: Bool, inside reference: ViewHierarchyReference) {
+        guard let referenceRootView = reference.rootView else {
             return
         }
         
-        for view in referenceView.allSubviews where view is LayerViewProtocol {
-            view.isSafelyHidden = hide
+        for view in referenceRootView.allSubviews where view is LayerViewProtocol {
+            view.isSafelyHidden = isVisible == false
         }
     }
     
@@ -106,7 +106,10 @@ class HighlightView: LayerView {
         $0.layer.rasterizationScale = UIScreen.main.scale
     }
     
-    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
+    private lazy var tapGestureRecognizer = UITapGestureRecognizer(
+        target: self,
+        action: #selector(tap)
+    )
     
     // MARK: - Init
     

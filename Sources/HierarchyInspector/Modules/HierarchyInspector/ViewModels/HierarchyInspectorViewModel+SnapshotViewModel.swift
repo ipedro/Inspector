@@ -52,7 +52,7 @@ extension HierarchyInspectorViewModel {
         }
         
         func titleForHeader(in section: Int) -> String? {
-            "\(searchResults.count) Search results in \(snapshot.viewHierarchy.elementName)"
+            "\(searchResults.count) Search results in \(snapshot.rootReference.elementName)"
         }
         
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
@@ -65,7 +65,7 @@ extension HierarchyInspectorViewModel {
                 return
             }
             
-            let flattenedViewHierarchy = [snapshot.viewHierarchy] + snapshot.flattenedViewHierarchy
+            let flattenedViewHierarchy = snapshot.inspectableReferences
             
             searchResults = flattenedViewHierarchy.filter {
                 ($0.elementName + $0.className).localizedCaseInsensitiveContains(searchQuery)

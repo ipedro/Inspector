@@ -26,7 +26,7 @@ public extension HierarchyInspectableProtocol {
 
 extension HierarchyInspectableProtocol {
     
-    var allAvailableLayers: [ViewHierarchyLayer] {
+    var availableLayers: [ViewHierarchyLayer] {
         var layers = hierarchyInspectorLayers
         layers.append(.internalViews)
         layers.append(.allViews)
@@ -34,7 +34,7 @@ extension HierarchyInspectableProtocol {
         return layers.uniqueValues
     }
     
-    var allAvailableInspectableElements: [HierarchyInspectorElementLibraryProtocol] {
+    var availableElementLibraries: [HierarchyInspectorElementLibraryProtocol] {
         var elements = [HierarchyInspectorElementLibraryProtocol]()
         elements.append(contentsOf: hierarchyInspectorElements)
         elements.append(contentsOf: UIKitElementLibrary.standard)

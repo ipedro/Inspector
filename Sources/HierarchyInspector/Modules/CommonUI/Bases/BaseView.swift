@@ -7,7 +7,7 @@
 
 import UIKit
 
-class BaseView: UIView {
+class BaseView: UIView, InternalViewProtocol {
     
     private(set) lazy var contentView = UIStackView(axis: .vertical).then {
         installView($0)

@@ -36,7 +36,7 @@ public struct ViewHierarchyLayer {
     // MARK: - Metods
     
     func filter(snapshot: ViewHierarchySnapshot) -> [UIView] {
-        let inspectableViews = snapshot.flattenedViewHierarchy.compactMap { $0.rootView }
+        let inspectableViews = snapshot.inspectableReferences.compactMap { $0.rootView }
         
         return filter(flattenedViewHierarchy: inspectableViews)
     }

@@ -84,7 +84,7 @@ extension ViewHierarchyReference: ViewHierarchyProtocol {
         return array
     }
     
-    var flattenedInspectableViewReferences: [ViewHierarchyReference] {
+    var inspectableViewReferences: [ViewHierarchyReference] {
         let flattenedViewHierarchy = [self] + flattenedSubviewReferences
         
         let inspectableViews = flattenedViewHierarchy.filter { $0.canHostInspectorView }

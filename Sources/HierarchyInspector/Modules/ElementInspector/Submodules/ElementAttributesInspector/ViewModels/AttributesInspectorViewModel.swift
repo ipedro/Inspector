@@ -31,7 +31,7 @@ final class AttributesInspectorViewModel {
             return []
         }
         
-        return snapshot.inspectableElements.targeting(element: referenceView).compactMap {
+        return snapshot.elementLibraries.targeting(element: referenceView).compactMap {
             $0.viewModel(with: referenceView)
         }
     }()

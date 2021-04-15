@@ -12,15 +12,15 @@ import UIKit
 extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
     
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        viewHierarchyLayersCoordinator.hideAllHighlightViews(false, containedIn: reference)
+        viewHierarchyLayersCoordinator.toggleHighlightViews(visibility: false, inside: reference)
     }
     
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, hideHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        viewHierarchyLayersCoordinator.hideAllHighlightViews(true, containedIn: reference)
+        viewHierarchyLayersCoordinator.toggleHighlightViews(visibility: true, inside: reference)
     }
     
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference) {
-        viewHierarchyLayersCoordinator.hideAllHighlightViews(false, containedIn: reference)
+        viewHierarchyLayersCoordinator.toggleHighlightViews(visibility: false, inside: reference)
         elementInspectorCoordinator = nil
     }
 }
@@ -32,13 +32,8 @@ extension HierarchyInspector.Manager {
             return
         }
         
-        let coordinator = ElementInspectorCoordinator(
-            reference: reference,
-            inWindow: windowHierarchySnapshot,
-            from: sourceView
-        ).then {
-            $0.delegate = self
-        }
+        let coordinator = ElementInspectorCoordinator(reference: reference, in: windowHierarchySnapshot, from: sourceView)
+        coordinator.delegate = self
         
         elementInspectorCoordinator = coordinator
         

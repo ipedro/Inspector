@@ -7,7 +7,7 @@
 
 import UIKit
 
-class BaseControl: UIControl {
+class BaseControl: UIControl, InternalViewProtocol {
     
     open var animateOnTouch: Bool = false
     
