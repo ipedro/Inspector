@@ -277,7 +277,7 @@ extension AttributesInspectorSectionViewController {
                 toggleControl.title = title
                 
             case let (.imageButtonGroup(title: title, _, _, selectedIndex: selectedIndexProvider, _), segmentedControl as SegmentedControl),
-                 let (.textButtonGroup(title: title, _, _, selectedIndex: selectedIndexProvider, _), segmentedControl as SegmentedControl):
+                 let ( .textButtonGroup(title: title, _, _, selectedIndex: selectedIndexProvider, _), segmentedControl as SegmentedControl):
                 segmentedControl.selectedIndex = selectedIndexProvider()
                 segmentedControl.title = title
                 
@@ -286,13 +286,13 @@ extension AttributesInspectorSectionViewController {
                 optionSelector.title = title
                 
             case let (.textField(title: title, placeholder: placeholderProvider, value: valueProvider, _), textFieldControl as TextFieldControl):
-                textFieldControl.placeholder = placeholderProvider()
-                textFieldControl.value = valueProvider()
+                textFieldControl.value = valueProvider()?.trimmed
+                textFieldControl.placeholder = placeholderProvider()?.trimmed
                 textFieldControl.title = title
                 
             case let (.textView(title: title, placeholder: placeholderProvider, value: valueProvider, _), textViewControl as TextViewControl):
-                textViewControl.placeholder = placeholderProvider()
-                textViewControl.value = valueProvider()
+                textViewControl.value = valueProvider()?.trimmed
+                textViewControl.placeholder = placeholderProvider()?.trimmed
                 textViewControl.title = title
                 
             case (.separator, _),

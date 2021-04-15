@@ -45,15 +45,25 @@ final class TextFieldControl: BaseFormControl {
             textField.placeholder
         }
         set {
-            textField.placeholder = newValue
+            guard let placeholder = newValue else {
+                textField.placeholder = nil
+                return
+            }
+            textField.attributedPlaceholder = NSAttributedString(
+                string: placeholder,
+                attributes: [
+                    .font : UIFont.preferredFont(forTextStyle: .footnote),
+                    .foregroundColor: ElementInspector.appearance.tertiaryTextColor
+                ]
+            )
         }
     }
 
     init(title: String?, value: String?, placeholder: String?) {
         super.init(title: title)
 
-        textField.text = value
-        textField.placeholder = placeholder
+        self.value = value
+        self.placeholder = placeholder
     }
 
     required init?(coder: NSCoder) {
@@ -68,13 +78,6 @@ final class TextFieldControl: BaseFormControl {
         contentView.addArrangedSubview(accessoryControl)
         
         accessoryControl.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor).isActive = true
-        
-        updateViews()
-    }
-    
-    func updateViews() {
-        textField.placeholder = placeholder
-        textField.text = value
     }
     
     override var canBecomeFirstResponder: Bool {

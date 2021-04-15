@@ -86,12 +86,17 @@ extension UIKitComponents {
                 }
                 
             case .accessibilityIdentifier:
+                let placeholder = view.accessibilityIdentifier?.trimmed ?? property.rawValue
+                
                 return .textField(
                     title: property.rawValue,
-                    placeholder: { view.accessibilityIdentifier ?? property.rawValue },
-                    value: { view.accessibilityIdentifier }
+                    placeholder: { placeholder },
+                    value: {
+                        view.accessibilityIdentifier?.trimmed
+                    }
                 ) { accessibilityIdentifier in
-                    view.accessibilityIdentifier = accessibilityIdentifier
+                    view.accessibilityIdentifier = accessibilityIdentifier?.trimmed
+                    view.hightlightView?.updateElementName()
                 }
                 
             case .groupInteraction:
