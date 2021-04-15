@@ -11,7 +11,7 @@ extension UIKeyboardType: CaseIterable {
     
     typealias AllCases = [UIKeyboardType]
     
-    public static let allCases: [UIKeyboardType] = [
+    static let allCases: [UIKeyboardType] = [
         .default,
         .asciiCapable,
         .numbersAndPunctuation,

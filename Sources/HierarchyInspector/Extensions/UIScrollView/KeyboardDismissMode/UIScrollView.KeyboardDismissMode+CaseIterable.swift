@@ -11,7 +11,7 @@ extension UIScrollView.KeyboardDismissMode: CaseIterable {
     
     typealias AllCases = [UIScrollView.KeyboardDismissMode]
     
-    public static let allCases: [UIScrollView.KeyboardDismissMode] = [
+    static let allCases: [UIScrollView.KeyboardDismissMode] = [
         .none,
         .onDrag,
         .interactive

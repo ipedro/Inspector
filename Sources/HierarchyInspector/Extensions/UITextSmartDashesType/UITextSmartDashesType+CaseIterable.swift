@@ -11,7 +11,7 @@ extension UITextSmartDashesType: CaseIterable {
     
     typealias AllCases = [UITextSmartDashesType]
     
-    public static let allCases: [UITextSmartDashesType] = [
+    static let allCases: [UITextSmartDashesType] = [
         .default,
         .no,
         .yes

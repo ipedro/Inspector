@@ -10,7 +10,7 @@ import MapKit
 extension MKMapType: CaseIterable {
     typealias AllCases = [MKMapType]
     
-    public static let allCases: [MKMapType] = [
+    static let allCases: [MKMapType] = [
         .standard,
         .satellite,
         .hybrid,

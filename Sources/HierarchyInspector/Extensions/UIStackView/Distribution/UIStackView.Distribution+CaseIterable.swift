@@ -10,7 +10,7 @@ import UIKit
 extension UIStackView.Distribution: CaseIterable {
     typealias AllCases = [UIStackView.Distribution]
     
-    public static let allCases: [UIStackView.Distribution] = [
+    static let allCases: [UIStackView.Distribution] = [
         .fill,
         .fillEqually,
         .fillProportionally,

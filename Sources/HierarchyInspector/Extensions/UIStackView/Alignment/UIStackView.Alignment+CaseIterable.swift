@@ -10,7 +10,7 @@ import UIKit
 extension UIStackView.Alignment: CaseIterable {
     typealias AllCases = [UIStackView.Alignment]
     
-    public static let allCases: [UIStackView.Alignment] = [
+    static let allCases: [UIStackView.Alignment] = [
         .fill,
         .leading,
         .firstBaseline,

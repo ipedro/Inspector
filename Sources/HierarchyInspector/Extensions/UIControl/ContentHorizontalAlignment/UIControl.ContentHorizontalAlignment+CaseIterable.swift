@@ -10,7 +10,7 @@ import UIKit
 extension UIControl.ContentHorizontalAlignment: CaseIterable {
     typealias AllCases = [UIControl.ContentHorizontalAlignment]
     
-    public static let allCases: [UIControl.ContentHorizontalAlignment] = [
+    static let allCases: [UIControl.ContentHorizontalAlignment] = [
         .leading,
         .left,
         .center,

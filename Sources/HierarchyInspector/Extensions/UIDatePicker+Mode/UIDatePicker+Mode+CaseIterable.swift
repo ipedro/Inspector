@@ -10,7 +10,7 @@ import UIKit
 extension UIDatePicker.Mode: CaseIterable {
     typealias AllCases = [UIDatePicker.Mode]
     
-    public static let allCases: [UIDatePicker.Mode] = [
+    static let allCases: [UIDatePicker.Mode] = [
         .time,
         .date,
         .dateAndTime,

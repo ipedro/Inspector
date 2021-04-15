@@ -11,7 +11,7 @@ extension UIKeyboardAppearance: CaseIterable {
     
     typealias AllCases = [UIKeyboardAppearance]
     
-    public static let allCases: [UIKeyboardAppearance] = [
+    static let allCases: [UIKeyboardAppearance] = [
         .default,
         .dark,
         .light

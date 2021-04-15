@@ -11,7 +11,7 @@ extension UITextAutocapitalizationType: CaseIterable {
     
     typealias AllCases = [UITextAutocapitalizationType]
     
-    public static let allCases: [UITextAutocapitalizationType] = [
+    static let allCases: [UITextAutocapitalizationType] = [
         .none,
         .words,
         .sentences,

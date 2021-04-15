@@ -11,7 +11,7 @@ extension UITextField.BorderStyle: CaseIterable {
     
     typealias AllCases = [UITextField.BorderStyle]
     
-    public static let allCases: [UITextField.BorderStyle] = [
+    static let allCases: [UITextField.BorderStyle] = [
         .none,
         .line,
         .bezel,

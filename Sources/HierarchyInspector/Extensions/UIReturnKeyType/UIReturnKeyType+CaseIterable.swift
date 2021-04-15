@@ -10,7 +10,7 @@ import UIKit
 extension UIReturnKeyType: CaseIterable {
     typealias AllCases = [UIReturnKeyType]
     
-    public static let allCases: [UIReturnKeyType] = [
+    static let allCases: [UIReturnKeyType] = [
         .default,
         .go,
         .google,

@@ -10,7 +10,7 @@ import UIKit
 extension UITextSpellCheckingType: CaseIterable {
     typealias AllCases = [UITextSpellCheckingType]
     
-    public static let allCases: [UITextSpellCheckingType] = [
+    static let allCases: [UITextSpellCheckingType] = [
         .default,
         .no,
         .yes

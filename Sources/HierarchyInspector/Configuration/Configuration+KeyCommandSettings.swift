@@ -12,11 +12,11 @@ public extension HierarchyInspector.Configuration {
 
     struct KeyCommandSettings {
         
-        public let layerToggleInputRange: ClosedRange<Int> = (1 ... 9)
+        public var layerToggleInputRange: ClosedRange<Int> = (1 ... 9)
         
-        public let layerToggleModifierFlags: UIKeyModifierFlags = [.control]
+        public var layerToggleModifierFlags: UIKeyModifierFlags = [.control]
         
-        public let allLayersToggleInput: String = String(0)
+        public var allLayersToggleInput: String = String(0)
         
         public var presentationOptions: UIKeyCommand.Options = .discoverabilityTitle(
             title: Texts.openHierarchyInspector,

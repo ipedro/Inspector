@@ -11,7 +11,7 @@ extension UITextAutocorrectionType: CaseIterable {
     
     typealias AllCases = [UITextAutocorrectionType]
     
-    public static let allCases: [UITextAutocorrectionType] = [
+    static let allCases: [UITextAutocorrectionType] = [
         .default,
         .no,
         .yes

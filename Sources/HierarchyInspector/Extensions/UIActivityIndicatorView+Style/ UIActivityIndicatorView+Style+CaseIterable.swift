@@ -11,7 +11,7 @@ extension UIActivityIndicatorView.Style: CaseIterable {
     typealias AllCases = [UIActivityIndicatorView.Style]
     
     #if swift(>=5.0)
-    public static let allCases: [UIActivityIndicatorView.Style] = {
+    static let allCases: [UIActivityIndicatorView.Style] = {
         if #available(iOS 13.0, *) {
             return [
                 .medium,
@@ -30,7 +30,7 @@ extension UIActivityIndicatorView.Style: CaseIterable {
     }()
     
     #else
-    public static let allCases: [UIActivityIndicatorView.Style] = [
+    static let allCases: [UIActivityIndicatorView.Style] = [
         .whiteLarge,
         .white,
         .gray

@@ -11,7 +11,7 @@ extension UIScrollView.IndicatorStyle: CaseIterable {
     
     typealias AllCases = [UIScrollView.IndicatorStyle]
     
-    public static let allCases: [UIScrollView.IndicatorStyle] = [
+    static let allCases: [UIScrollView.IndicatorStyle] = [
         .default,
         .black,
         .white

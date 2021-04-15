@@ -12,7 +12,7 @@ import UIKit
 extension UISwitch.Style: CaseIterable {
     typealias AllCases = [UISwitch.Style]
     
-    public static let allCases: [UISwitch.Style] = [
+    static let allCases: [UISwitch.Style] = [
         .automatic,
         .checkbox,
         .sliding
