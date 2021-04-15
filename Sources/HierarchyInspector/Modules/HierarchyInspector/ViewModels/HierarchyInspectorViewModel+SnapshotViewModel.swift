@@ -68,7 +68,7 @@ extension HierarchyInspectorViewModel {
             let flattenedViewHierarchy = [snapshot.viewHierarchy] + snapshot.flattenedViewHierarchy
             
             searchResults = flattenedViewHierarchy.filter {
-                $0.elementName.localizedCaseInsensitiveContains(searchQuery)
+                ($0.elementName + $0.className).localizedCaseInsensitiveContains(searchQuery)
             }.map({ element -> Details in
                 
                 let title: String = {
