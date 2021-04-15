@@ -52,7 +52,7 @@ extension HierarchyInspectorViewModel {
         }
         
         func titleForHeader(in section: Int) -> String? {
-            "\(searchResults.count) Search results in \(snapshot.rootReference.elementName)"
+            Texts.allResults(count: searchResults.count, in: snapshot.rootReference.elementName)
         }
         
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {

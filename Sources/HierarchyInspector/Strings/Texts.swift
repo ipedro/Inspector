@@ -17,11 +17,15 @@ enum Texts {
         "\(viewCount) inspectable views in \(className)"
     }
     
-    static let highlightViews = "Highlight Views"
+    static func allResults(count: Int, in elementName: String) -> String {
+        "\(count) Search results in \(elementName)"
+    }
+    
+    static let viewLayers = "View Layers"
     
     static let closeInspector = "Close"
     
-    static let hideVisibleLayers = "Stop highlighting all views"
+    static let hideVisibleLayers = "Hide all layers"
     
     static let hierarchyInspector = "Hierarchy Inspector"
     
@@ -31,7 +35,7 @@ enum Texts {
     
     static let openingHierarchyInspector = "Opening..."
     
-    static let showAllLayers = "Highlight all views"
+    static let showAllLayers = "Show all layers"
     
     static let stopInspecting = "Stop inspecting me"
     

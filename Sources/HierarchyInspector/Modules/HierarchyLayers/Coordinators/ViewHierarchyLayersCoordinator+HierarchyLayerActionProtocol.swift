@@ -19,7 +19,7 @@ extension ViewHierarchyLayersCoordinator: LayerActionProtocol {
         }
         
         return ActionGroup(
-            title: actions.isEmpty ? Texts.noLayers : Texts.highlightViews,
+            title: actions.isEmpty ? Texts.noLayers : Texts.viewLayers,
             actions: Array(actions.prefix(maxCount))
         )
     }
