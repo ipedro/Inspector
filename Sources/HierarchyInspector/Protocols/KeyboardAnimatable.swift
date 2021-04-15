@@ -41,17 +41,14 @@ enum KeyboardEvent {
     }
 }
 
+struct KeyboardAnimationProperties {
+    let duration: TimeInterval
+    let keyboardFrame: CGRect
+    let curveValue: Int
+    let curve: UIView.AnimationCurve
+}
+
 extension KeyboardAnimatable {
-    
-    typealias Properties = (duration: TimeInterval, keyboardFrame: CGRect, curveValue: Int, curve: UIView.AnimationCurve)
-    
-    var durationKey: String { UIResponder.keyboardAnimationDurationUserInfoKey }
-    
-    var frameKey: String { UIResponder.keyboardFrameEndUserInfoKey }
-    
-    var curveKey: String { UIResponder.keyboardAnimationCurveUserInfoKey }
-    
-    var keyboardIsLocalKey: String { UIResponder.keyboardIsLocalUserInfoKey }
     
     func addKeyboardNotificationObserver(with selector: Selector, to keyboardEvent: KeyboardEvent) {
         NotificationCenter.default.addObserver(self, selector: selector, name: keyboardEvent.notificationName, object: nil)
@@ -61,19 +58,19 @@ extension KeyboardAnimatable {
         NotificationCenter.default.removeObserver(self, name: keyboardEvent.notificationName, object: nil)
     }
     
-    func animateWithKeyboard(notification: Notification, animations: @escaping ((_ properties: Properties) -> Void)) {
+    func animateWithKeyboard(notification: Notification, animations: @escaping ((_ properties: KeyboardAnimationProperties) -> Void)) {
         guard
             let userInfo = notification.userInfo,
-            userInfo[keyboardIsLocalKey] as? Bool == true,
-            let duration = userInfo[durationKey] as? Double,
-            let keyboardFrame = userInfo[frameKey] as? CGRect,
-            let curveValue = userInfo[curveKey] as? Int,
+            userInfo[.keyboardIsLocalKey] as? Bool == true,
+            let duration = userInfo[.durationKey] as? Double,
+            let keyboardFrame = userInfo[.frameKey] as? CGRect,
+            let curveValue = userInfo[.curveKey] as? Int,
             let curve = UIView.AnimationCurve(rawValue: curveValue)
         else {
             return
         }
         
-        let properties: Properties = (
+        let properties = KeyboardAnimationProperties(
             duration: duration,
             keyboardFrame: keyboardFrame,
             curveValue: curveValue,
@@ -88,4 +85,16 @@ extension KeyboardAnimatable {
         
         animator.startAnimation()
     }
+}
+
+private extension AnyHashable {
+    
+    static var durationKey: AnyHashable { UIResponder.keyboardAnimationDurationUserInfoKey }
+    
+    static var frameKey: AnyHashable { UIResponder.keyboardFrameEndUserInfoKey }
+    
+    static var curveKey: AnyHashable { UIResponder.keyboardAnimationCurveUserInfoKey }
+    
+    static var keyboardIsLocalKey: AnyHashable { UIResponder.keyboardIsLocalUserInfoKey }
+    
 }

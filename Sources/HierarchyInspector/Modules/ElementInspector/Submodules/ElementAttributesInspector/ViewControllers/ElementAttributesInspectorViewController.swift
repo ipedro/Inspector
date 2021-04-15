@@ -26,7 +26,7 @@ protocol ElementAttributesInspectorViewControllerDelegate: OperationQueueManager
     
 }
 
-final class ElementAttributesInspectorViewController: ElementInspectorPanelViewController {
+final class ElementAttributesInspectorViewController: ElementInspectorPanelViewController, KeyboardAnimatable {
     
     // MARK: - Properties
     
@@ -96,6 +96,7 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
         super.viewDidLoad()
         
         loadSections()
+        addKeyboardNotificationObserver(with: #selector(keyboardChangeFrame(_:)), to: .willChangeFrame)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -151,6 +152,12 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
 
 
 @objc extension ElementAttributesInspectorViewController {
+    
+    private func keyboardChangeFrame(_ notification: Notification) {
+        animateWithKeyboard(notification: notification) { properties in
+            self.viewCode.keyboardHeight = properties.keyboardFrame.height
+        }
+    }
     
     func updateHeaderDetails() {
         thumbnailSectionViewCode.referenceDetailView.viewModel = viewModel

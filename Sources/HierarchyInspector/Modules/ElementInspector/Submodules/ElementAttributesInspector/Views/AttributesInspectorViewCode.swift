@@ -17,6 +17,7 @@ final class AttributesInspectorViewCode: BaseView {
     private(set) lazy var scrollView = UIScrollView().then {
         $0.alwaysBounceVertical = true
         $0.keyboardDismissMode = .onDrag
+        $0.indicatorStyle = .white
     }
     
     #if swift(>=5.0)
@@ -27,6 +28,12 @@ final class AttributesInspectorViewCode: BaseView {
     private(set) var isPointerInUse = false {
         didSet {
             delegate?.attributesInspectorViewCode(self, isPointerInUse: isPointerInUse)
+        }
+    }
+    
+    var keyboardHeight: CGFloat = .zero {
+        didSet {
+            scrollView.contentInset = UIEdgeInsets(top: .zero, left: .zero, bottom: keyboardHeight, right: .zero)
         }
     }
     
