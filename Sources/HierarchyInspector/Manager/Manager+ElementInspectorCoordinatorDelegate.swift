@@ -12,15 +12,15 @@ import UIKit
 extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
     
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        viewHierarchyLayersCoordinator.toggleHighlightViews(visibility: false, inside: reference)
-    }
-    
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, hideHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
         viewHierarchyLayersCoordinator.toggleHighlightViews(visibility: true, inside: reference)
     }
     
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference) {
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, hideHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
         viewHierarchyLayersCoordinator.toggleHighlightViews(visibility: false, inside: reference)
+    }
+    
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference) {
+        viewHierarchyLayersCoordinator.toggleHighlightViews(visibility: true, inside: reference)
         elementInspectorCoordinator = nil
     }
 }
