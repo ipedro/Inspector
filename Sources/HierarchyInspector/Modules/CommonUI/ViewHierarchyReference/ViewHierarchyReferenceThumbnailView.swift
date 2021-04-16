@@ -31,10 +31,10 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     var backgroundStyle: ThumbnailBackgroundStyle {
         get {
-            ElementInspector.appearance.thumbnailBackgroundStyle
+            ElementInspector.configuration.thumbnailBackgroundStyle
         }
         set {
-            ElementInspector.appearance.thumbnailBackgroundStyle = newValue
+            ElementInspector.configuration.thumbnailBackgroundStyle = newValue
             backgroundColor = newValue.color
         }
     }

@@ -293,7 +293,7 @@ private extension ElementAttributesInspectorViewController {
     @objc
     func tapThumbnailAccessory() {
         animatePanel { [weak self] in
-            self?.thumbnailSectionViewCode.toggleAccessoryControls()
+            self?.thumbnailSectionViewCode.isCollapsed.toggle()
         }
     }
 }

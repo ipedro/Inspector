@@ -15,14 +15,16 @@ enum ElementInspector {
 
 extension ElementInspector {
     struct Configuration {
-        let animationDuration: TimeInterval = CATransaction.animationDuration()
+        var animationDuration: TimeInterval = CATransaction.animationDuration()
+        
+        var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
+        
+        var isPreviewPanelCollapsed: Bool = false
     }
 }
 
 extension ElementInspector {
     struct Appearance {
-        var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
-        
         let horizontalMargins: CGFloat = 24
         
         let verticalMargins: CGFloat = 12

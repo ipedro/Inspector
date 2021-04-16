@@ -12,10 +12,20 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
     
     let reference: ViewHierarchyReference
     
+    var isCollapsed: Bool {
+        get {
+            ElementInspector.configuration.isPreviewPanelCollapsed
+        }
+        set {
+            ElementInspector.configuration.isPreviewPanelCollapsed = newValue
+            hideAccessoryControls(newValue)
+        }
+    }
+    
     private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView()
     
-    func toggleAccessoryControls() {
-        controlsContainerView.isSafelyHidden.toggle()
+    private func hideAccessoryControls(_ isHidden: Bool) {
+        controlsContainerView.isSafelyHidden = isHidden
         
         switch controlsContainerView.isHidden {
         case true:
@@ -44,19 +54,18 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
         margins: .margins(trailing: 20)
     )
     
-    private lazy var controlsHeaderTitle = SectionHeader.attributesInspectorHeader(
-        title: "Preview"
-    )
+    private lazy var controlsHeaderTitle = SectionHeader.attributesInspectorHeader(title: "Preview").then {
+        $0.contentView.directionalLayoutMargins = .horizontalMargins(ElementInspector.appearance.horizontalMargins)
+    }
     
     private lazy var controlsContainerView = UIStackView(
         axis: .vertical,
         arrangedSubviews: [
-            controlsHeaderTitle,
             backgroundAppearanceControl,
             isHighlightingViewsControl,
             isLiveUpdatingControl
         ],
-        margins: .allMargins(ElementInspector.appearance.horizontalMargins)
+        margins: .horizontalMargins(ElementInspector.appearance.horizontalMargins)
     )
     
     private lazy var backgroundAppearanceControl = SegmentedControl(
@@ -86,6 +95,8 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
     ).then {
         $0.clipsToBounds = false
     }
+    
+    private lazy var separatorView = SeparatorView()
     
     private lazy var thumbnailHeightConstraint = thumbnailView.heightAnchor.constraint(
         greaterThanOrEqualToConstant: frame.height
@@ -120,9 +131,19 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
         
         contentView.addArrangedSubview(headerContainerView)
         
-        contentView.addArrangedSubview(thumbnailView)
+        contentView.addArrangedSubview(separatorView)
+        
+        contentView.addArrangedSubview(controlsHeaderTitle)
         
         contentView.addArrangedSubview(controlsContainerView)
+        
+        contentView.addArrangedSubview(thumbnailView)
+        
+        contentView.spacing = ElementInspector.appearance.verticalMargins
+        
+        contentView.setCustomSpacing(.zero, after: headerContainerView)
+        
+        hideAccessoryControls(isCollapsed)
     }
     
     override func layoutSubviews() {

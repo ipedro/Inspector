@@ -44,29 +44,27 @@ extension ElementAttributesInspectorViewController: AttributesInspectorSectionVi
         stopLiveUpdatingSnaphost()
         
         animatePanel(
-            animations: {
+            animations: { [weak self] in
                 
-                viewController.isCollapsed.toggle()
-                
-//                guard isCollapsed else {
-//                    viewController.isCollapsed.toggle()
-//                    return
-//                }
-//
-//                self?.children.forEach {
-//
-//                    guard let sectionViewController = $0 as? AttributesInspectorSectionViewController else {
-//                        return
-//                    }
-//
-//                    if sectionViewController === viewController {
-//                        sectionViewController.isCollapsed = !isCollapsed
-//                    }
-//                    else {
-//                        sectionViewController.isCollapsed = isCollapsed
-//                    }
-//
-//                }
+                guard isCollapsed else {
+                    viewController.isCollapsed.toggle()
+                    return
+                }
+
+                self?.children.forEach {
+
+                    guard let sectionViewController = $0 as? AttributesInspectorSectionViewController else {
+                        return
+                    }
+
+                    if sectionViewController === viewController {
+                        sectionViewController.isCollapsed = !isCollapsed
+                    }
+                    else {
+                        sectionViewController.isCollapsed = isCollapsed
+                    }
+
+                }
                 
             },
             completion: { [weak self] _ in
