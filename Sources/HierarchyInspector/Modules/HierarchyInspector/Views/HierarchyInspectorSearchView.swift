@@ -18,20 +18,18 @@ final class HierarchyInspectorSearchView: BaseView {
         )
     )
     
-    private(set) lazy var textField = UITextField().then {
-        let font = UIFont.preferredFont(forTextStyle: .title2)
-        
-        $0.clearButtonMode = .whileEditing
-        $0.font = font
-        $0.textColor = ElementInspector.appearance.textColor
-        $0.attributedPlaceholder = NSAttributedString(
-            string: Texts.hierarchyInspector,
-            attributes: [
-                NSAttributedString.Key.foregroundColor: ElementInspector.appearance.tertiaryTextColor,
-                NSAttributedString.Key.font: font
-            ]
+    private(set) lazy var textField = UITextField(
+        .clearButtonMode(.whileEditing),
+        .textStyle(.title2),
+        .textColor(ElementInspector.appearance.textColor),
+        .attributedPlaceholder(
+            NSAttributedString(
+                Texts.hierarchyInspector,
+                .foregroundColor(ElementInspector.appearance.tertiaryTextColor),
+                .textStyle(.title2)
+            )
         )
-    }
+    )
     
     private(set) lazy var separatorView = SeparatorView(
         thickness: 1,

@@ -10,7 +10,13 @@ import UIKit
 final class TextViewControl: BaseFormControl {
     // MARK: - Properties
     
-    private lazy var textView = UITextView().then {
+    private lazy var textView = UITextView(
+        .backgroundColor(nil),
+        .isScrollEnabled(false),
+        .textColor(ElementInspector.appearance.textColor),
+        .textStyle(.footnote),
+        .delegate(self)
+    ).then {
         let padding = $0.textContainer.lineFragmentPadding
         
         $0.textContainerInset = .insets(
@@ -19,18 +25,13 @@ final class TextViewControl: BaseFormControl {
             bottom: padding,
             right: padding * -1
         )
-        $0.backgroundColor = nil
-        $0.isScrollEnabled = false
-        $0.textColor = ElementInspector.appearance.textColor
-        $0.font = .preferredFont(forTextStyle: .footnote)
-        $0.delegate = self
     }
     
-    private lazy var placeholderLabel = UILabel().then {
-        $0.font = textView.font
-        $0.numberOfLines = 0
-        $0.textColor = ElementInspector.appearance.secondaryTextColor
-    }
+    private lazy var placeholderLabel = UILabel(
+        .font(textView.font!),
+        .numberOfLines(.zero),
+        .textColor(ElementInspector.appearance.secondaryTextColor)
+    )
     
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.animateOnTouch = false

@@ -36,12 +36,12 @@ extension SectionHeader {
 
 final class SectionHeader: BaseView {
     
-    private(set) lazy var textLabel = UILabel().then {
-        $0.textColor = ElementInspector.appearance.textColor
-        $0.numberOfLines = 0
-        $0.adjustsFontSizeToFitWidth = true
-        $0.preferredMaxLayoutWidth = 200
-    }
+    private(set) lazy var textLabel = UILabel(
+        .textColor(ElementInspector.appearance.textColor),
+        .numberOfLines(.zero),
+        .adjustsFontSizeToFitWidth(true),
+        .preferredMaxLayoutWidth(200)
+    )
     
     var text: String? {
         get {

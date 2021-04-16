@@ -87,45 +87,43 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         )
     }
     
-    private(set) lazy var elementNameLabel = UILabel().then {
-        $0.textColor = ElementInspector.appearance.textColor
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        $0.numberOfLines = 0
-        $0.adjustsFontSizeToFitWidth = true
-        $0.allowsDefaultTighteningForTruncation = true
-        $0.preferredMaxLayoutWidth = 200
-    }
+    private(set) lazy var elementNameLabel = UILabel(
+        .textColor(ElementInspector.appearance.textColor),
+        .numberOfLines(.zero),
+        .adjustsFontSizeToFitWidth(true),
+        .allowsDefaultTighteningForTruncation(true),
+        .preferredMaxLayoutWidth(200),
+        .huggingPriority(.defaultHigh, for: .vertical)
+    )
     
     private(set) lazy var descriptionLabel = UILabel(
-        .caption2,
-        textColor: ElementInspector.appearance.secondaryTextColor,
-        numberOfLines: 0
-    ).then {
-        $0.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
-        $0.preferredMaxLayoutWidth = 200
-    }
+        .textStyle(.caption2),
+        .textColor(ElementInspector.appearance.secondaryTextColor),
+        .numberOfLines(.zero),
+        .preferredMaxLayoutWidth(200),
+        .compressionResistance(.defaultHigh, for: .vertical)
+    )
     
     private(set) lazy var chevronDownIcon = Icon.chevronDownIcon()
     
-    private(set) lazy var thumbnailImageView = UIImageView().then {
-        $0.contentMode = .center
-        $0.tintColor = ElementInspector.appearance.textColor
-        $0.backgroundColor = ElementInspector.appearance.quaternaryTextColor
-        
-        $0.clipsToBounds = true
-        
-        $0.layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
-        
-        $0.setContentHuggingPriority(.required, for: .horizontal)
-        $0.setContentHuggingPriority(.required, for: .vertical)
-    }
+    private(set) lazy var thumbnailImageView = UIImageView(
+        .contentMode(.center),
+        .tintColor(ElementInspector.appearance.textColor),
+        .backgroundColor(ElementInspector.appearance.quaternaryTextColor),
+        .layerOptions(.cornerRadius(ElementInspector.appearance.verticalMargins / 2)),
+        .clipsToBounds(true),
+        .layoutCompression(
+            .huggingPriority(.required, for: .horizontal),
+            .huggingPriority(.required, for: .vertical)
+        )
+    )
     
     private(set) lazy var textStackView = UIStackView.vertical(
-        arrangedSubviews: [
+        .arrangedSubviews(
             elementNameLabel,
             descriptionLabel
-        ],
-        spacing: ElementInspector.appearance.verticalMargins / 2
+        ),
+        .spacing(ElementInspector.appearance.verticalMargins / 2)
     )
     
     override func setup() {
@@ -134,8 +132,8 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         contentView.axis = .horizontal
         contentView.spacing = ElementInspector.appearance.verticalMargins
         contentView.alignment = .center
-        contentView.addArrangedSubview(thumbnailImageView)
-        contentView.addArrangedSubview(textStackView)
+        
+        contentView.addArrangedSubviews(thumbnailImageView, textStackView)
         
         installView(
             contentView,

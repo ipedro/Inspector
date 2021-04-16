@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/ipedro/UIKeyCommandTableView.git",
         "state": {
           "branch": null,
-          "revision": "a8d343478d3f1baa928a01b644bc8c9b9a6ad951",
-          "version": "0.1.3"
+          "revision": "76e6997d89e8850cbf08a51cce3953f71621efee",
+          "version": "0.1.4"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/ipedro/UIKitOptions.git",
         "state": {
           "branch": null,
-          "revision": "faee2410e6e49c07d2765be8674fab04a7443a40",
-          "version": "0.1.7"
+          "revision": "dd988450eb0387f0fca482ca09f9de7eb2360477",
+          "version": "0.2.15"
         }
       }
     ]

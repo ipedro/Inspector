@@ -34,19 +34,17 @@ final class HierarchyInspectorHeaderView: UITableViewHeaderFooterView {
     )
     
     private lazy var stackView = UIStackView.vertical(
-        arrangedSubviews: [
+        .arrangedSubviews(
             separatorView,
             titleLabel
-        ],
-        spacing: ElementInspector.appearance.verticalMargins
+        ),
+        .spacing(ElementInspector.appearance.verticalMargins)
     )
     
     private(set) lazy var titleLabel = UILabel(
-        .caption1,
-        textColor: ElementInspector.appearance.tertiaryTextColor
-    ).then {
-        $0.font = $0.font.bold()
-    }
+        .textStyle(.caption1, traits: .traitBold),
+        .textColor(ElementInspector.appearance.tertiaryTextColor)
+    )
     
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)

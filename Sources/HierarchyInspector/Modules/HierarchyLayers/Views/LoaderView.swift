@@ -15,14 +15,14 @@ final class LoaderView: LayerViewComponent {
         $0.startAnimating()
     }
     
-    private lazy var checkmarkLabel = UILabel().then {
-        $0.adjustsFontSizeToFitWidth = true
-        $0.font                      = .systemFont(ofSize: 32, weight: .semibold)
-        $0.text                      = "✓"
-        $0.textColor                 = .white
-        $0.textAlignment             = .center
-        $0.isSafelyHidden            = true
-    }
+    private lazy var checkmarkLabel = UILabel(
+        .text("✓"),
+        .adjustsFontSizeToFitWidth(true),
+        .font(.systemFont(ofSize: 32, weight: .semibold)),
+        .textColor(.white),
+        .textAlignment(.center),
+        .viewOptions(.isHidden(true))
+    )
     
     private lazy var colorScheme: ViewHierarchyColorScheme = .colorScheme { _ in .systemBlue }
     
@@ -34,12 +34,6 @@ final class LoaderView: LayerViewComponent {
     ).then {
         $0.verticalAlignmentOffset = activityIndicator.frame.height * 2 / 3
     }
-    
-//    var currentOperation: Operation? {
-//        didSet {
-//            accessibilityIdentifier = currentOperation?.name
-//        }
-//    }
     
     override var accessibilityIdentifier: String? {
         didSet {

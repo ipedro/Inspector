@@ -11,10 +11,10 @@ import UIKitOptions
 final class StepperControl: BaseFormControl {
     // MARK: - Properties
     
-    static let sharedDecimalNumberFormatter = NumberFormatter().then {
-        $0.minimumFractionDigits = 2
-        $0.numberStyle = .decimal
-    }
+    static let sharedDecimalNumberFormatter = NumberFormatter(
+        .minimumFractionDigits(2),
+        .numberStyle(.decimal)
+    )
     
     override var isEnabled: Bool {
         didSet {
@@ -66,13 +66,9 @@ final class StepperControl: BaseFormControl {
     }
     
     private lazy var counterLabel = UILabel(
-        options: UILabel.Options(
-            font: titleLabel.font?.withTraits(.traitMonoSpace),
-            textColor: tintColor,
-            viewOptions: .layoutCompression(
-                horizontalHugging: .required
-            )
-        )
+        .font(titleLabel.font!.withTraits(.traitMonoSpace)),
+        .textColor(tintColor),
+        .huggingPriority(.required, for: .horizontal)
     )
     
     private var decimalFormatter: NumberFormatter {

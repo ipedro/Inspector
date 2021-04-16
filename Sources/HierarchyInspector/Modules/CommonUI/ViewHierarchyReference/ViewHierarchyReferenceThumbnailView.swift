@@ -12,8 +12,8 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     
     enum State {
         case snapshot(UIView)
-        case isHidden
         case frameIsEmpty(CGRect)
+        case isHidden
         case lostConnection
     }
     
@@ -54,20 +54,20 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     // MARK: - Componentns
     
     private lazy var gridImageView = UIImageView(
-        image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)
+        .image(IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero))
     )
     
     private lazy var statusContentView = UIStackView.vertical(
-        spacing: ElementInspector.appearance.verticalMargins / 2,
-        layoutMargins: contentView.directionalLayoutMargins
-    ).then {
-        $0.alignment = .center
-    }
+        .directionalLayoutMargins(contentView.directionalLayoutMargins),
+        .spacing(ElementInspector.appearance.verticalMargins / 2),
+        .alignment(.center)
+    )
     
-    private lazy var snapshotContainerView = UIView(frame: bounds).then {
-        $0.layer.masksToBounds = true
-        $0.clipsToBounds = true
-    }
+    private lazy var snapshotContainerView = UIView(
+        .layerOptions(.masksToBounds(true)),
+        .clipsToBounds(true),
+        .frame(bounds)
+    )
     
     // MARK: - View Lifecycle
     

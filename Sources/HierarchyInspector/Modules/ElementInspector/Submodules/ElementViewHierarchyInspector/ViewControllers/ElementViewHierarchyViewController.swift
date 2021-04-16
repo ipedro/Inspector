@@ -27,6 +27,7 @@ final class ElementViewHierarchyViewController: ElementInspectorPanelViewControl
             size: ElementInspector.appearance.panelPreferredCompressedSize
         )
     ).then {
+        $0.tableView.register(ElementViewHierarchyInspectorTableViewCodeCell.self)
         $0.tableView.dataSource = self
         $0.tableView.delegate = self
     }

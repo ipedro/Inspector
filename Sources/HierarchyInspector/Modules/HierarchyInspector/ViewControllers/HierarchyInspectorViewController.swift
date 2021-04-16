@@ -37,6 +37,10 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         
         $0.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
         
+        $0.tableView.register(HierarchyInspectorLayerActionCell.self)
+        $0.tableView.register(HierarchyInspectorSnapshotCell.self)
+        $0.tableView.registerHeaderFooter(HierarchyInspectorHeaderView.self)
+        
         $0.tableView.delegate = self
         $0.tableView.dataSource = self
         $0.tableView.keyCommandsDelegate = self

@@ -38,30 +38,28 @@ final class HierarchyInspectorView: BaseView {
     
     private(set) lazy var searchView = HierarchyInspectorSearchView()
     
-    private(set) lazy var tableView = UIKeyCommandTableView().then {
-        $0.keyboardDismissMode = .onDrag
-        $0.indicatorStyle = .white
-        $0.backgroundColor = nil
-        $0.tableFooterView = UIView()
-        $0.separatorColor = ElementInspector.appearance.quaternaryTextColor
-        
-        $0.rowHeight = UITableView.automaticDimension
-        $0.estimatedRowHeight = 100
-        
-        $0.register(HierarchyInspectorLayerActionCell.self)
-        $0.register(HierarchyInspectorSnapshotCell.self)
-        $0.registerHeaderFooter(HierarchyInspectorHeaderView.self)
-        
-        $0.separatorInset = .insets(
-            left: ElementInspector.appearance.horizontalMargins,
-            right: ElementInspector.appearance.horizontalMargins
+    private(set) lazy var tableView = UIKeyCommandTableView(
+        .plain,
+        .keyboardDismissMode(.onDrag),
+        .indicatorStyle(.white),
+        .backgroundColor(nil),
+        .tableFooterView(UIView()),
+        .separatorColor(ElementInspector.appearance.quaternaryTextColor),
+        .automaticRowHeight,
+        .estimatedRowHeight(100),
+        .separatorInset(
+            .insets(
+                left: ElementInspector.appearance.horizontalMargins,
+                right: ElementInspector.appearance.horizontalMargins
+            )
+        ),
+        .contentInset(
+            .insets(
+                top: -searchView.separatorView.thickness,
+                bottom: ElementInspector.appearance.verticalMargins
+            )
         )
-        
-        $0.contentInset = .insets(
-            top: -searchView.separatorView.thickness,
-            bottom: ElementInspector.appearance.verticalMargins
-        )
-    }
+    )
     
     private let blurStyle: UIBlurEffect.Style = {
         if #available(iOS 13.0, *) {
@@ -89,10 +87,10 @@ final class HierarchyInspectorView: BaseView {
     }()
     
     private lazy var stackView = UIStackView.vertical(
-        arrangedSubviews: [
+        .arrangedSubviews(
             searchView,
             tableView
-        ]
+        )
     )
     
     @objc func updateTableViewHeight() {

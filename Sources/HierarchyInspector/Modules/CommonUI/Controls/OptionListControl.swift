@@ -30,14 +30,15 @@ final class OptionListControl: BaseFormControl {
         size: CGSize(width: 14, height: 14)
     )
     
-    private lazy var valueLabel = UILabel(.footnote, textColor: ElementInspector.appearance.textColor).then {
-        $0.adjustsFontSizeToFitWidth = true
-        $0.minimumScaleFactor = 0.6
-    }
+    private lazy var valueLabel = UILabel(
+        .textStyle(.footnote),
+        .textColor(ElementInspector.appearance.textColor),
+        .adjustsFontSizeToFitWidth(true),
+        .minimumScaleFactor(0.6)
+    )
     
     private(set) lazy var accessoryControl = AccessoryControl().then {
-        $0.contentView.addArrangedSubview(valueLabel)
-        $0.contentView.addArrangedSubview(icon)
+        $0.contentView.addArrangedSubviews(valueLabel, icon)
         $0.contentView.alignment = .center
         $0.contentView.spacing = ElementInspector.appearance.verticalMargins
         $0.addGestureRecognizer(tapGestureRecognizer)

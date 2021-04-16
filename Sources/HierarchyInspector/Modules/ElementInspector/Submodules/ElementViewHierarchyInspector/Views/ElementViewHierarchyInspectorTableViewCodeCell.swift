@@ -61,9 +61,9 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         )
     }
     
-    private lazy var customSelectedBackgroundView = UIView().then {
-        $0.backgroundColor = ElementInspector.appearance.tintColor.withAlphaComponent(0.1)
-    }
+    private lazy var customSelectedBackgroundView = UIView(
+        .backgroundColor(ElementInspector.appearance.tintColor.withAlphaComponent(0.1))
+    )
     
     private func setup() {
         setContentHuggingPriority(.defaultHigh, for: .vertical)

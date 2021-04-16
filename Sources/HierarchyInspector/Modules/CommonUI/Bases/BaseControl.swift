@@ -11,7 +11,7 @@ class BaseControl: UIControl, InternalViewProtocol {
     
     open var animateOnTouch: Bool = false
     
-    let spacing = ElementInspector.appearance.verticalMargins
+    let defaultSpacing = ElementInspector.appearance.verticalMargins
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -27,7 +27,9 @@ class BaseControl: UIControl, InternalViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private(set) lazy var contentView = UIStackView.horizontal(spacing: spacing).then {
+    private(set) lazy var contentView = UIStackView.horizontal(
+        .spacing(defaultSpacing)
+    ).then {
         installView($0, priority: .required)
     }
     

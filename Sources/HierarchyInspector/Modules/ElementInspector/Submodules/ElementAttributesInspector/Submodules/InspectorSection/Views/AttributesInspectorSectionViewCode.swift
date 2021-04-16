@@ -28,9 +28,7 @@ final class AttributesInspectorSectionViewCode: BaseView {
         }
     }
     
-    private lazy var toggleControl = UIControl().then {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        
+    private lazy var toggleControl = UIControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
         $0.addTarget(self, action: #selector(tapHeader), for: .touchUpInside)
     }
     

@@ -286,13 +286,13 @@ extension AttributesInspectorSectionViewController {
                 optionSelector.title = title
                 
             case let (.textField(title: title, placeholder: placeholderProvider, value: valueProvider, _), textFieldControl as TextFieldControl):
-                textFieldControl.value = valueProvider()?.trimmed
-                textFieldControl.placeholder = placeholderProvider()?.trimmed
+                textFieldControl.value = valueProvider()
+                textFieldControl.placeholder = placeholderProvider()
                 textFieldControl.title = title
                 
             case let (.textView(title: title, placeholder: placeholderProvider, value: valueProvider, _), textViewControl as TextViewControl):
-                textViewControl.value = valueProvider()?.trimmed
-                textViewControl.placeholder = placeholderProvider()?.trimmed
+                textViewControl.value = valueProvider()
+                textViewControl.placeholder = placeholderProvider()
                 textViewControl.title = title
                 
             case (.separator, _),

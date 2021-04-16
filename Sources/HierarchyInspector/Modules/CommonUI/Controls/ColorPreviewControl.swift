@@ -44,10 +44,11 @@ final class ColorPreviewControl: BaseFormControl {
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor, multiplier: 2).isActive = true
     }
     
-    private lazy var colorDisplayLabel = UILabel(.footnote, textColor: ElementInspector.appearance.textColor).then {
-//        $0.font = $0.font?.withTraits(traits: .traitMonoSpace)
-        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-    }
+    private lazy var colorDisplayLabel = UILabel(
+        .textStyle(.footnote),
+        .textColor(ElementInspector.appearance.textColor),
+        .huggingPriority(.defaultHigh, for: .horizontal)
+    )
     
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.addGestureRecognizer(tapGestureRecognizer)
@@ -110,10 +111,10 @@ extension ColorPreviewControl {
             }
         }
         
-        private lazy var colorBackgroundView = UIView().then {
-            $0.backgroundColor = nil
-            $0.isUserInteractionEnabled = false
-        }
+        private lazy var colorBackgroundView = UIView(
+            .backgroundColor(nil),
+            .isUserInteractionEnabled(false)
+        )
         
         override func setup() {
             super.setup()

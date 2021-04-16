@@ -14,11 +14,11 @@ protocol AttributesInspectorViewCodeDelegate: AnyObject {
 final class AttributesInspectorViewCode: BaseView {
     weak var delegate: AttributesInspectorViewCodeDelegate?
     
-    private(set) lazy var scrollView = UIScrollView().then {
-        $0.alwaysBounceVertical = true
-        $0.keyboardDismissMode = .onDrag
-        $0.indicatorStyle = .white
-    }
+    private(set) lazy var scrollView = UIScrollView(
+        .alwaysBounceVertical(true),
+        .keyboardDismissMode(.onDrag),
+        .indicatorStyle(.white)
+    )
     
     #if swift(>=5.0)
     @available(iOS 13.0, *)

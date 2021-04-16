@@ -21,19 +21,18 @@ final class LengthMeasurementView: BaseView {
     }
     
     private lazy var valueLabel = UILabel(
-        .caption2,
-        textAlignment: .center,
-        textColor: color
+        .textStyle(.caption2),
+        .textAlignment(.center),
+        .textColor(color)
     )
     
     private lazy var nameLabel = UILabel(
-        .caption2,
-        measurementName,
-        textAlignment: .center,
-        textColor: color
-    ).then {
-        $0.isHidden = measurementName?.isEmpty != false
-    }
+        .text(measurementName),
+        .textStyle(.caption2),
+        .textAlignment(.center),
+        .textColor(color),
+        .viewOptions(.isHidden(measurementName?.isEmpty != false))
+    )
     
     private lazy var arrowView = ArrowView(
         axis: axis,
@@ -110,9 +109,9 @@ final class LengthMeasurementView: BaseView {
 }
 
 fileprivate extension CGFloat {
-    private static let numberFormatter = NumberFormatter().then {
-        $0.numberStyle = .decimal
-    }
+    private static let numberFormatter = NumberFormatter(
+        .numberStyle(.decimal)
+    )
     
     var formattedString: String? {
         Self.numberFormatter.string(from: NSNumber(value: Float(self)))

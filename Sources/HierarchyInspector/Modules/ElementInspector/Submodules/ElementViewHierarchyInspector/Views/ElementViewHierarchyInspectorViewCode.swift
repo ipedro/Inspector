@@ -9,14 +9,14 @@ import UIKit
 
 final class ElementViewHierarchyInspectorViewCode: BaseView {
     
-    private(set) lazy var tableView = UITableView().then {
-        $0.register(ElementViewHierarchyInspectorTableViewCodeCell.self)
-        $0.backgroundColor = backgroundColor
-        $0.isOpaque        = true
-        $0.tableFooterView = UIView()
-        $0.separatorStyle  = .none
-        $0.contentInset    = .insets(bottom: ElementInspector.appearance.horizontalMargins)
-    }
+    private(set) lazy var tableView = UITableView(
+        .plain,
+        .backgroundColor(backgroundColor),
+        .viewOptions(.isOpaque(true)),
+        .tableFooterView(UIView()),
+        .separatorStyle(.none),
+        .contentInset(bottom: ElementInspector.appearance.horizontalMargins)
+    )
     
     override func setup() {
         super.setup()

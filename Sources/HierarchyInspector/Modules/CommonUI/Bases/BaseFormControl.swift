@@ -9,9 +9,11 @@ import UIKit
 
 class BaseFormControl: BaseControl {
 
-    private(set) lazy var titleLabel = UILabel(.footnote, textColor: ElementInspector.appearance.textColor).then {
-        $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
-    }
+    private(set) lazy var titleLabel = UILabel(
+        .textStyle(.footnote),
+        .huggingPriority(.fittingSizeLevel, for: .horizontal),
+        .textColor(ElementInspector.appearance.textColor)
+    )
     
     override var isEnabled: Bool {
         didSet {
@@ -20,22 +22,17 @@ class BaseFormControl: BaseControl {
     }
     
     private(set) lazy var contentContainerView = UIStackView.horizontal(
-        arrangedSubviews: [
+        .arrangedSubviews(
             titleLabel,
             contentView
-        ],
-        spacing: spacing
+        ),
+        .spacing(defaultSpacing)
     )
     
     private lazy var containerView = UIStackView.vertical(
-        arrangedSubviews: [
-            contentContainerView
-        ],
-        spacing: spacing,
-        layoutMargins: .margins(
-            horizontal: .zero,
-            vertical: spacing
-        )
+        .arrangedSubviews(contentContainerView),
+        .spacing(defaultSpacing),
+        .directionalLayoutMargins(vertical: defaultSpacing)
     )
     
     private lazy var separator = SeparatorView()
