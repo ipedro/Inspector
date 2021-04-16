@@ -2,21 +2,21 @@
   "object": {
     "pins": [
       {
-        "package": "UIKeyCommandOptions",
-        "repositoryURL": "https://github.com/ipedro/UIKeyCommandOptions.git",
-        "state": {
-          "branch": null,
-          "revision": "6400960b929ce53ef88959569fc8ab05f8ee34cb",
-          "version": "0.1.1"
-        }
-      },
-      {
         "package": "UIKeyCommandTableView",
         "repositoryURL": "https://github.com/ipedro/UIKeyCommandTableView.git",
         "state": {
           "branch": null,
-          "revision": "fdaf8709d75258919a53f79b7f4df1578647ea8e",
-          "version": "0.1.1"
+          "revision": "1ee52dfda5a070bae866d7882e1dc34fd4c153c1",
+          "version": "0.1.2"
+        }
+      },
+      {
+        "package": "UIKitOptions",
+        "repositoryURL": "https://github.com/ipedro/UIKitOptions.git",
+        "state": {
+          "branch": null,
+          "revision": "24468b2c0478760cfa4d5812f4a55cff8a81a031",
+          "version": "0.1.2"
         }
       }
     ]
