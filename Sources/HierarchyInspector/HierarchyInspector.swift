@@ -7,8 +7,6 @@
 
 import UIKit
 
-typealias ColorScheme = ViewHierarchyColorScheme
-
 typealias Closure = () -> Void
 
 public enum HierarchyInspector {

@@ -8,7 +8,7 @@
 import UIKit
 
 class LayerView: UIImageView, LayerViewProtocol {
-    open var shouldPresentOnTop = false
+    var shouldPresentOnTop = false
     
     // MARK: - Properties
     
@@ -82,7 +82,7 @@ class LayerView: UIImageView, LayerViewProtocol {
     
     // MARK: - View Lifecycle
     
-    public override func didMoveToSuperview() {
+    override func didMoveToSuperview() {
         super.didMoveToSuperview()
         
         guard let superview = superview else {
@@ -100,7 +100,7 @@ class LayerView: UIImageView, LayerViewProtocol {
         #endif
     }
     
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         
         guard let superview = superview else {

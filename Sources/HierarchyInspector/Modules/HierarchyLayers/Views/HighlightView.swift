@@ -36,7 +36,7 @@ class HighlightView: LayerView {
         }
     }
     
-    let colorScheme: ColorScheme
+    let colorScheme: ViewHierarchyColorScheme
     
     override var color: UIColor {
         didSet {
@@ -116,7 +116,7 @@ class HighlightView: LayerView {
     init(
         frame: CGRect,
         name: String,
-        colorScheme: ColorScheme,
+        colorScheme: ViewHierarchyColorScheme,
         reference: ViewHierarchyReference,
         borderWidth: CGFloat = 1
     ) {
@@ -166,7 +166,7 @@ class HighlightView: LayerView {
     
     // MARK: - View Lifecycle
     
-    public override func didMoveToSuperview() {
+    override func didMoveToSuperview() {
         super.didMoveToSuperview()
         
         guard let superview = superview else {

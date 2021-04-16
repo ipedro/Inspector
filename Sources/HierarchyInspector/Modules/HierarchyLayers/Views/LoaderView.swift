@@ -24,7 +24,7 @@ final class LoaderView: LayerViewComponent {
         $0.isSafelyHidden            = true
     }
     
-    private lazy var colorScheme: ColorScheme = .colorScheme { _ in .systemBlue }
+    private lazy var colorScheme: ViewHierarchyColorScheme = .colorScheme { _ in .systemBlue }
     
     private(set) lazy var highlightView = HighlightView(
         frame: bounds,

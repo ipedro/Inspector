@@ -7,4 +7,4 @@
 
 import UIKit
 
-public protocol LayerViewProtocol: UIView {}
+protocol LayerViewProtocol: UIView {}

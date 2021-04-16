@@ -7,7 +7,7 @@
 
 import UIKit
 
-public extension UITableView {
+extension UITableView {
 
     // MARK: - Cells
     

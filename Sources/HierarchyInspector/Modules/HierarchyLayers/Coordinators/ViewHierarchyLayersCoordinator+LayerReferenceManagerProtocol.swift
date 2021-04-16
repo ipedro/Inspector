@@ -9,7 +9,7 @@ import Foundation
 
 extension ViewHierarchyLayersCoordinator: LayerReferenceManagerProtocol {
     
-    public var isShowingLayers: Bool {
+    var isShowingLayers: Bool {
         visibleReferences.keys.isEmpty == false
     }
     
@@ -96,7 +96,7 @@ extension ViewHierarchyLayersCoordinator: LayerReferenceManagerProtocol {
         }
     }
     
-    func addReferences(for newLayers: Set<ViewHierarchyLayer>, with colorScheme: ColorScheme) {
+    func addReferences(for newLayers: Set<ViewHierarchyLayer>, with colorScheme: ViewHierarchyColorScheme) {
         
         for newLayer in newLayers {
             guard let references = visibleReferences[newLayer] else {

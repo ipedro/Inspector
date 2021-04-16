@@ -7,8 +7,8 @@
 
 import Foundation
 
-public enum Console {
-    public static var showDebugLogs: Bool = {
+enum Console {
+    static var showDebugLogs: Bool = {
         #if DEBUG
         return true
         #else

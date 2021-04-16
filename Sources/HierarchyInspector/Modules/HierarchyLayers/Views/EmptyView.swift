@@ -8,12 +8,12 @@
 import UIKit
 
 final class EmptyView: HighlightView {
-    static let defaultColorScheme: ColorScheme = .colorScheme { _ in HierarchyInspector.configuration.appearance.emptyLayerColor }
+    static let defaultColorScheme: ViewHierarchyColorScheme = .colorScheme { _ in HierarchyInspector.configuration.appearance.emptyLayerColor }
     
     override init(
         frame: CGRect,
         name: String,
-        colorScheme: ColorScheme = defaultColorScheme,
+        colorScheme: ViewHierarchyColorScheme = defaultColorScheme,
         reference: ViewHierarchyReference,
         borderWidth: CGFloat = HierarchyInspector.configuration.appearance.emptyLayerBorderWidth
     ) {

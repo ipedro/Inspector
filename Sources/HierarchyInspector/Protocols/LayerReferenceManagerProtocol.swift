@@ -23,5 +23,5 @@ protocol LayerReferenceManagerProtocol {
                           in oldValue: [ViewHierarchyLayer: [ViewHierarchyReference]])
     
     func addReferences(for newLayers: Set<ViewHierarchyLayer>,
-                       with colorScheme: ColorScheme)
+                       with colorScheme: ViewHierarchyColorScheme)
 }

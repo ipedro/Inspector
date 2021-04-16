@@ -13,7 +13,7 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
     
     // MARK: - Install
     
-    public func installLayer(_ layer: ViewHierarchyLayer) {
+    func installLayer(_ layer: ViewHierarchyLayer) {
         guard let viewHierarchySnapshot = dataSource?.viewHierarchySnapshot else {
             return
         }
@@ -23,7 +23,7 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
         }
     }
     
-    public func installAllLayers() {
+    func installAllLayers() {
         guard let viewHierarchySnapshot = dataSource?.viewHierarchySnapshot else {
             return
         }
@@ -37,7 +37,7 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
     
     // MARK: - Remove
     
-    public func removeAllLayers() {
+    func removeAllLayers() {
         guard isShowingLayers else {
             return
         }
@@ -47,7 +47,7 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
         }
     }
 
-    public func removeLayer(_ layer: ViewHierarchyLayer) {
+    func removeLayer(_ layer: ViewHierarchyLayer) {
         guard isShowingLayers else {
             return
         }
