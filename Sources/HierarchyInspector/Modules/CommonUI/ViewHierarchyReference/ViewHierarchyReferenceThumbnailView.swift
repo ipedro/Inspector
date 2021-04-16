@@ -57,10 +57,9 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)
     )
     
-    private lazy var statusContentView = UIStackView(
-        axis: .vertical,
+    private lazy var statusContentView = UIStackView.vertical(
         spacing: ElementInspector.appearance.verticalMargins / 2,
-        margins: contentView.directionalLayoutMargins
+        layoutMargins: contentView.directionalLayoutMargins
     ).then {
         $0.alignment = .center
     }

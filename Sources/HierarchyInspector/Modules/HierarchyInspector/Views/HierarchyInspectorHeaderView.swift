@@ -33,8 +33,7 @@ final class HierarchyInspectorHeaderView: UITableViewHeaderFooterView {
         color: ElementInspector.appearance.tertiaryTextColor
     )
     
-    private lazy var stackView = UIStackView(
-        axis: .vertical,
+    private lazy var stackView = UIStackView.vertical(
         arrangedSubviews: [
             separatorView,
             titleLabel

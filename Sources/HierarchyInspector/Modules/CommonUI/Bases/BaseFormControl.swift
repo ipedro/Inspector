@@ -19,8 +19,7 @@ class BaseFormControl: BaseControl {
         }
     }
     
-    private(set) lazy var contentContainerView = UIStackView(
-        axis: .horizontal,
+    private(set) lazy var contentContainerView = UIStackView.horizontal(
         arrangedSubviews: [
             titleLabel,
             contentView
@@ -28,13 +27,12 @@ class BaseFormControl: BaseControl {
         spacing: spacing
     )
     
-    private lazy var containerView = UIStackView(
-        axis: .vertical,
+    private lazy var containerView = UIStackView.vertical(
         arrangedSubviews: [
             contentContainerView
         ],
         spacing: spacing,
-        margins: .margins(
+        layoutMargins: .margins(
             horizontal: .zero,
             vertical: spacing
         )

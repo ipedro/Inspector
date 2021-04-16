@@ -120,8 +120,7 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         $0.setContentHuggingPriority(.required, for: .vertical)
     }
     
-    private(set) lazy var textStackView = UIStackView(
-        axis: .vertical,
+    private(set) lazy var textStackView = UIStackView.vertical(
         arrangedSubviews: [
             elementNameLabel,
             descriptionLabel

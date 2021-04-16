@@ -88,8 +88,7 @@ final class HierarchyInspectorView: BaseView {
         return blurView
     }()
     
-    private lazy var stackView = UIStackView(
-        axis: .vertical,
+    private lazy var stackView = UIStackView.vertical(
         arrangedSubviews: [
             searchView,
             tableView

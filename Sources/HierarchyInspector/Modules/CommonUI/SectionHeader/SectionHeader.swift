@@ -76,13 +76,11 @@ final class SectionHeader: BaseView {
         
         self.contentView.directionalLayoutMargins = margins
         
-        let font = UIFont.preferredFont(forTextStyle: textStyle)
-        
         guard let traits = traits else {
-            textLabel.font = font
+            textLabel.font = .preferredFont(forTextStyle: textStyle)
             return
         }
         
-        textLabel.font = font.withTraits(traits: traits)
+        textLabel.font = .preferredFont(forTextStyle: textStyle, with: traits)
     }
 }

@@ -45,27 +45,25 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
         $0.isSelected = true
     }
     
-    private lazy var headerContainerView = UIStackView(
-        axis: .horizontal,
+    private lazy var headerContainerView = UIStackView.horizontal(
         arrangedSubviews: [
             referenceDetailView,
             referenceAccessoryButton
         ],
-        margins: .margins(trailing: 20)
+        layoutMargins: .margins(trailing: 20)
     )
     
     private lazy var controlsHeaderTitle = SectionHeader.attributesInspectorHeader(title: "Preview").then {
         $0.contentView.directionalLayoutMargins = .horizontalMargins(ElementInspector.appearance.horizontalMargins)
     }
     
-    private lazy var controlsContainerView = UIStackView(
-        axis: .vertical,
+    private lazy var controlsContainerView = UIStackView.vertical(
         arrangedSubviews: [
             backgroundAppearanceControl,
             isHighlightingViewsControl,
             isLiveUpdatingControl
         ],
-        margins: .horizontalMargins(ElementInspector.appearance.horizontalMargins)
+        layoutMargins: .horizontalMargins(ElementInspector.appearance.horizontalMargins)
     )
     
     private lazy var backgroundAppearanceControl = SegmentedControl(

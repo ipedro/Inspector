@@ -16,7 +16,7 @@ protocol AttributesInspectorSectionViewCodeDelegate: AnyObject {
 final class AttributesInspectorSectionViewCode: BaseView {
     weak var delegate: AttributesInspectorSectionViewCodeDelegate?
     
-    private(set) lazy var inputContainerView = UIStackView(axis: .vertical)
+    private(set) lazy var inputContainerView = UIStackView.vertical()
     
     private lazy var topSeparatorView = SeparatorView(thickness: 1)
     

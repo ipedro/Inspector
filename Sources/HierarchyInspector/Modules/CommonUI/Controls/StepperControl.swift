@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UIKitOptions
 
 final class StepperControl: BaseFormControl {
     // MARK: - Properties
@@ -64,11 +65,15 @@ final class StepperControl: BaseFormControl {
         #endif
     }
     
-    private lazy var counterLabel = UILabel().then {
-        $0.setContentHuggingPriority(.required, for: .horizontal)
-        $0.font = titleLabel.font?.withTraits(traits: .traitMonoSpace)
-        $0.textColor = tintColor
-    }
+    private lazy var counterLabel = UILabel(
+        options: UILabel.Options(
+            font: titleLabel.font?.withTraits(.traitMonoSpace),
+            textColor: tintColor,
+            viewOptions: .layoutCompression(
+                horizontalHugging: .required
+            )
+        )
+    )
     
     private var decimalFormatter: NumberFormatter {
         StepperControl.sharedDecimalNumberFormatter

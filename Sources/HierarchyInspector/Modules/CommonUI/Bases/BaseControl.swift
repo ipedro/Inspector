@@ -27,10 +27,7 @@ class BaseControl: UIControl, InternalViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private(set) lazy var contentView = UIStackView(
-        axis: .horizontal,
-        spacing: spacing
-    ).then {
+    private(set) lazy var contentView = UIStackView.horizontal(spacing: spacing).then {
         installView($0, priority: .required)
     }
     
