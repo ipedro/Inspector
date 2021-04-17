@@ -16,10 +16,10 @@ extension ViewHierarchyLayersCoordinator: AsyncOperationProtocol {
             return operationQueue.addOperation(layerTask)
         }
         
-        let loaderView = LoaderView().then {
-            $0.accessibilityIdentifier = name
-            $0.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
-        }
+        let loaderView = LoaderView(
+            .accessibilityIdentifier(name),
+            .transform(CGAffineTransform(scaleX: 0.1, y: 0.1))
+        )
         
         let showLoader = MainThreadOperation(name: "\(name): show loader") {
             window.addSubview(loaderView)
