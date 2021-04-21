@@ -36,10 +36,13 @@ class HierarchyInspectorTableViewCell: UITableViewCell {
         detailTextLabel?.textColor = ElementInspector.appearance.secondaryTextColor
         
         selectedBackgroundView = UIView().then {
-            let colorView = BaseView()
-            colorView.backgroundColor = ElementInspector.appearance.tintColor
-            colorView.clipsToBounds = true
-            colorView.layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
+            let colorView = BaseView(
+                .clipsToBounds(true),
+                .backgroundColor(ElementInspector.appearance.tintColor),
+                .layerOptions(
+                    .cornerRadius(ElementInspector.appearance.verticalMargins / 2)
+                )
+            )
             
             $0.installView(
                 colorView,

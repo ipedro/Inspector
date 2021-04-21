@@ -23,27 +23,29 @@ extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerD
     func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController, didTap colorPicker: ColorPreviewControl) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
-            let colorPicker = UIColorPickerViewController().then {
-                $0.delegate = self
-                
-                if let selectedColor = colorPicker.selectedColor {
-                    $0.selectedColor = selectedColor
-                }
-                
-                $0.overrideUserInterfaceStyle = .dark
-                $0.modalPresentationStyle = .popover
-                $0.popoverPresentationController?.sourceView = colorPicker.accessoryControl
-                $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
+            let colorPickerViewController = UIColorPickerViewController(
+                .colorPickerDelegate(self),
+                .viewControllerOptions(
+                    .overrideUserInterfaceStyle(.dark),
+                    .modalPresentationStyle(.popover)
+                ),
+                .popoverPresentationControllerOptions(
+                    .sourceView(colorPicker.accessoryControl),
+                    .permittedArrowDirections([.up, .down])
+                )
+            )
+            
+            if let selectedColor = colorPicker.selectedColor {
+                colorPickerViewController.selectedColor = selectedColor
             }
             
-            viewController.present(colorPicker, animated: true)
+            viewController.present(colorPickerViewController, animated: true)
         }
-        #else
-            // Xcode 11 and lower
         #endif
     }
     
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController, didTap optionSelector: OptionListControl) {
+    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
+                                           didTap optionSelector: OptionListControl) {
         
         let viewModel = OptionSelectorViewModel(
             title: optionSelector.title,
@@ -56,38 +58,40 @@ extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerD
         }
         
         let navigationController = ElementInspectorNavigationController(
-            rootViewController: optionSelectorViewController
-        ).then {
-            #if swift(>=5.0)
-            if #available(iOS 13.0, *) {
-                $0.overrideUserInterfaceStyle = .dark
-            }
-            #endif
-            
-            $0.modalPresentationStyle = .popover
-            $0.popoverPresentationController?.sourceView = optionSelector.accessoryControl
-            $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
-            $0.popoverPresentationController?.delegate = self
-        }
+            .rootViewController(optionSelectorViewController),
+            .viewControllerOptions(
+                .modalPresentationStyle(.popover),
+                .overrideUserInterfaceStyle(.dark)
+            ),
+            .popoverPresentationControllerOptions(
+                .sourceView(optionSelector.accessoryControl),
+                .permittedArrowDirections([.up, .down]),
+                .popoverPresentationDelegate(self)
+            )
+        )
         
         viewController.present(navigationController, animated: true)
     }
     
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController, didTap imagePicker: ImagePreviewControl) {
-        let documentPicker = UIDocumentPickerViewController(documentTypes: [String(kUTTypeImage)], in: .import).then {
-            #if swift(>=5.0)
-            if #available(iOS 13.0, *) {
-                $0.overrideUserInterfaceStyle = .dark
-            }
-            #endif
-            
-            $0.view.tintColor = ElementInspector.appearance.tintColor
-            $0.delegate = self
-            $0.modalPresentationStyle = .popover
-            $0.popoverPresentationController?.sourceView = imagePicker.accessoryControl
-            $0.popoverPresentationController?.permittedArrowDirections = [.up, .down]
-            $0.popoverPresentationController?.delegate = self
-        }
+    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
+                                           didTap imagePicker: ImagePreviewControl) {
+        let documentPicker = UIDocumentPickerViewController.forImporting(
+            .documentTypes(.image),
+            .asCopy(true),
+            .documentPickerDelegate(self),
+            .viewOptions(
+                .tintColor(ElementInspector.appearance.tintColor)
+            ),
+            .viewControllerOptions(
+                .modalPresentationStyle(.popover),
+                .overrideUserInterfaceStyle(.dark)
+            ),
+            .popoverPresentationControllerOptions(
+                .sourceView(imagePicker.accessoryControl),
+                .permittedArrowDirections([.up, .down]),
+                .popoverPresentationDelegate(self)
+            )
+        )
         
         viewController.present(documentPicker, animated: true)
     }

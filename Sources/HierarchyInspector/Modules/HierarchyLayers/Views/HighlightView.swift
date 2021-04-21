@@ -71,45 +71,44 @@ class HighlightView: LayerView {
     
     // MARK: - Components
     
-    private lazy var label = UILabel().then {
-        $0.setContentHuggingPriority(.required, for: .horizontal)
-        
-        $0.textColor                 = .white
-        $0.font                      = .preferredFont(forTextStyle: .caption1)
-        $0.textAlignment             = .center
-        $0.numberOfLines             = 1
-        $0.adjustsFontSizeToFitWidth = true
-        $0.minimumScaleFactor        = 0.6
-        
-        $0.layer.shadowOffset        = CGSize(width: 0, height: 1)
-        $0.layer.shadowColor         = UIColor.black.cgColor
-        $0.layer.shadowRadius        = 0.8
-        $0.layer.shadowOpacity       = 0.4
-    }
-    
-    private(set) lazy var labelContentView = LayerViewComponent().then {
-        $0.installView(label, .margins(horizontal: 4, vertical: 2))
-        
-        $0.layer.cornerRadius  = 6
-        $0.layer.masksToBounds = true
-        $0.backgroundColor = color
-    }
-    
-    private lazy var labelContainerView = LayerViewComponent().then {
-        $0.installView(labelContentView, .autoResizingMask)
-        
-        $0.layer.shadowOffset       = CGSize(width: 0, height: 1)
-        $0.layer.shadowColor        = UIColor.black.cgColor
-        $0.layer.shadowRadius       = 2
-        $0.layer.shadowOpacity      = 0.6
-        $0.layer.shouldRasterize    = true
-        $0.layer.rasterizationScale = UIScreen.main.scale
-    }
-    
-    private lazy var tapGestureRecognizer = UITapGestureRecognizer(
-        target: self,
-        action: #selector(tap)
+    private lazy var label = UILabel(
+        .huggingPriority(.required, for: .horizontal),
+        .textColor(.white),
+        .textStyle(.caption1),
+        .textAlignment(.center),
+        .numberOfLines(1),
+        .adjustsFontSizeToFitWidth(true),
+        .minimumScaleFactor(0.6),
+        .layerOptions(
+            .shadowOffset(CGSize(width: 0, height: 1)),
+            .shadowColor(.black),
+            .shadowRadius(0.8),
+            .shadowOpacity(0.4)
+        )
     )
+    
+    private(set) lazy var labelContentView = LayerViewComponent(
+        .backgroundColor(color),
+        .cornerRadius(6),
+        .masksToBounds(true)
+    ).then {
+        $0.installView(label, .margins(horizontal: 4, vertical: 2))
+    }
+    
+    private lazy var labelContainerView = LayerViewComponent(
+        .layerOptions(
+            .shadowOffset(CGSize(width: 0, height: 1)),
+            .shadowColor(UIColor.black.cgColor),
+            .shadowRadius(2),
+            .shadowOpacity(0.6),
+            .shouldRasterize(true),
+            .rasterizationScale(UIScreen.main.scale)
+        )
+    ).then {
+        $0.installView(labelContentView, .autoResizingMask)
+    }
+    
+    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
     
     // MARK: - Init
     

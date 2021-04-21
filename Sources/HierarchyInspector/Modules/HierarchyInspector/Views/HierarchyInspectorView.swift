@@ -39,7 +39,6 @@ final class HierarchyInspectorView: BaseView {
     private(set) lazy var searchView = HierarchyInspectorSearchView()
     
     private(set) lazy var tableView = UIKeyCommandTableView(
-        .plain,
         .keyboardDismissMode(.onDrag),
         .indicatorStyle(.white),
         .backgroundColor(nil),
@@ -48,16 +47,12 @@ final class HierarchyInspectorView: BaseView {
         .automaticRowHeight,
         .estimatedRowHeight(100),
         .separatorInset(
-            .insets(
-                left: ElementInspector.appearance.horizontalMargins,
-                right: ElementInspector.appearance.horizontalMargins
-            )
+            left: ElementInspector.appearance.horizontalMargins,
+            right: ElementInspector.appearance.horizontalMargins
         ),
         .contentInset(
-            .insets(
-                top: -searchView.separatorView.thickness,
-                bottom: ElementInspector.appearance.verticalMargins
-            )
+            top: -searchView.separatorView.thickness,
+            bottom: ElementInspector.appearance.verticalMargins
         )
     )
     
