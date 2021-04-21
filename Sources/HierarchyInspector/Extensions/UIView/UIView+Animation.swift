@@ -9,11 +9,11 @@ import UIKit
 
 extension UIView {
     
-    enum Animation {
+    enum AnimationDirection {
         case `in`, out
     }
 
-    func scale(_ type: Animation, for event: UIEvent?) {
+    func scale(_ type: AnimationDirection, for event: UIEvent?) {
         switch event?.type {
         case .presses, .touches:
             break
