@@ -171,7 +171,12 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             return
         }
         
-        let label = UILabel(.footnote, text, textAlignment: .center, textColor: color)
+        let label = UILabel(
+            .textStyle(.footnote),
+            .text(text),
+            .textAlignment(.center),
+            .textColor(color)
+        )
         
         statusContentView.addArrangedSubview(label)
     }

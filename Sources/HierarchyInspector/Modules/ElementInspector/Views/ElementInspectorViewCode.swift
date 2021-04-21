@@ -14,12 +14,13 @@ final class ElementInspectorViewCode: BaseView {
     private(set) lazy var dismissBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
     
     private(set) lazy var emptyLabel = UILabel(
-        .body,
-        "No Element Inspector",
-        textAlignment: .center
-    ).then {
-        $0.alpha = 0.5
-    }
+        .text("No Element Inspector"),
+        .textStyle(.body),
+        .textAlignment(.center),
+        .viewOptions(
+            .alpha(0.5)
+        )
+    )
     
     override func setup() {
         super.setup()
