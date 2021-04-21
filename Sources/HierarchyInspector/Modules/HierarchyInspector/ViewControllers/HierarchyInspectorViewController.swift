@@ -72,7 +72,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         toggleFirstResponder()
         
         if viewCode.tableView.isFirstResponder {
-            viewCode.tableView.selectRowIfPossible(at: .first)
+            viewCode.tableView.selectRowIfPossible(at: IndexPath(item: .zero, section: .zero))
         }
     }
     
