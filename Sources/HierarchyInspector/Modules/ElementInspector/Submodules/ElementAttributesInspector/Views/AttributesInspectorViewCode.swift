@@ -33,7 +33,7 @@ final class AttributesInspectorViewCode: BaseView {
     
     var keyboardHeight: CGFloat = .zero {
         didSet {
-            scrollView.contentInset = UIEdgeInsets(top: .zero, left: .zero, bottom: keyboardHeight, right: .zero)
+            scrollView.contentInset = UIEdgeInsets(bottom: keyboardHeight)
         }
     }
     
@@ -48,7 +48,7 @@ final class AttributesInspectorViewCode: BaseView {
         
         contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         
-        contentView.directionalLayoutMargins = .margins(bottom: ElementInspector.appearance.verticalMargins)
+        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(bottom: ElementInspector.appearance.verticalMargins)
     }
     
     #if swift(>=5.0)

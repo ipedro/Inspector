@@ -19,7 +19,7 @@ final class TextViewControl: BaseFormControl {
     ).then {
         let padding = $0.textContainer.lineFragmentPadding
         
-        $0.textContainerInset = .insets(
+        $0.textContainerInset = UIEdgeInsets(
             top: padding,
             left: padding * -1,
             bottom: padding,

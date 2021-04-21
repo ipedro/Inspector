@@ -19,7 +19,7 @@ class HierarchyInspectorTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let defaultLayoutMargins: NSDirectionalEdgeInsets = .allMargins(ElementInspector.appearance.horizontalMargins)
+    let defaultLayoutMargins = NSDirectionalEdgeInsets(ElementInspector.appearance.horizontalMargins)
     
     func setup() {
         backgroundView = UIView()
@@ -30,7 +30,7 @@ class HierarchyInspectorTableViewCell: UITableViewCell {
         installView(contentView)
         
         directionalLayoutMargins = defaultLayoutMargins
-        separatorInset = .insets(left: defaultLayoutMargins.leading, right: defaultLayoutMargins.trailing)
+        separatorInset = UIEdgeInsets(left: defaultLayoutMargins.leading, right: defaultLayoutMargins.trailing)
         
         textLabel?.textColor = ElementInspector.appearance.textColor
         detailTextLabel?.textColor = ElementInspector.appearance.secondaryTextColor

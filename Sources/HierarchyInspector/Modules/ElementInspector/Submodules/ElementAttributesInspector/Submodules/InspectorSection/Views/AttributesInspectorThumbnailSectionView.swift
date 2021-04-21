@@ -54,7 +54,7 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
     )
     
     private lazy var controlsHeaderTitle = SectionHeader.attributesInspectorHeader(title: "Preview").then {
-        $0.contentView.directionalLayoutMargins = .horizontalMargins(ElementInspector.appearance.horizontalMargins)
+        $0.contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(horizontal: ElementInspector.appearance.horizontalMargins)
     }
     
     private lazy var controlsContainerView = UIStackView.vertical(

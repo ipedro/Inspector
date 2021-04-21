@@ -80,8 +80,7 @@ final class AttributesInspectorSectionViewController: UIViewController {
                 switch property {
                 case .separator:
                     return SeparatorView().then {
-                        $0.contentView.directionalLayoutMargins = .margins(
-                            horizontal: .zero,
+                        $0.contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(
                             vertical: ElementInspector.appearance.verticalMargins
                         )
                     }

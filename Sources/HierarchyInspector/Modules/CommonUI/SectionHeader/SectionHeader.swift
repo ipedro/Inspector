@@ -13,8 +13,7 @@ extension SectionHeader {
             .callout,
             text: title,
             withTraits: .traitBold,
-            margins: .margins(
-                horizontal: .zero,
+            margins: NSDirectionalEdgeInsets(
                 vertical: ElementInspector.appearance.verticalMargins / 2
             )
         )
@@ -24,7 +23,7 @@ extension SectionHeader {
         SectionHeader(
             .footnote,
             text: title,
-            margins: .margins(
+            margins: NSDirectionalEdgeInsets(
                 top: ElementInspector.appearance.horizontalMargins,
                 bottom: ElementInspector.appearance.verticalMargins
             )

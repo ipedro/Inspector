@@ -52,7 +52,7 @@ extension ElementInspector {
         var disabledAlpha: CGFloat = 0.3
         
         var directionalInsets: NSDirectionalEdgeInsets {
-            .margins(
+            NSDirectionalEdgeInsets(
                 horizontal: horizontalMargins,
                 vertical: verticalMargins
             )

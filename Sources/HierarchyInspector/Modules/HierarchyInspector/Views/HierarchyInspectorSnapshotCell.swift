@@ -29,7 +29,7 @@ final class HierarchyInspectorSnapshotCell: HierarchyInspectorTableViewCell {
             margins.leading += depth * 5
             
             directionalLayoutMargins = margins
-            separatorInset = .insets(left: margins.leading, right: defaultLayoutMargins.trailing)
+            separatorInset = UIEdgeInsets(left: margins.leading, right: defaultLayoutMargins.trailing)
             
             contentView.alpha = viewModel?.isEnabled == true ? 1 : ElementInspector.appearance.disabledAlpha
             selectionStyle = viewModel?.isEnabled == true ? .default : .none

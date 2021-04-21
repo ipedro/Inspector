@@ -74,7 +74,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     override func setup() {
         super.setup()
         
-        contentView.directionalLayoutMargins = .allMargins(ElementInspector.appearance.horizontalMargins)
+        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(ElementInspector.appearance.horizontalMargins)
         
         clipsToBounds = true
         

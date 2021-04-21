@@ -24,7 +24,7 @@ final class AccessoryControl: BaseControl {
         
         contentView.spacing = ElementInspector.appearance.verticalMargins / 2
         
-        contentView.directionalLayoutMargins = .margins(horizontal: 12, vertical: 9) // matches UIStepper
+        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(horizontal: 12, vertical: 9) // matches UIStepper
         
         layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
         

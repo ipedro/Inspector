@@ -20,7 +20,7 @@ final class HierarchyInspectorHeaderView: UITableViewHeaderFooterView {
                 
             case .some:
                 titleLabel.isHidden = false
-                stackView.directionalLayoutMargins = .margins(
+                stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(
                     leading: ElementInspector.appearance.horizontalMargins,
                     bottom: stackView.spacing / 2,
                     trailing: ElementInspector.appearance.horizontalMargins
