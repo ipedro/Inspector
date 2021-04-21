@@ -53,14 +53,14 @@ struct ViewHierarchySnapshot {
 
 extension ViewHierarchySnapshot {
     
-    func iconImage(for view: UIView?, with size: CGSize = .defaultIconSize) -> UIImage {
-        iconImage(for: view).resized(size)
+    func iconImage(for view: UIView?, with size: CGSize = .defaultIconSize) -> UIImage? {
+        iconImage(for: view)?.resized(size)
     }
     
-    private func iconImage(for view: UIView?) -> UIImage {
+    private func iconImage(for view: UIView?) -> UIImage? {
         switch view {
         case is InternalViewProtocol:
-            return UIImage.internalViewIcon.withRenderingMode(view is UIControl ? .alwaysOriginal : .alwaysTemplate)
+            return UIImage.internalViewIcon?.withRenderingMode(view is UIControl ? .alwaysOriginal : .alwaysTemplate)
             
         case let view?:
             let candidateIcons = elementLibraries.targeting(element: view).compactMap { $0.icon(with: view) }

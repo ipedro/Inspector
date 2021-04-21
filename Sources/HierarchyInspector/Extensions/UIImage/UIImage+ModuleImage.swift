@@ -9,11 +9,8 @@ import UIKit
 
 extension UIImage {
     
-    static func moduleImage(named imageName: String) -> UIImage {
-        guard let image = UIImage(named: imageName, in: .module, compatibleWith: nil) else {
-            fatalError("Couldn't find image named \(imageName)")
-        }
-        return image
+    static func moduleImage(named imageName: String) -> UIImage? {
+        UIImage(named: imageName, in: .module, compatibleWith: nil)
     }
     
 }
