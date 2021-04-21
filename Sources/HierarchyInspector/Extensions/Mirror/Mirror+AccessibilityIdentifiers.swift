@@ -2,7 +2,6 @@
 //  Mirror+AccessibilityIdentifiers.swift
 //  HierarchyInspector
 //
-//  Created by Pedro on 15.04.21.
 //
 
 import UIKit
@@ -23,7 +22,7 @@ public extension Mirror {
                 print(String(describing: view.accessibilityIdentifier))
             }
         }
-
+        
         if
             let superClassMirror = superclassMirror,
             superClassMirror.subjectType.self is AccessibilityIdentifiersProtocol.Type

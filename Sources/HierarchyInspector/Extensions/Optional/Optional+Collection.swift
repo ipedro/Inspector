@@ -1,5 +1,5 @@
 //
-//  Optional+NilOrEmpty.swift
+//  Optional+Collection.swift
 //  HierarchyInspector
 //
 //  Created by Pedro Almeida on 30.10.20.
