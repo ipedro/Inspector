@@ -28,6 +28,7 @@ final class ElementViewHierarchyViewController: ElementInspectorPanelViewControl
         )
     ).then {
         $0.tableView.register(ElementViewHierarchyInspectorTableViewCodeCell.self)
+        $0.tableView.activateAccessoryButtonKeyCommandOptions = [.discoverabilityTitle(title: "Inspect", key: .key("i"))]
         $0.tableView.dataSource = self
         $0.tableView.delegate = self
     }
@@ -55,6 +56,12 @@ final class ElementViewHierarchyViewController: ElementInspectorPanelViewControl
         reloadData()
         
         updatePreferredContentSize()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        viewCode.tableView.becomeFirstResponder()
     }
     
     func reloadData() {

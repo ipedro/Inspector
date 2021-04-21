@@ -6,11 +6,11 @@
 //
 
 import UIKit
+import UIKeyCommandTableView
 
 final class ElementViewHierarchyInspectorViewCode: BaseView {
     
-    private(set) lazy var tableView = UITableView(
-        .plain,
+    private(set) lazy var tableView = UIKeyCommandTableView(
         .backgroundColor(backgroundColor),
         .viewOptions(.isOpaque(true)),
         .tableFooterView(UIView()),
