@@ -141,19 +141,3 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
         }
     }
 }
-
-protocol TextElement: UIView {
-    var content: String? { get }
-}
-
-extension UILabel: TextElement {
-    var content: String? { text }
-}
-
-extension UITextView: TextElement {
-    var content: String? { text }
-}
-
-extension UITextField: TextElement {
-    var content: String? { text }
-}
