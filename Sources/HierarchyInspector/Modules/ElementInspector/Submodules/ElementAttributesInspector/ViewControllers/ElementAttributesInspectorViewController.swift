@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UIKeyboardAnimatable
 
 protocol ElementAttributesInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     
@@ -96,7 +97,7 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
         super.viewDidLoad()
         
         loadSections()
-        addKeyboardNotificationObserver(with: #selector(keyboardChangeFrame(_:)), to: .willChangeFrame)
+        addKeyboardNotificationObserver(with: #selector(keyboardChangeFrame(_:)), when: .willChangeFrame)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -141,11 +142,13 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
             initialSpringVelocity: 0,
             options: .beginFromCurrentState,
             animations: animations
-        ) { [weak self] finished in
+        ) { finished in
             
             completion?(finished)
             
-            self?.startLiveUpdatingSnaphost()
+            DispatchQueue.main.async { [weak self]  in
+                self?.startLiveUpdatingSnaphost()
+            }
         }
     }
 }
@@ -154,8 +157,8 @@ final class ElementAttributesInspectorViewController: ElementInspectorPanelViewC
 @objc extension ElementAttributesInspectorViewController {
     
     private func keyboardChangeFrame(_ notification: Notification) {
-        animateWithKeyboard(notification: notification) { properties in
-            self.viewCode.keyboardHeight = properties.keyboardFrame.height
+        animate(withKeyboardNotification: notification) { info in
+            self.viewCode.keyboardHeight = info.keyboardFrame.height
         }
     }
     

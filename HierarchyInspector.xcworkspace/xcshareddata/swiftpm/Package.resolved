@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "UIKeyboardAnimatable",
+        "repositoryURL": "https://github.com/ipedro/UIKeyboardAnimatable.git",
+        "state": {
+          "branch": null,
+          "revision": "d81241868e7c19be42ffc123f5f5daefef833902",
+          "version": "0.1.1"
+        }
+      },
+      {
         "package": "UIKeyCommandTableView",
         "repositoryURL": "https://github.com/ipedro/UIKeyCommandTableView.git",
         "state": {

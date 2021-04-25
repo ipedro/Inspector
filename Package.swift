@@ -16,7 +16,8 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-         .package(url: "https://github.com/ipedro/UIKeyCommandTableView.git", from: "0.1.2"),
+        .package(url: "https://github.com/ipedro/UIKeyCommandTableView.git", from: "0.1.2"),
+        .package(url: "https://github.com/ipedro/UIKeyboardAnimatable.git", from: "0.1.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -24,7 +25,8 @@ let package = Package(
         .target(
             name: "HierarchyInspector",
             dependencies: [
-                ._byNameItem(name: "UIKeyCommandTableView", condition: nil)
+                ._byNameItem(name: "UIKeyCommandTableView", condition: nil),
+                ._byNameItem(name: "UIKeyboardAnimatable", condition: nil),
             ],
             resources: [
                 .process("Resources")

@@ -7,6 +7,7 @@
 
 import UIKit
 import UIKeyCommandTableView
+import UIKeyboardAnimatable
 
 protocol HierarchyInspectorViewControllerDelegate: AnyObject {
     func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController, didSelect viewHierarchyReference: ViewHierarchyReference?)
@@ -129,8 +130,8 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         )
         
         // keyboard event listeners
-        addKeyboardNotificationObserver(with: #selector(keyboardWillShow(_:)), to: .willShow)
-        addKeyboardNotificationObserver(with: #selector(keyboardWillHide(_:)), to: .willHide)
+        addKeyboardNotificationObserver(with: #selector(keyboardWillShow(_:)), when: .willShow)
+        addKeyboardNotificationObserver(with: #selector(keyboardWillHide(_:)), when: .willHide)
     }
     
     override func observeValue(
@@ -201,14 +202,14 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
 
 @objc private extension HierarchyInspectorViewController {
     func keyboardWillHide(_ notification: Notification) {
-        animateWithKeyboard(notification: notification) { properties in
+        animate(withKeyboardNotification: notification) { _ in
             self.viewCode.keyboardFrame = nil
         }
-    }
+   }
     
     func keyboardWillShow(_ notification: Notification) {
-        animateWithKeyboard(notification: notification) { properties in
-            self.viewCode.keyboardFrame = properties.keyboardFrame
+        animate(withKeyboardNotification: notification) { info in
+            self.viewCode.keyboardFrame = info.keyboardFrame
         }
     }
     
