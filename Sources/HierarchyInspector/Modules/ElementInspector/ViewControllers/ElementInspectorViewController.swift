@@ -89,8 +89,7 @@ final class ElementInspectorViewController: UIViewController {
         
         navigationItem.titleView = viewCode.segmentedControl
         
-        #warning("TODO: come back")
-        //navigationItem.rightBarButtonItem = inspectBarButtonItem
+        navigationItem.rightBarButtonItem = hierarchyInspectorBarButtonItem
         
         if viewModel.showDismissBarButton {
             navigationItem.leftBarButtonItem = viewCode.dismissBarButtonItem

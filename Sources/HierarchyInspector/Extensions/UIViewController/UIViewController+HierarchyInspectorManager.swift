@@ -13,4 +13,19 @@ public extension UIViewController {
         view.window?.hierarchyInspectorManager
     }
     
+    // MARK: - Convenience
+    
+    var hierarchyInspectorBarButtonItem: UIBarButtonItem {
+        UIBarButtonItem(
+           title: "🧬",
+           style: .plain,
+           target: self,
+           action: #selector(hierarchyInspectorBarButtonItemHandler)
+       )
+    }
+    
+    @objc private func hierarchyInspectorBarButtonItemHandler() {
+        hierarchyInspectorManager?.present(animated: true)
+    }
+
 }
