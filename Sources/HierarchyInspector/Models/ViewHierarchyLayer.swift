@@ -8,6 +8,7 @@
 import UIKit
 
 public struct ViewHierarchyLayer {
+    
     public typealias Filter = (UIView) -> Bool
     
     // MARK: - Properties
@@ -22,7 +23,7 @@ public struct ViewHierarchyLayer {
     
     // MARK: - Init
     
-    public static func layer(name: String, filter: @escaping Filter) -> Self {
+    public init(name: String, filter: @escaping Filter) {
         self.init(name: name, showLabels: true, allowsSystemViews: false, filter: filter)
     }
     

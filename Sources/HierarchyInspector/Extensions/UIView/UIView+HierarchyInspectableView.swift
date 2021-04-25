@@ -10,6 +10,7 @@ import UIKit
 // MARK: - ViewHierarchyProtocol
 
 extension UIView: ViewHierarchyProtocol {
+    
     var canPresentOnTop: Bool {
         switch self {
         case is UITextView:
@@ -53,6 +54,7 @@ extension UIView: ViewHierarchyProtocol {
         else {
             return true
         }
+        
         return false
     }
     
@@ -67,6 +69,7 @@ extension UIView: ViewHierarchyProtocol {
         else {
             return true
         }
+        
         return false
     }
     

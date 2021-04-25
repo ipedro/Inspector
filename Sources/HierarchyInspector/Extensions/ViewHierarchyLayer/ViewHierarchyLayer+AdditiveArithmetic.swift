@@ -32,7 +32,7 @@ extension ViewHierarchyLayer: AdditiveArithmetic {
     }
     
     public static var zero: ViewHierarchyLayer {
-        .layer(name: "zero") { _ in false }
+        ViewHierarchyLayer(name: "zero") { _ in false }
     }
     
 }
