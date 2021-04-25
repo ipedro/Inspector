@@ -43,12 +43,23 @@ extension UIView: ViewHierarchyProtocol {
         else {
             return false
         }
-
         return true
     }
     
     var isSystemView: Bool {
-        className.first == "_"
+        guard
+            // Avoid visual clutter.
+            self is UIWindow == false,
+            className != "UITransitionView",
+            className != "UIDropShadowView",
+            className != "UILayoutContainerView",
+            className != "UIViewControllerWrapperView",
+            className != "UINavigationTransitionView",
+            className.first != "_"
+        else {
+            return true
+        }
+        return false
     }
     
     var className: String {
