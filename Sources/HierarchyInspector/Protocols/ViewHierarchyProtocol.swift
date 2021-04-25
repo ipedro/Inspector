@@ -19,5 +19,7 @@ protocol ViewHierarchyProtocol {
     /// If a view has accessibility identifiers the last component will be shown, otherwise shows the class name.
     var elementName: String { get }
     
+    var displayName: String { get }
+    
     var canPresentOnTop: Bool { get }
 }

@@ -24,9 +24,9 @@ final class ElementViewHierarchyPanelViewModel {
     
     private var _isCollapsed: Bool
     
-    private(set) lazy var title = reference.elementName
+    var title: String { reference.elementName }
     
-    private(set) lazy var subtitle = reference.elementDescription
+    var subtitle: String { reference.elementDescription }
     
     let rootDepth: Int
     
@@ -55,6 +55,7 @@ final class ElementViewHierarchyPanelViewModel {
 // MARK: - ElementViewHierarchyPanelViewModelProtocol
 
 extension ElementViewHierarchyPanelViewModel: ElementViewHierarchyPanelViewModelProtocol {
+    
     var titleFont: UIFont {
         ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth)
     }

@@ -192,7 +192,14 @@ class HighlightView: LayerView {
     }
     
     func updateElementName() {
-        name = superview?.elementName ?? viewReference.elementName
+        var superViewName: String {
+            guard let superview = superview else {
+                return viewReference.elementName
+            }
+            return superview.elementName
+        }
+        
+        name = superViewName
     }
 }
 

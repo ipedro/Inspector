@@ -89,10 +89,10 @@ final class ViewHierarchyReferenceDetailView: BaseView {
     
     private(set) lazy var elementNameLabel = UILabel(
         .textColor(ElementInspector.appearance.textColor),
-        .numberOfLines(.zero),
+        .numberOfLines(1),
         .adjustsFontSizeToFitWidth(true),
+        .minimumScaleFactor(0.75),
         .allowsDefaultTighteningForTruncation(true),
-        .preferredMaxLayoutWidth(200),
         .huggingPriority(.defaultHigh, for: .vertical)
     )
     

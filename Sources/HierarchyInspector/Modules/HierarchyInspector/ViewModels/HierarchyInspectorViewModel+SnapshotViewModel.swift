@@ -76,24 +76,13 @@ extension HierarchyInspectorViewModel {
                 }
                 
                 return inspectableReferences.filter {
-                    ($0.elementName + $0.className).localizedCaseInsensitiveContains(searchQuery)
+                    ($0.displayName + $0.className).localizedCaseInsensitiveContains(searchQuery)
                 }
             }()
             
             searchResults = matchingReferences.map({ element -> Details in
-                let title: String = {
-                    if
-                        let textElement = element.rootView as? TextElement,
-                        let text = textElement.content
-                    {
-                        return "\"\(text)\""
-                    }
-                    
-                    return element.elementName
-                }()
-                
-                return Details(
-                    title: title,
+                Details(
+                    title: element.displayName,
                     isEnabled: true,
                     subtitle: element.elementDescription,
                     image: snapshot.iconImage(for: element.rootView),

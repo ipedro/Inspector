@@ -18,9 +18,9 @@ final class ViewHierarchyReference {
     
     let isSystemView: Bool
     
-    let className: String
+    private let _className: String
     
-    let elementName: String
+    private let _elementName: String
     
     let frame: CGRect
     
@@ -60,9 +60,9 @@ final class ViewHierarchyReference {
         
         canPresentOnTop = root.canPresentOnTop
         
-        className = root.className
+        _className = root.className
         
-        elementName = root.elementName
+        _elementName = root.elementName
         
         isSystemView = root.isSystemView
         
@@ -77,6 +77,26 @@ final class ViewHierarchyReference {
 // MARK: - ViewHierarchyProtocol {
 
 extension ViewHierarchyReference: ViewHierarchyProtocol {
+    
+    var elementName: String {
+        guard let rootView = rootView else {
+            return _elementName
+        }
+        
+        return rootView.elementName
+    }
+    
+    var className: String {
+        rootView?.className ?? _className
+    }
+    
+    var displayName: String {
+        guard let rootView = rootView else {
+            return _elementName
+        }
+        
+        return rootView.displayName
+    }
     
     var flattenedSubviewReferences: [ViewHierarchyReference] {
         let array = children.flatMap { [$0] + $0.flattenedSubviewReferences }

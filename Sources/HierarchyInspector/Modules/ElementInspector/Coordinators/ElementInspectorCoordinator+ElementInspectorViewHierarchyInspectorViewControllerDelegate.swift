@@ -12,7 +12,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorVie
         
         operationQueue.cancelAllOperations()
         
-        addOperationToQueue(MainThreadOperation(name: "push hierarchy \(reference.elementName)", closure: { [weak self] in
+        addOperationToQueue(MainThreadOperation(name: "push hierarchy \(reference.displayName)", closure: { [weak self] in
             
             self?.pushElementInspector(with: reference, selectedPanel: .viewHierarchyInspector, animated: true)
             
@@ -23,7 +23,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorVie
         
         operationQueue.cancelAllOperations()
         
-        addOperationToQueue(MainThreadOperation(name: "push info \(reference.elementName)", closure: { [weak self] in
+        addOperationToQueue(MainThreadOperation(name: "push info \(reference.displayName)", closure: { [weak self] in
             guard
                 reference == rootReference,
                 let topElementInspector = self?.navigationController.topViewController as? ElementInspectorViewController

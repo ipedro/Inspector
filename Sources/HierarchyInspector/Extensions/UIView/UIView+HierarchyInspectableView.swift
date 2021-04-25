@@ -84,4 +84,14 @@ extension UIView: ViewHierarchyProtocol {
         
         return String(description)
     }
+    
+    var displayName: String {
+        // prefer text content
+        if let textContent = (self as? TextElement)?.content {
+            return "\"" + textContent + "\""
+        }
+        
+        return elementName
+    }
+    
 }
