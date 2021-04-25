@@ -98,7 +98,7 @@ extension HierarchyInspector.Manager {
 extension HierarchyInspector.Manager {
     
     var hostViewController: UIViewController? {
-        host.window?.rootViewController?.presentedViewController ?? host.window?.rootViewController
+        viewHierarchyWindow?.rootViewController?.presentedViewController ?? viewHierarchyWindow?.rootViewController
     }
     
 }
@@ -108,7 +108,7 @@ extension HierarchyInspector.Manager {
 extension HierarchyInspector.Manager {
     
     var viewHierarchySnapshot: ViewHierarchySnapshot? {
-        snapshot(of: host.window)
+        snapshot(of: viewHierarchyWindow)
     }
     
     private func snapshot(of referenceView: UIView?) -> ViewHierarchySnapshot? {

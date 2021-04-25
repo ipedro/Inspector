@@ -11,7 +11,9 @@ import UIKit
 
 extension HierarchyInspector.Manager: ViewHierarchyLayersCoordinatorDataSource {
     var viewHierarchyWindow: UIWindow? {
-        host.window
+        host.window?.hierarchyInspectorManager = self
+        
+        return host.window
     }
     
     var viewHierarchyColorScheme: ViewHierarchyColorScheme {
