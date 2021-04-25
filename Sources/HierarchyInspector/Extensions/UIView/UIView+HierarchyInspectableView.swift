@@ -29,6 +29,12 @@ extension UIView: ViewHierarchyProtocol {
             // Adding subviews directly to a UIVisualEffectView throws runtime exception.
             self is UIVisualEffectView == false,
             
+            // Adding subviews to UIPageViewController containers throws runtime exception.
+            className != "_UIPageViewControllerContentView",
+            subviews.map({ $0.className }).contains("_UIPageViewControllerContentView") == false,
+            className != "_UIQueuingScrollView",
+            superview?.className != "_UIQueuingScrollView",
+            
             // Avoid breaking UIButton layout.
             superview is UIButton == false,
             
