@@ -14,19 +14,23 @@ enum Texts {
     }
     
     static func inspectableViews(_ viewCount: Int, in className: String) -> String {
-        "\(viewCount) inspectable views in \(className)"
+        switch viewCount {
+        case 1:
+            return "\(viewCount) inspectable view in \(className)"
+            
+        default:
+            return "\(viewCount) inspectable views in \(className)"
+        }
     }
     
     static func allResults(count: Int, in elementName: String) -> String {
-        "\(count) Search results in \(elementName)"
-    }
-    
-    static func showLayer(with description: String) -> String {
-        "☐ \(description)"
-    }
-
-    static func hideLayer(with description: String) -> String {
-        "☑ \(description)"
+        switch count {
+        case 1:
+            return "\(count) Search result in \(elementName)"
+            
+        default:
+            return "\(count) Search results in \(elementName)"
+        }
     }
     
     static func emptyLayer(with description: String) -> String {
