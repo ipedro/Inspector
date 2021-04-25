@@ -40,6 +40,8 @@ extension HierarchyInspector {
         func invalidate() {
             hostViewController = nil
             
+            operationQueue.isSuspended = true
+            
             cachedSnapshots.removeAll()
             
             viewHierarchyLayersCoordinator.invalidate()
