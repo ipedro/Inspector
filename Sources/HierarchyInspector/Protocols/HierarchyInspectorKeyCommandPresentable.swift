@@ -18,34 +18,33 @@ public protocol HierarchyInspectorKeyCommandPresentable: UIViewController {
     var hierarchyInspectorPresentationKeyCommandOptions: UIKeyCommand.Options { get }
 }
 
-// MARK: - KeyCommands
-
-extension HierarchyInspectorKeyCommandPresentable {
+public extension HierarchyInspector.Manager {
     
     private var keyCommandSettings: HierarchyInspector.Configuration.KeyCommandSettings {
         HierarchyInspector.configuration.keyCommands
     }
     
-    public var hierarchyInspectorLayerToggleModifierFlags: UIKeyModifierFlags {
-        keyCommandSettings.layerToggleModifierFlags
-    }
-    
-    public var hierarchyInspectorPresentationKeyCommandOptions: UIKeyCommand.Options {
-        keyCommandSettings.presentationOptions
-    }
-    
-    public var hierarchyInspectorKeyCommands: [UIKeyCommand] {
-        guard let hierarchyInspectorManager = hierarchyInspectorManager else {
-            return []
+    /// Interprets key commands into HierarchyInspector actions.
+    /// - Parameter sender: (Any) If sender is not of `UIKeyCommand` type methods does nothing.
+    func hierarchyInspectorKeyCommandHandler(_ sender: Any) {
+        guard let keyCommand = sender as? UIKeyCommand else {
+            return
         }
         
-        let aSelector = hirearchyInspectorKeyCommandsSelector
+        let flattenedActions = availableActionsForKeyCommand.flatMap { $0.actions }
         
+        for action in flattenedActions where action.title == keyCommand.discoverabilityTitle {
+            action.closure?()
+            return
+        }
+    }
+    
+    func hierarchyInspectorKeyCommands(selector aSelector: Selector) -> [UIKeyCommand] {
         var keyCommands = [UIKeyCommand]()
         
         var index = keyCommandSettings.layerToggleInputRange.lowerBound
         
-        for actionGroup in hierarchyInspectorManager.availableActionsForKeyCommand {
+        for actionGroup in availableActionsForKeyCommand {
             
             for action in actionGroup.actions {
                 
@@ -96,6 +95,33 @@ extension HierarchyInspectorKeyCommandPresentable {
         }
         
         return keyCommands.sortedByInputKey()
+    }
+    
+}
+// MARK: - KeyCommands
+
+extension HierarchyInspectorKeyCommandPresentable {
+    
+    private var keyCommandSettings: HierarchyInspector.Configuration.KeyCommandSettings {
+        HierarchyInspector.configuration.keyCommands
+    }
+    
+    public var hierarchyInspectorLayerToggleModifierFlags: UIKeyModifierFlags {
+        keyCommandSettings.layerToggleModifierFlags
+    }
+    
+    public var hierarchyInspectorPresentationKeyCommandOptions: UIKeyCommand.Options {
+        keyCommandSettings.presentationOptions
+    }
+    
+    public var hierarchyInspectorKeyCommands: [UIKeyCommand] {
+        guard let hierarchyInspectorManager = hierarchyInspectorManager else {
+            return []
+        }
+        
+        let aSelector = hirearchyInspectorKeyCommandsSelector
+        
+        return hierarchyInspectorManager.hierarchyInspectorKeyCommands(selector: aSelector)
     }
     
     /// Interprets key commands into HierarchyInspector actions.
