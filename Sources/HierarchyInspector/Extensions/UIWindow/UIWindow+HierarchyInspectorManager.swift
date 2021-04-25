@@ -8,7 +8,7 @@
 import UIKit
 import ObjectAssociation
 
-extension UIWindow {
+public extension UIWindow {
     
     private static let managers = ObjectAssociation<HierarchyInspector.Manager>()
     
@@ -17,4 +17,7 @@ extension UIWindow {
         set { Self.managers[self] = newValue }
     }
     
+    func presentHierarchyInspector(animated: Bool) {
+        hierarchyInspectorManager?.present(animated: animated)
+    }
 }
