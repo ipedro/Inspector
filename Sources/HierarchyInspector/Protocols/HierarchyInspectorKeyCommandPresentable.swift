@@ -122,7 +122,7 @@ extension HierarchyInspectorKeyCommandPresentable {
 extension HierarchyInspector.Manager {
     
     var availableActionsForKeyCommand: ActionGroups {
-        var array = availableActions
+        var array = availableActionGroups
         
         let openInspectorGroup = ActionGroup(
             title: nil,

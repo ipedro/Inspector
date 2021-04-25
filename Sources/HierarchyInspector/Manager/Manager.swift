@@ -64,7 +64,7 @@ extension HierarchyInspector {
             
             let coordinator = HierarchyInspectorCoordinator(
                 hierarchySnapshot: viewHierarchySnapshot,
-                actionGroupsProvider: { [weak self] in self?.availableActions }
+                actionGroupsProvider: { [weak self] in self?.availableActionGroups }
             ).then {
                 $0.delegate = self
             }
@@ -81,18 +81,18 @@ extension HierarchyInspector {
 
 extension HierarchyInspector.Manager {
     
-    var availableActions: ActionGroups {
+    var availableActionGroups: ActionGroups {
         guard let snapshot = viewHierarchySnapshot else {
             return []
         }
         
-        var actions = ActionGroups()
+        var actionGroups = ActionGroups()
         // layer actions
-        actions.append(viewHierarchyLayersCoordinator.layerActions(for: snapshot))
+        actionGroups.append(viewHierarchyLayersCoordinator.layerActions(for: snapshot))
         // toggle all
-        actions.append(viewHierarchyLayersCoordinator.toggleAllLayersActions(for: snapshot))
+        actionGroups.append(viewHierarchyLayersCoordinator.toggleAllLayersActions(for: snapshot))
         
-        return actions
+        return actionGroups
     }
     
 }
