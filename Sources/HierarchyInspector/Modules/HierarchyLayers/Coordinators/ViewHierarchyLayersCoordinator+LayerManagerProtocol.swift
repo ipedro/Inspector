@@ -29,7 +29,7 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
         }
         
         asyncOperation(name: Texts.showAllLayers) {
-            self.populatedLayers.forEach { layer in
+            for layer in self.populatedLayers where layer != .internalViews {
                 self.create(layer: layer, for: viewHierarchySnapshot)
             }
         }
