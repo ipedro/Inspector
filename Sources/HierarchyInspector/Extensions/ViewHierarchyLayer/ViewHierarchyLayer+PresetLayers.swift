@@ -69,7 +69,9 @@ extension ViewHierarchyLayer {
     
     static let wireframes = ViewHierarchyLayer(name: "Wireframes", showLabels: false) { _ in true }
     
-    static let internalViews = ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsSystemViews: true) { $0.isSystemView }
+    static let internalViews = ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsSystemViews: true) { $0.isSystemView && !$0.isSystemContainerView }
+    
+    static let systemContainers = ViewHierarchyLayer(name: "System containers", showLabels: true, allowsSystemViews: true) { $0.isSystemContainerView }
     
     static let icons: ViewHierarchyLayer = .layer(name: "Icons") { $0 is Icon }
     

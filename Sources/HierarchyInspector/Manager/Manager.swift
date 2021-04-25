@@ -156,6 +156,7 @@ private extension HierarchyInspectableProtocol {
     var availableLayers: [ViewHierarchyLayer] {
         var layers = hierarchyInspectorLayers
         layers.append(.internalViews)
+        layers.append(.systemContainers)
         layers.append(.allViews)
         
         return layers.uniqueValues

@@ -8,20 +8,25 @@
 import UIKit
 
 protocol ViewHierarchyLayersCoordinatorDelegate: AnyObject {
+    
     func viewHierarchyLayersCoordinator(_ coordinator: ViewHierarchyLayersCoordinator,
                                         didSelect viewHierarchyReference: ViewHierarchyReference,
                                         from highlightView: HighlightView)
+    
 }
 
 protocol ViewHierarchyLayersCoordinatorDataSource: AnyObject {
+    
     var viewHierarchySnapshot: ViewHierarchySnapshot? { get }
     
     var viewHierarchyWindow: UIWindow? { get }
     
     var viewHierarchyColorScheme: ViewHierarchyColorScheme { get }
+    
 }
 
 final class ViewHierarchyLayersCoordinator: Create {
+    
     weak var delegate: ViewHierarchyLayersCoordinatorDelegate?
     
     weak var dataSource: ViewHierarchyLayersCoordinatorDataSource?
@@ -59,9 +64,7 @@ final class ViewHierarchyLayersCoordinator: Create {
     
     func invalidate() {
         visibleReferences.removeAll()
-        
         wireframeViews.removeAll()
-        
         highlightViews.removeAll()
     }
     
@@ -70,7 +73,9 @@ final class ViewHierarchyLayersCoordinator: Create {
 // MARK: - HighlightViewDelegate
 
 extension ViewHierarchyLayersCoordinator: HighlightViewDelegate {
+    
     func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference) {
         delegate?.viewHierarchyLayersCoordinator(self, didSelect: reference, from: highlightView)
     }
+    
 }
