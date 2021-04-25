@@ -129,9 +129,17 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
             )
         )
         
-        // keyboard event listeners
-        addKeyboardNotificationObserver(with: #selector(keyboardWillShow(_:)), when: .willShow)
-        addKeyboardNotificationObserver(with: #selector(keyboardWillHide(_:)), when: .willHide)
+        // keyboard event handlers
+        animateWhenKeyboard(.willHide) { _ in
+            self.viewCode.keyboardFrame = nil
+            self.viewCode.layoutIfNeeded()
+        }
+        
+        animateWhenKeyboard(.willShow) { info in
+            Console.print(info)
+            self.viewCode.keyboardFrame = info.keyboardFrame
+            self.viewCode.layoutIfNeeded()
+        }
     }
     
     override func observeValue(
@@ -201,17 +209,6 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
 // MARK: - Keyboard Handlers
 
 @objc private extension HierarchyInspectorViewController {
-    func keyboardWillHide(_ notification: Notification) {
-        animate(withKeyboardNotification: notification) { _ in
-            self.viewCode.keyboardFrame = nil
-        }
-   }
-    
-    func keyboardWillShow(_ notification: Notification) {
-        animate(withKeyboardNotification: notification) { info in
-            self.viewCode.keyboardFrame = info.keyboardFrame
-        }
-    }
     
     func type(_ sender: Any) {
         guard
