@@ -27,10 +27,6 @@ extension HierarchyInspector {
         
         private var cachedSnapshots: [UIView: ViewHierarchySnapshot] = [:]
         
-        var hostViewController: UIViewController? {
-            host.window?.rootViewController?.presentedViewController ?? host.window?.rootViewController
-        }
-        
         // MARK: - Init
         
         public init(host: HierarchyInspectableProtocol) {
@@ -96,6 +92,18 @@ extension HierarchyInspector.Manager {
     }
     
 }
+
+// MARK: - Host ViewController
+
+extension HierarchyInspector.Manager {
+    
+    var hostViewController: UIViewController? {
+        host.window?.rootViewController?.presentedViewController ?? host.window?.rootViewController
+    }
+    
+}
+
+// MARK: - Snapshot
 
 extension HierarchyInspector.Manager {
     
