@@ -6,16 +6,21 @@
 //
 
 import UIKit
+import HierarchyInspector
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    var hierarchyInspectorManager: HierarchyInspector.Manager?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+        
+        hierarchyInspectorManager = HierarchyInspector.Manager(host: self)
+        
         guard let _ = (scene as? UIWindowScene) else { return }
     }
 
@@ -50,3 +55,34 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 }
 
+// MARK: - HierarchyInspectableProtocol
+
+extension SceneDelegate: HierarchyInspectableProtocol {
+    
+    // MARK: - HierarchyInspectableProtocol
+    
+    var hierarchyInspectorElementLibraries: [HierarchyInspectorElementLibraryProtocol] {
+        ExampleElementLibrary.allCases
+    }
+    
+    var hierarchyInspectorLayers: [ViewHierarchyLayer] {
+        [
+            .controls,
+            .buttons,
+            .staticTexts + .images,
+            .stackViews + .containerViews
+        ]
+    }
+    
+    var hierarchyInspectorColorScheme: ViewHierarchyColorScheme {
+        .colorScheme { view in
+            switch view {
+            case is CustomButton:
+                return .systemPink
+                
+            default:
+                return ViewHierarchyColorScheme.default.color(for: view)
+            }
+        }
+    }
+}

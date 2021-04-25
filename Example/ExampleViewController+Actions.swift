@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import HierarchyInspector
 
 // MARK: - Actions
 
@@ -30,7 +31,7 @@ extension ExampleViewController {
     }
     
     @IBAction func openInspector(_ sender: Any) {
-        presentHierarchyInspector(animated: true)
+        hierarchyInspectorManager?.present(animated: true)
     }
     
     @IBAction func rotateActivityIndicator(_ sender: UISlider) {

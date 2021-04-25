@@ -18,6 +18,7 @@
 		EB5E1FEA261A48EC002301F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE8261A48EC002301F5 /* LaunchScreen.storyboard */; };
 		EB5E2004261A4EC9002301F5 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E2003261A4EC9002301F5 /* CustomButton.swift */; };
 		EBAB46C0261F7ED500375668 /* HierarchyInspector in Frameworks */ = {isa = PBXBuildFile; productRef = EBAB46BF261F7ED500375668 /* HierarchyInspector */; };
+		EBC0288226354CAB00502C90 /* ExampleElementLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC0288126354CAB00502C90 /* ExampleElementLibrary.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,7 @@
 		EB5E1FE9261A48EC002301F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EB5E1FEB261A48EC002301F5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EB5E2003261A4EC9002301F5 /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
+		EBC0288126354CAB00502C90 /* ExampleElementLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleElementLibrary.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,10 +79,11 @@
 			children = (
 				EB5E1FEB261A48EC002301F5 /* Info.plist */,
 				EB5E1FDD261A48EB002301F5 /* AppDelegate.swift */,
-				EB5E1FDF261A48EB002301F5 /* SceneDelegate.swift */,
-				EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */,
+				EBC0288126354CAB00502C90 /* ExampleElementLibrary.swift */,
 				EB5E1FE1261A48EB002301F5 /* ExampleViewController.swift */,
 				EB210C802624E54E0032B9AE /* ExampleViewController+Actions.swift */,
+				EB5E1FDF261A48EB002301F5 /* SceneDelegate.swift */,
+				EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */,
 				EB5E1FE6261A48EC002301F5 /* Assets.xcassets */,
 				EB210C7E2624E5090032B9AE /* CustomButton */,
 				EB5E1FE8261A48EC002301F5 /* LaunchScreen.storyboard */,
@@ -166,6 +169,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB5E2004261A4EC9002301F5 /* CustomButton.swift in Sources */,
+				EBC0288226354CAB00502C90 /* ExampleElementLibrary.swift in Sources */,
 				EB5E1FE2261A48EB002301F5 /* ExampleViewController.swift in Sources */,
 				EB210C862624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift in Sources */,
 				EB210C7B2624E4D00032B9AE /* CustomButtonInspectableViewModel.swift in Sources */,

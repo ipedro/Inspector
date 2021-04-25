@@ -9,63 +9,9 @@ import HierarchyInspector
 import UIKit
 import MapKit
 
-// MARK: - Example Hiearchy Inspectable Elements
-
-enum ExampleElementLibrary: HierarchyInspectorElementLibraryProtocol, CaseIterable {
-    case customButton
-    
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
-        }
-    }
-    
-    func viewModel(with referenceView: UIView) -> HierarchyInspectorElementViewModelProtocol? {
-        switch self {
-        case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
-        }
-    }
-    
-    func icon(with referenceView: UIView) -> UIImage? {
-        switch self {
-        case .customButton:
-            return #imageLiteral(resourceName: "CustomButton_32")
-        }
-    }
-}
-
 // MARK: - Example View Controller
 
-class ExampleViewController: HierarchyInspectableViewController {
-    // MARK: - HierarchyInspectableProtocol
-    
-    override var hierarchyInspectorElementLibraries: [HierarchyInspectorElementLibraryProtocol] {
-        ExampleElementLibrary.allCases
-    }
-    
-    override var hierarchyInspectorLayers: [ViewHierarchyLayer] {
-        [
-            .controls,
-            .buttons,
-            .staticTexts + .images,
-            .stackViews + .containerViews
-        ]
-    }
-    
-    override var hierarchyInspectorColorScheme: ViewHierarchyColorScheme {
-        .colorScheme { view in
-            switch view {
-            case is CustomButton:
-                return .systemPink
-                
-            default:
-                return ViewHierarchyColorScheme.default.color(for: view)
-            }
-        }
-    }
-    
+class ExampleViewController: UIViewController {
     // MARK: - Components
     
     lazy var refreshControl = UIRefreshControl()
