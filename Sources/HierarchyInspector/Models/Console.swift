@@ -16,15 +16,11 @@ enum Console {
         #endif
     }()
     
-    static func print(_ items: Any..., separator: String = " ", terminator: String = "\n") {
+    static func log(_ items: Any..., separator: String = " ", terminator: String = "\n") {
         guard showDebugLogs else {
             return
         }
         
-        Swift.print(
-            [Date()] + items,
-            separator: separator,
-            terminator: terminator
-        )
+        print([Date()] + items, separator: separator, terminator: terminator)
     }
 }

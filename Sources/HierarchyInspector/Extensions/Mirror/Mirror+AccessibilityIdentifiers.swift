@@ -18,8 +18,6 @@ public extension Mirror {
                     .replacingOccurrences(of: ".storage", with: "")
                     .replacingOccurrences(of: "$__lazy_storage_$_", with: "") {
                 view.accessibilityIdentifier = "\(type).\(identifier)"
-
-                print(String(describing: view.accessibilityIdentifier))
             }
         }
         

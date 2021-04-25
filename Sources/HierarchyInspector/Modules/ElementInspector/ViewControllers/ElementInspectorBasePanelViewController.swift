@@ -16,8 +16,6 @@ class ElementInspectorBasePanelViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        Console.print(#function, view.frame)
-        
         guard needsLayout else {
             return
         }

@@ -173,7 +173,7 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
         )
         
         guard frame.height.isNormal else {
-            Console.print(#function, "skipping frame content frame calc for frame \(frame), original snapshot \(thumbnailView.originalSnapshotSize)")
+            Console.log(#function, "skipping frame content frame calc for frame \(frame), original snapshot \(thumbnailView.originalSnapshotSize)")
             return 0
         }
         

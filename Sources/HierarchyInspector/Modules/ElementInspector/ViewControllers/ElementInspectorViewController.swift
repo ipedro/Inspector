@@ -27,7 +27,7 @@ final class ElementInspectorViewController: UIViewController {
     
     override var preferredContentSize: CGSize {
         didSet {
-            Console.print(self.classForCoder, #function, preferredContentSize)
+            Console.log(self.classForCoder, #function, preferredContentSize)
         }
     }
     

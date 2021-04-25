@@ -137,7 +137,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         }
         
         animateWhenKeyboard(.willShow) { info in
-            Console.print(info)
+            Console.log(info)
             self.viewCode.keyboardFrame = info.keyboardFrame
             self.viewCode.layoutIfNeeded()
         }
