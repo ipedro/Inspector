@@ -21,7 +21,7 @@ protocol ElementInspectorCoordinatorDelegate: AnyObject {
 final class ElementInspectorCoordinator: NSObject {
     weak var delegate: ElementInspectorCoordinatorDelegate?
     
-    let windowSnapshot: ViewHierarchySnapshot
+    let viewHierarchySnapshot: ViewHierarchySnapshot
     
     let reference: ViewHierarchyReference
     
@@ -29,7 +29,7 @@ final class ElementInspectorCoordinator: NSObject {
     
     private(set) lazy var navigationController = Self.makeNavigationController(
         reference: reference,
-        windowSnapshot: windowSnapshot,
+        viewHierarchySnapshot: viewHierarchySnapshot,
         delegate: self
     ).then {
         $0.dismissDelegate = self
@@ -48,22 +48,22 @@ final class ElementInspectorCoordinator: NSObject {
     
     init(
         reference: ViewHierarchyReference,
-        in windowHierarchySnapshot: ViewHierarchySnapshot,
+        in viewHierarchySnapshot: ViewHierarchySnapshot,
         from sourceView: UIView?
     ) {
         self.reference = reference
-        self.windowSnapshot = windowHierarchySnapshot
+        self.viewHierarchySnapshot = viewHierarchySnapshot
         self.sourceView = sourceView ?? reference.rootView
     }
     
     static func makeNavigationController(
         reference: ViewHierarchyReference,
-        windowSnapshot: ViewHierarchySnapshot,
+        viewHierarchySnapshot: ViewHierarchySnapshot,
         delegate: ElementInspectorViewControllerDelegate
     ) -> ElementInspectorNavigationController {
         let navigationController = ElementInspectorNavigationController()
         navigationController.modalPresentationStyle = {
-            guard let window = windowSnapshot.rootReference.rootView else {
+            guard let window = viewHierarchySnapshot.rootReference.rootView else {
                 return .pageSheet
             }
             
@@ -71,7 +71,7 @@ final class ElementInspectorCoordinator: NSObject {
                 return .pageSheet
             }
             
-            let referenceViewArea = windowSnapshot.rootReference.frame.height * windowSnapshot.rootReference.frame.width
+            let referenceViewArea = viewHierarchySnapshot.rootReference.frame.height * viewHierarchySnapshot.rootReference.frame.width
             
             let windowArea = window.frame.height * window.frame.width
             
@@ -84,15 +84,15 @@ final class ElementInspectorCoordinator: NSObject {
             return .formSheet
         }()
         
-        let populatedReferences = windowSnapshot.inspectableReferences.filter { $0.rootView === reference.rootView }
+        let populatedReferences = viewHierarchySnapshot.inspectableReferences.filter { $0.rootView === reference.rootView }
         
         guard let populatedReference = populatedReferences.first else {
             let rootViewController = makeElementInspectorViewController(
-                with: windowSnapshot.rootReference,
+                with: viewHierarchySnapshot.rootReference,
                 showDismissBarButton: true,
                 selectedPanel: .attributesInspector,
                 delegate: delegate,
-                inspectableElements: windowSnapshot.elementLibraries
+                inspectableElements: viewHierarchySnapshot.elementLibraries
             )
             
             navigationController.viewControllers = [rootViewController]
@@ -113,10 +113,10 @@ final class ElementInspectorCoordinator: NSObject {
                 
                 let viewController = makeElementInspectorViewController(
                     with: currentReference,
-                    showDismissBarButton: currentReference === windowSnapshot.rootReference,
+                    showDismissBarButton: currentReference === viewHierarchySnapshot.rootReference,
                     selectedPanel: .attributesInspector,
                     delegate: delegate,
-                    inspectableElements: windowSnapshot.elementLibraries
+                    inspectableElements: viewHierarchySnapshot.elementLibraries
                 )
                 
                 array.append(viewController)
@@ -159,7 +159,7 @@ final class ElementInspectorCoordinator: NSObject {
         operationQueue.cancelAllOperations()
         operationQueue.isSuspended = true
         
-        delegate?.elementInspectorCoordinator(self, didFinishWith: windowSnapshot.rootReference)
+        delegate?.elementInspectorCoordinator(self, didFinishWith: viewHierarchySnapshot.rootReference)
     }
     
     static func makeElementInspectorViewController(

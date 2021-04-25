@@ -10,13 +10,12 @@ import UIKit
 // MARK: - ViewHierarchyLayerCoordinatorDataSource
 
 extension HierarchyInspector.Manager: ViewHierarchyLayersCoordinatorDataSource {
-    
     var viewHierarchyWindow: UIWindow? {
-        hostViewController?.view.window
+        host.window
     }
     
     var viewHierarchyColorScheme: ViewHierarchyColorScheme {
-        hostViewController?.hierarchyInspectorColorScheme ?? .default
+        host.hierarchyInspectorColorScheme
     }
     
 }

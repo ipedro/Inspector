@@ -16,21 +16,26 @@ extension HierarchyInspector {
         
         var hierarchyInspectorCoordinator: HierarchyInspectorCoordinator?
         
-        private(set) lazy var viewHierarchyLayersCoordinator = ViewHierarchyLayersCoordinator().then {
+        lazy var viewHierarchyLayersCoordinator = ViewHierarchyLayersCoordinator().then {
             $0.dataSource = self
             $0.delegate   = self
         }
         
-        private(set) weak var hostViewController: HierarchyInspectableViewControllerProtocol?
+        let host: HierarchyInspectableProtocol
         
         var shouldCacheViewHierarchySnapshot = true
         
         private var cachedSnapshots: [UIView: ViewHierarchySnapshot] = [:]
         
+        var hostViewController: UIViewController? {
+            host.window?.rootViewController?.presentedViewController ?? host.window?.rootViewController
+        }
+        
         // MARK: - Init
         
-        public init(host: HierarchyInspectableViewControllerProtocol) {
-            self.hostViewController = host
+        public init(host: HierarchyInspectableProtocol) {
+            self.host = host
+            host.window?.hierarchyInspectorManager = self
         }
         
         deinit {
@@ -38,8 +43,6 @@ extension HierarchyInspector {
         }
         
         func invalidate() {
-            hostViewController = nil
-            
             operationQueue.isSuspended = true
             
             cachedSnapshots.removeAll()
@@ -51,16 +54,16 @@ extension HierarchyInspector {
             hierarchyInspectorCoordinator = nil
         }
         
-        func present(animated: Bool) {
+        public func present(animated: Bool) {
             guard
                 hierarchyInspectorCoordinator == nil,
-                let windowHierarchySnapshot = windowHierarchySnapshot
+                let viewHierarchySnapshot = viewHierarchySnapshot
             else {
                 return
             }
             
             let coordinator = HierarchyInspectorCoordinator(
-                hierarchySnapshot: windowHierarchySnapshot,
+                hierarchySnapshot: viewHierarchySnapshot,
                 actionGroupsProvider: { [weak self] in self?.availableActions }
             ).then {
                 $0.delegate = self
@@ -70,6 +73,7 @@ extension HierarchyInspector {
             
             hierarchyInspectorCoordinator = coordinator
         }
+        
     }
 }
 
@@ -93,24 +97,10 @@ extension HierarchyInspector.Manager {
     
 }
 
-// MARK: - ViewHierarchySnapshotableProtocol
-
-protocol ViewHierarchySnapshotableProtocol {
-    
-    var viewHierarchySnapshot: ViewHierarchySnapshot? { get }
-    
-    var shouldCacheViewHierarchySnapshot: Bool { get }
-    
-}
-
 extension HierarchyInspector.Manager {
     
     var viewHierarchySnapshot: ViewHierarchySnapshot? {
-        snapshot(of: hostViewController?.view)
-    }
-    
-    var windowHierarchySnapshot: ViewHierarchySnapshot? {
-        snapshot(of: hostViewController?.view.window)
+        snapshot(of: host.window)
     }
     
     private func snapshot(of referenceView: UIView?) -> ViewHierarchySnapshot? {
@@ -123,13 +113,9 @@ extension HierarchyInspector.Manager {
             let cachedSnapshot = cachedSnapshots[referenceView],
             Date() <= cachedSnapshot.expiryDate
         else {
-            let availableLayers = hostViewController?.availableLayers ?? []
-            
-            let availableElementLibraries = hostViewController?.availableElementLibraries ?? []
-            
             let snapshot = ViewHierarchySnapshot(
-                availableLayers: availableLayers,
-                elementLibraries: availableElementLibraries,
+                availableLayers: host.availableLayers,
+                elementLibraries: host.availableElementLibraries,
                 in: referenceView
             )
             
@@ -151,6 +137,28 @@ extension HierarchyInspector.Manager: AsyncOperationProtocol {
         let asyncOperation = MainThreadAsyncOperation(name: name, closure: closure)
         
         operationQueue.addOperation(asyncOperation)
+    }
+    
+}
+
+// MARK: - HierarchyInspectableProtocol Extension
+
+private extension HierarchyInspectableProtocol {
+    
+    var availableLayers: [ViewHierarchyLayer] {
+        var layers = hierarchyInspectorLayers
+        layers.append(.internalViews)
+        layers.append(.allViews)
+        
+        return layers.uniqueValues
+    }
+    
+    var availableElementLibraries: [HierarchyInspectorElementLibraryProtocol] {
+        var elements = [HierarchyInspectorElementLibraryProtocol]()
+        elements.append(contentsOf: hierarchyInspectorElementLibraries)
+        elements.append(contentsOf: UIKitElementLibrary.standard)
+        
+        return elements
     }
     
 }

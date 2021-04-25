@@ -28,11 +28,11 @@ extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
 extension HierarchyInspector.Manager {
     
     func presentElementInspector(for reference: ViewHierarchyReference, animated: Bool, from sourceView: UIView?) {
-        guard let windowHierarchySnapshot = windowHierarchySnapshot else {
+        guard let viewHierarchySnapshot = viewHierarchySnapshot else {
             return
         }
         
-        let coordinator = ElementInspectorCoordinator(reference: reference, in: windowHierarchySnapshot, from: sourceView)
+        let coordinator = ElementInspectorCoordinator(reference: reference, in: viewHierarchySnapshot, from: sourceView)
         coordinator.delegate = self
         
         elementInspectorCoordinator = coordinator

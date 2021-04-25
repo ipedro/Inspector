@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol HierarchyInspectorKeyCommandPresentable: HierarchyInspectorPresentableViewControllerProtocol {
+public protocol HierarchyInspectorKeyCommandPresentable: UIViewController {
     
     var hirearchyInspectorKeyCommandsSelector: Selector { get }
     
@@ -35,6 +35,10 @@ extension HierarchyInspectorKeyCommandPresentable {
     }
     
     public var hierarchyInspectorKeyCommands: [UIKeyCommand] {
+        guard let hierarchyInspectorManager = hierarchyInspectorManager else {
+            return []
+        }
+        
         let aSelector = hirearchyInspectorKeyCommandsSelector
         
         var keyCommands = [UIKeyCommand]()
@@ -68,9 +72,7 @@ extension HierarchyInspectorKeyCommandPresentable {
                         )
                     )
                     
-                case .inspect,
-                     .inspectWindow,
-                     .hideLayer,
+                case .hideLayer,
                      .showLayer:
                     
                     guard keyCommandSettings.layerToggleInputRange.contains(index) else {
@@ -99,7 +101,10 @@ extension HierarchyInspectorKeyCommandPresentable {
     /// Interprets key commands into HierarchyInspector actions.
     /// - Parameter sender: (Any) If sender is not of `UIKeyCommand` type methods does nothing.
     public func hierarchyInspectorKeyCommandHandler(_ sender: Any) {
-        guard let keyCommand = sender as? UIKeyCommand else {
+        guard
+            let keyCommand = sender as? UIKeyCommand,
+            let hierarchyInspectorManager = hierarchyInspectorManager
+        else {
             return
         }
         
@@ -119,14 +124,10 @@ extension HierarchyInspector.Manager {
     var availableActionsForKeyCommand: ActionGroups {
         var array = availableActions
         
-        guard let hostViewController = hostViewController as? HierarchyInspectorPresentableViewControllerProtocol else {
-            return array
-        }
-        
         let openInspectorGroup = ActionGroup(
             title: nil,
             actions: [
-                .openHierarchyInspector(from: hostViewController)
+                .openHierarchyInspector(from: host)
             ]
         )
         

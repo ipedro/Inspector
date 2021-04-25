@@ -18,11 +18,7 @@ enum Action {
     
     case hideVisibleLayers(closure: Closure)
     
-    case openHierarchyInspector(from: HierarchyInspectorPresentableViewControllerProtocol)
-    
-    case inspect(vc: HierarchyInspectorPresentableViewControllerProtocol)
-    
-    case inspectWindow(vc: HierarchyInspectorPresentableViewControllerProtocol)
+    case openHierarchyInspector(from: HierarchyInspectableProtocol)
 }
 
 // MARK: - Properties
@@ -48,14 +44,8 @@ extension Action {
         case .hideVisibleLayers:
             return Texts.hideVisibleLayers
             
-        case let .inspect(vc):
-            return Texts.inspect(String(describing: vc.classForCoder))
-            
         case .openHierarchyInspector:
             return Texts.openHierarchyInspector
-            
-        case let .inspectWindow(fromVC):
-            return Texts.inspect(String(describing: fromVC.classForCoder))
         }
     }
     
@@ -73,10 +63,6 @@ extension Action {
             return .moduleImage(named: "LayerAction-HideAll")
         case .openHierarchyInspector:
             return nil
-        case .inspect:
-            return nil
-        case .inspectWindow:
-            return nil
         }
     }
     
@@ -91,24 +77,8 @@ extension Action {
              let .hideVisibleLayers(closure):
             return closure
             
-        case let .inspect(vc):
-            return { vc.presentHierarchyInspector(animated: true) }
-            
-        case let .openHierarchyInspector(fromViewController):
-            return { fromViewController.presentHierarchyInspector(animated: true) }
-            
-        case let .inspectWindow(vc):
-            guard let window = vc.view.window else {
-                return nil
-            }
-            
-            return {
-                vc.hierarchyInspectorManager.presentElementInspector(
-                    for: ViewHierarchyReference(root: window),
-                    animated: true,
-                    from: nil
-                )
-            }
+        case let .openHierarchyInspector(from: host):
+            return { host.presentHierarchyInspector(animated: true) }
         }
     }
 }

@@ -18,7 +18,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
             return ElementAttributesInspectorViewController.create(
                 viewModel: AttributesInspectorViewModel(
                     reference: reference,
-                    snapshot: windowSnapshot
+                    snapshot: viewHierarchySnapshot
                 )).then {
                 $0.delegate = self
             }
@@ -27,7 +27,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
             return ElementViewHierarchyViewController.create(
                 viewModel: ElementViewHierarchyInspectorViewModel(
                     reference: reference,
-                    snapshot: windowSnapshot
+                    snapshot: viewHierarchySnapshot
                 )
             ).then {
                 $0.delegate = self

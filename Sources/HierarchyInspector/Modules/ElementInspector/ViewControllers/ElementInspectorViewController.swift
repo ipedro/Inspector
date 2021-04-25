@@ -15,23 +15,7 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController)
 }
 
-final class ElementInspectorViewController: HierarchyInspectableViewController {
-    
-    // MARK: - HierarchyInspectorPresentable
-    
-    override var hierarchyInspectorLayers: [ViewHierarchyLayer] {
-        [
-            .buttons,
-            .controls,
-            .staticTexts + .icons + .images,
-            .stackViews,
-            .tableViewCells,
-            .containerViews,
-            .layer(name: "Base View", filter: { view -> Bool in
-                view is BaseView
-            })
-        ]
-    }
+final class ElementInspectorViewController: UIViewController {
     
     weak var delegate: ElementInspectorViewControllerDelegate?
     
@@ -49,8 +33,6 @@ final class ElementInspectorViewController: HierarchyInspectableViewController {
     
     private var presentedPanelViewController: UIViewController? {
         didSet {
-            hierarchyInspectorManager.removeAllLayers()
-            
             viewCode.emptyLabel.isHidden = presentedPanelViewController != nil
             
             if let panelViewController = presentedPanelViewController {
@@ -107,7 +89,8 @@ final class ElementInspectorViewController: HierarchyInspectableViewController {
         
         navigationItem.titleView = viewCode.segmentedControl
         
-        navigationItem.rightBarButtonItem = inspectBarButtonItem
+        #warning("TODO: come back")
+        //navigationItem.rightBarButtonItem = inspectBarButtonItem
         
         if viewModel.showDismissBarButton {
             navigationItem.leftBarButtonItem = viewCode.dismissBarButtonItem
