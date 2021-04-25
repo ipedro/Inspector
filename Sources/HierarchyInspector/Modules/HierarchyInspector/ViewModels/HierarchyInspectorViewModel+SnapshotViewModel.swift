@@ -37,10 +37,13 @@ extension HierarchyInspectorViewModel {
         
         let numberOfSections = 1
         
-        func selectRow(at indexPath: IndexPath, completion: @escaping ((ViewHierarchyReference?) -> Void)) {
+        func selectRow(at indexPath: IndexPath) -> HierarchyInspectorCommand? {
+            guard (0..<searchResults.count).contains(indexPath.row) else {
+                return nil
+            }
             let reference = searchResults[indexPath.row].reference
             
-            completion(reference)
+            return .inspect(reference)
         }
         
         func isRowEnabled(at indexPath: IndexPath) -> Bool {

@@ -9,7 +9,7 @@ import UIKit
 
 protocol HierarchyInspectorCoordinatorDelegate: AnyObject {
     func hierarchyInspectorCoordinator(_ coordinator: HierarchyInspectorCoordinator,
-                                       didFinishWith reference: ViewHierarchyReference?)
+                                       didFinishWith command: HierarchyInspectorCommand?)
 }
 
 final class HierarchyInspectorCoordinator: NSObject {
@@ -46,9 +46,9 @@ final class HierarchyInspectorCoordinator: NSObject {
         hierarchyInspectorViewController
     }
     
-    func finish(with reference: ViewHierarchyReference? = nil) {
+    func finish(with command: HierarchyInspectorCommand? = nil) {
         hierarchyInspectorViewController.dismiss(animated: true) {
-            self.delegate?.hierarchyInspectorCoordinator(self, didFinishWith: reference)
+            self.delegate?.hierarchyInspectorCoordinator(self, didFinishWith: command)
         }
     }    
 }
@@ -58,11 +58,12 @@ final class HierarchyInspectorCoordinator: NSObject {
 extension HierarchyInspectorCoordinator: HierarchyInspectorViewControllerDelegate {
     
     func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController,
-                                          didSelect viewHierarchyReference: ViewHierarchyReference?) {
-        finish(with: viewHierarchyReference)
+                                          didSelect command: HierarchyInspectorCommand?) {
+        finish(with: command)
     }
-    
+
     func hierarchyInspectorViewControllerDidFinish(_ viewController: HierarchyInspectorViewController) {
         finish()
     }
+    
 }

@@ -10,7 +10,8 @@ import UIKeyCommandTableView
 import UIKeyboardAnimatable
 
 protocol HierarchyInspectorViewControllerDelegate: AnyObject {
-    func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController, didSelect viewHierarchyReference: ViewHierarchyReference?)
+    func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController,
+                                          didSelect command: HierarchyInspectorCommand?)
     
     func hierarchyInspectorViewControllerDidFinish(_ viewController: HierarchyInspectorViewController)
 }

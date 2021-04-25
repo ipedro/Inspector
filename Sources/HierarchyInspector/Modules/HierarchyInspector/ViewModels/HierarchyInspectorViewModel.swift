@@ -23,7 +23,7 @@ protocol HierarchyInspectorSectionViewModelProtocol {
     
     func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel
     
-    func selectRow(at indexPath: IndexPath, completion: @escaping ((ViewHierarchyReference?) -> Void))
+    func selectRow(at indexPath: IndexPath) -> HierarchyInspectorCommand?
     
     func isRowEnabled(at indexPath: IndexPath) -> Bool
     
@@ -91,13 +91,13 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
         }
     }
     
-    func selectRow(at indexPath: IndexPath, completion: @escaping ((ViewHierarchyReference?) -> Void)) {
+    func selectRow(at indexPath: IndexPath) -> HierarchyInspectorCommand? {
         switch isSearching {
         case true:
-        return snapshotViewModel.selectRow(at: indexPath, completion: completion)
+            return snapshotViewModel.selectRow(at: indexPath)
             
         case false:
-        return actionGroupsViewModel.selectRow(at: indexPath, completion: completion)
+            return actionGroupsViewModel.selectRow(at: indexPath)
         }
     }
     

@@ -38,12 +38,11 @@ extension HierarchyInspectorViewModel {
             layerActionGroups = provider() ?? []
         }
         
-        func selectRow(at indexPath: IndexPath, completion: @escaping ((ViewHierarchyReference?) -> Void)) {
-            action(at: indexPath).closure?()
-            
-            DispatchQueue.main.async {
-                completion(nil)
+        func selectRow(at indexPath: IndexPath) -> HierarchyInspectorCommand? {
+            guard let closure = action(at: indexPath).closure else {
+                return nil
             }
+            return .execute(closure)
         }
         
         func isRowEnabled(at indexPath: IndexPath) -> Bool {
