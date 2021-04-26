@@ -35,7 +35,8 @@ final class CustomButtonInspectableViewModel: HierarchyInspectorElementViewModel
     
     enum Properties: String, CaseIterable {
         case animateOnTouch = "Animate On Touch"
-        case cornerRadius = "Corner Radius"
+        case cornerRadius = "Round Corners"
+        case backgroundColor = "Background Color"
     }
     
     var properties: [HiearchyInspectableElementProperty] {
@@ -50,15 +51,21 @@ final class CustomButtonInspectableViewModel: HierarchyInspectorElementViewModel
                 }
                 
             case .cornerRadius:
-                return .cgFloatStepper(
+                return .toggleButton(
                     title: property.rawValue,
-                    value: { self.customButton.cornerRadius },
-                    range: { 0...self.customButton.frame.height / 2 },
-                    stepValue: { 1 }
-                ) { cornerRadius in
-                    self.customButton.cornerRadius = cornerRadius
+                    isOn: { self.customButton.roundCorners }
+                ) { roundCorners in
+                    self.customButton.roundCorners = roundCorners
                 }
                 
+            case .backgroundColor:
+                return .colorPicker(
+                    title: property.rawValue,
+                    color: { self.customButton.backgroundColor }
+                ) { newBackgroundColor in
+                    
+                    self.customButton.backgroundColor = newBackgroundColor
+                }
             }
             
         }

@@ -24,7 +24,7 @@ final class CustomButton: UIButton {
     
     var animateOnTouch = true
     
-    var cornerRadius: CGFloat = 20 {
+    var roundCorners: Bool = true {
         didSet {
             setNeedsLayout()
             layoutIfNeeded()
@@ -36,7 +36,8 @@ final class CustomButton: UIButton {
         
         layer.cornerCurve = .continuous
         
-        layer.cornerRadius = cornerRadius
+        layer.cornerRadius = roundCorners ? frame.height / 2 : .zero
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

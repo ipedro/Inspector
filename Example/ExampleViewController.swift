@@ -51,7 +51,12 @@ final class ExampleViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     
+    override var keyCommands: [UIKeyCommand]? {
+        hierarchyInspectorManager?.keyCommands
+    }
+    
     // MARK: - Life cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -83,4 +88,5 @@ final class ExampleViewController: UIViewController {
         datePickerSegmentedControl.selectedSegmentIndex = 0
         datePicker.preferredDatePickerStyle = .automatic
     }
+    
 }
