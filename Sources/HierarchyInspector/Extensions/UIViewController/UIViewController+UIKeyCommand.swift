@@ -9,7 +9,7 @@ import UIKit
 
 extension UIViewController {
     
-    static func dismissModalKeyCommand(action: Selector) -> UIKeyCommand {
+    func dismissModalKeyCommand(action: Selector) -> UIKeyCommand {
         UIKeyCommand(
             .discoverabilityTitle(
                 title: Texts.dismissView,

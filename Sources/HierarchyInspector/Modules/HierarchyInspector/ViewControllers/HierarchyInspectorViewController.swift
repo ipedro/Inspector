@@ -116,7 +116,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         super.viewDidLoad()
         
         // key commands
-        addKeyCommand(UIViewController.dismissModalKeyCommand(action: #selector(finish)))
+        addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))
         addKeyCommand(UIKeyCommand(.tab,       action: #selector(toggleResponderAndSelectFirstRow)))
         addKeyCommand(UIKeyCommand(.arrowDown, action: #selector(toggleResponderAndSelectFirstRow)))
         addKeyCommand(UIKeyCommand(.arrowUp,   action: #selector(toggleResponderAndSelectLastRow)))
