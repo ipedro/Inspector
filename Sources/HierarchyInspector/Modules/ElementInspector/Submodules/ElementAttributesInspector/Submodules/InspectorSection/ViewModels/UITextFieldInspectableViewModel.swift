@@ -78,7 +78,7 @@ extension UIKitElementLibrary {
             case .text:
                 return .textField(
                     title: property.rawValue,
-                    placeholder: { textField.text.isNilOrEmpty ? property.rawValue : textField.text },
+                    placeholder: textField.text.isNilOrEmpty ? property.rawValue : textField.text,
                     value: { textField.text }
                 ) { text in
                     textField.text = text
@@ -136,7 +136,7 @@ extension UIKitElementLibrary {
             case .placeholder:
                 return .textField(
                     title: property.rawValue,
-                    placeholder: { textField.placeholder.isNilOrEmpty ? property.rawValue : textField.placeholder },
+                    placeholder: textField.placeholder.isNilOrEmpty ? property.rawValue : textField.placeholder,
                     value: { textField.placeholder }
                 ) { placeholder in
                     textField.placeholder = placeholder

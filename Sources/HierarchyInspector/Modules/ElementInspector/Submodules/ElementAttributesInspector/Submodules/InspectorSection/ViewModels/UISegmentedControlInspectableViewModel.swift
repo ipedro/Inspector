@@ -129,7 +129,7 @@ extension UIKitElementLibrary {
             case .segmentTitle:
                 return .textField(
                     title: property.rawValue,
-                    placeholder: { property.rawValue },
+                    placeholder: property.rawValue,
                     value: { [weak self] in
                         
                         guard let selectedSegment = self?.selectedSegment else {

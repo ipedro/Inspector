@@ -61,12 +61,12 @@ public enum HiearchyInspectableElementProperty {
                  handler: DoubleHandler?)
     
     case textField(title: String,
-                   placeholder: StringProvider,
+                   placeholder: String?,
                    value: StringProvider,
                    handler:StringHandler?)
     
     case textView(title: String,
-                  placeholder: StringProvider,
+                  placeholder: String?,
                   value: StringProvider,
                   handler:StringHandler?)
     

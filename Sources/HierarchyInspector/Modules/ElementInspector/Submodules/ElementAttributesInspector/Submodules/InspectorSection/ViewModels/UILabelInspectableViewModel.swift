@@ -65,11 +65,9 @@ extension UIKitElementLibrary {
             switch property {
             
             case .text:
-                let originalText = label.text
-                
                 return .textView(
                     title: property.rawValue,
-                    placeholder: { originalText },
+                    placeholder: label.text ?? property.rawValue,
                     value: { label.text }
                 ) { text in
                     label.text = text

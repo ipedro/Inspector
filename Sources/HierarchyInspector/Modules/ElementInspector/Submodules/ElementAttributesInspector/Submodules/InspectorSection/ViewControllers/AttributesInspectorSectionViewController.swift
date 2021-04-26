@@ -107,7 +107,7 @@ final class AttributesInspectorSectionViewController: UIViewController {
                     }
                     
                 case let .textField(title: title, placeholder: placeholder, value: value, handler: _):
-                    return TextFieldControl(title: title, value: value(), placeholder: placeholder())
+                    return TextFieldControl(title: title, value: value(), placeholder: placeholder)
                     
                 case let .stepper(title: title, value: valueProvider, range: rangeProvider, stepValue: stepValueProvider, isDecimalValue: isDecimalValue, handler: _):
                     return StepperControl(
@@ -161,11 +161,11 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         $0.delegate = self
                     }
                     
-                case let .textView(title: title, placeholder: placeholderProvider, value: stringProvider, handler: _):
+                case let .textView(title: title, placeholder: placeholder, value: stringProvider, handler: _):
                     return TextViewControl(
                         title: title,
                         value: stringProvider(),
-                        placeholder: placeholderProvider()
+                        placeholder: placeholder
                     )
                 }
             }()
@@ -297,14 +297,14 @@ extension AttributesInspectorSectionViewController {
                 optionSelector.selectedIndex = selectedIndexProvider()
                 optionSelector.title = title
                 
-            case let (.textField(title: title, placeholder: placeholderProvider, value: valueProvider, _), textFieldControl as TextFieldControl):
+            case let (.textField(title: title, placeholder: placeholder, value: valueProvider, _), textFieldControl as TextFieldControl):
                 textFieldControl.value = valueProvider()
-                textFieldControl.placeholder = placeholderProvider()
+                textFieldControl.placeholder = placeholder
                 textFieldControl.title = title
                 
-            case let (.textView(title: title, placeholder: placeholderProvider, value: valueProvider, _), textViewControl as TextViewControl):
+            case let (.textView(title: title, placeholder: placeholder, value: valueProvider, _), textViewControl as TextViewControl):
                 textViewControl.value = valueProvider()
-                textViewControl.placeholder = placeholderProvider()
+                textViewControl.placeholder = placeholder
                 textViewControl.title = title
                 
             case (.separator, _),

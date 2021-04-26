@@ -55,7 +55,7 @@ extension UIKitElementLibrary {
                 if #available(iOS 14.0, *) {
                     return .textField(
                         title: property.rawValue,
-                        placeholder: { switchControl.title.isNilOrEmpty ? property.rawValue : switchControl.title },
+                        placeholder: switchControl.title.isNilOrEmpty ? property.rawValue : switchControl.title,
                         value: { switchControl.title }
                     ) { title in
                         switchControl.title = title

@@ -64,9 +64,7 @@ extension UIKitElementLibrary {
                     options: UIView.ContentMode.allCases.map { $0.description },
                     selectedIndex: { UIView.ContentMode.allCases.firstIndex(of: view.contentMode) }
                 ) {
-                    guard let newIndex = $0 else {
-                        return
-                    }
+                    guard let newIndex = $0 else { return }
 
                     let contentMode = UIView.ContentMode.allCases[newIndex]
                     
@@ -79,9 +77,7 @@ extension UIKitElementLibrary {
                     options: UISemanticContentAttribute.allCases.map { $0.description },
                     selectedIndex: { UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute) }
                 ) {
-                    guard let newIndex = $0 else {
-                        return
-                    }
+                    guard let newIndex = $0 else { return }
                     
                     let semanticContentAttribute = UISemanticContentAttribute.allCases[newIndex]
 
@@ -99,14 +95,10 @@ extension UIKitElementLibrary {
                 }
                 
             case .accessibilityIdentifier:
-                let placeholder = view.accessibilityIdentifier?.trimmed ?? property.rawValue
-                
                 return .textField(
                     title: property.rawValue,
-                    placeholder: { placeholder },
-                    value: {
-                        view.accessibilityIdentifier?.trimmed
-                    }
+                    placeholder: view.accessibilityIdentifier?.trimmed ?? property.rawValue,
+                    value: { view.accessibilityIdentifier?.trimmed }
                 ) { accessibilityIdentifier in
                     view.accessibilityIdentifier = accessibilityIdentifier?.trimmed
                     view.hightlightView?.updateElementName()
