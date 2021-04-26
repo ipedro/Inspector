@@ -24,18 +24,18 @@ public protocol HierarchyInspectableProtocol {
     
     var window: UIWindow? { get }
     
-    var hierarchyInspectorManager: HierarchyInspector.Manager? { get }
-    
     var hierarchyInspectorLayers: [ViewHierarchyLayer] { get }
     
     var hierarchyInspectorColorScheme: ViewHierarchyColorScheme { get }
     
     var hierarchyInspectorElementLibraries: [HierarchyInspectorElementLibraryProtocol] { get }
+    
 }
 
 // MARK: - Default Values
 
 public extension HierarchyInspectableProtocol {
+    
     var hierarchyInspectorLayers: [ViewHierarchyLayer] { [] }
     
     var hierarchyInspectorColorScheme: ViewHierarchyColorScheme { .default }
@@ -43,6 +43,7 @@ public extension HierarchyInspectableProtocol {
     var hierarchyInspectorElementLibraries: [HierarchyInspectorElementLibraryProtocol] { [] }
     
     func presentHierarchyInspector(animated: Bool) {
-        window?.hierarchyInspectorManager?.present(animated: animated)
+        window?.presentHierarchyInspector(animated: animated)
     }
+    
 }

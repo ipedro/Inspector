@@ -26,4 +26,8 @@ public enum HierarchyInspector {
     
     public static var configuration = HierarchyInspectorConfiguration()
     
+    public static var delegate: HierarchyInspectableProtocol? {
+        get { Manager.shared.host }
+        set { Manager.shared.host = newValue }
+    }
 }

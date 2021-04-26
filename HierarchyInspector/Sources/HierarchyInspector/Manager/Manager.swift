@@ -23,6 +23,14 @@ import UIKit
 extension HierarchyInspector {
     public final class Manager: Create {
         
+        // MARK: - Public Properties
+        
+        public static let shared = Manager()
+        
+        var host: HierarchyInspectableProtocol?
+        
+        // MARK: - Properties
+        
         lazy var operationQueue: OperationQueue = OperationQueue.main
         
         var elementInspectorCoordinator: ElementInspectorCoordinator?
@@ -34,18 +42,13 @@ extension HierarchyInspector {
             $0.delegate   = self
         }
         
-        let host: HierarchyInspectableProtocol
-        
         var shouldCacheViewHierarchySnapshot = true
         
         private var cachedSnapshots: [UIView: ViewHierarchySnapshot] = [:]
         
         // MARK: - Init
         
-        public init(host: HierarchyInspectableProtocol) {
-            self.host = host
-            host.window?.hierarchyInspectorManager = self
-        }
+        private init() {}
         
         deinit {
             invalidate()
@@ -125,7 +128,10 @@ extension HierarchyInspector.Manager {
     }
     
     private func snapshot(of referenceView: UIView?) -> ViewHierarchySnapshot? {
-        guard let referenceView = referenceView else {
+        guard
+            let referenceView = referenceView,
+            let host = host
+        else {
             return nil
         }
         

@@ -24,13 +24,11 @@ import UIKit
 
 extension HierarchyInspector.Manager: ViewHierarchyLayersCoordinatorDataSource {
     var viewHierarchyWindow: UIWindow? {
-        host.window?.hierarchyInspectorManager = self
-        
-        return host.window
+        host?.window
     }
     
     var viewHierarchyColorScheme: ViewHierarchyColorScheme {
-        host.hierarchyInspectorColorScheme
+        host?.hierarchyInspectorColorScheme ?? .default
     }
     
 }

@@ -29,6 +29,10 @@ extension HierarchyInspector.Manager: KeyCommandPresenterProtocol {
     }
     
     var availableActionsForKeyCommand: ActionGroups {
+        guard let host = host else {
+            return []
+        }
+        
         var array = availableActionGroups
         
         let openInspectorGroup = ActionGroup(

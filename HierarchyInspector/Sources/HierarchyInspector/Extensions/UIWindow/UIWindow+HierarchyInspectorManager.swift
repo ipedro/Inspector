@@ -19,15 +19,14 @@
 //  SOFTWARE.
 
 import UIKit
-import ObjectAssociation
 
 public extension UIWindow {
     
-    private static let managers = ObjectAssociation<HierarchyInspector.Manager>()
-    
     var hierarchyInspectorManager: HierarchyInspector.Manager? {
-        get { Self.managers[self] }
-        set { Self.managers[self] = newValue }
+        guard HierarchyInspector.Manager.shared.host?.window == self else {
+            return nil
+        }
+        return HierarchyInspector.Manager.shared
     }
     
     // MARK: - Presentation
