@@ -50,6 +50,8 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     
     private var needsSetup = true
     
+    private var isFinishing = false
+    
     override func loadView() {
         view = viewCode
     }
@@ -184,6 +186,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     }
     
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        isFinishing = true
         view.endEditing(true)
         
         super.dismiss(animated: flag, completion: completion)
@@ -256,6 +259,8 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     }
     
     func finish() {
+        isFinishing = true
+        view.endEditing(true)
         delegate?.hierarchyInspectorViewControllerDidFinish(self)
     }
 }
@@ -298,6 +303,9 @@ extension HierarchyInspectorViewController: UITableViewKeyCommandsDelegate {
     func tableViewDidResignFirstResponder(_ tableView: UIKeyCommandTableView) {
         tableView.indexPathsForSelectedRows?.forEach { tableView.deselectRow(at: $0, animated: false) }
         removeSearchKeyCommandListeners()
+        
+        guard isFinishing == false else { return }
+        
         viewCode.searchView.becomeFirstResponder()
     }
     
