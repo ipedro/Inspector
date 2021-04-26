@@ -71,22 +71,23 @@ extension ViewHierarchySnapshot {
     }
     
     private func iconImage(for view: UIView?) -> UIImage? {
-        switch view {
-        case is InternalViewProtocol:
-            return UIImage.internalViewIcon?.withRenderingMode(view is UIControl ? .alwaysOriginal : .alwaysTemplate)
-            
-        case let view?:
-            let candidateIcons = elementLibraries.targeting(element: view).compactMap { $0.icon(with: view) }
-            
-            if let firstIcon = candidateIcons.first {
-                return firstIcon
-            }
-            
-        default:
-            break
+        let emptyImage = UIImage.moduleImage(named: "EmptyView-32_Normal")
+        
+        guard let view = view else {
+            return emptyImage
         }
         
-        return UIImage.moduleImage(named: "EmptyView-32_Normal")
+        guard view is InternalViewProtocol == false else {
+            return UIImage.internalViewIcon?.withRenderingMode(view is UIControl ? .alwaysOriginal : .alwaysTemplate)
+        }
+        
+        if view.isHidden {
+            return UIImage.moduleImage(named: "Hidden-32_Normal")
+        }
+        
+        let candidateIcons = elementLibraries.targeting(element: view).compactMap { $0.icon(with: view) }
+        
+        return candidateIcons.first ?? emptyImage
     }
     
 }
