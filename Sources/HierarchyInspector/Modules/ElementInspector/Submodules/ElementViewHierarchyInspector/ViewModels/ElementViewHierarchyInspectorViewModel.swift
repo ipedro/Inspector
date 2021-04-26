@@ -56,7 +56,7 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
             reference: reference,
             parent: parent,
             rootDepth: rootDepth,
-            thumbnailImage: snapshot.iconImage(for: reference.rootView),
+            thumbnailImage: .icon(for: reference.rootView, with: snapshot.elementLibraries),
             isCollapsed: reference.depth > rootDepth + 5
         )
         
@@ -104,7 +104,7 @@ extension ElementViewHierarchyInspectorViewModel: ElementViewHierarchyInspectorV
     
     func reloadIcons() {
         childViewModels.forEach { childViewModel in
-            childViewModel.thumbnailImage = snapshot.iconImage(for: childViewModel.reference.rootView)
+            childViewModel.thumbnailImage = .icon(for: childViewModel.reference.rootView, with: snapshot.elementLibraries)
         }
     }
     
