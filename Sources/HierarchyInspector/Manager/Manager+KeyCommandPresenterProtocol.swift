@@ -43,8 +43,8 @@ extension HierarchyInspector.Manager: KeyCommandPresenterProtocol {
         return array
     }
     
-    var keyCommands: [UIKeyCommand] {
-        hierarchyInspectorKeyCommands(selector: #selector(hierarchyInspectorKeyCommandHandler(_:)))
+    public var keyCommands: [UIKeyCommand] {
+        hierarchyInspectorKeyCommands(selector: #selector(UIViewController.hierarchyInspectorKeyCommandHandler(_:)))
     }
     
     func hierarchyInspectorKeyCommands(selector aSelector: Selector) -> [UIKeyCommand] {

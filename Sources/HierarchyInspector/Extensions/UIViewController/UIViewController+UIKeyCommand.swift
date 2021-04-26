@@ -22,6 +22,22 @@ import UIKit
 
 extension UIViewController {
     
+    @objc public func hierarchyInspectorKeyCommandHandler(_ sender: Any) {
+        guard
+            let keyCommand = sender as? UIKeyCommand,
+            let hierarchyInspectorManager = hierarchyInspectorManager
+        else {
+            return
+        }
+        
+        let flattenedActions = hierarchyInspectorManager.availableActionsForKeyCommand.flatMap { $0.actions }
+        
+        for action in flattenedActions where action.title == keyCommand.discoverabilityTitle {
+            action.closure?()
+            return
+        }
+    }
+    
     func dismissModalKeyCommand(action: Selector) -> UIKeyCommand {
         UIKeyCommand(
             .discoverabilityTitle(
