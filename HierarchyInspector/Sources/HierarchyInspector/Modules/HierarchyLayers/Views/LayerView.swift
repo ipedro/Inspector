@@ -95,15 +95,11 @@ class LayerView: UIImageView, LayerViewProtocol {
     
     // MARK: - View Lifecycle
     
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
+    override func layoutSubviews() {
+        super.layoutSubviews()
         
         guard let superview = superview else {
             return
-        }
-        
-        if superview.isSystemView == false {
-            borderedView.layer.maskedCorners = superview.layer.maskedCorners
         }
         
         #if swift(>=5.0)
@@ -111,14 +107,6 @@ class LayerView: UIImageView, LayerViewProtocol {
             borderedView.layer.cornerCurve = superview.layer.cornerCurve
         }
         #endif
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        guard let superview = superview else {
-            return
-        }
         
         borderedView.layer.maskedCorners = superview.layer.maskedCorners
         
