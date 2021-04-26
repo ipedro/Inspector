@@ -7,6 +7,7 @@
 
 import UIKit
 import MapKit
+import WebKit
 
 enum UIKitElementLibrary: Swift.CaseIterable {
     case activityIndicator
@@ -26,6 +27,8 @@ enum UIKitElementLibrary: Swift.CaseIterable {
     case view
     case window
     case navigationBar
+    case oldWebview
+    case webView
     
     static var standard: AllCases {
         Self.allCases
@@ -87,6 +90,12 @@ extension UIKitElementLibrary: HierarchyInspectorElementLibraryProtocol {
             
         case .view:
             return UIView.self
+            
+        case .oldWebview:
+            return UIWebView.self
+            
+        case .webView:
+            return WKWebView.self
         }
     }
     
@@ -140,6 +149,12 @@ extension UIKitElementLibrary: HierarchyInspectorElementLibraryProtocol {
             
         case .view:
             return UIViewInspectableViewModel(view: referenceView)
+            
+        case .oldWebview:
+            return nil
+            
+        case .webView:
+            return nil
         }
         
     }
@@ -193,6 +208,10 @@ extension UIKitElementLibrary: HierarchyInspectorElementLibraryProtocol {
             
         case .control:
             return .moduleImage(named: "UIControl-32_Normal")
+            
+        case .oldWebview,
+             .webView:
+            return .moduleImage(named: "Webview-32_Normal")
             
         case .mapView,
              .slider,
