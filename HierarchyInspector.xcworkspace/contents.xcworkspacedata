@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:">
+      location = "group:HierarchyInspector">
    </FileRef>
    <FileRef
-      location = "group:HierarchyInspectorExample.xcodeproj">
+      location = "group:/Users/pedro/Developer/HierarchyInspector/Example.xcodeproj">
    </FileRef>
 </Workspace>

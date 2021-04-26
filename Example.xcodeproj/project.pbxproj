@@ -17,7 +17,7 @@
 		EB5E1FE7261A48EC002301F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE6261A48EC002301F5 /* Assets.xcassets */; };
 		EB5E1FEA261A48EC002301F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE8261A48EC002301F5 /* LaunchScreen.storyboard */; };
 		EB5E2004261A4EC9002301F5 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E2003261A4EC9002301F5 /* CustomButton.swift */; };
-		EBAB46C0261F7ED500375668 /* HierarchyInspector in Frameworks */ = {isa = PBXBuildFile; productRef = EBAB46BF261F7ED500375668 /* HierarchyInspector */; };
+		EB88D62A2636A775006D8940 /* HierarchyInspector in Frameworks */ = {isa = PBXBuildFile; productRef = EB88D6292636A775006D8940 /* HierarchyInspector */; };
 		EBC0288226354CAB00502C90 /* ExampleElementLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC0288126354CAB00502C90 /* ExampleElementLibrary.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,7 +25,7 @@
 		EB210C7A2624E4D00032B9AE /* CustomButtonInspectableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonInspectableViewModel.swift; sourceTree = "<group>"; };
 		EB210C802624E54E0032B9AE /* ExampleViewController+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExampleViewController+Actions.swift"; sourceTree = "<group>"; };
 		EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDatePickerStyle+Extensions.swift"; sourceTree = "<group>"; };
-		EB5E1FDA261A48EB002301F5 /* HierarchyInspectorExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HierarchyInspectorExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB5E1FDA261A48EB002301F5 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB5E1FDD261A48EB002301F5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EB5E1FDF261A48EB002301F5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		EB5E1FE1261A48EB002301F5 /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
@@ -42,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EBAB46C0261F7ED500375668 /* HierarchyInspector in Frameworks */,
+				EB88D62A2636A775006D8940 /* HierarchyInspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,7 +69,7 @@
 		EB5E1FDB261A48EB002301F5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EB5E1FDA261A48EB002301F5 /* HierarchyInspectorExample.app */,
+				EB5E1FDA261A48EB002301F5 /* Example.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		EB5E1FD9261A48EB002301F5 /* HierarchyInspectorExample */ = {
+		EB5E1FD9261A48EB002301F5 /* Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EB5E1FEE261A48EC002301F5 /* Build configuration list for PBXNativeTarget "HierarchyInspectorExample" */;
+			buildConfigurationList = EB5E1FEE261A48EC002301F5 /* Build configuration list for PBXNativeTarget "Example" */;
 			buildPhases = (
 				EB5E1FD6261A48EB002301F5 /* Sources */,
 				EB5E1FD7261A48EB002301F5 /* Frameworks */,
@@ -107,12 +107,12 @@
 			);
 			dependencies = (
 			);
-			name = HierarchyInspectorExample;
+			name = Example;
 			packageProductDependencies = (
-				EBAB46BF261F7ED500375668 /* HierarchyInspector */,
+				EB88D6292636A775006D8940 /* HierarchyInspector */,
 			);
 			productName = HierarchyInspectorExample;
-			productReference = EB5E1FDA261A48EB002301F5 /* HierarchyInspectorExample.app */;
+			productReference = EB5E1FDA261A48EB002301F5 /* Example.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -129,7 +129,7 @@
 					};
 				};
 			};
-			buildConfigurationList = EB5E1FD5261A48EB002301F5 /* Build configuration list for PBXProject "HierarchyInspectorExample" */;
+			buildConfigurationList = EB5E1FD5261A48EB002301F5 /* Build configuration list for PBXProject "Example" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -139,13 +139,13 @@
 			);
 			mainGroup = EB5E1FD1261A48EB002301F5;
 			packageReferences = (
-				EBAB46BE261F7ED500375668 /* XCRemoteSwiftPackageReference "HierarchyInspector" */,
+				EB88D6282636A775006D8940 /* XCRemoteSwiftPackageReference "HierarchyInspector" */,
 			);
 			productRefGroup = EB5E1FDB261A48EB002301F5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EB5E1FD9261A48EB002301F5 /* HierarchyInspectorExample */,
+				EB5E1FD9261A48EB002301F5 /* Example */,
 			);
 		};
 /* End PBXProject section */
@@ -362,7 +362,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		EB5E1FD5261A48EB002301F5 /* Build configuration list for PBXProject "HierarchyInspectorExample" */ = {
+		EB5E1FD5261A48EB002301F5 /* Build configuration list for PBXProject "Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EB5E1FEC261A48EC002301F5 /* Debug */,
@@ -371,7 +371,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EB5E1FEE261A48EC002301F5 /* Build configuration list for PBXNativeTarget "HierarchyInspectorExample" */ = {
+		EB5E1FEE261A48EC002301F5 /* Build configuration list for PBXNativeTarget "Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EB5E1FEF261A48EC002301F5 /* Debug */,
@@ -383,7 +383,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		EBAB46BE261F7ED500375668 /* XCRemoteSwiftPackageReference "HierarchyInspector" */ = {
+		EB88D6282636A775006D8940 /* XCRemoteSwiftPackageReference "HierarchyInspector" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "file:///Users/pedro/Developer/HierarchyInspector";
 			requirement = {
@@ -394,9 +394,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EBAB46BF261F7ED500375668 /* HierarchyInspector */ = {
+		EB88D6292636A775006D8940 /* HierarchyInspector */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EBAB46BE261F7ED500375668 /* XCRemoteSwiftPackageReference "HierarchyInspector" */;
+			package = EB88D6282636A775006D8940 /* XCRemoteSwiftPackageReference "HierarchyInspector" */;
 			productName = HierarchyInspector;
 		};
 /* End XCSwiftPackageProductDependency section */

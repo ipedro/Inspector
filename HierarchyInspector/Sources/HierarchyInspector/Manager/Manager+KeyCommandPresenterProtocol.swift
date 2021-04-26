@@ -24,7 +24,7 @@ import UIKit
 
 extension HierarchyInspector.Manager: KeyCommandPresenterProtocol {
     
-    private var keyCommandSettings: HierarchyInspector.Configuration.KeyCommandSettings {
+    private var keyCommandSettings: HierarchyInspectorConfiguration.KeyCommandSettings {
         HierarchyInspector.configuration.keyCommands
     }
     
