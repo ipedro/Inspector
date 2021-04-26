@@ -86,3 +86,19 @@ extension SceneDelegate: HierarchyInspectableProtocol {
         }
     }
 }
+
+// MARK: - Global HierarchyInspector Presentation Example
+
+extension UIWindow {
+
+    open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        super.motionBegan(motion, with: event)
+
+        guard motion == .motionShake else {
+            return
+        }
+
+        presentHierarchyInspector(animated: true)
+    }
+
+}

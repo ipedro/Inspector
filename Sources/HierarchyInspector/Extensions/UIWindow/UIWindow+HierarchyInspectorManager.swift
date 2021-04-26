@@ -17,6 +17,8 @@ public extension UIWindow {
         set { Self.managers[self] = newValue }
     }
     
+    // MARK: - Presentation
+    
     func presentHierarchyInspector(animated: Bool) {
         hierarchyInspectorManager?.present(animated: animated)
     }
