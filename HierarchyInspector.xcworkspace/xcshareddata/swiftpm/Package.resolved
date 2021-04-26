@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "HierarchyInspector",
+        "repositoryURL": "/Users/pedro/Developer/HierarchyInspector",
+        "state": {
+          "branch": "develop",
+          "revision": "f4ee9439e99d6e9abbbd499d872af2b1b9a1c50f",
+          "version": null
+        }
+      },
+      {
         "package": "ObjectAssociation",
         "repositoryURL": "https://github.com/ipedro/ObjectAssociation.git",
         "state": {

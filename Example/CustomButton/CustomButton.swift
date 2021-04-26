@@ -35,7 +35,6 @@ final class CustomButton: UIButton {
         super.layoutSubviews()
         
         layer.cornerCurve = .continuous
-        
         layer.cornerRadius = roundCorners ? frame.height / 2 : .zero
         
     }
