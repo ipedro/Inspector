@@ -1,7 +1,4 @@
 //
-//  CharacterSet+AllCharacters.swift
-//  HierachyInspector
-//
 //  Created by Cœur
 //  https://stackoverflow.com/a/52133647
 //

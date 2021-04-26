@@ -1,10 +1,3 @@
-//
-//  CaseIterable.swift
-//  HierarchyInspector
-//
-//  Created by Pedro Almeida on 03.04.21.
-//
-
 import Foundation
 
 /// A type that provides a collection of all of its values.

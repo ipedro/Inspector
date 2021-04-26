@@ -1,10 +1,3 @@
-//
-//  CustomStringConvertible.swift
-//  HierarchyInspector
-//
-//  Created by Pedro Almeida on 03.04.21.
-//
-
 import Foundation
 
 /// A type with a customized textual representation.
