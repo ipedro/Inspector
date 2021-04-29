@@ -24,7 +24,7 @@ public protocol InspectorElementViewModelProtocol: AnyObject {
     
     var title: String { get }
     
-    var properties: [HiearchyInspectableElementProperty] { get }
+    var properties: [InspectorElementViewModelProperty] { get }
     
     init?(view: UIView)
 }

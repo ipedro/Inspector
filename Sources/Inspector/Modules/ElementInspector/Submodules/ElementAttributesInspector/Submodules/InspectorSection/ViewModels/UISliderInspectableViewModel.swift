@@ -51,7 +51,7 @@ extension UIKitElementLibrary {
             self.slider = slider
         }
         
-        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let slider = slider else {
                 return nil
             }

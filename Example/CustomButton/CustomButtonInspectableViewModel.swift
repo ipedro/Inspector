@@ -39,7 +39,7 @@ final class CustomButtonInspectableViewModel: InspectorElementViewModelProtocol 
         case backgroundColor = "Background Color"
     }
     
-    var properties: [HiearchyInspectableElementProperty] {
+    var properties: [InspectorElementViewModelProperty] {
         Properties.allCases.map { property in
             switch property {
             case .animateOnTouch:

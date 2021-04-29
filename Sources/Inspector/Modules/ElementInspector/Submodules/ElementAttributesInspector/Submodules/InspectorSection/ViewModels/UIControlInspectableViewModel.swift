@@ -45,7 +45,7 @@ extension UIKitElementLibrary {
             self.control = control
         }
         
-        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let control = control else {
                 return nil
             }

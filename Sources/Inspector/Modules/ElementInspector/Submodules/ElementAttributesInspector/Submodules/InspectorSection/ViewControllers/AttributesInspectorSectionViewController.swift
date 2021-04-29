@@ -32,10 +32,10 @@ protocol AttributesInspectorSectionViewControllerDelegate: OperationQueueManager
                                                   didTap optionSelector: OptionListControl)
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  didUpdate property: HiearchyInspectableElementProperty)
+                                                  didUpdate property: InspectorElementViewModelProperty)
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  willUpdate property: HiearchyInspectableElementProperty)
+                                                  willUpdate property: InspectorElementViewModelProperty)
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
                                                   didToggle isCollapsed: Bool)
@@ -85,8 +85,8 @@ final class AttributesInspectorSectionViewController: UIViewController {
         }
     }
     
-    private lazy var inputViews: [HiearchyInspectableElementProperty: UIView] = {
-        var dict = [HiearchyInspectableElementProperty: UIView]()
+    private lazy var inputViews: [InspectorElementViewModelProperty: UIView] = {
+        var dict = [InspectorElementViewModelProperty: UIView]()
         
         for (index, property) in viewModel.properties.enumerated() {
             let element: UIView? = {

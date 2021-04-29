@@ -20,7 +20,7 @@
 
 import UIKit
 
-public extension HiearchyInspectableElementProperty {
+public extension InspectorElementViewModelProperty {
     
     static func integerStepper(
         title: String,
@@ -28,7 +28,7 @@ public extension HiearchyInspectableElementProperty {
         range: @escaping IntClosedRangeProvider,
         stepValue: @escaping IntProvider,
         handler: IntHandler?
-    ) -> HiearchyInspectableElementProperty {
+    ) -> InspectorElementViewModelProperty {
         .stepper(
             title: title,
             value: { Double(value()) },
@@ -46,7 +46,7 @@ public extension HiearchyInspectableElementProperty {
         range: @escaping CGFloatClosedRangeProvider,
         stepValue: @escaping CGFloatProvider,
         handler: CGFloatHandler?
-    ) -> HiearchyInspectableElementProperty {
+    ) -> InspectorElementViewModelProperty {
         .stepper(
             title: title,
             value: { Double(value()) },
@@ -64,7 +64,7 @@ public extension HiearchyInspectableElementProperty {
         range: @escaping (() -> ClosedRange<Float>),
         stepValue: @escaping (() -> Float),
         handler: ((Float) -> Void)?
-    ) -> HiearchyInspectableElementProperty {
+    ) -> InspectorElementViewModelProperty {
         .stepper(
             title: title,
             value: { Double(value()) },

@@ -44,7 +44,7 @@ extension UIKitElementLibrary {
             self.switchControl = switchControl
         }
         
-        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let switchControl = switchControl else {
                 return nil
             }

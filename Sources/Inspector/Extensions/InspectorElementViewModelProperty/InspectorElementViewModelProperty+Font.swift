@@ -20,14 +20,14 @@
 
 import UIKit
 
-public extension HiearchyInspectableElementProperty {
+public extension InspectorElementViewModelProperty {
     
     static func fontNamePicker(
         title: String,
         emptyTitle: String = "System Font",
         fontProvider: @escaping FontProvider,
         handler: @escaping FontHandler
-    ) -> HiearchyInspectableElementProperty {
+    ) -> InspectorElementViewModelProperty {
         
         typealias FontReference = (fontName: String, displayName: String)
         
@@ -92,7 +92,7 @@ public extension HiearchyInspectableElementProperty {
         title: String,
         fontProvider: @escaping FontProvider,
         handler: @escaping FontHandler
-    ) -> HiearchyInspectableElementProperty {
+    ) -> InspectorElementViewModelProperty {
         
         .cgFloatStepper(
             title: title,

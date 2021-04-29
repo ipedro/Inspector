@@ -47,7 +47,7 @@ extension UIKitElementLibrary {
         
         private lazy var validMinuteIntervals = minuteIntervalRange.filter { 60 % $0 == 0 }
         
-        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let datePicker = datePicker else {
                 return nil
             }

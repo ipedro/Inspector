@@ -44,7 +44,7 @@ extension UIKitElementLibrary {
             self.imageView = imageView
         }
         
-        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let imageView = imageView else {
                 return nil
             }

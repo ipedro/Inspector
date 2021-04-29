@@ -20,7 +20,7 @@
 
 import UIKit
 
-public enum HiearchyInspectableElementProperty {
+public enum InspectorElementViewModelProperty {
     
     case colorPicker(title: String,
                      color: ColorProvider,
@@ -76,7 +76,7 @@ public enum HiearchyInspectableElementProperty {
     
 }
 
-extension HiearchyInspectableElementProperty {
+extension InspectorElementViewModelProperty {
     
     var isControl: Bool {
         switch self {
@@ -133,7 +133,7 @@ extension HiearchyInspectableElementProperty {
 
 // MARK: - Value Handlers
 
-public extension HiearchyInspectableElementProperty {
+public extension InspectorElementViewModelProperty {
     typealias BoolHandler      = ((Bool)     -> Void)
     typealias CGFloatHandler   = ((CGFloat)  -> Void)
     typealias ColorHandler     = ((UIColor?) -> Void)
@@ -148,7 +148,7 @@ public extension HiearchyInspectableElementProperty {
 
 // MARK: - Value Providers
 
-public extension HiearchyInspectableElementProperty {
+public extension InspectorElementViewModelProperty {
     typealias BoolProvider               = (() -> Bool)
     typealias CGFloatClosedRangeProvider = (() -> ClosedRange<CGFloat>)
     typealias CGFloatProvider            = (() -> CGFloat)

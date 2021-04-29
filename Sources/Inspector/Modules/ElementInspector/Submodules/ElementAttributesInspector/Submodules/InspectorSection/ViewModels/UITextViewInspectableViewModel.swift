@@ -68,7 +68,7 @@ extension UIKitElementLibrary {
             self.textView = textView
         }
         
-        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let textView = textView else {
                 return nil
             }

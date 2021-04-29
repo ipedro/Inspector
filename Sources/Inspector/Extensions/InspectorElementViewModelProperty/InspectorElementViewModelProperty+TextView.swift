@@ -18,23 +18,40 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
+import UIKit
 
-extension HiearchyInspectableElementProperty: Hashable {
+public extension InspectorElementViewModelProperty {
     
-    private var idenfitifer: String {
-        String(describing: self)
-    }
-    
-    public static func == (
-        lhs: HiearchyInspectableElementProperty,
-        rhs: HiearchyInspectableElementProperty
-    ) -> Bool {
-        lhs.idenfitifer == rhs.idenfitifer
-    }
-    
-    public func hash(into hasher: inout Hasher) {
-        idenfitifer.hash(into: &hasher)
+    static func dataDetectorType(
+        textView: UITextView,
+        dataDetectorType: UIDataDetectorTypes
+    ) -> InspectorElementViewModelProperty {
+        
+        .toggleButton(
+            title: dataDetectorType.description,
+            isOn: { textView.dataDetectorTypes.contains(dataDetectorType) }
+        ) { isOn in
+            
+            var dataDetectorTypes: UIDataDetectorTypes? {
+                
+                var dataDetectors = textView.dataDetectorTypes
+                
+                switch isOn {
+                case true:
+                    _ = dataDetectors.insert(dataDetectorType).memberAfterInsert
+                    
+                case false:
+                    dataDetectors.remove(dataDetectorType)
+                }
+                
+                return dataDetectors
+            }
+                
+            let newDataDetectorTypes = dataDetectorTypes ?? []
+            
+            textView.dataDetectorTypes = newDataDetectorTypes
+        }
+        
     }
     
 }

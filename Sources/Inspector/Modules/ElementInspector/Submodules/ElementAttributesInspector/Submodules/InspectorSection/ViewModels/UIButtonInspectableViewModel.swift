@@ -60,7 +60,7 @@ extension UIKitElementLibrary {
         
         private var selectedControlState: UIControl.State
         
-        private(set) lazy var properties: [HiearchyInspectableElementProperty] = Property.allCases.compactMap { property in
+        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let button = button else {
                 return nil
             }

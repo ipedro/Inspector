@@ -25,12 +25,12 @@ import UIKit
 extension ElementAttributesInspectorViewController: AttributesInspectorSectionViewControllerDelegate {
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  willUpdate property: HiearchyInspectableElementProperty) {
+                                                  willUpdate property: InspectorElementViewModelProperty) {
         stopLiveUpdatingSnaphost()
     }
     
     func attributesInspectorSectionViewController(_ viewController: AttributesInspectorSectionViewController,
-                                                  didUpdate property: HiearchyInspectableElementProperty) {
+                                                  didUpdate property: InspectorElementViewModelProperty) {
         
         let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
             self?.children.forEach {
