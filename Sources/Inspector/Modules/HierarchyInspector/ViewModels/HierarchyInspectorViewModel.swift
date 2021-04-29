@@ -20,6 +20,11 @@
 
 import UIKit
 
+enum HierarchyInspectorCellViewModel {
+    case action(InspectorActionCellViewModelProtocol)
+    case element(InspectorElementReferenceCellViewModelProtocol)
+}
+
 protocol HierarchyInspectorViewModelProtocol: HierarchyInspectorSectionViewModelProtocol {
     var isSearching: Bool { get }
     var searchQuery: String? { get set }

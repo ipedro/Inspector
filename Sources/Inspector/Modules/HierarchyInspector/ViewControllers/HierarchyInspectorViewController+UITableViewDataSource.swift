@@ -32,13 +32,13 @@ extension HierarchyInspectorViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell = {
             switch viewModel.cellViewModelForRow(at: indexPath) {
-            case let .layerAction(cellViewModel):
-                let cell = tableView.dequeueReusableCell(HierarchyInspectorLayerActionCell.self, for: indexPath)
+            case let .action(cellViewModel):
+                let cell = tableView.dequeueReusableCell(InspectorActionCell.self, for: indexPath)
                 cell.viewModel = cellViewModel
                 return cell
                 
-            case let .snaphot(cellViewModel):
-                let cell = tableView.dequeueReusableCell(HierarchyInspectorSnapshotCell.self, for: indexPath)
+            case let .element(cellViewModel):
+                let cell = tableView.dequeueReusableCell(InspectorElementReferenceCell.self, for: indexPath)
                 cell.viewModel = cellViewModel
                 return cell
             }

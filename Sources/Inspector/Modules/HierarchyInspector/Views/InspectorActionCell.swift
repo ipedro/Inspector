@@ -20,15 +20,15 @@
 
 import UIKit
 
-protocol HierarchyInspectorLayerAcionCellViewModelProtocol {
+protocol InspectorActionCellViewModelProtocol {
     var title: String { get }
     var icon: UIImage? { get }
     var isEnabled: Bool { get }
 }
 
-final class HierarchyInspectorLayerActionCell: HierarchyInspectorTableViewCell {
+final class InspectorActionCell: InspectorBaseTableViewCell {
     
-    var viewModel: HierarchyInspectorLayerAcionCellViewModelProtocol? {
+    var viewModel: InspectorActionCellViewModelProtocol? {
         didSet {
             textLabel?.text = viewModel?.title
             
@@ -47,5 +47,11 @@ final class HierarchyInspectorLayerActionCell: HierarchyInspectorTableViewCell {
         
         textLabel?.textColor = ElementInspector.appearance.textColor
         textLabel?.font = .preferredFont(forTextStyle: .callout)
+        
+        if #available(iOS 13.0, *) {
+            imageView?.layer.cornerCurve = .continuous
+        }
+        imageView?.layer.cornerRadius = 6
+        imageView?.layer.masksToBounds = true
     }
 }

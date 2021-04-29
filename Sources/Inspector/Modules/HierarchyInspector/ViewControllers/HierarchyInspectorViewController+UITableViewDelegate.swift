@@ -31,7 +31,7 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
         }
         
         for cell in viewCode.tableView.visibleCells {
-            guard let cell = cell as? HierarchyInspectorTableViewCell else {
+            guard let cell = cell as? InspectorBaseTableViewCell else {
                 return
             }
             

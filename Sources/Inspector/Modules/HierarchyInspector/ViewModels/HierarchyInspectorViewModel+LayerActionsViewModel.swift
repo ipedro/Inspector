@@ -23,7 +23,7 @@ import UIKit
 extension HierarchyInspectorViewModel {
     final class ActionGroupsViewModel: HierarchyInspectorSectionViewModelProtocol {
         
-        struct Details: HierarchyInspectorLayerAcionCellViewModelProtocol {
+        struct Details: InspectorActionCellViewModelProtocol {
             let title: String
             var icon: UIImage?
             var isEnabled: Bool
@@ -77,7 +77,7 @@ extension HierarchyInspectorViewModel {
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
             let action = self.action(at: indexPath)
             
-            return .layerAction(
+            return .action(
                 Details(
                     title: action.title,
                     icon: action.icon?.resized(.actionIconSize),

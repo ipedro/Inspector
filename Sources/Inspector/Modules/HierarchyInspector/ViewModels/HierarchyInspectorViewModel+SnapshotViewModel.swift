@@ -23,7 +23,7 @@ import UIKit
 extension HierarchyInspectorViewModel {
     final class SnapshotViewModel: HierarchyInspectorSectionViewModelProtocol {
         
-        struct Details: HierarchyInspectorSnapshotCellViewModelProtocol {
+        struct Details: InspectorElementReferenceCellViewModelProtocol {
             let title: String
             var isEnabled: Bool
             let subtitle: String
@@ -72,7 +72,7 @@ extension HierarchyInspectorViewModel {
         }
         
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
-            .snaphot(searchResults[indexPath.row])
+            .element(searchResults[indexPath.row])
         }
         
         func loadData() {

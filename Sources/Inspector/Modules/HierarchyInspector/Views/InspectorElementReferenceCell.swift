@@ -20,7 +20,7 @@
 
 import UIKit
 
-protocol HierarchyInspectorSnapshotCellViewModelProtocol {
+protocol InspectorElementReferenceCellViewModelProtocol {
     var title: String { get }
     var isEnabled: Bool { get }
     var subtitle: String { get }
@@ -29,9 +29,9 @@ protocol HierarchyInspectorSnapshotCellViewModelProtocol {
     var reference: ViewHierarchyReference { get }
 }
 
-final class HierarchyInspectorSnapshotCell: HierarchyInspectorTableViewCell {
+final class InspectorElementReferenceCell: InspectorBaseTableViewCell {
     
-    var viewModel: HierarchyInspectorSnapshotCellViewModelProtocol? {
+    var viewModel: InspectorElementReferenceCellViewModelProtocol? {
         didSet {
             textLabel?.text       = viewModel?.title
             detailTextLabel?.text = viewModel?.subtitle

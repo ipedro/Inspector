@@ -20,7 +20,7 @@
 
 import UIKit
 
-class HierarchyInspectorTableViewCell: UITableViewCell {
+class InspectorBaseTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
