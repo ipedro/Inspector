@@ -26,7 +26,7 @@ public protocol InspectorManageableProtocol: AnyObject {
 }
 
 public extension InspectorManageableProtocol {
-    public func presentInspector(animated: Bool) {
+    func presentInspector(animated: Bool) {
         inspectorManager?.present(animated: animated)
     }
 }
