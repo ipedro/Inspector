@@ -52,13 +52,13 @@ enum Texts {
     
     static let highlightViews = "Highlight views"
     
-    static let hideVisibleLayers = "Stop highlighting views"
+    static let hideVisibleLayers = "Hide all highlights"
     
     static let hierarchySearch = "Hierarchy Search"
     
     static let openInspector = "Open Inspector..."
     
-    static let showAllLayers = "Highlight all views"
+    static let showAllLayers = "Show all highlights"
     
     static let dismissView = "Dismiss View"
 }

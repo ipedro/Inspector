@@ -80,8 +80,7 @@ extension SceneDelegate: InspectableProtocol {
         [
             .controls,
             .buttons,
-            .staticTexts + .images,
-            .stackViews + .containerViews
+            .staticTexts + .images
         ]
     }
     
@@ -129,6 +128,18 @@ extension SceneDelegate: InspectableProtocol {
                                 window.overrideUserInterfaceStyle = .unspecified
                             }
                         }
+                    ),
+                    .action(
+                        title: "Open repository...",
+                        icon: UIImage(named: "CustomAction_32"),
+                        keyCommand: .control(.shift(.key("g"))),
+                        closure: {
+                            UIApplication.shared.open(
+                                URL(string: "https://github.com/ipedro/Inspector")!,
+                                options: [:],
+                                completionHandler: nil
+                            )
+                        }
                     )
                 ]
             )
@@ -136,7 +147,7 @@ extension SceneDelegate: InspectableProtocol {
     }
 }
 
-// MARK: - Global HierarchyInspector Presentation Example
+// MARK: - Inspector Presentation Example
 
 extension UIWindow {
 
