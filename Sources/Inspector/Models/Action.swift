@@ -124,7 +124,7 @@ extension Action {
             icon: nil,
             keyCommandOptions: keyCommandSettings.presentationOptions
         ) {
-            host.presentHierarchyInspector(animated: animated)
+            host.presentInspector(animated: animated)
         }
     }
 }

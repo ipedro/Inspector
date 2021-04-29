@@ -20,18 +20,23 @@
 
 import UIKit
 
-public extension UIWindow {
-    
-    var inspectorManager: Inspector.Manager? {
-        guard Manager.shared.host?.window == self else {
-            return nil
-        }
-        return Manager.shared
+extension UIViewController: InspectorManageableProtocol {
+    public var inspectorManager: Inspector.Manager? {
+        view.window?.inspectorManager
     }
     
-    // MARK: - Presentation
+    // MARK: - Convenience
     
-    func presentInspector(animated: Bool) {
-        inspectorManager?.present(animated: animated)
+    public var inspectorBarButtonItem: UIBarButtonItem {
+        UIBarButtonItem(
+           title: "🧬",
+           style: .plain,
+           target: self,
+           action: #selector(inspectorBarButtonItemHandler)
+       )
+    }
+    
+    @objc private func inspectorBarButtonItemHandler() {
+        inspectorManager?.present(animated: true)
     }
 }

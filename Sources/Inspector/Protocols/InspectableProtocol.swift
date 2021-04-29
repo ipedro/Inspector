@@ -24,13 +24,13 @@ public protocol InspectableProtocol: AnyObject {
     
     var window: UIWindow? { get }
     
-    var hierarchyInspectorLayers: [Inspector.ViewHierarchyLayer] { get }
+    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }
     
-    var hierarchyInspectorColorScheme: Inspector.ViewHierarchyColorScheme { get }
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme { get }
     
-    var hierarchyInspectorActionGroups: [Inspector.ActionGroup] { get }
+    var inspectorActionGroups: [Inspector.ActionGroup] { get }
     
-    var hierarchyInspectorElementLibraries: [InspectorElementLibraryProtocol] { get }
+    var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }
     
 }
 
@@ -38,13 +38,13 @@ public protocol InspectableProtocol: AnyObject {
 
 public extension InspectableProtocol {
     
-    var hierarchyInspectorLayers: [Inspector.ViewHierarchyLayer] { [] }
+    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { [] }
     
-    var hierarchyInspectorColorScheme: Inspector.ViewHierarchyColorScheme { .default }
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme { .default }
     
-    var hierarchyInspectorActionGroups: [Inspector.ActionGroup] { [] }
+    var inspectorActionGroups: [Inspector.ActionGroup] { [] }
     
-    var hierarchyInspectorElementLibraries: [InspectorElementLibraryProtocol] { [] }
+    var inspectorElementLibraries: [InspectorElementLibraryProtocol] { [] }
     
 }
 
@@ -52,7 +52,7 @@ public extension InspectableProtocol {
 
 public extension InspectableProtocol {
 
-    func presentHierarchyInspector(animated: Bool) {
+    func presentInspector(animated: Bool) {
         window?.presentInspector(animated: animated)
     }
     

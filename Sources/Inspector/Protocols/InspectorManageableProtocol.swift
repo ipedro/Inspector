@@ -18,27 +18,15 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-public extension UIViewController {
-    
-    var inspectorManager: Inspector.Manager? {
-        view.window?.inspectorManager
-    }
-    
-    // MARK: - Convenience
-    
-    var inspectorBarButtonItem: UIBarButtonItem {
-        UIBarButtonItem(
-           title: "🧬",
-           style: .plain,
-           target: self,
-           action: #selector(inspectorBarButtonItemHandler)
-       )
-    }
-    
-    @objc private func inspectorBarButtonItemHandler() {
-        inspectorManager?.present(animated: true)
-    }
+public protocol InspectorManageableProtocol: AnyObject {
+    var inspectorManager: Inspector.Manager? { get }
+}
 
+public extension InspectorManageableProtocol {
+    public func presentInspector(animated: Bool) {
+        inspectorManager?.present(animated: animated)
+    }
 }

@@ -20,15 +20,11 @@
 
 import UIKit
 
-// MARK: - ViewHierarchyLayerCoordinatorDataSource
-
-extension Manager: ViewHierarchyLayersCoordinatorDataSource {
-    var viewHierarchyWindow: UIWindow? {
-        host?.window
+extension UIWindow: InspectorManageableProtocol {
+    public var inspectorManager: Inspector.Manager? {
+        guard Manager.shared.host?.window == self else {
+            return nil
+        }
+        return Manager.shared
     }
-    
-    var viewHierarchyColorScheme: ViewHierarchyColorScheme {
-        host?.inspectorViewHierarchyColorScheme ?? .default
-    }
-    
 }

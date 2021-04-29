@@ -72,11 +72,11 @@ extension SceneDelegate: InspectableProtocol {
     
     // MARK: - InspectableProtocol
     
-    var hierarchyInspectorElementLibraries: [InspectorElementLibraryProtocol] {
+    var inspectorElementLibraries: [InspectorElementLibraryProtocol] {
         ExampleElementLibrary.allCases
     }
     
-    var hierarchyInspectorLayers: [Inspector.ViewHierarchyLayer] {
+    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] {
         [
             .controls,
             .buttons,
@@ -85,7 +85,7 @@ extension SceneDelegate: InspectableProtocol {
         ]
     }
     
-    var hierarchyInspectorColorScheme: Inspector.ViewHierarchyColorScheme {
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme {
         .colorScheme { view in
             switch view {
             case is CustomButton:
@@ -97,7 +97,7 @@ extension SceneDelegate: InspectableProtocol {
         }
     }
     
-    var hierarchyInspectorActionGroups: [Inspector.ActionGroup] {
+    var inspectorActionGroups: [Inspector.ActionGroup] {
         guard let window = window else {
             return []
         }
