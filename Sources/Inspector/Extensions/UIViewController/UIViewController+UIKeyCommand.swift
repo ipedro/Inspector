@@ -22,15 +22,15 @@ import UIKit
 
 extension UIViewController {
     
-    @objc public func hierarchyInspectorKeyCommandHandler(_ sender: Any) {
+    @objc public func inspectorKeyCommandHandler(_ sender: Any) {
         guard
             let keyCommand = sender as? UIKeyCommand,
-            let hierarchyInspectorManager = inspectorManager
+            let inspectorManager = inspectorManager
         else {
             return
         }
         
-        let flattenedActions = hierarchyInspectorManager.availableActionsForKeyCommand.flatMap { $0.actions }
+        let flattenedActions = inspectorManager.availableActionsForKeyCommand.flatMap { $0.actions }
         
         for action in flattenedActions where action.title == keyCommand.discoverabilityTitle {
             action.closure?()

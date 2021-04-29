@@ -45,7 +45,7 @@ final class AttributesInspectorViewModel {
         }
         
         return snapshot.elementLibraries.targeting(element: referenceView).compactMap {
-            $0.viewModel(with: referenceView)
+            $0.viewModel(for: referenceView)
         }
     }()
     
