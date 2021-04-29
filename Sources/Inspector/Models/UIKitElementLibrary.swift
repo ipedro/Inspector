@@ -172,7 +172,7 @@ extension UIKitElementLibrary: InspectorElementLibraryProtocol {
         
     }
     
-    func icon(with referenceView: UIView) -> UIImage? {
+    func icon(for referenceView: UIView) -> UIImage? {
         switch self {
         case .navigationBar:
             return .moduleImage(named: "NavigationBar-32_Normal")

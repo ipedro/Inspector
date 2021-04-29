@@ -38,7 +38,7 @@ enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
         }
     }
     
-    func icon(with referenceView: UIView) -> UIImage? {
+    func icon(for referenceView: UIView) -> UIImage? {
         switch self {
         case .customButton:
             return #imageLiteral(resourceName: "CustomButton_32")
