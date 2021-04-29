@@ -94,15 +94,19 @@ extension HierarchyInspector {
 extension HierarchyInspector.Manager {
     
     var availableActionGroups: ActionGroups {
-        guard let snapshot = viewHierarchySnapshot else {
+        guard
+            let snapshot = viewHierarchySnapshot,
+            let host = host
+        else {
             return []
         }
         
-        var actionGroups = ActionGroups()
-        // layer actions
-        actionGroups.append(viewHierarchyLayersCoordinator.layerActions(for: snapshot))
-        // toggle all
-        actionGroups.append(viewHierarchyLayersCoordinator.toggleAllLayersActions(for: snapshot))
+        let layerActions = viewHierarchyLayersCoordinator.availableLayerActions(for: snapshot)
+        let toggleAllLayersActions = viewHierarchyLayersCoordinator.toggleAllLayersActions(for: snapshot)
+        
+        var actionGroups = host.hierarchyInspectorActionGroups
+        actionGroups.append(layerActions)
+        actionGroups.append(toggleAllLayersActions)
         
         return actionGroups
     }

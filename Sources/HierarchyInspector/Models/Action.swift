@@ -20,26 +20,32 @@
 
 import UIKit
 
-struct Action {
-    typealias Closure = () -> Void
-    
-    var title: String
-    
-    var icon: UIImage?
-    
-    var closure: Closure?
-    
-    var keyCommandOptions: UIKeyCommand.Options?
-    
-    var isEnabled: Bool {
-        closure != nil
-    }
-    
-    init(title: String, icon: UIImage?, keyCommand: UIKeyCommand.Options?, closure: Closure?) {
-        self.title = title
-        self.icon = icon
-        self.keyCommandOptions = keyCommand
-        self.closure = closure
+typealias Action = HierarchyInspector.Action
+
+extension HierarchyInspector {
+    public struct Action {
+        public typealias Closure = () -> Void
+        
+        public var title: String
+        
+        public var icon: UIImage?
+        
+        public var keyCommandOptions: UIKeyCommand.Options?
+        
+        var closure: Closure?
+        
+        var isEnabled: Bool {
+            closure != nil
+        }
+        
+        public static func action(
+            title: String,
+            icon: UIImage?,
+            keyCommand: UIKeyCommand.Options?,
+            closure: Closure?
+        ) -> Action {
+            self.init(title: title, icon: icon, keyCommandOptions: keyCommand, closure: closure)
+        }
     }
 }
 
@@ -54,7 +60,7 @@ extension Action {
         Action(
             title: title,
             icon: .moduleImage(named: "LayerAction-Empty"),
-            keyCommand: nil,
+            keyCommandOptions: nil,
             closure: nil
         )
     }
@@ -63,7 +69,7 @@ extension Action {
         Action(
             title: title,
             icon: .moduleImage(named: "LayerAction-Show"),
-            keyCommand: UIKeyCommand.Options(
+            keyCommandOptions: UIKeyCommand.Options(
                 input: String(index),
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
             ),
@@ -75,7 +81,7 @@ extension Action {
         Action(
             title: title,
             icon: .moduleImage(named: "LayerAction-Hide"),
-            keyCommand: UIKeyCommand.Options(
+            keyCommandOptions: UIKeyCommand.Options(
                 input: String(index),
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
             ),
@@ -87,7 +93,7 @@ extension Action {
         Action(
             title: Texts.showAllLayers,
             icon: .moduleImage(named: "LayerAction-ShowAll"),
-            keyCommand: UIKeyCommand.Options(
+            keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
             ),
@@ -99,7 +105,7 @@ extension Action {
         Action(
             title: Texts.hideVisibleLayers,
             icon: .moduleImage(named: "LayerAction-HideAll"),
-            keyCommand: UIKeyCommand.Options(
+            keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
             ),
@@ -108,7 +114,11 @@ extension Action {
     }
     
     static func openHierarchyInspector(from host: HierarchyInspectableProtocol, animated: Bool = true) -> Action {
-        Action(title: Texts.openHierarchyInspector, icon: nil, keyCommand: keyCommandSettings.presentationOptions) {
+        Action(
+            title: Texts.openHierarchyInspector,
+            icon: nil,
+            keyCommandOptions: keyCommandSettings.presentationOptions
+        ) {
             host.presentHierarchyInspector(animated: animated)
         }
     }

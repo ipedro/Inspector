@@ -21,7 +21,7 @@
 import Foundation
 
 protocol LayerActionProtocol {
-    func layerActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup
+    func availableLayerActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup
     
     func toggleAllLayersActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup
     

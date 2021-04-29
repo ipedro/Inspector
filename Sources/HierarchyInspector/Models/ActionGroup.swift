@@ -20,10 +20,16 @@
 
 import UIKit
 
-typealias ActionGroups = [ActionGroup]
+typealias ActionGroups = [HierarchyInspector.ActionGroup]
+typealias ActionGroup = HierarchyInspector.ActionGroup
 
-struct ActionGroup {
-    var title: String?
-    
-    var actions: [Action]
+extension HierarchyInspector {
+    public struct ActionGroup {
+        public var title: String?
+        public var actions: [Action]
+        
+        public static func actionGroup(title: String?, actions: [Action]) -> ActionGroup {
+            ActionGroup(title: title, actions: actions)
+        }
+    }
 }

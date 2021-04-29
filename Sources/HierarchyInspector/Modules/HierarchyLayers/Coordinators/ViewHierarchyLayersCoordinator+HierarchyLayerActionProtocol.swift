@@ -22,7 +22,7 @@ import UIKit
 
 extension ViewHierarchyLayersCoordinator: LayerActionProtocol {
     
-    func layerActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup {
+    func availableLayerActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup {
         let layerToggleInputRange = HierarchyInspector.configuration.keyCommands.layerToggleInputRange
         
         let maxCount = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound

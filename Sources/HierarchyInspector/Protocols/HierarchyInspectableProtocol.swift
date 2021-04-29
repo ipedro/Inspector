@@ -28,6 +28,8 @@ public protocol HierarchyInspectableProtocol {
     
     var hierarchyInspectorColorScheme: ViewHierarchyColorScheme { get }
     
+    var hierarchyInspectorActionGroups: [HierarchyInspector.ActionGroup] { get }
+    
     var hierarchyInspectorElementLibraries: [HierarchyInspectorElementLibraryProtocol] { get }
     
 }
@@ -39,6 +41,8 @@ public extension HierarchyInspectableProtocol {
     var hierarchyInspectorLayers: [ViewHierarchyLayer] { [] }
     
     var hierarchyInspectorColorScheme: ViewHierarchyColorScheme { .default }
+    
+    var hierarchyInspectorActionGroups: [HierarchyInspector.ActionGroup] { [] }
     
     var hierarchyInspectorElementLibraries: [HierarchyInspectorElementLibraryProtocol] { [] }
     
