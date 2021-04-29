@@ -18,30 +18,18 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
-import Inspector
+import Foundation
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+// MARK: - Hashable
+
+extension ViewHierarchyLayer: Hashable {
     
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
-        }
+    public func hash(into hasher: inout Hasher) {
+        name.hash(into: &hasher)
     }
     
-    func viewModel(with referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        switch self {
-        case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
-        }
+    public static func == (lhs: Inspector.ViewHierarchyLayer, rhs: Inspector.ViewHierarchyLayer) -> Bool {
+        lhs.name == rhs.name
     }
     
-    func icon(with referenceView: UIView) -> UIImage? {
-        switch self {
-        case .customButton:
-            return #imageLiteral(resourceName: "CustomButton_32")
-        }
-    }
 }

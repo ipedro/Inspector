@@ -19,29 +19,17 @@
 //  SOFTWARE.
 
 import UIKit
-import Inspector
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
-    
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
-        }
-    }
-    
-    func viewModel(with referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        switch self {
-        case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
-        }
-    }
-    
-    func icon(with referenceView: UIView) -> UIImage? {
-        switch self {
-        case .customButton:
-            return #imageLiteral(resourceName: "CustomButton_32")
+typealias ActionGroups = [Inspector.ActionGroup]
+typealias ActionGroup = Inspector.ActionGroup
+
+extension Inspector {
+    public struct ActionGroup {
+        public var title: String?
+        public var actions: [Action]
+        
+        public static func actionGroup(title: String?, actions: [Action]) -> ActionGroup {
+            ActionGroup(title: title, actions: actions)
         }
     }
 }

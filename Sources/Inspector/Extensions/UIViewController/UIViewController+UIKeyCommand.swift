@@ -19,29 +19,33 @@
 //  SOFTWARE.
 
 import UIKit
-import Inspector
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+extension UIViewController {
     
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
+    @objc public func hierarchyInspectorKeyCommandHandler(_ sender: Any) {
+        guard
+            let keyCommand = sender as? UIKeyCommand,
+            let hierarchyInspectorManager = inspectorManager
+        else {
+            return
+        }
+        
+        let flattenedActions = hierarchyInspectorManager.availableActionsForKeyCommand.flatMap { $0.actions }
+        
+        for action in flattenedActions where action.title == keyCommand.discoverabilityTitle {
+            action.closure?()
+            return
         }
     }
     
-    func viewModel(with referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        switch self {
-        case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
-        }
+    func dismissModalKeyCommand(action: Selector) -> UIKeyCommand {
+        UIKeyCommand(
+            .discoverabilityTitle(
+                title: Texts.dismissView,
+                key: .escape
+            ),
+            action: action
+        )
     }
     
-    func icon(with referenceView: UIView) -> UIImage? {
-        switch self {
-        case .customButton:
-            return #imageLiteral(resourceName: "CustomButton_32")
-        }
-    }
 }

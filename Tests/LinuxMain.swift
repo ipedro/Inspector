@@ -1,7 +1,7 @@
 import XCTest
 
-import HierarchyInspectorTests
+import InspectorTests
 
 var tests = [XCTestCaseEntry]()
-tests += HierarchyInspectorTests.allTests()
+tests += InspectorTests.allTests()
 XCTMain(tests)

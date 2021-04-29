@@ -18,30 +18,16 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
-import Inspector
+import Foundation
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+public struct InspectorConfiguration {
     
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
-        }
-    }
+    public var appearance = Appearance()
     
-    func viewModel(with referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        switch self {
-        case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
-        }
-    }
+    public var keyCommands = KeyCommandSettings()
     
-    func icon(with referenceView: UIView) -> UIImage? {
-        switch self {
-        case .customButton:
-            return #imageLiteral(resourceName: "CustomButton_32")
-        }
-    }
+    public var cacheExpirationTimeInterval: TimeInterval = 0.5
+    
+    public var showAllViewSearchQuery = "*"
+    
 }

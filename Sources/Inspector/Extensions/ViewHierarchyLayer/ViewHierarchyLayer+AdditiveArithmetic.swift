@@ -18,30 +18,34 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
-import Inspector
+import Foundation
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+// MARK: - AdditiveArithmetic
+
+extension ViewHierarchyLayer: AdditiveArithmetic {
     
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
+    public static func - (lhs: Inspector.ViewHierarchyLayer, rhs: Inspector.ViewHierarchyLayer) -> Inspector.ViewHierarchyLayer {
+        ViewHierarchyLayer(
+            name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",-"),
+            showLabels: lhs.showLabels,
+            allowsSystemViews: lhs.allowsSystemViews
+        ) {
+            lhs.filter($0) && rhs.filter($0) == false
         }
     }
     
-    func viewModel(with referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        switch self {
-        case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
+    public static func + (lhs: Inspector.ViewHierarchyLayer, rhs: Inspector.ViewHierarchyLayer) -> Inspector.ViewHierarchyLayer {
+        ViewHierarchyLayer(
+            name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",+"),
+            showLabels: lhs.showLabels,
+            allowsSystemViews: lhs.allowsSystemViews
+        ) {
+            lhs.filter($0) || rhs.filter($0)
         }
     }
     
-    func icon(with referenceView: UIView) -> UIImage? {
-        switch self {
-        case .customButton:
-            return #imageLiteral(resourceName: "CustomButton_32")
-        }
+    public static var zero: Inspector.ViewHierarchyLayer {
+        ViewHierarchyLayer(name: "zero", showLabels: false) { _ in false }
     }
+    
 }

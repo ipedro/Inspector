@@ -19,7 +19,7 @@
 //  SOFTWARE.
 
 import UIKit
-import HierarchyInspector
+import Inspector
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -30,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         
-        HierarchyInspector.delegate = self
+        Inspector.delegate = self
         
         guard let _ = (scene as? UIWindowScene) else { return }
     }
@@ -66,17 +66,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 }
 
-// MARK: - HierarchyInspectableProtocol
+// MARK: - InspectableProtocol
 
-extension SceneDelegate: HierarchyInspectableProtocol {
+extension SceneDelegate: InspectableProtocol {
     
-    // MARK: - HierarchyInspectableProtocol
+    // MARK: - InspectableProtocol
     
-    var hierarchyInspectorElementLibraries: [HierarchyInspectorElementLibraryProtocol] {
+    var hierarchyInspectorElementLibraries: [InspectorElementLibraryProtocol] {
         ExampleElementLibrary.allCases
     }
     
-    var hierarchyInspectorLayers: [ViewHierarchyLayer] {
+    var hierarchyInspectorLayers: [Inspector.ViewHierarchyLayer] {
         [
             .controls,
             .buttons,
@@ -85,16 +85,54 @@ extension SceneDelegate: HierarchyInspectableProtocol {
         ]
     }
     
-    var hierarchyInspectorColorScheme: ViewHierarchyColorScheme {
+    var hierarchyInspectorColorScheme: Inspector.ViewHierarchyColorScheme {
         .colorScheme { view in
             switch view {
             case is CustomButton:
                 return .systemPink
                 
             default:
-                return ViewHierarchyColorScheme.default.color(for: view)
+                return Inspector.ViewHierarchyColorScheme.default.color(for: view)
             }
         }
+    }
+    
+    var hierarchyInspectorActionGroups: [Inspector.ActionGroup] {
+        guard let window = window else {
+            return []
+        }
+        
+        return [
+            .actionGroup(
+                title: "Custom actions",
+                actions: [
+                    .action(
+                        title: {
+                            switch window.traitCollection.userInterfaceStyle {
+                            case .light:
+                                return "Switch to dark mode"
+                            case .dark:
+                                return "Switch to light mode"
+                            default:
+                                return "Stop forcing theme"
+                            }
+                        }(),
+                        icon: nil,
+                        keyCommand: .control(.shift(.key("i"))),
+                        closure: {
+                            switch window.traitCollection.userInterfaceStyle {
+                            case .dark:
+                                window.overrideUserInterfaceStyle = .light
+                            case .light:
+                                window.overrideUserInterfaceStyle = .dark
+                            default:
+                                window.overrideUserInterfaceStyle = .unspecified
+                            }
+                        }
+                    )
+                ]
+            )
+        ]
     }
 }
 
@@ -109,7 +147,7 @@ extension UIWindow {
             return
         }
 
-        presentHierarchyInspector(animated: true)
+        presentInspector(animated: true)
     }
 
 }

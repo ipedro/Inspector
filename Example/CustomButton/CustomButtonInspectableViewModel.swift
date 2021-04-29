@@ -19,9 +19,9 @@
 //  SOFTWARE.
 
 import UIKit
-import HierarchyInspector
+import Inspector
 
-final class CustomButtonInspectableViewModel: HierarchyInspectorElementViewModelProtocol {
+final class CustomButtonInspectableViewModel: InspectorElementViewModelProtocol {
     var title: String = "Custom Button"
     
     let customButton: CustomButton

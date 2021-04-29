@@ -18,30 +18,47 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
-import Inspector
+import Foundation
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+enum Texts {
     
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
+    static func inspect(_ name: Any) -> String {
+        "Inspect \(String(describing: name))..."
+    }
+    
+    static func inspectableViews(_ viewCount: Int, in className: String) -> String {
+        switch viewCount {
+        case 1:
+            return "\(viewCount) inspectable view in \(className)"
+            
+        default:
+            return "\(viewCount) inspectable views in \(className)"
         }
     }
     
-    func viewModel(with referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        switch self {
-        case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
+    static func allResults(count: Int, in elementName: String) -> String {
+        switch count {
+        case 1:
+            return "\(count) Search result in \(elementName)"
+            
+        default:
+            return "\(count) Search results in \(elementName)"
         }
     }
     
-    func icon(with referenceView: UIView) -> UIImage? {
-        switch self {
-        case .customButton:
-            return #imageLiteral(resourceName: "CustomButton_32")
-        }
+    static func emptyLayer(with description: String) -> String {
+        "No \(description) found"
     }
+    
+    static let highlightViews = "Highlight views"
+    
+    static let hideVisibleLayers = "Stop highlighting all views"
+    
+    static let hierarchySearch = "Hierarchy Search"
+    
+    static let openInspector = "Open Inspector..."
+    
+    static let showAllLayers = "Highlight all views"
+    
+    static let dismissView = "Dismiss View"
 }

@@ -18,7 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import HierarchyInspector
+import Inspector
 import UIKit
 import MapKit
 
@@ -52,7 +52,7 @@ final class ExampleViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     
     override var keyCommands: [UIKeyCommand]? {
-        hierarchyInspectorManager?.keyCommands
+        inspectorManager?.keyCommands
     }
     
     // MARK: - Life cycle

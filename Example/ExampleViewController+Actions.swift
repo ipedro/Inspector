@@ -19,7 +19,7 @@
 //  SOFTWARE.
 
 import UIKit
-import HierarchyInspector
+import Inspector
 
 extension ExampleViewController {
 
@@ -42,7 +42,7 @@ extension ExampleViewController {
     }
     
     @IBAction func openInspector(_ sender: Any) {
-        hierarchyInspectorManager?.present(animated: true)
+        inspectorManager?.present(animated: true)
     }
     
     @IBAction func rotateActivityIndicator(_ sender: UISlider) {

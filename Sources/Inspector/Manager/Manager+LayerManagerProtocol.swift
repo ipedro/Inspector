@@ -19,29 +19,29 @@
 //  SOFTWARE.
 
 import UIKit
-import Inspector
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+// MARK: - LayerManagerProtocol
+
+extension Manager: LayerManagerProtocol {
     
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
-        }
+    // MARK: - Install
+    
+    public func installLayer(_ layer: Inspector.ViewHierarchyLayer) {
+        viewHierarchyLayersCoordinator.installLayer(layer)
+    }
+
+    public func installAllLayers() {
+        viewHierarchyLayersCoordinator.installAllLayers()
+    }
+
+    // MARK: - Remove
+
+    public func removeAllLayers() {
+        viewHierarchyLayersCoordinator.removeAllLayers()
+    }
+
+    public func removeLayer(_ layer: Inspector.ViewHierarchyLayer) {
+        viewHierarchyLayersCoordinator.removeLayer(layer)
     }
     
-    func viewModel(with referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        switch self {
-        case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
-        }
-    }
-    
-    func icon(with referenceView: UIView) -> UIImage? {
-        switch self {
-        case .customButton:
-            return #imageLiteral(resourceName: "CustomButton_32")
-        }
-    }
 }

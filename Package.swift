@@ -4,14 +4,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "HierarchyInspector",
+    name: "Inspector",
     platforms: [
         .iOS(.v11)
     ],
     products: [
         .library(
-            name: "HierarchyInspector",
-            targets: ["HierarchyInspector"]
+            name: "Inspector",
+            targets: ["Inspector"]
         )
     ],
     dependencies: [
@@ -23,7 +23,7 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "HierarchyInspector",
+            name: "Inspector",
             dependencies: [
                 ._byNameItem(name: "UIKeyCommandTableView", condition: nil),
                 ._byNameItem(name: "UIKeyboardAnimatable", condition: nil)
@@ -33,8 +33,8 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "HierarchyInspectorTests",
-            dependencies: ["HierarchyInspector"]
+            name: "InspectorTests",
+            dependencies: ["Inspector"]
         ),
     ]
 )

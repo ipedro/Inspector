@@ -19,29 +19,41 @@
 //  SOFTWARE.
 
 import UIKit
-import Inspector
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+public protocol InspectableProtocol {
     
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
-        }
+    var window: UIWindow? { get }
+    
+    var hierarchyInspectorLayers: [Inspector.ViewHierarchyLayer] { get }
+    
+    var hierarchyInspectorColorScheme: Inspector.ViewHierarchyColorScheme { get }
+    
+    var hierarchyInspectorActionGroups: [Inspector.ActionGroup] { get }
+    
+    var hierarchyInspectorElementLibraries: [InspectorElementLibraryProtocol] { get }
+    
+}
+
+// MARK: - Default Values
+
+public extension InspectableProtocol {
+    
+    var hierarchyInspectorLayers: [Inspector.ViewHierarchyLayer] { [] }
+    
+    var hierarchyInspectorColorScheme: Inspector.ViewHierarchyColorScheme { .default }
+    
+    var hierarchyInspectorActionGroups: [Inspector.ActionGroup] { [] }
+    
+    var hierarchyInspectorElementLibraries: [InspectorElementLibraryProtocol] { [] }
+    
+}
+
+// MARK: - Convenience
+
+public extension InspectableProtocol {
+
+    func presentHierarchyInspector(animated: Bool) {
+        window?.presentInspector(animated: animated)
     }
     
-    func viewModel(with referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        switch self {
-        case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
-        }
-    }
-    
-    func icon(with referenceView: UIView) -> UIImage? {
-        switch self {
-        case .customButton:
-            return #imageLiteral(resourceName: "CustomButton_32")
-        }
-    }
 }

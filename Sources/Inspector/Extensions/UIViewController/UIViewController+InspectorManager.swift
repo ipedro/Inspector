@@ -19,29 +19,26 @@
 //  SOFTWARE.
 
 import UIKit
-import Inspector
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+public extension UIViewController {
     
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
-        }
+    var inspectorManager: Inspector.Manager? {
+        view.window?.inspectorManager
     }
     
-    func viewModel(with referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        switch self {
-        case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
-        }
+    // MARK: - Convenience
+    
+    var inspectorBarButtonItem: UIBarButtonItem {
+        UIBarButtonItem(
+           title: "🧬",
+           style: .plain,
+           target: self,
+           action: #selector(inspectorBarButtonItemHandler)
+       )
     }
     
-    func icon(with referenceView: UIView) -> UIImage? {
-        switch self {
-        case .customButton:
-            return #imageLiteral(resourceName: "CustomButton_32")
-        }
+    @objc private func inspectorBarButtonItemHandler() {
+        inspectorManager?.present(animated: true)
     }
+
 }

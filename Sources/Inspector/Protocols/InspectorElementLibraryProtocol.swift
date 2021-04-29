@@ -19,29 +19,23 @@
 //  SOFTWARE.
 
 import UIKit
-import Inspector
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+public protocol InspectorElementLibraryProtocol {
     
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
+    var targetClass: AnyClass { get }
+    
+    func viewModel(with referenceView: UIView) -> InspectorElementViewModelProtocol?
+    
+    func icon(with referenceView: UIView) -> UIImage?
+    
+}
+
+extension Sequence where Element == InspectorElementLibraryProtocol {
+    
+    func targeting(element: NSObject) -> [InspectorElementLibraryProtocol] {
+        element.classesForCoder.flatMap { aElementClass in
+            filter { $0.targetClass == aElementClass }
         }
     }
     
-    func viewModel(with referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        switch self {
-        case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
-        }
-    }
-    
-    func icon(with referenceView: UIView) -> UIImage? {
-        switch self {
-        case .customButton:
-            return #imageLiteral(resourceName: "CustomButton_32")
-        }
-    }
 }
