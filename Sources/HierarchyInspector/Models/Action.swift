@@ -20,78 +20,96 @@
 
 import UIKit
 
-enum Action {
-    case emptyLayer(_ title: String)
+struct Action {
+    typealias Closure = () -> Void
     
-    case showLayer(_ title: String, closure: Closure)
+    var title: String
     
-    case hideLayer(_ title: String, closure: Closure)
+    var icon: UIImage?
     
-    case showAllLayers(closure: Closure)
+    var closure: Closure?
     
-    case hideVisibleLayers(closure: Closure)
+    var keyCommandOptions: UIKeyCommand.Options?
     
-    case openHierarchyInspector(from: HierarchyInspectableProtocol)
+    var isEnabled: Bool {
+        closure != nil
+    }
+    
+    init(title: String, icon: UIImage?, keyCommand: UIKeyCommand.Options?, closure: Closure?) {
+        self.title = title
+        self.icon = icon
+        self.keyCommandOptions = keyCommand
+        self.closure = closure
+    }
 }
 
-// MARK: - Properties
+// MARK: - Internal Convenience
 
 extension Action {
-    var isEnabled: Bool {
-        guard case .emptyLayer = self else {
-            return true
-        }
-        return false
+    private static var keyCommandSettings: HierarchyInspectorConfiguration.KeyCommandSettings {
+        HierarchyInspector.configuration.keyCommands
     }
     
-    var title: String {
-        switch self {
-        case let .emptyLayer(title),
-             let .showLayer(title, _),
-             let .hideLayer(title, _):
-            return title
-            
-        case .showAllLayers:
-            return Texts.showAllLayers
-            
-        case .hideVisibleLayers:
-            return Texts.hideVisibleLayers
-            
-        case .openHierarchyInspector:
-            return Texts.openHierarchyInspector
-        }
+    static func emptyLayer(_ title: String) -> Action {
+        Action(
+            title: title,
+            icon: .moduleImage(named: "LayerAction-Empty"),
+            keyCommand: nil,
+            closure: nil
+        )
     }
     
-    var icon: UIImage? {
-        switch self {
-        case .emptyLayer:
-            return .moduleImage(named: "LayerAction-Empty")
-        case .showLayer:
-            return .moduleImage(named: "LayerAction-Show")
-        case .hideLayer:
-            return .moduleImage(named: "LayerAction-Hide")
-        case .showAllLayers:
-            return .moduleImage(named: "LayerAction-ShowAll")
-        case .hideVisibleLayers:
-            return .moduleImage(named: "LayerAction-HideAll")
-        case .openHierarchyInspector:
-            return nil
-        }
+    static func showLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Action {
+        Action(
+            title: title,
+            icon: .moduleImage(named: "LayerAction-Show"),
+            keyCommand: UIKeyCommand.Options(
+                input: String(index),
+                modifierFlags: keyCommandSettings.layerToggleModifierFlags
+            ),
+            closure: closure
+        )
     }
     
-    var closure: (() -> Void)? {
-        switch self {
-        case .emptyLayer:
-            return nil
-            
-        case let .showLayer(_, closure),
-             let .hideLayer(_, closure),
-             let .showAllLayers(closure),
-             let .hideVisibleLayers(closure):
-            return closure
-            
-        case let .openHierarchyInspector(from: host):
-            return { host.presentHierarchyInspector(animated: true) }
+    static func hideLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Action {
+        Action(
+            title: title,
+            icon: .moduleImage(named: "LayerAction-Hide"),
+            keyCommand: UIKeyCommand.Options(
+                input: String(index),
+                modifierFlags: keyCommandSettings.layerToggleModifierFlags
+            ),
+            closure: closure
+        )
+    }
+    
+    static func showAllLayers(closure: @escaping Closure) -> Action {
+        Action(
+            title: Texts.showAllLayers,
+            icon: .moduleImage(named: "LayerAction-ShowAll"),
+            keyCommand: UIKeyCommand.Options(
+                input: keyCommandSettings.allLayersToggleInput,
+                modifierFlags: keyCommandSettings.layerToggleModifierFlags
+            ),
+            closure: closure
+        )
+    }
+    
+    static func hideVisibleLayers(closure: @escaping Closure) -> Action {
+        Action(
+            title: Texts.hideVisibleLayers,
+            icon: .moduleImage(named: "LayerAction-HideAll"),
+            keyCommand: UIKeyCommand.Options(
+                input: keyCommandSettings.allLayersToggleInput,
+                modifierFlags: keyCommandSettings.layerToggleModifierFlags
+            ),
+            closure: closure
+        )
+    }
+    
+    static func openHierarchyInspector(from host: HierarchyInspectableProtocol, animated: Bool = true) -> Action {
+        Action(title: Texts.openHierarchyInspector, icon: nil, keyCommand: keyCommandSettings.presentationOptions) {
+            host.presentHierarchyInspector(animated: animated)
         }
     }
 }

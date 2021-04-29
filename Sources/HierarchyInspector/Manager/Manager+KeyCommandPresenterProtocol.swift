@@ -33,8 +33,6 @@ extension HierarchyInspector.Manager: KeyCommandPresenterProtocol {
             return []
         }
         
-        var array = availableActionGroups
-        
         let openInspectorGroup = ActionGroup(
             title: nil,
             actions: [
@@ -42,9 +40,10 @@ extension HierarchyInspector.Manager: KeyCommandPresenterProtocol {
             ]
         )
         
-        array.insert(openInspectorGroup, at: 0)
+        var actionGroups = [openInspectorGroup]
+        actionGroups.append(contentsOf: availableActionGroups)
         
-        return array
+        return actionGroups
     }
     
     public var keyCommands: [UIKeyCommand] {
@@ -52,60 +51,16 @@ extension HierarchyInspector.Manager: KeyCommandPresenterProtocol {
     }
     
     func hierarchyInspectorKeyCommands(selector aSelector: Selector) -> [UIKeyCommand] {
-        var keyCommands = [UIKeyCommand]()
-        
-        var index = keyCommandSettings.layerToggleInputRange.lowerBound
-        
-        for actionGroup in availableActionsForKeyCommand {
-            
-            for action in actionGroup.actions {
-                
-                switch action {
-                case .emptyLayer:
-                    continue
-                    
-                case .openHierarchyInspector:
-                    keyCommands.append(
-                        UIKeyCommand(
-                            keyCommandSettings.presentationOptions,
-                            action: aSelector
-                        )
-                    )
-                    
-                case .showAllLayers,
-                     .hideVisibleLayers:
-                    keyCommands.append(
-                        UIKeyCommand(
-                            input: keyCommandSettings.allLayersToggleInput,
-                            modifierFlags: keyCommandSettings.layerToggleModifierFlags,
-                            action: aSelector,
-                            discoverabilityTitle: action.title
-                        )
-                    )
-                    
-                case .hideLayer,
-                     .showLayer:
-                    
-                    guard keyCommandSettings.layerToggleInputRange.contains(index) else {
-                        break
-                    }
-                    
-                    keyCommands.append(
-                        UIKeyCommand(
-                            input: String(index),
-                            modifierFlags: keyCommandSettings.layerToggleModifierFlags,
-                            action: aSelector,
-                            discoverabilityTitle: action.title
-                        )
-                    )
-                    
-                    index += 1
+        let keyCommands = availableActionsForKeyCommand.flatMap { actionGroup in
+            actionGroup.actions.compactMap { action -> UIKeyCommand? in
+                guard let options = action.keyCommandOptions else {
+                    return nil
                 }
                 
+                return UIKeyCommand(.discoverabilityTitle(title: action.title, key: options), action: aSelector)
             }
-            
         }
-        
+
         return keyCommands.sortedByInputKey()
     }
     

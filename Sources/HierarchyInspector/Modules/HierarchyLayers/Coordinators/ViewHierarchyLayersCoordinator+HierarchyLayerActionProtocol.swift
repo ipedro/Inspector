@@ -27,8 +27,8 @@ extension ViewHierarchyLayersCoordinator: LayerActionProtocol {
         
         let maxCount = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
         
-        let actions = snapshot.availableLayers.map { layer in
-            layerAction(layer, isEmpty: snapshot.populatedLayers.contains(layer) == false)
+        let actions = snapshot.availableLayers.enumerated().map { index, layer in
+            action(for: layer, at: layerToggleInputRange.lowerBound + index, isEmpty: snapshot.populatedLayers.contains(layer) == false)
         }
         
         return ActionGroup(
@@ -37,19 +37,19 @@ extension ViewHierarchyLayersCoordinator: LayerActionProtocol {
         )
     }
     
-    func layerAction(_ layer: ViewHierarchyLayer, isEmpty: Bool) -> Action {
-        if isEmpty {
+    func action(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Action {
+        guard isEmpty == false else {
             return .emptyLayer(layer.emptyActionTitle)
         }
         
         switch isShowingLayer(layer) {
         case true:
-            return .showLayer(layer.title) { [weak self] in
+            return .showLayer(layer.title, at: index) { [weak self] in
                 self?.removeLayer(layer)
             }
             
         case false:
-            return .hideLayer(layer.title) { [weak self] in
+            return .hideLayer(layer.title, at: index) { [weak self] in
                 self?.installLayer(layer)
             }
         }

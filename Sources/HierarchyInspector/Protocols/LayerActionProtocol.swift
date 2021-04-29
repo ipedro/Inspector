@@ -25,5 +25,5 @@ protocol LayerActionProtocol {
     
     func toggleAllLayersActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup
     
-    func layerAction(_ layer: ViewHierarchyLayer, isEmpty: Bool) -> Action
+    func action(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Action
 }
