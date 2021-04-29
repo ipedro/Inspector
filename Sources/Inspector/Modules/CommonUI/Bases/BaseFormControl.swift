@@ -48,7 +48,9 @@ class BaseFormControl: BaseControl {
         .directionalLayoutMargins(vertical: defaultSpacing)
     )
     
-    private lazy var separator = SeparatorView()
+    private lazy var separator = SeparatorView().then {
+        $0.alpha = 0.5
+    }
     
     var isShowingSeparator: Bool {
         get {

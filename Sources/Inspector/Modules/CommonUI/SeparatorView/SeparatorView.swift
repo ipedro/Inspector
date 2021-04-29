@@ -33,16 +33,7 @@ final class SeparatorView: BaseView {
             return
         }
         
-        #if swift(>=5.0)
-        if #available(iOS 13.0, *) {
-            backgroundColor = .separator
-        }
-        else {
-            backgroundColor = .lightGray
-        }
-        #else
-        backgroundColor = .lightGray
-        #endif
+        backgroundColor = ElementInspector.appearance.quaternaryTextColor
     }
     
     required init?(coder: NSCoder) {
