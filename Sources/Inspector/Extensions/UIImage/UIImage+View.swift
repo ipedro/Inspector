@@ -22,10 +22,10 @@ import UIKit
 
 extension UIImage {
     
-    static func icon(
+    static func elementIcon(
         for view: UIView?,
         with elementLibraries: [InspectorElementLibraryProtocol],
-        sized size: CGSize = .iconSize
+        sized size: CGSize = .elementIconSize
     ) -> UIImage? {
         icon(for: view, with: elementLibraries)?.resized(size)
     }
@@ -54,11 +54,4 @@ extension UIImage {
 
 private extension UIImage {
     static let internalViewIcon = UIImage.moduleImage(named: "InternalView-32_Normal")
-}
-
-extension CGSize {
-    static let iconSize = CGSize(
-        width:  ElementInspector.appearance.verticalMargins * 3,
-        height: ElementInspector.appearance.verticalMargins * 3
-    )
 }

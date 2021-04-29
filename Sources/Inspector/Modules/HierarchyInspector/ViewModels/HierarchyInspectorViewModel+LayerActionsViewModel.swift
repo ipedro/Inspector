@@ -80,7 +80,7 @@ extension HierarchyInspectorViewModel {
             return .layerAction(
                 Details(
                     title: action.title,
-                    icon: action.icon,
+                    icon: action.icon?.resized(.actionIconSize),
                     isEnabled: action.isEnabled
                 )
             )

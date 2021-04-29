@@ -104,7 +104,7 @@ extension SceneDelegate: InspectableProtocol {
         
         return [
             .actionGroup(
-                title: "Custom actions",
+                title: "Add your own actions",
                 actions: [
                     .action(
                         title: {

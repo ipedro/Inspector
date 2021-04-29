@@ -67,7 +67,7 @@ extension AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
         set { }
     }
     
-    var thumbnailImage: UIImage? { .icon(for: reference.rootView, with: snapshot.elementLibraries) }
+    var thumbnailImage: UIImage? { .elementIcon(for: reference.rootView, with: snapshot.elementLibraries) }
     
     var title: String { reference.elementName }
     

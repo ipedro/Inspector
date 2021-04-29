@@ -44,7 +44,12 @@ extension Inspector {
             keyCommand: UIKeyCommand.Options?,
             closure: Closure?
         ) -> Action {
-            self.init(title: title, icon: icon, keyCommandOptions: keyCommand, closure: closure)
+            self.init(
+                title: title,
+                icon: icon?.resized(.actionIconSize),
+                keyCommandOptions: keyCommand,
+                closure: closure
+            )
         }
     }
 }
