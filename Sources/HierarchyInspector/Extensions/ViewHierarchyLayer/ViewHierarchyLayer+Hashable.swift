@@ -28,7 +28,7 @@ extension ViewHierarchyLayer: Hashable {
         name.hash(into: &hasher)
     }
     
-    public static func == (lhs: ViewHierarchyLayer, rhs: ViewHierarchyLayer) -> Bool {
+    public static func == (lhs: HierarchyInspector.ViewHierarchyLayer, rhs: HierarchyInspector.ViewHierarchyLayer) -> Bool {
         lhs.name == rhs.name
     }
     

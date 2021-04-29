@@ -20,51 +20,48 @@
 
 import UIKit
 
-public struct ViewHierarchyLayer {
-    
-    public typealias Filter = (UIView) -> Bool
-    
-    // MARK: - Properties
-    
-    public let name: String
-    
-    public let filter: Filter
-    
-    let showLabels: Bool
-    
-    let allowsSystemViews: Bool
-    
-    // MARK: - Init
-    
-    public init(name: String, filter: @escaping Filter) {
-        self.init(name: name, showLabels: true, allowsSystemViews: false, filter: filter)
-    }
-    
-    init(name: String, showLabels: Bool, allowsSystemViews: Bool = false, filter: @escaping Filter) {
-        self.name = name
-        self.showLabels = showLabels
-        self.allowsSystemViews = allowsSystemViews
-        self.filter = filter
-    }
-    
-    // MARK: - Metods
-    
-    func filter(snapshot: ViewHierarchySnapshot) -> [UIView] {
-        let inspectableViews = snapshot.inspectableReferences.compactMap { $0.rootView }
+typealias ViewHierarchyLayer = HierarchyInspector.ViewHierarchyLayer
+
+extension HierarchyInspector {
+    public struct ViewHierarchyLayer {
         
-        return filter(flattenedViewHierarchy: inspectableViews)
-    }
-    
-    func filter(flattenedViewHierarchy: [UIView]) -> [UIView] {
-        let filteredViews = flattenedViewHierarchy.filter(filter)
+        public typealias Filter = (UIView) -> Bool
         
-        switch allowsSystemViews {
-        case true:
-            return filteredViews
-            
-        case false:
-            return filteredViews.filter { $0.isSystemView == false }
+        // MARK: - Properties
+        
+        public var name: String
+        
+        var showLabels: Bool = true
+        
+        var allowsSystemViews: Bool = false
+        
+        public var filter: Filter
+        
+        // MARK: - Init
+        
+        public static func layer(name: String, filter: @escaping Filter) -> ViewHierarchyLayer {
+            ViewHierarchyLayer(name: name, filter: filter)
         }
+        
+        // MARK: - Metods
+        
+        func filter(snapshot: ViewHierarchySnapshot) -> [UIView] {
+            let inspectableViews = snapshot.inspectableReferences.compactMap { $0.rootView }
+            
+            return filter(flattenedViewHierarchy: inspectableViews)
+        }
+        
+        func filter(flattenedViewHierarchy: [UIView]) -> [UIView] {
+            let filteredViews = flattenedViewHierarchy.filter(filter)
+            
+            switch allowsSystemViews {
+            case true:
+                return filteredViews
+                
+            case false:
+                return filteredViews.filter { $0.isSystemView == false }
+            }
+        }
+        
     }
-    
 }

@@ -24,7 +24,7 @@ import Foundation
 
 extension ViewHierarchyLayer: AdditiveArithmetic {
     
-    public static func - (lhs: ViewHierarchyLayer, rhs: ViewHierarchyLayer) -> ViewHierarchyLayer {
+    public static func - (lhs: HierarchyInspector.ViewHierarchyLayer, rhs: HierarchyInspector.ViewHierarchyLayer) -> HierarchyInspector.ViewHierarchyLayer {
         ViewHierarchyLayer(
             name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",-"),
             showLabels: lhs.showLabels,
@@ -34,7 +34,7 @@ extension ViewHierarchyLayer: AdditiveArithmetic {
         }
     }
     
-    public static func + (lhs: ViewHierarchyLayer, rhs: ViewHierarchyLayer) -> ViewHierarchyLayer {
+    public static func + (lhs: HierarchyInspector.ViewHierarchyLayer, rhs: HierarchyInspector.ViewHierarchyLayer) -> HierarchyInspector.ViewHierarchyLayer {
         ViewHierarchyLayer(
             name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",+"),
             showLabels: lhs.showLabels,
@@ -44,8 +44,8 @@ extension ViewHierarchyLayer: AdditiveArithmetic {
         }
     }
     
-    public static var zero: ViewHierarchyLayer {
-        ViewHierarchyLayer(name: "zero") { _ in false }
+    public static var zero: HierarchyInspector.ViewHierarchyLayer {
+        ViewHierarchyLayer(name: "zero", showLabels: false) { _ in false }
     }
     
 }

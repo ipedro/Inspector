@@ -22,7 +22,7 @@ import UIKit
 
 // MARK: - HierarchyInspector Manager Extension
 
-extension HierarchyInspector.Manager: KeyCommandPresenterProtocol {
+extension Manager: KeyCommandPresenterProtocol {
     
     private var keyCommandSettings: HierarchyInspectorConfiguration.KeyCommandSettings {
         HierarchyInspector.configuration.keyCommands

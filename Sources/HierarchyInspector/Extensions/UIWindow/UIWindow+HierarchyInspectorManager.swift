@@ -23,10 +23,10 @@ import UIKit
 public extension UIWindow {
     
     var hierarchyInspectorManager: HierarchyInspector.Manager? {
-        guard HierarchyInspector.Manager.shared.host?.window == self else {
+        guard Manager.shared.host?.window == self else {
             return nil
         }
-        return HierarchyInspector.Manager.shared
+        return Manager.shared
     }
     
     // MARK: - Presentation

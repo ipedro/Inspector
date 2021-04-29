@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension HierarchyInspector.Manager: HierarchyInspectorCoordinatorDelegate {
+extension Manager: HierarchyInspectorCoordinatorDelegate {
     func hierarchyInspectorCoordinator(_ coordinator: HierarchyInspectorCoordinator,
                                        didFinishWith command: HierarchyInspectorCommand?) {
         

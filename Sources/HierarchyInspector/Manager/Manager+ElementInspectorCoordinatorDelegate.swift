@@ -22,7 +22,7 @@ import UIKit
 
 // MARK: - ElementInspectorCoordinatorDelegate
 
-extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
+extension Manager: ElementInspectorCoordinatorDelegate {
     
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
         viewHierarchyLayersCoordinator.toggleHighlightViews(visibility: true, inside: reference)
@@ -38,7 +38,7 @@ extension HierarchyInspector.Manager: ElementInspectorCoordinatorDelegate {
     }
 }
 
-extension HierarchyInspector.Manager {
+extension Manager {
     
     func presentElementInspector(for reference: ViewHierarchyReference, animated: Bool, from sourceView: UIView?) {
         guard let viewHierarchySnapshot = viewHierarchySnapshot else {

@@ -20,8 +20,26 @@
 
 import UIKit
 
-public struct ViewHierarchyColorScheme {
-    public static let `default` = ViewHierarchyColorScheme { view in
+typealias ViewHierarchyColorScheme = HierarchyInspector.ViewHierarchyColorScheme
+
+extension HierarchyInspector {
+    public struct ViewHierarchyColorScheme {
+        private let closure: (UIView) -> UIColor
+        
+        public static func colorScheme(_ closure: @escaping (UIView) -> UIColor) -> ViewHierarchyColorScheme {
+            self.init(closure: closure)
+        }
+        
+        public func color(for view: UIView) -> UIColor {
+            closure(view)
+        }
+    }
+}
+
+// MARK: - Convenince
+
+extension ViewHierarchyColorScheme {
+    public static let `default` = HierarchyInspector.ViewHierarchyColorScheme { view in
         guard view.isUserInteractionEnabled == true else {
             return .systemGray
         }
@@ -49,13 +67,4 @@ public struct ViewHierarchyColorScheme {
         }
     }
     
-    private let closure: (UIView) -> UIColor
-    
-    public static func colorScheme(_ closure: @escaping (UIView) -> UIColor) -> ViewHierarchyColorScheme {
-        self.init(closure: closure)
-    }
-    
-    public func color(for view: UIView) -> UIColor {
-        closure(view)
-    }
 }

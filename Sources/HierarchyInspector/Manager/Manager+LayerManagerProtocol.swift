@@ -22,11 +22,11 @@ import UIKit
 
 // MARK: - LayerManagerProtocol
 
-extension HierarchyInspector.Manager: LayerManagerProtocol {
+extension Manager: LayerManagerProtocol {
     
     // MARK: - Install
     
-    public func installLayer(_ layer: ViewHierarchyLayer) {
+    public func installLayer(_ layer: HierarchyInspector.ViewHierarchyLayer) {
         viewHierarchyLayersCoordinator.installLayer(layer)
     }
 
@@ -40,7 +40,7 @@ extension HierarchyInspector.Manager: LayerManagerProtocol {
         viewHierarchyLayersCoordinator.removeAllLayers()
     }
 
-    public func removeLayer(_ layer: ViewHierarchyLayer) {
+    public func removeLayer(_ layer: HierarchyInspector.ViewHierarchyLayer) {
         viewHierarchyLayersCoordinator.removeLayer(layer)
     }
     

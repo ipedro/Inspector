@@ -20,6 +20,8 @@
 
 import UIKit
 
+typealias Manager = HierarchyInspector.Manager
+
 extension HierarchyInspector {
     public final class Manager: Create {
         
@@ -91,7 +93,7 @@ extension HierarchyInspector {
 
 // MARK: - Actions
 
-extension HierarchyInspector.Manager {
+extension Manager {
     
     var availableActionGroups: ActionGroups {
         guard
@@ -115,7 +117,7 @@ extension HierarchyInspector.Manager {
 
 // MARK: - Host ViewController
 
-extension HierarchyInspector.Manager {
+extension Manager {
     
     var hostViewController: UIViewController? {
         viewHierarchyWindow?.rootViewController?.presentedViewController ?? viewHierarchyWindow?.rootViewController
@@ -125,7 +127,7 @@ extension HierarchyInspector.Manager {
 
 // MARK: - Snapshot
 
-extension HierarchyInspector.Manager {
+extension Manager {
     
     var viewHierarchySnapshot: ViewHierarchySnapshot? {
         snapshot(of: viewHierarchyWindow)
@@ -162,7 +164,7 @@ extension HierarchyInspector.Manager {
 
 // MARK: - AsyncOperationProtocol
 
-extension HierarchyInspector.Manager: AsyncOperationProtocol {
+extension Manager: AsyncOperationProtocol {
     
     func asyncOperation(name: String = #function, execute closure: @escaping Closure) {
         let asyncOperation = MainThreadAsyncOperation(name: name, closure: closure)

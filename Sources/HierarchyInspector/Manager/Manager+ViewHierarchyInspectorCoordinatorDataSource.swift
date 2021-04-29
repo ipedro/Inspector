@@ -22,7 +22,7 @@ import UIKit
 
 // MARK: - ViewHierarchyLayerCoordinatorDataSource
 
-extension HierarchyInspector.Manager: ViewHierarchyLayersCoordinatorDataSource {
+extension Manager: ViewHierarchyLayersCoordinatorDataSource {
     var viewHierarchyWindow: UIWindow? {
         host?.window
     }
