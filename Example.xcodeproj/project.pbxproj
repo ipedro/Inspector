@@ -10,7 +10,6 @@
 		EB210C7B2624E4D00032B9AE /* CustomButtonInspectableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB210C7A2624E4D00032B9AE /* CustomButtonInspectableViewModel.swift */; };
 		EB210C812624E54E0032B9AE /* ExampleViewController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB210C802624E54E0032B9AE /* ExampleViewController+Actions.swift */; };
 		EB210C862624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */; };
-		EB2A860E263AAF9A0093F4FB /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EB2A860D263AAF9A0093F4FB /* Inspector */; };
 		EB5E1FDE261A48EB002301F5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E1FDD261A48EB002301F5 /* AppDelegate.swift */; };
 		EB5E1FE0261A48EB002301F5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E1FDF261A48EB002301F5 /* SceneDelegate.swift */; };
 		EB5E1FE2261A48EB002301F5 /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E1FE1261A48EB002301F5 /* ExampleViewController.swift */; };
@@ -19,6 +18,7 @@
 		EB5E1FEA261A48EC002301F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE8261A48EC002301F5 /* LaunchScreen.storyboard */; };
 		EB5E2004261A4EC9002301F5 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E2003261A4EC9002301F5 /* CustomButton.swift */; };
 		EBC0288226354CAB00502C90 /* ExampleElementLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC0288126354CAB00502C90 /* ExampleElementLibrary.swift */; };
+		EBEC3E22263AC75B00131D60 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EBEC3E21263AC75B00131D60 /* Inspector */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB2A860E263AAF9A0093F4FB /* Inspector in Frameworks */,
+				EBEC3E22263AC75B00131D60 /* Inspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +63,7 @@
 			children = (
 				EB5E1FDC261A48EB002301F5 /* Example */,
 				EB5E1FDB261A48EB002301F5 /* Products */,
+				EBEC3E20263AC75B00131D60 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -92,6 +93,13 @@
 			path = Example;
 			sourceTree = "<group>";
 		};
+		EBEC3E20263AC75B00131D60 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -109,7 +117,7 @@
 			);
 			name = Example;
 			packageProductDependencies = (
-				EB2A860D263AAF9A0093F4FB /* Inspector */,
+				EBEC3E21263AC75B00131D60 /* Inspector */,
 			);
 			productName = HierarchyInspectorExample;
 			productReference = EB5E1FDA261A48EB002301F5 /* Example.app */;
@@ -139,7 +147,6 @@
 			);
 			mainGroup = EB5E1FD1261A48EB002301F5;
 			packageReferences = (
-				EB2A860C263AAF9A0093F4FB /* XCRemoteSwiftPackageReference "Inspector" */,
 			);
 			productRefGroup = EB5E1FDB261A48EB002301F5 /* Products */;
 			projectDirPath = "";
@@ -382,21 +389,9 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		EB2A860C263AAF9A0093F4FB /* XCRemoteSwiftPackageReference "Inspector" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "file:///Users/pedro/Developer/Inspector";
-			requirement = {
-				branch = develop;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		EB2A860D263AAF9A0093F4FB /* Inspector */ = {
+		EBEC3E21263AC75B00131D60 /* Inspector */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EB2A860C263AAF9A0093F4FB /* XCRemoteSwiftPackageReference "Inspector" */;
 			productName = Inspector;
 		};
 /* End XCSwiftPackageProductDependency section */
