@@ -52,7 +52,7 @@ enum Texts {
     
     static let highlightViews = "Highlight views"
     
-    static let hideVisibleLayers = "Stop highlighting all views"
+    static let hideVisibleLayers = "Stop highlighting views"
     
     static let hierarchySearch = "Hierarchy Search"
     

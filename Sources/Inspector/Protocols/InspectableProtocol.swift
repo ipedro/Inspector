@@ -20,7 +20,7 @@
 
 import UIKit
 
-public protocol InspectableProtocol {
+public protocol InspectableProtocol: AnyObject {
     
     var window: UIWindow? { get }
     

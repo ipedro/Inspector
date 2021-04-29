@@ -24,10 +24,20 @@ typealias Closure = () -> Void
 
 public enum Inspector {
     
+    public static var manager: Inspector.Manager { Manager.shared }
+    
     public static var configuration = InspectorConfiguration()
     
     public static var delegate: InspectableProtocol? {
         get { Manager.shared.host }
         set { Manager.shared.host = newValue }
+    }
+    
+    public static func start() {
+        Manager.shared.start()
+    }
+    
+    public static func finish() {
+        Manager.shared.finish()
     }
 }

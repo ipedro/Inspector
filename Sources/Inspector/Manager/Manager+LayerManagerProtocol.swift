@@ -27,21 +27,21 @@ extension Manager: LayerManagerProtocol {
     // MARK: - Install
     
     public func installLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        viewHierarchyLayersCoordinator.installLayer(layer)
+        viewHierarchyLayersCoordinator?.installLayer(layer)
     }
 
     public func installAllLayers() {
-        viewHierarchyLayersCoordinator.installAllLayers()
+        viewHierarchyLayersCoordinator?.installAllLayers()
     }
 
     // MARK: - Remove
 
     public func removeAllLayers() {
-        viewHierarchyLayersCoordinator.removeAllLayers()
+        viewHierarchyLayersCoordinator?.removeAllLayers()
     }
 
     public func removeLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        viewHierarchyLayersCoordinator.removeLayer(layer)
+        viewHierarchyLayersCoordinator?.removeLayer(layer)
     }
     
 }

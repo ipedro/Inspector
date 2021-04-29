@@ -75,7 +75,7 @@ final class ViewHierarchyLayersCoordinator: Create {
         }
     }
     
-    func invalidate() {
+    func finish() {
         visibleReferences.removeAll()
         wireframeViews.removeAll()
         highlightViews.removeAll()

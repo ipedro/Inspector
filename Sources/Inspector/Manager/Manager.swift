@@ -25,23 +25,47 @@ typealias Manager = Inspector.Manager
 extension Inspector {
     public final class Manager: Create {
         
-        // MARK: - Public Properties
+        // MARK: - Properties
         
-        public static let shared = Manager()
+        static let shared = Manager()
         
-        var host: InspectableProtocol?
+        weak var host: InspectableProtocol? {
+            didSet {
+                if oldValue != nil {
+                    finish()
+                }
+                if host != nil {
+                    start()
+                }
+            }
+        }
         
         // MARK: - Properties
         
-        lazy var operationQueue: OperationQueue = OperationQueue.main
+        private(set) lazy var operationQueue: OperationQueue = OperationQueue.main
         
-        var elementInspectorCoordinator: ElementInspectorCoordinator?
+        var elementInspectorCoordinator: ElementInspectorCoordinator? {
+            didSet {
+                asyncOperation {
+                    oldValue?.finish()
+                }
+            }
+        }
         
-        var hierarchyInspectorCoordinator: HierarchyInspectorCoordinator?
+        var hierarchyInspectorCoordinator: HierarchyInspectorCoordinator? {
+            didSet {
+                asyncOperation {
+                    oldValue?.finish()
+                }
+            }
+        }
         
-        lazy var viewHierarchyLayersCoordinator = ViewHierarchyLayersCoordinator().then {
-            $0.dataSource = self
-            $0.delegate   = self
+        var viewHierarchyLayersCoordinator: ViewHierarchyLayersCoordinator? {
+            didSet {
+                asyncOperation {
+                    oldValue?.finish()
+                }
+            }
         }
         
         var shouldCacheViewHierarchySnapshot = true
@@ -53,19 +77,35 @@ extension Inspector {
         private init() {}
         
         deinit {
-            invalidate()
+            operationQueue.cancelAllOperations()
+            host = nil
         }
         
-        func invalidate() {
-            operationQueue.isSuspended = true
+        func start() {
+            asyncOperation { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                
+                let coordinator = ViewHierarchyLayersCoordinator()
+                coordinator.dataSource = self
+                coordinator.delegate   = self
+                
+                self.viewHierarchyLayersCoordinator = coordinator
+            }
+        }
+        
+        func finish() {
+            operationQueue.cancelAllOperations()
             
-            cachedSnapshots.removeAll()
-            
-            viewHierarchyLayersCoordinator.invalidate()
-            
-            elementInspectorCoordinator = nil
-            
-            hierarchyInspectorCoordinator = nil
+            asyncOperation { [weak self] in
+                guard let self = self else { return }
+                
+                self.cachedSnapshots.removeAll()
+                self.viewHierarchyLayersCoordinator = nil
+                self.elementInspectorCoordinator = nil
+                self.hierarchyInspectorCoordinator = nil
+            }
         }
         
         public func present(animated: Bool) {
@@ -98,7 +138,8 @@ extension Manager {
     var availableActionGroups: ActionGroups {
         guard
             let snapshot = viewHierarchySnapshot,
-            let host = host
+            let host = host,
+            let viewHierarchyLayersCoordinator = viewHierarchyLayersCoordinator
         else {
             return []
         }
