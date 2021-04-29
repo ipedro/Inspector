@@ -104,7 +104,7 @@ extension SceneDelegate: InspectableProtocol {
         
         return [
             .actionGroup(
-                title: "Add your own actions",
+                title: "My custom actions",
                 actions: [
                     .action(
                         title: {
@@ -117,7 +117,7 @@ extension SceneDelegate: InspectableProtocol {
                                 return "Stop forcing theme"
                             }
                         }(),
-                        icon: nil,
+                        icon: UIImage(named: "CustomAction_32"),
                         keyCommand: .control(.shift(.key("i"))),
                         closure: {
                             switch window.traitCollection.userInterfaceStyle {
