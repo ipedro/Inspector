@@ -102,8 +102,6 @@ final class ElementInspectorViewController: UIViewController {
         
         navigationItem.titleView = viewCode.segmentedControl
         
-        navigationItem.rightBarButtonItem = inspectorBarButtonItem
-        
         if viewModel.showDismissBarButton {
             navigationItem.leftBarButtonItem = viewCode.dismissBarButtonItem
         }
