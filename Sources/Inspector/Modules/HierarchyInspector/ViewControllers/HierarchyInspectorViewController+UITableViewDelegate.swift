@@ -60,6 +60,14 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
         return header
     }
     
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        UIView()
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        viewModel.numberOfRows(in: section) == .zero ? .zero : ElementInspector.appearance.verticalMargins
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let command = viewModel.selectRow(at: indexPath)
         
