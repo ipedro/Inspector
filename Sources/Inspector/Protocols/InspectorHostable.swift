@@ -24,12 +24,16 @@ public protocol InspectorHostable: AnyObject {
     
     var window: UIWindow? { get }
     
+    /// Default value is an empty array. `ViewHierarchyLayer` are togglabe and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with `Ctrl + Shift + 1 - 9`. You can create your own or use one of the default ones.
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }
     
+    /// Return your own color scheme for the hierarchy label colors, instead of the default color scheme.
     var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme { get }
     
+    /// Default value is an empty array. Action groups appear as sections on the Inspector interface, you can have as many groups, with as many actions as you would like.
     var inspectorActionGroups: [Inspector.ActionGroup] { get }
     
+    /// Default value is an empty array.
     var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }
     
 }

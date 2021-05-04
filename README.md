@@ -35,6 +35,8 @@ The [Swift Package Manager](https://swift.org/package-manager/) is a tool for au
 Once you have your Swift package set up, adding `Inspector` as a dependency is as easy as adding it to the dependencies value of your `Package.swift`.
 
 ``` swift
+// Add to Package.swift
+
 dependencies: [
   .package(url: "https://github.com/ipedro/Inspector.git", .upToNextMajor(from: "1.0.0"))
 ]
@@ -44,9 +46,16 @@ dependencies: [
 
 After a [successful installation](#installation), you need to extend your `SceneDelegate.swift` of `AppDelegate.swift` by conforming to `InspectorHostable`, and assigning your class as the `Inspector` host.
 
+Then launch your app in the simulator, and launch the Inspector by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
+
+![](Documentation/inspector_interface.png)
+
+
 ### Scene Delegate Example
 
 ``` swift
+// Scene Delegate Example
+
 import UIKit
 
 #if DEBUG
@@ -56,7 +65,6 @@ extension SceneDelegate: InspectorHostable {}
 #endif
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -75,6 +83,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 ### App Delegate Example
 
 ``` swift
+// App Delegate Example
+
 import UIKit
 #if DEBUG
 import Inspector
@@ -83,7 +93,6 @@ extension AppDelegate: InspectorHostable {}
 #endif
 
 final class AppDelegate: UIResponder, UIApplicationDelegate {
-    
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -121,9 +130,11 @@ public protocol InspectorHostable: AnyObject {
 }
 ```
 
+---
+
 * ```var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }```
 
-    Default value is an empty array. `ViewHierarchyLayer` are togglabe and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 9</kbd>. You can create your own or use one of the default ones.
+    Default value is an empty array. `ViewHierarchyLayer` are togglabe and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 8</kbd>. You can create your own or use one of the default ones.
 
     - `activityIndicators`: Shows activity indicator views.
     - `buttons`: Shows buttons.
@@ -171,9 +182,30 @@ public protocol InspectorHostable: AnyObject {
     
     ```
 
-* ```var inspectorActionGroups: [Inspector.ActionGroup] { get }```
+---
 
-    ![Add Custom Actions](Documentation/custom_actions.png)
+* ```var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme { get }```
+
+    Return your own color scheme for the hierarchy label colors, instead of (or to extend) the default color scheme.
+
+    ``` swift
+    // Example
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme {
+        .colorScheme { view in
+            switch view {
+            case is CustomButton:
+                return .systemPink
+                
+            default:
+            // fallback to default color scheme
+                return Inspector.ViewHierarchyColorScheme.default.color(for: view)
+            }
+        }
+    }
+    ```
+---
+
+* ```var inspectorActionGroups: [Inspector.ActionGroup] { get }```
 
     Default value is an empty array. Action groups appear as sections on the Inspector interface, you can have as many groups, with as many actions as you would like.
 
@@ -208,7 +240,12 @@ public protocol InspectorHostable: AnyObject {
         ]
     }
     ```
-* ```var inspectorActionGroups: [Inspector.ActionGroup] { get }```
+
+---
+
+* ```var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }```
+
+    Add documentation.
 
 
 ## Pro-tips
