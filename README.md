@@ -37,7 +37,7 @@ Inspector is a debugging library written in Swift.
 
 ## Swift Package Manager
 
-The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swisft code and is integrated into the swift compiler. It is in early development, but Inspector does support its use on supported platforms.
+The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the swift compiler. It is in early development, but Inspector does support its use on supported platforms.
 
 Once you have your Swift package set up, adding `Inspector` as a dependency is as easy as adding it to the dependencies value of your `Package.swift`.
 
@@ -212,7 +212,7 @@ public protocol InspectorHostable: AnyObject {
     var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }
 
     // Optional
-    var inspectorCommandGroups: [Inspector.ActionGroup] { get }
+    var inspectorCommandGroups: [Inspector.CommandGroup] { get }
 
     // Optional
     var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }
@@ -295,23 +295,23 @@ public protocol InspectorHostable: AnyObject {
     ```
 ---
 
-* ```var inspectorCommandGroups: [Inspector.ActionGroup] { get }```
+* ```var inspectorCommandGroups: [Inspector.CommandGroup] { get }```
 
-    Default value is an empty array. Action groups appear as sections on the `Inspector` window and can have key command shortcuts associated with them, you can have as many groups, with as many actions as you would like.
+    Default value is an empty array. Command groups appear as sections on the `Inspector` window and can have key command shortcuts associated with them, you can have as many groups, with as many commands as you want.
 
     ```swift
     // Example
 
-    var inspectorCommandGroups: [Inspector.ActionGroup] {
+    var inspectorCommandGroups: [Inspector.CommandGroup] {
         guard let window = window else { return [] }
         
         [
             .group(
-                title: "My custom actions",
+                title: "My custom commands",
                 commands: [
-                    .action(
+                    .command(
                         title: "Reset",
-                        icon: .exampleActionIcon,
+                        icon: .exampleCommandIcon,
                         keyCommand: .control(.shift(.key("r"))),
                         closure: {
                             // Instantiates a new initial view controller on a Storyboard application.
