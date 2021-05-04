@@ -1,6 +1,6 @@
 
-[![](https://img.shields.io/github/license/ipedro/inspector)](https://github.com/ipedro/Inspector/blob/develop/LICENSE) 
-![](https://img.shields.io/github/v/tag/ipedro/inspector?label=spm)
+[![](https://img.shields.io/github/license/ipedro/Inspector)](https://github.com/ipedro/Inspector/blob/main/LICENSE) 
+![](https://img.shields.io/github/v/tag/ipedro/Inspector?label=spm)
 
 # 🕵🏽‍♂️ Inspector
 
