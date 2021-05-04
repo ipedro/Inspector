@@ -21,7 +21,7 @@
 import UIKit
 
 protocol KeyCommandPresenterProtocol {
-    var availableActionsForKeyCommand: ActionGroups { get }
+    var availableGroupsForKeyCommand: CommandGroups { get }
     
     var keyCommands: [UIKeyCommand] { get }
     
