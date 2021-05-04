@@ -81,6 +81,11 @@ extension Inspector {
             host = nil
         }
         
+        public func restart() {
+            finish()
+            start()
+        }
+        
         func start() {
             asyncOperation { [weak self] in
                 guard let self = self else {
