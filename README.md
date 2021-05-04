@@ -1,11 +1,16 @@
+
 [![](https://img.shields.io/github/license/ipedro/inspector)](https://github.com/ipedro/Inspector/blob/develop/LICENSE) 
 ![](https://img.shields.io/github/v/tag/ipedro/inspector?label=spm)
 
-# 🧬 Inspector
+# 🕵🏽‍♂️ Inspector
+
+![Inspector Demo](Documentation/inspector_demo.gif)
+
 Inspector is a debugging library written in Swift.
 
 * [Requirements](#requirements)
 * [Installation](#installation)
+  * [Swift Package Manager](#swift-package-manager)
 * [Credits](#credits)
 * [License](#license)
 
