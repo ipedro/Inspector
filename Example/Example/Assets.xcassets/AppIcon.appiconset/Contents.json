@@ -1,103 +1,103 @@
 {
   "images" : [
     {
-      "filename" : "HierarchyInpsector_Example-notification@2x.png",
+      "filename" : "InspectorExampleApp-notification@2x.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "20x20"
     },
     {
-      "filename" : "HierarchyInpsector_Example-notification@3x.png",
+      "filename" : "InspectorExampleApp-notification@3x.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "20x20"
     },
     {
-      "filename" : "HierarchyInpsector_Example-settings@2x.png",
+      "filename" : "InspectorExampleApp-settings@2x.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "29x29"
     },
     {
-      "filename" : "HierarchyInpsector_Example-settings@3x.png",
+      "filename" : "InspectorExampleApp-settings@3x.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "29x29"
     },
     {
-      "filename" : "HierarchyInpsector_Example-spotlight@2x.png",
+      "filename" : "InspectorExampleApp-spotlight@2x.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "40x40"
     },
     {
-      "filename" : "HierarchyInpsector_Example-spotlight@3x.png",
+      "filename" : "InspectorExampleApp-spotlight@3x.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "40x40"
     },
     {
-      "filename" : "HierarchyInpsector_Example-app@2x.png",
+      "filename" : "InspectorExampleApp-app@2x.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "60x60"
     },
     {
-      "filename" : "HierarchyInpsector_Example-app@3x.png",
+      "filename" : "InspectorExampleApp-app@3x.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "60x60"
     },
     {
-      "filename" : "HierarchyInpsector_Example-ipad-notification.png",
+      "filename" : "InspectorExampleApp-ipad-notifications.png",
       "idiom" : "ipad",
       "scale" : "1x",
       "size" : "20x20"
     },
     {
-      "filename" : "HierarchyInpsector_Example-ipad-notification@2x.png",
+      "filename" : "InspectorExampleApp-ipad-notifications@2x.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "20x20"
     },
     {
-      "filename" : "HierarchyInpsector_Example-ipad-settings.png",
+      "filename" : "InspectorExampleApp-ipad-settings.png",
       "idiom" : "ipad",
       "scale" : "1x",
       "size" : "29x29"
     },
     {
-      "filename" : "HierarchyInpsector_Example-ipad-settings@2x.png",
+      "filename" : "InspectorExampleApp-ipad-settings@2x.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "29x29"
     },
     {
-      "filename" : "HierarchyInpsector_Example-ipad-spotlight.png",
+      "filename" : "InspectorExampleApp-ipad-spotlight.png",
       "idiom" : "ipad",
       "scale" : "1x",
       "size" : "40x40"
     },
     {
-      "filename" : "HierarchyInpsector_Example-ipad-spotlight@2x.png",
+      "filename" : "InspectorExampleApp-ipad-spotlight@2x.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "40x40"
     },
     {
-      "filename" : "HierarchyInpsector_Example-ipad-app.png",
+      "filename" : "InspectorExampleApp-ipad-app.png",
       "idiom" : "ipad",
       "scale" : "1x",
       "size" : "76x76"
     },
     {
-      "filename" : "HierarchyInpsector_Example-ipad-app@2x.png",
+      "filename" : "InspectorExampleApp-ipad-app@2x.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "76x76"
     },
     {
-      "filename" : "HierarchyInpsector_Example-ipad-pro-app@2x.png",
+      "filename" : "InspectorExampleApp-ipad-pro-app@2x.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "83.5x83.5"
