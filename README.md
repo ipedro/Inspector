@@ -10,15 +10,22 @@ Inspector is a debugging library written in Swift.
 
 * [Requirements](#requirements)
 * [Installation](#installation)
-  * [Swift Package Manager](#swift-package-manager)
-* [Usage](#usage)
-  * [Scene Delegate Example](#scene-delegate-example)
-  * [App Delegate Example](#app-delegate-example)
-  * [Pro tips:](#pro-tips) 
-    * [Remove framework files from relases](#remove-framework-files-from-relases)
-    * [Add Custom Actions](#add-custom-actions)
+    * [Swift Package Manager](#swift-package-manager)
+* [Setup](#setup)
+    * [Scene Delegate](#scenedelegate.swift)
+    * [App Delegate](#appdelegate.swift)
+    * [Enable Key Commands *(Recommended)*](#enable-key-commands-(recommended))
+    * [Remove framework files from relase builds *(Optional)*](#enable-key-commands-(recommended))
+* [Presenting the Inspector](#presenting-the-inspector)
+    * [Simulators and iPad with external keyboard](#simulators-and-ipad-with-external-keyboard)
+    * [iPhone](#iphone)
 * [Credits](#credits)
 * [License](#license)
+
+* [Documentation](#Documentation)
+    * [InspectorHostable Protocol](#inspectorhostable-protocol)
+
+---
 
 ## Requirements
 
@@ -26,6 +33,7 @@ Inspector is a debugging library written in Swift.
 * Xcode 11+
 * Swift 5.3+
 
+---
 ## Installation
 
 ## Swift Package Manager
@@ -41,46 +49,41 @@ dependencies: [
   .package(url: "https://github.com/ipedro/Inspector.git", .upToNextMajor(from: "1.0.0"))
 ]
 ```
+---
+## Setup
 
-## Usage
+After a [successful installation](#installation), you need to add conformance to the [`InspectorHostable`](#inspectorhostable-protocol) protocol in [`SceneDelegate.swift`](#scene-delegate-example) or [`AppDelegate.swift`](#app-delegate-example) assign itself as `Inspector` host.
 
-After a [successful installation](#installation), you need to extend your [`SceneDelegate.swift`](#scene-delegate-example) of [`AppDelegate.swift`](#app-delegate-example) by conforming to [`InspectorHostable`](#inspectorhostable-protocol), and assigning your class as the `Inspector` host.
+### SceneDelegate.swift
 
-Then launch your app in the simulator, and launch `Inspector` by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
+    ``` swift
+    // Scene Delegate Example
 
-![](Documentation/inspector_interface.png)
+    import UIKit
 
+    #if DEBUG
+    import Inspector
 
-### Scene Delegate Example
+    extension SceneDelegate: InspectorHostable {}
+    #endif
 
-``` swift
-// Scene Delegate Example
+    class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+        var window: UIWindow?
 
-import UIKit
+        func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
-#if DEBUG
-import Inspector
+            #if DEBUG
+            // Make your class the Inspector' host when returning a scene
+            Inspector.host = self
+            #endif
+            
+            guard let _ = (scene as? UIWindowScene) else { return }
+        }
 
-extension SceneDelegate: InspectorHostable {}
-#endif
-
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    var window: UIWindow?
-
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-
-        #if DEBUG
-        // Make your class the Inspector' host when returning a scene
-        Inspector.host = self
-        #endif
-        
-        guard let _ = (scene as? UIWindowScene) else { return }
+        (...)
     }
-
-    (...)
-}
-```
-### App Delegate Example
+    ```
+### AppDelegate.swift
 
 ``` swift
 // App Delegate Example
@@ -109,7 +112,94 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 ```
 
-### InspectorHostable Protocol
+### Enable Key Commands *(Recommended)*
+
+Extend the root view controller class to enable `Inspector` key commands.
+
+``` swift
+// Add to your root view controller.
+
+#if DEBUG
+override var keyCommands: [UIKeyCommand]? {
+    return inspectorManager?.keyCommands
+}
+#endif
+```
+    
+### Remove framework files from relase builds *(Optional)* 
+In your app target: 
+- Add a `New Run Script Phase` as the last phase.
+- Then paste the script below  to remove all `Inspector` related files from your release builds.
+
+``` sh
+# Run Script Phase that removes `Inspector` and all its dependecies from relase builds.
+
+if [ $CONFIGURATION == "Release" ]; then
+    echo "Removing Inspector and dependencies from $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME/"
+
+    find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "Inspector*" | grep . | xargs rm -rf
+    find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "UIKeyCommandTableView*" | grep . | xargs rm -rf
+    find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "UIKeyboardAnimatable*" | grep . | xargs rm -rf
+    find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "UIKitOptions*" | grep . | xargs rm -rf
+    find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "ObjectAssociation*" | grep . | xargs rm -rf
+fi
+
+```
+---
+
+## Presenting the Inspector
+
+![](Documentation/inspector_interface.png)
+
+### Simulators and iPad with external keyboard
+
+Afer [enabling Key command support](#enable-key-commands-(recommended)), you can:
+
+- Invoke the `Inspector` by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
+
+- Toggle between showing/hiding view layers by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1-8</kbd>.
+
+- Showing/hide all layers by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>9</kbd>.
+
+### iPhone
+
+### Showing custom UI
+
+If you're willing to a custom interface on your app (maybe only on debug), such as a floating button, or UIBarButtonItem to be visible in a specific type of builds, you can simply call `presentInspector(animated: _:)` on any view controller or window.
+
+As a convenience, you can use `var inspectorBarButtonItem: UIBarButtonItem { get }` availabe via extenion on every `UIViewController` instance:
+``` swift
+// MyViewController.swift
+
+override func viewDidLoad() {
+    super.viewDidLoad()
+
+    navigationItem.rightBarButtonItem = self.inspectorBarButtonItem
+}
+```
+
+### With a motion gesture
+
+One other suggestion is to present the Inspector using a gesture, like shaking the device. That way no UI needs to be introduced. The most convienient way to do it is subclassing or extending `UIWindow` with the following code:
+``` swift
+// Add to UIWindow extension or subclass
+
+open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+    super.motionBegan(motion, with: event)
+
+    guard motion == .motionShake else {
+        return
+    }
+
+    presentInspector(animated: true)
+}
+```
+
+---
+
+## Documentation
+
+## InspectorHostable Protocol
 The protocol you need to conform to be able to be Inspector host.
 
 ``` swift
@@ -120,7 +210,7 @@ public protocol InspectorHostable: AnyObject {
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }
 
     // Optional
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme { get }
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }
 
     // Optional
     var inspectorActionGroups: [Inspector.ActionGroup] { get }
@@ -184,13 +274,13 @@ public protocol InspectorHostable: AnyObject {
 
 ---
 
-* ```var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme { get }```
+* ```var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }```
 
     Return your own color scheme for the hierarchy label colors, instead of (or to extend) the default color scheme.
 
     ``` swift
     // Example
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme {
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
         .colorScheme { view in
             switch view {
             case is CustomButton:
@@ -207,7 +297,7 @@ public protocol InspectorHostable: AnyObject {
 
 * ```var inspectorActionGroups: [Inspector.ActionGroup] { get }```
 
-    Default value is an empty array. Action groups appear as sections on the Inspector interface, you can have as many groups, with as many actions as you would like.
+    Default value is an empty array. Action groups appear as sections on the `Inspector` window and can have key command shortcuts associated with them, you can have as many groups, with as many actions as you would like.
 
     ``` swift
     // Example
@@ -224,7 +314,7 @@ public protocol InspectorHostable: AnyObject {
                         icon: .exampleActionIcon,
                         keyCommand: .control(.shift(.key("r"))),
                         closure: {
-                            // Instantiate the initial view controller again on a Storyboard application.
+                            // Instantiates a new initial view controller on a Storyboard application.
                             let storyboard = UIStoryboard(name: "Main", bundle: nil)
                             let vc = storyboard.instantiateInitialViewController()
 
@@ -244,29 +334,10 @@ public protocol InspectorHostable: AnyObject {
 ---
 
 * ```var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }```
+    Default value is an empty array.
 
     Add documentation.
 
-
-## Pro-tips
-
-### Remove framework files from relases
-In your app target, add a `New Run Script Phase`, and then use the following commands to remove all inspector related files from your release builds.
-
-``` sh
-# Run Script Phase that removes `Inspector` and all its dependecies from relase builds.
-
-if [ $CONFIGURATION == "Release" ]; then
-    echo "Removing Inspector and dependencies from $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME/"
-
-    find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "Inspector*" | grep . | xargs rm -rf
-    find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "UIKeyCommandTableView*" | grep . | xargs rm -rf
-    find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "UIKeyboardAnimatable*" | grep . | xargs rm -rf
-    find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "UIKitOptions*" | grep . | xargs rm -rf
-    find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "ObjectAssociation*" | grep . | xargs rm -rf
-fi
-
-```
 
 ## Credits
 

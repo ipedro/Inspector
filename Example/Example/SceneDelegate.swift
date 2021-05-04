@@ -93,7 +93,7 @@ extension SceneDelegate: InspectorHostable {
         ]
     }
     
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme {
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
         .colorScheme { view in
             switch view {
             case is CustomButton:
