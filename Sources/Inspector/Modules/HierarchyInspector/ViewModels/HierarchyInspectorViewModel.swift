@@ -1,0 +1,161 @@
+//  Copyright (c) 2021 Pedro Almeida
+//  
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//  
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+//  
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
+
+import UIKit
+
+enum HierarchyInspectorCellViewModel {
+    case action(InspectorActionCellViewModelProtocol)
+    case element(InspectorElementReferenceCellViewModelProtocol)
+}
+
+protocol HierarchyInspectorViewModelProtocol: HierarchyInspectorSectionViewModelProtocol {
+    var isSearching: Bool { get }
+    var searchQuery: String? { get set }
+}
+
+protocol HierarchyInspectorSectionViewModelProtocol {
+    var numberOfSections: Int { get }
+    
+    var isEmpty: Bool { get }
+    
+    func numberOfRows(in section: Int) -> Int
+    
+    func titleForHeader(in section: Int) -> String?
+    
+    func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel
+    
+    func selectRow(at indexPath: IndexPath) -> HierarchyInspectorCommand?
+    
+    func isRowEnabled(at indexPath: IndexPath) -> Bool
+    
+    func loadData()
+}
+
+final class HierarchyInspectorViewModel {
+    
+    typealias ActionGroupsProvider = (() -> ActionGroups?)
+    
+    let actionGroupsViewModel: ActionGroupsViewModel
+    
+    let snapshotViewModel: SnapshotViewModel
+    
+    var isSearching: Bool {
+        searchQuery.isNilOrEmpty == false
+    }
+    
+    var searchQuery: String? {
+        didSet {
+            let trimmedQuery = searchQuery?.trimmingCharacters(in: .whitespacesAndNewlines)
+            snapshotViewModel.searchQuery = trimmedQuery?.isEmpty == false ? trimmedQuery : nil
+        }
+    }
+    
+    init(
+        actionGroupsProvider: @escaping ActionGroupsProvider,
+        snapshot: ViewHierarchySnapshot
+    ) {
+        actionGroupsViewModel = ActionGroupsViewModel(actionGroupsProvider: actionGroupsProvider)
+        snapshotViewModel     = SnapshotViewModel(snapshot: snapshot)
+    }
+}
+
+// MARK: - HierarchyInspectorViewModelProtocol
+
+extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
+    func isRowEnabled(at indexPath: IndexPath) -> Bool {
+        switch isSearching {
+        case true:
+            return snapshotViewModel.isRowEnabled(at: indexPath)
+            
+        case false:
+            return actionGroupsViewModel.isRowEnabled(at: indexPath)
+        }
+    }
+    
+    var isEmpty: Bool {
+        switch isSearching {
+        case true:
+            return snapshotViewModel.isEmpty
+            
+        case false:
+            return actionGroupsViewModel.isEmpty
+        }
+    }
+    
+    func loadData() {
+        switch isSearching {
+        case true:
+            return snapshotViewModel.loadData()
+            
+        case false:
+            return actionGroupsViewModel.loadData()
+        }
+    }
+    
+    func selectRow(at indexPath: IndexPath) -> HierarchyInspectorCommand? {
+        switch isSearching {
+        case true:
+            return snapshotViewModel.selectRow(at: indexPath)
+            
+        case false:
+            return actionGroupsViewModel.selectRow(at: indexPath)
+        }
+    }
+    
+    var numberOfSections: Int {
+        switch isSearching {
+        case true:
+            return snapshotViewModel.numberOfSections
+            
+        case false:
+            return actionGroupsViewModel.numberOfSections
+        }
+    }
+    
+    func numberOfRows(in section: Int) -> Int {
+        switch isSearching {
+        case true:
+            return snapshotViewModel.numberOfRows(in: section)
+            
+        case false:
+            return actionGroupsViewModel.numberOfRows(in: section)
+        }
+    }
+    
+    func titleForHeader(in section: Int) -> String? {
+        switch isSearching {
+        case true:
+            return snapshotViewModel.titleForHeader(in: section)
+            
+        case false:
+            return actionGroupsViewModel.titleForHeader(in: section)
+        }
+    }
+    
+    func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
+        switch isSearching {
+        case true:
+            return snapshotViewModel.cellViewModelForRow(at: indexPath)
+            
+        case false:
+            return actionGroupsViewModel.cellViewModelForRow(at: indexPath)
+        }
+    }
+}

@@ -1,0 +1,43 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "ObjectAssociation",
+        "repositoryURL": "https://github.com/ipedro/ObjectAssociation.git",
+        "state": {
+          "branch": null,
+          "revision": "d96cb8280e039ee488ad02ed556651660ffe2487",
+          "version": "0.1.0"
+        }
+      },
+      {
+        "package": "UIKeyboardAnimatable",
+        "repositoryURL": "https://github.com/ipedro/UIKeyboardAnimatable.git",
+        "state": {
+          "branch": null,
+          "revision": "45d95cdd21385a8e0dbc61f442ad119fcb648348",
+          "version": "0.2.3"
+        }
+      },
+      {
+        "package": "UIKeyCommandTableView",
+        "repositoryURL": "https://github.com/ipedro/UIKeyCommandTableView.git",
+        "state": {
+          "branch": null,
+          "revision": "4663389cf13968fc3ad07b381855dfa9ba60c20e",
+          "version": "0.1.8"
+        }
+      },
+      {
+        "package": "UIKitOptions",
+        "repositoryURL": "https://github.com/ipedro/UIKitOptions.git",
+        "state": {
+          "branch": null,
+          "revision": "c1a3317f6cd98b20b602b090d7559ffff0860415",
+          "version": "0.2.27"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
