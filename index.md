@@ -6,9 +6,9 @@
 
 Inspector is a debugging library written in Swift.
 
-![](Documentation/inspector_header.png)
+![](https://github.com/ipedro/Inspector/raw/develop/Documentation/inspector_header.png)
 
-![Inspector Demo](Documentation/inspector_demo.gif)
+![Inspector Demo](https://github.com/ipedro/Inspector/raw/develop/Documentation/inspector_demo.gif)
 
 ## Contents
 * [Requirements](#requirements)
@@ -156,7 +156,7 @@ fi
 
 ## Presenting the Inspector
 
-![](Documentation/inspector_interface.png)
+![](https://github.com/ipedro/Inspector/raw/develop/Documentation/inspector_interface.png)
 
 ### Simulators and iPad with external keyboard
 
