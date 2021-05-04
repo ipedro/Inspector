@@ -218,31 +218,33 @@ open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEve
 
 #### `var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }`
 
-Default value is an empty array. `ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 8</kbd>. You can create your own or use one of the default ones.
+Default value is an empty array. `ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 8</kbd>. You can use one of the default ones or create your own.
 
-- `activityIndicators`: Shows activity indicator views.
-- `buttons`: Shows buttons.
-- `collectionViews`: Shows collection views.
-- `containerViews`: Shows all container views.
-- `controls`: Shows all controls.
-- `images`: Shows all image views.
-- `maps`: Shows all map views.
-- `pickers`: Shows all picker views.
-- `progressIndicators`: Shows all progress indicator views.
-- `scrollViews`: Shows all scroll views.
-- `segmentedControls`: Shows all segmented controls.
-- `spacerViews`: Shows all spacer views.
-- `stackViews`: Shows all stack views.
-- `tableViewCells`: Shows all table view cells.
-- `collectionViewReusableVies`: Shows all collection resusable views.
-- `collectionViewCells`: Shows all collection view cells.
-- `staticTexts`: Shows all static texts.
-- `switches`: Shows all switches.
-- `tables`: Shows all table views.
-- `textFields`: Shows all text fields.
-- `textViews`: Shows all text views.
-- `textInputs`: Shows all text inputs.
-- `webViews`: Shows all web views.
+**Default View Hierarchy Layers**:
+
+- `activityIndicators`: *Shows activity indicator views.*
+- `buttons`: *Shows buttons.*
+- `collectionViews`: *Shows collection views.*
+- `containerViews`: *Shows all container views.*
+- `controls`: *Shows all controls.*
+- `images`: *Shows all image views.*
+- `maps`: *Shows all map views.*
+- `pickers`: *Shows all picker views.*
+- `progressIndicators`: *Shows all progress indicator views.*
+- `scrollViews`: *Shows all scroll views.*
+- `segmentedControls`: *Shows all segmented controls.*
+- `spacerViews`: *Shows all spacer views.*
+- `stackViews`: *Shows all stack views.*
+- `tableViewCells`: *Shows all table view cells.*
+- `collectionViewReusableVies`: *Shows all collection resusable views.*
+- `collectionViewCells`: *Shows all collection view cells.*
+- `staticTexts`: *Shows all static texts.*
+- `switches`: *Shows all switches.*
+- `tables`: *Shows all table views.*
+- `textFields`: *Shows all text fields.*
+- `textViews`: *Shows all text views.*
+- `textInputs`: *Shows all text inputs.*
+- `webViews`: *Shows all web views.*
 
 ```swift
 // Example
@@ -423,11 +425,12 @@ final class MyClassInspectableViewModel: InspectorElementViewModelProtocol {
 }
 
 ```
-
+---
 
 ## Credits
 
 `Inspector` is owned and maintained by [Pedro Almeida](https://pedro.am). You can follow him on Twitter at [@ipedro](https://twitter.com/ipedro) for project updates and releases.
+
 
 ## License
 
