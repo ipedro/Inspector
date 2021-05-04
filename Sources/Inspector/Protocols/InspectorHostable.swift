@@ -28,7 +28,7 @@ public protocol InspectorHostable: AnyObject {
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }
     
     /// Return your own color scheme for the hierarchy label colors, instead of the default color scheme.
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme { get }
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }
     
     /// Default value is an empty array. Action groups appear as sections on the Inspector interface, you can have as many groups, with as many actions as you would like.
     var inspectorActionGroups: [Inspector.ActionGroup] { get }
@@ -44,7 +44,7 @@ public extension InspectorHostable {
     
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { [] }
     
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme { .default }
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { nil }
     
     var inspectorActionGroups: [Inspector.ActionGroup] { [] }
     
