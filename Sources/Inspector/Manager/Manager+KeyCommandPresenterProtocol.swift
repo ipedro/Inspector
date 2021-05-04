@@ -28,22 +28,22 @@ extension Manager: KeyCommandPresenterProtocol {
         Inspector.configuration.keyCommands
     }
     
-    var availableActionsForKeyCommand: ActionGroups {
+    var availableGroupsForKeyCommand: CommandGroups {
         guard let host = host else {
             return []
         }
         
-        let openInspectorGroup = ActionGroup(
+        let openInspectorGroup = CommandsGroup(
             title: nil,
-            actions: [
-                .openHierarchyInspector(from: host)
+            commands: [
+                .presentInspector(from: host)
             ]
         )
         
-        var actionGroups = [openInspectorGroup]
-        actionGroups.append(contentsOf: availableActionGroups)
+        var commandGroups = [openInspectorGroup]
+        commandGroups.append(contentsOf: availableCommandGroups)
         
-        return actionGroups
+        return commandGroups
     }
     
     public var keyCommands: [UIKeyCommand] {
@@ -51,8 +51,8 @@ extension Manager: KeyCommandPresenterProtocol {
     }
     
     func hierarchyInspectorKeyCommands(selector aSelector: Selector) -> [UIKeyCommand] {
-        let keyCommands = availableActionsForKeyCommand.flatMap { actionGroup in
-            actionGroup.actions.compactMap { action -> UIKeyCommand? in
+        let keyCommands = availableGroupsForKeyCommand.flatMap { actionGroup in
+            actionGroup.commands.compactMap { action -> UIKeyCommand? in
                 guard let options = action.keyCommandOptions else {
                     return nil
                 }

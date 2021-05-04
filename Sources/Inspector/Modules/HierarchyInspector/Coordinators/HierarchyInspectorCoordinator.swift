@@ -26,17 +26,17 @@ protocol HierarchyInspectorCoordinatorDelegate: AnyObject {
 }
 
 final class HierarchyInspectorCoordinator: NSObject {
-    typealias ActionGroupsProvider = HierarchyInspectorViewModel.ActionGroupsProvider
+    typealias CommandGroupsProvider = HierarchyInspectorViewModel.CommandGroupsProvider
     
     weak var delegate: HierarchyInspectorCoordinatorDelegate?
     
     let hierarchySnapshot: ViewHierarchySnapshot
     
-    let actionGroupsProvider: ActionGroupsProvider
+    let commandGroupsProvider: CommandGroupsProvider
     
     private lazy var hierarchyInspectorViewController: HierarchyInspectorViewController = {
         let viewModel = HierarchyInspectorViewModel(
-            actionGroupsProvider: actionGroupsProvider,
+            commandGroupsProvider: commandGroupsProvider,
             snapshot: hierarchySnapshot
         )
         
@@ -49,10 +49,10 @@ final class HierarchyInspectorCoordinator: NSObject {
     
     init(
         hierarchySnapshot: ViewHierarchySnapshot,
-        actionGroupsProvider: @escaping ActionGroupsProvider
+        commandGroupsProvider: @escaping CommandGroupsProvider
     ) {
         self.hierarchySnapshot = hierarchySnapshot
-        self.actionGroupsProvider = actionGroupsProvider
+        self.commandGroupsProvider = commandGroupsProvider
     }
     
     func start() -> UIViewController {

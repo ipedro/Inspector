@@ -30,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         
-        Inspector.delegate = self
+        Inspector.host = self
         
         guard let _ = (scene as? UIWindowScene) else { return }
     }
@@ -66,11 +66,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 }
 
-// MARK: - InspectableProtocol
+// MARK: - InspectorHostable
 
-extension SceneDelegate: InspectableProtocol {
+extension SceneDelegate: InspectorHostable {
     
-    // MARK: - InspectableProtocol
+    // MARK: - InspectorHostable
     
     var inspectorElementLibraries: [InspectorElementLibraryProtocol] {
         ExampleElementLibrary.allCases
@@ -80,11 +80,20 @@ extension SceneDelegate: InspectableProtocol {
         [
             .controls,
             .buttons,
-            .staticTexts + .images
+            .staticTexts + .images,
+            .layer(
+                name: "Without accessibility identifier",
+                filter: {
+                    guard let accessibilityIdentifier = $0.accessibilityIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+                        return true
+                    }
+                    return accessibilityIdentifier.isEmpty
+                }
+            )
         ]
     }
     
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme {
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
         .colorScheme { view in
             switch view {
             case is CustomButton:
@@ -96,16 +105,16 @@ extension SceneDelegate: InspectableProtocol {
         }
     }
     
-    var inspectorActionGroups: [Inspector.ActionGroup] {
+    var inspectorCommandGroups: [Inspector.CommandsGroup] {
         guard let window = window else {
             return []
         }
         
         return [
-            .actionGroup(
+            .group(
                 title: "My custom actions",
-                actions: [
-                    .action(
+                commands: [
+                    .command(
                         title: {
                             switch window.traitCollection.userInterfaceStyle {
                             case .light:
@@ -129,7 +138,7 @@ extension SceneDelegate: InspectableProtocol {
                             }
                         }
                     ),
-                    .action(
+                    .command(
                         title: "Reset",
                         icon: .exampleActionIcon,
                         keyCommand: .control(.shift(.key("r"))),
@@ -138,10 +147,10 @@ extension SceneDelegate: InspectableProtocol {
                             let initialViewController = mainStoryboard.instantiateInitialViewController()
                             
                             window.rootViewController = initialViewController
-                            window.inspectorManager?.restart()
+                            Inspector.restart()
                         }
                     ),
-                    .action(
+                    .command(
                         title: "Open repository...",
                         icon: .exampleActionIcon,
                         keyCommand: .control(.shift(.key("g"))),

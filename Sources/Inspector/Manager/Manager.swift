@@ -29,7 +29,7 @@ extension Inspector {
         
         static let shared = Manager()
         
-        weak var host: InspectableProtocol? {
+        weak var host: InspectorHostable? {
             didSet {
                 if oldValue != nil {
                     finish()
@@ -81,7 +81,7 @@ extension Inspector {
             host = nil
         }
         
-        public func restart() {
+        func restart() {
             finish()
             start()
         }
@@ -123,7 +123,7 @@ extension Inspector {
             
             let coordinator = HierarchyInspectorCoordinator(
                 hierarchySnapshot: viewHierarchySnapshot,
-                actionGroupsProvider: { [weak self] in self?.availableActionGroups }
+                commandGroupsProvider: { [weak self] in self?.availableCommandGroups }
             ).then {
                 $0.delegate = self
             }
@@ -136,11 +136,11 @@ extension Inspector {
     }
 }
 
-// MARK: - Actions
+// MARK: - Commands
 
 extension Manager {
     
-    var availableActionGroups: ActionGroups {
+    var availableCommandGroups: CommandGroups {
         guard
             let snapshot = viewHierarchySnapshot,
             let host = host,
@@ -149,14 +149,14 @@ extension Manager {
             return []
         }
         
-        let layerActions = viewHierarchyLayersCoordinator.availableLayerActions(for: snapshot)
-        let toggleAllLayersActions = viewHierarchyLayersCoordinator.toggleAllLayersActions(for: snapshot)
+        let layerCommands = viewHierarchyLayersCoordinator.availableLayerCommands(for: snapshot)
+        let toggleAllLayersCommands = viewHierarchyLayersCoordinator.toggleAllLayersCommands(for: snapshot)
         
-        var actionGroups = host.inspectorActionGroups
-        actionGroups.append(layerActions)
-        actionGroups.append(toggleAllLayersActions)
+        var commandGroups = host.inspectorCommandGroups
+        commandGroups.append(toggleAllLayersCommands)
+        commandGroups.append(layerCommands)
         
-        return actionGroups
+        return commandGroups
     }
     
 }
@@ -220,9 +220,9 @@ extension Manager: AsyncOperationProtocol {
     
 }
 
-// MARK: - InspectableProtocol Extension
+// MARK: - InspectorHostable Extension
 
-private extension InspectableProtocol {
+private extension InspectorHostable {
     
     var availableLayers: [ViewHierarchyLayer] {
         var layers = inspectorViewHierarchyLayers

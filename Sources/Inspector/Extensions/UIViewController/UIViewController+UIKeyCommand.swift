@@ -30,9 +30,9 @@ extension UIViewController {
             return
         }
         
-        let flattenedActions = inspectorManager.availableActionsForKeyCommand.flatMap { $0.actions }
+        let flattenedCommands = inspectorManager.availableGroupsForKeyCommand.flatMap { $0.commands }
         
-        for action in flattenedActions where action.title == keyCommand.discoverabilityTitle {
+        for action in flattenedCommands where action.title == keyCommand.discoverabilityTitle {
             action.closure?()
             return
         }

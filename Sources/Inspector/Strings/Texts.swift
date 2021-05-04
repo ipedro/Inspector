@@ -56,7 +56,7 @@ enum Texts {
     
     static let hierarchySearch = "Hierarchy Search"
     
-    static let openInspector = "Open Inspector..."
+    static let presentInspector = "Open Inspector..."
     
     static let showAllLayers = "Show all highlights"
     

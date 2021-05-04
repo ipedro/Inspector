@@ -28,7 +28,7 @@ public enum Inspector {
     
     public static var configuration = InspectorConfiguration()
     
-    public static var delegate: InspectableProtocol? {
+    public static var host: InspectorHostable? {
         get { Manager.shared.host }
         set { Manager.shared.host = newValue }
     }
@@ -40,4 +40,9 @@ public enum Inspector {
     public static func finish() {
         Manager.shared.finish()
     }
+    
+    public static func restart() {
+        Manager.shared.restart()
+    }
+    
 }
