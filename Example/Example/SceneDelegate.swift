@@ -125,7 +125,7 @@ extension SceneDelegate: InspectorHostable {
                                 return "Stop forcing theme"
                             }
                         }(),
-                        icon: .exampleActionIcon,
+                        icon: .exampleCommandIcon,
                         keyCommand: .control(.shift(.key("i"))),
                         closure: {
                             switch window.traitCollection.userInterfaceStyle {
@@ -140,7 +140,7 @@ extension SceneDelegate: InspectorHostable {
                     ),
                     .command(
                         title: "Reset",
-                        icon: .exampleActionIcon,
+                        icon: .exampleCommandIcon,
                         keyCommand: .control(.shift(.key("r"))),
                         closure: {
                             let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -152,7 +152,7 @@ extension SceneDelegate: InspectorHostable {
                     ),
                     .command(
                         title: "Open repository...",
-                        icon: .exampleActionIcon,
+                        icon: .exampleCommandIcon,
                         keyCommand: .control(.shift(.key("g"))),
                         closure: {
                             UIApplication.shared.open(
@@ -185,5 +185,5 @@ extension UIWindow {
 }
 
 private extension UIImage {
-    static let exampleActionIcon = UIImage(named: "CustomAction_32")
+    static let exampleCommandIcon = UIImage(named: "CustomAction_32")
 }

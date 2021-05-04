@@ -1,13 +1,15 @@
 
 [![](https://img.shields.io/github/license/ipedro/Inspector)](https://github.com/ipedro/Inspector/blob/main/LICENSE) 
-![](https://img.shields.io/github/v/tag/ipedro/Inspector?label=spm)
+![](https://img.shields.io/github/v/tag/ipedro/Inspector?label=Swift%20Package&sort=semver)
 
 # 🕵🏽‍♂️ Inspector
 
-![Inspector Demo](Documentation/inspector_demo.gif)
-
 Inspector is a debugging library written in Swift.
 
+![](Documentation/inspector_header.png)
+![Inspector Demo](Documentation/inspector_demo.gif)
+
+## Contents
 * [Requirements](#requirements)
 * [Installation](#installation)
     * [Swift Package Manager](#swift-package-manager)
@@ -19,8 +21,13 @@ Inspector is a debugging library written in Swift.
 * [Presenting the Inspector](#presenting-the-inspector)
     * [Simulators and iPad with external keyboard](#simulators-and-ipad-with-external-keyboard)
     * [iPhone](#iphone)
-* [Documentation](#Documentation)
+* [Customization](#Customization)
     * [InspectorHostable Protocol](#inspectorhostable-protocol)
+        * [View hierarchy layers](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
+        * [View hierarchy color scheme](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
+        * [Custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
+        * [Custom element libraries](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
+
 * [Credits](#credits)
 * [License](#license)
 
@@ -37,11 +44,11 @@ Inspector is a debugging library written in Swift.
 
 ## Swift Package Manager
 
-The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swisft code and is integrated into the swift compiler. It is in early development, but Inspector does support its use on supported platforms.
+The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the swift compiler. It is in early development, but Inspector does support its use on supported platforms.
 
 Once you have your Swift package set up, adding `Inspector` as a dependency is as easy as adding it to the dependencies value of your `Package.swift`.
 
-``` swift
+```swift
 // Add to Package.swift
 
 dependencies: [
@@ -55,36 +62,36 @@ After a [successful installation](#installation), you need to add conformance to
 
 ### SceneDelegate.swift
 
-    ``` swift
-    // Scene Delegate Example
+```swift
+// Scene Delegate Example
 
-    import UIKit
+import UIKit
 
-    #if DEBUG
-    import Inspector
+#if DEBUG
+import Inspector
 
-    extension SceneDelegate: InspectorHostable {}
-    #endif
+extension SceneDelegate: InspectorHostable {}
+#endif
 
-    class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-        var window: UIWindow?
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
 
-        func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
-            #if DEBUG
-            // Make your class the Inspector' host when returning a scene
-            Inspector.host = self
-            #endif
-            
-            guard let _ = (scene as? UIWindowScene) else { return }
-        }
-
-        (...)
+        #if DEBUG
+        // Make your class the Inspector' host when returning a scene
+        Inspector.host = self
+        #endif
+        
+        guard let _ = (scene as? UIWindowScene) else { return }
     }
-    ```
+
+    (...)
+}
+```
 ### AppDelegate.swift
 
-``` swift
+```swift
 // App Delegate Example
 
 import UIKit
@@ -115,7 +122,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
 Extend the root view controller class to enable `Inspector` key commands.
 
-``` swift
+```swift
 // Add to your root view controller.
 
 #if DEBUG
@@ -152,7 +159,7 @@ fi
 
 ### Simulators and iPad with external keyboard
 
-Afer [enabling Key command support](#enable-key-commands-recommended), you can:
+After [enabling Key command support](#enable-key-commands-recommended), you can:
 
 - Invoke the `Inspector` by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
 
@@ -167,7 +174,7 @@ Afer [enabling Key command support](#enable-key-commands-recommended), you can:
 If you're willing to a custom interface on your app (maybe only on debug), such as a floating button, or UIBarButtonItem to be visible in a specific type of builds, you can simply call `presentInspector(animated: _:)` on any view controller or window.
 
 As a convenience, you can use `var inspectorBarButtonItem: UIBarButtonItem { get }` availabe via extenion on every `UIViewController` instance:
-``` swift
+```swift
 // MyViewController.swift
 
 override func viewDidLoad() {
@@ -180,7 +187,7 @@ override func viewDidLoad() {
 ### With a motion gesture
 
 One other suggestion is to present the Inspector using a gesture, like shaking the device. That way no UI needs to be introduced. The most convienient way to do it is subclassing or extending `UIWindow` with the following code:
-``` swift
+```swift
 // Add to UIWindow extension or subclass
 
 open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
@@ -196,243 +203,234 @@ open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEve
 
 ---
 
-## Documentation
+## Customization
+
+`Inspector` allows you to customize and introduce new behavior on views specific to your codebase, through the `InspectorHostable` Protocol.
 
 ## InspectorHostable Protocol
-The protocol you need to conform to be able to be Inspector host.
+* `var window: UIWindow? { get }`
+* [`var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }`](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
+* [`var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }`](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
+* [`var inspectorCommandGroups: [Inspector.CommandGroup] { get }`](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
+* [`var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }`](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
 
-``` swift
-public protocol InspectorHostable: AnyObject {
-    var window: UIWindow? { get }
+---
 
-    // Optional
-    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }
+#### `var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }`
 
-    // Optional
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }
+Default value is an empty array. `ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 8</kbd>. You can use one of the default ones or create your own.
 
-    // Optional
-    var inspectorCommandGroups: [Inspector.ActionGroup] { get }
+**Default View Hierarchy Layers**:
 
-    // Optional
-    var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }
+- `activityIndicators`: *Shows activity indicator views.*
+- `buttons`: *Shows buttons.*
+- `collectionViews`: *Shows collection views.*
+- `containerViews`: *Shows all container views.*
+- `controls`: *Shows all controls.*
+- `images`: *Shows all image views.*
+- `maps`: *Shows all map views.*
+- `pickers`: *Shows all picker views.*
+- `progressIndicators`: *Shows all progress indicator views.*
+- `scrollViews`: *Shows all scroll views.*
+- `segmentedControls`: *Shows all segmented controls.*
+- `spacerViews`: *Shows all spacer views.*
+- `stackViews`: *Shows all stack views.*
+- `tableViewCells`: *Shows all table view cells.*
+- `collectionViewReusableVies`: *Shows all collection resusable views.*
+- `collectionViewCells`: *Shows all collection view cells.*
+- `staticTexts`: *Shows all static texts.*
+- `switches`: *Shows all switches.*
+- `tables`: *Shows all table views.*
+- `textFields`: *Shows all text fields.*
+- `textViews`: *Shows all text views.*
+- `textInputs`: *Shows all text inputs.*
+- `webViews`: *Shows all web views.*
+
+```swift
+// Example
+
+var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] {
+    [
+        .controls,
+        .buttons,
+        .staticTexts + .images,
+        .layer(
+            name: "Without accessibility identifiers",
+            filter: { element in
+                guard let accessibilityIdentifier = element.accessibilityIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+                    return true
+                }
+                return accessibilityIdentifier.isEmpty
+            }
+        )
+    ]
+}
+
+```
+
+---
+
+#### `var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }`
+
+Return your own color scheme for the hierarchy label colors, instead of (or to extend) the default color scheme.
+
+```swift
+// Example
+
+var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
+    .colorScheme { view in
+        switch view {
+        case is MyView:
+            return .systemPink
+            
+        default:
+        // fallback to default color scheme
+            return Inspector.ViewHierarchyColorScheme.default.color(for: view)
+        }
+    }
+}
+```
+---
+
+#### `var inspectorCommandGroups: [Inspector.CommandGroup] { get }`
+
+Default value is an empty array. Command groups appear as sections on the `Inspector` window and can have key command shortcuts associated with them, you can have as many groups, with as many commands as you want.
+
+```swift
+// Example
+
+var inspectorCommandGroups: [Inspector.CommandGroup] {
+    guard let window = window else { return [] }
+    
+    [
+        .group(
+            title: "My custom commands",
+            commands: [
+                .command(
+                    title: "Reset",
+                    icon: .exampleCommandIcon,
+                    keyCommand: .control(.shift(.key("r"))),
+                    closure: {
+                        // Instantiates a new initial view controller on a Storyboard application.
+                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                        let vc = storyboard.instantiateInitialViewController()
+
+                        // set new instance as the root view controller
+                        window.rootViewController = vc
+                        
+                        // restart inspector
+                        Insopector.restart()
+                    }
+                )
+            ]
+        )
+    ]
 }
 ```
 
 ---
 
-* ```var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }```
+#### `var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }`
 
-    Default value is an empty array. `ViewHierarchyLayer` are togglabe and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 8</kbd>. You can create your own or use one of the default ones.
+Default value is an empty array. Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
 
-    - `activityIndicators`: Shows activity indicator views.
-    - `buttons`: Shows buttons.
-    - `collectionViews`: Shows collection views.
-    - `containerViews`: Shows all container views.
-    - `controls`: Shows all controls.
-    - `images`: Shows all image views.
-    - `maps`: Shows all map views.
-    - `pickers`: Shows all picker views.
-    - `progressIndicators`: Shows all progress indicator views.
-    - `scrollViews`: Shows all scroll views.
-    - `segmentedControls`: Shows all segmented controls.
-    - `spacerViews`: Shows all spacer views.
-    - `stackViews`: Shows all stack views.
-    - `tableViewCells`: Shows all table view cells.
-    - `collectionViewReusableVies`: Shows all collection resusable views.
-    - `collectionViewCells`: Shows all collection view cells.
-    - `staticTexts`: Shows all static texts.
-    - `switches`: Shows all switches.
-    - `tables`: Shows all table views.
-    - `textFields`: Shows all text fields.
-    - `textViews`: Shows all text views.
-    - `textInputs`: Shows all text inputs.
-    - `webViews`: Shows all web views.
+```swift 
+// Example
 
-    ``` swift
-    // Example
+var inspectorElementLibraries: [InspectorElementLibraryProtocol] {
+    ExampleElementLibrary.allCases
+}
+```
 
-    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] {
-        [
-            .controls,
-            .buttons,
-            .staticTexts + .images,
-            .layer(
-                name: "Without accessibility identifiers",
-                filter: { element in
-                    guard let accessibilityIdentifier = element.accessibilityIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines) else {
-                        return true
-                    }
-                    return accessibilityIdentifier.isEmpty
-                }
-            )
-        ]
+```swift 
+// Element Library Example
+
+import UIKit
+import Inspector
+
+enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
+    case myClass
+    
+    var targetClass: AnyClass {
+        switch self {
+        case .myClass:
+            return MyView.self
+        }
     }
     
-    ```
-
----
-
-* ```var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }```
-
-    Return your own color scheme for the hierarchy label colors, instead of (or to extend) the default color scheme.
-
-    ``` swift
-    // Example
-
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
-        .colorScheme { view in
-            switch view {
-            case is MyView:
-                return .systemPink
-                
-            default:
-            // fallback to default color scheme
-                return Inspector.ViewHierarchyColorScheme.default.color(for: view)
-            }
+    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
+        switch self {
+        case .myClass:
+            return MyClassInspectableViewModel(view: referenceView)
         }
     }
-    ```
----
-
-* ```var inspectorCommandGroups: [Inspector.ActionGroup] { get }```
-
-    Default value is an empty array. Action groups appear as sections on the `Inspector` window and can have key command shortcuts associated with them, you can have as many groups, with as many actions as you would like.
-
-    ``` swift
-    // Example
-
-    var inspectorCommandGroups: [Inspector.ActionGroup] {
-        guard let window = window else { return [] }
-        
-        [
-            .group(
-                title: "My custom actions",
-                commands: [
-                    .action(
-                        title: "Reset",
-                        icon: .exampleActionIcon,
-                        keyCommand: .control(.shift(.key("r"))),
-                        closure: {
-                            // Instantiates a new initial view controller on a Storyboard application.
-                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                            let vc = storyboard.instantiateInitialViewController()
-
-                            // set new instance as the root view controller
-                            window.rootViewController = vc
-                            
-                            // restart inspector
-                            Insopector.restart()
-                        }
-                    )
-                ]
-            )
-        ]
-    }
-    ```
-
----
-
-* ```var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }```
     
-    Default value is an empty array. Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
-
-    ```swift 
-    // Example
-    
-    var inspectorElementLibraries: [InspectorElementLibraryProtocol] {
-        ExampleElementLibrary.allCases
-    }
-    ```
-
-    ``` swift 
-    // Element Library Example
-    
-    import UIKit
-    import Inspector
-
-    enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
-        case myClass
-        
-        var targetClass: AnyClass {
-            switch self {
-            case .myClass:
-                return MyView.self
-            }
-        }
-        
-        func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
-            switch self {
-            case .myClass:
-                return MyClassInspectableViewModel(view: referenceView)
-            }
-        }
-        
-        func icon(for referenceView: UIView) -> UIImage? {
-            switch self {
-            case .myClass:
-                return UIImage(named: "MyClassIcon") // optional
-            }
+    func icon(for referenceView: UIView) -> UIImage? {
+        switch self {
+        case .myClass:
+            return UIImage(named: "MyClassIcon") // optional
         }
     }
-    ```
-    ``` swift
-    // Element ViewModel Example
+}
+```
+```swift
+// Element ViewModel Example
 
-    import UIKit
-    import Inspector
+import UIKit
+import Inspector
 
-    final class MyClassInspectableViewModel: InspectorElementViewModelProtocol {
-        var title: String = "My View"
-        
-        let myObject: MyView
-        
-        init?(view: UIView) {
-            guard let myObject = view as? MyView else {
-                return nil
-            }
-            self.myObject = myObject
+final class MyClassInspectableViewModel: InspectorElementViewModelProtocol {
+    var title: String = "My View"
+    
+    let myObject: MyView
+    
+    init?(view: UIView) {
+        guard let myObject = view as? MyView else {
+            return nil
         }
-        
-        enum Properties: String, CaseIterable {
-            case cornerRadius = "Round Corners"
-            case backgroundColor = "Background Color"
-        }
-        
-        var properties: [InspectorElementViewModelProperty] {
-            Properties.allCases.map { property in
-                switch property {
-                case .cornerRadius:
-                    return .toggleButton(
-                        title: property.rawValue,
-                        isOn: { self.myObject.roundCorners }
-                    ) { [weak self] roundCorners in
-                        guard let self = self else { return}
+        self.myObject = myObject
+    }
+    
+    enum Properties: String, CaseIterable {
+        case cornerRadius = "Round Corners"
+        case backgroundColor = "Background Color"
+    }
+    
+    var properties: [InspectorElementViewModelProperty] {
+        Properties.allCases.map { property in
+            switch property {
+            case .cornerRadius:
+                return .toggleButton(
+                    title: property.rawValue,
+                    isOn: { self.myObject.roundCorners }
+                ) { [weak self] roundCorners in
+                    guard let self = self else { return }
 
-                        self.myObject.roundCorners = roundCorners
-                    }
-                    
-                case .backgroundColor:
-                    return .colorPicker(
-                        title: property.rawValue,
-                        color: { self.myObject.backgroundColor }
-                    ) { [weak self] newBackgroundColor in
-                        guard let self = self else { return}
-
-                        self.myObject.backgroundColor = newBackgroundColor
-                    }
+                    self.myObject.roundCorners = roundCorners
                 }
                 
+            case .backgroundColor:
+                return .colorPicker(
+                    title: property.rawValue,
+                    color: { self.myObject.backgroundColor }
+                ) { [weak self] newBackgroundColor in
+                    guard let self = self else { return }
+
+                    self.myObject.backgroundColor = newBackgroundColor
+                }
             }
+            
         }
     }
+}
 
-    ```
-
+```
+---
 
 ## Credits
 
 `Inspector` is owned and maintained by [Pedro Almeida](https://pedro.am). You can follow him on Twitter at [@ipedro](https://twitter.com/ipedro) for project updates and releases.
+
 
 ## License
 

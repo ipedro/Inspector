@@ -24,7 +24,7 @@ public protocol InspectorHostable: AnyObject {
     
     var window: UIWindow? { get }
     
-    /// Default value is an empty array. `ViewHierarchyLayer` are togglabe and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with `Ctrl + Shift + 1 - 9`. You can create your own or use one of the default ones.
+    /// Default value is an empty array. `ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with `Ctrl + Shift + 1 - 9`. You can create your own or use one of the default ones.
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }
     
     /// Return your own color scheme for the hierarchy label colors, instead of the default color scheme.
