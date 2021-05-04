@@ -31,9 +31,9 @@ public protocol InspectorHostable: AnyObject {
     var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }
     
     /// Default value is an empty array. Action groups appear as sections on the Inspector interface, you can have as many groups, with as many actions as you would like.
-    var inspectorActionGroups: [Inspector.ActionGroup] { get }
+    var inspectorCommandGroups: [Inspector.CommandsGroup] { get }
     
-    /// Default value is an empty array.
+    /// Default value is an empty array. Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
     var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }
     
 }
@@ -46,7 +46,7 @@ public extension InspectorHostable {
     
     var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { nil }
     
-    var inspectorActionGroups: [Inspector.ActionGroup] { [] }
+    var inspectorCommandGroups: [Inspector.CommandsGroup] { [] }
     
     var inspectorElementLibraries: [InspectorElementLibraryProtocol] { [] }
     

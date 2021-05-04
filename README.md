@@ -213,7 +213,7 @@ public protocol InspectorHostable: AnyObject {
     var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }
 
     // Optional
-    var inspectorActionGroups: [Inspector.ActionGroup] { get }
+    var inspectorCommandGroups: [Inspector.ActionGroup] { get }
 
     // Optional
     var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }
@@ -280,10 +280,11 @@ public protocol InspectorHostable: AnyObject {
 
     ``` swift
     // Example
+
     var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
         .colorScheme { view in
             switch view {
-            case is CustomButton:
+            case is MyView:
                 return .systemPink
                 
             default:
@@ -295,20 +296,20 @@ public protocol InspectorHostable: AnyObject {
     ```
 ---
 
-* ```var inspectorActionGroups: [Inspector.ActionGroup] { get }```
+* ```var inspectorCommandGroups: [Inspector.ActionGroup] { get }```
 
     Default value is an empty array. Action groups appear as sections on the `Inspector` window and can have key command shortcuts associated with them, you can have as many groups, with as many actions as you would like.
 
     ``` swift
     // Example
 
-    var inspectorActionGroups: [Inspector.ActionGroup] {
+    var inspectorCommandGroups: [Inspector.ActionGroup] {
         guard let window = window else { return [] }
         
         [
-            .actionGroup(
+            .group(
                 title: "My custom actions",
-                actions: [
+                commands: [
                     .action(
                         title: "Reset",
                         icon: .exampleActionIcon,
@@ -334,9 +335,100 @@ public protocol InspectorHostable: AnyObject {
 ---
 
 * ```var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }```
-    Default value is an empty array.
+    
+    Default value is an empty array. Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
 
-    Add documentation.
+    ```swift 
+    // Example
+    
+    var inspectorElementLibraries: [InspectorElementLibraryProtocol] {
+        ExampleElementLibrary.allCases
+    }
+    ```
+
+    ``` swift 
+    // Element Library Example
+    
+    import UIKit
+    import Inspector
+
+    enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
+        case myClass
+        
+        var targetClass: AnyClass {
+            switch self {
+            case .myClass:
+                return MyView.self
+            }
+        }
+        
+        func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
+            switch self {
+            case .myClass:
+                return MyClassInspectableViewModel(view: referenceView)
+            }
+        }
+        
+        func icon(for referenceView: UIView) -> UIImage? {
+            switch self {
+            case .myClass:
+                return UIImage(named: "MyClassIcon") // optional
+            }
+        }
+    }
+    ```
+    ``` swift
+    // Element ViewModel Example
+
+    import UIKit
+    import Inspector
+
+    final class MyClassInspectableViewModel: InspectorElementViewModelProtocol {
+        var title: String = "My View"
+        
+        let myObject: MyView
+        
+        init?(view: UIView) {
+            guard let myObject = view as? MyView else {
+                return nil
+            }
+            self.myObject = myObject
+        }
+        
+        enum Properties: String, CaseIterable {
+            case cornerRadius = "Round Corners"
+            case backgroundColor = "Background Color"
+        }
+        
+        var properties: [InspectorElementViewModelProperty] {
+            Properties.allCases.map { property in
+                switch property {
+                case .cornerRadius:
+                    return .toggleButton(
+                        title: property.rawValue,
+                        isOn: { self.myObject.roundCorners }
+                    ) { [weak self] roundCorners in
+                        guard let self = self else { return}
+
+                        self.myObject.roundCorners = roundCorners
+                    }
+                    
+                case .backgroundColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { self.myObject.backgroundColor }
+                    ) { [weak self] newBackgroundColor in
+                        guard let self = self else { return}
+
+                        self.myObject.backgroundColor = newBackgroundColor
+                    }
+                }
+                
+            }
+        }
+    }
+
+    ```
 
 
 ## Credits

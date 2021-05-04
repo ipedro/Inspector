@@ -105,16 +105,16 @@ extension SceneDelegate: InspectorHostable {
         }
     }
     
-    var inspectorActionGroups: [Inspector.ActionGroup] {
+    var inspectorCommandGroups: [Inspector.CommandsGroup] {
         guard let window = window else {
             return []
         }
         
         return [
-            .actionGroup(
+            .group(
                 title: "My custom actions",
-                actions: [
-                    .action(
+                commands: [
+                    .command(
                         title: {
                             switch window.traitCollection.userInterfaceStyle {
                             case .light:
@@ -138,7 +138,7 @@ extension SceneDelegate: InspectorHostable {
                             }
                         }
                     ),
-                    .action(
+                    .command(
                         title: "Reset",
                         icon: .exampleActionIcon,
                         keyCommand: .control(.shift(.key("r"))),
@@ -150,7 +150,7 @@ extension SceneDelegate: InspectorHostable {
                             Inspector.restart()
                         }
                     ),
-                    .action(
+                    .command(
                         title: "Open repository...",
                         icon: .exampleActionIcon,
                         keyCommand: .control(.shift(.key("g"))),

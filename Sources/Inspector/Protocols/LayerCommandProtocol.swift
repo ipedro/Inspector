@@ -18,18 +18,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
+import Foundation
 
-typealias ActionGroups = [Inspector.ActionGroup]
-typealias ActionGroup = Inspector.ActionGroup
-
-extension Inspector {
-    public struct ActionGroup {
-        public var title: String?
-        public var actions: [Action]
-        
-        public static func actionGroup(title: String?, actions: [Action]) -> ActionGroup {
-            ActionGroup(title: title, actions: actions)
-        }
-    }
+protocol LayerCommandProtocol {
+    func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> CommandsGroup
+    
+    func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> CommandsGroup
+    
+    func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command
 }

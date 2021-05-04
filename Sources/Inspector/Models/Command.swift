@@ -20,10 +20,10 @@
 
 import UIKit
 
-typealias Action = Inspector.Action
+typealias Command = Inspector.Command
 
 extension Inspector {
-    public struct Action {
+    public struct Command {
         public typealias Closure = () -> Void
         
         public var title: String
@@ -38,12 +38,12 @@ extension Inspector {
             closure != nil
         }
         
-        public static func action(
+        public static func command(
             title: String,
             icon: UIImage?,
             keyCommand: UIKeyCommand.Options?,
             closure: Closure?
-        ) -> Action {
+        ) -> Command {
             self.init(
                 title: title,
                 icon: icon?.resized(.actionIconSize),
@@ -56,13 +56,13 @@ extension Inspector {
 
 // MARK: - Internal Convenience
 
-extension Action {
+extension Command {
     private static var keyCommandSettings: InspectorConfiguration.KeyCommandSettings {
         Inspector.configuration.keyCommands
     }
     
-    static func emptyLayer(_ title: String) -> Action {
-        Action(
+    static func emptyLayer(_ title: String) -> Command {
+        Command(
             title: title,
             icon: .moduleImage(named: "LayerAction-Empty"),
             keyCommandOptions: nil,
@@ -70,8 +70,8 @@ extension Action {
         )
     }
     
-    static func showLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Action {
-        Action(
+    static func showLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
+        Command(
             title: title,
             icon: .moduleImage(named: "LayerAction-Show"),
             keyCommandOptions: UIKeyCommand.Options(
@@ -82,8 +82,8 @@ extension Action {
         )
     }
     
-    static func hideLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Action {
-        Action(
+    static func hideLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
+        Command(
             title: title,
             icon: .moduleImage(named: "LayerAction-Hide"),
             keyCommandOptions: UIKeyCommand.Options(
@@ -94,8 +94,8 @@ extension Action {
         )
     }
     
-    static func showAllLayers(closure: @escaping Closure) -> Action {
-        Action(
+    static func showAllLayers(closure: @escaping Closure) -> Command {
+        Command(
             title: Texts.showAllLayers,
             icon: .moduleImage(named: "LayerAction-ShowAll"),
             keyCommandOptions: UIKeyCommand.Options(
@@ -106,8 +106,8 @@ extension Action {
         )
     }
     
-    static func hideVisibleLayers(closure: @escaping Closure) -> Action {
-        Action(
+    static func hideVisibleLayers(closure: @escaping Closure) -> Command {
+        Command(
             title: Texts.hideVisibleLayers,
             icon: .moduleImage(named: "LayerAction-HideAll"),
             keyCommandOptions: UIKeyCommand.Options(
@@ -118,9 +118,9 @@ extension Action {
         )
     }
     
-    static func openHierarchyInspector(from host: InspectorHostable, animated: Bool = true) -> Action {
-        Action(
-            title: Texts.openInspector,
+    static func presentInspector(from host: InspectorHostable, animated: Bool = true) -> Command {
+        Command(
+            title: Texts.presentInspector,
             icon: nil,
             keyCommandOptions: keyCommandSettings.presentationOptions
         ) {

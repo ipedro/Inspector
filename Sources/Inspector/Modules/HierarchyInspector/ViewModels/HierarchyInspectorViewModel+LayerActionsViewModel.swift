@@ -21,7 +21,7 @@
 import UIKit
 
 extension HierarchyInspectorViewModel {
-    final class ActionGroupsViewModel: HierarchyInspectorSectionViewModelProtocol {
+    final class CommandGroupsViewModel: HierarchyInspectorSectionViewModelProtocol {
         
         struct Details: InspectorActionCellViewModelProtocol {
             let title: String
@@ -29,26 +29,26 @@ extension HierarchyInspectorViewModel {
             var isEnabled: Bool
         }
         
-        private(set) lazy var layerActionGroups = ActionGroups()
+        private(set) lazy var layerCommandGroups = CommandGroups()
         
-        let provider: ActionGroupsProvider
+        let provider: CommandGroupsProvider
         
-        init(actionGroupsProvider: @escaping ActionGroupsProvider) {
-            provider = actionGroupsProvider
+        init(commandGroupsProvider: @escaping CommandGroupsProvider) {
+            provider = commandGroupsProvider
         }
         
         var isEmpty: Bool {
             var totalActionCount = 0
             
-            for group in layerActionGroups {
-                totalActionCount += group.actions.count
+            for group in layerCommandGroups {
+                totalActionCount += group.commands.count
             }
             
             return totalActionCount == 0
         }
         
         func loadData() {
-            layerActionGroups = provider() ?? []
+            layerCommandGroups = provider() ?? []
         }
         
         func selectRow(at indexPath: IndexPath) -> HierarchyInspectorCommand? {
@@ -63,15 +63,15 @@ extension HierarchyInspectorViewModel {
         }
         
         var numberOfSections: Int {
-            layerActionGroups.count
+            layerCommandGroups.count
         }
         
         func numberOfRows(in section: Int) -> Int {
-            actionGroup(in: section).actions.count
+            group(in: section).commands.count
         }
         
         func titleForHeader(in section: Int) -> String? {
-            actionGroup(in: section).title
+            group(in: section).title
         }
         
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
@@ -86,12 +86,12 @@ extension HierarchyInspectorViewModel {
             )
         }
         
-        private func actionGroup(in section: Int) -> ActionGroup {
-            layerActionGroups[section]
+        private func group(in section: Int) -> CommandsGroup {
+            layerCommandGroups[section]
         }
         
-        private func action(at indexPath: IndexPath) -> Action {
-            actionGroup(in: indexPath.section).actions[indexPath.row]
+        private func action(at indexPath: IndexPath) -> Command {
+            group(in: indexPath.section).commands[indexPath.row]
         }
     }
 }

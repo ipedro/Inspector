@@ -20,24 +20,24 @@
 
 import UIKit
 
-extension ViewHierarchyLayersCoordinator: LayerActionProtocol {
+extension ViewHierarchyLayersCoordinator: LayerCommandProtocol {
     
-    func availableLayerActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup {
+    func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> CommandsGroup {
         let layerToggleInputRange = Inspector.configuration.keyCommands.layerToggleInputRange
         
         let maxCount = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
         
-        let actions = snapshot.availableLayers.enumerated().map { index, layer in
-            action(for: layer, at: layerToggleInputRange.lowerBound + index, isEmpty: snapshot.populatedLayers.contains(layer) == false)
+        let commands = snapshot.availableLayers.enumerated().map { index, layer in
+            command(for: layer, at: layerToggleInputRange.lowerBound + index, isEmpty: snapshot.populatedLayers.contains(layer) == false)
         }
         
-        return ActionGroup(
+        return CommandsGroup(
             title: Texts.highlightViews,
-            actions: Array(actions.prefix(maxCount))
+            commands: Array(commands.prefix(maxCount))
         )
     }
     
-    func action(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Action {
+    func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command {
         guard isEmpty == false else {
             return .emptyLayer(layer.emptyActionTitle)
         }
@@ -55,11 +55,11 @@ extension ViewHierarchyLayersCoordinator: LayerActionProtocol {
         }
     }
     
-    func toggleAllLayersActions(for snapshot: ViewHierarchySnapshot) -> ActionGroup {
-        ActionGroup(
+    func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> CommandsGroup {
+        CommandsGroup(
             title: nil,
-            actions: {
-                var array = [Action]()
+            commands: {
+                var array = [Command]()
                 
                 if activeLayers.count > .zero {
                     array.append(

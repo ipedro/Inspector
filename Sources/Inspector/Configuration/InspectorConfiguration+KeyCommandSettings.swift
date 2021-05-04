@@ -32,7 +32,7 @@ public extension InspectorConfiguration {
         public var allLayersToggleInput: String = String(0)
         
         public var presentationOptions: UIKeyCommand.Options = .discoverabilityTitle(
-            title: Texts.openInspector,
+            title: Texts.presentInspector,
             key: .control(.shift(.key("0")))
         )
         
