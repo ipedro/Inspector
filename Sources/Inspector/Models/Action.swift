@@ -118,7 +118,7 @@ extension Action {
         )
     }
     
-    static func openHierarchyInspector(from host: InspectableProtocol, animated: Bool = true) -> Action {
+    static func openHierarchyInspector(from host: InspectorHostable, animated: Bool = true) -> Action {
         Action(
             title: Texts.openInspector,
             icon: nil,

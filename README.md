@@ -42,10 +42,7 @@ dependencies: [
 
 ## Usage
 
-After a [successful installation](#installation), all you have to do is:
-* Extend your `SceneDelegate.swift` of `AppDelegate.swift` by conform to the `Inspectable Protocol`
-* Import the `Inspector` framework in `SceneDelegate.swift` of `AppDelegate.swift`, and make sure it conforms to `InspectableProtocol`.
-* Assign your class as delegate.
+After a [successful installation](#installation), you need to extend your `SceneDelegate.swift` of `AppDelegate.swift` by conforming to `InspectorHostable`, and assigning your class as the `Inspector` host.
 
 ### Scene Delegate Example
 
@@ -55,7 +52,7 @@ import UIKit
 #if DEBUG
 import Inspector
 
-extension SceneDelegate: InspectableProtocol {}
+extension SceneDelegate: InspectorHostable {}
 #endif
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -65,8 +62,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
         #if DEBUG
-        // Make your class the Inspector delegate when returning a scene
-        Inspector.delegate = self
+        // Make your class the Inspector' host when returning a scene
+        Inspector.host = self
         #endif
         
         guard let _ = (scene as? UIWindowScene) else { return }
@@ -82,7 +79,7 @@ import UIKit
 #if DEBUG
 import Inspector
 
-extension AppDelegate: InspectableProtocol {}
+extension AppDelegate: InspectorHostable {}
 #endif
 
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -92,8 +89,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         #if DEBUG
-        // Make your class the Inspector delegate when returning a scene
-        Inspector.delegate = self
+        // Make your class the Inspector's host when launching with options
+        Inspector.host = self
         #endif
 
         return true
@@ -102,6 +99,66 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     (...)
 }
 ```
+
+### InspectorHostable Protocol
+The protocol you need to conform to be able to be Inspector host.
+
+``` swift
+public protocol InspectorHostable: AnyObject {
+    var window: UIWindow? { get }
+
+    // Optional
+    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }
+
+    // Optional
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme { get }
+
+    // Optional
+    var inspectorActionGroups: [Inspector.ActionGroup] { get }
+
+    // Optional
+    var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }
+}
+```
+
+#### `var inspectorActionGroups: [Inspector.ActionGroup] { get }`
+
+Default value is an empty array. Add any actions that you
+
+![Add Custom Actions](Documentation/custom_actions.png)
+
+``` swift
+
+var inspectorActionGroups: [Inspector.ActionGroup] {
+    guard let window = window else { return [] }
+	
+	[
+		.actionGroup(
+			title: "My custom actions",
+			actions: [
+		    	.action(
+		        	title: "Reset",
+		           	icon: .exampleActionIcon,
+		           	keyCommand: .control(.shift(.key("r"))),
+		           	closure: {
+                        // Instantiate the initial view controller again on a Storyboard application.
+                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                        let vc = storyboard.instantiateInitialViewController()
+
+                        // set new instance as the root view controller
+		                window.rootViewController = vc
+		                
+                        // restart inspector
+                        Insopector.restart()
+		            }
+				)
+			]
+		)
+	]
+}
+```
+
+
 
 ## Pro-tips
 
@@ -122,38 +179,6 @@ if [ $CONFIGURATION == "Release" ]; then
 fi
 
 ```
-
-### Add Custom Actions
-
-![Add Custom Actions](Documentation/custom_actions.png)
-
-``` swift
-
-var inspectorActionGroups: [Inspector.ActionGroup] {
-	guard let window = window else { return [] }
-	
-	let storyboard = UIStoryboard(name: "Main", bundle: nil)
-	let vc = storyboard.instantiateInitialViewController()
-		                
-	return [
-		.actionGroup(
-			title: "My custom actions",
-			actions: [
-		    	.action(
-		        	title: "Reset",
-		           	icon: .exampleActionIcon,
-		           	keyCommand: .control(.shift(.key("r"))),
-		           	closure: {
-		                window.rootViewController = vc
-		                window.inspectorManager?.restart()
-		            }
-				)
-			]
-		)
-	]
-}
-```
-
 
 ## Credits
 

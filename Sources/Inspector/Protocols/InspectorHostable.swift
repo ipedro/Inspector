@@ -20,7 +20,7 @@
 
 import UIKit
 
-public protocol InspectableProtocol: AnyObject {
+public protocol InspectorHostable: AnyObject {
     
     var window: UIWindow? { get }
     
@@ -36,7 +36,7 @@ public protocol InspectableProtocol: AnyObject {
 
 // MARK: - Default Values
 
-public extension InspectableProtocol {
+public extension InspectorHostable {
     
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { [] }
     
@@ -50,7 +50,7 @@ public extension InspectableProtocol {
 
 // MARK: - Convenience
 
-public extension InspectableProtocol {
+public extension InspectorHostable {
 
     func presentInspector(animated: Bool) {
         window?.presentInspector(animated: animated)

@@ -29,7 +29,7 @@ extension Inspector {
         
         static let shared = Manager()
         
-        weak var host: InspectableProtocol? {
+        weak var host: InspectorHostable? {
             didSet {
                 if oldValue != nil {
                     finish()
@@ -81,7 +81,7 @@ extension Inspector {
             host = nil
         }
         
-        public func restart() {
+        func restart() {
             finish()
             start()
         }
@@ -220,9 +220,9 @@ extension Manager: AsyncOperationProtocol {
     
 }
 
-// MARK: - InspectableProtocol Extension
+// MARK: - InspectorHostable Extension
 
-private extension InspectableProtocol {
+private extension InspectorHostable {
     
     var availableLayers: [ViewHierarchyLayer] {
         var layers = inspectorViewHierarchyLayers

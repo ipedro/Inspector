@@ -30,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         
-        Inspector.delegate = self
+        Inspector.host = self
         
         guard let _ = (scene as? UIWindowScene) else { return }
     }
@@ -66,11 +66,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 }
 
-// MARK: - InspectableProtocol
+// MARK: - InspectorHostable
 
-extension SceneDelegate: InspectableProtocol {
+extension SceneDelegate: InspectorHostable {
     
-    // MARK: - InspectableProtocol
+    // MARK: - InspectorHostable
     
     var inspectorElementLibraries: [InspectorElementLibraryProtocol] {
         ExampleElementLibrary.allCases
@@ -138,7 +138,7 @@ extension SceneDelegate: InspectableProtocol {
                             let initialViewController = mainStoryboard.instantiateInitialViewController()
                             
                             window.rootViewController = initialViewController
-                            window.inspectorManager?.restart()
+                            Inspector.restart()
                         }
                     ),
                     .action(
