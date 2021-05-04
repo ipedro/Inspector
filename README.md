@@ -121,43 +121,94 @@ public protocol InspectorHostable: AnyObject {
 }
 ```
 
-#### `var inspectorActionGroups: [Inspector.ActionGroup] { get }`
+* ```var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }```
 
-Default value is an empty array. Add any actions that you
+    Default value is an empty array. View Hierarchy layers are shown in the `Highlight views` section on the Inspector interface, you can create your own or use one of the default ones.
 
-![Add Custom Actions](Documentation/custom_actions.png)
+    - `activityIndicators`: Shows activity indicator views.
+    - `buttons`: Shows buttons.
+    - `collectionViews`: Shows collection views.
+    - `containerViews`: Shows all container views.
+    - `controls`: Shows all controls.
+    - `images`: Shows all image views.
+    - `maps`: Shows all map views.
+    - `pickers`: Shows all picker views.
+    - `progressIndicators`: Shows all progress indicator views.
+    - `scrollViews`: Shows all scroll views.
+    - `segmentedControls`: Shows all segmented controls.
+    - `spacerViews`: Shows all spacer views.
+    - `stackViews`: Shows all stack views.
+    - `tableViewCells`: Shows all table view cells.
+    - `collectionViewReusableVies`: Shows all collection resusable views.
+    - `collectionViewCells`: Shows all collection view cells.
+    - `staticTexts`: Shows all static texts.
+    - `switches`: Shows all switches.
+    - `tables`: Shows all table views.
+    - `textFields`: Shows all text fields.
+    - `textViews`: Shows all text views.
+    - `textInputs`: Shows all text inputs.
+    - `webViews`: Shows all web views.
 
-``` swift
+    ``` swift
+    // Example
 
-var inspectorActionGroups: [Inspector.ActionGroup] {
-    guard let window = window else { return [] }
-	
-	[
-		.actionGroup(
-			title: "My custom actions",
-			actions: [
-		    	.action(
-		        	title: "Reset",
-		           	icon: .exampleActionIcon,
-		           	keyCommand: .control(.shift(.key("r"))),
-		           	closure: {
-                        // Instantiate the initial view controller again on a Storyboard application.
-                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                        let vc = storyboard.instantiateInitialViewController()
+    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] {
+        [
+            .controls,
+            .buttons,
+            .staticTexts + .images,
+            .layer(
+                name: "Without accessibility identifiers",
+                filter: { element in
+                    guard let accessibilityIdentifier = element.accessibilityIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+                        return true
+                    }
+                    return accessibilityIdentifier.isEmpty
+                }
+            )
+        ]
+    }
+    
+    ```
 
-                        // set new instance as the root view controller
-		                window.rootViewController = vc
-		                
-                        // restart inspector
-                        Insopector.restart()
-		            }
-				)
-			]
-		)
-	]
-}
-```
+* ```var inspectorActionGroups: [Inspector.ActionGroup] { get }```
 
+    ![Add Custom Actions](Documentation/custom_actions.png)
+
+    Default value is an empty array. Action groups appear as sections on the Inspector interface, you can have as many groups, with as many actions as you would like.
+
+    ``` swift
+    // Example
+
+    var inspectorActionGroups: [Inspector.ActionGroup] {
+        guard let window = window else { return [] }
+        
+        [
+            .actionGroup(
+                title: "My custom actions",
+                actions: [
+                    .action(
+                        title: "Reset",
+                        icon: .exampleActionIcon,
+                        keyCommand: .control(.shift(.key("r"))),
+                        closure: {
+                            // Instantiate the initial view controller again on a Storyboard application.
+                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                            let vc = storyboard.instantiateInitialViewController()
+
+                            // set new instance as the root view controller
+                            window.rootViewController = vc
+                            
+                            // restart inspector
+                            Insopector.restart()
+                        }
+                    )
+                ]
+            )
+        ]
+    }
+    ```
+* ```var inspectorActionGroups: [Inspector.ActionGroup] { get }```
 
 
 ## Pro-tips

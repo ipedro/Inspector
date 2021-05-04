@@ -80,7 +80,16 @@ extension SceneDelegate: InspectorHostable {
         [
             .controls,
             .buttons,
-            .staticTexts + .images
+            .staticTexts + .images,
+            .layer(
+                name: "Without accessibility identifier",
+                filter: {
+                    guard let accessibilityIdentifier = $0.accessibilityIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+                        return true
+                    }
+                    return accessibilityIdentifier.isEmpty
+                }
+            )
         ]
     }
     

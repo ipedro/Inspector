@@ -22,8 +22,6 @@ import UIKit
 import MapKit
 import WebKit
 
-// MARK: - Preset Layers
-
 public extension ViewHierarchyLayer {
     /// Shows activity indicator views
     static let activityIndicators         = ViewHierarchyLayer.layer(name: "Activity indicators")        { $0 is UIActivityIndicatorView }
