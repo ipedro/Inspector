@@ -116,7 +116,7 @@ extension SceneDelegate: InspectableProtocol {
                                 return "Stop forcing theme"
                             }
                         }(),
-                        icon: UIImage(named: "CustomAction_32"),
+                        icon: .exampleActionIcon,
                         keyCommand: .control(.shift(.key("i"))),
                         closure: {
                             switch window.traitCollection.userInterfaceStyle {
@@ -130,8 +130,22 @@ extension SceneDelegate: InspectableProtocol {
                         }
                     ),
                     .action(
+                        title: "Reset",
+                        icon: .exampleActionIcon,
+                        keyCommand: .control(.shift(.key("r"))),
+                        closure: { [weak self] in
+                            guard
+                                let self = self,
+                                let window = self.window
+                            else { return }
+                            
+                            window.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController()
+                            window.inspectorManager?.restart()
+                        }
+                    ),
+                    .action(
                         title: "Open repository...",
-                        icon: UIImage(named: "CustomAction_32"),
+                        icon: .exampleActionIcon,
                         keyCommand: .control(.shift(.key("g"))),
                         closure: {
                             UIApplication.shared.open(
@@ -161,4 +175,8 @@ extension UIWindow {
         presentInspector(animated: true)
     }
 
+}
+
+private extension UIImage {
+    static let exampleActionIcon = UIImage(named: "CustomAction_32")
 }
