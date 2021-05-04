@@ -133,13 +133,11 @@ extension SceneDelegate: InspectableProtocol {
                         title: "Reset",
                         icon: .exampleActionIcon,
                         keyCommand: .control(.shift(.key("r"))),
-                        closure: { [weak self] in
-                            guard
-                                let self = self,
-                                let window = self.window
-                            else { return }
+                        closure: {
+                            let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                            let initialViewController = mainStoryboard.instantiateInitialViewController()
                             
-                            window.rootViewController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController()
+                            window.rootViewController = initialViewController
                             window.inspectorManager?.restart()
                         }
                     ),
