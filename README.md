@@ -55,33 +55,33 @@ After a [successful installation](#installation), you need to add conformance to
 
 ### SceneDelegate.swift
 
-    ```swift
-    // Scene Delegate Example
+```swift
+// Scene Delegate Example
 
-    import UIKit
+import UIKit
 
-    #if DEBUG
-    import Inspector
+#if DEBUG
+import Inspector
 
-    extension SceneDelegate: InspectorHostable {}
-    #endif
+extension SceneDelegate: InspectorHostable {}
+#endif
 
-    class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-        var window: UIWindow?
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
 
-        func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
-            #if DEBUG
-            // Make your class the Inspector' host when returning a scene
-            Inspector.host = self
-            #endif
-            
-            guard let _ = (scene as? UIWindowScene) else { return }
-        }
-
-        (...)
+        #if DEBUG
+        // Make your class the Inspector' host when returning a scene
+        Inspector.host = self
+        #endif
+        
+        guard let _ = (scene as? UIWindowScene) else { return }
     }
-    ```
+
+    (...)
+}
+```
 ### AppDelegate.swift
 
 ```swift
@@ -152,7 +152,7 @@ fi
 
 ### Simulators and iPad with external keyboard
 
-Afer [enabling Key command support](#enable-key-commands-recommended), you can:
+After [enabling Key command support](#enable-key-commands-recommended), you can:
 
 - Invoke the `Inspector` by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
 
