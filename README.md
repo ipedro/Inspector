@@ -5,7 +5,6 @@
 # 🕵🏽‍♂️ Inspector
 
 ![](Documentation/inspector_header.png)
-
 ![Inspector Demo](Documentation/inspector_demo.gif)
 
 Inspector is a debugging library written in Swift.
