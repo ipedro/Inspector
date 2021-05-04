@@ -44,9 +44,9 @@ dependencies: [
 
 ## Usage
 
-After a [successful installation](#installation), you need to extend your `SceneDelegate.swift` of `AppDelegate.swift` by conforming to `InspectorHostable`, and assigning your class as the `Inspector` host.
+After a [successful installation](#installation), you need to extend your [`SceneDelegate.swift`](#scene-delegate-example) of [`AppDelegate.swift`](#app-delegate-example) by conforming to [`InspectorHostable`](#inspectorhostable-protocol), and assigning your class as the `Inspector` host.
 
-Then launch your app in the simulator, and launch the Inspector by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
+Then launch your app in the simulator, and launch `Inspector` by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
 
 ![](Documentation/inspector_interface.png)
 
