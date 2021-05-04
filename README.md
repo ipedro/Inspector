@@ -123,7 +123,7 @@ public protocol InspectorHostable: AnyObject {
 
 * ```var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }```
 
-    Default value is an empty array. View Hierarchy layers are shown in the `Highlight views` section on the Inspector interface, you can create your own or use one of the default ones.
+    Default value is an empty array. `ViewHierarchyLayer` are togglabe and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 9</kbd>. You can create your own or use one of the default ones.
 
     - `activityIndicators`: Shows activity indicator views.
     - `buttons`: Shows buttons.
