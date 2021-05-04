@@ -41,7 +41,7 @@ The [Swift Package Manager](https://swift.org/package-manager/) is a tool for au
 
 Once you have your Swift package set up, adding `Inspector` as a dependency is as easy as adding it to the dependencies value of your `Package.swift`.
 
-``` swift
+```swift
 // Add to Package.swift
 
 dependencies: [
@@ -55,7 +55,7 @@ After a [successful installation](#installation), you need to add conformance to
 
 ### SceneDelegate.swift
 
-    ``` swift
+    ```swift
     // Scene Delegate Example
 
     import UIKit
@@ -84,7 +84,7 @@ After a [successful installation](#installation), you need to add conformance to
     ```
 ### AppDelegate.swift
 
-``` swift
+```swift
 // App Delegate Example
 
 import UIKit
@@ -115,7 +115,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
 Extend the root view controller class to enable `Inspector` key commands.
 
-``` swift
+```swift
 // Add to your root view controller.
 
 #if DEBUG
@@ -167,7 +167,7 @@ Afer [enabling Key command support](#enable-key-commands-recommended), you can:
 If you're willing to a custom interface on your app (maybe only on debug), such as a floating button, or UIBarButtonItem to be visible in a specific type of builds, you can simply call `presentInspector(animated: _:)` on any view controller or window.
 
 As a convenience, you can use `var inspectorBarButtonItem: UIBarButtonItem { get }` availabe via extenion on every `UIViewController` instance:
-``` swift
+```swift
 // MyViewController.swift
 
 override func viewDidLoad() {
@@ -180,7 +180,7 @@ override func viewDidLoad() {
 ### With a motion gesture
 
 One other suggestion is to present the Inspector using a gesture, like shaking the device. That way no UI needs to be introduced. The most convienient way to do it is subclassing or extending `UIWindow` with the following code:
-``` swift
+```swift
 // Add to UIWindow extension or subclass
 
 open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
@@ -201,7 +201,7 @@ open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEve
 ## InspectorHostable Protocol
 The protocol you need to conform to be able to be Inspector host.
 
-``` swift
+```swift
 public protocol InspectorHostable: AnyObject {
     var window: UIWindow? { get }
 
@@ -249,7 +249,7 @@ public protocol InspectorHostable: AnyObject {
     - `textInputs`: Shows all text inputs.
     - `webViews`: Shows all web views.
 
-    ``` swift
+    ```swift
     // Example
 
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] {
@@ -277,7 +277,7 @@ public protocol InspectorHostable: AnyObject {
 
     Return your own color scheme for the hierarchy label colors, instead of (or to extend) the default color scheme.
 
-    ``` swift
+    ```swift
     // Example
 
     var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
@@ -299,7 +299,7 @@ public protocol InspectorHostable: AnyObject {
 
     Default value is an empty array. Action groups appear as sections on the `Inspector` window and can have key command shortcuts associated with them, you can have as many groups, with as many actions as you would like.
 
-    ``` swift
+    ```swift
     // Example
 
     var inspectorCommandGroups: [Inspector.ActionGroup] {
@@ -345,7 +345,7 @@ public protocol InspectorHostable: AnyObject {
     }
     ```
 
-    ``` swift 
+    ```swift 
     // Element Library Example
     
     import UIKit
@@ -376,7 +376,7 @@ public protocol InspectorHostable: AnyObject {
         }
     }
     ```
-    ``` swift
+    ```swift
     // Element ViewModel Example
 
     import UIKit
@@ -407,7 +407,7 @@ public protocol InspectorHostable: AnyObject {
                         title: property.rawValue,
                         isOn: { self.myObject.roundCorners }
                     ) { [weak self] roundCorners in
-                        guard let self = self else { return}
+                        guard let self = self else { return }
 
                         self.myObject.roundCorners = roundCorners
                     }
@@ -417,7 +417,7 @@ public protocol InspectorHostable: AnyObject {
                         title: property.rawValue,
                         color: { self.myObject.backgroundColor }
                     ) { [weak self] newBackgroundColor in
-                        guard let self = self else { return}
+                        guard let self = self else { return }
 
                         self.myObject.backgroundColor = newBackgroundColor
                     }
