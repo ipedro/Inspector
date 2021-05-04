@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="7XO-Xn-Xen">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="7XO-Xn-Xen">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--🧬 Inspector-->
+        <!--🕵🏽‍♂️ Inspector-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ExampleViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
@@ -18,10 +18,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="SAS-7K-iyc">
-                                <rect key="frame" x="0.0" y="148.5" width="414" height="664.5"/>
+                                <rect key="frame" x="0.0" y="148" width="414" height="665"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="lP5-3a-gfG">
-                                        <rect key="frame" x="30" y="40" width="354" height="1891"/>
+                                        <rect key="frame" x="30" y="40" width="354" height="1791.5"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" pointerInteraction="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bmx-Wi-bnN" customClass="CustomButton" customModule="Example" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="354" height="47"/>
@@ -60,7 +60,7 @@
                                                 </subviews>
                                             </stackView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NNN-1F-at6">
-                                                <rect key="frame" x="0.0" y="228" width="354" height="170"/>
+                                                <rect key="frame" x="0.0" y="228" width="354" height="111"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="textView"/>
                                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
                                                 <color key="textColor" systemColor="labelColor"/>
@@ -68,17 +68,17 @@
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W9f-3k-Q4n">
-                                                <rect key="frame" x="0.0" y="438" width="354" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="379" width="354" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="aGv-4R-5fS">
-                                                <rect key="frame" x="0.0" y="498.5" width="354" height="24"/>
+                                                <rect key="frame" x="0.0" y="439.5" width="354" height="24"/>
                                                 <color key="tintColor" systemColor="systemGray4Color"/>
                                             </imageView>
                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="wp0-kU-4b8">
-                                                <rect key="frame" x="0.0" y="562.5" width="354" height="40"/>
+                                                <rect key="frame" x="0.0" y="503.5" width="354" height="40"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="749" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enable me" borderStyle="roundedRect" placeholder="Text field" textAlignment="natural" clearsOnBeginEditing="YES" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="Juj-gq-NVu">
                                                         <rect key="frame" x="0.0" y="0.0" width="285" height="40"/>
@@ -99,18 +99,18 @@
                                                 </subviews>
                                             </stackView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="73c-Xy-UWQ">
-                                                <rect key="frame" x="0.0" y="642.5" width="354" height="152.5"/>
+                                                <rect key="frame" x="0.0" y="583.5" width="354" height="112"/>
                                                 <string key="text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="XfD-00-cAC">
-                                                <rect key="frame" x="0.0" y="835" width="354" height="24"/>
+                                                <rect key="frame" x="0.0" y="735.5" width="354" height="24"/>
                                                 <color key="tintColor" systemColor="systemGray4Color"/>
                                             </imageView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="FRI-vZ-Suo">
-                                                <rect key="frame" x="0.0" y="899" width="354" height="276"/>
+                                                <rect key="frame" x="0.0" y="799.5" width="354" height="276"/>
                                                 <subviews>
                                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="P52-4f-6lf">
                                                         <rect key="frame" x="0.0" y="0.0" width="354" height="41"/>
@@ -131,11 +131,11 @@
                                                 </subviews>
                                             </stackView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Yaa-hu-quS">
-                                                <rect key="frame" x="0.0" y="1215" width="354" height="24"/>
+                                                <rect key="frame" x="0.0" y="1115.5" width="354" height="24"/>
                                                 <color key="tintColor" systemColor="systemGray4Color"/>
                                             </imageView>
                                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="hQ1-am-2yh">
-                                                <rect key="frame" x="0.0" y="1279" width="354" height="500"/>
+                                                <rect key="frame" x="0.0" y="1179.5" width="354" height="500"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="500" id="ejb-MB-Bos"/>
                                                 </constraints>
@@ -147,13 +147,13 @@
                                                 </userDefinedRuntimeAttributes>
                                             </mapView>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tTH-Ha-1xL" userLabel="Spacer View">
-                                                <rect key="frame" x="0.0" y="1819" width="354" height="0.0"/>
+                                                <rect key="frame" x="0.0" y="1719.5" width="354" height="0.0"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" id="3bL-jB-p6u"/>
                                                 </constraints>
                                             </view>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="QwP-ZP-xcb">
-                                                <rect key="frame" x="0.0" y="1859" width="354" height="32"/>
+                                                <rect key="frame" x="0.0" y="1759.5" width="354" height="32"/>
                                                 <color key="tintColor" name="AccentColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="32" id="ASJ-s9-lOd"/>
@@ -189,7 +189,7 @@
                             <constraint firstItem="SAS-7K-iyc" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="wX3-1W-V4u"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="🧬 Inspector" id="lPw-0c-guy">
+                    <navigationItem key="navigationItem" title="🕵🏽‍♂️ Inspector" id="lPw-0c-guy">
                         <barButtonItem key="rightBarButtonItem" id="JZf-2w-S1S">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="rjK-Zh-gDA" customClass="CustomButton" customModule="Example" customModuleProvider="target">
                                 <rect key="frame" x="286" y="6" width="108" height="32"/>
@@ -232,7 +232,7 @@
                     <tabBarItem key="tabBarItem" title="Inspector" image="TabBarIcon" id="2Ki-oj-dQl"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="99r-xO-ddw">
-                        <rect key="frame" x="0.0" y="44" width="414" height="104.5"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
