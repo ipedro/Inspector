@@ -14,16 +14,15 @@ Inspector is a debugging library written in Swift.
 * [Setup](#setup)
     * [Scene Delegate](#scenedelegate.swift)
     * [App Delegate](#appdelegate.swift)
-    * [Enable Key Commands *(Recommended)*](#enable-key-commands-(recommended))
-    * [Remove framework files from relase builds *(Optional)*](#enable-key-commands-(recommended))
+    * [Enable Key Commands *(Recommended)*](#enable-key-commands-recommended)
+    * [Remove framework files from relase builds *(Optional)*](#remove-framework-files-from-relase-builds-optional)
 * [Presenting the Inspector](#presenting-the-inspector)
     * [Simulators and iPad with external keyboard](#simulators-and-ipad-with-external-keyboard)
     * [iPhone](#iphone)
-* [Credits](#credits)
-* [License](#license)
-
 * [Documentation](#Documentation)
     * [InspectorHostable Protocol](#inspectorhostable-protocol)
+* [Credits](#credits)
+* [License](#license)
 
 ---
 
@@ -153,7 +152,7 @@ fi
 
 ### Simulators and iPad with external keyboard
 
-Afer [enabling Key command support](#enable-key-commands-(recommended)), you can:
+Afer [enabling Key command support](#enable-key-commands-recommended), you can:
 
 - Invoke the `Inspector` by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
 
