@@ -195,7 +195,7 @@ After [enabling Key command support](#enable-key-commands-recommended), you can:
 
 - Showing/hide all layers by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>9</kbd>.
 
-- Give your custom actions any key commands you want.
+- Trigger [custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-) with any key command you want.
 
 ### iPhones
 
