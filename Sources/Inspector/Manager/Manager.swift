@@ -152,7 +152,7 @@ extension Manager {
         let layerCommands = viewHierarchyLayersCoordinator.availableLayerCommands(for: snapshot)
         let toggleAllLayersCommands = viewHierarchyLayersCoordinator.toggleAllLayersCommands(for: snapshot)
         
-        var commandGroups = host.inspectorCommandGroups
+        var commandGroups = host.inspectorCommandGroups ?? []
         commandGroups.append(toggleAllLayersCommands)
         commandGroups.append(layerCommands)
         
@@ -225,7 +225,7 @@ extension Manager: AsyncOperationProtocol {
 private extension InspectorHostable {
     
     var availableLayers: [ViewHierarchyLayer] {
-        var layers = inspectorViewHierarchyLayers
+        var layers = inspectorViewHierarchyLayers ?? []
         layers.append(.systemViews)
         layers.append(.systemContainers)
         layers.append(.allViews)
@@ -235,7 +235,11 @@ private extension InspectorHostable {
     
     var availableElementLibraries: [InspectorElementLibraryProtocol] {
         var elements = [InspectorElementLibraryProtocol]()
-        elements.append(contentsOf: inspectorElementLibraries)
+        
+        if let inspectorElementLibraries = inspectorElementLibraries {
+            elements.append(contentsOf: inspectorElementLibraries)
+        }
+        
         elements.append(contentsOf: UIKitElementLibrary.standard)
         
         return elements

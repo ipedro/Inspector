@@ -96,7 +96,15 @@ import UIKit
 #if DEBUG
 import Inspector
 
-extension SceneDelegate: InspectorHostable {}
+extension SceneDelegate: InspectorHostable {
+    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
+    
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { nil }
+    
+    var inspectorCommandGroups: [Inspector.CommandsGroup]? { nil }
+
+    var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { nil }
+}
 #endif
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -124,7 +132,15 @@ import UIKit
 #if DEBUG
 import Inspector
 
-extension AppDelegate: InspectorHostable {}
+extension AppDelegate: InspectorHostable {
+    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
+    
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { nil }
+    
+    var inspectorCommandGroups: [Inspector.CommandsGroup]? { nil }
+
+    var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { nil }
+}
 #endif
 
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -181,9 +197,11 @@ fi
 
 ## Presenting the Inspector
 
-### iOS Simulators and iPads
+Unlike the [iPhone Simulator](#ios-simulators-and-ipads), physical iPhones do not support key commands, so we need something else.
 
-### Key Commands
+All you need to present the inspector is to call `presentInspector(animated: _:)` form any view controller or window instance. And that you can achieve in all sorts of creative ways, heres some suggestions.
+
+### Key Commands (Available on Simulator and iPads)
 
 ![](Documentation/inspector_key-commands.jpg)
 
@@ -196,12 +214,6 @@ After [enabling Key command support](#enable-key-commands-recommended), you can:
 - Showing/hide all layers by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>9</kbd>.
 
 - Trigger [custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-) with any key command you want.
-
-### iPhones
-
-Unlike the [iPhone Simulator](#ios-simulators-and-ipads), physical iPhones do not support key commands, so we need something else.
-
-All you need to present the inspector is to call `presentInspector(animated: _:)` form any view controller or window instance. And that you can achieve in all sorts of creative ways, heres some suggestions.
 
 ### Using built-in `inspectorBarButtonItem`
 
@@ -262,16 +274,16 @@ open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEve
 
 ## InspectorHostable Protocol
 * `var window: UIWindow? { get }`
-* [`var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }`](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
+* [`var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
 * [`var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }`](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
-* [`var inspectorCommandGroups: [Inspector.CommandGroup] { get }`](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
+* [`var inspectorCommandGroups: [Inspector.CommandGroup]? { get }`](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
 * [`var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }`](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
 
 ---
 
-#### `var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }`
+#### `var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`
 
-Default value is an empty array. `ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 8</kbd>. You can use one of the default ones or create your own.
+`ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 8</kbd>. You can use one of the default ones or create your own.
 
 **Default View Hierarchy Layers**:
 
@@ -302,7 +314,7 @@ Default value is an empty array. `ViewHierarchyLayer` are toggleable and shown i
 ```swift
 // Example
 
-var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] {
+var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
     [
         .controls,
         .buttons,
@@ -345,14 +357,14 @@ var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
 ```
 ---
 
-#### `var inspectorCommandGroups: [Inspector.CommandGroup] { get }`
+#### `var inspectorCommandGroups: [Inspector.CommandGroup]? { get }`
 
-Default value is an empty array. Command groups appear as sections on the main `Inspector` UI and can have key command shortcuts associated with them, you can have as many groups, with as many commands as you want.
+Command groups appear as sections on the main `Inspector` UI and can have key command shortcuts associated with them, you can have as many groups, with as many commands as you want.
 
 ```swift
 // Example
 
-var inspectorCommandGroups: [Inspector.CommandGroup] {
+var inspectorCommandGroups: [Inspector.CommandGroup]? {
     guard let window = window else { return [] }
     
     [
@@ -385,7 +397,7 @@ var inspectorCommandGroups: [Inspector.CommandGroup] {
 
 #### `var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }`
 
-Default value is an empty array. Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
+Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Use enumerations.*
 
 ```swift 
 // Example
