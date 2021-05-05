@@ -27,7 +27,7 @@ Inspector is a debugging library written in Swift.
     * [iOS Simulators and iPads](#ios-simulators-and-ipads)
         * [Key Commands](#key-commands)
     * [iPhones](#iphones)
-        * [Using built-in inspectorBarButtonItem](#using-built-in-inspectorbarbuttonitem)
+        * [Using built-in `inspectorBarButtonItem`](#using-built-in-inspectorbarbuttonitem)
         * [Adding custom UI](#adding-custom-ui)
         * [With motion gestures](#with-motion-gestures)
 * [Customization](#Customization)
