@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/ipedro/ObjectAssociation.git",
         "state": {
           "branch": null,
-          "revision": "d96cb8280e039ee488ad02ed556651660ffe2487",
-          "version": "0.1.0"
+          "revision": "a3388ec96be7ba581612696edbd0858b827b0165",
+          "version": "0.2.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/ipedro/UIKeyboardAnimatable.git",
         "state": {
           "branch": null,
-          "revision": "45d95cdd21385a8e0dbc61f442ad119fcb648348",
-          "version": "0.2.3"
+          "revision": "557f75d0db6e9705c797ec959b3efcfa6858bb8c",
+          "version": "0.2.4"
         }
       },
       {

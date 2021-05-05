@@ -32,11 +32,16 @@ extension UIViewController: InspectorManageableProtocol {
            title: "🧬",
            style: .plain,
            target: self,
-           action: #selector(inspectorBarButtonItemHandler)
-       )
+           action: #selector(inspectorManagerPresentation)
+        ).then {
+            let control = UIControl()
+            control.addTarget(UIViewController(), action: #selector(UIViewController.inspectorManagerPresentation), for: .touchUpInside)
+            
+            $0.customView = control
+        }
     }
     
-    @objc private func inspectorBarButtonItemHandler() {
+    @objc public func inspectorManagerPresentation() {
         inspectorManager?.present(animated: true)
     }
 }

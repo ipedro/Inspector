@@ -1,6 +1,8 @@
 
 [![](https://img.shields.io/github/license/ipedro/Inspector)](https://github.com/ipedro/Inspector/blob/main/LICENSE) 
 ![](https://img.shields.io/github/v/tag/ipedro/Inspector?label=Swift%20Package&sort=semver)
+![](https://img.shields.io/badge/platform-iOS-lightgrey)
+
 
 # 🕵🏽‍♂️ Inspector
 
@@ -10,6 +12,9 @@ Inspector is a debugging library written in Swift.
 ![Inspector Demo](Documentation/inspector_demo.gif)
 
 ## Contents
+* [Why use it?](#why-use-it)
+    * [Better development experience](#better-development-experience)
+    * [Better QA with a reverse Zeplin](#better-qa-with-a-reverse-zeplin)
 * [Requirements](#requirements)
 * [Installation](#installation)
     * [Swift Package Manager](#swift-package-manager)
@@ -17,21 +22,42 @@ Inspector is a debugging library written in Swift.
     * [Scene Delegate](#scenedelegate.swift)
     * [App Delegate](#appdelegate.swift)
     * [Enable Key Commands *(Recommended)*](#enable-key-commands-recommended)
-    * [Remove framework files from relase builds *(Optional)*](#remove-framework-files-from-relase-builds-optional)
+    * [Remove framework files from release builds *(Optional)*](#remove-framework-files-from-release-builds-optional)
 * [Presenting the Inspector](#presenting-the-inspector)
-    * [Simulators and iPad with external keyboard](#simulators-and-ipad-with-external-keyboard)
-    * [iPhone](#iphone)
+    * [iOS Simulators and iPads](#ios-simulators-and-ipads)
+        * [Key Commands](#key-commands)
+    * [iPhones](#iphones)
+        * [Using built-in `inspectorBarButtonItem`](#using-built-in-inspectorbarbuttonitem)
+        * [Adding custom UI](#adding-custom-ui)
+        * [With motion gestures](#with-motion-gestures)
 * [Customization](#Customization)
     * [InspectorHostable Protocol](#inspectorhostable-protocol)
         * [View hierarchy layers](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
         * [View hierarchy color scheme](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
         * [Custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
         * [Custom element libraries](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
-
+* [Donate](#donate)
 * [Credits](#credits)
 * [License](#license)
 
 ---
+
+## Why use it?
+
+### Better development experience
+
+* Add your own custom commands to show in the interface and [key commands](#enable-key-commands-recommended) while developing on the simulator (also on iPad).
+* Filter views by any criteria you choose: class, a property, anything.
+* Inspect view hierarchy faster then using Xcode's built-in one, or
+* Inspect view hierarchy without Xcode.
+* Test changes and fix views live.
+
+### Better QA with a reverse [Zeplin](https://zeplin.io)
+* Inspect view hierarchy without Xcode.
+* Test changes and fix views live.
+* Easily validate specific state behaviors.
+* Better understanding of the inner-workings of components
+* More accurate feedback for developers. 
 
 ## Requirements
 
@@ -70,7 +96,15 @@ import UIKit
 #if DEBUG
 import Inspector
 
-extension SceneDelegate: InspectorHostable {}
+extension SceneDelegate: InspectorHostable {
+    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
+    
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { nil }
+    
+    var inspectorCommandGroups: [Inspector.CommandsGroup]? { nil }
+
+    var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { nil }
+}
 #endif
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -98,7 +132,15 @@ import UIKit
 #if DEBUG
 import Inspector
 
-extension AppDelegate: InspectorHostable {}
+extension AppDelegate: InspectorHostable {
+    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
+    
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { nil }
+    
+    var inspectorCommandGroups: [Inspector.CommandsGroup]? { nil }
+
+    var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { nil }
+}
 #endif
 
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -132,13 +174,13 @@ override var keyCommands: [UIKeyCommand]? {
 #endif
 ```
     
-### Remove framework files from relase builds *(Optional)* 
+### Remove framework files from release builds *(Optional)* 
 In your app target: 
 - Add a `New Run Script Phase` as the last phase.
 - Then paste the script below  to remove all `Inspector` related files from your release builds.
 
 ``` sh
-# Run Script Phase that removes `Inspector` and all its dependecies from relase builds.
+# Run Script Phase that removes `Inspector` and all its dependecies from release builds.
 
 if [ $CONFIGURATION == "Release" ]; then
     echo "Removing Inspector and dependencies from $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME/"
@@ -155,41 +197,63 @@ fi
 
 ## Presenting the Inspector
 
-![](Documentation/inspector_interface.png)
+Unlike the [iPhone Simulator](#ios-simulators-and-ipads), physical iPhones do not support key commands, so we need something else.
 
-### Simulators and iPad with external keyboard
+All you need to present the inspector is to call `presentInspector(animated: _:)` form any view controller or window instance. And that you can achieve in all sorts of creative ways, heres some suggestions.
+
+### Key Commands (Available on Simulator and iPads)
+
+![](Documentation/inspector_key-commands.jpg)
 
 After [enabling Key command support](#enable-key-commands-recommended), you can:
 
-- Invoke the `Inspector` by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
+- Invoke `Inspector` by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
 
 - Toggle between showing/hiding view layers by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1-8</kbd>.
 
 - Showing/hide all layers by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>9</kbd>.
 
-### iPhone
+- Trigger [custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-) with any key command you want.
 
-### Showing custom UI
+### Using built-in `inspectorBarButtonItem`
 
-If you're willing to a custom interface on your app (maybe only on debug), such as a floating button, or UIBarButtonItem to be visible in a specific type of builds, you can simply call `presentInspector(animated: _:)` on any view controller or window.
-
-As a convenience, you can use `var inspectorBarButtonItem: UIBarButtonItem { get }` availabe via extenion on every `UIViewController` instance:
+As a convenience, there is the `var inspectorBarButtonItem: UIBarButtonItem { get }` availabe on every `UIViewController` instance. It handles the presentation for you, and just needs to be set as a tool bar (or navigation) items, like this:
 ```swift
-// MyViewController.swift
+// Add to any view controller
 
 override func viewDidLoad() {
     super.viewDidLoad()
 
+    #if DEBUG
     navigationItem.rightBarButtonItem = self.inspectorBarButtonItem
+    #endif
 }
 ```
 
-### With a motion gesture
+### Adding custom UI
 
-One other suggestion is to present the Inspector using a gesture, like shaking the device. That way no UI needs to be introduced. The most convienient way to do it is subclassing or extending `UIWindow` with the following code:
+After creating a custom interface on your app, such as a floating button, or any other control of your choosing, you can then simply add any view controller as a target with selector `inspectorManagerPresentation()`.
+
+```swift 
+// Add to any view controller
+
+override func viewDidLoad() {
+    super.viewDidLoad()
+
+    #if DEBUG
+    self.myCustomControl.addTarget(self, action: #selector(UIViewController.inspectorManagerPresentation), for: .touchUpInside) // or any other event
+    #endif
+}
+```
+
+### With motion gestures
+
+You can also present `Inspector` using a gesture, like shaking the device. That way no UI needs to be introduced. One convienient way to do it is subclassing (or extending) `UIWindow` with the following code:
+
 ```swift
-// Add to UIWindow extension or subclass
+// Declare inside a subclass or UIWindow extension.
 
+#if DEBUG
 open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
     super.motionBegan(motion, with: event)
 
@@ -199,6 +263,7 @@ open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEve
 
     presentInspector(animated: true)
 }
+#endif
 ```
 
 ---
@@ -209,16 +274,16 @@ open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEve
 
 ## InspectorHostable Protocol
 * `var window: UIWindow? { get }`
-* [`var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }`](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
+* [`var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
 * [`var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }`](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
-* [`var inspectorCommandGroups: [Inspector.CommandGroup] { get }`](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
+* [`var inspectorCommandGroups: [Inspector.CommandGroup]? { get }`](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
 * [`var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }`](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
 
 ---
 
-#### `var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }`
+#### `var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`
 
-Default value is an empty array. `ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 8</kbd>. You can use one of the default ones or create your own.
+`ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 8</kbd>. You can use one of the default ones or create your own.
 
 **Default View Hierarchy Layers**:
 
@@ -249,7 +314,7 @@ Default value is an empty array. `ViewHierarchyLayer` are toggleable and shown i
 ```swift
 // Example
 
-var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] {
+var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
     [
         .controls,
         .buttons,
@@ -292,14 +357,14 @@ var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
 ```
 ---
 
-#### `var inspectorCommandGroups: [Inspector.CommandGroup] { get }`
+#### `var inspectorCommandGroups: [Inspector.CommandGroup]? { get }`
 
-Default value is an empty array. Command groups appear as sections on the `Inspector` window and can have key command shortcuts associated with them, you can have as many groups, with as many commands as you want.
+Command groups appear as sections on the main `Inspector` UI and can have key command shortcuts associated with them, you can have as many groups, with as many commands as you want.
 
 ```swift
 // Example
 
-var inspectorCommandGroups: [Inspector.CommandGroup] {
+var inspectorCommandGroups: [Inspector.CommandGroup]? {
     guard let window = window else { return [] }
     
     [
@@ -332,7 +397,7 @@ var inspectorCommandGroups: [Inspector.CommandGroup] {
 
 #### `var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }`
 
-Default value is an empty array. Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
+Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Use enumerations.*
 
 ```swift 
 // Example
@@ -427,10 +492,18 @@ final class MyClassInspectableViewModel: InspectorElementViewModelProtocol {
 ```
 ---
 
+## Donate
+You can support development with PayPal.
+
+[![](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=LJU86LQ4NUYGN) 
+
+---
+
 ## Credits
 
 `Inspector` is owned and maintained by [Pedro Almeida](https://pedro.am). You can follow him on Twitter at [@ipedro](https://twitter.com/ipedro) for project updates and releases.
 
+---
 
 ## License
 

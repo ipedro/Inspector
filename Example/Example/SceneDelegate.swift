@@ -69,14 +69,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 // MARK: - InspectorHostable
 
 extension SceneDelegate: InspectorHostable {
+    var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { ExampleElementLibrary.allCases }
     
-    // MARK: - InspectorHostable
-    
-    var inspectorElementLibraries: [InspectorElementLibraryProtocol] {
-        ExampleElementLibrary.allCases
-    }
-    
-    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer] {
+    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
         [
             .controls,
             .buttons,
@@ -105,9 +100,9 @@ extension SceneDelegate: InspectorHostable {
         }
     }
     
-    var inspectorCommandGroups: [Inspector.CommandsGroup] {
+    var inspectorCommandGroups: [Inspector.CommandsGroup]? {
         guard let window = window else {
-            return []
+            return nil
         }
         
         return [
