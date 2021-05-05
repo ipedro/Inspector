@@ -8,8 +8,8 @@
 
 Inspector is a debugging library written in Swift.
 
-![](Documentation/inspector_header.png)
-![Inspector Demo](Documentation/inspector_demo.gif)
+![](https://github.com/ipedro/Inspector/raw/develop/Documentation/inspector_header.png)
+![](https://github.com/ipedro/Inspector/raw/develop/Documentation/inspector_demo.gif)
 
 ## Contents
 * [Why use it?](#why-use-it)
@@ -203,7 +203,7 @@ All you need to present the inspector is to call `presentInspector(animated: _:)
 
 ### Key Commands (Available on Simulator and iPads)
 
-![](Documentation/inspector_key-commands.jpg)
+![](https://github.com/ipedro/Inspector/raw/develop/Documentation/inspector_key-commands.jpg)
 
 After [enabling Key command support](#enable-key-commands-recommended), you can:
 
