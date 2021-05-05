@@ -30,7 +30,7 @@ Inspector is a debugging library written in Swift.
         * [View hierarchy color scheme](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
         * [Custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
         * [Custom element libraries](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
-
+* [Donate](#donate)
 * [Credits](#credits)
 * [License](#license)
 
@@ -447,10 +447,18 @@ final class MyClassInspectableViewModel: InspectorElementViewModelProtocol {
 ```
 ---
 
+## Donate
+You can support development with PayPal.
+
+[![](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=LJU86LQ4NUYGN) 
+
+---
+
 ## Credits
 
 `Inspector` is owned and maintained by [Pedro Almeida](https://pedro.am). You can follow him on Twitter at [@ipedro](https://twitter.com/ipedro) for project updates and releases.
 
+---
 
 ## License
 
