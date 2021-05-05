@@ -10,6 +10,9 @@ Inspector is a debugging library written in Swift.
 ![Inspector Demo](Documentation/inspector_demo.gif)
 
 ## Contents
+* [Why use it?](#why-use-it)
+    * [Better development experience](#better-development-experience)
+    * [Better QA with a reverse Zeplin](#better-qa-with-a-reverse-zeplin)
 * [Requirements](#requirements)
 * [Installation](#installation)
     * [Swift Package Manager](#swift-package-manager)
@@ -32,6 +35,23 @@ Inspector is a debugging library written in Swift.
 * [License](#license)
 
 ---
+
+## Why use it?
+
+### Better development experience
+
+* Add your own custom commands to show in the interface and [key commands](#enable-key-commands-recommended) while developing on the simulator (also on iPad).
+* Filter views by any criteria you choose: class, a property, anything.
+* Inspect view hierarchy faster then using Xcode's built-in one, or
+* Inspect view hierarchy without Xcode.
+* Test changes and fix views live.
+
+### Better QA with a reverse [Zeplin](https://zeplin.io)
+* Inspect view hierarchy without Xcode.
+* Test changes and fix views live.
+* Easily validate specific state behaviors.
+* Better understanding of the inner-workings of components
+* More accurate feedback for developers. 
 
 ## Requirements
 
