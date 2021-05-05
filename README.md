@@ -195,6 +195,8 @@ After [enabling Key command support](#enable-key-commands-recommended), you can:
 
 - Showing/hide all layers by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>9</kbd>.
 
+- Give your custom actions any key commands you want.
+
 ### iPhones
 
 Unlike the [iPhone Simulator](#ios-simulators-and-ipads), physical iPhones do not support key commands, so we need something else.
