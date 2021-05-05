@@ -22,7 +22,7 @@ Inspector is a debugging library written in Swift.
     * [Scene Delegate](#scenedelegate.swift)
     * [App Delegate](#appdelegate.swift)
     * [Enable Key Commands *(Recommended)*](#enable-key-commands-recommended)
-    * [Remove framework files from relase builds *(Optional)*](#remove-framework-files-from-relase-builds-optional)
+    * [Remove framework files from release builds *(Optional)*](#remove-framework-files-from-release-builds-optional)
 * [Presenting the Inspector](#presenting-the-inspector)
     * [iOS Simulators and iPads](#ios-simulators-and-ipads)
         * [Key Commands](#key-commands)
@@ -158,13 +158,13 @@ override var keyCommands: [UIKeyCommand]? {
 #endif
 ```
     
-### Remove framework files from relase builds *(Optional)* 
+### Remove framework files from release builds *(Optional)* 
 In your app target: 
 - Add a `New Run Script Phase` as the last phase.
 - Then paste the script below  to remove all `Inspector` related files from your release builds.
 
 ``` sh
-# Run Script Phase that removes `Inspector` and all its dependecies from relase builds.
+# Run Script Phase that removes `Inspector` and all its dependecies from release builds.
 
 if [ $CONFIGURATION == "Release" ]; then
     echo "Removing Inspector and dependencies from $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME/"
