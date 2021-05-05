@@ -183,7 +183,7 @@ fi
 
 ### iOS Simulators and iPads
 
-#### Key Commands
+### Key Commands
 
 ![](Documentation/inspector_key-commands.jpg)
 
