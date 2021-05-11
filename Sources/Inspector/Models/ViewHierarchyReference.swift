@@ -41,6 +41,8 @@ final class ViewHierarchyReference {
     
     var parent: ViewHierarchyReference?
     
+    var isUserInteractionEnabled: Bool
+    
     private(set) lazy var isContainer: Bool = children.isEmpty == false
     
     private(set) lazy var deepestAbsoulteLevel: Int = children.map { $0.depth }.max() ?? depth
@@ -72,6 +74,8 @@ final class ViewHierarchyReference {
         viewIdentifier = ObjectIdentifier(root)
         
         canPresentOnTop = root.canPresentOnTop
+        
+        isUserInteractionEnabled = root.isUserInteractionEnabled
         
         _className = root.className
         
