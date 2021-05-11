@@ -56,7 +56,7 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(HierarchyInspectorHeaderView.self)
         header.title = viewModel.titleForHeader(in: section)
-        
+        header.showSeparatorView = section > .zero
         return header
     }
     
