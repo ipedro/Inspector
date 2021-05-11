@@ -110,9 +110,15 @@ extension UIKitElementLibrary {
             case .isUserInteractionEnabled:
                 return .toggleButton(
                     title: property.rawValue,
-                    isOn: { view.isUserInteractionEnabled }
+                    isOn: { view.hightlightView?.viewReference.isUserInteractionEnabled ?? view.isUserInteractionEnabled }
                 ) { isUserInteractionEnabled in
-                    view.isUserInteractionEnabled = isUserInteractionEnabled
+                    guard let viewReference = view.hightlightView?.viewReference else {
+                        view.isUserInteractionEnabled = isUserInteractionEnabled
+                        return
+                    }
+                    
+                    viewReference.isUserInteractionEnabled = isUserInteractionEnabled
+                    view.hightlightView?.updateViews()
                 }
 
             case .isMultipleTouchEnabled:
