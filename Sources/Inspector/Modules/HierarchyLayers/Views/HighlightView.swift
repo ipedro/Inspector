@@ -190,18 +190,30 @@ class HighlightView: LayerView {
         setupViews(with: superview)
     }
     
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+        
+        guard newSuperview == nil else {
+            return
+        }
+        
+        viewReference.rootView?.isUserInteractionEnabled = viewReference.isUserInteractionEnabled
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        updateViews()
+    }
+    
+    func updateViews() {
         updateElementName()
         
         updateLabelWidth()
         
-        guard let superview = superview else {
-            return
-        }
-        
-        color = colorScheme.color(for: superview)
+        if let superview = superview {
+            color = colorScheme.color(for: superview)
+        }        
     }
     
     func updateElementName() {
@@ -242,6 +254,8 @@ private extension HighlightView {
         }
         
         isSafelyHidden = false
+        
+        hostView.isUserInteractionEnabled = true
     }
     
     func updateColors(isTouching: Bool = false) {

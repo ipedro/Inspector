@@ -40,7 +40,7 @@ extension Inspector {
 
 extension ViewHierarchyColorScheme {
     public static let `default` = Inspector.ViewHierarchyColorScheme { view in
-        guard view.isUserInteractionEnabled == true else {
+        guard view.hightlightView?.viewReference.isUserInteractionEnabled == true else {
             return .systemGray
         }
         
