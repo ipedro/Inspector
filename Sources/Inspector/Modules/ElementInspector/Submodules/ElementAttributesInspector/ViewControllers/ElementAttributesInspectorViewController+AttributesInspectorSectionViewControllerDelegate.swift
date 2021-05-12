@@ -58,27 +58,15 @@ extension ElementAttributesInspectorViewController: AttributesInspectorSectionVi
         
         animatePanel(
             animations: { [weak self] in
+                guard let self = self else { return }
                 
-                guard isCollapsed else {
-                    viewController.isCollapsed.toggle()
-                    return
-                }
-
-                self?.children.forEach {
-
-                    guard let sectionViewController = $0 as? AttributesInspectorSectionViewController else {
-                        return
-                    }
-
-                    if sectionViewController === viewController {
-                        sectionViewController.isCollapsed = !isCollapsed
-                    }
-                    else {
-                        sectionViewController.isCollapsed = isCollapsed
-                    }
-
-                }
+                viewController.isCollapsed.toggle()
                 
+                let sectionViewControllers = self.children.compactMap({ $0 as? AttributesInspectorSectionViewController })
+                
+                for sectionViewController in sectionViewControllers where sectionViewController !== viewController {
+                    sectionViewController.isCollapsed = true
+                }
             },
             completion: { [weak self] _ in
                 self?.startLiveUpdatingSnaphost()

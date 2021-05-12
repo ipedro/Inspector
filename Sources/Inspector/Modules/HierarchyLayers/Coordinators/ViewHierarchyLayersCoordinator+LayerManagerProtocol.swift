@@ -55,7 +55,7 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
             return
         }
         
-        asyncOperation(name: Texts.hideVisibleLayers) {
+        asyncOperation(name: Texts.hideAllLayers) {
             self.destroyAllLayers()
         }
     }

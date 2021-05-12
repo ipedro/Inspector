@@ -226,9 +226,9 @@ private extension InspectorHostable {
     
     var availableLayers: [ViewHierarchyLayer] {
         var layers = inspectorViewHierarchyLayers ?? []
+        layers.append(.allViews)
         layers.append(.systemViews)
         layers.append(.systemContainers)
-        layers.append(.allViews)
         
         return layers.uniqueValues
     }

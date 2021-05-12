@@ -34,10 +34,9 @@ public extension InspectorElementViewModelProperty {
             value: { Double(value()) },
             range: { Double(range().lowerBound)...Double(range().upperBound) },
             stepValue: { Double(stepValue()) },
-            isDecimalValue: false
-        ) { doubleValue in
-            handler?(Int(doubleValue))
-        }
+            isDecimalValue: false,
+            handler: handler == nil ? nil : { handler?(Int($0)) }
+        )
     }
     
     static func cgFloatStepper(
@@ -52,10 +51,9 @@ public extension InspectorElementViewModelProperty {
             value: { Double(value()) },
             range: { Double(range().lowerBound)...Double(range().upperBound) },
             stepValue: { Double(stepValue()) },
-            isDecimalValue: true
-        ) { doubleValue in
-            handler?(CGFloat(doubleValue))
-        }
+            isDecimalValue: true,
+            handler: handler == nil ? nil : { handler?(CGFloat($0)) }
+        )
     }
     
     static func floatStepper(
@@ -70,10 +68,9 @@ public extension InspectorElementViewModelProperty {
             value: { Double(value()) },
             range: { Double(range().lowerBound)...Double(range().upperBound)} ,
             stepValue: { Double(stepValue()) },
-            isDecimalValue: true
-        ) { doubleValue in
-            handler?(Float(doubleValue))
-        }
+            isDecimalValue: true,
+            handler: handler == nil ? nil : { handler?(Float($0)) }
+        )
     }
     
 }

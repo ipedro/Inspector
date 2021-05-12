@@ -106,8 +106,10 @@ final class AttributesInspectorSectionViewController: UIViewController {
                         $0.delegate = self
                     }
                     
-                case let .textField(title: title, placeholder: placeholder, value: value, handler: _):
-                    return TextFieldControl(title: title, value: value(), placeholder: placeholder)
+                case let .textField(title: title, placeholder: placeholder, axis: axis, value: value, handler: _):
+                    return TextFieldControl(title: title, value: value(), placeholder: placeholder).then {
+                        $0.axis = axis
+                    }
                     
                 case let .stepper(title: title, value: valueProvider, range: rangeProvider, stepValue: stepValueProvider, isDecimalValue: isDecimalValue, handler: _):
                     return StepperControl(
@@ -222,7 +224,7 @@ extension AttributesInspectorSectionViewController {
                 case let (.optionsList(_, _, _, _, _, handler), optionSelector as OptionListControl):
                     handler?(optionSelector.selectedIndex)
                     
-                case let (.textField(_, _, _, handler), textFieldControl as TextFieldControl):
+                case let (.textField(_, _, _, _, handler), textFieldControl as TextFieldControl):
                     handler?(textFieldControl.value)
                 
                 case let (.textView(_, _, _, handler), textViewControl as TextViewControl):
@@ -297,7 +299,7 @@ extension AttributesInspectorSectionViewController {
                 optionSelector.selectedIndex = selectedIndexProvider()
                 optionSelector.title = title
                 
-            case let (.textField(title: title, placeholder: placeholder, value: valueProvider, _), textFieldControl as TextFieldControl):
+            case let (.textField(title: title, placeholder: placeholder, _, value: valueProvider, _), textFieldControl as TextFieldControl):
                 textFieldControl.value = valueProvider()
                 textFieldControl.placeholder = placeholder
                 textFieldControl.title = title

@@ -62,6 +62,7 @@ public enum InspectorElementViewModelProperty {
     
     case textField(title: String,
                    placeholder: String?,
+                   axis: NSLayoutConstraint.Axis = .vertical,
                    value: StringProvider,
                    handler:StringHandler?)
     
@@ -108,7 +109,7 @@ extension InspectorElementViewModelProperty {
              .textButtonGroup(_, _, _, _, .some),
              .imageButtonGroup(_, _, _, _, .some),
              .optionsList(_, _, _, _, _, .some),
-             .textField(_, _, _, .some),
+             .textField(_, _, _, _, .some),
              .textView(_, _, _, .some),
              .imagePicker(_, _, .some):
             return true

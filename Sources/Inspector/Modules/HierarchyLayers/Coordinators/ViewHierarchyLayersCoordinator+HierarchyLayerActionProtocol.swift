@@ -32,7 +32,7 @@ extension ViewHierarchyLayersCoordinator: LayerCommandProtocol {
         }
         
         return CommandsGroup(
-            title: Texts.highlightViews,
+            title: Texts.highlightLayers,
             commands: Array(commands.prefix(maxCount))
         )
     }
