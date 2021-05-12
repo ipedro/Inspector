@@ -111,7 +111,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
         #if DEBUG
-        // Make your class the Inspector' host when returning a scene
+        // Make your class the Inspector's host when connecting to a session
         Inspector.host = self
         #endif
         
@@ -147,7 +147,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         #if DEBUG
-        // Make your class the Inspector's host when launching with options
+        // Make your class the Inspector's host on launch
         Inspector.host = self
         #endif
 
@@ -201,7 +201,7 @@ The inspector can be presented from any view controller or window instance by ca
 
 ![](Documentation/inspector_key-commands.jpg)
 
-After [enabling Key command support](#enable-key-commands-recommended), you can:
+After [enabling Key Commands support](#enable-key-commands-recommended), using the Simulator.app or a real iPad, you can:
 
 - Invoke `Inspector` by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
 
@@ -237,9 +237,7 @@ You can also present `Inspector` using a gesture, like shaking the device. That 
 open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
     super.motionBegan(motion, with: event)
 
-    guard motion == .motionShake else {
-        return
-    }
+    guard motion == .motionShake else { return }
 
     presentInspector(animated: true)
 }
@@ -248,16 +246,20 @@ open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEve
 
 ### Adding custom UI
 
-After creating a custom interface on your app, such as a floating button, or any other control of your choosing, you can then simply add any view controller as a target with selector `inspectorManagerPresentation()`.
+After creating a custom interface on your app, such as a floating button, or any other control of your choosing, you can call `presentInspector(animated:_:)` yourself.
+
+If you are using a `UIControl` you can use the convenenice selector `UIViewController.inspectorManagerPresentation()` when adding event targets.
 
 ```swift 
-// Add to any view controller
+// Add to any view controller if your view inherits from `UIControl`
+
+var myControl: MyControl
 
 override func viewDidLoad() {
     super.viewDidLoad()
 
     #if DEBUG
-    self.myCustomControl.addTarget(self, action: #selector(UIViewController.inspectorManagerPresentation), for: .touchUpInside) // or any other event
+    myControl.addTarget(self, action: #selector(UIViewController.inspectorManagerPresentation), for: UIControl.Event)
     #endif
 }
 ```
