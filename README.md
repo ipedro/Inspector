@@ -13,8 +13,8 @@ Inspector is a debugging library written in Swift.
 
 ## Contents
 * [Why use it?](#why-use-it)
-    * [Better development experience](#better-development-experience)
-    * [Better QA with a reverse Zeplin](#better-qa-with-a-reverse-zeplin)
+    * [Improve development experience](#improve-development-experience)
+    * [Improve QA and Designer feedback with a reverse Zeplin](#improve-qa-and-designer-feedback-with-a-reverse-zeplin)
 * [Requirements](#requirements)
 * [Installation](#installation)
     * [Swift Package Manager](#swift-package-manager)
@@ -42,20 +42,20 @@ Inspector is a debugging library written in Swift.
 
 ## Why use it?
 
-### Better development experience
+### Improve development experience
 
-* Add your own custom commands to show in the interface and [key commands](#enable-key-commands-recommended) while developing on the simulator (also on iPad).
-* Filter views by any criteria you choose: class, a property, anything.
+* Add your own [custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-) to the main `Inspector` interface and make use of [key commands](#using-built-in-key-commands-available-on-simulator-and-ipads) while using the Simulator.app (and also on iPad).
+* [Create layer views](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-) by any criteria you choose to help you visualize application state: class, a property, anything.
 * Inspect view hierarchy faster then using Xcode's built-in one, or
 * Inspect view hierarchy without Xcode.
 * Test changes and fix views live.
 
-### Better QA with a reverse [Zeplin](https://zeplin.io)
+### Improve QA and Designer feedback with a reverse [Zeplin](https://zeplin.io)
 * Inspect view hierarchy without Xcode.
 * Test changes and fix views live.
 * Easily validate specific state behaviors.
 * Better understanding of the inner-workings of components
-* More accurate feedback for developers. 
+* Give more accurate feedback for developers. 
 
 ## Requirements
 
