@@ -50,15 +50,15 @@ enum Texts {
         "No \(description) found"
     }
     
-    static let highlightViews = "Highlight views"
+    static let highlightLayers = "Highlight Layers"
     
-    static let hideVisibleLayers = "Hide all highlights"
+    static let hideAllLayers = "Hide all layers"
     
     static let hierarchySearch = "Hierarchy Search"
     
     static let presentInspector = "Open Inspector..."
     
-    static let showAllLayers = "Show all highlights"
+    static let showAllLayers = "Show all layers"
     
     static let dismissView = "Dismiss View"
 }

@@ -108,7 +108,7 @@ extension Command {
     
     static func hideVisibleLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.hideVisibleLayers,
+            title: Texts.hideAllLayers,
             icon: .moduleImage(named: "LayerAction-HideAll"),
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
