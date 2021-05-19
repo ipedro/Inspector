@@ -21,6 +21,9 @@
 import UIKit
 import UIKeyCommandTableView
 import UIKeyboardAnimatable
+#if swift(>=5.3)
+import GameController
+#endif
 
 protocol HierarchyInspectorViewControllerDelegate: AnyObject {
     func hierarchyInspectorViewController(_ viewController: HierarchyInspectorViewController,
@@ -64,6 +67,21 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     private var needsSetup = true
     
     private var isFinishing = false
+    
+    private var shouldToggleFirstResponderOnAppear: Bool {
+        #if targetEnvironment(simulator)
+        return true
+        #else
+        
+        #if swift(>=5.3)
+        if #available(iOS 14.0, *) {
+            return GCKeyboard.coalesced != nil
+        }
+        #endif
+        
+        return false
+        #endif
+    }
     
     override func loadView() {
         view = viewCode
@@ -192,6 +210,10 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         }
         
         reloadData()
+        
+        guard shouldToggleFirstResponderOnAppear else {
+            return
+        }
         
         DispatchQueue.main.async {
             self.toggleFirstResponder()

@@ -13,8 +13,8 @@ Inspector is a debugging library written in Swift.
 
 ## Contents
 * [Why use it?](#why-use-it)
-    * [Better development experience](#better-development-experience)
-    * [Better QA with a reverse Zeplin](#better-qa-with-a-reverse-zeplin)
+    * [Improve development experience](#improve-development-experience)
+    * [Improve QA and Designer feedback with a reverse Zeplin](#improve-qa-and-designer-feedback-with-a-reverse-zeplin)
 * [Requirements](#requirements)
 * [Installation](#installation)
     * [Swift Package Manager](#swift-package-manager)
@@ -24,12 +24,10 @@ Inspector is a debugging library written in Swift.
     * [Enable Key Commands *(Recommended)*](#enable-key-commands-recommended)
     * [Remove framework files from release builds *(Optional)*](#remove-framework-files-from-release-builds-optional)
 * [Presenting the Inspector](#presenting-the-inspector)
-    * [iOS Simulators and iPads](#ios-simulators-and-ipads)
-        * [Key Commands](#key-commands)
-    * [iPhones](#iphones)
-        * [Using built-in `inspectorBarButtonItem`](#using-built-in-inspectorbarbuttonitem)
-        * [Adding custom UI](#adding-custom-ui)
-        * [With motion gestures](#with-motion-gestures)
+    * [Using built-in Key Commands (Simulator and iPads)](#using-built-in-key-commands-available-on-simulator-and-ipads)
+    * [Using built-in BarButtonItem](#using-built-in-barbuttonitem)
+    * [With motion gestures](#with-motion-gestures)
+    * [Adding custom UI](#adding-custom-ui)
 * [Customization](#Customization)
     * [InspectorHostable Protocol](#inspectorhostable-protocol)
         * [View hierarchy layers](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
@@ -44,20 +42,20 @@ Inspector is a debugging library written in Swift.
 
 ## Why use it?
 
-### Better development experience
+### Improve development experience
 
-* Add your own custom commands to show in the interface and [key commands](#enable-key-commands-recommended) while developing on the simulator (also on iPad).
-* Filter views by any criteria you choose: class, a property, anything.
+* Add your own [custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-) to the main `Inspector` interface and make use of [key commands](#using-built-in-key-commands-available-on-simulator-and-ipads) while using the Simulator.app (and also on iPad).
+* [Create layer views](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-) by any criteria you choose to help you visualize application state: class, a property, anything.
 * Inspect view hierarchy faster then using Xcode's built-in one, or
 * Inspect view hierarchy without Xcode.
 * Test changes and fix views live.
 
-### Better QA with a reverse [Zeplin](https://zeplin.io)
+### Improve QA and Designer feedback with a reverse [Zeplin](https://zeplin.io)
 * Inspect view hierarchy without Xcode.
 * Test changes and fix views live.
 * Easily validate specific state behaviors.
 * Better understanding of the inner-workings of components
-* More accurate feedback for developers. 
+* Give more accurate feedback for developers. 
 
 ## Requirements
 
@@ -113,7 +111,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
         #if DEBUG
-        // Make your class the Inspector' host when returning a scene
+        // Make your class the Inspector's host when connecting to a session
         Inspector.host = self
         #endif
         
@@ -149,7 +147,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         #if DEBUG
-        // Make your class the Inspector's host when launching with options
+        // Make your class the Inspector's host on launch
         Inspector.host = self
         #endif
 
@@ -197,15 +195,13 @@ fi
 
 ## Presenting the Inspector
 
-Unlike the [iPhone Simulator](#ios-simulators-and-ipads), physical iPhones do not support key commands, so we need something else.
+The inspector can be presented from any view controller or window instance by calling the `presentInspector(animated:_:)` method. And that you can achieve in all sorts of creative ways, heres some suggestions.
 
-All you need to present the inspector is to call `presentInspector(animated: _:)` form any view controller or window instance. And that you can achieve in all sorts of creative ways, heres some suggestions.
-
-### Key Commands (Available on Simulator and iPads)
+### Using built-in Key Commands (Available on Simulator and iPads)
 
 ![](Documentation/inspector_key-commands.jpg)
 
-After [enabling Key command support](#enable-key-commands-recommended), you can:
+After [enabling Key Commands support](#enable-key-commands-recommended), using the Simulator.app or a real iPad, you can:
 
 - Invoke `Inspector` by pressing <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>0</kbd>.
 
@@ -215,7 +211,7 @@ After [enabling Key command support](#enable-key-commands-recommended), you can:
 
 - Trigger [custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-) with any key command you want.
 
-### Using built-in `inspectorBarButtonItem`
+### Using built-in BarButtonItem
 
 As a convenience, there is the `var inspectorBarButtonItem: UIBarButtonItem { get }` availabe on every `UIViewController` instance. It handles the presentation for you, and just needs to be set as a tool bar (or navigation) items, like this:
 ```swift
@@ -226,22 +222,6 @@ override func viewDidLoad() {
 
     #if DEBUG
     navigationItem.rightBarButtonItem = self.inspectorBarButtonItem
-    #endif
-}
-```
-
-### Adding custom UI
-
-After creating a custom interface on your app, such as a floating button, or any other control of your choosing, you can then simply add any view controller as a target with selector `inspectorManagerPresentation()`.
-
-```swift 
-// Add to any view controller
-
-override func viewDidLoad() {
-    super.viewDidLoad()
-
-    #if DEBUG
-    self.myCustomControl.addTarget(self, action: #selector(UIViewController.inspectorManagerPresentation), for: .touchUpInside) // or any other event
     #endif
 }
 ```
@@ -257,13 +237,31 @@ You can also present `Inspector` using a gesture, like shaking the device. That 
 open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
     super.motionBegan(motion, with: event)
 
-    guard motion == .motionShake else {
-        return
-    }
+    guard motion == .motionShake else { return }
 
     presentInspector(animated: true)
 }
 #endif
+```
+
+### Adding custom UI
+
+After creating a custom interface on your app, such as a floating button, or any other control of your choosing, you can call `presentInspector(animated:_:)` yourself.
+
+If you are using a `UIControl` you can use the convenenice selector `UIViewController.inspectorManagerPresentation()` when adding event targets.
+
+```swift 
+// Add to any view controller if your view inherits from `UIControl`
+
+var myControl: MyControl
+
+override func viewDidLoad() {
+    super.viewDidLoad()
+
+    #if DEBUG
+    myControl.addTarget(self, action: #selector(UIViewController.inspectorManagerPresentation), for: UIControl.Event)
+    #endif
+}
 ```
 
 ---

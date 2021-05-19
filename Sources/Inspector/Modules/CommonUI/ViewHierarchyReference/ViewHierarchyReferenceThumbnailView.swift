@@ -73,7 +73,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     private lazy var statusContentView = UIStackView.vertical(
         .directionalLayoutMargins(contentView.directionalLayoutMargins),
         .spacing(ElementInspector.appearance.verticalMargins / 2),
-        .alignment(.center)
+        .verticalAlignment(.center)
     )
     
     private lazy var snapshotContainerView = UIView(
