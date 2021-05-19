@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/ipedro/ObjectAssociation.git",
         "state": {
           "branch": null,
-          "revision": "a3388ec96be7ba581612696edbd0858b827b0165",
+          "revision": "8a8c598a80c8210ad771a6988faa509a1eb7cea8",
           "version": "0.2.0"
         }
       },
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/ipedro/UIKitOptions.git",
         "state": {
           "branch": null,
-          "revision": "c1a3317f6cd98b20b602b090d7559ffff0860415",
-          "version": "0.2.27"
+          "revision": "034eb3bf4b3afbd0bbad67142aa23fb5a8be4b7a",
+          "version": "0.2.29"
         }
       }
     ]
