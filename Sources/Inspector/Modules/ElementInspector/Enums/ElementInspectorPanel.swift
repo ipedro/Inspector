@@ -20,7 +20,9 @@
 
 import UIKit
 
-enum ElementInspectorPanel: Int, Swift.CaseIterable {
+enum ElementInspectorPanel: CaseIterable {
+    typealias AllCases = [ElementInspectorPanel]
+    
     case attributesInspector
     case sizeInspector
     case viewHierarchyInspector
@@ -36,5 +38,9 @@ enum ElementInspectorPanel: Int, Swift.CaseIterable {
         case .sizeInspector:
             return IconKit.imageOfSetSquareFill()
         }
+    }
+    
+    static var allCases: [ElementInspectorPanel] {
+        [.attributesInspector, .viewHierarchyInspector]
     }
 }

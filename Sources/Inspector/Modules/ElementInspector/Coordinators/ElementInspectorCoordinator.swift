@@ -104,8 +104,8 @@ final class ElementInspectorCoordinator: NSObject {
                 with: viewHierarchySnapshot.rootReference,
                 showDismissBarButton: true,
                 selectedPanel: .attributesInspector,
-                delegate: delegate,
-                inspectableElements: viewHierarchySnapshot.elementLibraries
+                elementLibraries: viewHierarchySnapshot.elementLibraries,
+                delegate: delegate
             )
             
             navigationController.viewControllers = [rootViewController]
@@ -128,8 +128,8 @@ final class ElementInspectorCoordinator: NSObject {
                     with: currentReference,
                     showDismissBarButton: currentReference === viewHierarchySnapshot.rootReference,
                     selectedPanel: .attributesInspector,
-                    delegate: delegate,
-                    inspectableElements: viewHierarchySnapshot.elementLibraries
+                    elementLibraries: viewHierarchySnapshot.elementLibraries,
+                    delegate: delegate
                 )
                 
                 array.append(viewController)
@@ -179,15 +179,15 @@ final class ElementInspectorCoordinator: NSObject {
         with reference: ViewHierarchyReference,
         showDismissBarButton: Bool,
         selectedPanel: ElementInspectorPanel?,
-        delegate: ElementInspectorViewControllerDelegate,
-        inspectableElements: [InspectorElementLibraryProtocol]
+        elementLibraries: [InspectorElementLibraryProtocol],
+        delegate: ElementInspectorViewControllerDelegate
     ) -> ElementInspectorViewController {
         
         let viewModel = ElementInspectorViewModel(
             reference: reference,
             showDismissBarButton: showDismissBarButton,
             selectedPanel: selectedPanel,
-            inspectableElements: inspectableElements
+            inspectableElements: elementLibraries
         )
         
         let viewController = ElementInspectorViewController.create(viewModel: viewModel)
