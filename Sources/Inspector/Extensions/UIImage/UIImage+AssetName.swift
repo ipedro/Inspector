@@ -18,29 +18,47 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-enum ElementInspectorPanel: CaseIterable {
-    typealias AllCases = [ElementInspectorPanel]
-    
-    case attributesInspector
-    case sizeInspector
-    case viewHierarchyInspector
-    
-    var image: UIImage {
-        switch self {
-        case .attributesInspector:
-            return IconKit.imageOfSliderHorizontal()
-            
-        case .viewHierarchyInspector:
-            return IconKit.imageOfListBulletIndent()
-            
-        case .sizeInspector:
-            return IconKit.imageOfSetSquareFill()
+extension UIImage {
+    var assetName: String? {
+        guard
+            let regex = try? NSRegularExpression(pattern: "(?<=named\\().+(?=\\))|(?<=symbol\\()\\w+:\\s\\w+(?=\\))", options: .caseInsensitive),
+            let firstMatch = regex.firstMatch(in: description)
+        else {
+            return nil
         }
+        
+        let assetName = (description as NSString).substring(with: firstMatch.range)
+        
+        return assetName
     }
     
-    static var allCases: [ElementInspectorPanel] {
-        [.attributesInspector, .viewHierarchyInspector]
+    var sizeDesription: String {
+        guard
+            let width = formatter.string(from: size.width * scale / screenScale),
+            let height = formatter.string(from: size.height * scale / screenScale)
+        else {
+            return "None"
+        }
+        
+        let sizeDesription = "w: \(width), h: \(height) @\(Int(screenScale))x"
+        
+        return sizeDesription
+    }
+}
+
+private extension UIImage {
+    static var sharedFormatter = NumberFormatter().then {
+        $0.maximumFractionDigits = 1
+    }
+    
+    var formatter: NumberFormatter {
+        Self.sharedFormatter
+    }
+    
+    var screenScale: CGFloat {
+        UIScreen.main.scale
     }
 }

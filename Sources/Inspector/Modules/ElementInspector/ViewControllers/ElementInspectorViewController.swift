@@ -184,13 +184,12 @@ private extension ElementInspectorViewController {
     func didChangeSelectedSegmentIndex() {
         delegate?.cancelAllOperations()
         
-        guard
-            viewCode.segmentedControl.selectedSegmentIndex != UISegmentedControl.noSegment,
-            let panel = ElementInspectorPanel(rawValue: viewCode.segmentedControl.selectedSegmentIndex)
-        else {
+        guard viewCode.segmentedControl.selectedSegmentIndex != UISegmentedControl.noSegment else {
             removeCurrentPanel()
             return
         }
+
+        let panel = ElementInspectorPanel.allCases[viewCode.segmentedControl.selectedSegmentIndex]
         
         installPanel(panel)
     }

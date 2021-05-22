@@ -88,16 +88,17 @@ extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerD
     
     func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
                                            didTap imagePicker: ImagePreviewControl) {
-        let documentPicker = UIDocumentPickerViewController.forImporting(
-            .documentTypes(.image),
-            .asCopy(true),
-            .documentPickerDelegate(self),
+        let alertController = UIAlertController(
+            title: nil,
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        
+        alertController.apply(viewControllerOptions:
+            .modalPresentationStyle(.popover),
+            .overrideUserInterfaceStyle(.dark),
             .viewOptions(
                 .tintColor(ElementInspector.appearance.tintColor)
-            ),
-            .viewControllerOptions(
-                .modalPresentationStyle(.popover),
-                .overrideUserInterfaceStyle(.dark)
             ),
             .popoverPresentationControllerOptions(
                 .sourceView(imagePicker.accessoryControl),
@@ -106,6 +107,60 @@ extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerD
             )
         )
         
-        viewController.present(documentPicker, animated: true)
+        alertController.addAction(
+            UIAlertAction(
+                title: Texts.cancel,
+                style: .cancel,
+                handler: nil
+            )
+        )
+        
+        if imagePicker.image != nil {
+            alertController.addAction(
+                UIAlertAction(
+                    title: Texts.clearImage,
+                    style: .destructive,
+                    handler: { _ in
+                        viewController.selectImage(nil)
+                    }
+                )
+            )
+        }
+        
+        alertController.addAction(
+            UIAlertAction(
+                title: Texts.importImage,
+                style: .default,
+                handler: { [weak self] _ in
+                    guard let self = self else {
+                        return
+                    }
+                    
+                    let documentPicker = UIDocumentPickerViewController.forImporting(
+                        .documentTypes(.image),
+                        .asCopy(true),
+                        .documentPickerDelegate(self),
+                        .viewOptions(
+                            .tintColor(ElementInspector.appearance.tintColor)
+                        ),
+                        .viewControllerOptions(
+                            .modalPresentationStyle(.popover),
+                            .overrideUserInterfaceStyle(.dark)
+                        ),
+                        .popoverPresentationControllerOptions(
+                            .sourceView(imagePicker.accessoryControl),
+                            .permittedArrowDirections([.up, .down]),
+                            .popoverPresentationDelegate(self)
+                        )
+                    )
+                    
+                    viewController.present(documentPicker, animated: true)
+                }
+            )
+        )
+        
+        viewController.present(alertController, animated: true) {
+            alertController.view.tintColor = ElementInspector.appearance.tintColor
+        }
     }
 }

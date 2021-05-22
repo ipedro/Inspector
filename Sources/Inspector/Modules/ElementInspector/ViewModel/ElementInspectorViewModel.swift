@@ -70,17 +70,12 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         }
     }
     
-    private(set) lazy var elementPanels: [ElementInspectorPanel] = ElementInspectorPanel.allCases.compactMap {
-        switch $0 {
-
-        case .attributesInspector:
-            return $0
-            
+    private(set) lazy var elementPanels: [ElementInspectorPanel] = ElementInspectorPanel.allCases.compactMap { panel in
+        switch panel {
         case .viewHierarchyInspector:
-            return reference.isContainer ? $0 : nil
-            
-        case .sizeInspector:
-            return $0
+            return reference.isContainer ? panel : nil
+        default:
+            return panel
             
         }
     }

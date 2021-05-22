@@ -18,29 +18,15 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 
-enum ElementInspectorPanel: CaseIterable {
-    typealias AllCases = [ElementInspectorPanel]
-    
-    case attributesInspector
-    case sizeInspector
-    case viewHierarchyInspector
-    
-    var image: UIImage {
-        switch self {
-        case .attributesInspector:
-            return IconKit.imageOfSliderHorizontal()
-            
-        case .viewHierarchyInspector:
-            return IconKit.imageOfListBulletIndent()
-            
-        case .sizeInspector:
-            return IconKit.imageOfSetSquareFill()
-        }
+import Foundation
+
+extension NSRegularExpression {
+    func matches(in string: String, options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
+        matches(in: string, options: options, range: NSMakeRange(.zero, string.count))
     }
     
-    static var allCases: [ElementInspectorPanel] {
-        [.attributesInspector, .viewHierarchyInspector]
+    func firstMatch(in string: String, options: NSRegularExpression.MatchingOptions = []) -> NSTextCheckingResult? {
+        firstMatch(in: string, options: options, range: NSMakeRange(.zero, string.count))
     }
 }
