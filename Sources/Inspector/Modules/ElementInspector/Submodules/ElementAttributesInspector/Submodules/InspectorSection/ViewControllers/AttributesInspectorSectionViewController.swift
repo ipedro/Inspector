@@ -231,7 +231,7 @@ extension AttributesInspectorSectionViewController {
                     handler?(textViewControl.value)
                 
                 case let (.imagePicker(_, _, handler), imagePicker as ImagePreviewControl):
-                    handler?(imagePicker.selectedImage)
+                    handler?(imagePicker.image)
                     
                 case (.separator, _),
                      (.group, _):
@@ -283,7 +283,7 @@ extension AttributesInspectorSectionViewController {
                 colorPicker.title = title
                 
             case let (.imagePicker(title: title, image: imageProvider, _), imagePicker as ImagePreviewControl):
-                imagePicker.selectedImage = imageProvider()
+                imagePicker.image = imageProvider()
                 imagePicker.title = title
                 
             case let (.toggleButton(title: title, isOn: isOnProvider, _), toggleControl as ToggleControl):

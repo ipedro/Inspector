@@ -29,14 +29,14 @@ final class ImagePreviewControl: BaseFormControl {
     
     weak var delegate: ImagePreviewControlDelegate?
     
-    var selectedImage: UIImage? {
+    var image: UIImage? {
         didSet {
             didUpdateImage()
         }
     }
     
     func updateSelectedImage(_ image: UIImage?) {
-        selectedImage = image
+        self.image = image
         
         sendActions(for: .valueChanged)
     }
@@ -64,7 +64,7 @@ final class ImagePreviewControl: BaseFormControl {
         $0.installView(imageView)
     }
     
-    private lazy var imageView = UIImageView(image: selectedImage).then {
+    private lazy var imageView = UIImageView(image: image).then {
         $0.contentMode = .scaleAspectFit
     }
     
@@ -87,7 +87,7 @@ final class ImagePreviewControl: BaseFormControl {
     // MARK: - Init
     
     init(title: String?, image: UIImage?) {
-        self.selectedImage = image
+        self.image = image
         
         super.init(title: title)
     }
@@ -107,23 +107,14 @@ final class ImagePreviewControl: BaseFormControl {
     }
     
     private func didUpdateImage() {
-        imageView.image = selectedImage
+        imageView.image = image
         
-        guard let selectedImage = selectedImage else {
-            imageNameLabel.text = "No Image"
+        guard let image = image else {
+            imageNameLabel.text = "None"
             return
         }
         
-        #if swift(>=5.0)
-        if #available(iOS 13.0, *) {
-            guard selectedImage.isSymbolImage == false else {
-                imageNameLabel.text = "Vector \(selectedImage.size.debugDescription)"
-                return
-            }
-        }
-        #endif
-        
-        imageNameLabel.text = "\(selectedImage.size.debugDescription) @\(Int(selectedImage.scale))x"
+        imageNameLabel.text = image.assetName ?? image.sizeDesription
     }
     
     @objc private func tapImage() {
