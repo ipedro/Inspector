@@ -210,7 +210,13 @@ extension ElementInspectorCoordinator: ElementInspectorNavigationControllerDismi
 
 extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-        return .none
+        switch controller.presentedViewController {
+        case is UIDocumentPickerViewController:
+            return .pageSheet
+        
+        default:
+            return .none
+        }
     }
     
     @available(iOS 13.0, *)

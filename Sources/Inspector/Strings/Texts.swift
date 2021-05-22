@@ -61,4 +61,10 @@ enum Texts {
     static let showAllLayers = "Show all layers"
     
     static let dismissView = "Dismiss View"
+    
+    static let cancel = "Cancel"
+    
+    static let clearImage = "Clear image"
+    
+    static let importImage = "Import image..."
 }
