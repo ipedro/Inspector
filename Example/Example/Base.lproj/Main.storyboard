@@ -18,10 +18,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="SAS-7K-iyc">
-                                <rect key="frame" x="0.0" y="148" width="414" height="665"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="lP5-3a-gfG">
-                                        <rect key="frame" x="30" y="40" width="354" height="1791.5"/>
+                                        <rect key="frame" x="30" y="40" width="354" height="1823.5"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" pointerInteraction="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bmx-Wi-bnN" customClass="CustomButton" customModule="Example" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="354" height="47"/>
@@ -40,12 +40,12 @@
                                                     <action selector="openInspector:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Us4-aa-1LF"/>
                                                 </connections>
                                             </button>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Jke-NT-miV">
-                                                <rect key="frame" x="0.0" y="87" width="354" height="24"/>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CustomButton_32" translatesAutoresizingMaskIntoConstraints="NO" id="Jke-NT-miV">
+                                                <rect key="frame" x="0.0" y="87" width="354" height="32"/>
                                                 <color key="tintColor" systemColor="systemGray4Color"/>
                                             </imageView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="3mM-H5-FNd">
-                                                <rect key="frame" x="0.0" y="151" width="354" height="37"/>
+                                                <rect key="frame" x="0.0" y="159" width="354" height="37"/>
                                                 <subviews>
                                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="gp4-7X-RIQ">
                                                         <rect key="frame" x="-2" y="0.0" width="301" height="38"/>
@@ -62,7 +62,7 @@
                                                 </subviews>
                                             </stackView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NNN-1F-at6">
-                                                <rect key="frame" x="0.0" y="228" width="354" height="111"/>
+                                                <rect key="frame" x="0.0" y="236" width="354" height="111"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="textView"/>
                                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
                                                 <color key="textColor" systemColor="labelColor"/>
@@ -70,17 +70,17 @@
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W9f-3k-Q4n">
-                                                <rect key="frame" x="0.0" y="379" width="354" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="387" width="354" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="aGv-4R-5fS">
-                                                <rect key="frame" x="0.0" y="439.5" width="354" height="24"/>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CustomButton_32" translatesAutoresizingMaskIntoConstraints="NO" id="aGv-4R-5fS">
+                                                <rect key="frame" x="0.0" y="447.5" width="354" height="32"/>
                                                 <color key="tintColor" systemColor="systemGray4Color"/>
                                             </imageView>
                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="wp0-kU-4b8">
-                                                <rect key="frame" x="0.0" y="503.5" width="354" height="40"/>
+                                                <rect key="frame" x="0.0" y="519.5" width="354" height="40"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="749" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enable me" borderStyle="roundedRect" placeholder="Text field" textAlignment="natural" clearsOnBeginEditing="YES" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="Juj-gq-NVu">
                                                         <rect key="frame" x="0.0" y="0.0" width="285" height="40"/>
@@ -101,18 +101,18 @@
                                                 </subviews>
                                             </stackView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="73c-Xy-UWQ">
-                                                <rect key="frame" x="0.0" y="583.5" width="354" height="112"/>
+                                                <rect key="frame" x="0.0" y="599.5" width="354" height="112"/>
                                                 <string key="text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="XfD-00-cAC">
-                                                <rect key="frame" x="0.0" y="735.5" width="354" height="24"/>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CustomButton_32" translatesAutoresizingMaskIntoConstraints="NO" id="XfD-00-cAC">
+                                                <rect key="frame" x="0.0" y="751.5" width="354" height="32"/>
                                                 <color key="tintColor" systemColor="systemGray4Color"/>
                                             </imageView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="FRI-vZ-Suo">
-                                                <rect key="frame" x="0.0" y="799.5" width="354" height="276"/>
+                                                <rect key="frame" x="0.0" y="823.5" width="354" height="276"/>
                                                 <subviews>
                                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="P52-4f-6lf">
                                                         <rect key="frame" x="0.0" y="0.0" width="354" height="41"/>
@@ -132,12 +132,12 @@
                                                     </datePicker>
                                                 </subviews>
                                             </stackView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Yaa-hu-quS">
-                                                <rect key="frame" x="0.0" y="1115.5" width="354" height="24"/>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CustomButton_32" translatesAutoresizingMaskIntoConstraints="NO" id="Yaa-hu-quS">
+                                                <rect key="frame" x="0.0" y="1139.5" width="354" height="32"/>
                                                 <color key="tintColor" systemColor="systemGray4Color"/>
                                             </imageView>
                                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="hQ1-am-2yh">
-                                                <rect key="frame" x="0.0" y="1179.5" width="354" height="500"/>
+                                                <rect key="frame" x="0.0" y="1211.5" width="354" height="500"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="500" id="ejb-MB-Bos"/>
                                                 </constraints>
@@ -149,13 +149,13 @@
                                                 </userDefinedRuntimeAttributes>
                                             </mapView>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tTH-Ha-1xL" userLabel="Spacer View">
-                                                <rect key="frame" x="0.0" y="1719.5" width="354" height="0.0"/>
+                                                <rect key="frame" x="0.0" y="1751.5" width="354" height="0.0"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" id="3bL-jB-p6u"/>
                                                 </constraints>
                                             </view>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TabBarIcon" translatesAutoresizingMaskIntoConstraints="NO" id="QwP-ZP-xcb">
-                                                <rect key="frame" x="0.0" y="1759.5" width="354" height="32"/>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CustomButton_32" translatesAutoresizingMaskIntoConstraints="NO" id="QwP-ZP-xcb">
+                                                <rect key="frame" x="0.0" y="1791.5" width="354" height="32"/>
                                                 <color key="tintColor" name="AccentColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="32" id="ASJ-s9-lOd"/>
@@ -234,7 +234,7 @@
                     <tabBarItem key="tabBarItem" title="Inspector" image="magnifyingglass" catalog="system" id="2Ki-oj-dQl"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="99r-xO-ddw">
-                        <rect key="frame" x="0.0" y="44" width="414" height="104"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -267,7 +267,7 @@
     </scenes>
     <color key="tintColor" name="AccentColor"/>
     <resources>
-        <image name="TabBarIcon" width="25" height="24"/>
+        <image name="CustomButton_32" width="32" height="32"/>
         <image name="magnifyingglass" catalog="system" width="128" height="115"/>
         <namedColor name="AccentColor">
             <color red="0.68599998950958252" green="0.32199999690055847" blue="0.87100005149841309" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
