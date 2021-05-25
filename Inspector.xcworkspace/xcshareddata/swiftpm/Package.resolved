@@ -2,21 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "ObjectAssociation",
-        "repositoryURL": "https://github.com/ipedro/ObjectAssociation.git",
-        "state": {
-          "branch": null,
-          "revision": "8a8c598a80c8210ad771a6988faa509a1eb7cea8",
-          "version": "0.2.0"
-        }
-      },
-      {
         "package": "UIKeyboardAnimatable",
         "repositoryURL": "https://github.com/ipedro/UIKeyboardAnimatable.git",
         "state": {
           "branch": null,
-          "revision": "557f75d0db6e9705c797ec959b3efcfa6858bb8c",
-          "version": "0.2.4"
+          "revision": "3ac2463af77e998fd179ff7aeefebe765f08b4cd",
+          "version": "0.3.0"
         }
       },
       {
