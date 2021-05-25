@@ -30,7 +30,7 @@ extension UIImage {
             return nil
         }
         
-        let assetName = (description as NSString).substring(with: firstMatch.range)
+        let assetName = description.substring(with: firstMatch.range)
         
         return assetName
     }
