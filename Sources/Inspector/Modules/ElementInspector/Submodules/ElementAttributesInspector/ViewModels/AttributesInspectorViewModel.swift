@@ -50,7 +50,7 @@ final class AttributesInspectorViewModel {
             viewModels.append(contentsOf: library.viewModels(for: referenceView))
         }
         
-        return viewModels.flatMap { $0 }
+        return viewModels.compactMap { $0 }
     }()
     
     init(

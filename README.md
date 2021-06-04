@@ -420,10 +420,10 @@ enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
         }
     }
     
-    func viewModels(for referenceView: UIView) -> [InspectorElementViewModelProtocol?] {
+    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
         switch self {
         case .myClass:
-            return [MyClassInspectableViewModel(view: referenceView)]
+            return MyClassInspectableViewModel(view: referenceView)
         }
     }
     
