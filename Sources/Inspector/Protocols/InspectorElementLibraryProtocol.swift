@@ -27,7 +27,6 @@ public protocol InspectorElementLibraryProtocol {
     
     func viewModels(for referenceView: UIView) -> [InspectorElementViewModelProtocol?]
     
-    func icon(for referenceView: UIView) -> UIImage?
     func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol?
     
     func icon(for referenceView: UIView) -> UIImage?
