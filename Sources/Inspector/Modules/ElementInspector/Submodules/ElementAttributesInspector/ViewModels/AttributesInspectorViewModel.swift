@@ -44,9 +44,13 @@ final class AttributesInspectorViewModel {
             return []
         }
         
-        return snapshot.elementLibraries.targeting(element: referenceView).compactMap {
-            $0.viewModel(for: referenceView)
+        var viewModels = [InspectorElementViewModelProtocol?]()
+        
+        snapshot.elementLibraries.targeting(element: referenceView).forEach { library in
+            viewModels.append(contentsOf: library.viewModels(for: referenceView))
         }
+        
+        return viewModels.flatMap { $0 }
     }()
     
     init(

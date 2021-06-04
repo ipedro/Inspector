@@ -112,64 +112,59 @@ extension UIKitElementLibrary: InspectorElementLibraryProtocol {
         }
     }
     
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
+    func viewModels(for referenceView: UIView) -> [InspectorElementViewModelProtocol?] {
         switch self {
-        case .window,
-             .navigationBar:
-            return nil
-            
         case .activityIndicator:
-            return UIActivityIndicatorViewInspectableViewModel(view: referenceView)
+            return [UIActivityIndicatorViewInspectableViewModel(view: referenceView)]
             
         case .button:
-            return UIButtonInspectableViewModel(view: referenceView)
+            return [UIButtonInspectableViewModel(view: referenceView)]
             
         case .control:
-            return UIControlInspectableViewModel(view: referenceView)
+            return [UIControlInspectableViewModel(view: referenceView)]
             
         case .datePicker:
-            return UIDatePickerInspectableViewModel(view: referenceView)
+            return [UIDatePickerInspectableViewModel(view: referenceView)]
             
         case .imageView:
-            return UIImageViewInspectableViewModel(view: referenceView)
+            return [UIImageViewInspectableViewModel(view: referenceView)]
             
         case .label:
-            return UILabelInspectableViewModel(view: referenceView)
+            return [UILabelInspectableViewModel(view: referenceView)]
             
         case .mapView:
-            return MKMapViewInspectableViewModel(view: referenceView)
+            return [MKMapViewInspectableViewModel(view: referenceView)]
             
         case .scrollView:
-            return UIScrollViewInspectableViewModel(view: referenceView)
+            return [UIScrollViewInspectableViewModel(view: referenceView)]
             
         case .segmentedControl:
-            return UISegmentedControlInspectableViewModel(view: referenceView)
+            return [UISegmentedControlInspectableViewModel(view: referenceView)]
             
         case .slider:
-            return UISliderInspectableViewModel(view: referenceView)
+            return [UISliderInspectableViewModel(view: referenceView)]
             
         case .switch:
-            return UISwitchInspectableViewModel(view: referenceView)
+            return [UISwitchInspectableViewModel(view: referenceView)]
             
         case .stackView:
-            return UIStackViewInspectableViewModel(view: referenceView)
+            return [UIStackViewInspectableViewModel(view: referenceView)]
             
         case .textField:
-            return UITextFieldInspectableViewModel(view: referenceView)
+            return [UITextFieldInspectableViewModel(view: referenceView)]
             
         case .textView:
-            return UITextViewInspectableViewModel(view: referenceView)
+            return [UITextViewInspectableViewModel(view: referenceView)]
             
         case .view:
-            return UIViewInspectableViewModel(view: referenceView)
+            return [UIViewInspectableViewModel(view: referenceView)]
             
-        case .oldWebview:
-            return nil
-            
-        case .webView:
-            return nil
+        case .window,
+             .navigationBar,
+             .oldWebview,
+             .webView:
+            return []
         }
-        
     }
     
     func icon(for referenceView: UIView) -> UIImage? {
