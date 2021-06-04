@@ -31,10 +31,10 @@ enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
         }
     }
     
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
+    func viewModels(for referenceView: UIView) -> [InspectorElementViewModelProtocol?] {
         switch self {
         case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
+            return [CustomButtonInspectableViewModel(view: referenceView)]
         }
     }
     
