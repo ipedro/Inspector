@@ -8,8 +8,8 @@
 
 Inspector is a debugging library written in Swift.
 
-![](https://github.com/ipedro/Inspector/raw/develop/Documentation/inspector_header.png)
-![Inspector Demo](https://github.com/ipedro/Inspector/raw/develop/Documentation/inspector_demo.gif)
+![Header](https://github.com/ipedro/Inspector/raw/develop/Documentation/inspector_header.png)
+![Demo GIF](https://github.com/ipedro/Inspector/raw/develop/Documentation/inspector_demo.gif)
 
 ## Contents
 * [Why use it?](#why-use-it)
