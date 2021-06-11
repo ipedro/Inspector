@@ -74,7 +74,7 @@ final class LengthMeasurementView: BaseView {
         
         contentView.alignment = .center
         
-        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(2)
+        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(insets: 2)
         
         contentView.spacing = ElementInspector.appearance.verticalMargins
         

@@ -32,7 +32,7 @@ class InspectorBaseTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let defaultLayoutMargins = NSDirectionalEdgeInsets(ElementInspector.appearance.horizontalMargins)
+    let defaultLayoutMargins = NSDirectionalEdgeInsets(insets: ElementInspector.appearance.horizontalMargins)
     
     func setup() {
         backgroundView = UIView()
