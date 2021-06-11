@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,20 +18,19 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 import Inspector
+import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        
+
         Inspector.host = self
-        
+
         guard let _ = (scene as? UIWindowScene) else { return }
     }
 
@@ -62,15 +61,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-
 }
 
 // MARK: - InspectorHostable
 
 extension SceneDelegate: InspectorHostable {
     var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { ExampleElementLibrary.allCases }
-    
+
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
         [
             .controls,
@@ -87,24 +84,24 @@ extension SceneDelegate: InspectorHostable {
             )
         ]
     }
-    
+
     var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
         .colorScheme { view in
             switch view {
             case is CustomButton:
                 return .systemPink
-                
+
             default:
                 return Inspector.ViewHierarchyColorScheme.default.color(for: view)
             }
         }
     }
-    
+
     var inspectorCommandGroups: [Inspector.CommandsGroup]? {
         guard let window = window else {
             return nil
         }
-        
+
         return [
             .group(
                 title: "My custom actions",
@@ -140,7 +137,7 @@ extension SceneDelegate: InspectorHostable {
                         closure: {
                             let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                             let initialViewController = mainStoryboard.instantiateInitialViewController()
-                            
+
                             window.rootViewController = initialViewController
                             Inspector.restart()
                         }
@@ -166,8 +163,7 @@ extension SceneDelegate: InspectorHostable {
 // MARK: - Inspector Presentation Example
 
 extension UIWindow {
-
-    open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+    override open func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         super.motionBegan(motion, with: event)
 
         guard motion == .motionShake else {
@@ -176,7 +172,6 @@ extension UIWindow {
 
         presentInspector(animated: true)
     }
-
 }
 
 private extension UIImage {
