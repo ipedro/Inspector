@@ -19,7 +19,7 @@
 //  SOFTWARE.
 
 import UIKit
-import UIKitOptions
+@_implementationOnly import UIKitOptions
 
 public extension InspectorConfiguration {
 
@@ -31,11 +31,29 @@ public extension InspectorConfiguration {
         
         public var allLayersToggleInput: String = String(0)
         
-        public var presentationOptions: UIKeyCommand.Options = .discoverabilityTitle(
-            title: Texts.presentInspector,
-            key: .control(.shift(.key("0")))
+        private var presentationOptions: UIKeyCommand.Options {
+            .discoverabilityTitle(
+                title: Texts.presentInspector,
+                key: .control(.shift(.key("0")))
+            )
+        }
+
+        public var presentationSettings = KeyCommandOptions(
+            input: "0",
+            modifierFlags: [.control, .shift]
         )
-        
+
+        public struct KeyCommandOptions {
+            public var input: String
+            public var modifierFlags: UIKeyModifierFlags
+
+            var options: UIKeyCommand.Options {
+                .discoverabilityTitle(
+                    title: Texts.presentInspector,
+                    key: .init(input: input, modifierFlags: modifierFlags)
+                )
+            }
+        }
     }
     
 }

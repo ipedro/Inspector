@@ -1,0 +1,34 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "UIKeyboardAnimatable",
+        "repositoryURL": "https://github.com/ipedro/UIKeyboardAnimatable.git",
+        "state": {
+          "branch": null,
+          "revision": "3ac2463af77e998fd179ff7aeefebe765f08b4cd",
+          "version": "0.3.0"
+        }
+      },
+      {
+        "package": "UIKeyCommandTableView",
+        "repositoryURL": "https://github.com/ipedro/UIKeyCommandTableView.git",
+        "state": {
+          "branch": null,
+          "revision": "4663389cf13968fc3ad07b381855dfa9ba60c20e",
+          "version": "0.1.8"
+        }
+      },
+      {
+        "package": "UIKitOptions",
+        "repositoryURL": "https://github.com/ipedro/UIKitOptions.git",
+        "state": {
+          "branch": null,
+          "revision": "2bc1a65f4a21299fd8ef17dbb0ba9a87f4eef5c3",
+          "version": "0.3.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

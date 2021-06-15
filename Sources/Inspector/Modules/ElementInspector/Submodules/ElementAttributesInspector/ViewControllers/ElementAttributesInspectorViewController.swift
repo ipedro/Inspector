@@ -19,7 +19,7 @@
 //  SOFTWARE.
 
 import UIKit
-import UIKeyboardAnimatable
+@_implementationOnly import UIKeyboardAnimatable
 
 protocol ElementAttributesInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     

@@ -82,16 +82,14 @@ final class CustomButton: UIButton {
             return
         }
         
-        let delay = type == .in ? 0 : 0.15
-        
-        UIView.animate(withDuration: 0.2, delay: delay, animations: {
+        UIView.animate(.quickly) {
             switch type {
             case .in:
-                self.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+                self.transform = CGAffineTransform(scaleX: 0.92, y: 0.9)
                 
             case .out:
                 self.transform = .identity
             }
-        })
+        }
     }
 }

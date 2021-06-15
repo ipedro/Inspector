@@ -19,7 +19,7 @@
 //  SOFTWARE.
 
 import UIKit
-import UIKeyCommandTableView
+@_implementationOnly import UIKeyCommandTableView
 
 protocol HierarchyInspectorViewDelegate: AnyObject {
     func hierarchyInspectorViewDidTapOutside(_ view: HierarchyInspectorView)
