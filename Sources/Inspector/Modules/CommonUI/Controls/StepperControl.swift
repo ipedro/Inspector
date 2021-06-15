@@ -19,7 +19,7 @@
 //  SOFTWARE.
 
 import UIKit
-import UIKitOptions
+@_implementationOnly import UIKitOptions
 
 final class StepperControl: BaseFormControl {
     // MARK: - Properties

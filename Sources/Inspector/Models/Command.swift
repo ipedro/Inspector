@@ -122,7 +122,7 @@ extension Command {
         Command(
             title: Texts.presentInspector,
             icon: nil,
-            keyCommandOptions: keyCommandSettings.presentationOptions
+            keyCommandOptions: keyCommandSettings.presentationSettings.options
         ) {
             host.presentInspector(animated: animated)
         }

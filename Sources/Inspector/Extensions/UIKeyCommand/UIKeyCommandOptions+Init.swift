@@ -20,7 +20,7 @@
 
 
 import UIKit
-import UIKitOptions
+@_implementationOnly import UIKitOptions
 
 extension UIKeyCommand.Options {
     init(input: String, modifierFlags: UIKeyModifierFlags) {

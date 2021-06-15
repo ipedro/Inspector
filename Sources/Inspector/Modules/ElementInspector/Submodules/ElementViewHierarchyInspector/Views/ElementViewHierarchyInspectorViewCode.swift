@@ -19,7 +19,7 @@
 //  SOFTWARE.
 
 import UIKit
-import UIKeyCommandTableView
+@_implementationOnly import UIKeyCommandTableView
 
 final class ElementViewHierarchyInspectorViewCode: BaseView {
     

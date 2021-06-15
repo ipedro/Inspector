@@ -19,8 +19,8 @@
 //  SOFTWARE.
 
 import UIKit
-import UIKeyCommandTableView
-import UIKeyboardAnimatable
+@_implementationOnly import UIKeyCommandTableView
+@_implementationOnly import UIKeyboardAnimatable
 #if swift(>=5.3)
 import GameController
 #endif
@@ -157,7 +157,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
             UIKeyCommand(
                 .discoverabilityTitle(
                     title: Texts.dismissView,
-                    key: Inspector.configuration.keyCommands.presentationOptions
+                    key: Inspector.configuration.keyCommands.presentationSettings.options
                 ),
                 action: #selector(finish)
             )
