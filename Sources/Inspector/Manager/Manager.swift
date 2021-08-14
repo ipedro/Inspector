@@ -23,8 +23,14 @@ import UIKit
 typealias Manager = Inspector.Manager
 
 extension Inspector {
+
+    enum InspectorError: Error {
+        case noViewHierarchySnapshot
+    }
+
     public final class Manager: Create {
-        
+
+
         // MARK: - Properties
         
         static let shared = Manager()
@@ -37,6 +43,12 @@ extension Inspector {
                 if host != nil {
                     start()
                 }
+            }
+        }
+
+        var swiftUIhost: InspectorSwiftUIHostable? {
+            didSet {
+                host = swiftUIhost
             }
         }
         
@@ -101,36 +113,35 @@ extension Inspector {
         }
         
         func finish() {
+            viewHierarchyLayersCoordinator = nil
+            elementInspectorCoordinator = nil
+            hierarchyInspectorCoordinator = nil
+
+            cachedSnapshots.removeAll()
             operationQueue.cancelAllOperations()
-            
-            asyncOperation { [weak self] in
-                guard let self = self else { return }
-                
-                self.cachedSnapshots.removeAll()
-                self.viewHierarchyLayersCoordinator = nil
-                self.elementInspectorCoordinator = nil
-                self.hierarchyInspectorCoordinator = nil
-            }
         }
-        
+
         public func present(animated: Bool = true) {
-            guard
-                hierarchyInspectorCoordinator == nil,
-                let viewHierarchySnapshot = viewHierarchySnapshot
-            else {
-                return
-            }
-            
+            guard let coordinator = makeHierarchyInspectorCoordinator() else { return }
+
+            let inspectorViewController = coordinator.start()
+
+            hostViewController?.present(inspectorViewController, animated: animated)
+        }
+
+        func makeHierarchyInspectorCoordinator() -> HierarchyInspectorCoordinator? {
+            guard let viewHierarchySnapshot = viewHierarchySnapshot else { return nil }
+
             let coordinator = HierarchyInspectorCoordinator(
                 hierarchySnapshot: viewHierarchySnapshot,
                 commandGroupsProvider: { [weak self] in self?.availableCommandGroups }
             ).then {
                 $0.delegate = self
             }
-            
-            hostViewController?.present(coordinator.start(), animated: animated)
-            
+
             hierarchyInspectorCoordinator = coordinator
+
+            return coordinator
         }
         
     }
@@ -176,25 +187,19 @@ extension Manager {
 extension Manager {
     
     var viewHierarchySnapshot: ViewHierarchySnapshot? {
-        snapshot(of: viewHierarchyWindow)
+        guard let window = viewHierarchyWindow else { return nil }
+        return snapshot(of: window)
     }
     
-    private func snapshot(of referenceView: UIView?) -> ViewHierarchySnapshot? {
-        guard
-            let referenceView = referenceView,
-            let host = host
-        else {
-            return nil
-        }
-        
+    private func snapshot(of referenceView: UIView) -> ViewHierarchySnapshot {
         guard
             shouldCacheViewHierarchySnapshot,
             let cachedSnapshot = cachedSnapshots[referenceView],
             Date() <= cachedSnapshot.expiryDate
         else {
             let snapshot = ViewHierarchySnapshot(
-                availableLayers: host.availableLayers,
-                elementLibraries: host.availableElementLibraries,
+                availableLayers: host?.availableLayers ?? [],
+                elementLibraries: host?.availableElementLibraries ?? [],
                 in: referenceView
             )
             

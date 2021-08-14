@@ -100,6 +100,11 @@ final class HierarchyInspectorView: BaseView {
             tableView
         )
     )
+
+    func reloadData() {
+        tableView.reloadData()
+        updateTableViewHeight()
+    }
     
     @objc func updateTableViewHeight() {
         let height = round(tableViewContentSize.height + tableView.contentInset.verticalInsets)
@@ -107,9 +112,11 @@ final class HierarchyInspectorView: BaseView {
         guard tableViewHeightConstraint.constant != height else {
             return
         }
-        
-        tableViewHeightConstraint.constant = height
-        layoutIfNeeded()
+
+        UIView.performWithoutAnimation {
+            self.tableViewHeightConstraint.constant = height
+            self.layoutIfNeeded()
+        }
     }
     
     var tableViewContentSize: CGSize = .zero {

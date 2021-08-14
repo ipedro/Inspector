@@ -41,9 +41,11 @@ public protocol InspectorHostable: AnyObject {
 // MARK: - Convenience
 
 public extension InspectorHostable {
-
     func presentInspector(animated: Bool) {
         window?.presentInspector(animated: animated)
     }
-    
+}
+
+protocol InspectorSwiftUIHostable: InspectorHostable {
+    func hierarchyInspectorDidFinish(_ coordinator: HierarchyInspectorCoordinator)
 }

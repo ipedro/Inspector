@@ -58,7 +58,11 @@ final class HierarchyInspectorCoordinator: NSObject {
     func start() -> UIViewController {
         hierarchyInspectorViewController
     }
-    
+
+    func reloadData() {
+        hierarchyInspectorViewController.reloadData()
+    }
+
     func finish(with command: HierarchyInspectorCommand? = nil) {
         hierarchyInspectorViewController.dismiss(animated: true) {
             self.delegate?.hierarchyInspectorCoordinator(self, didFinishWith: command)

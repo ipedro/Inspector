@@ -47,7 +47,8 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
             }
             
         case .sizeInspector:
-            return ElementSizeInspectorViewController()
+            // implement
+            fatalError() // ElementSizeInspectorViewController()
         }
     }
     

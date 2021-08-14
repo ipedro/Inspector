@@ -18,29 +18,15 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 
-extension Manager: HierarchyInspectorCoordinatorDelegate {
-    func hierarchyInspectorCoordinator(_ coordinator: HierarchyInspectorCoordinator,
-                                       didFinishWith command: HierarchyInspectorCommand?) {
-        
-        hierarchyInspectorCoordinator = nil
+import SwiftUI
+import Inspector
 
-        swiftUIhost?.hierarchyInspectorDidFinish(coordinator)
-
-        guard let command = command else {
-            return
+@main
+struct ExampleApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
         }
-        
-        asyncOperation { [weak self] in
-            switch command {
-            case let .execute(closure):
-                closure()
-                
-            case let .inspect(reference):
-                self?.presentElementInspector(for: reference, animated: true, from: nil)
-            }
-        }
-        
     }
 }

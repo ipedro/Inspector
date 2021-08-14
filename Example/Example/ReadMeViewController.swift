@@ -184,7 +184,6 @@ extension ReadMeViewController: WKNavigationDelegate {
                     }
                 }
             """
-//            let javascript = "document.getElementsByClassName('anchor').item(0).id"
             
             webView.evaluateJavaScript(javascript) { result, error in
                 if let offset = result as? CGFloat {

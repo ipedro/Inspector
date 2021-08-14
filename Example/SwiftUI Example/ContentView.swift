@@ -18,29 +18,44 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 
-extension Manager: HierarchyInspectorCoordinatorDelegate {
-    func hierarchyInspectorCoordinator(_ coordinator: HierarchyInspectorCoordinator,
-                                       didFinishWith command: HierarchyInspectorCommand?) {
-        
-        hierarchyInspectorCoordinator = nil
+import SwiftUI
+import Inspector
 
-        swiftUIhost?.hierarchyInspectorDidFinish(coordinator)
+struct ContentView: View {
+    var window: UIWindow?
 
-        guard let command = command else {
-            return
-        }
-        
-        asyncOperation { [weak self] in
-            switch command {
-            case let .execute(closure):
-                closure()
-                
-            case let .inspect(reference):
-                self?.presentElementInspector(for: reference, animated: true, from: nil)
+    @State var isPresented = false
+
+    @State var text = "Hello, world!"
+
+    var body: some View {
+        NavigationView() {
+            VStack {
+                TextField("text field", text: $text)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+
+                Button("Inspect") {
+                    isPresented.toggle()
+                }
+                .padding()
             }
+            .inspect(
+                isPresented: $isPresented,
+                inspectorViewHierarchyLayers: nil,
+                inspectorViewHierarchyColorScheme: nil,
+                inspectorCommandGroups: nil,
+                inspectorElementLibraries: nil
+            )
         }
-        
+        .navigationTitle("Inspector")
+        .background(Color(UIColor.systemGroupedBackground))
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
     }
 }
