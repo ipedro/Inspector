@@ -38,18 +38,17 @@ extension Inspector {
             closure != nil
         }
         
-        public static func command(
+        public init(
             title: String,
             icon: UIImage?,
-            keyCommand: UIKeyCommand.Options?,
+            keyCommandOptions: UIKeyCommand.Options?,
             closure: Closure?
-        ) -> Command {
-            self.init(
-                title: title,
-                icon: icon?.resized(.actionIconSize),
-                keyCommandOptions: keyCommand,
-                closure: closure
-            )
+        ) {
+            self.title = title
+            self.icon = icon?.resized(.actionIconSize)
+            self.keyCommandOptions = keyCommandOptions
+            self.closure = closure
+
         }
     }
 }

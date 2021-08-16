@@ -106,7 +106,7 @@ extension SceneDelegate: InspectorHostable {
             .group(
                 title: "My custom actions",
                 commands: [
-                    .command(
+                    Inspector.Command(
                         title: {
                             switch window.traitCollection.userInterfaceStyle {
                             case .light:
@@ -118,7 +118,7 @@ extension SceneDelegate: InspectorHostable {
                             }
                         }(),
                         icon: .exampleCommandIcon,
-                        keyCommand: .control(.shift(.key("i"))),
+                        keyCommandOptions: .control(.shift(.key("i"))),
                         closure: {
                             switch window.traitCollection.userInterfaceStyle {
                             case .dark:
@@ -130,10 +130,10 @@ extension SceneDelegate: InspectorHostable {
                             }
                         }
                     ),
-                    .command(
+                    Inspector.Command(
                         title: "Reset",
                         icon: .exampleCommandIcon,
-                        keyCommand: .control(.shift(.key("r"))),
+                        keyCommandOptions: .control(.shift(.key("r"))),
                         closure: {
                             let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                             let initialViewController = mainStoryboard.instantiateInitialViewController()
@@ -142,10 +142,10 @@ extension SceneDelegate: InspectorHostable {
                             Inspector.restart()
                         }
                     ),
-                    .command(
+                    Inspector.Command(
                         title: "Open repository...",
                         icon: .exampleCommandIcon,
-                        keyCommand: .control(.shift(.key("g"))),
+                        keyCommandOptions: .control(.shift(.key("g"))),
                         closure: {
                             UIApplication.shared.open(
                                 URL(string: "https://github.com/ipedro/Inspector")!,

@@ -21,6 +21,7 @@
 import Inspector
 import MapKit
 import UIKit
+@_implementationOnly import UIKitOptions
 
 final class PlaygroundViewController: UIViewController {
     // MARK: - Components
