@@ -113,7 +113,7 @@ extension Inspector {
             }
         }
         
-        public func present(animated: Bool) {
+        public func present(animated: Bool = true) {
             guard
                 hierarchyInspectorCoordinator == nil,
                 let viewHierarchySnapshot = viewHierarchySnapshot
@@ -128,7 +128,7 @@ extension Inspector {
                 $0.delegate = self
             }
             
-            hostViewController?.present(coordinator.start(), animated: true)
+            hostViewController?.present(coordinator.start(), animated: animated)
             
             hierarchyInspectorCoordinator = coordinator
         }

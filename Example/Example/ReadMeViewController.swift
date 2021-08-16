@@ -187,7 +187,6 @@ extension ReadMeViewController: WKNavigationDelegate {
 //            let javascript = "document.getElementsByClassName('anchor').item(0).id"
             
             webView.evaluateJavaScript(javascript) { result, error in
-                print(anchor, result, error)
                 if let offset = result as? CGFloat {
                     webView.scrollView.scrollRectToVisible(CGRect(x: 0, y: -offset, width: webView.frame.width, height: webView.frame.height / 2), animated: true)
                 }
