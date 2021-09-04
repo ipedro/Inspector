@@ -100,22 +100,22 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         )
     }
     
-    private(set) lazy var elementNameLabel = UILabel(
-        .textColor(ElementInspector.appearance.textColor),
-        .numberOfLines(1),
-        .adjustsFontSizeToFitWidth(true),
-        .minimumScaleFactor(0.75),
-        .allowsDefaultTighteningForTruncation(true),
-        .huggingPriority(.defaultHigh, for: .vertical)
-    )
+    private(set) lazy var elementNameLabel = SelectableLabel().then {
+        $0.textColor = ElementInspector.appearance.textColor
+        $0.numberOfLines = 1
+        $0.adjustsFontSizeToFitWidth = true
+        $0.minimumScaleFactor = 0.75
+        $0.allowsDefaultTighteningForTruncation = true
+        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
+    }
     
-    private(set) lazy var descriptionLabel = UILabel(
-        .textStyle(.caption2),
-        .textColor(ElementInspector.appearance.secondaryTextColor),
-        .numberOfLines(.zero),
-        .preferredMaxLayoutWidth(200),
-        .compressionResistance(.defaultHigh, for: .vertical)
-    )
+    private(set) lazy var descriptionLabel = SelectableLabel().then {
+        $0.font = .preferredFont(forTextStyle: .caption2)
+        $0.textColor = ElementInspector.appearance.secondaryTextColor
+        $0.numberOfLines = .zero
+        $0.preferredMaxLayoutWidth = 200
+        $0.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+    }
     
     private(set) lazy var chevronDownIcon = Icon.chevronDownIcon()
     
