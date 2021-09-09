@@ -30,13 +30,9 @@ final class Icon: BaseView {
         }
     }
     
-    private lazy var widthConstraint = widthAnchor.constraint(equalToConstant: size.width).then {
-        $0.priority = .defaultHigh
-    }
+    private lazy var widthConstraint = widthAnchor.constraint(equalToConstant: size.width)
     
-    private lazy var heightConstraint = heightAnchor.constraint(equalToConstant: size.height).then {
-        $0.priority = .defaultHigh
-    }
+    private lazy var heightConstraint = heightAnchor.constraint(equalToConstant: size.height)
     
     init(_ glpyh: Glyph, color: UIColor, size: CGSize = CGSize(width: 16, height: 16)) {
         self.glpyh = glpyh
@@ -92,13 +88,8 @@ extension Icon {
         Icon(
             .chevronDown,
             color: ElementInspector.appearance.textColor.withAlphaComponent(0.7),
-            size: CGSize(
-                width: ElementInspector.appearance.verticalMargins,
-                height: ElementInspector.appearance.verticalMargins
-            )
-        ).then {
-            $0.alpha = 0.8
-        }
+            size: CGSize(16)
+        )
     }
     
 }

@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,22 +21,20 @@
 import UIKit
 
 class IconKit: NSObject {
-    
-    
-    //MARK: - Canvas Drawings
-    
+    // MARK: - Canvas Drawings
+
     /// Icons
-    
+
     class func drawBorderStyleRoundedRect(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 20, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 20, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 20, y: resizedFrame.height / 16)
-        
+
         /// Icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 15.5, y: 0))
@@ -60,20 +58,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawBorderStyleBezel(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 20, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 20, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 20, y: resizedFrame.height / 16)
-        
+
         /// Icon Shadow
         let iconShadow = UIBezierPath()
         iconShadow.move(to: CGPoint(x: 14, y: 0))
@@ -98,7 +96,7 @@ class IconKit: NSObject {
         }
         context.endTransparencyLayer()
         context.restoreGState()
-        
+
         /// Icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 14, y: 0))
@@ -118,20 +116,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawBorderStyleLine(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 20, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 20, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 20, y: resizedFrame.height / 16)
-        
+
         /// Icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 14, y: 0))
@@ -151,20 +149,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawBorderStyleNone(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 20, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 20, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 20, y: resizedFrame.height / 16)
-        
+
         /// Icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 3, y: 8))
@@ -293,20 +291,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawTextAlignmentNatural(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 4, y: 0))
@@ -333,20 +331,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawTextAlignmentJustified(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 14, y: 6))
@@ -379,20 +377,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawTextAlignmentRight(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 14, y: 6))
@@ -425,20 +423,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawTextAlignmentCenter(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 13, y: 6))
@@ -471,24 +469,24 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawAppearanceDark(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
-        
+
         /// Ultralight-S
         do {
             context.saveGState()
-            
+
             /// Shape
             let shape = UIBezierPath()
             shape.move(to: CGPoint(x: 7.87, y: 1.35))
@@ -556,23 +554,23 @@ class IconKit: NSObject {
             UIColor.black.setFill()
             shape.fill()
             context.restoreGState()
-            
+
             context.restoreGState()
         }
-        
+
         context.restoreGState()
     }
-    
+
     class func drawAppearanceMedium(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
-        
+
         /// Shape
         let shape = UIBezierPath()
         shape.move(to: CGPoint(x: 8, y: 2.04))
@@ -639,20 +637,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         shape.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
-    class func drawSliderHorizontal(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) {
+
+    class func drawSliderHorizontal(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 24, height: 24), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 24, y: resizedFrame.height / 24)
-        
+
         /// Shape
         let shape = UIBezierPath()
         shape.move(to: CGPoint(x: 12.14, y: 4.49))
@@ -717,23 +715,23 @@ class IconKit: NSObject {
         shape.close()
         context.saveGState()
         context.translateBy(x: 3, y: 5)
-        UIColor.black.setFill()
+        color.setFill()
         shape.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawSetSquareFill(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 24, height: 24), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 24, y: resizedFrame.height / 24)
-        
+
         /// SetSquare
         let setSquare = UIBezierPath()
         setSquare.move(to: CGPoint(x: 0.43, y: 0))
@@ -764,20 +762,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         setSquare.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawAppearanceLight(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
-        
+
         /// Shape
         let shape = UIBezierPath()
         shape.move(to: CGPoint(x: 8, y: 2.34))
@@ -838,20 +836,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         shape.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawTextAlignmentLeft(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 12, y: 6))
@@ -884,31 +882,30 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawColorGrid(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 32, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 32, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 32, y: resizedFrame.height / 16)
-        
+
         /// Background Color
         UIColor.clear.setFill()
         context.fill(context.boundingBoxOfClipPath)
-        
+
         /// grid
         /// pattern
         context.saveGState()
         context.setAlpha(0.2)
         context.beginTransparencyLayer(auxiliaryInfo: nil)
         do {
-            
             /// grid
             let grid = UIBezierPath()
             grid.move(to: CGPoint.zero)
@@ -922,7 +919,7 @@ class IconKit: NSObject {
             color.setFill()
             grid.fill()
             context.restoreGState()
-            
+
             /// grid
             let grid2 = UIBezierPath()
             grid2.move(to: CGPoint.zero)
@@ -937,7 +934,7 @@ class IconKit: NSObject {
             color.setFill()
             grid2.fill()
             context.restoreGState()
-            
+
             /// grid
             let grid3 = UIBezierPath()
             grid3.move(to: CGPoint.zero)
@@ -952,7 +949,7 @@ class IconKit: NSObject {
             color.setFill()
             grid3.fill()
             context.restoreGState()
-            
+
             /// grid
             let grid4 = UIBezierPath()
             grid4.move(to: CGPoint.zero)
@@ -970,20 +967,20 @@ class IconKit: NSObject {
         }
         context.endTransparencyLayer()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawVerticalAlignmentTop(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 15, height: 11), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 15, height: 11), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 15, y: resizedFrame.height / 11)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 3, y: 1))
@@ -1006,20 +1003,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawVerticalAlignmentCenter(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 15, height: 11), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 15, height: 11), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 15, y: resizedFrame.height / 11)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 12.96, y: 0))
@@ -1052,20 +1049,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawVerticalAlignmentBottom(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 15, height: 11), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 15, height: 11), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 15, y: resizedFrame.height / 11)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 0, y: 11))
@@ -1088,20 +1085,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawVerticalAlignmentFill(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 11, height: 11), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 11, height: 11), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 11, y: resizedFrame.height / 11)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 11, y: 0))
@@ -1135,20 +1132,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawHorizontalAlignmentFill(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 11, height: 11), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 11, height: 11), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 11, y: resizedFrame.height / 11)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 11, y: 0))
@@ -1183,20 +1180,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawHorizontalAlignmentRight(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 11, height: 15), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 11, height: 15), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 11, y: resizedFrame.height / 15)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 11, y: 15))
@@ -1219,20 +1216,20 @@ class IconKit: NSObject {
         UIColor(hue: 0.583, saturation: 0.095, brightness: 0.082, alpha: 1).setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawHorizontalAlignmentTrailing(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 11, height: 15), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 11, height: 15), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 11, y: resizedFrame.height / 15)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 11, y: 15))
@@ -1265,20 +1262,20 @@ class IconKit: NSObject {
         UIColor(hue: 0.583, saturation: 0.095, brightness: 0.082, alpha: 1).setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawHorizontalAlignmentCenter(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 11, height: 15), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 11, height: 15), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 11, y: resizedFrame.height / 15)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 6, y: 0))
@@ -1311,20 +1308,20 @@ class IconKit: NSObject {
         UIColor(hue: 0.583, saturation: 0.095, brightness: 0.082, alpha: 1).setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawHorizontalAlignmentLeft(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 11, height: 15), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 11, height: 15), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 11, y: resizedFrame.height / 15)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 1, y: 0))
@@ -1347,20 +1344,20 @@ class IconKit: NSObject {
         UIColor(hue: 0.583, saturation: 0.095, brightness: 0.082, alpha: 1).setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawHorizontalAlignmentLeading(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 11, height: 15), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 11, height: 15), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 11, y: resizedFrame.height / 15)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 1, y: 0))
@@ -1391,20 +1388,20 @@ class IconKit: NSObject {
         UIColor(hue: 0.583, saturation: 0.095, brightness: 0.082, alpha: 1).setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawWifiExlusionMark(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 24, height: 24), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 24, y: resizedFrame.height / 24)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 9.01, y: 9.86))
@@ -1458,20 +1455,20 @@ class IconKit: NSObject {
         color.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawEyeSlashFill(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 24, height: 24), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 24, y: resizedFrame.height / 24)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 14.12, y: 11.83))
@@ -1519,20 +1516,20 @@ class IconKit: NSObject {
         color.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawListBulletIndent(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 24, height: 24), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 24, y: resizedFrame.height / 24)
-        
+
         /// Parent
         let parent = UIBezierPath()
         parent.move(to: CGPoint(x: 2.51, y: 0))
@@ -1559,7 +1556,7 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         parent.fill()
         context.restoreGState()
-        
+
         /// Child
         let child = UIBezierPath()
         child.move(to: CGPoint(x: 1.79, y: 0))
@@ -1586,7 +1583,7 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         child.fill()
         context.restoreGState()
-        
+
         /// Child
         let child2 = UIBezierPath()
         child2.move(to: CGPoint(x: 1.79, y: 0))
@@ -1613,7 +1610,7 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         child2.fill()
         context.restoreGState()
-        
+
         /// Child
         let child3 = UIBezierPath()
         child3.move(to: CGPoint(x: 1.79, y: 0))
@@ -1640,7 +1637,7 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         child3.fill()
         context.restoreGState()
-        
+
         /// Connection
         let connection = UIBezierPath()
         connection.move(to: CGPoint(x: 7.5, y: 0))
@@ -1684,20 +1681,20 @@ class IconKit: NSObject {
         UIColor.black.setFill()
         connection.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawInfoCircleFill(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 24, height: 24), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 24, y: resizedFrame.height / 24)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 9, y: 18))
@@ -1756,17 +1753,17 @@ class IconKit: NSObject {
         color.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawSizeArrowHorizontal(color: UIColor = .black, gapWidth: CGFloat = 0, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 9, height: 7)) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Line 1
         let line1 = UIBezierPath()
-        line1.move(to:    CGPoint(x: targetFrame.midX - gapWidth / 2, y: targetFrame.midY - 0.5))
+        line1.move(to: CGPoint(x: targetFrame.midX - gapWidth / 2, y: targetFrame.midY - 0.5))
         line1.addLine(to: CGPoint(x: targetFrame.midX - gapWidth / 2, y: targetFrame.midY + 0.5))
         line1.addLine(to: CGPoint(x: targetFrame.minX + 3.5, y: targetFrame.midY + 0.5))
         line1.addLine(to: CGPoint(x: targetFrame.minX + 3.5, y: targetFrame.midY - 0.5))
@@ -1776,10 +1773,10 @@ class IconKit: NSObject {
         color.setFill()
         line1.fill()
         context.restoreGState()
-        
+
         /// Line 2
         let line2 = UIBezierPath()
-        line2.move(to:    CGPoint(x: targetFrame.maxX - 3.5, y: targetFrame.midY - 0.5))
+        line2.move(to: CGPoint(x: targetFrame.maxX - 3.5, y: targetFrame.midY - 0.5))
         line2.addLine(to: CGPoint(x: targetFrame.maxX - 3.5, y: targetFrame.midY + 0.5))
         line2.addLine(to: CGPoint(x: targetFrame.midX + gapWidth / 2, y: targetFrame.midY + 0.5))
         line2.addLine(to: CGPoint(x: targetFrame.midX + gapWidth / 2, y: targetFrame.midY - 0.5))
@@ -1789,10 +1786,10 @@ class IconKit: NSObject {
         color.setFill()
         line2.fill()
         context.restoreGState()
-        
+
         /// Triangle Left
         let triangleLeft = UIBezierPath()
-        triangleLeft.move(to:    CGPoint(x: targetFrame.minX + 4, y: targetFrame.midY - 3.5))
+        triangleLeft.move(to: CGPoint(x: targetFrame.minX + 4, y: targetFrame.midY - 3.5))
         triangleLeft.addLine(to: CGPoint(x: targetFrame.minX + 4, y: targetFrame.midY + 3.5))
         triangleLeft.addLine(to: CGPoint(x: targetFrame.minX + 0, y: targetFrame.midY + 0.0))
         triangleLeft.addLine(to: CGPoint(x: targetFrame.minX + 0, y: targetFrame.midY - 0.0))
@@ -1802,10 +1799,10 @@ class IconKit: NSObject {
         color.setFill()
         triangleLeft.fill()
         context.restoreGState()
-        
+
         /// Triangle Right
         let triangleRight = UIBezierPath()
-        triangleRight.move(to:    CGPoint(x: targetFrame.maxX - 4, y: targetFrame.midY - 3.5))
+        triangleRight.move(to: CGPoint(x: targetFrame.maxX - 4, y: targetFrame.midY - 3.5))
         triangleRight.addLine(to: CGPoint(x: targetFrame.maxX - 4, y: targetFrame.midY + 3.5))
         triangleRight.addLine(to: CGPoint(x: targetFrame.maxX - 0, y: targetFrame.midY + 0.0))
         triangleRight.addLine(to: CGPoint(x: targetFrame.maxX - 0, y: targetFrame.midY - 0.0))
@@ -1816,14 +1813,14 @@ class IconKit: NSObject {
         triangleRight.fill()
         context.restoreGState()
     }
-    
+
     class func drawSizeArrowVertical(color: UIColor = .black, gapHeight: CGFloat = 0, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 7, height: 9)) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Line 1
         let line1 = UIBezierPath()
-        line1.move(to:    CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.minY + 4))
+        line1.move(to: CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.minY + 4))
         line1.addLine(to: CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.midY - gapHeight / 2))
         line1.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.midY - gapHeight / 2))
         line1.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.minY + 4))
@@ -1833,10 +1830,10 @@ class IconKit: NSObject {
         color.setFill()
         line1.fill()
         context.restoreGState()
-        
+
         /// Line 2
         let line2 = UIBezierPath()
-        line2.move(to:    CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.midY + gapHeight / 2))
+        line2.move(to: CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.midY + gapHeight / 2))
         line2.addLine(to: CGPoint(x: targetFrame.midX + 0.5, y: targetFrame.maxY - 4))
         line2.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.maxY - 4))
         line2.addLine(to: CGPoint(x: targetFrame.midX - 0.5, y: targetFrame.midY + gapHeight / 2))
@@ -1846,10 +1843,10 @@ class IconKit: NSObject {
         color.setFill()
         line2.fill()
         context.restoreGState()
-        
+
         /// Triangle Up
         let triangleUp = UIBezierPath()
-        triangleUp.move(to:    CGPoint(x: targetFrame.midX + 0.0, y: 0))
+        triangleUp.move(to: CGPoint(x: targetFrame.midX + 0.0, y: 0))
         triangleUp.addLine(to: CGPoint(x: targetFrame.midX + 3.5, y: 4))
         triangleUp.addLine(to: CGPoint(x: targetFrame.midX - 3.5, y: 4))
         triangleUp.addLine(to: CGPoint(x: targetFrame.midX + 0.0, y: 0))
@@ -1859,10 +1856,10 @@ class IconKit: NSObject {
         color.setFill()
         triangleUp.fill()
         context.restoreGState()
-        
+
         /// Triangle Down
         let triangleDown = UIBezierPath()
-        triangleDown.move(to:    CGPoint(x: targetFrame.midX + 0.0, y: targetFrame.maxY + 0))
+        triangleDown.move(to: CGPoint(x: targetFrame.midX + 0.0, y: targetFrame.maxY + 0))
         triangleDown.addLine(to: CGPoint(x: targetFrame.midX + 3.5, y: targetFrame.maxY - 4))
         triangleDown.addLine(to: CGPoint(x: targetFrame.midX - 3.5, y: targetFrame.maxY - 4))
         triangleDown.addLine(to: CGPoint(x: targetFrame.midX + 0.0, y: targetFrame.maxY + 0))
@@ -1873,17 +1870,17 @@ class IconKit: NSObject {
         triangleDown.fill()
         context.restoreGState()
     }
-    
+
     class func drawChevronUpDown(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 5, y: 6))
@@ -1905,7 +1902,7 @@ class IconKit: NSObject {
         color.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         /// icon copy
         let iconCopy = UIBezierPath()
         iconCopy.move(to: CGPoint(x: 5, y: 6))
@@ -1929,20 +1926,20 @@ class IconKit: NSObject {
         color.setFill()
         iconCopy.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawChevronDown(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         /// Resize to Target Frame
         context.saveGState()
         let resizedFrame = resizing.apply(rect: CGRect(x: 0, y: 0, width: 16, height: 16), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 16, y: resizedFrame.height / 16)
-        
+
         /// icon
         let icon = UIBezierPath()
         icon.move(to: CGPoint(x: 5, y: 6))
@@ -1964,20 +1961,20 @@ class IconKit: NSObject {
         color.setFill()
         icon.fill()
         context.restoreGState()
-        
+
         context.restoreGState()
     }
-    
+
     class func drawSearch(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
+
         //// Resize to Target Frame
         context.saveGState()
         let resizedFrame: CGRect = resizing.apply(rect: CGRect(x: 0, y: 0, width: 19, height: 19), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 19, y: resizedFrame.height / 19)
-        
+
         //// Bezier Drawing
         let bezierPath = UIBezierPath()
         bezierPath.move(to: CGPoint(x: 7.71, y: 15.27))
@@ -2000,644 +1997,643 @@ class IconKit: NSObject {
         bezierPath.close()
         color.setFill()
         bezierPath.fill()
-        
-        context.restoreGState()
 
+        context.restoreGState()
     }
-    
-    //MARK: - Canvas Images
-    
+
+    // MARK: - Canvas Images
+
     /// Icons
-    
+
     class func imageOfBorderStyleRoundedRect() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 20, height: 16), false, 0)
         IconKit.drawBorderStyleRoundedRect()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfBorderStyleBezel() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 20, height: 16), false, 0)
         IconKit.drawBorderStyleBezel()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfBorderStyleLine() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 20, height: 16), false, 0)
         IconKit.drawBorderStyleLine()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfBorderStyleNone() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 20, height: 16), false, 0)
         IconKit.drawBorderStyleNone()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfTextAlignmentNatural() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
         IconKit.drawTextAlignmentNatural()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfTextAlignmentJustified() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
         IconKit.drawTextAlignmentJustified()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfTextAlignmentRight() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
         IconKit.drawTextAlignmentRight()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfTextAlignmentCenter() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
         IconKit.drawTextAlignmentCenter()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfAppearanceDark() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
         IconKit.drawAppearanceDark()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfAppearanceMedium() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
         IconKit.drawAppearanceMedium()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfSliderHorizontal() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 24, height: 24), false, 0)
         IconKit.drawSliderHorizontal()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfSetSquareFill() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 24, height: 24), false, 0)
         IconKit.drawSetSquareFill()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfAppearanceLight() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
         IconKit.drawAppearanceLight()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfTextAlignmentLeft() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
         IconKit.drawTextAlignmentLeft()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfColorGrid() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 32, height: 16), false, 0)
         IconKit.drawColorGrid()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfVerticalAlignmentTop() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 15, height: 11), false, 0)
         IconKit.drawVerticalAlignmentTop()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfVerticalAlignmentCenter() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 15, height: 11), false, 0)
         IconKit.drawVerticalAlignmentCenter()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfVerticalAlignmentBottom() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 15, height: 11), false, 0)
         IconKit.drawVerticalAlignmentBottom()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfVerticalAlignmentFill() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 11, height: 11), false, 0)
         IconKit.drawVerticalAlignmentFill()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfHorizontalAlignmentFill() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 11, height: 11), false, 0)
         IconKit.drawHorizontalAlignmentFill()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfHorizontalAlignmentRight() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 11, height: 15), false, 0)
         IconKit.drawHorizontalAlignmentRight()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfHorizontalAlignmentTrailing() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 11, height: 15), false, 0)
         IconKit.drawHorizontalAlignmentTrailing()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfHorizontalAlignmentCenter() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 11, height: 15), false, 0)
         IconKit.drawHorizontalAlignmentCenter()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfHorizontalAlignmentLeft() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 11, height: 15), false, 0)
         IconKit.drawHorizontalAlignmentLeft()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfHorizontalAlignmentLeading() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 11, height: 15), false, 0)
         IconKit.drawHorizontalAlignmentLeading()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfWifiExlusionMark(_ size: CGSize = CGSize(width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         IconKit.drawWifiExlusionMark()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfEyeSlashFill(_ size: CGSize = CGSize(width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         IconKit.drawEyeSlashFill(frame: CGRect(origin: .zero, size: size), resizing: resizing)
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfListBulletIndent(_ size: CGSize = CGSize(width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         IconKit.drawListBulletIndent(frame: CGRect(origin: .zero, size: size), resizing: resizing)
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfInfoCircleFill(_ size: CGSize = CGSize(width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         IconKit.drawInfoCircleFill(frame: CGRect(origin: .zero, size: size), resizing: resizing)
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfChevronUpDown(_ size: CGSize = CGSize(width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         IconKit.drawChevronUpDown(frame: CGRect(origin: .zero, size: size), resizing: resizing)
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfSizeArrowVertical() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 7, height: 9), false, 0)
         IconKit.drawSizeArrowVertical()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfSizeArrowHorizontal() -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 9, height: 7), false, 0)
         IconKit.drawSizeArrowHorizontal()
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfChevronDown(_ size: CGSize = CGSize(width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         IconKit.drawChevronDown(frame: CGRect(origin: .zero, size: size), resizing: resizing)
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
+
     class func imageOfSearch(_ size: CGSize = CGSize(width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) -> UIImage {
-        struct LocalCache {
+        enum LocalCache {
             static var image: UIImage!
         }
         if LocalCache.image != nil {
             return LocalCache.image
         }
         var image: UIImage
-        
+
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         IconKit.drawSearch(frame: CGRect(origin: .zero, size: size), resizing: resizing)
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
+
         LocalCache.image = image
         return image
     }
-    
-    //MARK: - Resizing Behavior
-    
+
+    // MARK: - Resizing Behavior
+
     enum ResizingBehavior {
         case aspectFit /// The content is proportionally resized to fit into the target rectangle.
         case aspectFill /// The content is proportionally resized to completely fill the target rectangle.
         case stretch /// The content is stretched to match the entire target rectangle.
         case center /// The content is centered in the target rectangle, but it is NOT resized.
-        
+
         func apply(rect: CGRect, target: CGRect) -> CGRect {
             if rect == target || target == CGRect.zero {
                 return rect
             }
-            
+
             var scales = CGSize.zero
             scales.width = abs(target.width / rect.width)
             scales.height = abs(target.height / rect.height)
-            
+
             switch self {
                 case .aspectFit:
                     scales.width = min(scales.width, scales.height)
@@ -2651,7 +2647,7 @@ class IconKit: NSObject {
                     scales.width = 1
                     scales.height = 1
             }
-            
+
             var result = rect.standardized
             result.size.width *= scales.width
             result.size.height *= scales.height
@@ -2660,6 +2656,4 @@ class IconKit: NSObject {
             return result
         }
     }
-    
-    
 }

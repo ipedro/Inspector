@@ -29,9 +29,12 @@ extension Icon {
         case eyeSlashFill
         case listBulletIndent
         case search
+        case sliderHorizontal
         
         func draw(color: UIColor, frame: CGRect, resizing: IconKit.ResizingBehavior) {
             switch self {
+            case .sliderHorizontal:
+                IconKit.drawSliderHorizontal(color: color, frame: frame, resizing: resizing)
             case .chevronDown:
                 IconKit.drawChevronDown(color: color, frame: frame, resizing: resizing)
                 

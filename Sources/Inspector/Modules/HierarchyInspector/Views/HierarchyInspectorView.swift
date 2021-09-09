@@ -176,23 +176,5 @@ final class HierarchyInspectorView: BaseView {
         
         return false
     }
-    
-    func animate(
-        _ animation: Animation,
-        duration: TimeInterval = ElementInspector.configuration.animationDuration,
-        delay: TimeInterval = .zero,
-        completion: ((Bool) -> Void)? = nil
-    ) {
-        transform = animation.startTransform
-        
-        Self.animate(
-            withDuration: duration,
-            delay: delay,
-            usingSpringWithDamping: animation.damping,
-            initialSpringVelocity: animation.velocity,
-            options: animation.options,
-            animations: { self.transform = animation.endTransform },
-            completion: completion
-        )
-    }
+
 }

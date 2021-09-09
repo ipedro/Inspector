@@ -64,7 +64,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         $0.tableView.keyCommandsDelegate = self
     }
     
-    private var needsSetup = true
+    private var willAppear = true
     
     private var isFinishing = false
     
@@ -137,17 +137,33 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         
         return keyCommands
     }()
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        viewCode.animate(.in) { [weak self] _ in
+            guard let self = self else { return }
+
+            if self.shouldToggleFirstResponderOnAppear {
+                self.toggleFirstResponder()
+            }
+
+        }
+    }
     
     private func addSearchKeyCommandListeners() {
         searchKeyCommands.forEach { addKeyCommand($0) }
     }
+
     private func removeSearchKeyCommandListeners() {
         searchKeyCommands.forEach { removeKeyCommand($0) }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        reloadData()
+
         // key commands
         addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))
         addKeyCommand(UIKeyCommand(.tab,       action: #selector(toggleResponderAndSelectFirstRow)))
@@ -194,30 +210,6 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     
     override var canBecomeFirstResponder: Bool {
         true
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        guard needsSetup else {
-            return
-        }
-        
-        needsSetup = false
-        
-        if animated {
-            viewCode.animate(.in)
-        }
-        
-        reloadData()
-        
-        guard shouldToggleFirstResponderOnAppear else {
-            return
-        }
-        
-        DispatchQueue.main.async {
-            self.toggleFirstResponder()
-        }
     }
     
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {

@@ -28,3 +28,9 @@ extension CGSize {
     static var actionIconSize: CGSize { Inspector.configuration.appearance.actionIconSize }
     
 }
+
+extension CGSize {
+    init(_ size: CGFloat) {
+        self.init(width: size, height: size)
+    }
+}
