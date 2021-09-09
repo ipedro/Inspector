@@ -26,6 +26,8 @@ protocol ElementViewHierarchyInspectorViewModelProtocol {
     var rootReference: ViewHierarchyReference { get }
     
     var numberOfRows: Int { get }
+
+    func shouldHighlightItem(at indexPath: IndexPath) -> Bool
     
     func reloadIcons()
     
@@ -57,7 +59,7 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
             parent: parent,
             rootDepth: rootDepth,
             thumbnailImage: snapshot.elementLibraries.icon(for: reference.rootView),
-            isCollapsed: reference.depth > rootDepth + 5
+            isCollapsed: reference.depth > rootDepth + ElementInspector.appearance.maxViewHierarchyDepthInList
         )
         
         let childrenViewModels: [[ElementViewHierarchyPanelViewModel]] = reference.children.map { childReference in
@@ -94,6 +96,10 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
 }
 
 extension ElementViewHierarchyInspectorViewModel: ElementViewHierarchyInspectorViewModelProtocol {
+    func shouldHighlightItem(at indexPath: IndexPath) -> Bool {
+        indexPath != IndexPath(row: .zero, section: .zero) && itemViewModel(for: indexPath) != nil
+    }
+
     var title: String {
         "More info"
     }

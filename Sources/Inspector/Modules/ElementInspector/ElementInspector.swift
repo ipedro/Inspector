@@ -41,6 +41,8 @@ extension ElementInspector {
         let horizontalMargins: CGFloat = 24
         
         let verticalMargins: CGFloat = 12
+
+        var maxViewHierarchyDepthInList = 3
         
         var tintColor: UIColor = UIColor(hex: 0xBF5AF2)
         

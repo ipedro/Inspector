@@ -20,8 +20,6 @@
 
 import UIKit
 
-typealias ElementInspectorPanelViewController = ElementInspectorBasePanelViewController & ElementInspectorPanelViewControllerProtocol
-
 protocol ElementInspectorPanelViewControllerProtocol: UIViewController {
     func calculatePreferredContentSize() -> CGSize
 }

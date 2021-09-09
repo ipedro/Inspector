@@ -20,6 +20,8 @@
 
 import UIKit
 
+typealias ElementInspectorPanelViewController = ElementInspectorBasePanelViewController & ElementInspectorPanelViewControllerProtocol
+
 class ElementInspectorBasePanelViewController: UIViewController {
     
     // MARK: - Layout

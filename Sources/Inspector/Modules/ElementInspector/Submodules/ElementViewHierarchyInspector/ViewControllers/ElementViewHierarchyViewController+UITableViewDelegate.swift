@@ -24,52 +24,22 @@ import UIKit
 
 extension ElementViewHierarchyViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
-            return false
-        }
-        
-        return itemViewModel.isContainer == true || itemViewModel.accessoryType == .detailDisclosureButton
+        viewModel.shouldHighlightItem(at: indexPath)
     }
-    
-    func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
-        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
-            return
-        }
-        
-        self.delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference, from: viewModel.rootReference)
-    }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        DispatchQueue.main.async {
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
-        
-        guard let selectedItemViewModel = viewModel.itemViewModel(for: indexPath) else {
-            return
-        }
-        
-        guard selectedItemViewModel.accessoryType == .detailDisclosureButton else {
-            return toggleContainer(at: indexPath)
-        }
+        guard let selectedItemViewModel = viewModel.itemViewModel(for: indexPath) else { return }
         
         delegate?.viewHierarchyListViewController(self, didSegueTo: selectedItemViewModel.reference, from: viewModel.rootReference)
-    }
-    
-    private func toggleContainer(at indexPath: IndexPath) {
-        let actions = viewModel.toggleContainer(at: indexPath)
-        
-        updateTableView(indexPath, with: actions)
     }
 }
 
 // MARK: - Helpers
 
-private extension ElementViewHierarchyViewController {
+extension ElementViewHierarchyViewController {
     
     func updateTableView(_ indexPath: IndexPath, with actions: [ElementInspector.ViewHierarchyInspectorAction]) {
-        guard actions.isEmpty == false else {
-            return
-        }
+        guard actions.isEmpty == false else { return }
         
         let tableView = viewCode.tableView
         

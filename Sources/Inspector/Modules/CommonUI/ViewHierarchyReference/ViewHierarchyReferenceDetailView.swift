@@ -33,7 +33,7 @@ protocol ViewHierarchyReferenceDetailViewModelProtocol {
     
     var isCollapsed: Bool { get set }
     
-    var isChevronHidden: Bool { get }
+    var showCollapseButton: Bool { get }
     
     var isHidden: Bool { get }
     
@@ -41,7 +41,7 @@ protocol ViewHierarchyReferenceDetailViewModelProtocol {
 }
 
 final class ViewHierarchyReferenceDetailView: BaseView {
-    
+
     var viewModel: ViewHierarchyReferenceDetailViewModelProtocol? {
         didSet {
             
@@ -56,8 +56,10 @@ final class ViewHierarchyReferenceDetailView: BaseView {
             // Collapsed
 
             isCollapsed = viewModel?.isCollapsed == true
-            
-            chevronDownIcon.isSafelyHidden = viewModel?.isChevronHidden ?? true
+
+            let hideCollapse = viewModel?.showCollapseButton != true
+            collapseButton.isHidden = hideCollapse
+            collapseButton.isUserInteractionEnabled = !hideCollapse
 
             // Description
 
@@ -77,7 +79,7 @@ final class ViewHierarchyReferenceDetailView: BaseView {
     
     var isCollapsed = false {
         didSet {
-            chevronDownIcon.transform = isCollapsed ? .init(rotationAngle: -(.pi / 2)) : .identity
+            collapseButton.transform = .init(rotationAngle: isCollapsed ? -(.pi / 2) : .zero)
         }
     }
     
@@ -92,9 +94,7 @@ final class ViewHierarchyReferenceDetailView: BaseView {
             delay: 0,
             options: [.beginFromCurrentState, .curveEaseInOut],
             animations: { [weak self] in
-                
                 self?.isCollapsed.toggle()
-                
             },
             completion: nil
         )
@@ -117,8 +117,8 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         $0.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
     }
     
-    private(set) lazy var chevronDownIcon = Icon.chevronDownIcon()
-    
+    private(set) lazy var collapseButton = IconButton(.chevronDown)
+
     private(set) lazy var thumbnailImageView = UIImageView(
         .contentMode(.center),
         .tintColor(ElementInspector.appearance.textColor),
@@ -146,27 +146,13 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         contentView.spacing = ElementInspector.appearance.verticalMargins
         contentView.alignment = .center
         
-        contentView.addArrangedSubviews(thumbnailImageView, textStackView)
+        contentView.addArrangedSubviews(collapseButton, thumbnailImageView, textStackView)
         
         installView(
             contentView,
             .insets(ElementInspector.appearance.directionalInsets),
             priority: .required
         )
-    
-        setupChevronDownIcon()
-    }
-    
-    private func setupChevronDownIcon() {
-        contentView.addSubview(chevronDownIcon)
-        
-        chevronDownIcon.centerYAnchor.constraint(equalTo: elementNameLabel.centerYAnchor).isActive = true
-
-        chevronDownIcon.trailingAnchor.constraint(
-            equalTo: elementNameLabel.leadingAnchor,
-            constant: -(ElementInspector.appearance.verticalMargins / 3)
-        ).isActive = true
-        
     }
     
 }

@@ -70,7 +70,7 @@ extension AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
         get { nil }
         set { }
     }
-    
+
     var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
     
     var title: String { reference.elementName }
@@ -80,17 +80,15 @@ extension AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
     var subtitle: String { reference.elementDescription }
     
     var isContainer: Bool { false }
+
+    var showCollapseButton: Bool { false }
     
     var isCollapsed: Bool {
         get { true }
         set { }
     }
     
-    var isChevronHidden: Bool { true }
-    
     var isHidden: Bool { false }
-    
-    var accessoryType: UITableViewCell.AccessoryType { .none }
     
     var relativeDepth: Int { .zero }
 }

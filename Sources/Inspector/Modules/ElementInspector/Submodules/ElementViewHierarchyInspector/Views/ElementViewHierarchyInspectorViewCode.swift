@@ -29,13 +29,13 @@ final class ElementViewHierarchyInspectorViewCode: BaseView {
         .tableFooterView(UIView()),
         .separatorStyle(.none),
         .contentInset(bottom: ElementInspector.appearance.horizontalMargins)
-    )
+    ).then {
+        $0.delaysContentTouches = false
+    }
     
     override func setup() {
         super.setup()
-        
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
-        
         installView(tableView)
     }
     

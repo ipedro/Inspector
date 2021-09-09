@@ -29,10 +29,31 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ElementViewHierarchyInspectorTableViewCodeCell.self, for: indexPath)
-        cell.viewModel = viewModel.itemViewModel(for: indexPath)
+        let itemViewModel = viewModel.itemViewModel(for: indexPath)
+        cell.viewModel = itemViewModel
         cell.isEvenRow = indexPath.row % 2 == 0
-        
+        cell.contentView.isUserInteractionEnabled = true
+
+        cell.collapseButton.actionHandler = { [weak self] in
+            guard let self = self else { return }
+
+            let actions = self.viewModel.toggleContainer(at: indexPath)
+            self.updateTableView(indexPath, with: actions)
+        }
+
+        cell.detailsButton.actionHandler = { [weak self] in
+            guard
+                let self = self,
+                let itemViewModel = itemViewModel
+            else { return }
+
+            self.delegate?.viewHierarchyListViewController(
+                self,
+                didSelectInfo: itemViewModel.reference,
+                from: self.viewModel.rootReference
+            )
+        }
+
         return cell
     }
-    
 }

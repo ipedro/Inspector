@@ -22,10 +22,7 @@ import UIKit
 
 protocol ElementViewHierarchyPanelViewModelProtocol: ViewHierarchyReferenceDetailViewModelProtocol & AnyObject {
     var parent: ElementViewHierarchyPanelViewModelProtocol? { get set }
-    
     var reference: ViewHierarchyReference { get }
-    
-    var accessoryType: UITableViewCell.AccessoryType { get }
 }
 
 
@@ -76,9 +73,9 @@ extension ElementViewHierarchyPanelViewModel: ElementViewHierarchyPanelViewModel
     var isHidden: Bool {
         parent?.isCollapsed == true || parent?.isHidden == true
     }
-    
-    var accessoryType: UITableViewCell.AccessoryType {
-        .detailButton
+
+    var showCollapseButton: Bool {
+        isContainer && relativeDepth <= ElementInspector.appearance.maxViewHierarchyDepthInList
     }
     
     var isCollapsed: Bool {
@@ -102,9 +99,6 @@ extension ElementViewHierarchyPanelViewModel: ElementViewHierarchyPanelViewModel
         reference.depth - rootDepth
     }
     
-    var isChevronHidden: Bool {
-        isContainer != true || accessoryType == .disclosureIndicator
-    }
 }
 
 // MARK: - Hashable
