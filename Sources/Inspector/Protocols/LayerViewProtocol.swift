@@ -20,4 +20,4 @@
 
 import UIKit
 
-protocol LayerViewProtocol: UIView {}
+protocol LayerViewProtocol: InternalViewProtocol {}

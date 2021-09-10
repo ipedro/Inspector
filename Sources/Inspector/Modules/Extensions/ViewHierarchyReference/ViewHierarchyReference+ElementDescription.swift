@@ -26,10 +26,11 @@ extension ViewHierarchyReference {
         var strings = [String?]()
         
         var constraints: String? {
-            guard let view = rootView else {
-                return nil
-            }
-            return "\(view.constraints.count) constraints"
+            guard let rootView = rootView else { return nil }
+
+            return rootView.constraints.compactMap { constraint in
+                NSLayoutConstraintDescription(with: constraint, inRelationTo: rootView)?.rawValue
+            }.joined(separator: "\n")
         }
         
         var subviews: String? {
