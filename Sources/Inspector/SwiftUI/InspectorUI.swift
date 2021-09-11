@@ -23,6 +23,9 @@ import SwiftUI
 
 @available(iOS 14.0, *)
 final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHostable {
+
+    // MARK: - InspectorSwiftUIHostable
+
     let inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]?
 
     let inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme?
@@ -32,6 +35,12 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHostable
     let inspectorElementLibraries: [InspectorElementLibraryProtocol]?
 
     var didFinish: (() -> Void)?
+
+    var window: UIWindow? {
+        UIApplication.shared.windows.first { $0.isKeyWindow }
+    }
+
+    // MARK: - Initializer
 
     init(
         inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]?,
@@ -49,10 +58,6 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHostable
 
     func hierarchyInspectorDidFinish(_ coordinator: HierarchyInspectorCoordinator) {
         didFinish?()
-    }
-
-    var window: UIWindow? {
-        UIApplication.shared.windows.first { $0.isKeyWindow }
     }
 
     func alertController(
