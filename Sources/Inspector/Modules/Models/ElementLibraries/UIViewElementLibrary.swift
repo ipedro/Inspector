@@ -22,7 +22,7 @@ import UIKit
 import MapKit
 import WebKit
 
-enum UIKitElementLibrary: Swift.CaseIterable {
+enum UIViewElementLibrary: Swift.CaseIterable {
     case activityIndicator
     case button
     case control
@@ -50,7 +50,7 @@ enum UIKitElementLibrary: Swift.CaseIterable {
 
 // MARK: - HierarchyInspectorElementLibraryProtocol
 
-extension UIKitElementLibrary: InspectorElementLibraryProtocol {
+extension UIViewElementLibrary: InspectorElementLibraryProtocol {
     var targetClass: AnyClass {
         switch self {
         case .navigationBar:

@@ -21,16 +21,52 @@
 import Foundation
 
 extension ViewHierarchyReference {
-    
+
+    var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        guard let view = rootView else { return [] }
+
+        return view.constraints.compactMap {
+            NSLayoutConstraintInspectableViewModel(with: $0, inRelationTo: view)
+        }
+        .uniqueValues()
+    }
+
+    var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        constraintReferences.filter { $0.axis == .horizontal }
+    }
+
+    var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        constraintReferences.filter { $0.axis == .vertical }
+    }
+
     var elementDescription: String {
         var strings = [String?]()
         
         var constraints: String? {
-            guard let rootView = rootView else { return nil }
+            let totalCount = constraintReferences.count
 
-            return rootView.constraints.compactMap { constraint in
-                NSLayoutConstraintDescription(with: constraint, inRelationTo: rootView)?.rawValue
-            }.joined(separator: "\n")
+            if totalCount == .zero {
+                return nil
+            }
+            else {
+                return totalCount == 1 ? "1 Constraint" : "\(totalCount) Constraints"
+            }
+
+//            let components: [String?] = [
+//                "\(totalCount == 1 ? "1 Constraint" : "\(totalCount) Constraints")",
+//                "",
+//                horizontal.isEmpty ? nil : "Horizontal Constraints",
+//                horizontal.prefix(3).compactMap { $0.displayName }.joined(separator: "\n"),
+//                horizontal.count > 3 ? "..." : nil,
+//                "",
+//                vertical.isEmpty ? nil : "Vertical Constraints",
+//                vertical.prefix(3).compactMap { $0.displayName }.joined(separator: "\n"),
+//                vertical.count > 3 ? "..." : nil
+//            ]
+//
+//            return components
+//            .compactMap { $0 }
+//            .joined(separator: "\n")
         }
         
         var subviews: String? {

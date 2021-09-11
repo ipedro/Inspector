@@ -45,7 +45,7 @@ struct ViewHierarchySnapshot {
         elementLibraries: [InspectorElementLibraryProtocol],
         in rootView: UIView
     ) {
-        self.availableLayers = availableLayers.uniqueValues
+        self.availableLayers = availableLayers.uniqueValues()
         
         self.elementLibraries = elementLibraries
         

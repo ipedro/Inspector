@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension UIKitElementLibrary {
+extension UIViewElementLibrary {
 
     final class UIControlInspectableViewModel: InspectorElementViewModelProtocol {
         

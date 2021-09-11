@@ -20,8 +20,6 @@
 
 import UIKit
 
-#warning("WIP")
-
 final class ElementSizeInspectorViewController: ElementInspectorPanelViewController {
     func calculatePreferredContentSize() -> CGSize {
         #warning("implement")

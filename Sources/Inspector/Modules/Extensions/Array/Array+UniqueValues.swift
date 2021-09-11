@@ -21,8 +21,8 @@
 import Foundation
 
 extension Array where Element: Equatable {
-    var uniqueValues: [Element] {
-        var uniqueValues: [Element] = []
+    func uniqueValues() -> Self {
+        var uniqueValues = Self()
         forEach { item in
             if !uniqueValues.contains(item) {
                 uniqueValues += [item]

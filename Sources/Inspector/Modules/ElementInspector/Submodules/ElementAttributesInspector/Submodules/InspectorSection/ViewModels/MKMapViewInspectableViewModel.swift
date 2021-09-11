@@ -20,7 +20,7 @@
 
 import MapKit
 
-extension UIKitElementLibrary {
+extension UIViewElementLibrary {
     
     final class MKMapViewInspectableViewModel: InspectorElementViewModelProtocol {
         

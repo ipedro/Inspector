@@ -41,6 +41,6 @@ enum ElementInspectorPanel: CaseIterable {
     }
     
     static var allCases: [ElementInspectorPanel] {
-        [.attributesInspector, .viewHierarchyInspector]
+        [.attributesInspector, .sizeInspector, .viewHierarchyInspector]
     }
 }

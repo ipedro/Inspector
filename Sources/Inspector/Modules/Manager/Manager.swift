@@ -230,7 +230,7 @@ private extension InspectorHostable {
         layers.append(.systemViews)
         layers.append(.systemContainers)
         
-        return layers.uniqueValues
+        return layers.uniqueValues()
     }
     
     var availableElementLibraries: [InspectorElementLibraryProtocol] {
@@ -240,7 +240,7 @@ private extension InspectorHostable {
             elements.append(contentsOf: inspectorElementLibraries)
         }
         
-        elements.append(contentsOf: UIKitElementLibrary.standard)
+        elements.append(contentsOf: UIViewElementLibrary.standard)
         
         return elements
     }
