@@ -22,7 +22,7 @@ import UIKit
 
 extension UIViewElementLibrary {
 
-    final class UISliderInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UISliderInspectableViewModel: ElementInspectorFormViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case value                 = "Value"

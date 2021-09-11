@@ -112,7 +112,7 @@ extension UIViewElementLibrary: InspectorElementLibraryProtocol {
         }
     }
     
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
+    func viewModel(for referenceView: UIView) -> ElementInspectorFormViewModelProtocol? {
         switch self {
         case .window,
              .navigationBar:

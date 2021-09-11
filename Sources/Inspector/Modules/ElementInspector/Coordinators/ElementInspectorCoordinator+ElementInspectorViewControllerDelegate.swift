@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
+extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelegate {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
                                         viewControllerFor panel: ElementInspectorPanel,
                                         with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {
@@ -33,7 +33,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
                     reference: reference,
                     snapshot: viewHierarchySnapshot
                 )).then {
-                $0.delegate = self
+                $0.formDelegate = self
             }
             
         case .viewHierarchyInspector:
@@ -46,8 +46,15 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
                 $0.delegate = self
             }
             
-        case .sizeInspector:
-            return ElementSizeInspectorViewController()
+        case .autoLayoutInspector:
+            return ElementAutoLayoutInspectorViewController.create(
+                viewModel: AutoLayoutInspectorViewModel(
+                    reference: reference,
+                    snapshot: viewHierarchySnapshot
+                )
+            ).then {
+                $0.formDelegate = self
+            }
         }
     }
     

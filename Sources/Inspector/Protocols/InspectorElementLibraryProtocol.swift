@@ -25,15 +25,15 @@ public protocol InspectorElementLibraryProtocol {
     
     var targetClass: AnyClass { get }
     
-    func viewModels(for referenceView: UIView) -> [InspectorElementViewModelProtocol?]
+    func viewModels(for referenceView: UIView) -> [ElementInspectorFormViewModelProtocol?]
     
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol?
+    func viewModel(for referenceView: UIView) -> ElementInspectorFormViewModelProtocol?
     
     func icon(for referenceView: UIView) -> UIImage?
 }
 
 public extension InspectorElementLibraryProtocol {
-    func viewModels(for referenceView: UIView) -> [InspectorElementViewModelProtocol?] {
+    func viewModels(for referenceView: UIView) -> [ElementInspectorFormViewModelProtocol?] {
         [viewModel(for: referenceView)]
     }
 }

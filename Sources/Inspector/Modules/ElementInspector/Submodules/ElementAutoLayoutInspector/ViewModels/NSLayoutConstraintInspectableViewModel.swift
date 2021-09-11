@@ -187,6 +187,165 @@ struct NSLayoutConstraintInspectableViewModel: Hashable {
         $0.numberStyle = .decimal
     }
 
+    let constraint: NSLayoutConstraint
+
+    let view: UIView?
+
+    let type: `Type`
+
+    let first: Binding
+
+    let second: Binding?
+
+    let axis: NSLayoutConstraint.Axis
+
+    init?(with constraint: NSLayoutConstraint, in view: UIView) {
+        guard
+            constraint.isActive,
+            let firstItem = Item(with: constraint.firstItem),
+            let firstAxis = constraint.firstAttribute.axis
+        else {
+            return nil
+        }
+
+        let first = Binding(
+            item: firstItem,
+            attribute: constraint.firstAttribute,
+            anchor: constraint.firstAnchor
+        )
+
+        let second: Binding?
+
+        if let secondAnchor = constraint.secondAnchor,
+           let secondItem = Item(with: constraint.secondItem)
+        {
+            second = Binding(
+                item: secondItem,
+                attribute: constraint.secondAttribute,
+                anchor: secondAnchor
+            )
+        }
+        else {
+            second = nil
+        }
+
+        let myBindings = Self.find(.mine, bindings: first, second, inRelationTo: view)
+
+        guard
+            first.item.targetView as? InternalViewProtocol == nil,
+            second?.item.targetView as? InternalViewProtocol == nil,
+            myBindings.isEmpty == false
+        else {
+            return nil
+        }
+
+        axis = firstAxis
+        self.first = first
+        self.second = second
+        self.constraint = constraint
+        self.view = view
+
+        if let identifier = constraint.safeIdentifier {
+            let multiplier = constraint.multiplier != 1 ? constraint.multiplier : nil
+            let constant = constraint.constant != 0 ? constraint.constant : nil
+            type = .identifier(identifier, value: multiplier?.string(appending: "x") ?? constant?.string(appending: " pt"))
+            return
+        }
+
+        let theirBindings = Self.find(.theirs, bindings: first, second, inRelationTo: view)
+
+        switch theirBindings.count {
+        case .zero where myBindings.count > .zero && constraint.multiplier != 1:
+            type = .aspectRatio(multiplier: constraint.multiplier)
+
+        case .zero where myBindings.count > .zero:
+            guard let firstAttributeName = first.attribute.displayName else {
+                return nil
+            }
+
+            type = .constant(
+                attributeName: firstAttributeName,
+                relation: constraint.relation,
+                constant: constraint.constant
+            )
+
+        case 1 where constraint.multiplier != 1:
+            type = .proportional(
+                attribute: myBindings.first?.attribute.displayName,
+                to: theirBindings.first!.item.displayName
+            )
+
+        case 1:
+            type = .relative(
+                from: myBindings.first?.attribute.displayName,
+                to: theirBindings.first!.item.displayName
+            )
+
+        default:
+            return nil
+        }
+    }
+
+    private static func find(_ ownership: Ownership, bindings: Binding?..., inRelationTo view: UIView?) -> [Binding] {
+        bindings.compactMap { binding in
+            guard
+                let view = view,
+                let binding = binding,
+                binding.ownership(to: view) == ownership
+            else {
+                return nil
+            }
+
+            return binding
+        }
+    }
+
+}
+
+// MARK: - Computed Properties
+
+extension NSLayoutConstraintInspectableViewModel {
+
+    var mine: Binding? {
+        guard let rootView = view else { return nil }
+
+        if case .mine = first.ownership(to: rootView) {
+            return first
+        }
+        else if case .mine = second?.ownership(to: rootView) {
+            return second
+        }
+        else {
+            assertionFailure("should this happen?")
+            return nil
+        }
+    }
+
+    var theirs: Binding? {
+        guard let rootView = view else { return nil }
+
+        if case .theirs = first.ownership(to: rootView) {
+            return first
+        }
+        else if case .theirs = second?.ownership(to: rootView) {
+            return second
+        }
+        else {
+            return nil
+        }
+    }
+
+    var displayName: String? {
+        let priority = constraint.priority != .required ? constraint.priority : nil
+
+        return [
+            type.description,
+            priority?.displayName.string(prepending: "(", appending: ")"),
+        ]
+        .compactMap { $0 }
+        .joined(separator: " ")
+    }
+
     enum Ownership {
         case mine, theirs
     }
@@ -262,9 +421,9 @@ struct NSLayoutConstraintInspectableViewModel: Hashable {
 
             case let .layoutGuide(layoutGuide):
                 if let owningView = layoutGuide.owningView {
-                    return "\(owningView.accessibilityIdentifierOrClassName).\(type(of: layoutGuide))"
+                    return "\(owningView.accessibilityIdentifierOrClassName).\( layoutGuide.classForCoder)"
                 }
-                return String(describing: type(of: layoutGuide))
+                return String(describing: layoutGuide.classForCoder)
 
             case let .other(object):
                 return String(describing: object)
@@ -272,162 +431,7 @@ struct NSLayoutConstraintInspectableViewModel: Hashable {
         }
     }
 
-    let rootConstraint: NSLayoutConstraint
-
-    let rootView: UIView?
-
-    let title: Title
-
-    let first: Binding
-
-    let second: Binding?
-
-    let axis: NSLayoutConstraint.Axis
-
-    init?(with rootConstraint: NSLayoutConstraint, inRelationTo rootView: UIView) {
-        guard
-            rootConstraint.isActive,
-            let firstItem = Item(with: rootConstraint.firstItem),
-            let firstAxis = rootConstraint.firstAttribute.axis
-        else {
-            return nil
-        }
-
-        let first = Binding(
-            item: firstItem,
-            attribute: rootConstraint.firstAttribute,
-            anchor: rootConstraint.firstAnchor
-        )
-
-        let second: Binding?
-
-        if let secondAnchor = rootConstraint.secondAnchor,
-           let secondItem = Item(with: rootConstraint.secondItem)
-        {
-            second = Binding(
-                item: secondItem,
-                attribute: rootConstraint.secondAttribute,
-                anchor: secondAnchor
-            )
-        }
-        else {
-            second = nil
-        }
-
-        let myBindings = Self.find(.mine, bindings: first, second, inRelationTo: rootView)
-
-        guard
-            first.item.targetView as? InternalViewProtocol == nil,
-            second?.item.targetView as? InternalViewProtocol == nil,
-            myBindings.isEmpty == false
-        else {
-            return nil
-        }
-
-        axis = firstAxis
-        self.first = first
-        self.second = second
-        self.rootConstraint = rootConstraint
-        self.rootView = rootView
-
-        if let identifier = rootConstraint.safeIdentifier {
-            let multiplier = rootConstraint.multiplier != 1 ? rootConstraint.multiplier : nil
-            let constant = rootConstraint.constant != 0 ? rootConstraint.constant : nil
-            title = .identifier(identifier, value: multiplier?.string(appending: "x") ?? constant?.string(appending: " pt"))
-            return
-        }
-
-        let theirBindings = Self.find(.theirs, bindings: first, second, inRelationTo: rootView)
-
-        switch theirBindings.count {
-        case .zero where myBindings.count > .zero && rootConstraint.multiplier != 1:
-            title = .aspectRatio(multiplier: rootConstraint.multiplier)
-
-        case .zero where myBindings.count > .zero:
-            guard let firstAttributeName = first.attribute.displayName else {
-                return nil
-            }
-
-            title = .constant(
-                attributeName: firstAttributeName,
-                relation: rootConstraint.relation,
-                constant: rootConstraint.constant
-            )
-
-        case 1 where rootConstraint.multiplier != 1:
-            title = .proportional(
-                attribute: myBindings.first?.attribute.displayName,
-                to: theirBindings.first!.item.displayName
-            )
-
-        case 1:
-            title = .relative(
-                from: myBindings.first?.attribute.displayName,
-                to: theirBindings.first!.item.displayName
-            )
-
-        default:
-            return nil
-        }
-    }
-
-    static func find(_ ownership: Ownership, bindings: Binding?..., inRelationTo view: UIView?) -> [Binding] {
-        bindings.compactMap { binding in
-            guard
-                let view = view,
-                let binding = binding,
-                binding.ownership(to: view) == ownership
-            else {
-                return nil
-            }
-
-            return binding
-        }
-    }
-
-    var mine: Binding? {
-        guard let rootView = rootView else { return nil }
-
-        if case .mine = first.ownership(to: rootView) {
-            return first
-        }
-        else if case .mine = second?.ownership(to: rootView) {
-            return second
-        }
-        else {
-            assertionFailure("should this happen?")
-            return nil
-        }
-    }
-
-    var theirs: Binding? {
-        guard let rootView = rootView else { return nil }
-
-        if case .theirs = first.ownership(to: rootView) {
-            return first
-        }
-        else if case .theirs = second?.ownership(to: rootView) {
-            return second
-        }
-        else {
-            return nil
-        }
-    }
-
-    var displayName: String? {
-        let priority = rootConstraint.priority != .required ? rootConstraint.priority : nil
-
-        return [
-            title.description,
-            priority?.displayName.string(prepending: "(", appending: ")"),
-        ]
-        .compactMap { $0 }
-        .joined(separator: " ")
-    }
-}
-
-extension NSLayoutConstraintInspectableViewModel {
-    enum Title: CustomStringConvertible, Hashable {
+    enum `Type`: CustomStringConvertible, Hashable {
         case identifier(String, value: String?)
         case aspectRatio(multiplier: CGFloat)
         case proportional(attribute: String? = nil, to: String)
@@ -464,4 +468,76 @@ extension NSLayoutConstraintInspectableViewModel {
             }
         }
     }
+}
+
+extension NSLayoutConstraintInspectableViewModel: InspectorAutoLayoutViewModelProtocol {
+    private enum Property: String, Swift.CaseIterable {
+        case firstItem = "First Item"
+        case relation = "Relation"
+        case secondItem = "Second Item"
+        case spacer1
+        case constant = "Constant"
+        case priority = "Priority"
+        case multiplier = "Multiplier"
+        case spacer2
+        case identifier = "Identifier"
+        case spacer3
+        case isActive = "Installed"
+    }
+
+    var title: String { type.description }
+
+    var properties: [InspectorElementViewModelProperty] {
+        Property.allCases.compactMap { property in
+            switch property {
+            case .constant:
+                return .cgFloatStepper(
+                    title: property.rawValue,
+                    value: { constraint.constant },
+                    range: { -CGFloat.infinity...CGFloat.infinity },
+                    stepValue: { 1 },
+                    handler: { constraint.constant = $0 }
+                )
+            case .spacer1,
+                 .spacer2,
+                 .spacer3:
+                return .separator(title: "")
+
+            case .multiplier:
+                return .cgFloatStepper(
+                    title: property.rawValue,
+                    value: { constraint.multiplier },
+                    range: { -CGFloat.infinity...CGFloat.infinity },
+                    stepValue: { 0.1 },
+                    handler: nil
+                )
+
+            case .identifier:
+                return .textField(
+                    title: property.rawValue,
+                    placeholder: constraint.safeIdentifier ?? property.rawValue,
+                    value: { constraint.safeIdentifier },
+                    handler: { constraint.identifier = $0 }
+                )
+
+            case .isActive:
+                return .toggleButton(
+                    title: property.rawValue,
+                    isOn: { constraint.isActive },
+                    handler: { constraint.isActive = $0 }
+                )
+
+            case .priority:
+                return .floatStepper(
+                    title: property.rawValue,
+                    value: { constraint.priority.rawValue },
+                    range: { UILayoutPriority.fittingSizeLevel.rawValue...UILayoutPriority.required.rawValue },
+                    stepValue: { 50 },
+                    handler: { constraint.priority = .init($0) }
+                )
+
+            default:
+                return nil
+            }
+        }}
 }

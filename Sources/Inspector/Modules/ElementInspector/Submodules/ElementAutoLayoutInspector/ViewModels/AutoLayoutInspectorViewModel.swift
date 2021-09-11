@@ -20,35 +20,37 @@
 
 import UIKit
 
-protocol SizeInspectorViewModelProtocol: ElementViewHierarchyPanelViewModelProtocol {
-    var sectionViewModels: [InspectorElementViewModelProtocol] { get }
+protocol AutoLayoutInspectorViewModelProtocol: ElementViewHierarchyPanelViewModelProtocol {
+    var sectionViewModels: [ElementInspectorFormViewModelProtocol] { get }
 }
 
-final class SizeInspectorViewModel {
+final class AutoLayoutInspectorViewModel {
+    let reference: ViewHierarchyReference
+    let snapshot: ViewHierarchySnapshot
 
-    private(set) lazy var sectionViewModels: [InspectorElementViewModelProtocol] = {
+    private(set) lazy var sectionViewModels: [ElementInspectorFormViewModelProtocol] = {
         guard let referenceView = reference.rootView else {
             return []
         }
 
-        var viewModels = [InspectorElementViewModelProtocol?]()
+        var viewModels = [ElementInspectorFormViewModelProtocol?]()
 
-        reference.
-        snapshot.elementLibraries.targeting(element: referenceView).forEach { library in
+        AutoLayoutLibrary.allCases.forEach { library in
             viewModels.append(contentsOf: library.viewModels(for: referenceView))
         }
 
         return viewModels.compactMap { $0 }
     }()
 
-    init(reference: ViewHierarchyReference) {
+    init(reference: ViewHierarchyReference, snapshot: ViewHierarchySnapshot) {
         self.reference = reference
+        self.snapshot = snapshot
     }
 }
 
-// MARK: - SizeInspectorViewModelProtocol
+// MARK: - AutoLayoutInspectorViewModelProtocol
 
-extension SizeInspectorViewModel: SizeInspectorViewModelProtocol {
+extension AutoLayoutInspectorViewModel: AutoLayoutInspectorViewModelProtocol {
     var parent: ElementViewHierarchyPanelViewModelProtocol? {
         get { nil }
         set { }

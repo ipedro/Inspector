@@ -22,7 +22,7 @@ import MapKit
 
 extension UIViewElementLibrary {
     
-    final class MKMapViewInspectableViewModel: InspectorElementViewModelProtocol {
+    final class MKMapViewInspectableViewModel: ElementInspectorFormViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case type                  = "Type"

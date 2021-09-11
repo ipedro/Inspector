@@ -22,7 +22,7 @@ import UIKit
 
 extension UIViewElementLibrary {
     
-    final class UIActivityIndicatorViewInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIActivityIndicatorViewInspectableViewModel: ElementInspectorFormViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case style            = "Style"

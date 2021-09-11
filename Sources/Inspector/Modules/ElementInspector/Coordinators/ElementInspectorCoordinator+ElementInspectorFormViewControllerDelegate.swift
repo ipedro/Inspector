@@ -21,19 +21,19 @@
 import UIKit
 import MobileCoreServices
 
-extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerDelegate {
+extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegate {
     
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
+    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
                                            showLayerInspectorViewsInside reference: ViewHierarchyReference) {
         delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
     }
     
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
+    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
                                            hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
         delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
     }
     
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController, didTap colorPicker: ColorPreviewControl) {
+    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController, didTap colorPicker: ColorPreviewControl) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             let colorPickerViewController = UIColorPickerViewController(
@@ -57,8 +57,8 @@ extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerD
         #endif
     }
     
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
-                                           didTap optionSelector: OptionListControl) {
+    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
+                                        didTap optionSelector: OptionListControl) {
         
         let viewModel = OptionSelectorViewModel(
             title: optionSelector.title,
@@ -86,7 +86,7 @@ extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerD
         viewController.present(navigationController, animated: true)
     }
     
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
+    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
                                            didTap imagePicker: ImagePreviewControl) {
         let alertController = UIAlertController(
             title: nil,

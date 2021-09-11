@@ -22,7 +22,7 @@ import UIKit
 
 extension UIViewElementLibrary {
     
-    final class UIButtonInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIButtonInspectableViewModel: ElementInspectorFormViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case type                                                = "Type"

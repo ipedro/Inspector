@@ -20,27 +20,7 @@
 
 import UIKit
 
-final class ElementSizeInspectorViewController: ElementInspectorPanelViewController {
-    func calculatePreferredContentSize() -> CGSize {
-        #warning("implement")
-        
-        return preferredContentSize
-    }
-    
-    private lazy var viewCode = ElementSizeInspectorViewCode()
-    
-    override func loadView() {
-        view = viewCode
-    }
-}
-
-final class ElementSizeInspectorViewCode: BaseView {
-    
-    private lazy var inspectorView = SizeInspectorView()
-    
-    override func setup() {
-        super.setup()
-        
-        installView(inspectorView, priority: .required)
-    }
+public protocol ElementInspectorFormViewModelProtocol {
+    var title: String { get }
+    var properties: [InspectorElementViewModelProperty] { get }
 }

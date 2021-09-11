@@ -22,7 +22,7 @@ import UIKit
 
 extension UIViewElementLibrary {
 
-    final class UIImageViewInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIImageViewInspectableViewModel: ElementInspectorFormViewModelProtocol {
         
         private enum Property: String, Swift.CaseIterable {
             case image                                               = "Image"

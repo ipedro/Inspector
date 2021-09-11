@@ -22,7 +22,7 @@ import UIKit
 
 extension UIViewElementLibrary {
         
-    final class UILabelInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UILabelInspectableViewModel: ElementInspectorFormViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case text                                 = "Text"

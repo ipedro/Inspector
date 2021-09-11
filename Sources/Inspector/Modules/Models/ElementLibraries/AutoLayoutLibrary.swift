@@ -21,141 +21,24 @@
 import UIKit
 
 enum AutoLayoutLibrary: Swift.CaseIterable {
-    case layoutConstranint
+    case layoutConstraints
 
     static var standard: AllCases {
         Self.allCases
     }
 }
 
-// MARK: - HierarchyInspectorElementLibraryProtocol
+// MARK: - InspectorAutoLayoutLibraryProtocol
 
-extension UIViewElementLibrary: InspectorElementLibraryProtocol {
-    var targetClass: AnyClass {
+extension AutoLayoutLibrary: InspectorAutoLayoutLibraryProtocol {
+    func viewModels(for referenceView: UIView) -> [InspectorAutoLayoutViewModelProtocol?] {
         switch self {
-        case .layoutConstraint:
-            return NSLayoutConstraint.self
-        }
-    }
-
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        switch self {
-        case .window,
-             .navigationBar:
-            return nil
-
-        case .activityIndicator:
-            return UIActivityIndicatorViewInspectableViewModel(view: referenceView)
-
-        case .button:
-            return UIButtonInspectableViewModel(view: referenceView)
-
-        case .control:
-            return UIControlInspectableViewModel(view: referenceView)
-
-        case .datePicker:
-            return UIDatePickerInspectableViewModel(view: referenceView)
-
-        case .imageView:
-            return UIImageViewInspectableViewModel(view: referenceView)
-
-        case .label:
-            return UILabelInspectableViewModel(view: referenceView)
-
-        case .mapView:
-            return MKMapViewInspectableViewModel(view: referenceView)
-
-        case .scrollView:
-            return UIScrollViewInspectableViewModel(view: referenceView)
-
-        case .segmentedControl:
-            return UISegmentedControlInspectableViewModel(view: referenceView)
-
-        case .slider:
-            return UISliderInspectableViewModel(view: referenceView)
-
-        case .switch:
-            return UISwitchInspectableViewModel(view: referenceView)
-
-        case .stackView:
-            return UIStackViewInspectableViewModel(view: referenceView)
-
-        case .textField:
-            return UITextFieldInspectableViewModel(view: referenceView)
-
-        case .textView:
-            return UITextViewInspectableViewModel(view: referenceView)
-
-        case .view:
-            return UIViewInspectableViewModel(view: referenceView)
-
-        case .oldWebview:
-            return nil
-
-        case .webView:
-            return nil
-        }
-
-    }
-
-    func icon(for referenceView: UIView) -> UIImage? {
-        switch self {
-        case .navigationBar:
-            return .moduleImage(named: "NavigationBar-32_Normal")
-
-        case .window:
-            return .moduleImage(named: "UIWindow-32_Normal")
-
-        case .activityIndicator:
-            return .moduleImage(named: "UIActivityIndicator_32_Dark_Normal")
-
-        case .button:
-            return .moduleImage(named: "UIButton_32-Dark_Normal")
-
-        case .datePicker:
-            return .moduleImage(named: "UIDatePicker_32_Normal")
-
-        case .imageView:
-            guard let image = (referenceView as? UIImageView)?.image else {
-                return .moduleImage(named: "UIImageView-32_Normal")
+        case .layoutConstraints:
+            return referenceView.constraints.compactMap {
+                NSLayoutConstraintInspectableViewModel(with: $0, in: referenceView)
             }
-            return image
-
-        case .label:
-            return .moduleImage(named: "UILabel_32-Dark_Normal")
-
-        case .scrollView:
-            return .moduleImage(named: "UIScrollView_32_Normal")
-
-        case .segmentedControl:
-            return .moduleImage(named: "UISegmentedControl_32_Normal")
-
-        case .switch:
-            return .moduleImage(named: "Toggle-32_Normal")
-
-        case .stackView:
-            guard (referenceView as? UIStackView)?.axis == .horizontal else {
-                return .moduleImage(named: "VStack-32_Normal")
-            }
-            return .moduleImage(named: "HStack-32_Normal")
-
-        case .textField:
-            return .moduleImage(named: "TextField-32_Normal")
-
-        case .textView:
-            return .moduleImage(named: "TextView-32_Normal")
-
-        case .control:
-            return .moduleImage(named: "UIControl-32_Normal")
-
-        case .oldWebview,
-             .webView:
-            return .moduleImage(named: "Webview-32_Normal")
-
-        case .mapView,
-             .slider,
-             .view:
-            return nil
         }
     }
+
+    func icon(for viewModel: InspectorAutoLayoutViewModelProtocol) -> UIImage? { nil }
 }

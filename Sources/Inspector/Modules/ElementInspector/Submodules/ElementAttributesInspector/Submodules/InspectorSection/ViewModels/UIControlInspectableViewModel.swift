@@ -22,7 +22,7 @@ import UIKit
 
 extension UIViewElementLibrary {
 
-    final class UIControlInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIControlInspectableViewModel: ElementInspectorFormViewModelProtocol {
         
         private enum Property: String, Swift.CaseIterable {
             case contentHorizontalAlignment = "Horizontal Alignment"

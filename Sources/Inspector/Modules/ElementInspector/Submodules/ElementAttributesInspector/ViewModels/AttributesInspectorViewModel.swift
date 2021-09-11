@@ -21,7 +21,7 @@
 import UIKit
 
 protocol AttributesInspectorViewModelProtocol: ElementViewHierarchyPanelViewModelProtocol {
-    var sectionViewModels: [InspectorElementViewModelProtocol] { get }
+    var sectionViewModels: [ElementInspectorFormViewModelProtocol] { get }
     
     var isHighlightingViews: Bool { get }
     
@@ -39,12 +39,12 @@ final class AttributesInspectorViewModel {
     
     let snapshot: ViewHierarchySnapshot
     
-    private(set) lazy var sectionViewModels: [InspectorElementViewModelProtocol] = {
+    private(set) lazy var sectionViewModels: [ElementInspectorFormViewModelProtocol] = {
         guard let referenceView = reference.rootView else {
             return []
         }
         
-        var viewModels = [InspectorElementViewModelProtocol?]()
+        var viewModels = [ElementInspectorFormViewModelProtocol?]()
         
         snapshot.elementLibraries.targeting(element: referenceView).forEach { library in
             viewModels.append(contentsOf: library.viewModels(for: referenceView))

@@ -22,7 +22,7 @@ import UIKit
 
 extension UIViewElementLibrary {
         
-    final class UIStackViewInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIStackViewInspectableViewModel: ElementInspectorFormViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case axis                          = "Axis"

@@ -20,14 +20,14 @@
 
 import UIKit
 
-protocol AttributesInspectorSectionViewCodeDelegate: AnyObject {
+protocol ElementInspectorFormSectionViewCodeDelegate: AnyObject {
     
-    func attributesInspectorSectionViewCode(_ section: AttributesInspectorSectionViewCode, didToggle isCollapsed: Bool)
+    func elementInspectorFormSectionViewCode(_ section: ElementInspectorFormSectionViewCode, didToggle isCollapsed: Bool)
     
 }
 
-final class AttributesInspectorSectionViewCode: BaseView {
-    weak var delegate: AttributesInspectorSectionViewCodeDelegate?
+final class ElementInspectorFormSectionViewCode: BaseView {
+    weak var delegate: ElementInspectorFormSectionViewCodeDelegate?
     
     private(set) lazy var inputContainerView = UIStackView.vertical()
     
@@ -103,7 +103,7 @@ final class AttributesInspectorSectionViewCode: BaseView {
     }
     
     @objc private func tapHeader() {
-        delegate?.attributesInspectorSectionViewCode(self, didToggle: isCollapsed)
+        delegate?.elementInspectorFormSectionViewCode(self, didToggle: isCollapsed)
     }
     
     private func hideContent(_ hide: Bool) {

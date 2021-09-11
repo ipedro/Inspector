@@ -22,7 +22,7 @@ import UIKit
 
 extension UIViewElementLibrary {
     
-    final class UIViewInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIViewInspectableViewModel: ElementInspectorFormViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case contentMode                = "Content Mode"

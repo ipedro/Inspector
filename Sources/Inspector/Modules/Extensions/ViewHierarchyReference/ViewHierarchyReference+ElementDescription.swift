@@ -26,7 +26,7 @@ extension ViewHierarchyReference {
         guard let view = rootView else { return [] }
 
         return view.constraints.compactMap {
-            NSLayoutConstraintInspectableViewModel(with: $0, inRelationTo: view)
+            NSLayoutConstraintInspectableViewModel(with: $0, in: view)
         }
         .uniqueValues()
     }

@@ -20,7 +20,7 @@
 
 import UIKit
 
-protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
+protocol ElementInspectorPanelViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
                                         viewControllerFor panel: ElementInspectorPanel,
                                         with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
@@ -30,7 +30,7 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
 
 final class ElementInspectorViewController: UIViewController {
     
-    weak var delegate: ElementInspectorViewControllerDelegate?
+    weak var delegate: ElementInspectorPanelViewControllerDelegate?
     
     private var viewModel: ElementInspectorViewModelProtocol! {
         didSet {

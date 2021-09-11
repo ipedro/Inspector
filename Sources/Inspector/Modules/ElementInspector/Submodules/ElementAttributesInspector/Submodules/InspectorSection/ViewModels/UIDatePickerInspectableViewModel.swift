@@ -22,7 +22,7 @@ import UIKit
 
 extension UIViewElementLibrary {
     
-    final class UIDatePickerInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIDatePickerInspectableViewModel: ElementInspectorFormViewModelProtocol {
         
         enum Property: String, Swift.CaseIterable {
             case datePickerStyle = "Style"

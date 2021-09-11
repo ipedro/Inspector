@@ -72,7 +72,7 @@ final class ElementInspectorCoordinator: NSObject {
     static func makeNavigationController(
         reference: ViewHierarchyReference,
         viewHierarchySnapshot: ViewHierarchySnapshot,
-        delegate: ElementInspectorViewControllerDelegate
+        delegate: ElementInspectorPanelViewControllerDelegate
     ) -> ElementInspectorNavigationController {
         let navigationController = ElementInspectorNavigationController()
         navigationController.modalPresentationStyle = {
@@ -180,7 +180,7 @@ final class ElementInspectorCoordinator: NSObject {
         showDismissBarButton: Bool,
         selectedPanel: ElementInspectorPanel?,
         elementLibraries: [InspectorElementLibraryProtocol],
-        delegate: ElementInspectorViewControllerDelegate
+        delegate: ElementInspectorPanelViewControllerDelegate
     ) -> ElementInspectorViewController {
         
         let viewModel = ElementInspectorViewModel(

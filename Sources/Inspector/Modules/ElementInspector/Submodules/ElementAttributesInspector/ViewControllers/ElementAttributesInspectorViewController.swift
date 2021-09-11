@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,292 +18,267 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 @_implementationOnly import UIKeyboardAnimatable
+import UIKit
 
-protocol ElementAttributesInspectorViewControllerDelegate: OperationQueueManagerProtocol {
-    
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
-                                           didTap colorPicker: ColorPreviewControl)
-    
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
-                                           didTap imagePicker: ImagePreviewControl)
-    
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
-                                           didTap optionSelector: OptionListControl)
-    
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
-                                           showLayerInspectorViewsInside reference: ViewHierarchyReference)
-    
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
-                                           hideLayerInspectorViewsInside reference: ViewHierarchyReference)
-    
-}
-
-final class ElementAttributesInspectorViewController: ElementInspectorPanelViewController, KeyboardAnimatable {
-    
+final class ElementAttributesInspectorViewController: ElementInspectorFormViewController, KeyboardAnimatable {
     // MARK: - Properties
-    
-    weak var delegate: ElementAttributesInspectorViewControllerDelegate?
-    
+
     private var viewModel: AttributesInspectorViewModelProtocol!
-    
-    var selectedColorPicker: ColorPreviewControl?
-    
-    var selectedImagePicker: ImagePreviewControl?
-    
-    var selectedOptionSelector: OptionListControl?
-    
+
     private var needsInitialSnapshotRender = true
-    
+
     private var displayLink: CADisplayLink? {
         didSet {
             if let oldLink = oldValue {
                 oldLink.invalidate()
             }
-            
+
             if let newLink = displayLink {
                 newLink.add(to: .current, forMode: .default)
             }
         }
     }
-    
-    private(set) lazy var viewCode = AttributesInspectorViewCode().then {
+
+    private(set) lazy var viewCode = ElementInspectorFormViewCode().then {
         $0.contentView.addArrangedSubview(thumbnailSectionViewCode)
-        
+
         $0.delegate = self
     }
-    
+
     private(set) lazy var thumbnailSectionViewCode = AttributesInspectorThumbnailSectionView(
         reference: viewModel.reference,
         frame: .zero
     ).then {
         $0.referenceDetailView.viewModel = viewModel
-        
+
         $0.isHighlightingViewsControl.isOn = viewModel.isHighlightingViews
-        
+
         $0.isLiveUpdatingControl.isOn = viewModel.isLiveUpdating
-        
+
         $0.isHighlightingViewsControl.addTarget(self, action: #selector(toggleHighlightViews), for: .valueChanged)
-        
+
         $0.isLiveUpdatingControl.addTarget(self, action: #selector(toggleLiveUpdate), for: .valueChanged)
-        
+
         $0.referenceAccessoryButton.addTarget(self, action: #selector(tapThumbnailAccessory), for: .touchUpInside)
     }
-    
+
     // MARK: - Init
-    
+
     static func create(viewModel: AttributesInspectorViewModelProtocol) -> ElementAttributesInspectorViewController {
         let viewController = ElementAttributesInspectorViewController()
         viewController.viewModel = viewModel
-        
+
         return viewController
     }
-    
+
     // MARK: - Lifecycle
-    
+
     override func loadView() {
         view = viewCode
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         loadSections()
-        
+
         animateWhenKeyboard(.willChangeFrame) { info in
             self.viewCode.keyboardHeight = info.keyboardFrame.height
             self.viewCode.layoutIfNeeded()
         }
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         renderInitialSnapshotIfNeeded()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         debounce(#selector(startLiveUpdatingSnaphost), after: ElementInspector.configuration.animationDuration)
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
         stopLiveUpdatingSnaphost()
     }
-    
+
     override func didMove(toParent parent: UIViewController?) {
         super.didMove(toParent: parent)
-        
+
         guard parent == nil else {
             return
         }
-        
+
         stopLiveUpdatingSnaphost()
     }
-    
+
+    override func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController, willUpdate property: InspectorElementViewModelProperty) {
+        stopLiveUpdatingSnaphost()
+    }
+
+    override func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController, didUpdate property: InspectorElementViewModelProperty) {
+        let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
+            self?.children.forEach {
+                guard let sectionViewController = $0 as? ElementInspectorFormSectionViewController else {
+                    return
+                }
+
+                sectionViewController.updateValues()
+                self?.updateHeaderDetails()
+            }
+        }
+
+        updateOperation.completionBlock = {
+            DispatchQueue.main.async { [weak self] in
+                self?.startLiveUpdatingSnaphost()
+            }
+        }
+
+        formDelegate?.addOperationToQueue(updateOperation)
+    }
+
+    override func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController, didToggle isCollapsed: Bool) {
+        stopLiveUpdatingSnaphost()
+
+        animatePanel(
+            animations: { [weak self] in
+                guard let self = self else { return }
+
+                viewController.isCollapsed.toggle()
+
+                let sectionViewControllers = self.children.compactMap { $0 as? ElementInspectorFormSectionViewController }
+
+                for sectionViewController in sectionViewControllers where sectionViewController !== viewController {
+                    sectionViewController.isCollapsed = true
+                }
+            },
+            completion: { [weak self] _ in
+                self?.startLiveUpdatingSnaphost()
+            }
+        )
+    }
+
     deinit {
         stopLiveUpdatingSnaphost()
     }
-    
-    func animatePanel(animations: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {
+
+    override func animatePanel(animations: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {
         stopLiveUpdatingSnaphost()
-        
-        UIView.animate(
-            withDuration: ElementInspector.configuration.animationDuration * 2,
-            delay: 0.05,
-            usingSpringWithDamping: 0.9,
-            initialSpringVelocity: 0,
-            options: .beginFromCurrentState,
-            animations: animations
-        ) { finished in
-            
+
+        super.animatePanel(animations: animations) { finished in
             completion?(finished)
-            
-            DispatchQueue.main.async { [weak self]  in
+
+            DispatchQueue.main.async { [weak self] in
                 self?.startLiveUpdatingSnaphost()
             }
         }
     }
 }
 
+// MARK: - Objective-C Actions
 
 @objc extension ElementAttributesInspectorViewController {
-    
     func updateHeaderDetails() {
         thumbnailSectionViewCode.referenceDetailView.viewModel = viewModel
     }
-        
+
     func updateHeaderSnapshot() {
         thumbnailSectionViewCode.updateSnapshot(afterScreenUpdates: false)
     }
-    
+
     func startLiveUpdatingSnaphost() {
         displayLink = CADisplayLink(target: self, selector: #selector(refresh))
     }
-    
+
     func stopLiveUpdatingSnaphost() {
         Self.cancelPreviousPerformRequests(
             withTarget: self,
             selector: #selector(startLiveUpdatingSnaphost),
             object: nil
         )
-        
+
         displayLink = nil
     }
-    
+
     func refresh() {
         guard viewModel.reference.rootView != nil else {
             return stopLiveUpdatingSnaphost()
         }
-        
+
         guard viewCode.isPointerInUse == false, viewModel.isLiveUpdating else {
             return
         }
-        
+
         let operation = MainThreadAsyncOperation(name: "udpate snapshot") { [weak self] in
             self?.thumbnailSectionViewCode.updateSnapshot(afterScreenUpdates: false)
         }
-        
-        delegate?.addOperationToQueue(operation)
-    }
-}
 
-// MARK: - API
-
-extension ElementAttributesInspectorViewController {
-    
-    func calculatePreferredContentSize() -> CGSize {
-        viewCode.contentView.systemLayoutSizeFitting(
-            ElementInspector.appearance.panelPreferredCompressedSize,
-            withHorizontalFittingPriority: .defaultHigh,
-            verticalFittingPriority: .fittingSizeLevel
-        )
+        formDelegate?.addOperationToQueue(operation)
     }
-    
-    func selectImage(_ image: UIImage?) {
-        selectedImagePicker?.updateSelectedImage(image)
-    }
-    
-    func selectColor(_ color: UIColor) {
-        selectedColorPicker?.updateSelectedColor(color)
-    }
-    
-    func selectOptionAtIndex(_ index: Int?) {
-        selectedOptionSelector?.updateSelectedIndex(index)
-    }
-        
-    func finishColorSelection() {
-        selectedColorPicker = nil
-    }
-    
-    func finishOptionSelction() {
-        selectedOptionSelector = nil
-    }
-    
 }
 
 // MARK: - Actions
 
 private extension ElementAttributesInspectorViewController {
-    
     func renderInitialSnapshotIfNeeded() {
         guard needsInitialSnapshotRender else {
             return
         }
-        
+
         needsInitialSnapshotRender = false
         refresh()
     }
-    
+
     func loadSections() {
         updateHeaderDetails()
         updateHeaderSnapshot()
-        
+
         viewModel.sectionViewModels.enumerated().forEach { index, sectionViewModel in
-            
-            let sectionViewController = AttributesInspectorSectionViewController.create(viewModel: sectionViewModel).then {
+
+            let sectionViewController = ElementInspectorFormSectionViewController.create(viewModel: sectionViewModel).then {
                 $0.isCollapsed = index > 0
                 $0.delegate = self
             }
-            
+
             addChild(sectionViewController)
-            
+
             viewCode.contentView.addArrangedSubview(sectionViewController.view)
-            
+
             sectionViewController.didMove(toParent: self)
         }
     }
-    
+
     @objc
     func toggleHighlightViews() {
         let operation = MainThreadAsyncOperation(name: "toggle layers") { [weak self] in
             guard
                 let self = self,
-                let delegate = self.delegate
+                let formDelegate = self.formDelegate
             else {
                 return
             }
-            
+
             guard self.viewModel.isHighlightingViews else {
-                delegate.attributesInspectorViewController(self, showLayerInspectorViewsInside: self.viewModel.reference)
+                formDelegate.elementInspectorViewController(self, showLayerInspectorViewsInside: self.viewModel.reference)
                 return
             }
-            
-            delegate.attributesInspectorViewController(self, hideLayerInspectorViewsInside: self.viewModel.reference)
+
+            formDelegate.elementInspectorViewController(self, hideLayerInspectorViewsInside: self.viewModel.reference)
         }
-        
-        delegate?.addOperationToQueue(operation)
+
+        formDelegate?.addOperationToQueue(operation)
     }
-    
+
     @objc
     func toggleLiveUpdate() {
         viewModel.isLiveUpdating.toggle()
     }
-    
+
     @objc
     func tapThumbnailAccessory() {
         animatePanel { [weak self] in
@@ -312,31 +287,11 @@ private extension ElementAttributesInspectorViewController {
     }
 }
 
-// MARK: - QueueManagerProtocol
-
-extension ElementAttributesInspectorViewController: OperationQueueManagerProtocol {
-    
-    func cancelAllOperations() {
-        delegate?.cancelAllOperations()
-    }
-    
-    func suspendQueue(_ isSuspended: Bool) {
-        delegate?.suspendQueue(isSuspended)
-    }
-    
-    func addOperationToQueue(_ operation: MainThreadOperation) {
-        delegate?.addOperationToQueue(operation)
-    }
-    
-}
-
 // MARK: - AttributesInspectorViewCodeDelegate
 
-extension ElementAttributesInspectorViewController: AttributesInspectorViewCodeDelegate {
-    
-    func attributesInspectorViewCode(_ viewCode: AttributesInspectorViewCode, isPointerInUse: Bool) {
+extension ElementAttributesInspectorViewController: ElementInspectorFormViewCodeDelegate {
+    func elementInspectorFormViewCode(_ viewCode: ElementInspectorFormViewCode, isPointerInUse: Bool) {
         thumbnailSectionViewCode.isLiveUpdatingControl.isEnabled = isPointerInUse == false
         thumbnailSectionViewCode.isLiveUpdatingControl.setOn(isPointerInUse == false && viewModel.isLiveUpdating, animated: true)
     }
-    
 }

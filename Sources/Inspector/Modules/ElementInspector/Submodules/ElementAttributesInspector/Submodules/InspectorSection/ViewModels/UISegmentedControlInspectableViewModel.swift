@@ -22,7 +22,7 @@ import UIKit
 
 extension UIViewElementLibrary {
 
-    final class UISegmentedControlInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UISegmentedControlInspectableViewModel: ElementInspectorFormViewModelProtocol {
         
         private enum Property: String, Swift.CaseIterable {
             case selectedSegmentTintColor = "Selected Tint"
