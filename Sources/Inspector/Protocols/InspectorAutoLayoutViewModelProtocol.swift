@@ -21,4 +21,6 @@
 
 import UIKit
 
-public protocol InspectorAutoLayoutViewModelProtocol: ElementInspectorFormViewModelProtocol {}
+public protocol InspectorAutoLayoutViewModelProtocol: ElementInspectorFormViewModelProtocol {
+    var axis: NSLayoutConstraint.Axis { get }
+}

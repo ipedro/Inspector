@@ -92,6 +92,8 @@ final class SectionHeader: BaseView {
             textLabel.font = .preferredFont(forTextStyle: textStyle)
             return
         }
+
+        traits.union(.traitUIOptimized)
         
         textLabel.font = .preferredFont(forTextStyle: textStyle, with: traits)
     }

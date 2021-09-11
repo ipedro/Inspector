@@ -19,6 +19,7 @@
 //  SOFTWARE.
 
 import UIKit
+@_implementationOnly import UIKeyboardAnimatable
 
 protocol ElementInspectorFormViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
@@ -37,14 +38,64 @@ protocol ElementInspectorFormViewControllerDelegate: OperationQueueManagerProtoc
                                         hideLayerInspectorViewsInside reference: ViewHierarchyReference)
 }
 
-class ElementInspectorFormViewController: ElementInspectorPanelViewController, ElementInspectorFormSectionViewControllerDelegate {
+protocol ElementInspectorFormViewControllerDataSource: AnyObject {
+    var sections: [String : [ElementInspectorFormViewModelProtocol]] { get }
+}
+
+class ElementInspectorFormViewController: ElementInspectorPanelViewController, ElementInspectorFormSectionViewControllerDelegate, KeyboardAnimatable {
     weak var formDelegate: ElementInspectorFormViewControllerDelegate?
+
+    weak var dataSource: ElementInspectorFormViewControllerDataSource?
+
+    var viewCode: ElementInspectorFormView!
 
     var selectedColorPicker: ColorPreviewControl?
 
     var selectedImagePicker: ImagePreviewControl?
 
     var selectedOptionSelector: OptionListControl?
+
+    override func loadView() {
+        view = viewCode
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        loadSections()
+
+        animateWhenKeyboard(.willChangeFrame) { info in
+            self.viewCode.keyboardHeight = info.keyboardFrame.height
+            self.viewCode.layoutIfNeeded()
+        }
+    }
+
+    func loadSections() {
+        dataSource?.sections.enumerated().forEach { index, section in
+            let sectionHeaderView = SectionHeader(
+                .headline,
+                text: section.key,
+                margins: .init(insets: ElementInspector.appearance.horizontalMargins)
+            ).then {
+                $0.alpha = 0.5
+            }
+
+            viewCode.contentView.addArrangedSubview(sectionHeaderView)
+
+            for viewModel in section.value {
+                let sectionViewController = ElementInspectorFormSectionViewController.create(viewModel: viewModel).then {
+                    $0.isCollapsed = index > 0
+                    $0.delegate = self
+                }
+
+                addChild(sectionViewController)
+
+                viewCode.contentView.addArrangedSubview(sectionViewController.view)
+
+                sectionViewController.didMove(toParent: self)
+            }
+        }
+    }
 
     func calculatePreferredContentSize() -> CGSize {
         if isViewLoaded {
@@ -58,6 +109,7 @@ class ElementInspectorFormViewController: ElementInspectorPanelViewController, E
             return .zero
         }
     }
+    
 
     func selectImage(_ image: UIImage?) {
         selectedImagePicker?.updateSelectedImage(image)

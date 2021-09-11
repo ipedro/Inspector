@@ -20,26 +20,20 @@
 
 import UIKit
 
-protocol AutoLayoutInspectorViewModelProtocol: ElementViewHierarchyPanelViewModelProtocol {
-    var sectionViewModels: [ElementInspectorFormViewModelProtocol] { get }
-}
+protocol AutoLayoutInspectorViewModelProtocol: ElementInspectorPanelViewModelProtocol & ElementInspectorFormViewControllerDataSource {}
 
 final class AutoLayoutInspectorViewModel {
     let reference: ViewHierarchyReference
     let snapshot: ViewHierarchySnapshot
 
-    private(set) lazy var sectionViewModels: [ElementInspectorFormViewModelProtocol] = {
+    private(set) lazy var sections: [String: [ElementInspectorFormViewModelProtocol]] = {
         guard let referenceView = reference.rootView else {
-            return []
+            return ["No Constraints": []]
         }
 
-        var viewModels = [ElementInspectorFormViewModelProtocol?]()
+        let array = AutoLayoutLibrary.allCases.map { $0.viewModels(for: referenceView) }.flatMap { $0 }.compactMap { $0 }
 
-        AutoLayoutLibrary.allCases.forEach { library in
-            viewModels.append(contentsOf: library.viewModels(for: referenceView))
-        }
-
-        return viewModels.compactMap { $0 }
+        return ["Constraints": array]
     }()
 
     init(reference: ViewHierarchyReference, snapshot: ViewHierarchySnapshot) {
@@ -51,7 +45,7 @@ final class AutoLayoutInspectorViewModel {
 // MARK: - AutoLayoutInspectorViewModelProtocol
 
 extension AutoLayoutInspectorViewModel: AutoLayoutInspectorViewModelProtocol {
-    var parent: ElementViewHierarchyPanelViewModelProtocol? {
+    var parent: ElementInspectorPanelViewModelProtocol? {
         get { nil }
         set { }
     }

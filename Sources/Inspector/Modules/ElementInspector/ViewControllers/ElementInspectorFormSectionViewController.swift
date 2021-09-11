@@ -20,10 +20,21 @@
 
 import UIKit
 
+protocol ElementInspectorFormSectionViewDelegate: AnyObject {
+    func elementInspectorFormSectionView(_ section: ElementInspectorFormSectionView, didToggle isCollapsed: Bool)
+}
+
+protocol ElementInspectorFormSectionView: BaseView {
+    var delegate: ElementInspectorFormSectionViewDelegate? { get set }
+    var inputContainerView: UIStackView { get }
+    var sectionHeader: SectionHeader { get }
+    var isCollapsed: Bool { get set }
+}
+
 protocol ElementInspectorFormSectionViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
                                                    didTap colorPicker: ColorPreviewControl)
-    
+
     func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
                                                    didTap imagePicker: ImagePreviewControl)
 
@@ -43,15 +54,21 @@ protocol ElementInspectorFormSectionViewControllerDelegate: OperationQueueManage
 final class ElementInspectorFormSectionViewController: UIViewController {
     weak var delegate: ElementInspectorFormSectionViewControllerDelegate?
 
-    private(set) lazy var viewCode = ElementInspectorFormSectionViewCode().then {
-        $0.delegate = self
+    private(set) var viewCode: ElementInspectorFormSectionView! {
+        didSet {
+            viewCode.delegate = self
+        }
     }
 
     private var viewModel: ElementInspectorFormViewModelProtocol!
 
-    static func create(viewModel: ElementInspectorFormViewModelProtocol) -> ElementInspectorFormSectionViewController {
+    static func create(
+        viewModel: ElementInspectorFormViewModelProtocol,
+        viewCode: ElementInspectorFormSectionView = ElementInspectorDefaultFormSectionView()
+    ) -> ElementInspectorFormSectionViewController {
         let viewController = ElementInspectorFormSectionViewController()
         viewController.viewModel = viewModel
+        viewController.viewCode = viewCode
 
         return viewController
     }
@@ -344,8 +361,8 @@ extension ElementInspectorFormSectionViewController: ImagePreviewControlDelegate
 
 // MARK: - ElementInspectorFormSectionViewCodeDelegate
 
-extension ElementInspectorFormSectionViewController: ElementInspectorFormSectionViewCodeDelegate {
-    func elementInspectorFormSectionViewCode(_ section: ElementInspectorFormSectionViewCode, didToggle isCollapsed: Bool) {
+extension ElementInspectorFormSectionViewController: ElementInspectorFormSectionViewDelegate {
+    func elementInspectorFormSectionView(_ section: ElementInspectorFormSectionView, didToggle isCollapsed: Bool) {
         delegate?.elementInspectorFormSectionViewController(self, didToggle: isCollapsed)
     }
 }

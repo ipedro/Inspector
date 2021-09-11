@@ -201,7 +201,6 @@ struct NSLayoutConstraintInspectableViewModel: Hashable {
 
     init?(with constraint: NSLayoutConstraint, in view: UIView) {
         guard
-            constraint.isActive,
             let firstItem = Item(with: constraint.firstItem),
             let firstAxis = constraint.firstAttribute.axis
         else {

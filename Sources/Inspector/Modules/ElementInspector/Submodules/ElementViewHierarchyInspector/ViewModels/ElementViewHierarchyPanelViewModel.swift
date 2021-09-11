@@ -20,17 +20,16 @@
 
 import UIKit
 
-protocol ElementViewHierarchyPanelViewModelProtocol: ViewHierarchyReferenceDetailViewModelProtocol & AnyObject {
-    var parent: ElementViewHierarchyPanelViewModelProtocol? { get set }
+protocol ElementInspectorPanelViewModelProtocol: ViewHierarchyReferenceDetailViewModelProtocol & AnyObject {
+    var parent: ElementInspectorPanelViewModelProtocol? { get set }
     var reference: ViewHierarchyReference { get }
 }
-
 
 final class ElementViewHierarchyPanelViewModel {
     
     let identifier = UUID()
     
-    weak var parent: ElementViewHierarchyPanelViewModelProtocol?
+    weak var parent: ElementInspectorPanelViewModelProtocol?
     
     private var _isCollapsed: Bool
     
@@ -48,7 +47,7 @@ final class ElementViewHierarchyPanelViewModel {
     
     init(
         reference: ViewHierarchyReference,
-        parent: ElementViewHierarchyPanelViewModelProtocol? = nil,
+        parent: ElementInspectorPanelViewModelProtocol? = nil,
         rootDepth: Int,
         thumbnailImage: UIImage?,
         isCollapsed: Bool
@@ -64,7 +63,7 @@ final class ElementViewHierarchyPanelViewModel {
 
 // MARK: - ElementViewHierarchyPanelViewModelProtocol
 
-extension ElementViewHierarchyPanelViewModel: ElementViewHierarchyPanelViewModelProtocol {
+extension ElementViewHierarchyPanelViewModel: ElementInspectorPanelViewModelProtocol {
     
     var titleFont: UIFont {
         ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth)

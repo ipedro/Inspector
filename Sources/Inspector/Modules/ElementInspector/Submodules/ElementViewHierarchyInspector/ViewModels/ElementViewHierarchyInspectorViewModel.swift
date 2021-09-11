@@ -31,7 +31,7 @@ protocol ElementViewHierarchyInspectorViewModelProtocol {
     
     func reloadIcons()
     
-    func itemViewModel(for indexPath: IndexPath) -> ElementViewHierarchyPanelViewModelProtocol?
+    func itemViewModel(for indexPath: IndexPath) -> ElementInspectorPanelViewModelProtocol?
     
     /// Toggle if a container displays its subviews or hides them.
     /// - Parameter indexPath: row with
@@ -114,7 +114,7 @@ extension ElementViewHierarchyInspectorViewModel: ElementViewHierarchyInspectorV
         }
     }
     
-    func itemViewModel(for indexPath: IndexPath) -> ElementViewHierarchyPanelViewModelProtocol? {
+    func itemViewModel(for indexPath: IndexPath) -> ElementInspectorPanelViewModelProtocol? {
         let visibleChildViewModels = self.visibleChildViewModels
         
         guard indexPath.row < visibleChildViewModels.count else {

@@ -23,54 +23,34 @@ import UIKit
 final class ElementAutoLayoutInspectorViewController: ElementInspectorFormViewController {
     // MARK: - Properties
 
-    private(set) lazy var viewCode = ElementInspectorFormViewCode()
-
     private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView().then {
         $0.viewModel = viewModel
     }
 
-    private var viewModel: AutoLayoutInspectorViewModelProtocol!
+    private var viewModel: AutoLayoutInspectorViewModelProtocol! {
+        didSet {
+            dataSource = viewModel
+        }
+    }
 
     // MARK: - Init
 
-    static func create(viewModel: AutoLayoutInspectorViewModelProtocol) -> ElementAutoLayoutInspectorViewController {
+    static func create(
+        viewModel: AutoLayoutInspectorViewModelProtocol,
+        viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
+    ) -> ElementAutoLayoutInspectorViewController {
         let viewController = ElementAutoLayoutInspectorViewController()
         viewController.viewModel = viewModel
+        viewController.viewCode = viewCode
 
         return viewController
     }
 
     // MARK: - Lifecycle
 
-    override func loadView() {
-        view = viewCode
-    }
-
     override func viewDidLoad() {
-        super.viewDidLoad()
-
         viewCode.contentView.addArrangedSubview(referenceDetailView)
-        
-        loadSections()
-    }
-}
 
-// MARK: - Actions
-
-private extension ElementAutoLayoutInspectorViewController {
-    func loadSections() {
-        viewModel.sectionViewModels.enumerated().forEach { index, sectionViewModel in
-
-            let sectionViewController = ElementInspectorFormSectionViewController.create(viewModel: sectionViewModel).then {
-                $0.isCollapsed = index > 0
-                $0.delegate = self
-            }
-
-            addChild(sectionViewController)
-
-            viewCode.contentView.addArrangedSubview(sectionViewController.view)
-
-            sectionViewController.didMove(toParent: self)
-        }
+        super.viewDidLoad()
     }
 }

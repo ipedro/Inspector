@@ -21,10 +21,17 @@
 import UIKit
 
 protocol ElementInspectorFormViewCodeDelegate: AnyObject {
-    func elementInspectorFormViewCode(_ viewCode: ElementInspectorFormViewCode, isPointerInUse: Bool)
+    func elementInspectorFormView(_ view: ElementInspectorFormView, isPointerInUse: Bool)
 }
 
-final class ElementInspectorFormViewCode: BaseView {
+protocol ElementInspectorFormView: BaseView {
+    var delegate: ElementInspectorFormViewCodeDelegate? { get set }
+    var keyboardHeight: CGFloat { get set }
+    var scrollView: UIScrollView { get }
+    var isPointerInUse: Bool { get }
+}
+
+final class ElementInspectorFormViewCode: BaseView, ElementInspectorFormView {
     weak var delegate: ElementInspectorFormViewCodeDelegate?
     
     private(set) lazy var scrollView = UIScrollView(
@@ -40,7 +47,7 @@ final class ElementInspectorFormViewCode: BaseView {
     
     private(set) var isPointerInUse = false {
         didSet {
-            delegate?.elementInspectorFormViewCode(self, isPointerInUse: isPointerInUse)
+            delegate?.elementInspectorFormView(self, isPointerInUse: isPointerInUse)
         }
     }
     
