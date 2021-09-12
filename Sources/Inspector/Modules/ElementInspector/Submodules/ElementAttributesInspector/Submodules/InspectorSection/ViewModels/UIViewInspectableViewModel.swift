@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,28 +20,26 @@
 
 import UIKit
 
-extension UIKitElementLibrary {
-    
-    final class UIViewInspectableViewModel: InspectorElementViewModelProtocol {
-        
+extension UIViewElementLibrary {
+    final class UIViewInspectableViewModel: InspectorElementFormViewModelProtocol {
         enum Property: String, Swift.CaseIterable {
-            case contentMode                = "Content Mode"
-            case semanticContentAttribute   = "Semantic Content"
-            case tag                        = "Tag"
-            case accessibilityIdentifier    = "Accessibility Identifier"
-            case groupInteraction           = "Interaction"
-            case isUserInteractionEnabled   = "User Interaction Enabled"
-            case isMultipleTouchEnabled     = "Multiple Touch Enabled"
-            case groupAlphaAndColors        = "Alpha And Colors"
-            case alpha                      = "Alpha"
-            case backgroundColor            = "Background"
-            case tintColor                  = "Tint"
-            case groupDrawing               = "Drawing"
-            case isOpaque                   = "Opaque"
-            case isHidden                   = "Hidden"
+            case contentMode = "Content Mode"
+            case semanticContentAttribute = "Semantic Content"
+            case tag = "Tag"
+            case accessibilityIdentifier = "Accessibility Identifier"
+            case groupInteraction = "Interaction"
+            case isUserInteractionEnabled = "User Interaction Enabled"
+            case isMultipleTouchEnabled = "Multiple Touch Enabled"
+            case groupAlphaAndColors = "Alpha And Colors"
+            case alpha = "Alpha"
+            case backgroundColor = "Background"
+            case tintColor = "Tint"
+            case groupDrawing = "Drawing"
+            case isOpaque = "Opaque"
+            case isHidden = "Hidden"
             case clearsContextBeforeDrawing = "Clears Graphic Context"
-            case clipsToBounds              = "Clips To Bounds"
-            case autoresizesSubviews        = "Autoresize Subviews"
+            case clipsToBounds = "Clips To Bounds"
+            case autoresizesSubviews = "Autoresize Subviews"
         }
         
         let title = "View"
@@ -61,7 +59,7 @@ extension UIKitElementLibrary {
             case .contentMode:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIView.ContentMode.allCases.map { $0.description },
+                    options: UIView.ContentMode.allCases.map(\.description),
                     selectedIndex: { UIView.ContentMode.allCases.firstIndex(of: view.contentMode) }
                 ) {
                     guard let newIndex = $0 else { return }
@@ -74,7 +72,7 @@ extension UIKitElementLibrary {
             case .semanticContentAttribute:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UISemanticContentAttribute.allCases.map { $0.description },
+                    options: UISemanticContentAttribute.allCases.map(\.description),
                     selectedIndex: { UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute) }
                 ) {
                     guard let newIndex = $0 else { return }
@@ -201,8 +199,6 @@ extension UIKitElementLibrary {
                     view.autoresizesSubviews = autoresizesSubviews
                 }
             }
-            
         }
     }
-
 }

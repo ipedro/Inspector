@@ -1,15 +1,15 @@
-import XCTest
 @testable import Inspector
+import XCTest
 
 final class InspectorTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        //XCTAssertEqual(HierarchyInspector().text, "Hello, World!")
+        // XCTAssertEqual(HierarchyInspector().text, "Hello, World!")
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testExample", testExample)
     ]
 }

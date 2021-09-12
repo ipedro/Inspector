@@ -45,7 +45,6 @@ import Foundation
 ///     print(p)
 ///     // Prints "(21, 30)"
 protocol CustomStringConvertible {
-
     /// A textual representation of this instance.
     ///
     /// Calling this property directly is discouraged. Instead, convert an

@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,20 +20,18 @@
 
 import UIKit
 
-extension UIKitElementLibrary {
-
-    final class UISegmentedControlInspectableViewModel: InspectorElementViewModelProtocol {
-        
+extension UIViewElementLibrary {
+    final class UISegmentedControlInspectableViewModel: InspectorElementFormViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case selectedSegmentTintColor = "Selected Tint"
-            case isMomentary              = "Momentary"
-            case isSpringLoaded           = "Spring Loaded"
-            case groupSegment             = "Segment Group"
-            case segmentPicker            = "Segment"
-            case segmentTitle             = "Title"
-            case segmentImage             = "Image"
-            case segmentIsEnabled         = "Enabled"
-            case segmentIsSelected        = "Selected"
+            case isMomentary = "Momentary"
+            case isSpringLoaded = "Spring Loaded"
+            case groupSegment = "Segment Group"
+            case segmentPicker = "Segment"
+            case segmentTitle = "Title"
+            case segmentImage = "Image"
+            case segmentIsEnabled = "Enabled"
+            case segmentIsSelected = "Selected"
         }
         
         let title = "Segmented Control"
@@ -57,7 +55,7 @@ extension UIKitElementLibrary {
             
             var options = [String]()
             
-            for index in 0..<segmentedControl.numberOfSegments {
+            for index in 0 ..< segmentedControl.numberOfSegments {
                 var title: String {
                     let segmentIndex = "Segment \(index)"
                     
@@ -82,7 +80,6 @@ extension UIKitElementLibrary {
             }
 
             switch property {
-                
             case .selectedSegmentTintColor:
                 #if swift(>=5.0)
                 if #available(iOS 13.0, *) {
@@ -119,7 +116,7 @@ extension UIKitElementLibrary {
                 return .optionsList(
                     title: property.rawValue,
                     emptyTitle: "No Segments",
-                    options: segmentsOptions.map { $0.description },
+                    options: segmentsOptions.map(\.description),
                     selectedIndex: { [weak self] in self?.selectedSegment }
                 ) { [weak self] selectedSegment in
                     
@@ -177,7 +174,6 @@ extension UIKitElementLibrary {
                         }
                         
                         return segmentedControl.isEnabledForSegment(at: selectedSegment)
-                        
                     }
                 ) { [weak self] isEnabled in
                     
@@ -205,12 +201,8 @@ extension UIKitElementLibrary {
                     case false:
                         segmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
                     }
-                    
                 }
-                
             }
         }
-        
     }
-
 }

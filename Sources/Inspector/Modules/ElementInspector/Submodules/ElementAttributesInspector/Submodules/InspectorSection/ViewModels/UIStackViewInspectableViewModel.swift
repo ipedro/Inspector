@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,15 +20,13 @@
 
 import UIKit
 
-extension UIKitElementLibrary {
-        
-    final class UIStackViewInspectableViewModel: InspectorElementViewModelProtocol {
-        
+extension UIViewElementLibrary {
+    final class UIStackViewInspectableViewModel: InspectorElementFormViewModelProtocol {
         enum Property: String, Swift.CaseIterable {
-            case axis                          = "Axis"
-            case alignment                     = "Alignment"
-            case distribution                  = "Distribution"
-            case spacing                       = "Spacing"
+            case axis = "Axis"
+            case alignment = "Alignment"
+            case distribution = "Distribution"
+            case spacing = "Spacing"
             case isBaselineRelativeArrangement = "Baseline Relative"
         }
         
@@ -53,7 +51,7 @@ extension UIKitElementLibrary {
             case .axis:
                 return .textButtonGroup(
                     title: property.rawValue,
-                    texts: NSLayoutConstraint.Axis.allCases.map { $0.description },
+                    texts: NSLayoutConstraint.Axis.allCases.map(\.description),
                     selectedIndex: { NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis) }
                 ) {
                     guard let newIndex = $0 else {
@@ -68,7 +66,7 @@ extension UIKitElementLibrary {
             case .alignment:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIStackView.Alignment.allCases.map { $0.description },
+                    options: UIStackView.Alignment.allCases.map(\.description),
                     selectedIndex: { UIStackView.Alignment.allCases.firstIndex(of: stackView.alignment) }
                 ) {
                     guard let newIndex = $0 else {
@@ -83,7 +81,7 @@ extension UIKitElementLibrary {
             case .distribution:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIStackView.Distribution.allCases.map { $0.description },
+                    options: UIStackView.Distribution.allCases.map(\.description),
                     selectedIndex: { UIStackView.Distribution.allCases.firstIndex(of: stackView.distribution) }
                 ) {
                     guard let newIndex = $0 else {
@@ -115,5 +113,4 @@ extension UIKitElementLibrary {
             }
         }
     }
-
 }

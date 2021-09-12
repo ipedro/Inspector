@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,15 +20,13 @@
 
 import UIKit
 
-extension UIKitElementLibrary {
-    
-    final class UIDatePickerInspectableViewModel: InspectorElementViewModelProtocol {
-        
+extension UIViewElementLibrary {
+    final class UIDatePickerInspectableViewModel: InspectorElementFormViewModelProtocol {
         enum Property: String, Swift.CaseIterable {
             case datePickerStyle = "Style"
-            case datePickerMode  = "Mode"
-            case locale          = "Locale"
-            case minuteInterval  = "Interval"
+            case datePickerMode = "Mode"
+            case locale = "Locale"
+            case minuteInterval = "Interval"
         }
         
         let title = "Date Picker"
@@ -53,14 +51,13 @@ extension UIKitElementLibrary {
             }
 
             switch property {
-            
             case .datePickerStyle:
                 #if swift(>=5.3)
                 if #available(iOS 13.4, *) {
                     return .optionsList(
                         title: property.rawValue,
-                        options: UIDatePickerStyle.allCases.map { $0.description },
-                        selectedIndex: { UIDatePickerStyle.allCases.firstIndex(of: datePicker.datePickerStyle ) }
+                        options: UIDatePickerStyle.allCases.map(\.description),
+                        selectedIndex: { UIDatePickerStyle.allCases.firstIndex(of: datePicker.datePickerStyle) }
                     ) {
                         guard let newIndex = $0 else {
                             return
@@ -86,7 +83,7 @@ extension UIKitElementLibrary {
             case .datePickerMode:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIDatePicker.Mode.allCases.map { $0.description },
+                    options: UIDatePicker.Mode.allCases.map(\.description),
                     selectedIndex: { UIDatePicker.Mode.allCases.firstIndex(of: datePicker.datePickerMode) }
                 ) {
                     guard let newIndex = $0 else {
@@ -107,7 +104,6 @@ extension UIKitElementLibrary {
                     #endif
                     
                     datePicker.datePickerMode = datePickerMode
-                    
                 }
                 
             case .locale:
@@ -127,9 +123,7 @@ extension UIKitElementLibrary {
                     
                     datePicker.minuteInterval = minuteInterval
                 }
-                
             }
-            
         }
     }
 }

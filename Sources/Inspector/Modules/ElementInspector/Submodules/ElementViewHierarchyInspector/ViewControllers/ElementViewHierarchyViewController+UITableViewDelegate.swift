@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,52 +24,21 @@ import UIKit
 
 extension ElementViewHierarchyViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
-            return false
-        }
-        
-        return itemViewModel.isContainer == true || itemViewModel.accessoryType == .detailDisclosureButton
+        viewModel.shouldHighlightItem(at: indexPath)
     }
-    
-    func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
-        guard let itemViewModel = viewModel.itemViewModel(for: indexPath) else {
-            return
-        }
-        
-        self.delegate?.viewHierarchyListViewController(self, didSelectInfo: itemViewModel.reference, from: viewModel.rootReference)
-    }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        DispatchQueue.main.async {
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
-        
-        guard let selectedItemViewModel = viewModel.itemViewModel(for: indexPath) else {
-            return
-        }
-        
-        guard selectedItemViewModel.accessoryType == .detailDisclosureButton else {
-            return toggleContainer(at: indexPath)
-        }
+        guard let selectedItemViewModel = viewModel.itemViewModel(for: indexPath) else { return }
         
         delegate?.viewHierarchyListViewController(self, didSegueTo: selectedItemViewModel.reference, from: viewModel.rootReference)
-    }
-    
-    private func toggleContainer(at indexPath: IndexPath) {
-        let actions = viewModel.toggleContainer(at: indexPath)
-        
-        updateTableView(indexPath, with: actions)
     }
 }
 
 // MARK: - Helpers
 
-private extension ElementViewHierarchyViewController {
-    
+extension ElementViewHierarchyViewController {
     func updateTableView(_ indexPath: IndexPath, with actions: [ElementInspector.ViewHierarchyInspectorAction]) {
-        guard actions.isEmpty == false else {
-            return
-        }
+        guard actions.isEmpty == false else { return }
         
         let tableView = viewCode.tableView
         
@@ -80,30 +49,29 @@ private extension ElementViewHierarchyViewController {
         }
         
         tableView.performBatchUpdates({
-            
-            actions.forEach {
-                switch $0 {
-                case let .inserted(indexPaths):
-                    insertedIndexPaths.append(contentsOf: indexPaths)
+                                          actions.forEach {
+                                              switch $0 {
+                                              case let .inserted(indexPaths):
+                                                  insertedIndexPaths.append(contentsOf: indexPaths)
                     
-                    tableView.insertRows(at: indexPaths, with: .top)
+                                                  tableView.insertRows(at: indexPaths, with: .top)
                     
-                case let .deleted(indexPaths):
-                    tableView.deleteRows(at: indexPaths, with: .top)
-                }
-            }
+                                              case let .deleted(indexPaths):
+                                                  tableView.deleteRows(at: indexPaths, with: .top)
+                                              }
+                                          }
             
-        },
-        completion: { [weak self] _ in
-            guard let self = self else {
-                return
-            }
+                                      },
+                                      completion: { [weak self] _ in
+                                          guard let self = self else {
+                                              return
+                                          }
             
-            self.updatePreferredContentSize()
+                                          self.updatePreferredContentSize()
             
-            self.updateVisibleRowsBackgroundColor()
+                                          self.updateVisibleRowsBackgroundColor()
             
-        })
+                                      })
     }
     
     func updateVisibleRowsBackgroundColor(_ completion: ((Bool) -> Void)? = nil) {
@@ -123,5 +91,4 @@ private extension ElementViewHierarchyViewController {
             completion: completion
         )
     }
-    
 }

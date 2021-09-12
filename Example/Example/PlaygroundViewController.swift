@@ -97,7 +97,8 @@ final class PlaygroundViewController: UIViewController {
         
         if #available(iOS 13.4, *) {
             setupSegmentedControl()
-        } else {
+        }
+        else {
             datePickerSegmentedControl.removeSegment(at: 1, animated: false)
         }
     }

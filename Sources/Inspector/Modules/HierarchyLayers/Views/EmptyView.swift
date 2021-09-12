@@ -33,6 +33,7 @@ final class EmptyView: HighlightView {
         super.init(frame: frame, name: name, colorScheme: colorScheme, reference: reference, borderWidth: borderWidth)
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
