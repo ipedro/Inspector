@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,7 +20,7 @@
 
 import UIKit
 
-protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
+protocol ElementInspectorPanelViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
                                         viewControllerFor panel: ElementInspectorPanel,
                                         with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
@@ -29,8 +29,7 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
 }
 
 final class ElementInspectorViewController: UIViewController {
-    
-    weak var delegate: ElementInspectorViewControllerDelegate?
+    weak var delegate: ElementInspectorPanelViewControllerDelegate?
     
     private var viewModel: ElementInspectorViewModelProtocol! {
         didSet {
@@ -40,7 +39,7 @@ final class ElementInspectorViewController: UIViewController {
     
     override var preferredContentSize: CGSize {
         didSet {
-            Console.log(self.classForCoder, #function, preferredContentSize)
+            Console.log(classForCoder, #function, preferredContentSize)
         }
     }
     
@@ -49,7 +48,6 @@ final class ElementInspectorViewController: UIViewController {
             viewCode.emptyLabel.isHidden = presentedPanelViewController != nil
             
             if let panelViewController = presentedPanelViewController {
-                
                 addChild(panelViewController)
                 
                 view.setNeedsLayout()
@@ -60,7 +58,6 @@ final class ElementInspectorViewController: UIViewController {
             }
             
             if let oldPanelViewController = oldValue {
-                
                 oldPanelViewController.willMove(toParent: nil)
                 
                 oldPanelViewController.view.removeFromSuperview()
@@ -106,7 +103,7 @@ final class ElementInspectorViewController: UIViewController {
             navigationItem.leftBarButtonItem = viewCode.dismissBarButtonItem
         }
         
-        viewModel.elementPanels.reversed().forEach {
+        viewModel.availablePanels.reversed().forEach {
             viewCode.segmentedControl.insertSegment(
                 with: $0.image.withRenderingMode(.alwaysTemplate),
                 at: .zero,
@@ -147,10 +144,9 @@ final class ElementInspectorViewController: UIViewController {
 // MARK: - Actions
 
 extension ElementInspectorViewController {
-    
     @discardableResult
     func selectPanelIfAvailable(_ panel: ElementInspectorPanel) -> Bool {
-        guard let index = viewModel.elementPanels.firstIndex(of: panel) else {
+        guard let index = viewModel.availablePanels.firstIndex(of: panel) else {
             return false
         }
         
@@ -164,13 +160,11 @@ extension ElementInspectorViewController {
     func removeCurrentPanel() {
         presentedPanelViewController = nil
     }
-    
 }
 
 // MARK: - Private Actions
 
 private extension ElementInspectorViewController {
-    
     func installPanel(_ panel: ElementInspectorPanel) {
         guard let panelViewController = delegate?.elementInspectorViewController(self, viewControllerFor: panel, with: viewModel.reference) else {
             presentedPanelViewController = nil
@@ -189,14 +183,13 @@ private extension ElementInspectorViewController {
             return
         }
 
-        let panel = ElementInspectorPanel.allCases[viewCode.segmentedControl.selectedSegmentIndex]
+        let panel = viewModel.availablePanels[viewCode.segmentedControl.selectedSegmentIndex]
         
         installPanel(panel)
     }
     
     @objc
     func close() {
-        self.delegate?.elementInspectorViewControllerDidFinish(self)
+        delegate?.elementInspectorViewControllerDidFinish(self)
     }
-    
 }

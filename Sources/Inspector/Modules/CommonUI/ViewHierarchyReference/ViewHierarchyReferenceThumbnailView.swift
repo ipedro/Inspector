@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,7 +22,6 @@ import AVFoundation
 import UIKit
 
 final class ViewHierarchyReferenceThumbnailView: BaseView {
-    
     enum State {
         case snapshot(UIView)
         case frameIsEmpty(CGRect)
@@ -60,6 +59,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         super.init(frame: frame)
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -195,7 +195,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     }
     
     private func calculateFrame(with snapshotSize: CGSize) -> CGRect {
-        let margins  = contentView.directionalLayoutMargins
+        let margins = contentView.directionalLayoutMargins
         let maxWidth = max(0, bounds.width - margins.leading - margins.trailing)
         
         return AVMakeRect(
@@ -206,7 +206,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             insideRect: CGRect(
                 origin: .zero,
                 size: CGSize(
-                    width:  maxWidth,
+                    width: maxWidth,
                     height: maxWidth
                 )
             )
@@ -238,5 +238,4 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
         
         state = .snapshot(snapshotView)
     }
-    
 }

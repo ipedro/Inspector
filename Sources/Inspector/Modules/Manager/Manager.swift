@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,9 +22,8 @@ import UIKit
 
 typealias Manager = Inspector.Manager
 
-extension Inspector {
-    public final class Manager: Create {
-        
+public extension Inspector {
+    final class Manager: Create {
         // MARK: - Properties
         
         static let shared = Manager()
@@ -42,7 +41,7 @@ extension Inspector {
         
         // MARK: - Properties
         
-        private(set) lazy var operationQueue: OperationQueue = OperationQueue.main
+        private(set) lazy var operationQueue = OperationQueue.main
         
         var elementInspectorCoordinator: ElementInspectorCoordinator? {
             didSet {
@@ -94,7 +93,7 @@ extension Inspector {
                 
                 let coordinator = ViewHierarchyLayersCoordinator()
                 coordinator.dataSource = self
-                coordinator.delegate   = self
+                coordinator.delegate = self
                 
                 self.viewHierarchyLayersCoordinator = coordinator
             }
@@ -132,14 +131,12 @@ extension Inspector {
             
             hierarchyInspectorCoordinator = coordinator
         }
-        
     }
 }
 
 // MARK: - Commands
 
 extension Manager {
-    
     var availableCommandGroups: CommandGroups {
         guard
             let snapshot = viewHierarchySnapshot,
@@ -158,23 +155,19 @@ extension Manager {
         
         return commandGroups
     }
-    
 }
 
 // MARK: - Host ViewController
 
 extension Manager {
-    
     var hostViewController: UIViewController? {
         viewHierarchyWindow?.rootViewController?.presentedViewController ?? viewHierarchyWindow?.rootViewController
     }
-    
 }
 
 // MARK: - Snapshot
 
 extension Manager {
-    
     var viewHierarchySnapshot: ViewHierarchySnapshot? {
         snapshot(of: viewHierarchyWindow)
     }
@@ -205,32 +198,28 @@ extension Manager {
         
         return cachedSnapshot
     }
-    
 }
 
 // MARK: - AsyncOperationProtocol
 
 extension Manager: AsyncOperationProtocol {
-    
     func asyncOperation(name: String = #function, execute closure: @escaping Closure) {
         let asyncOperation = MainThreadAsyncOperation(name: name, closure: closure)
         
         operationQueue.addOperation(asyncOperation)
     }
-    
 }
 
 // MARK: - InspectorHostable Extension
 
 private extension InspectorHostable {
-    
     var availableLayers: [ViewHierarchyLayer] {
         var layers = inspectorViewHierarchyLayers ?? []
         layers.append(.allViews)
         layers.append(.systemViews)
         layers.append(.systemContainers)
         
-        return layers.uniqueValues
+        return layers.uniqueValues()
     }
     
     var availableElementLibraries: [InspectorElementLibraryProtocol] {
@@ -240,9 +229,8 @@ private extension InspectorHostable {
             elements.append(contentsOf: inspectorElementLibraries)
         }
         
-        elements.append(contentsOf: UIKitElementLibrary.standard)
+        elements.append(contentsOf: UIViewElementLibrary.standard)
         
         return elements
     }
-    
 }

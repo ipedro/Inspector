@@ -22,14 +22,12 @@ import UIKit
 @_implementationOnly import UIKitOptions
 
 public extension InspectorConfiguration {
-
     struct KeyCommandSettings {
-        
-        public var layerToggleInputRange: ClosedRange<Int> = (1 ... 9)
+        public var layerToggleInputRange: ClosedRange<Int> = (1...9)
         
         public var layerToggleModifierFlags: UIKeyModifierFlags = [.control]
         
-        public var allLayersToggleInput: String = String(0)
+        public var allLayersToggleInput = String(0)
         
         private var presentationOptions: UIKeyCommand.Options {
             .discoverabilityTitle(
@@ -55,5 +53,4 @@ public extension InspectorConfiguration {
             }
         }
     }
-    
 }

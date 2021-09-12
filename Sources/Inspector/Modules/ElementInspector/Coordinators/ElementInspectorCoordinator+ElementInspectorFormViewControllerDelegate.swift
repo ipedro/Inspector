@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,22 +18,23 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 import MobileCoreServices
+import UIKit
 
-extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerDelegate {
-    
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
-                                           showLayerInspectorViewsInside reference: ViewHierarchyReference) {
+extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegate {
+    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
+                                        showLayerInspectorViewsInside reference: ViewHierarchyReference)
+    {
         delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
     }
     
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
-                                           hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
+    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
+                                        hideLayerInspectorViewsInside reference: ViewHierarchyReference)
+    {
         delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
     }
     
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController, didTap colorPicker: ColorPreviewControl) {
+    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController, didTap colorPicker: ColorPreviewControl) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             let colorPickerViewController = UIColorPickerViewController(
@@ -57,9 +58,9 @@ extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerD
         #endif
     }
     
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
-                                           didTap optionSelector: OptionListControl) {
-        
+    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
+                                        didTap optionSelector: OptionListControl)
+    {
         let viewModel = OptionSelectorViewModel(
             title: optionSelector.title,
             options: optionSelector.options,
@@ -86,8 +87,9 @@ extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerD
         viewController.present(navigationController, animated: true)
     }
     
-    func attributesInspectorViewController(_ viewController: ElementAttributesInspectorViewController,
-                                           didTap imagePicker: ImagePreviewControl) {
+    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
+                                        didTap imagePicker: ImagePreviewControl)
+    {
         let alertController = UIAlertController(
             title: nil,
             message: nil,
@@ -104,8 +106,7 @@ extension ElementInspectorCoordinator: ElementAttributesInspectorViewControllerD
                 .sourceView(imagePicker.accessoryControl),
                 .permittedArrowDirections([.up, .down]),
                 .popoverPresentationDelegate(self)
-            )
-        )
+            ))
         
         alertController.addAction(
             UIAlertAction(

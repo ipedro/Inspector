@@ -30,6 +30,7 @@ final class WireframeView: LayerView {
         super.init(frame: frame, reference: reference, color: color, borderWidth: borderWidth)
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

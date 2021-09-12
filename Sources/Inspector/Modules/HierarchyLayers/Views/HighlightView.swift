@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,7 +25,6 @@ protocol HighlightViewDelegate: AnyObject {
 }
 
 extension HighlightViewDelegate {
-    
     func toggleHighlightViews(visibility isVisible: Bool, inside reference: ViewHierarchyReference) {
         guard let referenceRootView = reference.rootView else {
             return
@@ -35,7 +34,6 @@ extension HighlightViewDelegate {
             view.isSafelyHidden = isVisible == false
         }
     }
-    
 }
 
 class HighlightView: LayerView {
@@ -172,6 +170,7 @@ class HighlightView: LayerView {
         updateColors()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -213,7 +212,7 @@ class HighlightView: LayerView {
         
         if let superview = superview {
             color = colorScheme.color(for: superview)
-        }        
+        }
     }
     
     func updateElementName() {
@@ -229,7 +228,6 @@ class HighlightView: LayerView {
 }
 
 private extension HighlightView {
-    
     @objc
     func tap() {
         delegate?.highlightView(self, didTapWith: viewReference)
@@ -262,11 +260,11 @@ private extension HighlightView {
         switch isTouching {
         case true:
             layerBackgroundColor = color.withAlphaComponent(ElementInspector.appearance.disabledAlpha)
-            layerBorderColor     = color.withAlphaComponent(1)
+            layerBorderColor = color.withAlphaComponent(1)
             
         case false:
             layerBackgroundColor = color.withAlphaComponent(ElementInspector.appearance.disabledAlpha / 10)
-            layerBorderColor     = color.withAlphaComponent(ElementInspector.appearance.disabledAlpha * 2)
+            layerBorderColor = color.withAlphaComponent(ElementInspector.appearance.disabledAlpha * 2)
         }
     }
 }

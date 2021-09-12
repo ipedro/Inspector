@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,17 +20,16 @@
 
 import UIKit
 
-protocol ElementViewHierarchyPanelViewModelProtocol: ViewHierarchyReferenceDetailViewModelProtocol & AnyObject {
-    var parent: ElementViewHierarchyPanelViewModelProtocol? { get set }
+protocol ElementInspectorPanelViewModelProtocol: ViewHierarchyReferenceDetailViewModelProtocol & AnyObject {
+    var parent: ElementInspectorPanelViewModelProtocol? { get set }
     var reference: ViewHierarchyReference { get }
+    var isCollapsed: Bool { get set }
 }
 
-
 final class ElementViewHierarchyPanelViewModel {
-    
     let identifier = UUID()
     
-    weak var parent: ElementViewHierarchyPanelViewModelProtocol?
+    weak var parent: ElementInspectorPanelViewModelProtocol?
     
     private var _isCollapsed: Bool
     
@@ -48,7 +47,7 @@ final class ElementViewHierarchyPanelViewModel {
     
     init(
         reference: ViewHierarchyReference,
-        parent: ElementViewHierarchyPanelViewModelProtocol? = nil,
+        parent: ElementInspectorPanelViewModelProtocol? = nil,
         rootDepth: Int,
         thumbnailImage: UIImage?,
         isCollapsed: Bool
@@ -57,15 +56,13 @@ final class ElementViewHierarchyPanelViewModel {
         self.reference = reference
         self.rootDepth = rootDepth
         self.thumbnailImage = thumbnailImage
-        self._isCollapsed = isCollapsed
+        _isCollapsed = isCollapsed
     }
 }
 
-
 // MARK: - ElementViewHierarchyPanelViewModelProtocol
 
-extension ElementViewHierarchyPanelViewModel: ElementViewHierarchyPanelViewModelProtocol {
-    
+extension ElementViewHierarchyPanelViewModel: ElementInspectorPanelViewModelProtocol {
     var titleFont: UIFont {
         ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth)
     }
@@ -98,7 +95,6 @@ extension ElementViewHierarchyPanelViewModel: ElementViewHierarchyPanelViewModel
     var relativeDepth: Int {
         reference.depth - rootDepth
     }
-    
 }
 
 // MARK: - Hashable
@@ -116,7 +112,6 @@ extension ElementViewHierarchyPanelViewModel: Hashable {
 // MARK: - Images
 
 private extension ElementViewHierarchyPanelViewModel {
-    
     static let thumbnailImageLostConnection = IconKit.imageOfWifiExlusionMark(
         CGSize(
             width: ElementInspector.appearance.horizontalMargins * 1.5,
@@ -130,5 +125,4 @@ private extension ElementViewHierarchyPanelViewModel {
             height: ElementInspector.appearance.horizontalMargins * 1.5
         )
     ).withRenderingMode(.alwaysTemplate)
-    
 }

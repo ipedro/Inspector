@@ -49,7 +49,7 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         .horizontalAlignment(.center)
     )
 
-    var viewModel: ElementViewHierarchyPanelViewModelProtocol? {
+    var viewModel: ElementInspectorPanelViewModelProtocol? {
         didSet {
             referenceDetailView.viewModel = viewModel
         }

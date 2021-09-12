@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -45,7 +45,7 @@ final class ViewHierarchyReference {
     
     private(set) lazy var isContainer: Bool = children.isEmpty == false
     
-    private(set) lazy var deepestAbsoulteLevel: Int = children.map { $0.depth }.max() ?? depth
+    private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
     
     private(set) lazy var children: [ViewHierarchyReference] = rootView?.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1, parent: self) } ?? []
     
@@ -65,7 +65,7 @@ final class ViewHierarchyReference {
     }
     
     init(root: UIView, depth: Int = 0, parent: ViewHierarchyReference? = nil) {
-        self.rootView = root
+        rootView = root
         
         self.depth = depth
         
@@ -94,7 +94,6 @@ final class ViewHierarchyReference {
 // MARK: - ViewHierarchyProtocol {
 
 extension ViewHierarchyReference: ViewHierarchyProtocol {
-    
     var elementName: String {
         guard let rootView = rootView else {
             return _elementName
@@ -124,11 +123,10 @@ extension ViewHierarchyReference: ViewHierarchyProtocol {
     var inspectableViewReferences: [ViewHierarchyReference] {
         let flattenedViewHierarchy = [self] + flattenedSubviewReferences
         
-        let inspectableViews = flattenedViewHierarchy.filter { $0.canHostInspectorView }
+        let inspectableViews = flattenedViewHierarchy.filter(\.canHostInspectorView)
         
         return inspectableViews
     }
-    
 }
 
 // MARK: - Hashable
