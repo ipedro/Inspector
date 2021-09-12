@@ -18,11 +18,16 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
+import Foundation
 
-/// AutoLayout Libraries are entities that conform to `InspectorAutoLayoutLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
-public protocol InspectorAutoLayoutLibraryProtocol {
-    func viewModels(for referenceView: UIView) -> [ElementInspectorFormSection]
+extension String {
+    var trimmed: String? {
+        let trimmedString = trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        return trimmedString.isEmpty ? nil : trimmedString
+    }
 
-    func icon(for viewModel: InspectorAutoLayoutViewModelProtocol) -> UIImage?
+    func string(prepending: String? = nil, appending: String? = nil, separator: String = "") -> String {
+        [prepending, self, appending].compactMap { $0 }.joined(separator: separator)
+    }
 }

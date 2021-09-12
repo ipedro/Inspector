@@ -26,18 +26,12 @@ final class AutoLayoutInspectorViewModel {
     let reference: ViewHierarchyReference
     let snapshot: ViewHierarchySnapshot
 
-    private(set) lazy var sections: [Title: Section] = {
-        guard let referenceView = reference.rootView else { return [:] }
+    private(set) lazy var sections: [ElementInspectorFormSection] = {
+        guard let referenceView = reference.rootView else { return [] }
 
-        var sections: [Title: Section] = [:]
-
-        AutoLayoutLibrary.allCases.forEach { library in
-            for (key, value) in library.viewModels(for: referenceView) {
-                sections[key] = value
-            }
-        }
-
-        return sections
+        return AutoLayoutLibrary.allCases
+            .map{ $0.viewModels(for: referenceView) }
+            .flatMap { $0 }
     }()
 
     init(reference: ViewHierarchyReference, snapshot: ViewHierarchySnapshot) {

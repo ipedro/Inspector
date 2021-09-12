@@ -21,7 +21,7 @@
 import UIKit
 
 extension UIViewElementLibrary {
-    final class UIStackViewInspectableViewModel: ElementInspectorFormViewModelProtocol {
+    final class UIStackViewInspectableViewModel: InspectorElementFormViewModelProtocol {
         enum Property: String, Swift.CaseIterable {
             case axis = "Axis"
             case alignment = "Alignment"

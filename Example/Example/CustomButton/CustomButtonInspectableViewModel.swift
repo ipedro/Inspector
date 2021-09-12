@@ -21,7 +21,7 @@
 import Inspector
 import UIKit
 
-final class CustomButtonInspectableViewModel: ElementInspectorFormViewModelProtocol {
+final class CustomButtonInspectableViewModel: InspectorElementFormViewModelProtocol {
     var title: String = "Custom Button"
     
     let customButton: CustomButton

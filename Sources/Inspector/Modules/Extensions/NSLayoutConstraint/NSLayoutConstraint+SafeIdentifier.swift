@@ -20,14 +20,13 @@
 
 import UIKit
 
-public protocol ElementInspectorFormViewModelProtocol {
-    var title: String { get }
-    var subtitle: String? { get }
-    var headerAccessoryView: UIView? { get }
-    var properties: [InspectorElementViewModelProperty] { get }
-}
-
-public extension ElementInspectorFormViewModelProtocol {
-    var headerAccessoryView: UIView? { nil }
-    var subtitle: String? { nil }
+extension NSLayoutConstraint {
+    var safeIdentifier: String? {
+        if identifier != nil {
+            return identifier!
+        }
+        else {
+            return nil
+        }
+    }
 }

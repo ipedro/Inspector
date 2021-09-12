@@ -21,7 +21,7 @@
 import UIKit
 
 extension UIViewElementLibrary {
-    final class UIViewInspectableViewModel: ElementInspectorFormViewModelProtocol {
+    final class UIViewInspectableViewModel: InspectorElementFormViewModelProtocol {
         enum Property: String, Swift.CaseIterable {
             case contentMode = "Content Mode"
             case semanticContentAttribute = "Semantic Content"

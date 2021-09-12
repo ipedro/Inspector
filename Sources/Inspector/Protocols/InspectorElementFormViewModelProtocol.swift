@@ -20,9 +20,14 @@
 
 import UIKit
 
-/// AutoLayout Libraries are entities that conform to `InspectorAutoLayoutLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
-public protocol InspectorAutoLayoutLibraryProtocol {
-    func viewModels(for referenceView: UIView) -> [ElementInspectorFormSection]
+public protocol InspectorElementFormViewModelProtocol {
+    var title: String { get }
+    var subtitle: String? { get }
+    var headerAccessoryView: UIView? { get }
+    var properties: [InspectorElementViewModelProperty] { get }
+}
 
-    func icon(for viewModel: InspectorAutoLayoutViewModelProtocol) -> UIImage?
+public extension InspectorElementFormViewModelProtocol {
+    var headerAccessoryView: UIView? { nil }
+    var subtitle: String? { nil }
 }

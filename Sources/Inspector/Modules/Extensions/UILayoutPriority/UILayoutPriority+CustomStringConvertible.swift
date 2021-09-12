@@ -18,11 +18,28 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-/// AutoLayout Libraries are entities that conform to `InspectorAutoLayoutLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
-public protocol InspectorAutoLayoutLibraryProtocol {
-    func viewModels(for referenceView: UIView) -> [ElementInspectorFormSection]
-
-    func icon(for viewModel: InspectorAutoLayoutViewModelProtocol) -> UIImage?
+extension UILayoutPriority: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .defaultHigh:
+            return "High"
+        case .defaultLow:
+            return "Low"
+        case .fittingSizeLevel:
+            return "Fitting Size"
+        case .required:
+            return "Required"
+        case .dragThatCanResizeScene:
+            return "Drag That Can Resize Scene"
+        case .sceneSizeStayPut:
+            return "Scene Size Stay Put"
+        case .dragThatCannotResizeScene:
+            return "Drag That Can't Resize Scene"
+        default:
+            return rawValue.string()
+        }
+    }
 }

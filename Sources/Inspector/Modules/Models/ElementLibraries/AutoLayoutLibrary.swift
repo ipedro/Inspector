@@ -31,7 +31,7 @@ enum AutoLayoutLibrary: Swift.CaseIterable {
 // MARK: - InspectorAutoLayoutLibraryProtocol
 
 extension AutoLayoutLibrary: InspectorAutoLayoutLibraryProtocol {
-    func viewModels(for referenceView: UIView) -> [String: [InspectorAutoLayoutViewModelProtocol]] {
+    func viewModels(for referenceView: UIView) -> [ElementInspectorFormSection] {
         switch self {
         case .layoutConstraints:
             var horizontal: [InspectorAutoLayoutViewModelProtocol] = []
@@ -50,16 +50,26 @@ extension AutoLayoutLibrary: InspectorAutoLayoutLibraryProtocol {
                 }
             }
 
-            var dict: [String: [InspectorAutoLayoutViewModelProtocol]] = [:]
+            var sections: [ElementInspectorFormSection] = []
 
             if horizontal.isEmpty == false {
-                dict["Horizontal Constraints"] = horizontal
+                sections.append(
+                    ElementInspectorFormSection(
+                        title: "Horizontal Constraints",
+                        rows: horizontal
+                    )
+                )
             }
             if vertical.isEmpty == false {
-                dict["Vertical Constraints"] = vertical
+                sections.append(
+                    ElementInspectorFormSection(
+                        title: "Vertical Constraints",
+                        rows: vertical
+                    )
+                )
             }
 
-            return dict
+            return sections
         }
     }
 

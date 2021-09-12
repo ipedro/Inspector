@@ -38,12 +38,21 @@ protocol ElementInspectorFormViewControllerDelegate: OperationQueueManagerProtoc
                                         hideLayerInspectorViewsInside reference: ViewHierarchyReference)
 }
 
+public struct ElementInspectorFormSection {
+    public var title: String?
+    public var viewModels: [InspectorElementFormViewModelProtocol]
+
+    public init(
+        title: String? = nil,
+        rows: [InspectorElementFormViewModelProtocol]
+    ) {
+        self.title = title
+        self.viewModels = rows
+    }
+}
+
 protocol ElementInspectorFormViewControllerDataSource: AnyObject {
-    typealias Section = [ElementInspectorFormViewModelProtocol]
-
-    typealias Title = String
-
-    var sections: [Title: Section] { get }
+    var sections: [ElementInspectorFormSection] { get }
 }
 
 protocol ElementInspectorBaseViewControllerProtocol {
@@ -106,17 +115,20 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
         guard let self = self as? ElementInspectorFormViewController else { return }
 
         dataSource?.sections.forEach { section in
-            let sectionHeaderView = SectionHeader(
-                title: section.key,
-                titleFont: .headline,
-                margins: .init(insets: ElementInspector.appearance.horizontalMargins)
-            ).then {
-                $0.alpha = 0.5
+
+            if let title = section.title {
+                let sectionHeaderView = SectionHeader(
+                    title: title,
+                    titleFont: .headline,
+                    margins: .init(insets: ElementInspector.appearance.horizontalMargins)
+                ).then {
+                    $0.alpha = 0.5
+                }
+
+                self.viewCode.contentView.addArrangedSubview(sectionHeaderView)
             }
 
-            self.viewCode.contentView.addArrangedSubview(sectionHeaderView)
-
-            for (index, viewModel) in section.value.enumerated() {
+            for (index, viewModel) in section.viewModels.enumerated() {
                 let sectionViewController = ElementInspectorFormSectionViewController.create(
                     viewModel: viewModel,
                     viewCode: self.sectionViewType.init()

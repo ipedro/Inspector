@@ -41,17 +41,17 @@ final class AttributesInspectorViewModel {
 
     let snapshot: ViewHierarchySnapshot
 
-    private(set) lazy var sections: [Title: Section] = {
-        guard let referenceView = reference.rootView else {
-            return [:]
-        }
+    private(set) lazy var sections: [ElementInspectorFormSection] = {
+        guard let referenceView = reference.rootView else { return [] }
 
-        let array = snapshot.elementLibraries.targeting(element: referenceView)
-            .map { $0.viewModels(for: referenceView) }
-            .flatMap { $0 }
-            .compactMap { $0 }
-
-        return ["Attributes": array]
+        return [
+            ElementInspectorFormSection(
+                rows: snapshot.elementLibraries.targeting(element: referenceView)
+                    .map { $0.viewModels(for: referenceView) }
+                    .flatMap { $0 }
+                    .compactMap { $0 }
+            )
+        ]
     }()
 
     init(

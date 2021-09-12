@@ -18,12 +18,20 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 
-extension String {
-    var trimmed: String? {
-        let trimmedString = trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        return trimmedString.isEmpty ? nil : trimmedString
+import UIKit
+
+private let binaryFloatingPointFormatter = NumberFormatter().then {
+    $0.maximumFractionDigits = 2
+    $0.numberStyle = .decimal
+}
+
+extension BinaryFloatingPoint {
+    func string(prepending: String? = nil, appending: String? = nil, separator: String = "") -> String {
+        guard let formattedNumber = binaryFloatingPointFormatter.string(from: CGFloat(self)) else {
+            return String()
+        }
+
+        return formattedNumber.string(prepending: prepending, appending: appending, separator: separator)
     }
 }

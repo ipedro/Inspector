@@ -94,6 +94,10 @@ extension UIView: ViewHierarchyProtocol {
     var className: String {
         String(describing: classForCoder)
     }
+
+    var accessibilityIdentifierOrClassName: String {
+        accessibilityIdentifier ?? className
+    }
     
     var elementName: String {
         guard let description = accessibilityIdentifier?.split(separator: ".").last else {

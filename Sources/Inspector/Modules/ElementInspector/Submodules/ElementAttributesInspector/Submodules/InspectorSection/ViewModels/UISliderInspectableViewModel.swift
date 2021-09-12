@@ -21,7 +21,7 @@
 import UIKit
 
 extension UIViewElementLibrary {
-    final class UISliderInspectableViewModel: ElementInspectorFormViewModelProtocol {
+    final class UISliderInspectableViewModel: InspectorElementFormViewModelProtocol {
         enum Property: String, Swift.CaseIterable {
             case value = "Value"
             case minimumValue = "Minimum"
