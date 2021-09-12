@@ -35,7 +35,7 @@ extension ElementInspectorFormSectionViewDelegate where Self: UIViewController {
 protocol ElementInspectorFormSectionView: BaseView {
     var delegate: ElementInspectorFormSectionViewDelegate? { get set }
     var inputContainerView: UIStackView { get }
-    var sectionHeader: SectionHeader { get }
+    var header: SectionHeader { get }
     var isCollapsed: Bool { get set }
 }
 
@@ -88,7 +88,7 @@ final class ElementInspectorFormSectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        viewCode.sectionHeader.text = viewModel.title
+        viewCode.header.title = viewModel.title
 
         viewModel.properties.forEach {
             guard let view = inputViews[$0] else {

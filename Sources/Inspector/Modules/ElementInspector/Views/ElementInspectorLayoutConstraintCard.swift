@@ -21,9 +21,10 @@
 import UIKit
 
 final class ElementInspectorLayoutConstraintCard: BaseCard, ElementInspectorFormSectionView {
-    private lazy var formView = ElementInspectorFormSectionContentView().then {
+    private lazy var formView = ElementInspectorFormSectionContentView.init(
+        header: header
+    ).then {
         $0.topSeparatorView.isHidden = true
-        $0.sectionHeader.textStyle = .footnote
     }
 
     var delegate: ElementInspectorFormSectionViewDelegate? {
@@ -38,7 +39,10 @@ final class ElementInspectorLayoutConstraintCard: BaseCard, ElementInspectorForm
 
     var inputContainerView: UIStackView { formView.inputContainerView }
 
-    var sectionHeader: SectionHeader { formView.sectionHeader }
+    private(set) lazy var header = SectionHeader(
+        titleFont: .init(.footnote, .traitBold),
+        subtitleFont: .caption2
+    )
 
     override func setup() {
         super.setup()

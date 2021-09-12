@@ -91,7 +91,7 @@ extension OptionSelectorViewController: UIPickerViewDelegate {
             return SeparatorView()
         }
 
-        return SectionHeader(.callout, text: title)
+        return SectionHeader(title: title, titleFont: .callout)
     }
     
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat { 50 }

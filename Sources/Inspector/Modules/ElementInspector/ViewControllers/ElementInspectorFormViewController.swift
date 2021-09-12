@@ -40,6 +40,7 @@ protocol ElementInspectorFormViewControllerDelegate: OperationQueueManagerProtoc
 
 protocol ElementInspectorFormViewControllerDataSource: AnyObject {
     typealias Section = [ElementInspectorFormViewModelProtocol]
+
     typealias Title = String
 
     var sections: [Title: Section] { get }
@@ -85,8 +86,8 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
 
         dataSource?.sections.forEach { section in
             let sectionHeaderView = SectionHeader(
-                .headline,
-                text: section.key,
+                title: section.key,
+                titleFont: .headline,
                 margins: .init(insets: ElementInspector.appearance.horizontalMargins)
             ).then {
                 $0.alpha = 0.5

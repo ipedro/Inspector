@@ -27,7 +27,7 @@ final class ElementInspectorFormSectionContentView: BaseView, ElementInspectorFo
 
     private(set) lazy var topSeparatorView = SeparatorView(thickness: 1)
 
-    private(set) lazy var sectionHeader = SectionHeader.attributesInspectorHeader()
+    var header: SectionHeader
 
     var isCollapsed: Bool = false {
         didSet {
@@ -41,6 +41,18 @@ final class ElementInspectorFormSectionContentView: BaseView, ElementInspectorFo
 
     private lazy var chevronDownIcon = Icon.chevronDownIcon()
 
+    convenience init() {
+        self.init(header: SectionHeader.attributesInspectorHeader(), frame: .zero)
+    }
+
+    init(
+        header: SectionHeader,
+        frame: CGRect = .zero
+    ) {
+        self.header = header
+        super.init(frame: frame)
+    }
+
     override func setup() {
         super.setup()
 
@@ -48,11 +60,11 @@ final class ElementInspectorFormSectionContentView: BaseView, ElementInspectorFo
 
         contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
 
-        contentView.addArrangedSubview(sectionHeader)
+        contentView.addArrangedSubview(header)
 
         contentView.addArrangedSubview(inputContainerView)
 
-        contentView.setCustomSpacing(ElementInspector.appearance.verticalMargins, after: sectionHeader)
+        contentView.setCustomSpacing(ElementInspector.appearance.verticalMargins, after: header)
 
         installSeparator()
 
@@ -73,10 +85,10 @@ final class ElementInspectorFormSectionContentView: BaseView, ElementInspectorFo
     private func installIcon() {
         contentView.addSubview(chevronDownIcon)
 
-        chevronDownIcon.centerYAnchor.constraint(equalTo: sectionHeader.centerYAnchor).isActive = true
+        chevronDownIcon.centerYAnchor.constraint(equalTo: header.centerYAnchor).isActive = true
 
         chevronDownIcon.trailingAnchor.constraint(
-            equalTo: sectionHeader.leadingAnchor,
+            equalTo: header.leadingAnchor,
             constant: -(ElementInspector.appearance.verticalMargins / 3)
         ).isActive = true
     }
