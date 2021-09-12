@@ -117,11 +117,11 @@ final class ElementAttributesInspectorViewController: ElementInspectorFormViewCo
         super.loadSections()
     }
 
-    override func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController, willUpdate property: InspectorElementViewModelProperty) {
+    override func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController, willUpdate property: InspectorElementViewModelProperty) {
         stopLiveUpdatingSnaphost()
     }
 
-    override func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController, didUpdate property: InspectorElementViewModelProperty) {
+    override func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController, didUpdate property: InspectorElementViewModelProperty) {
         let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
             self?.children.forEach {
                 guard let sectionViewController = $0 as? ElementInspectorFormSectionViewController else {
@@ -140,27 +140,6 @@ final class ElementAttributesInspectorViewController: ElementInspectorFormViewCo
         }
 
         formDelegate?.addOperationToQueue(updateOperation)
-    }
-
-    override func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController, didToggle isCollapsed: Bool) {
-        stopLiveUpdatingSnaphost()
-
-        animatePanel(
-            animations: { [weak self] in
-                guard let self = self else { return }
-
-                viewController.isCollapsed.toggle()
-
-                let sectionViewControllers = self.children.compactMap { $0 as? ElementInspectorFormSectionViewController }
-
-                for sectionViewController in sectionViewControllers where sectionViewController !== viewController {
-                    sectionViewController.isCollapsed = true
-                }
-            },
-            completion: { [weak self] _ in
-                self?.startLiveUpdatingSnaphost()
-            }
-        )
     }
 
     override func animatePanel(animations: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {

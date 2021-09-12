@@ -135,20 +135,16 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
     
     override func setup() {
         super.setup()
-        
-        setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        
-        setContentHuggingPriority(.defaultHigh, for: .vertical)
-        
-        contentView.addArrangedSubview(headerContainerView)
-        
-        contentView.addArrangedSubview(separatorView)
-        
-        contentView.addArrangedSubview(controlsHeaderTitle)
-        
-        contentView.addArrangedSubview(controlsContainerView)
-        
-        contentView.addArrangedSubview(thumbnailView)
+
+        installView(contentView, priority: .required)
+
+        contentView.addArrangedSubviews(
+            headerContainerView,
+            separatorView,
+            controlsHeaderTitle,
+            controlsContainerView,
+            thumbnailView
+        )
         
         contentView.spacing = ElementInspector.appearance.verticalMargins
         

@@ -34,11 +34,12 @@ protocol ElementInspectorFormView: BaseView {
 final class ElementInspectorFormViewCode: BaseView, ElementInspectorFormView {
     weak var delegate: ElementInspectorFormViewCodeDelegate?
     
-    private(set) lazy var scrollView = UIScrollView(
-        .alwaysBounceVertical(true),
-        .keyboardDismissMode(.onDrag),
-        .indicatorStyle(.white)
-    )
+    private(set) lazy var scrollView = UIScrollView().then {
+        $0.alwaysBounceVertical = true
+        $0.keyboardDismissMode = .onDrag
+        $0.indicatorStyle = .white
+        $0.delaysContentTouches = false
+    }
     
     #if swift(>=5.0)
     @available(iOS 13.0, *)
@@ -59,10 +60,10 @@ final class ElementInspectorFormViewCode: BaseView, ElementInspectorFormView {
     
     override func setup() {
         super.setup()
+
+        scrollView.installView(contentView, priority: .required)
         
-        scrollView.installView(contentView)
-        
-        installView(scrollView)
+        installView(scrollView, priority: .required)
         
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
         

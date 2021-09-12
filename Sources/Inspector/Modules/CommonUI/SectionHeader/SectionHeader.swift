@@ -45,29 +45,26 @@ extension SectionHeader {
 
 final class SectionHeader: BaseView {
     private lazy var titleLabel = UILabel(
-        .textColor(ElementInspector.appearance.textColor),
-        .numberOfLines(.zero),
-        .adjustsFontSizeToFitWidth(true),
-        .preferredMaxLayoutWidth(200),
-        .minimumScaleFactor(0.5)
+        .textColor(ElementInspector.appearance.textColor)
     ).then {
         $0.font = titleFont.font()
+        $0.isHidden = $0.text?.isEmpty != false
     }
 
     private lazy var subtitleLabel = UILabel(
-        .textColor(ElementInspector.appearance.secondaryTextColor),
-        .numberOfLines(.zero),
-        .adjustsFontSizeToFitWidth(true),
-        .preferredMaxLayoutWidth(200),
-        .minimumScaleFactor(0.5)
+        .textColor(ElementInspector.appearance.secondaryTextColor)
     ).then {
         $0.font = subtitleFont.font()
+        $0.isHidden = $0.text?.isEmpty != false
     }
 
     private lazy var textStackView = UIStackView.vertical(
         .arrangedSubviews(titleLabel, subtitleLabel),
         .spacing(ElementInspector.appearance.verticalMargins / 2)
-    )
+    ).then {
+        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        $0.clipsToBounds = false
+    }
 
     var title: String? {
         get {
@@ -75,6 +72,7 @@ final class SectionHeader: BaseView {
         }
         set {
             titleLabel.text = newValue
+            titleLabel.isHidden = newValue?.isEmpty != false
         }
     }
 
@@ -84,6 +82,7 @@ final class SectionHeader: BaseView {
         }
         set {
             subtitleLabel.text = newValue
+            subtitleLabel.isHidden = newValue?.isEmpty != false
         }
     }
 

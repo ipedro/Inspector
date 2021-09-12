@@ -20,6 +20,16 @@
 
 import UIKit
 
+extension UISwitch {
+    static func toggleControlSyle() -> UISwitch {
+        let switchControl = UISwitch()
+        switchControl.onTintColor = .systemPurple
+        switchControl.thumbTintColor = ElementInspector.appearance.quaternaryTextColor
+
+        return switchControl
+    }
+}
+
 final class ToggleControl: BaseFormControl {
     // MARK: - Properties
 
@@ -31,20 +41,20 @@ final class ToggleControl: BaseFormControl {
             setOn(newValue, animated: false)
         }
     }
-    
+
     override var isEnabled: Bool {
         didSet {
             switchControl.isEnabled = isEnabled
-            
+
             guard isEnabled else {
                 return
             }
-            
+
             updateViews()
         }
     }
-    
-    private lazy var switchControl = UISwitch().then {
+
+    private lazy var switchControl = UISwitch.toggleControlSyle().then {
         $0.addTarget(self, action: #selector(toggleOn), for: .valueChanged)
     }
 
@@ -52,7 +62,7 @@ final class ToggleControl: BaseFormControl {
 
     init(title: String?, isOn: Bool) {
         super.init(title: title)
-        
+
         self.isOn = isOn
     }
 
@@ -64,28 +74,23 @@ final class ToggleControl: BaseFormControl {
     override func setup() {
         super.setup()
 
-        switchControl.onTintColor = .systemPurple
-        
-        switchControl.thumbTintColor = ElementInspector.appearance.quaternaryTextColor
-        
         contentView.addArrangedSubview(switchControl)
-        
+
         updateViews()
     }
-    
+
     func setOn(_ on: Bool, animated: Bool) {
         switchControl.setOn(on, animated: animated)
-        
+
         updateViews()
     }
 
     @objc
     func toggleOn() {
         updateViews()
-        
         sendActions(for: .valueChanged)
     }
-    
+
     func updateViews() {
         titleLabel.alpha = isOn ? 1 : 0.75
     }

@@ -20,11 +20,9 @@
 
 import UIKit
 
-final class ElementInspectorLayoutConstraintCard: BaseCard, ElementInspectorFormSectionView {
-    private lazy var formView = ElementInspectorFormSectionContentView.init(
-        header: header
-    ).then {
-        $0.topSeparatorView.isHidden = true
+final class ElementInspectorLayoutConstraintCard: BaseCardControl, ElementInspectorFormSectionView {
+    private lazy var formView = ElementInspectorFormSectionContentView(header: header).then {
+        $0.separatorStyle = .none
     }
 
     var delegate: ElementInspectorFormSectionViewDelegate? {
@@ -32,26 +30,35 @@ final class ElementInspectorLayoutConstraintCard: BaseCard, ElementInspectorForm
         set { formView.delegate = newValue }
     }
 
-    var isCollapsed: Bool {
-        get { formView.isCollapsed }
-        set { formView.isCollapsed = newValue }
+    var sectionState: UIControl.State {
+        get { formView.sectionState }
+        set { formView.sectionState = newValue }
     }
 
-    var inputContainerView: UIStackView { formView.inputContainerView }
+    func addFormViews(_ views: [UIView]) {
+        formView.addFormViews(views)
+    }
 
     private(set) lazy var header = SectionHeader(
         titleFont: .init(.footnote, .traitBold),
-        subtitleFont: .caption2
+        subtitleFont: .footnote,
+        margins: .init(vertical: ElementInspector.appearance.verticalMargins / 2)
     )
 
     override func setup() {
         super.setup()
 
         var insets = ElementInspector.appearance.directionalInsets
+        insets.bottom = insets.leading
         insets.top = .zero
 
         self.insets = insets
-        contentMargins = .init(leading: ElementInspector.appearance.verticalMargins / 2)
+
+        contentMargins = .init(
+            top: ElementInspector.appearance.verticalMargins / 2,
+            leading: ElementInspector.appearance.verticalMargins / 2,
+            bottom: ElementInspector.appearance.verticalMargins / 2
+        )
         backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
 
         contentView.addArrangedSubview(formView)

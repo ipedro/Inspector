@@ -33,17 +33,18 @@ class BaseFormControl: BaseControl {
         }
     }
     
-    private(set) lazy var contentContainerView = UIStackView.horizontal(
-        .arrangedSubviews(
+    private(set) lazy var contentContainerView = UIStackView.horizontal().then {
+        $0.spacing = defaultSpacing
+        $0.addArrangedSubviews(
             titleLabel,
             contentView
-        ),
-        .spacing(defaultSpacing)
-    )
+        )
+    }
     
     private lazy var containerView = UIStackView.vertical(
         .arrangedSubviews(contentContainerView),
         .spacing(defaultSpacing),
+        .isLayoutMarginsRelativeArrangement(true),
         .directionalLayoutMargins(vertical: defaultSpacing)
     )
     
@@ -93,14 +94,10 @@ class BaseFormControl: BaseControl {
     
     override open func setup() {
         super.setup()
-        
-        setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        
-        setContentHuggingPriority(.defaultHigh, for: .vertical)
-        
+
         tintColor = .systemPurple
         
-        installView(containerView)
+        installView(containerView, priority: .required)
         
         installSeparator()
     }

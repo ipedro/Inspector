@@ -20,7 +20,11 @@
 
 import UIKit
 
-private extension NSLayoutConstraint.Relation {
+extension NSLayoutConstraint.Relation: CaseIterable {
+    typealias AllCases = [NSLayoutConstraint.Relation]
+
+    static let allCases: [NSLayoutConstraint.Relation] = [.lessThanOrEqual, .equal, .greaterThanOrEqual]
+
     var label: String {
         switch self {
         case .lessThanOrEqual:
@@ -181,7 +185,15 @@ private extension String {
     }
 }
 
-struct NSLayoutConstraintInspectableViewModel: Hashable {
+final class NSLayoutConstraintInspectableViewModel: Hashable {
+    static func == (lhs: NSLayoutConstraintInspectableViewModel, rhs: NSLayoutConstraintInspectableViewModel) -> Bool {
+        lhs.constraint == rhs.constraint
+    }
+
+    func hash(into hasher: inout Hasher) {
+        constraint.hash(into: &hasher)
+    }
+
     static let numberFormatter = NumberFormatter().then {
         $0.maximumFractionDigits = 2
         $0.numberStyle = .decimal
@@ -198,6 +210,16 @@ struct NSLayoutConstraintInspectableViewModel: Hashable {
     let second: Binding?
 
     let axis: NSLayoutConstraint.Axis
+
+    private(set) lazy var switchControl = UISwitch.toggleControlSyle().then {
+        $0.isOn = constraint.isActive
+        $0.addTarget(self, action: #selector(toggleActive), for: .valueChanged)
+    }
+
+    @objc
+    private func toggleActive() {
+        constraint.isActive.toggle()
+    }
 
     init?(with constraint: NSLayoutConstraint, in view: UIView) {
         guard
@@ -243,11 +265,6 @@ struct NSLayoutConstraintInspectableViewModel: Hashable {
         self.second = second
         self.constraint = constraint
         self.view = view
-
-        if let identifier = constraint.safeIdentifier {
-            type = .identifier(identifier)
-            return
-        }
 
         let theirBindings = Self.find(.theirs, bindings: first, second, inRelationTo: view)
 
@@ -429,7 +446,6 @@ extension NSLayoutConstraintInspectableViewModel {
     }
 
     enum `Type`: CustomStringConvertible, Hashable {
-        case identifier(String)
         case aspectRatio(multiplier: CGFloat)
         case proportional(attribute: String? = nil, to: String)
         case relative(from: String? = nil, to: String)
@@ -437,9 +453,6 @@ extension NSLayoutConstraintInspectableViewModel {
 
         var description: String {
             switch self {
-            case let .identifier(identifier):
-                return identifier
-
             case let .aspectRatio(multiplier: multiplier):
                 return "Aspect Ratio \(multiplier)"
 
@@ -479,16 +492,20 @@ extension NSLayoutConstraintInspectableViewModel: InspectorAutoLayoutViewModelPr
 
     var title: String { type.description }
 
+    var subtitle: String? { self.constraint.safeIdentifier }
+
+    //var headerAccessoryView: UIView? { switchControl }
+
     var properties: [InspectorElementViewModelProperty] {
         Property.allCases.compactMap { property in
             switch property {
             case .constant:
                 return .cgFloatStepper(
                     title: property.rawValue,
-                    value: { constraint.constant },
+                    value: { self.constraint.constant },
                     range: { -CGFloat.infinity...CGFloat.infinity },
                     stepValue: { 1 },
-                    handler: { constraint.constant = $0 }
+                    handler: { self.constraint.constant = $0 }
                 )
             case .spacer1,
                  .spacer2,
@@ -498,7 +515,7 @@ extension NSLayoutConstraintInspectableViewModel: InspectorAutoLayoutViewModelPr
             case .multiplier:
                 return .cgFloatStepper(
                     title: property.rawValue,
-                    value: { constraint.multiplier },
+                    value: { self.constraint.multiplier },
                     range: { -CGFloat.infinity...CGFloat.infinity },
                     stepValue: { 0.1 },
                     handler: nil
@@ -508,28 +525,56 @@ extension NSLayoutConstraintInspectableViewModel: InspectorAutoLayoutViewModelPr
                 return .textField(
                     title: property.rawValue,
                     placeholder: constraint.safeIdentifier ?? property.rawValue,
-                    value: { constraint.safeIdentifier },
-                    handler: { constraint.identifier = $0 }
+                    axis: .vertical,
+                    value: { self.constraint.safeIdentifier },
+                    handler: { self.constraint.identifier = $0 }
                 )
 
             case .isActive:
                 return .toggleButton(
                     title: property.rawValue,
-                    isOn: { constraint.isActive },
-                    handler: { constraint.isActive = $0 }
+                    isOn: { self.constraint.isActive },
+                    handler: { self.constraint.isActive = $0 }
                 )
 
             case .priority:
                 return .floatStepper(
                     title: property.rawValue,
-                    value: { constraint.priority.rawValue },
+                    value: { self.constraint.priority.rawValue },
                     range: { UILayoutPriority.fittingSizeLevel.rawValue...UILayoutPriority.required.rawValue },
                     stepValue: { 50 },
-                    handler: { constraint.priority = .init($0) }
+                    handler: { self.constraint.priority = .init($0) }
                 )
 
-            default:
-                return nil
+            case .firstItem:
+                return .optionsList(
+                    title: property.rawValue,
+                    emptyTitle: property.rawValue,
+                    axis: .vertical,
+                    options: [first.displayName],
+                    selectedIndex: { 0 },
+                    handler: nil
+                )
+            case .relation:
+                return .optionsList(
+                    title: property.rawValue,
+                    emptyTitle: property.rawValue,
+                    options: NSLayoutConstraint.Relation.allCases.map(\.label),
+                    selectedIndex: { NSLayoutConstraint.Relation.allCases.firstIndex(of: self.constraint.relation) },
+                    handler: nil
+                )
+
+            case .secondItem:
+                guard let second = second else { return nil }
+
+                return .optionsList(
+                    title: property.rawValue,
+                    emptyTitle: property.rawValue,
+                    axis: .vertical,
+                    options: [second.displayName],
+                    selectedIndex: { 0 },
+                    handler: nil
+                )
             }
         }
     }

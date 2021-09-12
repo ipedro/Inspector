@@ -20,29 +20,90 @@
 
 import UIKit
 
-final class ElementInspectorFormSectionContentView: BaseView, ElementInspectorFormSectionView {
+final class ElementInspectorFormSectionContentView: BaseControl, ElementInspectorFormSectionView {
+    // MARK: - Properties
+
     weak var delegate: ElementInspectorFormSectionViewDelegate?
 
-    private(set) lazy var inputContainerView = UIStackView.vertical()
+    enum SeparatorStyle {
+        case top
+    }
 
-    private(set) lazy var topSeparatorView = SeparatorView(thickness: 1)
-
-    var header: SectionHeader
-
-    var isCollapsed: Bool = false {
-        didSet {
-            hideContent(isCollapsed)
+    var separatorStyle: SeparatorStyle? {
+        get { topSeparatorView.isHidden ? .none : .top }
+        set {
+            switch newValue {
+            case .none:
+                topSeparatorView.isHidden = true
+            case .top:
+                topSeparatorView.isHidden = false
+            }
         }
     }
 
-    private lazy var toggleControl = UIControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
+    var sectionState: UIControl.State {
+        get { state }
+        set {
+            switch newValue {
+            case .disabled:
+                alpha = 0.5
+                isSelected = false
+                isEnabled = false
+                hideContent(true)
+
+            case .normal:
+                alpha = 1
+                isEnabled = true
+                isSelected = false
+                hideContent(true)
+
+            case .selected:
+                alpha = 1
+                isEnabled = true
+                isSelected = true
+                hideContent(false)
+
+            default:
+                alpha = 1
+                isSelected = false
+                isEnabled = true
+                hideContent(false)
+            }
+        }
+    }
+
+    // MARK: - Views
+
+    private lazy var contentContainerView = UIStackView.vertical().then {
+        $0.isLayoutMarginsRelativeArrangement = true
+    }
+
+    private lazy var topSeparatorView = SeparatorView(thickness: 1)
+
+    var header: SectionHeader
+
+    private lazy var headerControl = UIControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
         $0.addTarget(self, action: #selector(tapHeader), for: .touchUpInside)
+        $0.installView(header)
     }
 
     private lazy var chevronDownIcon = Icon.chevronDownIcon()
 
     convenience init() {
         self.init(header: SectionHeader.attributesInspectorHeader(), frame: .zero)
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if let headerAccessoryView = header.accessoryView,
+           headerAccessoryView.point(inside: convert(point, to: headerAccessoryView), with: event) {
+            return headerAccessoryView
+        }
+
+        if headerControl.point(inside: convert(point, to: headerControl), with: event) {
+            return headerControl
+        }
+
+        return super.hitTest(point, with: event)
     }
 
     init(
@@ -53,33 +114,21 @@ final class ElementInspectorFormSectionContentView: BaseView, ElementInspectorFo
         super.init(frame: frame)
     }
 
+    func addFormViews(_ views: [UIView]) {
+        contentContainerView.addArrangedSubviews(views)
+    }
+
     override func setup() {
         super.setup()
 
-        hideContent(isCollapsed)
-
+        contentView.axis = .vertical
         contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
-
-        contentView.addArrangedSubview(header)
-
-        contentView.addArrangedSubview(inputContainerView)
-
+        contentView.addArrangedSubviews(headerControl, contentContainerView)
         contentView.setCustomSpacing(ElementInspector.appearance.verticalMargins, after: header)
 
         installSeparator()
 
         installIcon()
-
-        installHeaderControl()
-    }
-
-    private func installHeaderControl() {
-        contentView.addSubview(toggleControl)
-
-        toggleControl.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        toggleControl.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        toggleControl.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        toggleControl.bottomAnchor.constraint(equalTo: inputContainerView.topAnchor).isActive = true
     }
 
     private func installIcon() {
@@ -104,13 +153,17 @@ final class ElementInspectorFormSectionContentView: BaseView, ElementInspectorFo
     }
 
     @objc private func tapHeader() {
-        delegate?.elementInspectorFormSectionView(self, didToggle: isCollapsed)
+        isSelected.toggle()
     }
 
     private func hideContent(_ hide: Bool) {
-        inputContainerView.clipsToBounds = hide
-        inputContainerView.isSafelyHidden = hide
-        inputContainerView.alpha = hide ? 0 : 1
+        contentContainerView.clipsToBounds = hide
+        contentContainerView.isSafelyHidden = hide
+        contentContainerView.alpha = hide ? 0 : 1
         chevronDownIcon.transform = hide ? CGAffineTransform(rotationAngle: -(.pi / 2)) : .identity
+    }
+
+    override func stateDidChange(from oldState: UIControl.State, to newState: UIControl.State) {
+        delegate?.elementInspectorFormSectionView(self, changedFrom: oldState, to: newState)
     }
 }

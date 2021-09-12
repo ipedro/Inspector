@@ -25,13 +25,14 @@ final class TextFieldControl: BaseFormControl {
     
     // MARK: - Properties
     
-    private lazy var textField = UITextField(
-        .textColor(ElementInspector.appearance.textColor),
-        .adjustsFontSizeToFitWidth(true),
-        .font(defaultFont),
-        .borderStyle(.none),
-        .delegate(self)
-    ).then {
+    private lazy var textField = UITextField().then {
+        $0.textColor = ElementInspector.appearance.textColor
+        $0.adjustsFontSizeToFitWidth = true
+        $0.font = defaultFont
+        $0.borderStyle = .none
+        $0.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        $0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        $0.delegate = self
         $0.addTarget(self, action: #selector(editText), for: .editingChanged)
     }
         
@@ -90,12 +91,9 @@ final class TextFieldControl: BaseFormControl {
         super.setup()
         
         axis = .vertical
-        
         contentView.addArrangedSubview(accessoryControl)
-        
-        accessoryControl.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor).isActive = true
     }
-    
+
     override var canBecomeFirstResponder: Bool {
         textField.canBecomeFirstResponder
     }

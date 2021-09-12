@@ -51,9 +51,30 @@ protocol ElementInspectorBaseViewControllerProtocol {
     var viewCode: ElementInspectorFormView { get }
 }
 
-typealias ElementInspectorFormViewController = ElementInspectorBaseFormViewController & ElementInspectorBaseViewControllerProtocol & ElementInspectorFormSectionViewDelegate
+typealias ElementInspectorFormViewController = ElementInspectorBaseFormViewController & ElementInspectorBaseViewControllerProtocol
 
 class ElementInspectorBaseFormViewController: ElementInspectorPanelViewController, ElementInspectorFormSectionViewControllerDelegate, KeyboardAnimatable {
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+                                                   didChangeState newState: UIControl.State,
+                                                   from oldState: UIControl.State?)
+    {
+        animatePanel(animations: { [weak self] in
+            guard let self = self else { return }
+
+            sectionController.sectionState = newState
+
+            guard newState == .selected else { return }
+
+            let selectedSections = self.children
+                .compactMap { $0 as? ElementInspectorFormSectionViewController }
+                .filter { $0.sectionState == .selected }
+
+            for section in selectedSections where section !== sectionController {
+                section.sectionState = .normal
+            }
+        })
+    }
+
     weak var formDelegate: ElementInspectorFormViewControllerDelegate?
 
     weak var dataSource: ElementInspectorFormViewControllerDataSource?
@@ -100,7 +121,7 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
                     viewModel: viewModel,
                     viewCode: self.sectionViewType.init()
                 ).then {
-                    $0.isCollapsed = index > 0
+                    $0.sectionState = index == 0 ? .selected : .normal
                     $0.delegate = self
                 }
 
@@ -160,30 +181,35 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
 
     // MARK: - ElementInspectorFormSectionViewControllerDelegate
 
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController, willUpdate property: InspectorElementViewModelProperty) {}
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+                                                   willUpdate property: InspectorElementViewModelProperty) {}
 
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController, didUpdate property: InspectorElementViewModelProperty) {}
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+                                                   didUpdate property: InspectorElementViewModelProperty) {}
 
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController, didToggle isCollapsed: Bool) {
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+                                                   didChangeState newState: UIControl.State,
+                                                   from oldState: UIControl.State) {
         animatePanel(
             animations: { [weak self] in
                 guard let self = self else { return }
 
-                viewController.isCollapsed.toggle()
+                let selectedSections: [ElementInspectorFormSectionViewController] = self.children
+                    .compactMap { $0 as? ElementInspectorFormSectionViewController }
+                    .filter { $0.sectionState == .selected }
 
-                let sectionViewControllers = self.children.compactMap { $0 as? ElementInspectorFormSectionViewController }
-
-                for sectionViewController in sectionViewControllers where sectionViewController !== viewController {
-                    sectionViewController.isCollapsed = true
+                for section in selectedSections {
+                    section.sectionState = .normal
                 }
+
+                sectionController.sectionState = .selected
             },
             completion: nil
         )
     }
 
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
-                                                   didTap imagePicker: ImagePreviewControl)
-    {
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+                                                   didTap imagePicker: ImagePreviewControl) {
         selectedImagePicker = imagePicker
 
         guard let self = self as? ElementInspectorFormViewController else { return }
@@ -191,9 +217,8 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
         self.formDelegate?.elementInspectorViewController(self, didTap: imagePicker)
     }
 
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
-                                                   didTap colorPicker: ColorPreviewControl)
-    {
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+                                                   didTap colorPicker: ColorPreviewControl) {
         selectedColorPicker = colorPicker
 
         guard let self = self as? ElementInspectorFormViewController else { return }
@@ -201,9 +226,8 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
         self.formDelegate?.elementInspectorViewController(self, didTap: colorPicker)
     }
 
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
-                                                   didTap optionSelector: OptionListControl)
-    {
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+                                                   didTap optionSelector: OptionListControl) {
         selectedOptionSelector = optionSelector
 
         guard let self = self as? ElementInspectorFormViewController else { return }

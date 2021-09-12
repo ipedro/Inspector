@@ -20,10 +20,9 @@
 
 import UIKit
 
-class BaseCard: BaseView {
+class BaseCardControl: BaseControl {
     private(set) lazy var backgroundView = UIView().then {
-        $0.installView(contentView)
-        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.installView(contentView, priority: .required)
         $0.clipsToBounds = true
         $0.layer.cornerRadius = cornerRadius
     }
@@ -40,7 +39,7 @@ class BaseCard: BaseView {
         }
     }
 
-    var cornerRadius: CGFloat = ElementInspector.appearance.verticalMargins {
+    var cornerRadius: CGFloat = ElementInspector.appearance.horizontalMargins {
         didSet {
             backgroundView.layer.cornerRadius = cornerRadius
         }
@@ -57,10 +56,20 @@ class BaseCard: BaseView {
         set { backgroundView.backgroundColor = newValue }
     }
 
+    var borderColor: UIColor? {
+        didSet {
+            let color = borderColor ?? .clear
+            layer.borderColor = color.cgColor
+        }
+    }
     override func setup() {
         super.setup()
 
-        installView(stackView)
+        layer.borderWidth = 1.5
+
+        borderColor = nil
+
+        installView(stackView, priority: .required)
 
         contentView.directionalLayoutMargins = contentMargins
     }

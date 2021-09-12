@@ -31,12 +31,35 @@ enum AutoLayoutLibrary: Swift.CaseIterable {
 // MARK: - InspectorAutoLayoutLibraryProtocol
 
 extension AutoLayoutLibrary: InspectorAutoLayoutLibraryProtocol {
-    func viewModels(for referenceView: UIView) -> [InspectorAutoLayoutViewModelProtocol?] {
+    func viewModels(for referenceView: UIView) -> [String: [InspectorAutoLayoutViewModelProtocol]] {
         switch self {
         case .layoutConstraints:
-            return referenceView.constraints.compactMap {
-                NSLayoutConstraintInspectableViewModel(with: $0, in: referenceView)
+            var horizontal: [InspectorAutoLayoutViewModelProtocol] = []
+            var vertical: [InspectorAutoLayoutViewModelProtocol] = []
+
+            referenceView.constraints.forEach {
+                guard let viewModel = NSLayoutConstraintInspectableViewModel(with: $0, in: referenceView) else { return }
+
+                switch viewModel.axis {
+                case .vertical:
+                    vertical.append(viewModel)
+                case .horizontal:
+                    horizontal.append(viewModel)
+                @unknown default:
+                    return
+                }
             }
+
+            var dict: [String: [InspectorAutoLayoutViewModelProtocol]] = [:]
+
+            if horizontal.isEmpty == false {
+                dict["Horizontal Constraints"] = horizontal
+            }
+            if vertical.isEmpty == false {
+                dict["Vertical Constraints"] = vertical
+            }
+
+            return dict
         }
     }
 

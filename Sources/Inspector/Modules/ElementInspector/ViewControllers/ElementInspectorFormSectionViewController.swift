@@ -21,42 +21,38 @@
 import UIKit
 
 protocol ElementInspectorFormSectionViewDelegate: AnyObject {
-    func elementInspectorFormSectionView(_ section: ElementInspectorFormSectionView, didToggle isCollapsed: Bool)
+    func elementInspectorFormSectionView(_ section: ElementInspectorFormSectionView,
+                                         changedFrom oldState: UIControl.State?,
+                                         to newState: UIControl.State)
 }
 
-extension ElementInspectorFormSectionViewDelegate where Self: UIViewController {
-    func elementInspectorFormSectionView(_ section: ElementInspectorFormSectionView, didToggle isCollapsed: Bool) {
-        for sectionController in children.compactMap({ $0 as? ElementInspectorFormSectionViewController }) where sectionController.viewCode === section {
-            sectionController.isCollapsed.toggle()
-        }
-    }
-}
-
-protocol ElementInspectorFormSectionView: BaseView {
+protocol ElementInspectorFormSectionView: BaseControl {
     var delegate: ElementInspectorFormSectionViewDelegate? { get set }
-    var inputContainerView: UIStackView { get }
     var header: SectionHeader { get }
-    var isCollapsed: Bool { get set }
+    var sectionState: State { get set }
+
+    func addFormViews(_ views: [UIView])
 }
 
 protocol ElementInspectorFormSectionViewControllerDelegate: OperationQueueManagerProtocol {
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
                                                    didTap colorPicker: ColorPreviewControl)
 
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
                                                    didTap imagePicker: ImagePreviewControl)
 
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
                                                    didTap optionSelector: OptionListControl)
 
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
                                                    didUpdate property: InspectorElementViewModelProperty)
 
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
                                                    willUpdate property: InspectorElementViewModelProperty)
 
-    func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
-                                                   didToggle isCollapsed: Bool)
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+                                                   didChangeState newState: UIControl.State,
+                                                   from oldState: UIControl.State?)
 }
 
 final class ElementInspectorFormSectionViewController: UIViewController {
@@ -89,26 +85,20 @@ final class ElementInspectorFormSectionViewController: UIViewController {
         super.viewDidLoad()
 
         viewCode.header.title = viewModel.title
+        viewCode.header.subtitle = viewModel.subtitle
+        viewCode.header.accessoryView = viewModel.headerAccessoryView
 
-        viewModel.properties.forEach {
-            guard let view = inputViews[$0] else {
-                return
-            }
+        let subviews = viewModel.properties.compactMap { viewForProperties[$0] }
 
-            viewCode.inputContainerView.addArrangedSubview(view)
-        }
+        viewCode.addFormViews(subviews)
     }
 
-    var isCollapsed: Bool {
-        get {
-            viewCode.isCollapsed
-        }
-        set {
-            viewCode.isCollapsed = newValue
-        }
+    var sectionState: UIControl.State {
+        get { viewCode.sectionState }
+        set { viewCode.sectionState = newValue }
     }
 
-    private lazy var inputViews: [InspectorElementViewModelProperty: UIView] = {
+    private lazy var viewForProperties: [InspectorElementViewModelProperty: UIView] = {
         var dict = [InspectorElementViewModelProperty: UIView]()
 
         for (index, property) in viewModel.properties.enumerated() {
@@ -217,16 +207,20 @@ final class ElementInspectorFormSectionViewController: UIViewController {
 // MARK: - Actions
 
 extension ElementInspectorFormSectionViewController {
+    @objc private func stateChanged() {
+        delegate?.elementInspectorFormSectionViewController(self, didChangeState: viewCode.sectionState, from: nil)
+    }
+
     @objc private func valueChanged(_ sender: AnyObject) {
         handleChange(with: sender)
     }
 
     private func handleChange(with sender: AnyObject) {
-        for (property, inputView) in inputViews where inputView === sender {
+        for (property, formView) in viewForProperties where formView === sender {
             delegate?.elementInspectorFormSectionViewController(self, willUpdate: property)
 
             let updateValueOperation = MainThreadOperation(name: "update property value") {
-                switch (property, inputView) {
+                switch (property, formView) {
                 case let (.stepper(_, _, _, _, _, handler), stepperControl as StepperControl):
                     handler?(stepperControl.value)
 
@@ -285,8 +279,8 @@ extension ElementInspectorFormSectionViewController {
     }
 
     func updateValues() {
-        for (property, inputView) in inputViews {
-            switch (property, inputView) {
+        for (property, formView) in viewForProperties {
+            switch (property, formView) {
             case let (.stepper(title: title, value: valueProvider, range: rangeProvider, stepValue: stepValueProvider, _, _), stepperControl as StepperControl):
                 stepperControl.value = valueProvider()
                 stepperControl.title = title
@@ -370,7 +364,9 @@ extension ElementInspectorFormSectionViewController: ImagePreviewControlDelegate
 // MARK: - ElementInspectorFormSectionViewCodeDelegate
 
 extension ElementInspectorFormSectionViewController: ElementInspectorFormSectionViewDelegate {
-    func elementInspectorFormSectionView(_ section: ElementInspectorFormSectionView, didToggle isCollapsed: Bool) {
-        delegate?.elementInspectorFormSectionViewController(self, didToggle: isCollapsed)
+    func elementInspectorFormSectionView(_ section: ElementInspectorFormSectionView,
+                                         changedFrom oldState: UIControl.State?,
+                                         to newState: UIControl.State) {
+        delegate?.elementInspectorFormSectionViewController(self, didChangeState: newState, from: oldState)
     }
 }
