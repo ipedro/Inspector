@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,27 +20,37 @@
 
 import UIKit
 
-enum ElementInspectorPanel: CaseIterable, Hashable {
-    typealias AllCases = [ElementInspectorPanel]
-    
-    case attributesInspector
-    case viewHierarchyInspector
-    case autoLayoutInspector
+final class ElementInspectorLayoutConstraintCard: BaseCard, ElementInspectorFormSectionView {
+    private lazy var formView = ElementInspectorFormSectionContentView().then {
+        $0.topSeparatorView.isHidden = true
+        $0.sectionHeader.textStyle = .footnote
 
-    var image: UIImage {
-        switch self {
-        case .attributesInspector:
-            return IconKit.imageOfSliderHorizontal()
-            
-        case .viewHierarchyInspector:
-            return IconKit.imageOfListBulletIndent()
-            
-        case .autoLayoutInspector:
-            return IconKit.imageOfSetSquareFill()
-        }
     }
-    
-    static var allCases: [ElementInspectorPanel] {
-        [.attributesInspector, .autoLayoutInspector, .viewHierarchyInspector]
+
+    var delegate: ElementInspectorFormSectionViewDelegate? {
+        get { formView.delegate }
+        set { formView.delegate = newValue }
+    }
+
+    var isCollapsed: Bool {
+        get { formView.isCollapsed }
+        set { formView.isCollapsed = newValue }
+    }
+
+    var inputContainerView: UIStackView { formView.inputContainerView }
+
+    var sectionHeader: SectionHeader { formView.sectionHeader }
+
+    override func setup() {
+        super.setup()
+
+        var insets = ElementInspector.appearance.directionalInsets
+        insets.top = .zero
+
+        self.insets = insets
+        contentMargins = .init(leading: ElementInspector.appearance.verticalMargins / 2)
+        backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
+
+        contentView.addArrangedSubview(formView)
     }
 }

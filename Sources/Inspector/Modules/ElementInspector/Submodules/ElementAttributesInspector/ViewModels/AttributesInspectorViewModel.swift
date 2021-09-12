@@ -27,6 +27,10 @@ protocol AttributesInspectorViewModelProtocol: ElementInspectorPanelViewModelPro
 }
 
 final class AttributesInspectorViewModel {
+    weak var parent: ElementInspectorPanelViewModelProtocol?
+
+    var isCollapsed: Bool = true
+
     var isHighlightingViews: Bool {
         reference.isHidingHighlightViews == false
     }
@@ -37,7 +41,7 @@ final class AttributesInspectorViewModel {
 
     let snapshot: ViewHierarchySnapshot
 
-    private(set) lazy var sections: [String: [ElementInspectorFormViewModelProtocol]] = {
+    private(set) lazy var sections: [Title: Section] = {
         guard let referenceView = reference.rootView else {
             return [:]
         }
@@ -63,11 +67,6 @@ final class AttributesInspectorViewModel {
 // MARK: - AttributesInspectorViewModelProtocol
 
 extension AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
-    var parent: ElementInspectorPanelViewModelProtocol? {
-        get { nil }
-        set {}
-    }
-
     var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
 
     var title: String { reference.elementName }
@@ -79,11 +78,6 @@ extension AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
     var isContainer: Bool { false }
 
     var showCollapseButton: Bool { false }
-
-    var isCollapsed: Bool {
-        get { true }
-        set {}
-    }
 
     var isHidden: Bool { false }
 

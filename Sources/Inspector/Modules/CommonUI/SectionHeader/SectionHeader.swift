@@ -48,11 +48,12 @@ extension SectionHeader {
 
 final class SectionHeader: BaseView {
     
-    private(set) lazy var textLabel = UILabel(
+    private lazy var textLabel = UILabel(
         .textColor(ElementInspector.appearance.textColor),
         .numberOfLines(.zero),
         .adjustsFontSizeToFitWidth(true),
-        .preferredMaxLayoutWidth(200)
+        .preferredMaxLayoutWidth(200),
+        .minimumScaleFactor(0.5)
     )
     
     var text: String? {
@@ -63,10 +64,37 @@ final class SectionHeader: BaseView {
             textLabel.text = newValue
         }
     }
-    
+
+    var accessoryView: UIView? {
+        didSet {
+            if let accessoryView = accessoryView {
+                contentView.addArrangedSubview(accessoryView)
+            }
+            if let oldValue = oldValue {
+                oldValue.removeFromSuperview()
+            }
+        }
+    }
+
+    var textStyle: UIFont.TextStyle {
+        didSet {
+            textLabel.font = font()
+        }
+    }
+
+    var traits: UIFontDescriptor.SymbolicTraits {
+        didSet {
+            textLabel.font = font()
+        }
+    }
+
+    func font() -> UIFont {
+        .preferredFont(forTextStyle: textStyle, with: traits.union(.traitUIOptimized))
+    }
+
     override func setup() {
         super.setup()
-        
+        contentView.axis = .horizontal
         contentView.addArrangedSubview(textLabel)
     }
     
@@ -76,25 +104,23 @@ final class SectionHeader: BaseView {
         backgroundColor = superview?.backgroundColor
     }
     
-    convenience init(
+    init(
         _ textStyle: UIFont.TextStyle = .title3,
         text: String?,
-        withTraits traits: UIFontDescriptor.SymbolicTraits? = nil,
+        withTraits traits: UIFontDescriptor.SymbolicTraits = .traitUIOptimized,
         margins: NSDirectionalEdgeInsets = ElementInspector.appearance.directionalInsets
     ) {
-        self.init(frame: .zero)
-        
-        self.text = text
-        
-        self.contentView.directionalLayoutMargins = margins
-        
-        guard let traits = traits else {
-            textLabel.font = .preferredFont(forTextStyle: textStyle)
-            return
-        }
+        self.textStyle = textStyle
+        self.traits = traits.union(.traitUIOptimized)
 
-        traits.union(.traitUIOptimized)
-        
-        textLabel.font = .preferredFont(forTextStyle: textStyle, with: traits)
+        super.init(frame: .zero)
+
+        self.text = text
+        self.contentView.directionalLayoutMargins = margins
+        self.textLabel.font = font()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init?(coder:) not implemented")
     }
 }

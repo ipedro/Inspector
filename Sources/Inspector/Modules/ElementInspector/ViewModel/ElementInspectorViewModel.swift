@@ -23,7 +23,7 @@ import UIKit
 protocol ElementInspectorViewModelProtocol {
     var reference: ViewHierarchyReference { get }
     
-    var elementPanels: [ElementInspectorPanel] { get }
+    var availablePanels: [ElementInspectorPanel] { get }
     
     var selectedPanel: ElementInspectorPanel? { get }
     
@@ -44,7 +44,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     var selectedPanelSegmentIndex: Int {
         guard
             let selectedPanel = selectedPanel,
-            let selectedIndex = elementPanels.firstIndex(of: selectedPanel)
+            let selectedIndex = availablePanels.firstIndex(of: selectedPanel)
         else {
             return UISegmentedControl.noSegment
         }
@@ -62,21 +62,21 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         self.showDismissBarButton = showDismissBarButton
         self.inspectableElements = inspectableElements
         
-        if let selectedPanel = selectedPanel, elementPanels.contains(selectedPanel) {
+        if let selectedPanel = selectedPanel, availablePanels.contains(selectedPanel) {
             self.selectedPanel = selectedPanel
         }
         else {
-            self.selectedPanel = elementPanels.first
+            self.selectedPanel = availablePanels.first
         }
     }
     
-    private(set) lazy var elementPanels: [ElementInspectorPanel] = ElementInspectorPanel.allCases.compactMap { panel in
+    private(set) lazy var availablePanels: [ElementInspectorPanel] = ElementInspectorPanel.allCases.compactMap { panel in
         switch panel {
         case .viewHierarchyInspector:
             return reference.isContainer ? panel : nil
         case .autoLayoutInspector:
             return reference.constraintReferences.isEmpty ? nil : panel
-        default:
+        case .attributesInspector:
             return panel
             
         }

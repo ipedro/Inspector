@@ -23,6 +23,7 @@ import UIKit
 protocol ElementInspectorPanelViewModelProtocol: ViewHierarchyReferenceDetailViewModelProtocol & AnyObject {
     var parent: ElementInspectorPanelViewModelProtocol? { get set }
     var reference: ViewHierarchyReference { get }
+    var isCollapsed: Bool { get set }
 }
 
 final class ElementViewHierarchyPanelViewModel {

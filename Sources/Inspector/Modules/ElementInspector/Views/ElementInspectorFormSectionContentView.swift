@@ -20,12 +20,12 @@
 
 import UIKit
 
-final class ElementInspectorDefaultFormSectionView: BaseView, ElementInspectorFormSectionView {
+final class ElementInspectorFormSectionContentView: BaseView, ElementInspectorFormSectionView {
     weak var delegate: ElementInspectorFormSectionViewDelegate?
 
     private(set) lazy var inputContainerView = UIStackView.vertical()
 
-    private lazy var topSeparatorView = SeparatorView(thickness: 1)
+    private(set) lazy var topSeparatorView = SeparatorView(thickness: 1)
 
     private(set) lazy var sectionHeader = SectionHeader.attributesInspectorHeader()
 
@@ -46,18 +46,13 @@ final class ElementInspectorDefaultFormSectionView: BaseView, ElementInspectorFo
 
         hideContent(isCollapsed)
 
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
-
         contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
 
         contentView.addArrangedSubview(sectionHeader)
 
         contentView.addArrangedSubview(inputContainerView)
 
-        contentView.setCustomSpacing(
-            ElementInspector.appearance.verticalMargins,
-            after: sectionHeader
-        )
+        contentView.setCustomSpacing(ElementInspector.appearance.verticalMargins, after: sectionHeader)
 
         installSeparator()
 

@@ -18,8 +18,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 @_implementationOnly import UIKeyboardAnimatable
+import UIKit
 
 protocol ElementInspectorFormViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
@@ -39,15 +39,24 @@ protocol ElementInspectorFormViewControllerDelegate: OperationQueueManagerProtoc
 }
 
 protocol ElementInspectorFormViewControllerDataSource: AnyObject {
-    var sections: [String : [ElementInspectorFormViewModelProtocol]] { get }
+    typealias Section = [ElementInspectorFormViewModelProtocol]
+    typealias Title = String
+
+    var sections: [Title: Section] { get }
 }
 
-class ElementInspectorFormViewController: ElementInspectorPanelViewController, ElementInspectorFormSectionViewControllerDelegate, KeyboardAnimatable {
+protocol ElementInspectorBaseViewControllerProtocol {
+    var sectionViewType: ElementInspectorFormSectionView.Type { get }
+    var viewCode: ElementInspectorFormView { get }
+}
+
+typealias ElementInspectorFormViewController = ElementInspectorBaseFormViewController & ElementInspectorBaseViewControllerProtocol & ElementInspectorFormSectionViewDelegate
+
+
+class ElementInspectorBaseFormViewController: ElementInspectorPanelViewController, ElementInspectorFormSectionViewControllerDelegate, KeyboardAnimatable {
     weak var formDelegate: ElementInspectorFormViewControllerDelegate?
 
     weak var dataSource: ElementInspectorFormViewControllerDataSource?
-
-    var viewCode: ElementInspectorFormView!
 
     var selectedColorPicker: ColorPreviewControl?
 
@@ -56,11 +65,13 @@ class ElementInspectorFormViewController: ElementInspectorPanelViewController, E
     var selectedOptionSelector: OptionListControl?
 
     override func loadView() {
-        view = viewCode
+        view = (self as? ElementInspectorFormViewController)?.viewCode ?? UIView()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        guard let self = self as? ElementInspectorFormViewController else { return }
 
         loadSections()
 
@@ -71,7 +82,9 @@ class ElementInspectorFormViewController: ElementInspectorPanelViewController, E
     }
 
     func loadSections() {
-        dataSource?.sections.enumerated().forEach { index, section in
+        guard let self = self as? ElementInspectorFormViewController else { return }
+
+        dataSource?.sections.forEach { section in
             let sectionHeaderView = SectionHeader(
                 .headline,
                 text: section.key,
@@ -80,17 +93,20 @@ class ElementInspectorFormViewController: ElementInspectorPanelViewController, E
                 $0.alpha = 0.5
             }
 
-            viewCode.contentView.addArrangedSubview(sectionHeaderView)
+            self.viewCode.contentView.addArrangedSubview(sectionHeaderView)
 
-            for viewModel in section.value {
-                let sectionViewController = ElementInspectorFormSectionViewController.create(viewModel: viewModel).then {
+            for (index, viewModel) in section.value.enumerated() {
+                let sectionViewController = ElementInspectorFormSectionViewController.create(
+                    viewModel: viewModel,
+                    viewCode: self.sectionViewType.init()
+                ).then {
                     $0.isCollapsed = index > 0
                     $0.delegate = self
                 }
 
                 addChild(sectionViewController)
 
-                viewCode.contentView.addArrangedSubview(sectionViewController.view)
+                self.viewCode.contentView.addArrangedSubview(sectionViewController.view)
 
                 sectionViewController.didMove(toParent: self)
             }
@@ -109,7 +125,6 @@ class ElementInspectorFormViewController: ElementInspectorPanelViewController, E
             return .zero
         }
     }
-    
 
     func selectImage(_ image: UIImage?) {
         selectedImagePicker?.updateSelectedImage(image)
@@ -171,7 +186,9 @@ class ElementInspectorFormViewController: ElementInspectorPanelViewController, E
     {
         selectedImagePicker = imagePicker
 
-        formDelegate?.elementInspectorViewController(self, didTap: imagePicker)
+        guard let self = self as? ElementInspectorFormViewController else { return }
+
+        self.formDelegate?.elementInspectorViewController(self, didTap: imagePicker)
     }
 
     func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
@@ -179,7 +196,9 @@ class ElementInspectorFormViewController: ElementInspectorPanelViewController, E
     {
         selectedColorPicker = colorPicker
 
-        formDelegate?.elementInspectorViewController(self, didTap: colorPicker)
+        guard let self = self as? ElementInspectorFormViewController else { return }
+
+        self.formDelegate?.elementInspectorViewController(self, didTap: colorPicker)
     }
 
     func elementInspectorFormSectionViewController(_ viewController: ElementInspectorFormSectionViewController,
@@ -187,14 +206,15 @@ class ElementInspectorFormViewController: ElementInspectorPanelViewController, E
     {
         selectedOptionSelector = optionSelector
 
-        formDelegate?.elementInspectorViewController(self, didTap: optionSelector)
-    }
+        guard let self = self as? ElementInspectorFormViewController else { return }
 
+        self.formDelegate?.elementInspectorViewController(self, didTap: optionSelector)
+    }
 }
 
 // MARK: - OperationQueueManagerProtocol
 
-extension ElementInspectorFormViewController: OperationQueueManagerProtocol {
+extension ElementInspectorBaseFormViewController: OperationQueueManagerProtocol {
     func cancelAllOperations() {
         formDelegate?.cancelAllOperations()
     }

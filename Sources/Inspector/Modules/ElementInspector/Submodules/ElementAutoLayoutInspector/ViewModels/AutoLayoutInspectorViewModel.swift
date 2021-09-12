@@ -26,7 +26,7 @@ final class AutoLayoutInspectorViewModel {
     let reference: ViewHierarchyReference
     let snapshot: ViewHierarchySnapshot
 
-    private(set) lazy var sections: [String: [ElementInspectorFormViewModelProtocol]] = {
+    private(set) lazy var sections: [Title: Section] = {
         guard let referenceView = reference.rootView else {
             return ["No Constraints": []]
         }

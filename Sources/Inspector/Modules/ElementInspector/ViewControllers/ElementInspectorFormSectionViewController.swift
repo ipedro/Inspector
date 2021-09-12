@@ -24,6 +24,14 @@ protocol ElementInspectorFormSectionViewDelegate: AnyObject {
     func elementInspectorFormSectionView(_ section: ElementInspectorFormSectionView, didToggle isCollapsed: Bool)
 }
 
+extension ElementInspectorFormSectionViewDelegate where Self: UIViewController {
+    func elementInspectorFormSectionView(_ section: ElementInspectorFormSectionView, didToggle isCollapsed: Bool) {
+        for sectionController in children.compactMap({ $0 as? ElementInspectorFormSectionViewController }) where sectionController.viewCode === section {
+            sectionController.isCollapsed.toggle()
+        }
+    }
+}
+
 protocol ElementInspectorFormSectionView: BaseView {
     var delegate: ElementInspectorFormSectionViewDelegate? { get set }
     var inputContainerView: UIStackView { get }
@@ -64,7 +72,7 @@ final class ElementInspectorFormSectionViewController: UIViewController {
 
     static func create(
         viewModel: ElementInspectorFormViewModelProtocol,
-        viewCode: ElementInspectorFormSectionView = ElementInspectorDefaultFormSectionView()
+        viewCode: ElementInspectorFormSectionView
     ) -> ElementInspectorFormSectionViewController {
         let viewController = ElementInspectorFormSectionViewController()
         viewController.viewModel = viewModel

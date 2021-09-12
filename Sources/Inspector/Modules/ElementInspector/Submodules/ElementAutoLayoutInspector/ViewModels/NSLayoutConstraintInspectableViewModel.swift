@@ -245,9 +245,7 @@ struct NSLayoutConstraintInspectableViewModel: Hashable {
         self.view = view
 
         if let identifier = constraint.safeIdentifier {
-            let multiplier = constraint.multiplier != 1 ? constraint.multiplier : nil
-            let constant = constraint.constant != 0 ? constraint.constant : nil
-            type = .identifier(identifier, value: multiplier?.string(appending: "x") ?? constant?.string(appending: " pt"))
+            type = .identifier(identifier)
             return
         }
 
@@ -257,10 +255,8 @@ struct NSLayoutConstraintInspectableViewModel: Hashable {
         case .zero where myBindings.count > .zero && constraint.multiplier != 1:
             type = .aspectRatio(multiplier: constraint.multiplier)
 
-        case .zero where myBindings.count > .zero:
-            guard let firstAttributeName = first.attribute.displayName else {
-                return nil
-            }
+        case .zero where myBindings.isEmpty == false:
+            guard let firstAttributeName = first.attribute.displayName else { return nil }
 
             type = .constant(
                 attributeName: firstAttributeName,
@@ -269,15 +265,19 @@ struct NSLayoutConstraintInspectableViewModel: Hashable {
             )
 
         case 1 where constraint.multiplier != 1:
+            guard let theirFirstBinding = theirBindings.first else { return nil }
+
             type = .proportional(
                 attribute: myBindings.first?.attribute.displayName,
-                to: theirBindings.first!.item.displayName
+                to: theirFirstBinding.item.displayName
             )
 
         case 1:
+            guard let theirFirstBinding = theirBindings.first else { return nil }
+
             type = .relative(
                 from: myBindings.first?.attribute.displayName,
-                to: theirBindings.first!.item.displayName
+                to: theirFirstBinding.item.displayName
             )
 
         default:
@@ -298,13 +298,11 @@ struct NSLayoutConstraintInspectableViewModel: Hashable {
             return binding
         }
     }
-
 }
 
 // MARK: - Computed Properties
 
 extension NSLayoutConstraintInspectableViewModel {
-
     var mine: Binding? {
         guard let rootView = view else { return nil }
 
@@ -420,7 +418,7 @@ extension NSLayoutConstraintInspectableViewModel {
 
             case let .layoutGuide(layoutGuide):
                 if let owningView = layoutGuide.owningView {
-                    return "\(owningView.accessibilityIdentifierOrClassName).\( layoutGuide.classForCoder)"
+                    return "\(owningView.accessibilityIdentifierOrClassName).\(layoutGuide.classForCoder)"
                 }
                 return String(describing: layoutGuide.classForCoder)
 
@@ -431,7 +429,7 @@ extension NSLayoutConstraintInspectableViewModel {
     }
 
     enum `Type`: CustomStringConvertible, Hashable {
-        case identifier(String, value: String?)
+        case identifier(String)
         case aspectRatio(multiplier: CGFloat)
         case proportional(attribute: String? = nil, to: String)
         case relative(from: String? = nil, to: String)
@@ -439,13 +437,8 @@ extension NSLayoutConstraintInspectableViewModel {
 
         var description: String {
             switch self {
-            case let .identifier(identifier, value):
-                return [
-                    identifier,
-                    value?.string(prepending: "(", appending: ")"),
-                ]
-                .compactMap { $0 }
-                .joined(separator: " ")
+            case let .identifier(identifier):
+                return identifier
 
             case let .aspectRatio(multiplier: multiplier):
                 return "Aspect Ratio \(multiplier)"
@@ -538,5 +531,6 @@ extension NSLayoutConstraintInspectableViewModel: InspectorAutoLayoutViewModelPr
             default:
                 return nil
             }
-        }}
+        }
+    }
 }

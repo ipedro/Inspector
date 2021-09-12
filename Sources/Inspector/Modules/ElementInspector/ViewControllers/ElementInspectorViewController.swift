@@ -106,7 +106,7 @@ final class ElementInspectorViewController: UIViewController {
             navigationItem.leftBarButtonItem = viewCode.dismissBarButtonItem
         }
         
-        viewModel.elementPanels.reversed().forEach {
+        viewModel.availablePanels.reversed().forEach {
             viewCode.segmentedControl.insertSegment(
                 with: $0.image.withRenderingMode(.alwaysTemplate),
                 at: .zero,
@@ -150,7 +150,7 @@ extension ElementInspectorViewController {
     
     @discardableResult
     func selectPanelIfAvailable(_ panel: ElementInspectorPanel) -> Bool {
-        guard let index = viewModel.elementPanels.firstIndex(of: panel) else {
+        guard let index = viewModel.availablePanels.firstIndex(of: panel) else {
             return false
         }
         
@@ -189,7 +189,7 @@ private extension ElementInspectorViewController {
             return
         }
 
-        let panel = ElementInspectorPanel.allCases[viewCode.segmentedControl.selectedSegmentIndex]
+        let panel = viewModel.availablePanels[viewCode.segmentedControl.selectedSegmentIndex]
         
         installPanel(panel)
     }

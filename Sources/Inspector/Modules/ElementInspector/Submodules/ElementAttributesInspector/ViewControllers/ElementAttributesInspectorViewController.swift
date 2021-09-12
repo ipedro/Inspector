@@ -21,13 +21,12 @@
 import UIKit
 
 final class ElementAttributesInspectorViewController: ElementInspectorFormViewController {
+    var sectionViewType: ElementInspectorFormSectionView.Type = ElementInspectorFormSectionContentView.self
+
     // MARK: - Properties
 
-    override var viewCode: ElementInspectorFormView! {
-        didSet {
-            viewCode.contentView.addArrangedSubview(thumbnailSectionViewCode)
-            viewCode.delegate = self
-        }
+    private(set) lazy var viewCode: ElementInspectorFormView = ElementInspectorFormViewCode().then {
+        $0.delegate = self
     }
 
     private var viewModel: AttributesInspectorViewModelProtocol! {
@@ -67,8 +66,8 @@ final class ElementAttributesInspectorViewController: ElementInspectorFormViewCo
     static func create(
         viewModel: AttributesInspectorViewModelProtocol,
         viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
-    ) -> ElementAttributesInspectorViewController {
-        let viewController = ElementAttributesInspectorViewController()
+    ) -> Self {
+    let viewController = Self()
         viewController.viewModel = viewModel
         viewController.viewCode = viewCode
 
@@ -76,6 +75,12 @@ final class ElementAttributesInspectorViewController: ElementInspectorFormViewCo
     }
 
     // MARK: - Lifecycle
+
+    override func viewDidLoad() {
+        viewCode.contentView.addArrangedSubview(thumbnailSectionViewCode)
+        
+        super.viewDidLoad()
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

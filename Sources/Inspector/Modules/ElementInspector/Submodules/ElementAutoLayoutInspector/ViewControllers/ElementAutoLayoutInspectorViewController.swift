@@ -21,6 +21,10 @@
 import UIKit
 
 final class ElementAutoLayoutInspectorViewController: ElementInspectorFormViewController {
+    var sectionViewType: ElementInspectorFormSectionView.Type = ElementInspectorLayoutConstraintCard.self
+
+    lazy var viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
+
     // MARK: - Properties
 
     private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView().then {
@@ -38,8 +42,8 @@ final class ElementAutoLayoutInspectorViewController: ElementInspectorFormViewCo
     static func create(
         viewModel: AutoLayoutInspectorViewModelProtocol,
         viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
-    ) -> ElementAutoLayoutInspectorViewController {
-        let viewController = ElementAutoLayoutInspectorViewController()
+    ) -> Self {
+        let viewController = Self()
         viewController.viewModel = viewModel
         viewController.viewCode = viewCode
 
