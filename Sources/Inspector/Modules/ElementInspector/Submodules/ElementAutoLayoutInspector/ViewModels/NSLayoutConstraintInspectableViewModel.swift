@@ -337,7 +337,7 @@ extension NSLayoutConstraintInspectableViewModel {
 
         return [
             type.description,
-            priority?.displayName.string(prepending: "(", appending: ")"),
+            priority?.displayName.string(prepending: "(", appending: ")")
         ]
         .compactMap { $0 }
         .joined(separator: " ")

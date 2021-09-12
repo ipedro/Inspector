@@ -52,7 +52,6 @@ protocol ElementInspectorBaseViewControllerProtocol {
 
 typealias ElementInspectorFormViewController = ElementInspectorBaseFormViewController & ElementInspectorBaseViewControllerProtocol & ElementInspectorFormSectionViewDelegate
 
-
 class ElementInspectorBaseFormViewController: ElementInspectorPanelViewController, ElementInspectorFormSectionViewControllerDelegate, KeyboardAnimatable {
     weak var formDelegate: ElementInspectorFormViewControllerDelegate?
 

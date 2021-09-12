@@ -47,7 +47,7 @@ final class AutoLayoutInspectorViewModel {
 extension AutoLayoutInspectorViewModel: AutoLayoutInspectorViewModelProtocol {
     var parent: ElementInspectorPanelViewModelProtocol? {
         get { nil }
-        set { }
+        set {}
     }
 
     var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
@@ -64,7 +64,7 @@ extension AutoLayoutInspectorViewModel: AutoLayoutInspectorViewModelProtocol {
 
     var isCollapsed: Bool {
         get { true }
-        set { }
+        set {}
     }
 
     var isHidden: Bool { false }

@@ -64,8 +64,7 @@ final class ReadMeViewController: UIViewController {
         [markdownView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
          markdownView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
          markdownView.topAnchor.constraint(equalTo: view.topAnchor),
-         markdownView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ].forEach {
+         markdownView.trailingAnchor.constraint(equalTo: view.trailingAnchor)].forEach {
             $0.priority = .defaultHigh
             $0.isActive = true
         }
@@ -82,6 +81,7 @@ final class ReadMeViewController: UIViewController {
     }
     
     // MARK: - Life cycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -186,7 +186,7 @@ extension ReadMeViewController: WKNavigationDelegate {
             """
 //            let javascript = "document.getElementsByClassName('anchor').item(0).id"
             
-            webView.evaluateJavaScript(javascript) { result, error in
+            webView.evaluateJavaScript(javascript) { result, _ in
                 if let offset = result as? CGFloat {
                     webView.scrollView.scrollRectToVisible(CGRect(x: 0, y: -offset, width: webView.frame.width, height: webView.frame.height / 2), animated: true)
                 }
@@ -214,7 +214,7 @@ extension ReadMeViewController: WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        self.updateNavigationBarSize()
+        updateNavigationBarSize()
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

@@ -24,7 +24,6 @@ final class ElementInspectorLayoutConstraintCard: BaseCard, ElementInspectorForm
     private lazy var formView = ElementInspectorFormSectionContentView().then {
         $0.topSeparatorView.isHidden = true
         $0.sectionHeader.textStyle = .footnote
-
     }
 
     var delegate: ElementInspectorFormSectionViewDelegate? {

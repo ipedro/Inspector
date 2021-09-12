@@ -15,8 +15,9 @@ public extension Mirror {
                 let view = child.value as? UIView,
                 view.accessibilityIdentifier.isNilOrEmpty,
                 let identifier = child.label?
-                    .replacingOccurrences(of: ".storage", with: "")
-                    .replacingOccurrences(of: "$__lazy_storage_$_", with: "") {
+                .replacingOccurrences(of: ".storage", with: "")
+                .replacingOccurrences(of: "$__lazy_storage_$_", with: "")
+            {
                 view.accessibilityIdentifier = "\(type).\(identifier)"
             }
         }

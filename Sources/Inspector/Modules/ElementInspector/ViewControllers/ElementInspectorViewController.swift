@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,7 +29,6 @@ protocol ElementInspectorPanelViewControllerDelegate: OperationQueueManagerProto
 }
 
 final class ElementInspectorViewController: UIViewController {
-    
     weak var delegate: ElementInspectorPanelViewControllerDelegate?
     
     private var viewModel: ElementInspectorViewModelProtocol! {
@@ -40,7 +39,7 @@ final class ElementInspectorViewController: UIViewController {
     
     override var preferredContentSize: CGSize {
         didSet {
-            Console.log(self.classForCoder, #function, preferredContentSize)
+            Console.log(classForCoder, #function, preferredContentSize)
         }
     }
     
@@ -49,7 +48,6 @@ final class ElementInspectorViewController: UIViewController {
             viewCode.emptyLabel.isHidden = presentedPanelViewController != nil
             
             if let panelViewController = presentedPanelViewController {
-                
                 addChild(panelViewController)
                 
                 view.setNeedsLayout()
@@ -60,7 +58,6 @@ final class ElementInspectorViewController: UIViewController {
             }
             
             if let oldPanelViewController = oldValue {
-                
                 oldPanelViewController.willMove(toParent: nil)
                 
                 oldPanelViewController.view.removeFromSuperview()
@@ -147,7 +144,6 @@ final class ElementInspectorViewController: UIViewController {
 // MARK: - Actions
 
 extension ElementInspectorViewController {
-    
     @discardableResult
     func selectPanelIfAvailable(_ panel: ElementInspectorPanel) -> Bool {
         guard let index = viewModel.availablePanels.firstIndex(of: panel) else {
@@ -164,13 +160,11 @@ extension ElementInspectorViewController {
     func removeCurrentPanel() {
         presentedPanelViewController = nil
     }
-    
 }
 
 // MARK: - Private Actions
 
 private extension ElementInspectorViewController {
-    
     func installPanel(_ panel: ElementInspectorPanel) {
         guard let panelViewController = delegate?.elementInspectorViewController(self, viewControllerFor: panel, with: viewModel.reference) else {
             presentedPanelViewController = nil
@@ -196,7 +190,6 @@ private extension ElementInspectorViewController {
     
     @objc
     func close() {
-        self.delegate?.elementInspectorViewControllerDidFinish(self)
+        delegate?.elementInspectorViewControllerDidFinish(self)
     }
-    
 }

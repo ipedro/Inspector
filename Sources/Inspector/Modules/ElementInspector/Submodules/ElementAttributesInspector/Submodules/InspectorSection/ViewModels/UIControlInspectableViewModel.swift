@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,16 +21,14 @@
 import UIKit
 
 extension UIViewElementLibrary {
-
     final class UIControlInspectableViewModel: ElementInspectorFormViewModelProtocol {
-        
         private enum Property: String, Swift.CaseIterable {
             case contentHorizontalAlignment = "Horizontal Alignment"
-            case contentVerticalAlignment   = "Vertical Alignment"
-            case groupState                 = "State"
-            case isSelected                 = "Selected"
-            case isEnabled                  = "Enabled"
-            case isHighlighted              = "Highlighted"
+            case contentVerticalAlignment = "Vertical Alignment"
+            case groupState = "State"
+            case isSelected = "Selected"
+            case isEnabled = "Enabled"
+            case isHighlighted = "Highlighted"
         }
         
         let title = "Control"
@@ -56,7 +54,7 @@ extension UIViewElementLibrary {
                 
                 return .imageButtonGroup(
                     title: property.rawValue,
-                    images: allCases.compactMap { $0.image },
+                    images: allCases.compactMap(\.image),
                     selectedIndex: { allCases.firstIndex(of: control.contentHorizontalAlignment) }
                 ) {
                     guard let newIndex = $0 else {
@@ -73,7 +71,7 @@ extension UIViewElementLibrary {
 
                 return .imageButtonGroup(
                     title: property.rawValue,
-                    images: knownCases.compactMap { $0.image },
+                    images: knownCases.compactMap(\.image),
                     selectedIndex: { knownCases.firstIndex(of: control.contentVerticalAlignment) }
                 ) {
                     guard let newIndex = $0 else {
@@ -112,8 +110,6 @@ extension UIViewElementLibrary {
                     control.isHighlighted = isHighlighted
                 }
             }
-
         }
     }
-    
 }

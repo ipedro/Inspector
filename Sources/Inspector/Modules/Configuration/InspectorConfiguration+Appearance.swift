@@ -21,9 +21,7 @@
 import UIKit
 
 public extension InspectorConfiguration {
-    
     struct Appearance {
-        
         // MARK: - Wireframe Style
         
         public var wireframeLayerColor: UIColor = {
@@ -39,7 +37,7 @@ public extension InspectorConfiguration {
         public var actionIconSize = CGSize(width: 32, height: 32)
         
         public var elementIconSize = CGSize(
-            width:  ElementInspector.appearance.verticalMargins * 3,
+            width: ElementInspector.appearance.verticalMargins * 3,
             height: ElementInspector.appearance.verticalMargins * 3
         )
         
@@ -51,5 +49,4 @@ public extension InspectorConfiguration {
         
         public var emptyLayerBorderWidth: CGFloat = 0
     }
-    
 }

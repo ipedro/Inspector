@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,7 +21,6 @@
 import UIKit
 
 public enum InspectorElementViewModelProperty {
-    
     case colorPicker(title: String,
                      color: ColorProvider,
                      handler: ColorHandler?)
@@ -64,24 +63,21 @@ public enum InspectorElementViewModelProperty {
                    placeholder: String?,
                    axis: NSLayoutConstraint.Axis = .vertical,
                    value: StringProvider,
-                   handler:StringHandler?)
+                   handler: StringHandler?)
     
     case textView(title: String,
                   placeholder: String?,
                   value: StringProvider,
-                  handler:StringHandler?)
+                  handler: StringHandler?)
     
     case toggleButton(title: String,
                       isOn: BoolProvider,
                       handler: BoolHandler?)
-    
 }
 
 extension InspectorElementViewModelProperty {
-    
     var isControl: Bool {
         switch self {
-        
         case .stepper,
              .colorPicker,
              .toggleButton,
@@ -96,13 +92,11 @@ extension InspectorElementViewModelProperty {
         case .group,
              .separator:
             return false
-            
         }
     }
     
     var hasHandler: Bool {
         switch self {
-        
         case .stepper(_, _, _, _, _, .some),
              .colorPicker(_, _, .some),
              .toggleButton(_, _, .some),
@@ -126,42 +120,40 @@ extension InspectorElementViewModelProperty {
              .separator,
              .imagePicker:
             return false
-            
         }
     }
-    
 }
 
 // MARK: - Value Handlers
 
 public extension InspectorElementViewModelProperty {
-    typealias BoolHandler      = ((Bool)     -> Void)
-    typealias CGFloatHandler   = ((CGFloat)  -> Void)
-    typealias ColorHandler     = ((UIColor?) -> Void)
-    typealias DoubleHandler    = ((Double)   -> Void)
-    typealias FloatHandler     = ((Float)    -> Void)
-    typealias FontHandler      = ((UIFont?)  -> Void)
-    typealias ImageHandler     = ((UIImage?) -> Void)
-    typealias IntHandler       = ((Int)      -> Void)
-    typealias SelectionHandler = ((Int?)     -> Void)
-    typealias StringHandler    = ((String?)  -> Void)
+    typealias BoolHandler = ((Bool) -> Void)
+    typealias CGFloatHandler = ((CGFloat) -> Void)
+    typealias ColorHandler = ((UIColor?) -> Void)
+    typealias DoubleHandler = ((Double) -> Void)
+    typealias FloatHandler = ((Float) -> Void)
+    typealias FontHandler = ((UIFont?) -> Void)
+    typealias ImageHandler = ((UIImage?) -> Void)
+    typealias IntHandler = ((Int) -> Void)
+    typealias SelectionHandler = ((Int?) -> Void)
+    typealias StringHandler = ((String?) -> Void)
 }
 
 // MARK: - Value Providers
 
 public extension InspectorElementViewModelProperty {
-    typealias BoolProvider               = (() -> Bool)
+    typealias BoolProvider = (() -> Bool)
     typealias CGFloatClosedRangeProvider = (() -> ClosedRange<CGFloat>)
-    typealias CGFloatProvider            = (() -> CGFloat)
-    typealias ColorProvider              = (() -> UIColor?)
-    typealias DoubleClosedRangeProvider  = (() -> ClosedRange<Double>)
-    typealias DoubleProvider             = (() -> Double)
-    typealias FloatClosedRangeProvider   = (() -> ClosedRange<Float>)
-    typealias FloatProvider              = (() -> Float)
-    typealias FontProvider               = (() -> UIFont?)
-    typealias ImageProvider              = (() -> UIImage?)
-    typealias IntClosedRangeProvider     = (() -> ClosedRange<Int>)
-    typealias IntProvider                = (() -> Int)
-    typealias SelectionProvider          = (() -> Int?)
-    typealias StringProvider             = (() -> String?)
+    typealias CGFloatProvider = (() -> CGFloat)
+    typealias ColorProvider = (() -> UIColor?)
+    typealias DoubleClosedRangeProvider = (() -> ClosedRange<Double>)
+    typealias DoubleProvider = (() -> Double)
+    typealias FloatClosedRangeProvider = (() -> ClosedRange<Float>)
+    typealias FloatProvider = (() -> Float)
+    typealias FontProvider = (() -> UIFont?)
+    typealias ImageProvider = (() -> UIImage?)
+    typealias IntClosedRangeProvider = (() -> ClosedRange<Int>)
+    typealias IntProvider = (() -> Int)
+    typealias SelectionProvider = (() -> Int?)
+    typealias StringProvider = (() -> String?)
 }

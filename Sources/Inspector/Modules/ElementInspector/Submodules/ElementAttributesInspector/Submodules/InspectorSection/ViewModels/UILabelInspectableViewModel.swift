@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,28 +21,26 @@
 import UIKit
 
 extension UIViewElementLibrary {
-        
     final class UILabelInspectableViewModel: ElementInspectorFormViewModelProtocol {
-        
         enum Property: String, Swift.CaseIterable {
-            case text                                 = "Text"
-            case textColor                            = "Text Color"
-            case fontName                             = "Font Name"
-            case fontSize                             = "Font Size"
-            case adjustsFontSizeToFitWidth            = "Automatically Adjusts Font"
-            case textAlignment                        = "Alignment"
-            case numberOfLines                        = "Lines"
-            case groupBehavior                        = "Behavior"
-            case isEnabled                            = "Enabled"
-            case isHighlighted                        = "Highlighted"
-            case separator0                           = "Separator0"
-            case baseline                             = "Baseline"
-            case lineBreak                            = "Line Break"
-            case autoShrink                           = "Auto Shrink"
+            case text = "Text"
+            case textColor = "Text Color"
+            case fontName = "Font Name"
+            case fontSize = "Font Size"
+            case adjustsFontSizeToFitWidth = "Automatically Adjusts Font"
+            case textAlignment = "Alignment"
+            case numberOfLines = "Lines"
+            case groupBehavior = "Behavior"
+            case isEnabled = "Enabled"
+            case isHighlighted = "Highlighted"
+            case separator0 = "Separator0"
+            case baseline = "Baseline"
+            case lineBreak = "Line Break"
+            case autoShrink = "Auto Shrink"
             case allowsDefaultTighteningForTruncation = "Tighten Letter Spacing"
-            case separator1                           = "Separator1"
-            case highlightedTextColor                 = "Highlighted Color"
-            case shadowColor                          = "Shadow"
+            case separator1 = "Separator1"
+            case highlightedTextColor = "Highlighted Color"
+            case shadowColor = "Shadow"
         }
         
         let title = "Label"
@@ -63,7 +61,6 @@ extension UIViewElementLibrary {
             }
 
             switch property {
-            
             case .text:
                 return .textView(
                     title: property.rawValue,
@@ -118,7 +115,7 @@ extension UIViewElementLibrary {
                 
                 return .imageButtonGroup(
                     title: property.rawValue,
-                    images: allCases.compactMap { $0.image },
+                    images: allCases.compactMap(\.image),
                     selectedIndex: { allCases.firstIndex(of: label.textAlignment) }
                 ) {
                     guard let newIndex = $0 else {
@@ -195,10 +192,7 @@ extension UIViewElementLibrary {
                 ) { shadowColor in
                     label.shadowColor = shadowColor
                 }
-                
             }
-            
         }
     }
-    
 }

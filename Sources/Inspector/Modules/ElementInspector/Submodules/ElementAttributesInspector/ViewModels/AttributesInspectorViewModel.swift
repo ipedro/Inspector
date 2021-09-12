@@ -60,7 +60,7 @@ final class AttributesInspectorViewModel {
     ) {
         self.reference = reference
         self.snapshot = snapshot
-        self.isLiveUpdating = true
+        isLiveUpdating = true
     }
 }
 

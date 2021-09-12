@@ -69,7 +69,6 @@ final class AutoLayoutInspectorViewCode: BaseView {
         super.didMoveToWindow()
 
         guard let window = window else {
-
             if #available(iOS 13.0, *) {
                 hoverGestureRecognizer.isEnabled = false
             }
@@ -91,7 +90,6 @@ final class AutoLayoutInspectorViewCode: BaseView {
     @objc
     func hovering(_ recognizer: UIHoverGestureRecognizer) {
         switch recognizer.state {
-
         case .began, .changed:
             isPointerInUse = true
 

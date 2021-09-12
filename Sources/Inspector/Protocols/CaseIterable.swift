@@ -37,9 +37,8 @@ import Foundation
 /// enumeration's original declaration. The `CompassDirection` example above
 /// demonstrates this automatic implementation.
 protocol CaseIterable {
-
     /// A type that can represent a collection of all values of this type.
-    associatedtype AllCases : Collection where Self == Self.AllCases.Element
+    associatedtype AllCases: Collection where Self == Self.AllCases.Element
 
     /// A collection of all values of this type.
     static var allCases: Self.AllCases { get }

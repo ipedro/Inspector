@@ -23,7 +23,6 @@ import UIKit
 // MARK: - Actionable
 
 extension ViewHierarchyLayer: Actionable {
-    
     var title: String {
         description
     }
@@ -31,5 +30,4 @@ extension ViewHierarchyLayer: Actionable {
     var emptyActionTitle: String {
         Texts.emptyLayer(with: description)
     }
-    
 }

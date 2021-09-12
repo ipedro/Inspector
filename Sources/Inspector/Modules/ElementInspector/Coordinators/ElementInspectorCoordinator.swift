@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -119,7 +119,6 @@ final class ElementInspectorCoordinator: NSObject {
             var reference: ViewHierarchyReference? = populatedReference
             
             while reference != nil {
-                
                 guard let currentReference = reference else {
                     break
                 }
@@ -145,7 +144,6 @@ final class ElementInspectorCoordinator: NSObject {
     
     var permittedPopoverArrowDirections: UIPopoverArrowDirection {
         switch navigationController.popoverPresentationController?.arrowDirection {
-            
         case .some(.up):
             return [.up, .left, .right]
             
@@ -160,7 +158,6 @@ final class ElementInspectorCoordinator: NSObject {
             
         default:
             return .any
-            
         }
     }
     
@@ -182,7 +179,6 @@ final class ElementInspectorCoordinator: NSObject {
         elementLibraries: [InspectorElementLibraryProtocol],
         delegate: ElementInspectorPanelViewControllerDelegate
     ) -> ElementInspectorViewController {
-        
         let viewModel = ElementInspectorViewModel(
             reference: reference,
             showDismissBarButton: showDismissBarButton,
@@ -195,7 +191,6 @@ final class ElementInspectorCoordinator: NSObject {
         
         return viewController
     }
-    
 }
 
 extension ElementInspectorCoordinator: ElementInspectorNavigationControllerDismissDelegate {
@@ -232,7 +227,6 @@ extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate 
 // MARK: - UIPopoverPresentationControllerDelegate
 
 extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
-    
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
         guard popoverPresentationController.presentedViewController === navigationController else {
             return
@@ -240,7 +234,6 @@ extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
         
         finish()
     }
-    
 }
 
 #if swift(>=5.3)
@@ -249,7 +242,6 @@ extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
 
 @available(iOS 14.0, *)
 extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
-    
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
         topAttributesInspectorViewController?.selectColor(viewController.selectedColor)
     }
@@ -257,7 +249,6 @@ extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
         topAttributesInspectorViewController?.finishColorSelection()
     }
-    
 }
 
 #endif
@@ -265,15 +256,12 @@ extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
 // MARK: - OptionSelectorViewControllerDelegate
 
 extension ElementInspectorCoordinator: OptionSelectorViewControllerDelegate {
-    
     func optionSelectorViewController(_ viewController: OptionSelectorViewController, didSelectIndex selectedIndex: Int?) {
         topAttributesInspectorViewController?.selectOptionAtIndex(selectedIndex)
     }
-    
 }
 
 private extension ElementInspectorCoordinator {
-    
     var topAttributesInspectorViewController: ElementAttributesInspectorViewController? {
         guard let topElementInspectorViewController = navigationController.topViewController as? ElementInspectorViewController else {
             return nil
@@ -281,15 +269,12 @@ private extension ElementInspectorCoordinator {
         
         return topElementInspectorViewController.children.first as? ElementAttributesInspectorViewController
     }
-    
 }
 
 // MARK: - UIDocumentPickerDelegate
 
 extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
-    
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        
         for url in urls {
             guard let imageData = try? Data(contentsOf: url) else {
                 continue
@@ -310,7 +295,6 @@ extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
 // MARK: - OperationQueueManagerProtocol
 
 extension ElementInspectorCoordinator: OperationQueueManagerProtocol {
-    
     func cancelAllOperations() {
         operationQueue.cancelAllOperations()
     }
@@ -326,5 +310,4 @@ extension ElementInspectorCoordinator: OperationQueueManagerProtocol {
     func suspendQueue(_ isSuspended: Bool) {
         operationQueue.isSuspended = isSuspended
     }
-    
 }

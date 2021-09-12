@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,18 +21,15 @@
 import UIKit
 
 public extension InspectorElementViewModelProperty {
-    
     static func fontNamePicker(
         title: String,
         emptyTitle: String = "System Font",
         fontProvider: @escaping FontProvider,
         handler: @escaping FontHandler
     ) -> InspectorElementViewModelProperty {
-        
         typealias FontReference = (fontName: String, displayName: String)
         
         let availableFonts: [FontReference] = {
-            
             var array = [FontReference("", emptyTitle)]
             
             UIFont.familyNames.forEach { familyName in
@@ -68,15 +65,15 @@ public extension InspectorElementViewModelProperty {
             title: title,
             emptyTitle: emptyTitle,
             axis: .vertical,
-            options: availableFonts.map { $0.displayName },
+            options: availableFonts.map(\.displayName),
             selectedIndex: { availableFonts.firstIndex { $0.fontName == fontProvider()?.fontName } }
         ) {
             guard let newIndex = $0 else {
                 return
             }
             
-            let fontNames = availableFonts.map { $0.fontName }
-            let fontName  = fontNames[newIndex]
+            let fontNames = availableFonts.map(\.fontName)
+            let fontName = fontNames[newIndex]
             
             guard let pointSize = fontProvider()?.pointSize else {
                 return
@@ -93,7 +90,6 @@ public extension InspectorElementViewModelProperty {
         fontProvider: @escaping FontProvider,
         handler: @escaping FontHandler
     ) -> InspectorElementViewModelProperty {
-        
         .cgFloatStepper(
             title: title,
             value: { fontProvider()?.pointSize ?? 0 },
@@ -106,5 +102,4 @@ public extension InspectorElementViewModelProperty {
             handler(newFont)
         }
     }
-    
 }

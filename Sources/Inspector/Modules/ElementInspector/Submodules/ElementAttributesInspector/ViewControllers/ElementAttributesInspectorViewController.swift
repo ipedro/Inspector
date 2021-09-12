@@ -67,7 +67,7 @@ final class ElementAttributesInspectorViewController: ElementInspectorFormViewCo
         viewModel: AttributesInspectorViewModelProtocol,
         viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
     ) -> Self {
-    let viewController = Self()
+        let viewController = Self()
         viewController.viewModel = viewModel
         viewController.viewCode = viewCode
 

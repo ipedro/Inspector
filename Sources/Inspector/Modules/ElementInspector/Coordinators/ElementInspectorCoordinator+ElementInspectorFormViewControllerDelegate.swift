@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,18 +18,19 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 import MobileCoreServices
+import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegate {
-    
     func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
-                                           showLayerInspectorViewsInside reference: ViewHierarchyReference) {
+                                        showLayerInspectorViewsInside reference: ViewHierarchyReference)
+    {
         delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
     }
     
     func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
-                                           hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
+                                        hideLayerInspectorViewsInside reference: ViewHierarchyReference)
+    {
         delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
     }
     
@@ -58,8 +59,8 @@ extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegat
     }
     
     func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
-                                        didTap optionSelector: OptionListControl) {
-        
+                                        didTap optionSelector: OptionListControl)
+    {
         let viewModel = OptionSelectorViewModel(
             title: optionSelector.title,
             options: optionSelector.options,
@@ -87,7 +88,8 @@ extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegat
     }
     
     func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
-                                           didTap imagePicker: ImagePreviewControl) {
+                                        didTap imagePicker: ImagePreviewControl)
+    {
         let alertController = UIAlertController(
             title: nil,
             message: nil,
@@ -104,8 +106,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegat
                 .sourceView(imagePicker.accessoryControl),
                 .permittedArrowDirections([.up, .down]),
                 .popoverPresentationDelegate(self)
-            )
-        )
+            ))
         
         alertController.addAction(
             UIAlertAction(

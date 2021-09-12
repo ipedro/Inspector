@@ -22,9 +22,8 @@ import UIKit
 
 typealias ViewHierarchyLayer = Inspector.ViewHierarchyLayer
 
-extension Inspector {
-    public struct ViewHierarchyLayer {
-        
+public extension Inspector {
+    struct ViewHierarchyLayer {
         public typealias Filter = (UIView) -> Bool
         
         // MARK: - Properties
@@ -46,7 +45,7 @@ extension Inspector {
         // MARK: - Metods
         
         func filter(snapshot: ViewHierarchySnapshot) -> [UIView] {
-            let inspectableViews = snapshot.inspectableReferences.compactMap { $0.rootView }
+            let inspectableViews = snapshot.inspectableReferences.compactMap(\.rootView)
             
             return filter(flattenedViewHierarchy: inspectableViews)
         }
@@ -62,6 +61,5 @@ extension Inspector {
                 return filteredViews.filter { $0.isSystemView == false }
             }
         }
-        
     }
 }

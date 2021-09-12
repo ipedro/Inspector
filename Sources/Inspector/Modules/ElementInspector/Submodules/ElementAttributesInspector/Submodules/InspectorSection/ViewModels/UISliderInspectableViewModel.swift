@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,22 +21,20 @@
 import UIKit
 
 extension UIViewElementLibrary {
-
     final class UISliderInspectableViewModel: ElementInspectorFormViewModelProtocol {
-        
         enum Property: String, Swift.CaseIterable {
-            case value                 = "Value"
-            case minimumValue          = "Minimum"
-            case maximumValue          = "Maximum"
-            case groupImages           = "Images"
-            case minimumValueImage     = "Min Image"
-            case maximumValueImage     = "Max Image"
-            case groupColors           = "Colors"
+            case value = "Value"
+            case minimumValue = "Minimum"
+            case maximumValue = "Maximum"
+            case groupImages = "Images"
+            case minimumValueImage = "Min Image"
+            case maximumValueImage = "Max Image"
+            case groupColors = "Colors"
             case minimumTrackTintColor = "Min Track"
-            case maxTrack              = "Max Track"
-            case thumbTintColor        = "Thumb Tint"
-            case groupEvent            = "Event"
-            case isContinuous          = "Continuous updates"
+            case maxTrack = "Max Track"
+            case thumbTintColor = "Thumb Tint"
+            case groupEvent = "Event"
+            case isContinuous = "Continuous updates"
         }
         
         let title = "Slider"
@@ -59,7 +57,6 @@ extension UIViewElementLibrary {
             let stepValueProvider = { max(0.01, (slider.maximumValue - slider.minimumValue) / 100) }
 
             switch property {
-                
             case .value:
                 return .floatStepper(
                     title: property.rawValue,
@@ -75,7 +72,7 @@ extension UIViewElementLibrary {
                 return .floatStepper(
                     title: property.rawValue,
                     value: { slider.minimumValue },
-                    range: { 0...max(0, slider.maximumValue) } ,
+                    range: { 0...max(0, slider.maximumValue) },
                     stepValue: stepValueProvider
                 ) { minimumValue in
                     slider.minimumValue = minimumValue
@@ -97,7 +94,7 @@ extension UIViewElementLibrary {
             case .minimumValueImage:
                 return .imagePicker(
                     title: property.rawValue,
-                     image: { slider.minimumValueImage}
+                    image: { slider.minimumValueImage }
                 ) { minimumValueImage in
                     slider.minimumValueImage = minimumValueImage
                 }
@@ -148,8 +145,6 @@ extension UIViewElementLibrary {
                     slider.isContinuous = isContinuous
                 }
             }
-            
         }
     }
-
 }
