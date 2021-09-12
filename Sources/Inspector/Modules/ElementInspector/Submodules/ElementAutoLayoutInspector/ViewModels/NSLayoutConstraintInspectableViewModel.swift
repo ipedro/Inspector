@@ -20,26 +20,7 @@
 
 import UIKit
 
-extension NSLayoutConstraint.Relation: CaseIterable {
-    typealias AllCases = [NSLayoutConstraint.Relation]
-
-    static let allCases: [NSLayoutConstraint.Relation] = [.lessThanOrEqual, .equal, .greaterThanOrEqual]
-
-    var label: String {
-        switch self {
-        case .lessThanOrEqual:
-            return "Less Than Or Equal"
-        case .equal:
-            return "Equals"
-        case .greaterThanOrEqual:
-            return "Greater Than Or Equal"
-        @unknown default:
-            return "Unknown"
-        }
-    }
-}
-
-struct NSLayoutConstraintInspectableViewModel: InspectorAutoLayoutViewModelProtocol, Hashable {
+struct NSLayoutConstraintInspectableViewModel: InspectorElementFormViewModelProtocol, Hashable {
     private enum Property: String, Swift.CaseIterable {
         case firstItem = "First Item"
         case relation = "Relation"
@@ -55,8 +36,8 @@ struct NSLayoutConstraintInspectableViewModel: InspectorAutoLayoutViewModelProto
     }
 
     init?(with constraint: NSLayoutConstraint, in view: UIView) {
-        guard let parser = NSLayoutConstraintReference(with: constraint, in: view) else { return nil }
-        self.constraintReference = parser
+        guard let constraintReference = NSLayoutConstraintReference(with: constraint, in: view) else { return nil }
+        self.constraintReference = constraintReference
     }
 
     let constraintReference: NSLayoutConstraintReference
@@ -132,7 +113,7 @@ struct NSLayoutConstraintInspectableViewModel: InspectorAutoLayoutViewModelProto
                 return .optionsList(
                     title: property.rawValue,
                     emptyTitle: property.rawValue,
-                    options: NSLayoutConstraint.Relation.allCases.map(\.label),
+                    options: NSLayoutConstraint.Relation.allCases.map(\.description),
                     selectedIndex: { NSLayoutConstraint.Relation.allCases.firstIndex(of: self.constraintReference.constraint.relation) },
                     handler: nil
                 )

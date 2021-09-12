@@ -27,7 +27,7 @@ private let binaryFloatingPointFormatter = NumberFormatter().then {
 }
 
 extension BinaryFloatingPoint {
-    func string(prepending: String? = nil, appending: String? = nil, separator: String = "") -> String {
+    func toString(prepending: String? = nil, appending: String? = nil, separator: String = "") -> String {
         guard let formattedNumber = binaryFloatingPointFormatter.string(from: CGFloat(self)) else {
             return String()
         }

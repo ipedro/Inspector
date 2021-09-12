@@ -115,7 +115,9 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         $0.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
     }
     
-    private(set) lazy var collapseButton = IconButton(.chevronDown)
+    private(set) lazy var collapseButton = IconButton(.chevronDown).then {
+        $0.tintColor = ElementInspector.appearance.quaternaryTextColor
+    }
 
     private(set) lazy var thumbnailImageView = UIImageView(
         .contentMode(.center),

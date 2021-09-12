@@ -52,11 +52,11 @@ public struct ElementInspectorFormSection {
 }
 
 protocol ElementInspectorFormViewControllerDataSource: AnyObject {
+    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type?
     var sections: [ElementInspectorFormSection] { get }
 }
 
 protocol ElementInspectorBaseViewControllerProtocol {
-    var sectionViewType: ElementInspectorFormSectionView.Type { get }
     var viewCode: ElementInspectorFormView { get }
 }
 
@@ -112,9 +112,12 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
     }
 
     func loadSections() {
-        guard let self = self as? ElementInspectorFormViewController else { return }
+        guard
+            let self = self as? ElementInspectorFormViewController,
+            let dataSource = dataSource
+        else { return }
 
-        dataSource?.sections.forEach { section in
+        dataSource.sections.enumerated().forEach { sectionIndex, section in
 
             if let title = section.title {
                 let sectionHeaderView = SectionHeader(
@@ -128,12 +131,16 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
                 self.viewCode.contentView.addArrangedSubview(sectionHeaderView)
             }
 
-            for (index, viewModel) in section.viewModels.enumerated() {
+            for (row, viewModel) in section.viewModels.enumerated() {
+                let indexPath = IndexPath(row: row, section: sectionIndex)
+
+                let ContentView = dataSource.typeForRow(at: indexPath) ?? ElementInspectorFormSectionContentView.self
+
                 let sectionViewController = ElementInspectorFormSectionViewController.create(
                     viewModel: viewModel,
-                    viewCode: self.sectionViewType.init()
+                    viewCode: ContentView.create()
                 ).then {
-                    $0.sectionState = index == 0 ? .selected : .normal
+                    $0.sectionState = indexPath.isFirst ? .selected : .normal
                     $0.delegate = self
                 }
 
@@ -197,7 +204,19 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
                                                    willUpdate property: InspectorElementViewModelProperty) {}
 
     func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
-                                                   didUpdate property: InspectorElementViewModelProperty) {}
+                                                   didUpdate property: InspectorElementViewModelProperty) {
+        let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
+            self?.children.forEach {
+                guard let sectionViewController = $0 as? ElementInspectorFormSectionViewController else {
+                    return
+                }
+
+                sectionViewController.updateValues()
+            }
+        }
+
+        formDelegate?.addOperationToQueue(updateOperation)
+    }
 
     func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
                                                    didChangeState newState: UIControl.State,
@@ -261,5 +280,11 @@ extension ElementInspectorBaseFormViewController: OperationQueueManagerProtocol 
 
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
+    }
+}
+
+private extension IndexPath {
+    var isFirst: Bool {
+        row == .zero && section == .zero
     }
 }

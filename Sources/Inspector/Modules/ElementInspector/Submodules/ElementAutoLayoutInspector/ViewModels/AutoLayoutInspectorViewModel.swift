@@ -43,6 +43,13 @@ final class AutoLayoutInspectorViewModel {
 // MARK: - AutoLayoutInspectorViewModelProtocol
 
 extension AutoLayoutInspectorViewModel: AutoLayoutInspectorViewModelProtocol {
+    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type? {
+        let viewModel = sections[indexPath.section].viewModels[indexPath.row]
+
+        return AutoLayoutLibrary.viewType(forViewModel: viewModel)
+    }
+
+
     var parent: ElementInspectorPanelViewModelProtocol? {
         get { nil }
         set {}

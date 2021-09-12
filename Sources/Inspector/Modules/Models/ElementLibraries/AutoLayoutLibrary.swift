@@ -21,6 +21,7 @@
 import UIKit
 
 enum AutoLayoutLibrary: Swift.CaseIterable {
+    case contentHuggingCompression
     case layoutConstraints
 
     static var standard: AllCases {
@@ -31,11 +32,29 @@ enum AutoLayoutLibrary: Swift.CaseIterable {
 // MARK: - InspectorAutoLayoutLibraryProtocol
 
 extension AutoLayoutLibrary: InspectorAutoLayoutLibraryProtocol {
+    static func viewType(forViewModel viewModel: InspectorElementFormViewModelProtocol) -> InspectorElementFormSectionView.Type {
+        switch viewModel {
+        case is NSLayoutConstraintInspectableViewModel:
+            return ElementInspectorLayoutConstraintCard.self
+        default:
+            return ElementInspectorFormSectionContentView.self
+        }
+    }
+
     func viewModels(for referenceView: UIView) -> [ElementInspectorFormSection] {
         switch self {
+        case .contentHuggingCompression:
+            return [
+                ElementInspectorFormSection(
+                        rows: [
+                            ContentHuggingCompressionInspectableViewModel(view: referenceView)
+                        ]
+                )
+            ]
+
         case .layoutConstraints:
-            var horizontal: [InspectorAutoLayoutViewModelProtocol] = []
-            var vertical: [InspectorAutoLayoutViewModelProtocol] = []
+            var horizontal: [InspectorElementFormViewModelProtocol] = []
+            var vertical: [InspectorElementFormViewModelProtocol] = []
 
             referenceView.constraints.forEach {
                 guard let viewModel = NSLayoutConstraintInspectableViewModel(with: $0, in: referenceView) else { return }
@@ -73,5 +92,5 @@ extension AutoLayoutLibrary: InspectorAutoLayoutLibraryProtocol {
         }
     }
 
-    func icon(for viewModel: InspectorAutoLayoutViewModelProtocol) -> UIImage? { nil }
+    func icon(for viewModel: InspectorElementFormViewModelProtocol) -> UIImage? { nil }
 }

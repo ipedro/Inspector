@@ -21,25 +21,17 @@
 
 import UIKit
 
-extension UILayoutPriority: CustomStringConvertible {
+extension NSLayoutConstraint.Relation: CustomStringConvertible {
     var description: String {
         switch self {
-        case .defaultHigh:
-            return "High"
-        case .defaultLow:
-            return "Low"
-        case .fittingSizeLevel:
-            return "Fitting Size"
-        case .required:
-            return "Required"
-        case .dragThatCanResizeScene:
-            return "Drag That Can Resize Scene"
-        case .sceneSizeStayPut:
-            return "Scene Size Stay Put"
-        case .dragThatCannotResizeScene:
-            return "Drag That Can't Resize Scene"
-        default:
-            return rawValue.toString()
+        case .lessThanOrEqual:
+            return "Less Than Or Equal"
+        case .equal:
+            return "Equals"
+        case .greaterThanOrEqual:
+            return "Greater Than Or Equal"
+        @unknown default:
+            return "Unknown"
         }
     }
 }

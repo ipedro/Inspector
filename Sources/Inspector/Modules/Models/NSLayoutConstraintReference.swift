@@ -303,7 +303,7 @@ extension NSLayoutConstraintReference {
                 return "To: \(toString)"
 
             case let .constant(attributeName: attribute, relation: relation, constant: constant):
-                return "\(attribute) \(relation.label): \(constant.string())"
+                return "\(attribute) \(relation.description): \(constant.toString())"
             }
         }
     }

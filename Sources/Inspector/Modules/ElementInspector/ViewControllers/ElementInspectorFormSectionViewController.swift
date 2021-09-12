@@ -20,18 +20,27 @@
 
 import UIKit
 
-protocol ElementInspectorFormSectionViewDelegate: AnyObject {
-    func elementInspectorFormSectionView(_ section: ElementInspectorFormSectionView,
+public protocol InspectorElementFormSectionViewDelegate: AnyObject {
+    func inspectorElementFormSectionView(_ section: InspectorElementFormSectionView,
                                          changedFrom oldState: UIControl.State?,
                                          to newState: UIControl.State)
 }
 
-protocol ElementInspectorFormSectionView: BaseControl {
-    var delegate: ElementInspectorFormSectionViewDelegate? { get set }
-    var header: SectionHeader { get }
+
+public protocol InspectorElementFormSectionView: UIControl {
+    var delegate: InspectorElementFormSectionViewDelegate? { get set }
+
+    var title: String? { get set }
+
+    var subtitle: String?  { get set }
+
+    var accessoryView: UIView?  { get set }
+
     var sectionState: State { get set }
 
     func addFormViews(_ views: [UIView])
+
+    static func create() -> InspectorElementFormSectionView
 }
 
 protocol ElementInspectorFormSectionViewControllerDelegate: OperationQueueManagerProtocol {
@@ -58,7 +67,7 @@ protocol ElementInspectorFormSectionViewControllerDelegate: OperationQueueManage
 final class ElementInspectorFormSectionViewController: UIViewController {
     weak var delegate: ElementInspectorFormSectionViewControllerDelegate?
 
-    private(set) var viewCode: ElementInspectorFormSectionView! {
+    private(set) var viewCode: InspectorElementFormSectionView! {
         didSet {
             viewCode.delegate = self
         }
@@ -68,7 +77,7 @@ final class ElementInspectorFormSectionViewController: UIViewController {
 
     static func create(
         viewModel: InspectorElementFormViewModelProtocol,
-        viewCode: ElementInspectorFormSectionView
+        viewCode: InspectorElementFormSectionView
     ) -> ElementInspectorFormSectionViewController {
         let viewController = ElementInspectorFormSectionViewController()
         viewController.viewModel = viewModel
@@ -84,9 +93,9 @@ final class ElementInspectorFormSectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        viewCode.header.title = viewModel.title
-        viewCode.header.subtitle = viewModel.subtitle
-        viewCode.header.accessoryView = viewModel.headerAccessoryView
+        viewCode.title = viewModel.title
+        viewCode.subtitle = viewModel.subtitle
+        viewCode.accessoryView = viewModel.headerAccessoryView
 
         let subviews = viewModel.properties.compactMap { viewForProperties[$0] }
 
@@ -363,8 +372,8 @@ extension ElementInspectorFormSectionViewController: ImagePreviewControlDelegate
 
 // MARK: - ElementInspectorFormSectionViewCodeDelegate
 
-extension ElementInspectorFormSectionViewController: ElementInspectorFormSectionViewDelegate {
-    func elementInspectorFormSectionView(_ section: ElementInspectorFormSectionView,
+extension ElementInspectorFormSectionViewController: InspectorElementFormSectionViewDelegate {
+    func inspectorElementFormSectionView(_ section: InspectorElementFormSectionView,
                                          changedFrom oldState: UIControl.State?,
                                          to newState: UIControl.State) {
         delegate?.elementInspectorFormSectionViewController(self, didChangeState: newState, from: oldState)

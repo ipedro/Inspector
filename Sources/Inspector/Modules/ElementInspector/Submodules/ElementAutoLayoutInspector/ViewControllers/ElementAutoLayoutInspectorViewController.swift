@@ -21,11 +21,9 @@
 import UIKit
 
 final class ElementAutoLayoutInspectorViewController: ElementInspectorFormViewController {
-    var sectionViewType: ElementInspectorFormSectionView.Type = ElementInspectorLayoutConstraintCard.self
+    // MARK: - Properties
 
     lazy var viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
-
-    // MARK: - Properties
 
     private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView().then {
         $0.viewModel = viewModel
@@ -56,5 +54,11 @@ final class ElementAutoLayoutInspectorViewController: ElementInspectorFormViewCo
         viewCode.contentView.addArrangedSubview(referenceDetailView)
 
         super.viewDidLoad()
+    }
+
+    override func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController, didUpdate property: InspectorElementViewModelProperty) {
+        super.elementInspectorFormSectionViewController(sectionController, didUpdate: property)
+
+        referenceDetailView.viewModel = viewModel
     }
 }

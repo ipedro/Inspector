@@ -18,8 +18,16 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-public protocol InspectorAutoLayoutViewModelProtocol: InspectorElementFormViewModelProtocol {
-    var axis: NSLayoutConstraint.Axis { get }
+extension UILayoutPriority: CaseIterable {
+    typealias AllCases = [UILayoutPriority]
+
+    static let allCases: [UILayoutPriority] = [
+        .fittingSizeLevel,
+        .defaultLow,
+        .defaultHigh,
+        .required
+    ]
 }

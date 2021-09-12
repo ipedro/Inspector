@@ -67,6 +67,8 @@ final class AttributesInspectorViewModel {
 // MARK: - AttributesInspectorViewModelProtocol
 
 extension AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
+    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type? { nil }
+
     var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
 
     var title: String { reference.elementName }

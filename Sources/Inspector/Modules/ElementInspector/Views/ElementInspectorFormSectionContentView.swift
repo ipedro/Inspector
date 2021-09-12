@@ -20,10 +20,29 @@
 
 import UIKit
 
-final class ElementInspectorFormSectionContentView: BaseControl, ElementInspectorFormSectionView {
+final class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormSectionView {
+    var title: String? {
+        get { header.title }
+        set { header.title = newValue }
+    }
+
+    var subtitle: String? {
+        get { header.subtitle }
+        set { header.subtitle = newValue }
+    }
+
+    var accessoryView: UIView? {
+        get { header.accessoryView }
+        set { header.accessoryView = newValue }
+    }
+
+    static func create() -> InspectorElementFormSectionView {
+        ElementInspectorFormSectionContentView()
+    }
+
     // MARK: - Properties
 
-    weak var delegate: ElementInspectorFormSectionViewDelegate?
+    weak var delegate: InspectorElementFormSectionViewDelegate?
 
     enum SeparatorStyle {
         case top
@@ -106,11 +125,9 @@ final class ElementInspectorFormSectionContentView: BaseControl, ElementInspecto
         return super.hitTest(point, with: event)
     }
 
-    init(
-        header: SectionHeader,
-        frame: CGRect = .zero
-    ) {
+    init(header: SectionHeader, frame: CGRect = .zero) {
         self.header = header
+
         super.init(frame: frame)
     }
 
@@ -164,6 +181,6 @@ final class ElementInspectorFormSectionContentView: BaseControl, ElementInspecto
     }
 
     override func stateDidChange(from oldState: UIControl.State, to newState: UIControl.State) {
-        delegate?.elementInspectorFormSectionView(self, changedFrom: oldState, to: newState)
+        delegate?.inspectorElementFormSectionView(self, changedFrom: oldState, to: newState)
     }
 }

@@ -21,8 +21,6 @@
 import UIKit
 
 final class ElementAttributesInspectorViewController: ElementInspectorFormViewController {
-    var sectionViewType: ElementInspectorFormSectionView.Type = ElementInspectorFormSectionContentView.self
-
     // MARK: - Properties
 
     private(set) lazy var viewCode: ElementInspectorFormView = ElementInspectorFormViewCode().then {
