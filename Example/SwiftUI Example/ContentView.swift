@@ -29,17 +29,25 @@ struct ContentView: View {
 
     @State var text = "Hello, world!"
 
-    var body: some View {
-        NavigationView() {
-            VStack {
-                TextField("text field", text: $text)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
+    @State var date = Date()
 
-                Button("Inspect") {
-                    isPresented.toggle()
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 15) {
+                    DatePicker("Date", selection: $date)
+                        .datePickerStyle(GraphicalDatePickerStyle())
+
+                    TextField("text field", text: $text)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+
+                    Button("Inspect") {
+                        isPresented.toggle()
+                    }
+                    .padding()
                 }
-                .padding()
+                .padding(20)
             }
             .inspect(
                 isPresented: $isPresented,
@@ -48,8 +56,8 @@ struct ContentView: View {
                 inspectorCommandGroups: nil,
                 inspectorElementLibraries: nil
             )
+            .navigationTitle("SwiftUI Inspector")
         }
-        .navigationTitle("Inspector")
         .background(Color(UIColor.systemGroupedBackground))
     }
 }
