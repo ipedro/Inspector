@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,7 +23,7 @@ import UIKit
 protocol ElementInspectorViewModelProtocol {
     var reference: ViewHierarchyReference { get }
     
-    var elementPanels: [ElementInspectorPanel] { get }
+    var availablePanels: [ElementInspectorPanel] { get }
     
     var selectedPanel: ElementInspectorPanel? { get }
     
@@ -44,7 +44,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     var selectedPanelSegmentIndex: Int {
         guard
             let selectedPanel = selectedPanel,
-            let selectedIndex = elementPanels.firstIndex(of: selectedPanel)
+            let selectedIndex = availablePanels.firstIndex(of: selectedPanel)
         else {
             return UISegmentedControl.noSegment
         }
@@ -62,22 +62,22 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         self.showDismissBarButton = showDismissBarButton
         self.inspectableElements = inspectableElements
         
-        if let selectedPanel = selectedPanel, elementPanels.contains(selectedPanel) {
+        if let selectedPanel = selectedPanel, availablePanels.contains(selectedPanel) {
             self.selectedPanel = selectedPanel
         }
         else {
-            self.selectedPanel = elementPanels.first
+            self.selectedPanel = availablePanels.first
         }
     }
     
-    private(set) lazy var elementPanels: [ElementInspectorPanel] = ElementInspectorPanel.allCases.compactMap { panel in
+    private(set) lazy var availablePanels: [ElementInspectorPanel] = ElementInspectorPanel.allCases.compactMap { panel in
         switch panel {
         case .viewHierarchyInspector:
             return reference.isContainer ? panel : nil
-        default:
+        case .autoLayoutInspector:
+            return reference.constraintReferences.isEmpty ? nil : panel
+        case .attributesInspector:
             return panel
-            
         }
     }
-    
 }

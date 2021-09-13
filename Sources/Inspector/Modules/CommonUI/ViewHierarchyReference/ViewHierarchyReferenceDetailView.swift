@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,7 +33,7 @@ protocol ViewHierarchyReferenceDetailViewModelProtocol {
     
     var isCollapsed: Bool { get set }
     
-    var isChevronHidden: Bool { get }
+    var showCollapseButton: Bool { get }
     
     var isHidden: Bool { get }
     
@@ -41,10 +41,8 @@ protocol ViewHierarchyReferenceDetailViewModelProtocol {
 }
 
 final class ViewHierarchyReferenceDetailView: BaseView {
-    
     var viewModel: ViewHierarchyReferenceDetailViewModelProtocol? {
         didSet {
-            
             // Name
             
             elementNameLabel.text = viewModel?.title
@@ -56,8 +54,10 @@ final class ViewHierarchyReferenceDetailView: BaseView {
             // Collapsed
 
             isCollapsed = viewModel?.isCollapsed == true
-            
-            chevronDownIcon.isSafelyHidden = viewModel?.isChevronHidden ?? true
+
+            let hideCollapse = viewModel?.showCollapseButton != true
+            collapseButton.isHidden = hideCollapse
+            collapseButton.isUserInteractionEnabled = !hideCollapse
 
             // Description
 
@@ -77,7 +77,7 @@ final class ViewHierarchyReferenceDetailView: BaseView {
     
     var isCollapsed = false {
         didSet {
-            chevronDownIcon.transform = isCollapsed ? .init(rotationAngle: -(.pi / 2)) : .identity
+            collapseButton.transform = .init(rotationAngle: isCollapsed ? -(.pi / 2) : .zero)
         }
     }
     
@@ -92,33 +92,33 @@ final class ViewHierarchyReferenceDetailView: BaseView {
             delay: 0,
             options: [.beginFromCurrentState, .curveEaseInOut],
             animations: { [weak self] in
-                
                 self?.isCollapsed.toggle()
-                
             },
             completion: nil
         )
     }
     
-    private(set) lazy var elementNameLabel = UILabel(
-        .textColor(ElementInspector.appearance.textColor),
-        .numberOfLines(1),
-        .adjustsFontSizeToFitWidth(true),
-        .minimumScaleFactor(0.75),
-        .allowsDefaultTighteningForTruncation(true),
-        .huggingPriority(.defaultHigh, for: .vertical)
-    )
+    private(set) lazy var elementNameLabel = SelectableLabel().then {
+        $0.textColor = ElementInspector.appearance.textColor
+        $0.numberOfLines = 1
+        $0.adjustsFontSizeToFitWidth = true
+        $0.minimumScaleFactor = 0.75
+        $0.allowsDefaultTighteningForTruncation = true
+        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
+    }
     
-    private(set) lazy var descriptionLabel = UILabel(
-        .textStyle(.caption2),
-        .textColor(ElementInspector.appearance.secondaryTextColor),
-        .numberOfLines(.zero),
-        .preferredMaxLayoutWidth(200),
-        .compressionResistance(.defaultHigh, for: .vertical)
-    )
+    private(set) lazy var descriptionLabel = SelectableLabel().then {
+        $0.font = .preferredFont(forTextStyle: .caption2)
+        $0.textColor = ElementInspector.appearance.secondaryTextColor
+        $0.numberOfLines = .zero
+        $0.preferredMaxLayoutWidth = 200
+        $0.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+    }
     
-    private(set) lazy var chevronDownIcon = Icon.chevronDownIcon()
-    
+    private(set) lazy var collapseButton = IconButton(.chevronDown).then {
+        $0.tintColor = ElementInspector.appearance.quaternaryTextColor
+    }
+
     private(set) lazy var thumbnailImageView = UIImageView(
         .contentMode(.center),
         .tintColor(ElementInspector.appearance.textColor),
@@ -146,27 +146,12 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         contentView.spacing = ElementInspector.appearance.verticalMargins
         contentView.alignment = .center
         
-        contentView.addArrangedSubviews(thumbnailImageView, textStackView)
+        contentView.addArrangedSubviews(collapseButton, thumbnailImageView, textStackView)
         
         installView(
             contentView,
             .insets(ElementInspector.appearance.directionalInsets),
             priority: .required
         )
-    
-        setupChevronDownIcon()
     }
-    
-    private func setupChevronDownIcon() {
-        contentView.addSubview(chevronDownIcon)
-        
-        chevronDownIcon.centerYAnchor.constraint(equalTo: elementNameLabel.centerYAnchor).isActive = true
-
-        chevronDownIcon.trailingAnchor.constraint(
-            equalTo: elementNameLabel.leadingAnchor,
-            constant: -(ElementInspector.appearance.verticalMargins / 3)
-        ).isActive = true
-        
-    }
-    
 }

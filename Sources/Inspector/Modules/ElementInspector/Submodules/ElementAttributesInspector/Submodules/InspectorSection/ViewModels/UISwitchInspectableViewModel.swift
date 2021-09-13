@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,15 +20,13 @@
 
 import UIKit
 
-extension UIKitElementLibrary {
-        
-    final class UISwitchInspectableViewModel: InspectorElementViewModelProtocol {
-        
+extension UIViewElementLibrary {
+    final class UISwitchInspectableViewModel: InspectorElementFormViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
-            case title          = "Title"
+            case title = "Title"
             case preferredStyle = "Preferred Style"
-            case isOn           = "State"
-            case onTintColor    = "On Tint"
+            case isOn = "State"
+            case onTintColor = "On Tint"
             case thumbTintColor = "Thumb Tint"
         }
         
@@ -69,7 +67,7 @@ extension UIKitElementLibrary {
                 if #available(iOS 14.0, *) {
                     return .textButtonGroup(
                         title: property.rawValue,
-                        texts: UISwitch.Style.allCases.map { $0.description },
+                        texts: UISwitch.Style.allCases.map(\.description),
                         selectedIndex: { UISwitch.Style.allCases.firstIndex(of: switchControl.preferredStyle) },
                         handler: {
                             guard let newIndex = $0 else {
@@ -109,9 +107,7 @@ extension UIKitElementLibrary {
                 ) { thumbTintColor in
                     switchControl.thumbTintColor = thumbTintColor
                 }
-                
             }
         }
     }
-
 }

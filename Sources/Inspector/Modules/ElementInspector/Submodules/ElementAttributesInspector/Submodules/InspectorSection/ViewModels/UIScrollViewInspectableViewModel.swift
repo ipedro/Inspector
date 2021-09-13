@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,32 +20,30 @@
 
 import UIKit
 
-extension UIKitElementLibrary {
-    
-    final class UIScrollViewInspectableViewModel: InspectorElementViewModelProtocol {
-        
+extension UIViewElementLibrary {
+    final class UIScrollViewInspectableViewModel: InspectorElementFormViewModelProtocol {
         enum Property: String, Swift.CaseIterable {
-            case groupIndicators                = "Indicators"
-            case indicatorStyle                 = "Indicator Style"
+            case groupIndicators = "Indicators"
+            case indicatorStyle = "Indicator Style"
             case showsHorizontalScrollIndicator = "Show Horizontal Indicator"
-            case showsVerticalScrollIndicator   = "Show Vertical Indicator"
-            case groupScrolling                 = "Scrolling"
-            case isScrollEnabled                = "Scroll Enabled"
-            case pagingEnabled                  = "Paging Enabled"
-            case isDirectionalLockEnabled       = "Direction Lock Enabled"
-            case groupBounce                    = "Bounce"
-            case bounces                        = "Bounce On Scroll"
-            case bouncesZoom                    = "Bounce On Zoom"
-            case alwaysBounceHorizontal         = "Bounce Horizontally"
-            case bounceVertically               = "Bounce Vertically"
-            case groupZoom                      = "Zoom Separator"
-            case zoomScale                      = "Zoom"
-            case minimumZoomScale               = "Minimum Scale"
-            case maximumZoomScale               = "Maximum Scale"
-            case groupContentTouch              = "Content Touch"
-            case delaysContentTouches           = "Delay Touch Down"
-            case canCancelContentTouches        = "Can Cancel On Scroll"
-            case keyboardDismissMode            = "Keyboard"
+            case showsVerticalScrollIndicator = "Show Vertical Indicator"
+            case groupScrolling = "Scrolling"
+            case isScrollEnabled = "Scroll Enabled"
+            case pagingEnabled = "Paging Enabled"
+            case isDirectionalLockEnabled = "Direction Lock Enabled"
+            case groupBounce = "Bounce"
+            case bounces = "Bounce On Scroll"
+            case bouncesZoom = "Bounce On Zoom"
+            case alwaysBounceHorizontal = "Bounce Horizontally"
+            case bounceVertically = "Bounce Vertically"
+            case groupZoom = "Zoom Separator"
+            case zoomScale = "Zoom"
+            case minimumZoomScale = "Minimum Scale"
+            case maximumZoomScale = "Maximum Scale"
+            case groupContentTouch = "Content Touch"
+            case delaysContentTouches = "Delay Touch Down"
+            case canCancelContentTouches = "Can Cancel On Scroll"
+            case keyboardDismissMode = "Keyboard"
         }
         
         let title = "Scroll View"
@@ -66,14 +64,13 @@ extension UIKitElementLibrary {
             }
             
             switch property {
-            
             case .groupIndicators:
                 return .group(title: property.rawValue)
                 
             case .indicatorStyle:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIScrollView.IndicatorStyle.allCases.map { $0.description },
+                    options: UIScrollView.IndicatorStyle.allCases.map(\.description),
                     selectedIndex: { UIScrollView.IndicatorStyle.allCases.firstIndex(of: scrollView.indicatorStyle) }
                 ) {
                     guard let newIndex = $0 else {
@@ -218,7 +215,7 @@ extension UIKitElementLibrary {
             case .keyboardDismissMode:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIScrollView.KeyboardDismissMode.allCases.map { $0.description },
+                    options: UIScrollView.KeyboardDismissMode.allCases.map(\.description),
                     selectedIndex: { UIScrollView.KeyboardDismissMode.allCases.firstIndex(of: scrollView.keyboardDismissMode) }
                 ) {
                     guard let newIndex = $0 else {
@@ -229,10 +226,7 @@ extension UIKitElementLibrary {
                     
                     scrollView.keyboardDismissMode = keyboardDismissMode
                 }
-                
             }
-            
         }
     }
-    
 }

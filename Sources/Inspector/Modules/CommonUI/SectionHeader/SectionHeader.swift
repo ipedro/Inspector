@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,20 +23,17 @@ import UIKit
 extension SectionHeader {
     static func attributesInspectorHeader(title: String? = nil) -> SectionHeader {
         SectionHeader(
-            .callout,
-            text: title,
-            withTraits: .traitBold,
-            margins: NSDirectionalEdgeInsets(
-                vertical: ElementInspector.appearance.verticalMargins / 2
-            )
+            title: title,
+            titleFont: .init(.callout, .traitBold),
+            margins: .init(vertical: ElementInspector.appearance.verticalMargins / 2)
         )
     }
-    
+
     static func attributesInspectorGroup(title: String? = nil) -> SectionHeader {
         SectionHeader(
-            .footnote,
-            text: title,
-            margins: NSDirectionalEdgeInsets(
+            title: title,
+            titleFont: .footnote,
+            margins: .init(
                 top: ElementInspector.appearance.horizontalMargins,
                 bottom: ElementInspector.appearance.verticalMargins
             )
@@ -47,52 +44,129 @@ extension SectionHeader {
 }
 
 final class SectionHeader: BaseView {
-    
-    private(set) lazy var textLabel = UILabel(
-        .textColor(ElementInspector.appearance.textColor),
-        .numberOfLines(.zero),
-        .adjustsFontSizeToFitWidth(true),
-        .preferredMaxLayoutWidth(200)
-    )
-    
-    var text: String? {
+    private lazy var titleLabel = UILabel(
+        .textColor(ElementInspector.appearance.textColor)
+    ).then {
+        $0.font = titleFont.font()
+        $0.isHidden = $0.text?.isEmpty != false
+    }
+
+    private lazy var subtitleLabel = UILabel(
+        .textColor(ElementInspector.appearance.secondaryTextColor)
+    ).then {
+        $0.font = subtitleFont.font()
+        $0.isHidden = $0.text?.isEmpty != false
+    }
+
+    private lazy var textStackView = UIStackView.vertical(
+        .arrangedSubviews(titleLabel, subtitleLabel),
+        .spacing(ElementInspector.appearance.verticalMargins / 2)
+    ).then {
+        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        $0.clipsToBounds = false
+    }
+
+    var title: String? {
         get {
-            textLabel.text
+            titleLabel.text
         }
         set {
-            textLabel.text = newValue
+            titleLabel.text = newValue
+            titleLabel.isHidden = newValue?.isEmpty != false
         }
     }
-    
+
+    var subtitle: String? {
+        get {
+            subtitleLabel.text
+        }
+        set {
+            subtitleLabel.text = newValue
+            subtitleLabel.isHidden = newValue?.isEmpty != false
+        }
+    }
+
+    var accessoryView: UIView? {
+        didSet {
+            if let accessoryView = accessoryView {
+                contentView.addArrangedSubview(accessoryView)
+            }
+            if let oldValue = oldValue {
+                oldValue.removeFromSuperview()
+            }
+        }
+    }
+
+    struct FontOptions {
+        var style: UIFont.TextStyle
+        var traits: UIFontDescriptor.SymbolicTraits = .traitUIOptimized
+
+        init(_ style: UIFont.TextStyle, _ traits: UIFontDescriptor.SymbolicTraits = .traitUIOptimized) {
+            self.style = style
+            self.traits = traits
+        }
+        func font() -> UIFont {
+            .preferredFont(forTextStyle: style, with: traits.union(.traitUIOptimized))
+        }
+
+        // MARK: - Convenience Inits
+
+        static let largeTitle: Self = .init(.largeTitle)
+        static let title1: Self = .init(.title1)
+        static let title2: Self = .init(.title2)
+        static let title3: Self = .init(.title3)
+        static let headline: Self = .init(.headline)
+        static let subheadline: Self = .init(.subheadline)
+        static let body: Self = .init(.body)
+        static let callout: Self = .init(.callout)
+        static let footnote: Self = .init(.footnote)
+        static let caption1: Self = .init(.caption1)
+        static let caption2: Self = .init(.caption2)
+
+    }
+
+    var titleFont: FontOptions {
+        didSet {
+            titleLabel.font = titleFont.font()
+        }
+    }
+
+    var subtitleFont: FontOptions {
+        didSet {
+            subtitleLabel.font = subtitleFont.font()
+        }
+    }
+
     override func setup() {
         super.setup()
-        
-        contentView.addArrangedSubview(textLabel)
+        contentView.axis = .horizontal
+        contentView.addArrangedSubview(textStackView)
     }
-    
+
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
-        
         backgroundColor = superview?.backgroundColor
     }
-    
-    convenience init(
-        _ textStyle: UIFont.TextStyle = .title3,
-        text: String?,
-        withTraits traits: UIFontDescriptor.SymbolicTraits? = nil,
+
+    init(
+        title: String? = nil,
+        titleFont: FontOptions = .title3,
+        subtitle: String? = nil,
+        subtitleFont: FontOptions = .body,
         margins: NSDirectionalEdgeInsets = ElementInspector.appearance.directionalInsets
     ) {
-        self.init(frame: .zero)
-        
-        self.text = text
-        
-        self.contentView.directionalLayoutMargins = margins
-        
-        guard let traits = traits else {
-            textLabel.font = .preferredFont(forTextStyle: textStyle)
-            return
-        }
-        
-        textLabel.font = .preferredFont(forTextStyle: textStyle, with: traits)
+        self.titleFont = titleFont
+        self.subtitleFont = subtitleFont
+
+        super.init(frame: .zero)
+
+        self.title = title
+        self.subtitle = subtitle
+        contentView.directionalLayoutMargins = margins
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init?(coder:) not implemented")
     }
 }

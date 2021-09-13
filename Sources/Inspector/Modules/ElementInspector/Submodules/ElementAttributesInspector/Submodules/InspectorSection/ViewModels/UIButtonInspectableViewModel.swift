@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,28 +20,26 @@
 
 import UIKit
 
-extension UIKitElementLibrary {
-    
-    final class UIButtonInspectableViewModel: InspectorElementViewModelProtocol {
-        
+extension UIViewElementLibrary {
+    final class UIButtonInspectableViewModel: InspectorElementFormViewModelProtocol {
         enum Property: String, Swift.CaseIterable {
-            case type                                                = "Type"
-            case fontName                                            = "Font Name"
-            case fontPointSize                                       = "Font Point Size"
-            case groupState                                          = "State"
-            case stateConfig                                         = "State Config"
-            case titleText                                           = "Title"
-            case currentTitleColor                                   = "Text Color"
-            case currentTitleShadowColor                             = "Shadow Color"
-            case image                                               = "Image"
-            case backgroundImage                                     = "Background Image"
-            case isPointerInteractionEnabled                         = "Pointer Interaction Enabled"
+            case type = "Type"
+            case fontName = "Font Name"
+            case fontPointSize = "Font Point Size"
+            case groupState = "State"
+            case stateConfig = "State Config"
+            case titleText = "Title"
+            case currentTitleColor = "Text Color"
+            case currentTitleShadowColor = "Shadow Color"
+            case image = "Image"
+            case backgroundImage = "Background Image"
+            case isPointerInteractionEnabled = "Pointer Interaction Enabled"
             case adjustsImageSizeForAccessibilityContentSizeCategory = "Adjusts Image Size"
-            case groupDrawing                                        = "Drawing"
-            case reversesTitleShadowWhenHighlighted                  = "Reverses On Highlight"
-            case showsTouchWhenHighlighted                           = "Shows Touch On Highlight"
-            case adjustsImageWhenHighlighted                         = "Highlighted Adjusts Image"
-            case adjustsImageWhenDisabled                            = "Disabled Adjusts Image"
+            case groupDrawing = "Drawing"
+            case reversesTitleShadowWhenHighlighted = "Reverses On Highlight"
+            case showsTouchWhenHighlighted = "Shows Touch On Highlight"
+            case adjustsImageWhenHighlighted = "Highlighted Adjusts Image"
+            case adjustsImageWhenDisabled = "Disabled Adjusts Image"
         }
         
         let title = "Button"
@@ -55,7 +53,7 @@ extension UIKitElementLibrary {
             
             self.button = button
             
-            self.selectedControlState = button.state
+            selectedControlState = button.state
         }
         
         private var selectedControlState: UIControl.State
@@ -66,11 +64,10 @@ extension UIKitElementLibrary {
             }
             
             switch property {
-            
             case .type:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIButton.ButtonType.allCases.map { $0.description },
+                    options: UIButton.ButtonType.allCases.map(\.description),
                     selectedIndex: { UIButton.ButtonType.allCases.firstIndex(of: button.buttonType) },
                     handler: nil
                 )
@@ -103,7 +100,7 @@ extension UIKitElementLibrary {
             case .stateConfig:
                 return .optionsList(
                     title: property.rawValue,
-                    options: UIControl.State.configurableButtonStates.map { $0.description },
+                    options: UIControl.State.configurableButtonStates.map(\.description),
                     selectedIndex: { UIControl.State.configurableButtonStates.firstIndex(of: self.selectedControlState) }
                 ) { [weak self] in
                     
@@ -205,7 +202,6 @@ extension UIKitElementLibrary {
                     button.adjustsImageWhenHighlighted = adjustsImageWhenHighlighted
                 }
             
-                
             case .adjustsImageWhenDisabled:
                 return .toggleButton(
                     title: property.rawValue,
@@ -213,21 +209,16 @@ extension UIKitElementLibrary {
                 ) { adjustsImageWhenDisabled in
                     button.adjustsImageWhenDisabled = adjustsImageWhenDisabled
                 }
-            
             }
-            
         }
     }
-    
 }
 
-fileprivate extension UIControl.State {
-    
+private extension UIControl.State {
     static let configurableButtonStates: [UIControl.State] = [
         .normal,
         .highlighted,
         .selected,
         .disabled
     ]
-    
 }

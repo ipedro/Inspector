@@ -73,7 +73,12 @@ final class PlaygroundViewController: UIViewController {
     @IBOutlet var containerStackView: UIStackView! {
         didSet {
             containerStackView.isLayoutMarginsRelativeArrangement = true
-            containerStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(horizontal: 30, vertical: 30)
+            containerStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(
+                top: 30,
+                leading: 30,
+                bottom: 30,
+                trailing: 30
+            )
         }
     }
     
@@ -92,7 +97,8 @@ final class PlaygroundViewController: UIViewController {
         
         if #available(iOS 13.4, *) {
             setupSegmentedControl()
-        } else {
+        }
+        else {
             datePickerSegmentedControl.removeSegment(at: 1, animated: false)
         }
     }

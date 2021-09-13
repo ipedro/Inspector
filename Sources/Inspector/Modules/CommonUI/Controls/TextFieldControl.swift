@@ -1,15 +1,15 @@
 //  Copyright (c) 2021 Pedro Almeida
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,18 +21,18 @@
 import UIKit
 
 final class TextFieldControl: BaseFormControl {
-    
     private let defaultFont: UIFont = .preferredFont(forTextStyle: .footnote)
     
     // MARK: - Properties
     
-    private lazy var textField = UITextField(
-        .textColor(ElementInspector.appearance.textColor),
-        .adjustsFontSizeToFitWidth(true),
-        .font(defaultFont),
-        .borderStyle(.none),
-        .delegate(self)
-    ).then {
+    private lazy var textField = UITextField().then {
+        $0.textColor = ElementInspector.appearance.textColor
+        $0.adjustsFontSizeToFitWidth = true
+        $0.font = defaultFont
+        $0.borderStyle = .none
+        $0.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        $0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        $0.delegate = self
         $0.addTarget(self, action: #selector(editText), for: .editingChanged)
     }
         
@@ -82,6 +82,7 @@ final class TextFieldControl: BaseFormControl {
         self.placeholder = placeholder
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -90,12 +91,9 @@ final class TextFieldControl: BaseFormControl {
         super.setup()
         
         axis = .vertical
-        
         contentView.addArrangedSubview(accessoryControl)
-        
-        accessoryControl.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor).isActive = true
     }
-    
+
     override var canBecomeFirstResponder: Bool {
         textField.canBecomeFirstResponder
     }
@@ -110,7 +108,6 @@ final class TextFieldControl: BaseFormControl {
 }
 
 private extension TextFieldControl {
-    
     @objc
     func editText() {
         sendActions(for: .valueChanged)
