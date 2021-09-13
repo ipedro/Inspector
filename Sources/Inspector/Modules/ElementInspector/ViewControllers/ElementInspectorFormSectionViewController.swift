@@ -73,10 +73,10 @@ final class ElementInspectorFormSectionViewController: UIViewController {
         }
     }
 
-    private var viewModel: InspectorElementFormViewModelProtocol!
+    private var viewModel: InspectorElementViewModelProtocol!
 
     static func create(
-        viewModel: InspectorElementFormViewModelProtocol,
+        viewModel: InspectorElementViewModelProtocol,
         viewCode: InspectorElementFormSectionView
     ) -> ElementInspectorFormSectionViewController {
         let viewController = ElementInspectorFormSectionViewController()

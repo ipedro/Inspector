@@ -40,11 +40,11 @@ protocol ElementInspectorFormViewControllerDelegate: OperationQueueManagerProtoc
 
 public struct ElementInspectorFormSection {
     public var title: String?
-    public var viewModels: [InspectorElementFormViewModelProtocol]
+    public var viewModels: [InspectorElementViewModelProtocol]
 
     public init(
         title: String? = nil,
-        rows: [InspectorElementFormViewModelProtocol]
+        rows: [InspectorElementViewModelProtocol]
     ) {
         self.title = title
         self.viewModels = rows

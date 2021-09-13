@@ -32,7 +32,7 @@ enum AutoLayoutLibrary: Swift.CaseIterable {
 // MARK: - InspectorAutoLayoutLibraryProtocol
 
 extension AutoLayoutLibrary: InspectorAutoLayoutLibraryProtocol {
-    static func viewType(forViewModel viewModel: InspectorElementFormViewModelProtocol) -> InspectorElementFormSectionView.Type {
+    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormSectionView.Type {
         switch viewModel {
         case is NSLayoutConstraintInspectableViewModel:
             return ElementInspectorLayoutConstraintCard.self
@@ -53,8 +53,8 @@ extension AutoLayoutLibrary: InspectorAutoLayoutLibraryProtocol {
             ]
 
         case .layoutConstraints:
-            var horizontal: [InspectorElementFormViewModelProtocol] = []
-            var vertical: [InspectorElementFormViewModelProtocol] = []
+            var horizontal: [InspectorElementViewModelProtocol] = []
+            var vertical: [InspectorElementViewModelProtocol] = []
 
             referenceView.constraints.forEach {
                 guard let viewModel = NSLayoutConstraintInspectableViewModel(with: $0, in: referenceView) else { return }
@@ -92,5 +92,5 @@ extension AutoLayoutLibrary: InspectorAutoLayoutLibraryProtocol {
         }
     }
 
-    func icon(for viewModel: InspectorElementFormViewModelProtocol) -> UIImage? { nil }
+    func icon(for viewModel: InspectorElementViewModelProtocol) -> UIImage? { nil }
 }

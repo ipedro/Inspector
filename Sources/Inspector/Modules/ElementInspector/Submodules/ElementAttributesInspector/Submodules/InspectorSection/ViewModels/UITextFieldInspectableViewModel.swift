@@ -21,7 +21,7 @@
 import UIKit
 
 extension UIViewElementLibrary {
-    final class UITextFieldInspectableViewModel: InspectorElementFormViewModelProtocol {
+    final class UITextFieldInspectableViewModel: InspectorElementViewModelProtocol {
         enum Property: String, Swift.CaseIterable {
             case text = "Text"
             case textColor = "Color"

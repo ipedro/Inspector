@@ -21,7 +21,7 @@
 
 import UIKit
 
-struct ContentHuggingCompressionInspectableViewModel: InspectorElementFormViewModelProtocol {
+struct ContentHuggingCompressionInspectableViewModel: InspectorElementViewModelProtocol {
     private enum Properties: String, Swift.CaseIterable {
         case groupHuggingPriority = "Content Hugging Priority"
         case horizontalHugging = "Horizontal Hugging"

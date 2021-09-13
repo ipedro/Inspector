@@ -21,7 +21,7 @@ Inspector is a debugging library written in Swift.
 * [Setup](#setup)
     * [Scene Delegate](#scenedelegate.swift)
     * [App Delegate](#appdelegate.swift)
-    * [SwiftUI (Beta)](#swift-ui)
+    * [SwiftUI (Beta)](#swiftui-beta)
     * [Enable Key Commands *(Recommended)*](#enable-key-commands-recommended)
     * [Remove framework files from release builds *(Optional)*](#remove-framework-files-from-release-builds-optional)
 * [Presenting the Inspector](#presenting-the-inspector)

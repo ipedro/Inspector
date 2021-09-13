@@ -21,7 +21,7 @@
 import UIKit
 
 extension UIViewElementLibrary {
-    final class UIScrollViewInspectableViewModel: InspectorElementFormViewModelProtocol {
+    final class UIScrollViewInspectableViewModel: InspectorElementViewModelProtocol {
         enum Property: String, Swift.CaseIterable {
             case groupIndicators = "Indicators"
             case indicatorStyle = "Indicator Style"
