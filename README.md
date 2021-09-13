@@ -21,6 +21,7 @@ Inspector is a debugging library written in Swift.
 * [Setup](#setup)
     * [Scene Delegate](#scenedelegate.swift)
     * [App Delegate](#appdelegate.swift)
+    * [SwiftUI (Beta)](#swift-ui)
     * [Enable Key Commands *(Recommended)*](#enable-key-commands-recommended)
     * [Remove framework files from release builds *(Optional)*](#remove-framework-files-from-release-builds-optional)
 * [Presenting the Inspector](#presenting-the-inspector)
@@ -155,6 +156,53 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     (...)
+}
+```
+
+### SwiftUI (Beta)
+
+**Please note that SwiftUI support is in early stages and any feedback is welcome.**
+
+
+```swift
+// Add to your main view, or another view of your choosing
+
+import Inspector
+import SwiftUI
+
+struct ContentView: View {
+    @State var text = "Hello, world!"
+    @State var date = Date()
+    @State var isInspecting = false
+
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 15) {
+                    DatePicker("Date", selection: $date)
+                        .datePickerStyle(GraphicalDatePickerStyle())
+
+                    TextField("text field", text: $text)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+
+                    Button("Inspect") {
+                        isInspecting.toggle()
+                    }
+                    .padding()
+                }
+                .padding(20)
+            }
+            .inspect(
+                isPresented: $isInspecting,
+                inspectorViewHierarchyLayers: nil,
+                inspectorViewHierarchyColorScheme: nil,
+                inspectorCommandGroups: nil,
+                inspectorElementLibraries: nil
+            )
+            .navigationTitle("SwiftUI Inspector")
+        }
+    }
 }
 ```
 
