@@ -65,8 +65,6 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         $0.tableView.keyCommandsDelegate = self
     }
 
-    private var willAppear = true
-
     private var isFinishing = false
 
     private var shouldToggleFirstResponderOnAppear: Bool {
@@ -142,27 +140,31 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        viewCode.animate(.in) { [weak self] _ in
-            guard let self = self else { return }
+        if animated {
+            viewCode.animate(.in) { [weak self] _ in
+                self?.reloadData()
+            }
+        }
 
-            if self.shouldToggleFirstResponderOnAppear {
+        if shouldToggleFirstResponderOnAppear {
+            DispatchQueue.main.async {
                 self.toggleFirstResponder()
             }
         }
     }
 
-    private func addSearchKeyCommandListeners() {
-        searchKeyCommands.forEach { addKeyCommand($0) }
-    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
 
-    private func removeSearchKeyCommandListeners() {
-        searchKeyCommands.forEach { removeKeyCommand($0) }
+        if animated {
+            viewCode.animate(.out)
+        }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        reloadData()
+        setup()
 
         // key commands
         addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))
@@ -208,31 +210,44 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         viewCode.tableViewContentSize = contentSize
     }
 
-    override var canBecomeFirstResponder: Bool {
-        true
-    }
+    override var canBecomeFirstResponder: Bool { true }
 
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        isFinishing = true
-        view.endEditing(true)
-
+        startDismissing(animated: flag)
         super.dismiss(animated: flag, completion: completion)
-
-        if flag {
-            viewCode.animate(.out)
-        }
     }
 
     // MARK: - Private Methods
 
-    private func reloadData() {
+    private func startDismissing(animated: Bool) {
+        isFinishing = true
+        view.endEditing(true)
+
+        if animated {
+            viewCode.animate(.out)
+        }
+    }
+
+    private func setup() {
+        reloadData()
+    }
+
+    func reloadData() {
         viewModel.loadData()
 
         viewCode.searchView.separatorView.isSafelyHidden = viewModel.isEmpty
 
         viewCode.tableView.isSafelyHidden = viewModel.isEmpty
 
-        viewCode.tableView.reloadData()
+        viewCode.reloadData()
+    }
+
+    private func addSearchKeyCommandListeners() {
+        searchKeyCommands.forEach { addKeyCommand($0) }
+    }
+
+    private func removeSearchKeyCommandListeners() {
+        searchKeyCommands.forEach { removeKeyCommand($0) }
     }
 }
 

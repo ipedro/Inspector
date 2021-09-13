@@ -43,3 +43,7 @@ public extension InspectorHostable {
         window?.presentInspector(animated: animated)
     }
 }
+
+protocol InspectorSwiftUIHostable: InspectorHostable {
+    func hierarchyInspectorDidFinish(_ coordinator: HierarchyInspectorCoordinator)
+}

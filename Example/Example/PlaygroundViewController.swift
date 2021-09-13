@@ -73,7 +73,12 @@ final class PlaygroundViewController: UIViewController {
     @IBOutlet var containerStackView: UIStackView! {
         didSet {
             containerStackView.isLayoutMarginsRelativeArrangement = true
-            containerStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(horizontal: 30, vertical: 30)
+            containerStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(
+                top: 30,
+                leading: 30,
+                bottom: 30,
+                trailing: 30
+            )
         }
     }
     
