@@ -20,7 +20,7 @@
 
 import UIKit
 
-struct NSLayoutConstraintInspectableViewModel: InspectorElementFormViewModelProtocol, Hashable {
+struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol, Hashable {
     private enum Property: String, Swift.CaseIterable {
         case firstItem = "First Item"
         case relation = "Relation"

@@ -21,7 +21,7 @@
 import UIKit
 
 extension UIViewElementLibrary {
-    final class UIButtonInspectableViewModel: InspectorElementFormViewModelProtocol {
+    final class UIButtonInspectableViewModel: InspectorElementViewModelProtocol {
         enum Property: String, Swift.CaseIterable {
             case type = "Type"
             case fontName = "Font Name"
