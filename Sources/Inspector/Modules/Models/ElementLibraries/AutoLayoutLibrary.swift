@@ -20,18 +20,16 @@
 
 import UIKit
 
-enum AutoLayoutLibrary: Swift.CaseIterable {
-    case contentHuggingCompression
+enum AutoLayoutLibrary: Swift.CaseIterable, InspectorSizeLibraryProtocol {
+    case contentLayoutPriority
     case layoutConstraints
 
     static var standard: AllCases {
         Self.allCases
     }
-}
 
-// MARK: - InspectorAutoLayoutLibraryProtocol
+    // MARK: - InspectorSizeLibraryProtocol
 
-extension AutoLayoutLibrary: InspectorAutoLayoutLibraryProtocol {
     static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormSectionView.Type {
         switch viewModel {
         case is NSLayoutConstraintInspectableViewModel:
@@ -43,47 +41,49 @@ extension AutoLayoutLibrary: InspectorAutoLayoutLibraryProtocol {
 
     func viewModels(for referenceView: UIView) -> [ElementInspectorFormSection] {
         switch self {
-        case .contentHuggingCompression:
+        case .contentLayoutPriority:
             return [
                 ElementInspectorFormSection(
                         rows: [
-                            ContentHuggingCompressionInspectableViewModel(view: referenceView)
+                            ContentLayoutPriorityInspectableViewModel(view: referenceView)
                         ]
                 )
             ]
 
         case .layoutConstraints:
-            var horizontal: [InspectorElementViewModelProtocol] = []
-            var vertical: [InspectorElementViewModelProtocol] = []
+            var horizontalConstraints: [InspectorElementViewModelProtocol] = []
+            var verticalConstraints: [InspectorElementViewModelProtocol] = []
 
             referenceView.constraints.forEach {
-                guard let viewModel = NSLayoutConstraintInspectableViewModel(with: $0, in: referenceView) else { return }
-
-                switch viewModel.axis {
-                case .vertical:
-                    vertical.append(viewModel)
-                case .horizontal:
-                    horizontal.append(viewModel)
-                @unknown default:
+                guard
+                    let rowViewModel = NSLayoutConstraintInspectableViewModel(with: $0, in: referenceView)
+                else {
                     return
+                }
+
+                switch rowViewModel.axis {
+                case .vertical:
+                    verticalConstraints.append(rowViewModel)
+                case .horizontal:
+                    horizontalConstraints.append(rowViewModel)
                 }
             }
 
             var sections: [ElementInspectorFormSection] = []
 
-            if horizontal.isEmpty == false {
+            if horizontalConstraints.isEmpty == false {
                 sections.append(
                     ElementInspectorFormSection(
                         title: "Horizontal Constraints",
-                        rows: horizontal
+                        rows: horizontalConstraints
                     )
                 )
             }
-            if vertical.isEmpty == false {
+            if verticalConstraints.isEmpty == false {
                 sections.append(
                     ElementInspectorFormSection(
                         title: "Vertical Constraints",
-                        rows: vertical
+                        rows: verticalConstraints
                     )
                 )
             }

@@ -45,9 +45,9 @@ extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelega
                 $0.delegate = self
             }
 
-        case .autoLayoutInspector:
-            return ElementAutoLayoutInspectorViewController.create(
-                viewModel: AutoLayoutInspectorViewModel(
+        case .sizeInspector:
+            return ElementSizeInspectorViewController.create(
+                viewModel: ElementSizeInspectorViewModel(
                     reference: reference,
                     snapshot: viewHierarchySnapshot
                 )

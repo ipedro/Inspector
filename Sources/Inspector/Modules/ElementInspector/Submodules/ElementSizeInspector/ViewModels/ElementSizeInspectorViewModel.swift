@@ -20,9 +20,9 @@
 
 import UIKit
 
-protocol AutoLayoutInspectorViewModelProtocol: ElementInspectorPanelViewModelProtocol & ElementInspectorFormViewControllerDataSource {}
+protocol ElementSizeInspectorViewModelProtocol: ElementInspectorPanelViewModelProtocol & ElementInspectorFormViewControllerDataSource {}
 
-final class AutoLayoutInspectorViewModel {
+final class ElementSizeInspectorViewModel {
     let reference: ViewHierarchyReference
     let snapshot: ViewHierarchySnapshot
 
@@ -40,9 +40,9 @@ final class AutoLayoutInspectorViewModel {
     }
 }
 
-// MARK: - AutoLayoutInspectorViewModelProtocol
+// MARK: - ElementSizeInspectorViewModelProtocol
 
-extension AutoLayoutInspectorViewModel: AutoLayoutInspectorViewModelProtocol {
+extension ElementSizeInspectorViewModel: ElementSizeInspectorViewModelProtocol {
     func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type? {
         let viewModel = sections[indexPath.section].viewModels[indexPath.row]
 

@@ -41,12 +41,13 @@ final class NSLayoutConstraintReference: Hashable {
 
     let second: Binding?
 
-    let axis: NSLayoutConstraint.Axis
+    
+    let axis: Axis
 
     init?(with constraint: NSLayoutConstraint, in view: UIView) {
         guard
             let firstItem = Item(with: constraint.firstItem),
-            let firstAxis = constraint.firstAttribute.axis
+            let firstAxis = Axis(constraint.firstAttribute.axis)
         else {
             return nil
         }
@@ -82,7 +83,7 @@ final class NSLayoutConstraintReference: Hashable {
             return nil
         }
 
-        axis = firstAxis
+        self.axis = firstAxis
         self.first = first
         self.second = second
         self.constraint = constraint
@@ -204,6 +205,26 @@ extension NSLayoutConstraintReference {
 
         func ownership(to view: UIView) -> Ownership {
             ObjectIdentifier(item.target) == ObjectIdentifier(view) ? .mine : .theirs
+        }
+    }
+}
+
+// MARK: - Axis
+
+extension NSLayoutConstraintReference {
+    enum Axis: Int, Swift.CaseIterable, Hashable {
+        case horizontal = 0
+        case vertical = 1
+
+        init?(_ axis: NSLayoutConstraint.Axis?) {
+            switch axis {
+            case .horizontal:
+                self = .horizontal
+            case .vertical:
+                self = .vertical
+            default:
+                return nil
+            }
         }
     }
 }

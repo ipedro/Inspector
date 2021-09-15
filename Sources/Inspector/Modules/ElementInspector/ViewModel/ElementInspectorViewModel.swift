@@ -74,9 +74,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         switch panel {
         case .viewHierarchyInspector:
             return reference.isContainer ? panel : nil
-        case .autoLayoutInspector:
-            return reference.constraintReferences.isEmpty ? nil : panel
-        case .attributesInspector:
+        case .sizeInspector, .attributesInspector:
             return panel
         }
     }

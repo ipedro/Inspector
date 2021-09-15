@@ -25,7 +25,7 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
     
     case attributesInspector
     case viewHierarchyInspector
-    case autoLayoutInspector
+    case sizeInspector
 
     var image: UIImage {
         switch self {
@@ -35,12 +35,12 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
         case .viewHierarchyInspector:
             return IconKit.imageOfListBulletIndent()
             
-        case .autoLayoutInspector:
+        case .sizeInspector:
             return IconKit.imageOfSetSquareFill()
         }
     }
     
     static var allCases: [ElementInspectorPanel] {
-        [.attributesInspector, .autoLayoutInspector, .viewHierarchyInspector]
+        [.attributesInspector, .sizeInspector, .viewHierarchyInspector]
     }
 }

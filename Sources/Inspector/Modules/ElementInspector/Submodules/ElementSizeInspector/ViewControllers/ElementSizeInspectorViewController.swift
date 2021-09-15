@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ElementAutoLayoutInspectorViewController: ElementInspectorFormViewController {
+final class ElementSizeInspectorViewController: ElementInspectorFormViewController {
     // MARK: - Properties
 
     lazy var viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
@@ -29,7 +29,7 @@ final class ElementAutoLayoutInspectorViewController: ElementInspectorFormViewCo
         $0.viewModel = viewModel
     }
 
-    private var viewModel: AutoLayoutInspectorViewModelProtocol! {
+    private var viewModel: ElementSizeInspectorViewModelProtocol! {
         didSet {
             dataSource = viewModel
         }
@@ -38,7 +38,7 @@ final class ElementAutoLayoutInspectorViewController: ElementInspectorFormViewCo
     // MARK: - Init
 
     static func create(
-        viewModel: AutoLayoutInspectorViewModelProtocol,
+        viewModel: ElementSizeInspectorViewModelProtocol,
         viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
     ) -> Self {
         let viewController = Self()

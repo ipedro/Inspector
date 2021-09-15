@@ -21,7 +21,7 @@
 
 import UIKit
 
-struct ContentHuggingCompressionInspectableViewModel: InspectorElementViewModelProtocol {
+struct ContentLayoutPriorityInspectableViewModel: InspectorElementViewModelProtocol {
     private enum Properties: String, Swift.CaseIterable {
         case groupHuggingPriority = "Content Hugging Priority"
         case horizontalHugging = "Horizontal Hugging"
@@ -31,7 +31,7 @@ struct ContentHuggingCompressionInspectableViewModel: InspectorElementViewModelP
         case verticalCompressionResistance = "Vertical Resistance"
     }
 
-    let title: String = "Content Layout"
+    let title: String = "Content Layout Priority"
 
     private let view: UIView
 
