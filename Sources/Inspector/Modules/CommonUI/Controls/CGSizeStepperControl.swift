@@ -45,6 +45,7 @@ final class CGSizeStepperControl: BaseFormControl {
         stepValue: 1,
         isDecimalValue: true
     ).then {
+        $0.isShowingSeparator = false
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
@@ -55,6 +56,7 @@ final class CGSizeStepperControl: BaseFormControl {
         stepValue: 1,
         isDecimalValue: true
     ).then {
+        $0.isShowingSeparator = false
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 

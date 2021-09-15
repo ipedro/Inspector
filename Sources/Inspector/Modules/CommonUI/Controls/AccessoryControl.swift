@@ -24,6 +24,7 @@ final class AccessoryControl: BaseControl {
     override var isEnabled: Bool {
         didSet {
             alpha = isEnabled ? 1 : 0.5
+            backgroundColor = isEnabled ? ElementInspector.appearance.accessoryControlBackgroundColor : ElementInspector.appearance.accessoryControlDisabledBackgroundColor
         }
     }
     

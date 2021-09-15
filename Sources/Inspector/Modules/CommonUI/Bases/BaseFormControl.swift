@@ -27,12 +27,6 @@ class BaseFormControl: BaseControl {
         .textColor(ElementInspector.appearance.textColor)
     )
     
-    override var isEnabled: Bool {
-        didSet {
-            titleLabel.alpha = isEnabled ? 1 : 0.5
-        }
-    }
-    
     private(set) lazy var contentContainerView = UIStackView.horizontal().then {
         $0.spacing = defaultSpacing
         $0.addArrangedSubviews(
@@ -48,9 +42,7 @@ class BaseFormControl: BaseControl {
         .directionalLayoutMargins(vertical: defaultSpacing)
     )
     
-    private lazy var separator = SeparatorView().then {
-        $0.alpha = 0.5
-    }
+    private lazy var separator = SeparatorView()
     
     var isShowingSeparator: Bool {
         get {
@@ -95,7 +87,7 @@ class BaseFormControl: BaseControl {
     override open func setup() {
         super.setup()
 
-        tintColor = .systemPurple
+        tintColor = ElementInspector.appearance.tintColor
         
         installView(containerView, priority: .required)
         

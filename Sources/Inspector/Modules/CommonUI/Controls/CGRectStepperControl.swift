@@ -43,6 +43,7 @@ final class CGRectStepperControl: BaseFormControl {
     }
 
     private lazy var sizeStepper = CGSizeStepperControl(title: "Size", size: .zero).then {
+        $0.isShowingSeparator = false
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 

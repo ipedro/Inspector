@@ -45,6 +45,7 @@ final class CGPointStepperControl: BaseFormControl {
         stepValue: 1,
         isDecimalValue: true
     ).then {
+        $0.isShowingSeparator = false
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
@@ -55,6 +56,7 @@ final class CGPointStepperControl: BaseFormControl {
         stepValue: 1,
         isDecimalValue: true
     ).then {
+        $0.isShowingSeparator = false
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
@@ -67,7 +69,7 @@ final class CGPointStepperControl: BaseFormControl {
         super.setup()
 
         axis = .vertical
-        contentView.axis = .vertical
+        contentView.axis = .horizontal
         contentView.distribution = .fillEqually
         contentView.addArrangedSubviews(xStepper, yStepper)
     }
