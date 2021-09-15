@@ -89,7 +89,7 @@ extension UIViewElementLibrary {
                 }
             
             case .groupImages:
-                return .separator(title: property.rawValue)
+                return .separator
             
             case .minimumValueImage:
                 return .imagePicker(
@@ -108,7 +108,7 @@ extension UIViewElementLibrary {
                 }
             
             case .groupColors:
-                return .separator(title: property.rawValue)
+                return .separator
             
             case .minimumTrackTintColor:
                 return .colorPicker(

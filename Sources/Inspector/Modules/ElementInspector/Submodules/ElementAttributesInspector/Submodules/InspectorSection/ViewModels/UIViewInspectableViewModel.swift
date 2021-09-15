@@ -128,7 +128,7 @@ extension UIViewElementLibrary {
                 }
             
             case .groupAlphaAndColors:
-                return .separator(title: property.rawValue)
+                return .separator
             
             case .alpha:
                 return .cgFloatStepper(

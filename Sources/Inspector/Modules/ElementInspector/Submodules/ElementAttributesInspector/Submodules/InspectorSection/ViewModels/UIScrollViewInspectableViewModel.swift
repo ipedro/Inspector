@@ -161,7 +161,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .groupZoom:
-                return .separator(title: property.rawValue)
+                return .separator
                 
             case .zoomScale:
                 return .cgFloatStepper(

@@ -49,7 +49,7 @@ extension UIViewElementLibrary {
 
             switch property {
             case .separator:
-                return .separator(title: property.rawValue)
+                return .separator
                 
             case .image:
                 return .imagePicker(

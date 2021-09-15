@@ -66,7 +66,7 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
             case .spacer1,
                  .spacer2,
                  .spacer3:
-                return .separator(title: property.rawValue)
+                return .separator
 
             case .multiplier:
                 return .cgFloatStepper(

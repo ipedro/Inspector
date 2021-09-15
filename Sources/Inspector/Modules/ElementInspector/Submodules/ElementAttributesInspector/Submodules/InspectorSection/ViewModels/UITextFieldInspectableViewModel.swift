@@ -159,7 +159,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .groupBorder:
-                return .separator(title: property.rawValue)
+                return .separator
                 
             case .borderStyle:
                 let allCases = UITextField.BorderStyle.allCases.withImages
@@ -180,7 +180,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .groupClearButton:
-                return .separator(title: property.rawValue)
+                return .separator
                 
             case .clearButton:
                 return .optionsList(
@@ -206,7 +206,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .groupAdditionalFontOptions:
-                return .separator(title: property.rawValue)
+                return .separator
                 
             case .minFontSize:
                 return .cgFloatStepper(
