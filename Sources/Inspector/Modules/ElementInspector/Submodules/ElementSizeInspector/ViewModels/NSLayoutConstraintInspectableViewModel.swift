@@ -21,6 +21,8 @@
 import UIKit
 
 struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol, Hashable {
+    typealias Axis = NSLayoutConstraintReference.Axis
+
     private enum Property: String, Swift.CaseIterable {
         case firstItem = "First Item"
         case relation = "Relation"
@@ -42,7 +44,7 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
 
     let constraintReference: NSLayoutConstraintReference
 
-    var axis: NSLayoutConstraint.Axis { constraintReference.axis }
+    var axis: Axis { constraintReference.axis }
 
     var title: String { constraintReference.type.description }
 
@@ -64,7 +66,7 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
             case .spacer1,
                  .spacer2,
                  .spacer3:
-                return .separator(title: property.rawValue)
+                return .separator
 
             case .multiplier:
                 return .cgFloatStepper(

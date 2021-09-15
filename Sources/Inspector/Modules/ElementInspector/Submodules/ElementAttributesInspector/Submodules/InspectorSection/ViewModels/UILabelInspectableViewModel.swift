@@ -158,7 +158,7 @@ extension UIViewElementLibrary {
                 
             case .separator0,
                  .separator1:
-                return .separator(title: property.rawValue)
+                return .separator
                 
             case .baseline:
                 return nil

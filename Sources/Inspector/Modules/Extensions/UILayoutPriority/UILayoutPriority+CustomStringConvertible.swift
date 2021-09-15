@@ -22,7 +22,7 @@
 import UIKit
 
 extension UILayoutPriority: CustomStringConvertible {
-    var description: String {
+    var name: String {
         switch self {
         case .defaultHigh:
             return "High"
@@ -42,4 +42,6 @@ extension UILayoutPriority: CustomStringConvertible {
             return rawValue.toString()
         }
     }
+
+    var description: String { "\(name) (\(rawValue.toString()))" }
 }

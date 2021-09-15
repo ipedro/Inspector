@@ -51,6 +51,12 @@ public struct ElementInspectorFormSection {
     }
 }
 
+public extension Array where Element == ElementInspectorFormSection {
+    static func single(_ viewModel: InspectorElementViewModelProtocol) -> Self {
+        [.init(rows: [viewModel])]
+    }
+}
+
 protocol ElementInspectorFormViewControllerDataSource: AnyObject {
     func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type?
     var sections: [ElementInspectorFormSection] { get }

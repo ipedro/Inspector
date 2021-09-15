@@ -191,19 +191,27 @@ final class ElementInspectorFormSectionViewController: UIViewController {
                         value: stringProvider(),
                         placeholder: placeholder
                     )
+                case let .cgRect(title: title, value: rectProvider, handler: _):
+                    return CGRectStepperControl(title: title, rect: rectProvider())
+
+                case let .cgPoint(title: title, value: pointProvider, handler: handler):
+                    return CGPointStepperControl(title: title, point: pointProvider())
+
+                case let .cgSize(title: title, value: sizeProvider, handler: handler):
+                    return CGSizeStepperControl(title: title, size: sizeProvider())
                 }
             }()
 
-            if let control = element as? BaseFormControl {
+            if let control = element as? UIControl {
                 control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
+                control.isEnabled = property.hasHandler
+            }
 
+            if let fromControl = element as? BaseFormControl {
                 let isLastElement = index == viewModel.properties.count - 1
-
                 let isNotFollowedByControl = index + 1 < viewModel.properties.count && viewModel.properties[index + 1].isControl == false
 
-                control.isShowingSeparator = (isLastElement || isNotFollowedByControl) == false
-
-                control.isEnabled = property.hasHandler
+                fromControl.isShowingSeparator = (isLastElement || isNotFollowedByControl) == false
             }
 
             dict[property] = element
@@ -255,6 +263,15 @@ extension ElementInspectorFormSectionViewController {
                 case let (.imagePicker(_, _, handler), imagePicker as ImagePreviewControl):
                     handler?(imagePicker.image)
 
+                case let (.cgRect(_, _, handler: handler), cgRectStepper as CGRectStepperControl):
+                    handler?(cgRectStepper.rect)
+
+                case let (.cgPoint(_, _, handler: handler), cgPointStepper as CGPointStepperControl):
+                    handler?(cgPointStepper.point)
+
+                case let (.cgSize(_, _, handler: handler), cgSizeStepper as CGSizeStepperControl):
+                    handler?(cgSizeStepper.size)
+
                 case (.separator, _),
                      (.group, _):
                     break
@@ -267,7 +284,10 @@ extension ElementInspectorFormSectionViewController {
                      (.optionsList, _),
                      (.textField, _),
                      (.textView, _),
-                     (.imagePicker, _):
+                     (.imagePicker, _),
+                     (.cgRect, _),
+                     (.cgSize, _),
+                     (.cgPoint, _):
                     assertionFailure("shouldn't happen")
                 }
             }
@@ -327,6 +347,18 @@ extension ElementInspectorFormSectionViewController {
                 textViewControl.placeholder = placeholder
                 textViewControl.title = title
 
+            case let (.cgRect(title: title, value: rectProvider, _), cgRectStepperControl as CGRectStepperControl):
+                cgRectStepperControl.title = title
+                cgRectStepperControl.rect = rectProvider() ?? .zero
+
+            case let (.cgPoint(title: title, value: pointProvider, _), cgPointStepperControl as CGPointStepperControl):
+                cgPointStepperControl.title = title
+                cgPointStepperControl.point = pointProvider() ?? .zero
+
+            case let (.cgSize(title: title, value: sizeProvider, _), cgSizeStepperControl as CGSizeStepperControl):
+                cgSizeStepperControl.title = title
+                cgSizeStepperControl.size = sizeProvider() ?? .zero
+
             case (.separator, _),
                  (.group, _):
                 break
@@ -339,7 +371,10 @@ extension ElementInspectorFormSectionViewController {
                  (.optionsList, _),
                  (.textField, _),
                  (.textView, _),
-                 (.imagePicker, _):
+                 (.imagePicker, _),
+                 (.cgRect, _),
+                 (.cgSize, _),
+                 (.cgPoint, _):
                 assertionFailure("shouldn't happen")
             }
         }

@@ -110,7 +110,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .groupSegment:
-                return .separator(title: property.rawValue)
+                return .separator
                 
             case .segmentPicker:
                 return .optionsList(

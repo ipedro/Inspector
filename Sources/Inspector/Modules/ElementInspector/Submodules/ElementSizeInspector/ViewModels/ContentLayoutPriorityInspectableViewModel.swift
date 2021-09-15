@@ -21,17 +21,20 @@
 
 import UIKit
 
-struct ContentHuggingCompressionInspectableViewModel: InspectorElementViewModelProtocol {
+struct ContentLayoutPriorityInspectableViewModel: InspectorElementViewModelProtocol {
     private enum Properties: String, Swift.CaseIterable {
         case groupHuggingPriority = "Content Hugging Priority"
         case horizontalHugging = "Horizontal Hugging"
         case verticalHugging = "Vertical Hugging"
+        case separator0
         case groupCompressionResistancePriority = "Content Compression Resistance Priority"
         case horizontalCompressionResistance = "Horizontal Resistance"
         case verticalCompressionResistance = "Vertical Resistance"
+        case separator1
+        case instrinsicContentSize = "Intrinsic Size"
     }
 
-    let title: String = "Content Layout"
+    let title: String = "Content Layout Priority"
 
     private let view: UIView
 
@@ -90,6 +93,16 @@ struct ContentHuggingCompressionInspectableViewModel: InspectorElementViewModelP
                         let priority = UILayoutPriority.allCases[newIndex]
                         view.setContentCompressionResistancePriority(priority, for: .vertical)
                     }
+                )
+            case .separator0,
+                 .separator1:
+                return .separator
+
+            case .instrinsicContentSize:
+                return .cgSize(
+                    title: property.rawValue,
+                    value: { view.intrinsicContentSize },
+                    handler: nil
                 )
             }
         }

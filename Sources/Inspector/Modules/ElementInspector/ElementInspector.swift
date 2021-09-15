@@ -47,6 +47,8 @@ extension ElementInspector {
         var tintColor = UIColor(hex: 0xBF5AF2)
         
         var accessoryControlBackgroundColor: UIColor { textColor.withAlphaComponent(disabledAlpha / 4) }
+
+        var accessoryControlDisabledBackgroundColor: UIColor { textColor.withAlphaComponent(disabledAlpha / 8) }
         
         var textColor: UIColor = {
             .white

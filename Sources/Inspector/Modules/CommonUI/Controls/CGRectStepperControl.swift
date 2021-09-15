@@ -20,27 +20,48 @@
 
 import UIKit
 
-final class AccessoryControl: BaseControl {
-    override var isEnabled: Bool {
-        didSet {
-            alpha = isEnabled ? 1 : 0.5
-            backgroundColor = isEnabled ? ElementInspector.appearance.accessoryControlBackgroundColor : ElementInspector.appearance.accessoryControlDisabledBackgroundColor
+final class CGRectStepperControl: BaseFormControl {
+    var rect: CGRect {
+        get {
+            CGRect(origin: originStepper.point, size: sizeStepper.size)
+        }
+        set {
+            originStepper.point = newValue.origin
+            sizeStepper.size = newValue.size
         }
     }
-    
+
+    override var isEnabled: Bool {
+        didSet {
+            originStepper.isEnabled = isEnabled
+            sizeStepper.isEnabled = isEnabled
+        }
+    }
+
+    private lazy var originStepper = CGPointStepperControl(title: "Origin", point: .zero).then {
+        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+    }
+
+    private lazy var sizeStepper = CGSizeStepperControl(title: "Size", size: .zero).then {
+        $0.isShowingSeparator = false
+        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+    }
+
+    convenience init(title: String?, rect: CGRect? = nil) {
+        self.init(title: title, frame: .zero)
+        self.rect = rect ?? .zero
+    }
+
     override func setup() {
         super.setup()
-        
-        animateOnTouch = true
-        
-        contentView.axis = .horizontal
-        
-        contentView.spacing = ElementInspector.appearance.verticalMargins / 2
-        
-        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(horizontal: 12, vertical: 9) // matches UIStepper
-        
-        layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
-        
-        backgroundColor = ElementInspector.appearance.accessoryControlBackgroundColor
+
+        axis = .vertical
+        contentView.axis = .vertical
+        contentView.addArrangedSubviews(originStepper, sizeStepper)
+    }
+
+    @objc
+    private func valueChanged() {
+        sendActions(for: .valueChanged)
     }
 }

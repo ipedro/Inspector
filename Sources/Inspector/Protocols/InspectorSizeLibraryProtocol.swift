@@ -20,27 +20,11 @@
 
 import UIKit
 
-enum ElementInspectorPanel: CaseIterable, Hashable {
-    typealias AllCases = [ElementInspectorPanel]
-    
-    case attributesInspector
-    case viewHierarchyInspector
-    case sizeInspector
+/// AutoLayout Libraries are entities that conform to `InspectorSizeLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
+public protocol InspectorSizeLibraryProtocol {
+    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormSectionView.Type
 
-    var image: UIImage {
-        switch self {
-        case .attributesInspector:
-            return IconKit.imageOfSliderHorizontal()
-            
-        case .viewHierarchyInspector:
-            return IconKit.imageOfListBulletIndent()
-            
-        case .sizeInspector:
-            return IconKit.imageOfSetSquareFill()
-        }
-    }
-    
-    static var allCases: [ElementInspectorPanel] {
-        [.attributesInspector, .sizeInspector, .viewHierarchyInspector]
-    }
+    func viewModels(for referenceView: UIView) -> [ElementInspectorFormSection]
+
+    func icon(for viewModel: InspectorElementViewModelProtocol) -> UIImage?
 }

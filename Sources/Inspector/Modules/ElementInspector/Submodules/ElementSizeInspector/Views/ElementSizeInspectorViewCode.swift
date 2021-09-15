@@ -20,12 +20,12 @@
 
 import UIKit
 
-protocol AutoLayoutInspectorViewCodeDelegate: AnyObject {
-    func autoLayoutInspectorViewCode(_ viewCode: AutoLayoutInspectorViewCode, isPointerInUse: Bool)
+protocol ElementSizeInspectorViewCodeDelegate: AnyObject {
+    func elementSizeInspectorViewCode(_ viewCode: ElementSizeInspectorViewCode, isPointerInUse: Bool)
 }
 
-final class AutoLayoutInspectorViewCode: BaseView {
-    weak var delegate: AutoLayoutInspectorViewCodeDelegate?
+final class ElementSizeInspectorViewCode: BaseView {
+    weak var delegate: ElementSizeInspectorViewCodeDelegate?
 
     private(set) lazy var scrollView = UIScrollView(
         .alwaysBounceVertical(true),
@@ -40,7 +40,7 @@ final class AutoLayoutInspectorViewCode: BaseView {
 
     private(set) var isPointerInUse = false {
         didSet {
-            delegate?.autoLayoutInspectorViewCode(self, isPointerInUse: isPointerInUse)
+            delegate?.elementSizeInspectorViewCode(self, isPointerInUse: isPointerInUse)
         }
     }
 

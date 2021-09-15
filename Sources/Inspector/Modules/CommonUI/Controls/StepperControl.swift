@@ -23,15 +23,11 @@ import UIKit
 
 final class StepperControl: BaseFormControl {
     // MARK: - Properties
-    
-    static let sharedDecimalNumberFormatter = NumberFormatter(
-        .minimumFractionDigits(2),
-        .numberStyle(.decimal)
-    )
-    
+
     override var isEnabled: Bool {
         didSet {
             stepperControl.isEnabled = isEnabled
+            updateState()
         }
     }
     
@@ -80,13 +76,8 @@ final class StepperControl: BaseFormControl {
     
     private lazy var counterLabel = UILabel(
         .font(titleLabel.font!.withTraits(.traitMonoSpace)),
-        .textColor(tintColor),
         .huggingPriority(.required, for: .horizontal)
     )
-    
-    private var decimalFormatter: NumberFormatter {
-        StepperControl.sharedDecimalNumberFormatter
-    }
     
     // MARK: - Init
     
@@ -95,12 +86,9 @@ final class StepperControl: BaseFormControl {
         
         super.init(title: title)
         
-        stepperControl.maximumValue = range.upperBound
-        
-        stepperControl.minimumValue = range.lowerBound
-        
-        stepperControl.stepValue = stepValue
-        
+        self.stepperControl.maximumValue = range.upperBound
+        self.stepperControl.minimumValue = range.lowerBound
+        self.stepperControl.stepValue = stepValue
         self.value = value
     }
     
@@ -111,25 +99,25 @@ final class StepperControl: BaseFormControl {
 
     override func setup() {
         super.setup()
-        
-        contentView.addArrangedSubview(counterLabel)
-        
-        contentView.addArrangedSubview(stepperControl)
+
+        updateState()
+        contentView.addArrangedSubviews(counterLabel, stepperControl)
     }
 
     @objc
     func step() {
         updateCounterLabel()
-        
+
         sendActions(for: .valueChanged)
     }
     
     private func updateCounterLabel() {
-        guard isDecimalValue else {
-            counterLabel.text = String(Int(stepperControl.value))
-            return
-        }
-        
-        counterLabel.text = decimalFormatter.string(from: NSNumber(value: stepperControl.value))
+        counterLabel.text = stepperControl.value.toString()
     }
+
+    private func updateState() {
+        stepperControl.alpha = isEnabled ? 1 : 0.5
+        counterLabel.textColor = isEnabled ? ElementInspector.appearance.tintColor : ElementInspector.appearance.secondaryTextColor
+    }
+    
 }
