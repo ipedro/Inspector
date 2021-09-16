@@ -29,8 +29,8 @@ extension ElementViewHierarchyViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let selectedItemViewModel = viewModel.itemViewModel(for: indexPath) else { return }
-        
-        delegate?.viewHierarchyListViewController(self, didSegueTo: selectedItemViewModel.reference, from: viewModel.rootReference)
+
+        delegate?.viewHierarchyListViewController(self, didSelect: selectedItemViewModel.reference, with: .viewHierarchy, from: viewModel.rootReference)
     }
 }
 

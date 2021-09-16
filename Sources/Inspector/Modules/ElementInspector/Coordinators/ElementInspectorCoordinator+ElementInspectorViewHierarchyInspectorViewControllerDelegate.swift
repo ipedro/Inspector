@@ -21,43 +21,29 @@
 import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorViewControllerDelegate {
-    func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController, didSegueTo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
+    func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController,
+                                         didSelect reference: ViewHierarchyReference,
+                                         with preferredPanel: ElementInspectorPanel,
+                                         from rootReference: ViewHierarchyReference) {
         operationQueue.cancelAllOperations()
-        
-        addOperationToQueue(MainThreadOperation(name: "push hierarchy \(reference.displayName)", closure: { [weak self] in
+
+        let pushOperation = MainThreadOperation(name: "Push \(reference.displayName)") { [weak self] in
+            guard let self = self else { return }
             
-            self?.pushElementInspector(with: reference, selectedPanel: .viewHierarchy, animated: true)
-            
-        }))
-    }
-    
-    func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController, didSelectInfo reference: ViewHierarchyReference, from rootReference: ViewHierarchyReference) {
-        operationQueue.cancelAllOperations()
-        
-        addOperationToQueue(MainThreadOperation(name: "push info \(reference.displayName)", closure: { [weak self] in
-            guard
-                reference == rootReference,
-                let topElementInspector = self?.navigationController.topViewController as? ElementInspectorViewController
-            else {
-                self?.pushElementInspector(with: reference, selectedPanel: .attributes, animated: true)
-                return
-            }
-            
-            topElementInspector.selectPanelIfAvailable(.attributes)
-            
-        }))
-    }
-    
-    private func pushElementInspector(with reference: ViewHierarchyReference, selectedPanel: ElementInspectorPanel?, animated: Bool) {
-        let elementInspectorViewController = Self.makeElementInspectorViewController(
-            with: reference,
-            in: viewHierarchySnapshot,
-            showDismissBarButton: false,
-            selectedPanel: selectedPanel,
-            elementLibraries: viewHierarchySnapshot.elementLibraries,
-            delegate: self
-        )
-        
-        navigationController.pushViewController(elementInspectorViewController, animated: animated)
+            let selectedPanel = ElementInspectorPanel.cases(for: reference).contains(preferredPanel) ? preferredPanel : .preview
+
+            let elementInspectorViewController = Self.makeElementInspectorViewController(
+                with: reference,
+                in: self.viewHierarchySnapshot,
+                showDismissBarButton: false,
+                selectedPanel: selectedPanel,
+                elementLibraries: self.viewHierarchySnapshot.elementLibraries,
+                delegate: self
+            )
+
+            self.navigationController.pushViewController(elementInspectorViewController, animated: true)
+        }
+
+        addOperationToQueue(pushOperation)
     }
 }

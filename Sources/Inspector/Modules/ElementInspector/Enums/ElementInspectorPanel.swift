@@ -28,6 +28,19 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
     case viewHierarchy
     case size
 
+    var title: String {
+        switch self {
+        case .preview:
+            return "Preview"
+        case .attributes:
+            return "Attributes"
+        case .viewHierarchy:
+            return "View Hierarchy"
+        case .size:
+            return "Size"
+        }
+    }
+
     var image: UIImage {
         switch self {
         case .preview:
@@ -46,5 +59,16 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
     
     static var allCases: [ElementInspectorPanel] {
         [.preview, .attributes, .size, .viewHierarchy]
+    }
+
+    static func cases(for reference: ViewHierarchyReference) -> [ElementInspectorPanel] {
+        ElementInspectorPanel.allCases.compactMap { panel in
+            switch panel {
+            case .viewHierarchy:
+                return reference.isContainer ? panel : nil
+            case .size, .attributes, .preview:
+                return panel
+            }
+        }
     }
 }

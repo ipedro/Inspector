@@ -76,14 +76,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         }
     }
 
-    private(set) lazy var availablePanels: [ElementInspectorPanel] = ElementInspectorPanel.allCases.compactMap { panel in
-        switch panel {
-        case .viewHierarchy:
-            return reference.isContainer ? panel : nil
-        case .size, .attributes, .preview:
-            return panel
-        }
-    }
+    private(set) lazy var availablePanels: [ElementInspectorPanel] = ElementInspectorPanel.cases(for: reference)
 }
 
 // MARK: - ViewHierarchyReferenceDetailViewModelProtocol

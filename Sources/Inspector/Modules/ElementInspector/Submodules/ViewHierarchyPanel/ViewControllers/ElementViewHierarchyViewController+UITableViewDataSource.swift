@@ -23,6 +23,40 @@ import UIKit
 // MARK: - UITableViewDataSource
 
 extension ElementViewHierarchyViewController: UITableViewDataSource {
+    @available(iOS 13.0, *)
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        guard
+            let itemViewModel = viewModel.itemViewModel(for: indexPath),
+            itemViewModel.availablePanels.isEmpty == false
+        else {
+            return nil
+        }
+
+        return UIContextMenuConfiguration(
+            identifier: indexPath.description as NSString,
+            previewProvider: nil) { _ in
+
+                return UIMenu(
+                    title: itemViewModel.title,
+                    image: itemViewModel.thumbnailImage,
+                    children: itemViewModel.availablePanels.map { panel in
+                        UIAction(
+                            title: panel.title,
+                            image: panel.image) { [weak self] _ in
+                                guard let self = self else { return }
+
+                                self.delegate?.viewHierarchyListViewController(
+                                    self,
+                                    didSelect: itemViewModel.reference,
+                                    with: panel,
+                                    from: self.viewModel.rootReference
+                                )
+                            }
+                    }
+                )
+            }
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.numberOfRows
     }
