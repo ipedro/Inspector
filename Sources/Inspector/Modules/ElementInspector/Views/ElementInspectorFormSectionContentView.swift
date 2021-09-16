@@ -93,8 +93,14 @@ final class ElementInspectorFormSectionContentView: BaseControl, InspectorElemen
 
     // MARK: - Views
 
-    private lazy var contentContainerView = UIStackView.vertical().then {
+    private lazy var verticalStackView = UIStackView.vertical().then {
         $0.isLayoutMarginsRelativeArrangement = true
+        $0.addArrangedSubviews(headerControl, contentContainerView)
+        $0.setCustomSpacing(ElementInspector.appearance.verticalMargins, after: headerControl)
+    }
+
+    private lazy var contentContainerView = UIStackView.vertical().then {
+        $0.clipsToBounds = true
     }
 
     private lazy var topSeparatorView = SeparatorView(thickness: 1)
@@ -106,7 +112,15 @@ final class ElementInspectorFormSectionContentView: BaseControl, InspectorElemen
         $0.installView(header)
     }
 
-    private lazy var chevronDownIcon = Icon.chevronDownIcon()
+    private lazy var collapseButtonContainer = UIStackView.vertical().then {
+        $0.addArrangedSubview(collapseButton)
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.directionalLayoutMargins = .init(top: 5.5)
+    }
+
+    private(set) lazy var collapseButton = IconButton(.chevronDown).then {
+        $0.tintColor = ElementInspector.appearance.quaternaryTextColor
+    }
 
     convenience init() {
         self.init(header: SectionHeader.attributesInspectorHeader(), frame: .zero)
@@ -138,25 +152,18 @@ final class ElementInspectorFormSectionContentView: BaseControl, InspectorElemen
     override func setup() {
         super.setup()
 
-        contentView.axis = .vertical
-        contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
-        contentView.addArrangedSubviews(headerControl, contentContainerView)
-        contentView.setCustomSpacing(ElementInspector.appearance.verticalMargins, after: header)
+        contentView.axis = .horizontal
+        contentView.alignment = .top
+        contentView.directionalLayoutMargins = .init(
+            top: ElementInspector.appearance.verticalMargins,
+            leading: 10,
+            bottom: ElementInspector.appearance.horizontalMargins,
+            trailing: ElementInspector.appearance.horizontalMargins
+        )
+        contentView.addArrangedSubviews(collapseButtonContainer, verticalStackView)
+        contentView.spacing = 10
 
         installSeparator()
-
-        installIcon()
-    }
-
-    private func installIcon() {
-        contentView.addSubview(chevronDownIcon)
-
-        chevronDownIcon.centerYAnchor.constraint(equalTo: header.centerYAnchor).isActive = true
-
-        chevronDownIcon.trailingAnchor.constraint(
-            equalTo: header.leadingAnchor,
-            constant: -(ElementInspector.appearance.verticalMargins / 3)
-        ).isActive = true
     }
 
     private func installSeparator() {
@@ -174,10 +181,9 @@ final class ElementInspectorFormSectionContentView: BaseControl, InspectorElemen
     }
 
     private func hideContent(_ hide: Bool) {
-        contentContainerView.clipsToBounds = hide
         contentContainerView.isSafelyHidden = hide
         contentContainerView.alpha = hide ? 0 : 1
-        chevronDownIcon.transform = hide ? CGAffineTransform(rotationAngle: -(.pi / 2)) : .identity
+        collapseButton.transform = hide ? CGAffineTransform(rotationAngle: -(.pi / 2)) : .identity
     }
 
     override func stateDidChange(from oldState: UIControl.State, to newState: UIControl.State) {

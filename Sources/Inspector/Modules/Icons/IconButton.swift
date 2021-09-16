@@ -77,6 +77,9 @@ final class IconButton: BaseControl {
     override func setup() {
         super.setup()
 
+        layer.shouldRasterize = true
+        layer.rasterizationScale = window?.screen.scale ?? 2
+
         contentView.axis = .vertical
         contentView.addArrangedSubview(icon)
         contentView.directionalLayoutMargins = style.layoutMargins

@@ -24,7 +24,7 @@ extension SectionHeader {
     static func attributesInspectorHeader(title: String? = nil) -> SectionHeader {
         SectionHeader(
             title: title,
-            titleFont: .init(.callout, .traitBold),
+            titleFont: .init(.body, .traitBold),
             margins: .init(vertical: ElementInspector.appearance.verticalMargins / 2)
         )
     }
