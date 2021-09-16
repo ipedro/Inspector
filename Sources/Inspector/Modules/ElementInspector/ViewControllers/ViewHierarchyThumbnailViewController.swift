@@ -20,11 +20,39 @@
 
 import UIKit
 
-final class ViewHierarchyThumbnailViewController: UIViewController {
+struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceDetailViewModelProtocol {
     let reference: ViewHierarchyReference
+    let snapshot: ViewHierarchySnapshot
 
-    init(reference: ViewHierarchyReference) {
-        self.reference = reference
+    // MARK: - ViewHierarchyReferenceDetailViewModelProtocol
+
+    var isCollapsed: Bool = false
+
+    var automaticallyAdjustIndentation: Bool { false }
+
+    var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView)}
+
+    var title: String { reference.accessibilityIdentifier ?? reference.className }
+
+    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
+
+    var subtitle: String { reference.elementDescription }
+
+    var isContainer: Bool { false }
+
+    var showCollapseButton: Bool { false }
+
+    var isHidden: Bool { false }
+
+    var relativeDepth: Int { .zero }
+}
+
+final class ViewHierarchyThumbnailViewController: UIViewController {
+
+    let viewModel: ViewHierarchyThumbnailViewModel
+
+    init(viewModel: ViewHierarchyThumbnailViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -33,9 +61,17 @@ final class ViewHierarchyThumbnailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private(set) lazy var viewCode = ViewHierarchyReferenceThumbnailView(
+    private(set) lazy var viewCode = BaseView().then {
+        $0.backgroundColor = ElementInspector.appearance.panelHighlightBackgroundColor
+    }
+
+    private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView().then {
+        $0.viewModel = viewModel
+    }
+
+    private(set) lazy var thumbnailView = ViewHierarchyReferenceThumbnailView(
         frame: .zero,
-        reference: reference
+        reference: viewModel.reference
     )
 
     override func loadView() {
@@ -45,13 +81,15 @@ final class ViewHierarchyThumbnailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        viewCode.updateViews(afterScreenUpdates: false)
+        viewCode.contentView.addArrangedSubviews(referenceDetailView, thumbnailView)
+
+        thumbnailView.updateViews(afterScreenUpdates: false)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        viewCode.updateViews(afterScreenUpdates: true)
+        thumbnailView.updateViews(afterScreenUpdates: true)
     }
 
     override func viewDidLayoutSubviews() {

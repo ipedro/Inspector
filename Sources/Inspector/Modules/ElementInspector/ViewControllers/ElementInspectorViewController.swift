@@ -34,31 +34,39 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         UIContextMenuConfiguration(
             identifier: nil,
-            previewProvider: { ViewHierarchyThumbnailViewController(reference: self.viewModel.reference) }
-        ) { [weak self] _ in
-            guard let self = self else { return nil }
-
-            return UIMenu(
-                title: self.viewModel.title,
-                image: self.viewModel.thumbnailImage,
-                children: [
-                    UIMenu(
-                        title: "Copy",
-                        image: UIImage(systemName: "doc.on.doc.fill"),
-                        children: [
-                            UIAction.copyAction(
-                                title: "Description",
-                                stringProvider: { [weak self] in self?.viewModel.reference.elementDescription }
-                            ),
-                            UIAction.copyAction(
-                                title: "Class Name",
-                                stringProvider: { [weak self] in self?.viewModel.reference.className }
-                            )
-                        ]
+            previewProvider: {
+                ViewHierarchyThumbnailViewController(
+                    viewModel: .init(
+                        reference: self.viewModel.reference,
+                        snapshot: self.viewModel.snapshot
                     )
-                ]
-            )
-        }
+                )
+            },
+            actionProvider: { [weak self] _ in
+                guard let self = self else { return nil }
+
+                return UIMenu(
+                    title: self.viewModel.title,
+                    image: self.viewModel.thumbnailImage,
+                    children: [
+                        UIMenu(
+                            title: "Copy",
+                            image: UIImage(systemName: "doc.on.doc.fill"),
+                            children: [
+                                UIAction.copyAction(
+                                    title: "Description",
+                                    stringProvider: { [weak self] in self?.viewModel.reference.elementDescription }
+                                ),
+                                UIAction.copyAction(
+                                    title: "Class Name",
+                                    stringProvider: { [weak self] in self?.viewModel.reference.className }
+                                )
+                            ]
+                        )
+                    ]
+                )
+            }
+        )
     }
 }
 #endif

@@ -23,6 +23,8 @@ import UIKit
 protocol ElementInspectorViewModelProtocol: ViewHierarchyReferenceDetailViewModelProtocol {
     var reference: ViewHierarchyReference { get }
 
+    var snapshot: ViewHierarchySnapshot { get }
+
     var availablePanels: [ElementInspectorPanel] { get }
 
     var selectedPanel: ElementInspectorPanel? { get }
