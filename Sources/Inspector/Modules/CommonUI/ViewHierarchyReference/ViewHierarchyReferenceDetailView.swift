@@ -69,7 +69,7 @@ final class ViewHierarchyReferenceDetailView: BaseView {
             // Containers Insets
 
             let relativeDepth = viewModel?.relativeDepth ?? 0
-            let indentation = CGFloat(relativeDepth) * 15
+            let indentation = CGFloat(relativeDepth) * ElementInspector.appearance.horizontalMargins
 
             var directionalLayoutMargins = contentView.directionalLayoutMargins
             directionalLayoutMargins.leading = indentation

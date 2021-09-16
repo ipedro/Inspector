@@ -35,7 +35,11 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
 
         return UIContextMenuConfiguration(
             identifier: indexPath.description as NSString,
-            previewProvider: nil
+            previewProvider: { [weak self] in
+                guard let self = self else { return nil }
+
+                return self.delegate?.viewHierarchyListViewController(self, previewFor: itemViewModel.reference)
+            }
         ) { _ in
 
             let actions = self.menuAction(
@@ -85,7 +89,7 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
         }()
 
         let selectionActions = ElementInspectorPanel.cases(for: reference).map { panel in
-            UIAction(title: panel.title, image: panel.image) { [weak self] _ in
+            UIAction(title: "Open \(panel.title)", image: panel.image) { [weak self] _ in
                 guard let self = self else { return }
 
                 self.delegate?.viewHierarchyListViewController(
@@ -97,8 +101,12 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
             }
         }
 
+        let isCollapsed = self.viewModel.itemViewModel(at: indexPath)?.isCollapsed == true
+
         let toggleCollapseAction = UIAction(
-            title: self.viewModel.itemViewModel(at: indexPath)?.isCollapsed == true ? "Show Children" : "Hide Children") { [weak self] _ in
+            title: isCollapsed ? "Show Children" : "Hide Children",
+            image: isCollapsed ? IconKit.imageOfChevronDown() : IconKit.imageOfChevronRight()
+        ) { [weak self] _ in
                 self?.toggleCollapse(indexPath)
             }
 

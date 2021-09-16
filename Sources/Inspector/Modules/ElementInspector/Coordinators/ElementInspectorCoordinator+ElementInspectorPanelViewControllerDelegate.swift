@@ -25,6 +25,10 @@ extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelega
                                         viewControllerFor panel: ElementInspectorPanel,
                                         with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
     {
+        panelController(for: panel, with: reference)
+    }
+
+    func panelController(for panel: ElementInspectorPanel, with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {
         switch panel {
         case .preview:
             return ElementPreviewInspectorViewController.create(
@@ -40,7 +44,8 @@ extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelega
                 viewModel: AttributesInspectorViewModel(
                     reference: reference,
                     snapshot: viewHierarchySnapshot
-                )).then {
+                )
+            ).then {
                 $0.formDelegate = self
             }
 

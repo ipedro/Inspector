@@ -2581,6 +2581,44 @@ class IconKit: NSObject {
         return image
     }
 
+    class func imageOfChevronRight(_ size: CGSize = CGSize(width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) -> UIImage? {
+        enum LocalCache {
+            static var image: UIImage!
+        }
+        if LocalCache.image != nil {
+            return LocalCache.image
+        }
+
+        guard let cgImage = imageOfChevronDown(size, resizing: resizing).cgImage else {
+            return nil
+        }
+
+        let image = UIImage(cgImage: cgImage, scale: 1, orientation: .left)
+
+        LocalCache.image = image
+
+        return image
+    }
+
+    class func imageOfChevronLeft(_ size: CGSize = CGSize(width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) -> UIImage? {
+        enum LocalCache {
+            static var image: UIImage!
+        }
+        if LocalCache.image != nil {
+            return LocalCache.image
+        }
+
+        guard let cgImage = imageOfChevronDown(size, resizing: resizing).cgImage else {
+            return nil
+        }
+
+        let image = UIImage(cgImage: cgImage, scale: 1, orientation: .right)
+
+        LocalCache.image = image
+
+        return image
+    }
+
     class func imageOfChevronDown(_ size: CGSize = CGSize(width: 16, height: 16), resizing: ResizingBehavior = .aspectFit) -> UIImage {
         enum LocalCache {
             static var image: UIImage!

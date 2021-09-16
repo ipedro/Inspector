@@ -21,6 +21,10 @@
 import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorViewControllerDelegate {
+    func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController, previewFor reference: ViewHierarchyReference) -> UIViewController? {
+        ViewHierarchyPreviewViewController(reference: reference)
+    }
+
     func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController,
                                          didSelect reference: ViewHierarchyReference,
                                          with preferredPanel: ElementInspectorPanel?,

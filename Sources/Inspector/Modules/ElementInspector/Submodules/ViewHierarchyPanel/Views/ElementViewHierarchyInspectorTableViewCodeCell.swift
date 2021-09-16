@@ -92,29 +92,30 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         contentView.installView(containerStackView)
     }
 
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard
             event?.type == .touches,
-            isPointNearCollapseButton(point) || super.hitTest(point, with: event) === collapseButton
+            let touch = touches.first,
+            collapseButton.isHidden == false,
+            isPointNearCollapseButton(touch.location(in: self))
         else {
-            return super.hitTest(point, with: event)
+            return super.touchesBegan(touches, with: event)
         }
 
-        DispatchQueue.main.async {
-            self.debounce(#selector(self.triggerCollapseButton), after: 0.15, object: nil)
-        }
+        collapseButton.animate(.in)
 
-        return nil
+        self.debounce(#selector(self.triggerCollapseButton), after: 0.15, object: nil)
     }
 
     @objc private func triggerCollapseButton() {
         collapseButton.actionHandler?()
+        collapseButton.animate(.out)
     }
 
     private func isPointNearCollapseButton(_ point: CGPoint) -> Bool {
         let buttonFrame = collapseButton.convert(collapseButton.bounds, to: self)
 
-        return bounds.contains(point) && point.x <= buttonFrame.maxX + referenceDetailView.contentView.spacing
+        return bounds.contains(point) && point.x <= buttonFrame.maxX + referenceDetailView.contentView.spacing * 1.5
     }
 
 }

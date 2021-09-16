@@ -25,6 +25,9 @@ protocol ElementInspectorViewHierarchyInspectorViewControllerDelegate: Operation
                                          didSelect reference: ViewHierarchyReference,
                                          with preferredPanel: ElementInspectorPanel?,
                                          from rootReference: ViewHierarchyReference)
+
+    func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController,
+                                         previewFor reference: ViewHierarchyReference) -> UIViewController?
 }
 
 final class ElementViewHierarchyViewController: ElementInspectorPanelViewController {
