@@ -219,7 +219,8 @@ extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate 
             return .none
         }
     }
-    
+
+    #if swift(>=5.0)
     @available(iOS 13.0, *)
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         guard presentationController.presentedViewController === navigationController else {
@@ -228,6 +229,7 @@ extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate 
         
         finish()
     }
+    #endif
 }
 
 // MARK: - UIPopoverPresentationControllerDelegate

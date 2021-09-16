@@ -31,7 +31,9 @@ protocol ElementViewHierarchyInspectorViewModelProtocol {
     
     func reloadIcons()
     
-    func itemViewModel(for indexPath: IndexPath) -> ElementInspectorPanelViewModelProtocol?
+    func itemViewModel(at indexPath: IndexPath) -> ElementInspectorPanelViewModelProtocol?
+
+    func image(for reference: ViewHierarchyReference) -> UIImage?
     
     /// Toggle if a container displays its subviews or hides them.
     /// - Parameter indexPath: row with
@@ -59,7 +61,7 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
             parent: parent,
             rootDepth: rootDepth,
             thumbnailImage: snapshot.elementLibraries.icon(for: reference.rootView),
-            isCollapsed: reference.depth > rootDepth + ElementInspector.appearance.maxViewHierarchyDepthInList
+            isCollapsed: reference.depth >= rootDepth
         )
         
         let childrenViewModels: [[ElementViewHierarchyPanelViewModel]] = reference.children.map { childReference in
@@ -115,8 +117,12 @@ extension ElementViewHierarchyInspectorViewModel: ElementViewHierarchyInspectorV
             childViewModel.thumbnailImage = snapshot.elementLibraries.icon(for: childViewModel.reference.rootView)
         }
     }
+
+    func image(for reference: ViewHierarchyReference) -> UIImage? {
+        snapshot.elementLibraries.icon(for: reference.rootView)
+    }
     
-    func itemViewModel(for indexPath: IndexPath) -> ElementInspectorPanelViewModelProtocol? {
+    func itemViewModel(at indexPath: IndexPath) -> ElementInspectorPanelViewModelProtocol? {
         let visibleChildViewModels = self.visibleChildViewModels
         
         guard indexPath.row < visibleChildViewModels.count else {

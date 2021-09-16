@@ -76,9 +76,7 @@ extension ElementViewHierarchyPanelViewModel: ElementInspectorPanelViewModelProt
         parent?.isCollapsed == true || parent?.isHidden == true
     }
 
-    var showCollapseButton: Bool {
-        isContainer && relativeDepth <= ElementInspector.appearance.maxViewHierarchyDepthInList
-    }
+    var showCollapseButton: Bool { isContainer }
     
     var isCollapsed: Bool {
         get {

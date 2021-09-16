@@ -168,7 +168,6 @@ final class ElementPreviewInspectorViewCode: BaseView {
     }
 
     #if swift(>=5.0)
-
     @available(iOS 13.0, *)
     private lazy var hoverGestureRecognizer = UIHoverGestureRecognizer(
         target: self,

@@ -40,8 +40,6 @@ extension ElementInspector {
         
         let verticalMargins: CGFloat = 12
 
-        var maxViewHierarchyDepthInList = 3
-        
         var tintColor = UIColor(hex: 0xBF5AF2)
         
         var accessoryControlBackgroundColor: UIColor { textColor.withAlphaComponent(disabledAlpha / 4) }

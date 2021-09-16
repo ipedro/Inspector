@@ -23,10 +23,11 @@ import UIKit
 // MARK: - UITableViewDataSource
 
 extension ElementViewHierarchyViewController: UITableViewDataSource {
+    #if swift(>=5.0)
     @available(iOS 13.0, *)
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         guard
-            let itemViewModel = viewModel.itemViewModel(for: indexPath),
+            let itemViewModel = viewModel.itemViewModel(at: indexPath),
             itemViewModel.availablePanels.isEmpty == false
         else {
             return nil
@@ -34,36 +35,88 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
 
         return UIContextMenuConfiguration(
             identifier: indexPath.description as NSString,
-            previewProvider: nil) { _ in
+            previewProvider: nil
+        ) { _ in
 
-                return UIMenu(
-                    title: itemViewModel.title,
-                    image: itemViewModel.thumbnailImage,
-                    children: itemViewModel.availablePanels.map { panel in
-                        UIAction(
-                            title: panel.title,
-                            image: panel.image) { [weak self] _ in
-                                guard let self = self else { return }
+            let actions = self.menuAction(
+                title: itemViewModel.title,
+                image: itemViewModel.thumbnailImage,
+                options: .displayInline,
+                for: itemViewModel.reference
+            )
 
-                                self.delegate?.viewHierarchyListViewController(
-                                    self,
-                                    didSelect: itemViewModel.reference,
-                                    with: panel,
-                                    from: self.viewModel.rootReference
-                                )
-                            }
-                    }
+            return UIMenu(
+                title: itemViewModel.title,
+                image: itemViewModel.thumbnailImage,
+                children: [actions]
+            )
+        }
+    }
+
+    @available(iOS 13.0, *)
+        private func menuAction(title: String, image: UIImage?, options: UIMenu.Options = .init(), for reference: ViewHierarchyReference) -> UIMenuElement {
+        let subviewsActions: [UIMenuElement] = {
+            let actions: [UIMenuElement]
+
+            switch reference.children.count {
+            case .zero:
+                return []
+
+            case 1:
+                actions = menuChildReferenceActions(for: reference.children)
+
+            default:
+                actions = [
+                    UIMenu(
+                        title: "Children",
+                        children: menuChildReferenceActions(for: reference.children)
+                    )
+                ]
+            }
+
+            return actions.insideDivider()
+        }()
+
+        let actions = ElementInspectorPanel.cases(for: reference).map { panel in
+            UIAction(title: panel.title, image: panel.image) { [weak self] _ in
+                guard let self = self else { return }
+
+                self.delegate?.viewHierarchyListViewController(
+                    self,
+                    didSelect: reference,
+                    with: panel,
+                    from: self.viewModel.rootReference
                 )
             }
+        }
+
+        return UIMenu(
+            title: title,
+            image: image,
+            options: options,
+            children: actions + subviewsActions
+        )
     }
+
+    @available(iOS 13.0, *)
+    private func menuChildReferenceActions(for references: [ViewHierarchyReference]) -> [UIMenuElement] {
+        references.enumerated().map { _, reference in
+            menuAction(
+                title: reference.accessibilityIdentifier ?? reference.className,
+                image: viewModel.image(for: reference),
+                for: reference
+            )
+        }
+    }
+    #endif
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.numberOfRows
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ElementViewHierarchyInspectorTableViewCodeCell.self, for: indexPath)
-        let itemViewModel = viewModel.itemViewModel(for: indexPath)
+        let itemViewModel = viewModel.itemViewModel(at: indexPath)
         cell.viewModel = itemViewModel
         cell.isEvenRow = indexPath.row % 2 == 0
         cell.contentView.isUserInteractionEnabled = true
