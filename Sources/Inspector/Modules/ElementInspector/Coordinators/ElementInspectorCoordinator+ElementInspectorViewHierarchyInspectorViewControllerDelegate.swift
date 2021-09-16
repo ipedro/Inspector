@@ -22,7 +22,7 @@ import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorViewControllerDelegate {
     func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController, previewFor reference: ViewHierarchyReference) -> UIViewController? {
-        ViewHierarchyPreviewViewController(reference: reference)
+        ViewHierarchyThumbnailViewController(reference: reference)
     }
 
     func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController,

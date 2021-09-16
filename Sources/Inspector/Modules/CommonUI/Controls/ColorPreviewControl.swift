@@ -88,7 +88,9 @@ final class ColorPreviewControl: BaseFormControl {
         contentView.addArrangedSubview(accessoryControl)
         
         #if swift(>=5.3)
-        colorDisplayControl.isEnabled = true
+        if #available(iOS 14.0, *) {
+            colorDisplayControl.isEnabled = true
+        }
         #else
         accessoryControl.isUserInteractionEnabled = false
         colorDisplayLabel.textColor = .systemPurple

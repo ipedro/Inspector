@@ -37,84 +37,87 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
             identifier: indexPath.description as NSString,
             previewProvider: { [weak self] in
                 guard let self = self else { return nil }
-
                 return self.delegate?.viewHierarchyListViewController(self, previewFor: itemViewModel.reference)
+            },
+            actionProvider: { [weak self] _ in
+                self?.menuAction(
+                    title: itemViewModel.title,
+                    image: itemViewModel.thumbnailImage,
+                    for: itemViewModel.reference,
+                    options: .displayInline,
+                    at: indexPath
+                )
             }
-        ) { _ in
-
-            let actions = self.menuAction(
-                title: itemViewModel.title,
-                image: itemViewModel.thumbnailImage,
-                options: .displayInline,
-                for: itemViewModel.reference,
-                at: indexPath
-            )
-
-            return UIMenu(
-                title: itemViewModel.title,
-                image: itemViewModel.thumbnailImage,
-                children: [actions]
-            )
-        }
+        )
     }
 
     @available(iOS 13.0, *)
         private func menuAction(
             title: String,
             image: UIImage?,
-            options: UIMenu.Options = .init(),
             for reference: ViewHierarchyReference,
+            options: UIMenu.Options = .init(),
             at indexPath: IndexPath
-        ) -> UIMenuElement {
-        let subviewsActions: [UIMenuElement] = {
-            let actions: [UIMenuElement]
+        ) -> UIMenu {
+        let subviewsActions: UIMenu? = {
+            guard reference.children.count > .zero else { return nil }
 
-            switch reference.children.count {
-            case .zero:
-                return []
-
-            case 1:
-                actions = menuChildReferenceActions(for: reference.children)
-
-            default:
-                actions = [
-                    UIMenu(
-                        title: "Children",
-                        children: menuChildReferenceActions(for: reference.children)
-                    )
-                ]
-            }
-
-            return actions.insideDivider()
+            return UIMenu(
+                title: "Children...",
+                children: menuChildReferenceActions(for: reference.children)
+            )
         }()
 
-        let selectionActions = ElementInspectorPanel.cases(for: reference).map { panel in
-            UIAction(title: "Open \(panel.title)", image: panel.image) { [weak self] _ in
-                guard let self = self else { return }
+        let openActionsMenu = UIMenu(
+            title: "Open...",
+            options: .displayInline,
+            children: ElementInspectorPanel.cases(for: reference).map { panel in
+                UIAction(
+                    title: panel.title,
+                    image: panel.image
+                ) { [weak self] _ in
+                    guard let self = self else { return }
 
-                self.delegate?.viewHierarchyListViewController(
-                    self,
-                    didSelect: reference,
-                    with: panel,
-                    from: self.viewModel.rootReference
-                )
+                    self.delegate?.viewHierarchyListViewController(
+                        self,
+                        didSelect: reference,
+                        with: panel,
+                        from: self.viewModel.rootReference
+                    )
+                }
             }
-        }
+        )
 
         let isCollapsed = self.viewModel.itemViewModel(at: indexPath)?.isCollapsed == true
 
-        let toggleCollapseAction = UIAction(
-            title: isCollapsed ? "Show Children" : "Hide Children",
-            image: isCollapsed ? IconKit.imageOfChevronDown() : IconKit.imageOfChevronRight()
-        ) { [weak self] _ in
-                self?.toggleCollapse(indexPath)
-            }
+        let cellActionsMenu: UIMenu = {
+            let collapseContainer: UIAction? = {
+                guard reference.isContainer else { return nil }
+
+                return UIAction(title: isCollapsed ? "Show children" : "Hide children") { [weak self] _ in
+                    self?.toggleCollapse(indexPath)
+                }
+            }()
+
+            return UIMenu(
+                title: "Cell Actions",
+                options: .displayInline,
+                children: [
+                    collapseContainer
+                ].compactMap { $0 }
+            )
+        }()
 
         return UIMenu(
             title: title,
             image: image,
             options: options,
-            children: [toggleCollapseAction] + (selectionActions + subviewsActions).insideDivider()
+            children: [
+                cellActionsMenu,
+                openActionsMenu,
+                subviewsActions
+            ]
+            .compactMap { $0 }
         )
     }
 
@@ -128,6 +131,7 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
                 at: IndexPath(row: row, section: .zero)
             )
         }
+
     }
     #endif
 

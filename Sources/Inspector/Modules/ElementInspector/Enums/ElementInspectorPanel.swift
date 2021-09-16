@@ -50,7 +50,7 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
             return IconKit.imageOfSliderHorizontal()
             
         case .viewHierarchy:
-            return IconKit.imageOfListBulletIndent()
+            return IconKit.imageOfRelationshipDiagram()
             
         case .size:
             return IconKit.imageOfSetSquareFill()

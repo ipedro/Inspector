@@ -18,28 +18,32 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
 #if swift(>=5.0)
 @available(iOS 13.0, *)
-extension UIMenuElement {
-    func insideDivider() -> UIMenuElement {
-        UIMenu(
-            title: String(),
-            options: .displayInline,
-            children: [self]
+extension UIAction {
+    static func copyAction(
+        title: String,
+        image: UIImage? = nil,
+        identifier: UIAction.Identifier? = nil,
+        discoverabilityTitle: String? = nil,
+        attributes: UIMenuElement.Attributes = [],
+        state: UIMenuElement.State = .off,
+        stringProvider: @escaping (() -> String?)
+    ) -> UIAction {
+        UIAction(
+            title: title,
+            image: image,
+            identifier: identifier,
+            discoverabilityTitle: discoverabilityTitle,
+            attributes: attributes,
+            state: state,
+            handler: { _ in
+                UIPasteboard.general.string = stringProvider()
+            }
         )
-    }
-}
-
-@available(iOS 13.0, *)
-extension Array where Element: UIMenuElement {
-    func insideDivider() -> [UIMenuElement] {
-        [UIMenu(
-            title: String(),
-            options: .displayInline,
-            children: self
-        )]
     }
 }
 #endif

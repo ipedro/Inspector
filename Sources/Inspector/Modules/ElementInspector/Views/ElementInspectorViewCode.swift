@@ -23,13 +23,13 @@ import UIKit
 final class ElementInspectorViewCode: BaseView {
     private(set) lazy var segmentedControl = UISegmentedControl()
 
-    private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView().then {
+    private(set) lazy var referenceView = ViewHierarchyReferenceDetailView().then {
         $0.setContentHuggingPriority(.required, for: .vertical)
     }
 
     private(set) lazy var separatorView = SeparatorView()
 
-    private lazy var referenceDetailHeightConstraint = referenceDetailView.heightAnchor.constraint(equalToConstant: .zero).then {
+    private lazy var referenceDetailHeightConstraint = referenceView.heightAnchor.constraint(equalToConstant: .zero).then {
         $0.priority = .defaultHigh
         $0.isActive = true
     }
@@ -37,7 +37,7 @@ final class ElementInspectorViewCode: BaseView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let size = referenceDetailView.systemLayoutSizeFitting(
+        let size = referenceView.systemLayoutSizeFitting(
             frame.size,
             withHorizontalFittingPriority: .required,
             verticalFittingPriority: .fittingSizeLevel
@@ -63,7 +63,7 @@ final class ElementInspectorViewCode: BaseView {
     }
 
     private lazy var containerStackView = UIStackView.vertical().then {
-        $0.addArrangedSubviews(referenceDetailView, separatorView, contentView)
+        $0.addArrangedSubviews(referenceView, separatorView, contentView)
     }
     
     override func setup() {
@@ -74,6 +74,7 @@ final class ElementInspectorViewCode: BaseView {
         contentView.installView(emptyLabel, .margins(.zero), position: .behind)
         
         installView(containerStackView, priority: .required)
+
         containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
     }
 }

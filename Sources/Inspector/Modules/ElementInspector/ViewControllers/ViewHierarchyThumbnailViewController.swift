@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ViewHierarchyPreviewViewController: UIViewController {
+final class ViewHierarchyThumbnailViewController: UIViewController {
     let reference: ViewHierarchyReference
 
     init(reference: ViewHierarchyReference) {
@@ -36,18 +36,26 @@ final class ViewHierarchyPreviewViewController: UIViewController {
     private(set) lazy var viewCode = ViewHierarchyReferenceThumbnailView(
         frame: .zero,
         reference: reference
-    ).then {
-        $0.updateViews(afterScreenUpdates: false)
-    }
+    )
 
     override func loadView() {
         view = viewCode
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        viewCode.updateViews(afterScreenUpdates: false)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
         viewCode.updateViews(afterScreenUpdates: true)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
 
         let size = view.systemLayoutSizeFitting(
             view.frame.size,

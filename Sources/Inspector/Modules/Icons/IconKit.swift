@@ -2019,7 +2019,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2037,7 +2037,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2055,7 +2055,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2073,7 +2073,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2091,7 +2091,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2109,7 +2109,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2127,7 +2127,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2145,7 +2145,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2163,7 +2163,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2181,7 +2181,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2199,7 +2199,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2217,7 +2217,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2235,7 +2235,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2253,7 +2253,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2271,7 +2271,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2289,7 +2289,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2307,7 +2307,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2325,7 +2325,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2343,7 +2343,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2361,7 +2361,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2379,7 +2379,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2397,7 +2397,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2415,7 +2415,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2433,7 +2433,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2451,7 +2451,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2469,7 +2469,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2487,11 +2487,11 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
-    class func imageOfListBulletIndent(_ size: CGSize = CGSize(width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) -> UIImage {
+    class func imageOfRelationshipDiagram(_ size: CGSize = CGSize(width: 24, height: 24), resizing: ResizingBehavior = .aspectFit) -> UIImage {
         enum LocalCache {
             static var image: UIImage!
         }
@@ -2505,7 +2505,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2523,7 +2523,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2541,7 +2541,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2559,7 +2559,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2577,7 +2577,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2595,7 +2595,7 @@ class IconKit: NSObject {
 
         let image = UIImage(cgImage: cgImage, scale: 1, orientation: .left)
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
 
         return image
     }
@@ -2614,7 +2614,7 @@ class IconKit: NSObject {
 
         let image = UIImage(cgImage: cgImage, scale: 1, orientation: .right)
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
 
         return image
     }
@@ -2633,7 +2633,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
@@ -2651,7 +2651,7 @@ class IconKit: NSObject {
         image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
-        LocalCache.image = image
+        LocalCache.image = image.withRenderingMode(.alwaysTemplate)
         return image
     }
 
