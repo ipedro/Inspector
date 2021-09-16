@@ -20,16 +20,12 @@
 
 import UIKit
 
-final class ElementSizeInspectorViewController: ElementInspectorFormViewController {
+final class ElementAttributesInspectorViewController: ElementInspectorFormViewController {
     // MARK: - Properties
 
-    lazy var viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
+    private(set) lazy var viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
 
-    private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView().then {
-        $0.viewModel = viewModel
-    }
-
-    private var viewModel: ElementSizeInspectorViewModelProtocol! {
+    private var viewModel: AttributesInspectorViewModelProtocol! {
         didSet {
             dataSource = viewModel
         }
@@ -38,7 +34,7 @@ final class ElementSizeInspectorViewController: ElementInspectorFormViewControll
     // MARK: - Init
 
     static func create(
-        viewModel: ElementSizeInspectorViewModelProtocol,
+        viewModel: AttributesInspectorViewModelProtocol,
         viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
     ) -> Self {
         let viewController = Self()
@@ -48,17 +44,4 @@ final class ElementSizeInspectorViewController: ElementInspectorFormViewControll
         return viewController
     }
 
-    // MARK: - Lifecycle
-
-    override func viewDidLoad() {
-        viewCode.contentView.addArrangedSubview(referenceDetailView)
-
-        super.viewDidLoad()
-    }
-
-    override func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController, didUpdate property: InspectorElementViewModelProperty) {
-        super.elementInspectorFormSectionViewController(sectionController, didUpdate: property)
-
-        referenceDetailView.viewModel = viewModel
-    }
 }

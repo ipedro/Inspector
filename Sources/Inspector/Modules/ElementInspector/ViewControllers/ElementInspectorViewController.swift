@@ -34,6 +34,7 @@ final class ElementInspectorViewController: UIViewController {
     private var viewModel: ElementInspectorViewModelProtocol! {
         didSet {
             title = viewModel.reference.elementName
+            viewCode.referenceDetailView.viewModel = viewModel
         }
     }
     
@@ -53,7 +54,7 @@ final class ElementInspectorViewController: UIViewController {
                 view.setNeedsLayout()
                 
                 viewCode.contentView.installView(panelViewController.view, priority: .required)
-                
+
                 panelViewController.didMove(toParent: self)
             }
             

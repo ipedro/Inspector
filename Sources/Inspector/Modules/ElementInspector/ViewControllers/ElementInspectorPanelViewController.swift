@@ -50,4 +50,17 @@ class ElementInspectorBasePanelViewController: UIViewController {
         
         preferredContentSize = self.calculatePreferredContentSize()
     }
+
+    func calculatePreferredContentSize() -> CGSize {
+        if isViewLoaded {
+            return view.systemLayoutSizeFitting(
+                ElementInspector.appearance.panelPreferredCompressedSize,
+                withHorizontalFittingPriority: .defaultHigh,
+                verticalFittingPriority: .fittingSizeLevel
+            )
+        }
+        else {
+            return .zero
+        }
+    }
 }

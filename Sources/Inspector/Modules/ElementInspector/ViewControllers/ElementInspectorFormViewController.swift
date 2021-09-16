@@ -30,12 +30,6 @@ protocol ElementInspectorFormViewControllerDelegate: OperationQueueManagerProtoc
 
     func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
                                         didTap optionSelector: OptionListControl)
-
-    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
-                                        showLayerInspectorViewsInside reference: ViewHierarchyReference)
-
-    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
-                                        hideLayerInspectorViewsInside reference: ViewHierarchyReference)
 }
 
 public struct ElementInspectorFormSection {
@@ -69,6 +63,18 @@ protocol ElementInspectorBaseViewControllerProtocol {
 typealias ElementInspectorFormViewController = ElementInspectorBaseFormViewController & ElementInspectorBaseViewControllerProtocol
 
 class ElementInspectorBaseFormViewController: ElementInspectorPanelViewController, ElementInspectorFormSectionViewControllerDelegate, KeyboardAnimatable {
+    func addOperationToQueue(_ operation: MainThreadOperation) {
+        formDelegate?.addOperationToQueue(operation)
+    }
+
+    func suspendQueue(_ isSuspended: Bool) {
+        formDelegate?.suspendQueue(isSuspended)
+    }
+
+    func cancelAllOperations() {
+        formDelegate?.cancelAllOperations()
+    }
+
     func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
                                                    didChangeState newState: UIControl.State,
                                                    from oldState: UIControl.State?)
@@ -124,7 +130,6 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
         else { return }
 
         dataSource.sections.enumerated().forEach { sectionIndex, section in
-
             if let title = section.title {
                 let sectionHeaderView = SectionHeader(
                     title: title,
@@ -140,11 +145,13 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
             for (row, viewModel) in section.viewModels.enumerated() {
                 let indexPath = IndexPath(row: row, section: sectionIndex)
 
-                let ContentView = dataSource.typeForRow(at: indexPath) ?? ElementInspectorFormSectionContentView.self
+                let Type = dataSource.typeForRow(at: indexPath) ?? ElementInspectorFormSectionContentView.self
+                let viewCode = Type.create()
+                viewCode.separatorStyle = indexPath.isFirst ? .none : .top
 
                 let sectionViewController = ElementInspectorFormSectionViewController.create(
                     viewModel: viewModel,
-                    viewCode: ContentView.create()
+                    viewCode: viewCode
                 ).then {
                     $0.sectionState = indexPath.isFirst ? .selected : .normal
                     $0.delegate = self
@@ -154,21 +161,9 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
 
                 self.viewCode.contentView.addArrangedSubview(sectionViewController.view)
 
+                sectionViewController.view.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
                 sectionViewController.didMove(toParent: self)
             }
-        }
-    }
-
-    func calculatePreferredContentSize() -> CGSize {
-        if isViewLoaded {
-            return view.systemLayoutSizeFitting(
-                ElementInspector.appearance.panelPreferredCompressedSize,
-                withHorizontalFittingPriority: .defaultHigh,
-                verticalFittingPriority: .fittingSizeLevel
-            )
-        }
-        else {
-            return .zero
         }
     }
 
@@ -270,22 +265,6 @@ class ElementInspectorBaseFormViewController: ElementInspectorPanelViewControlle
         guard let self = self as? ElementInspectorFormViewController else { return }
 
         self.formDelegate?.elementInspectorViewController(self, didTap: optionSelector)
-    }
-}
-
-// MARK: - OperationQueueManagerProtocol
-
-extension ElementInspectorBaseFormViewController: OperationQueueManagerProtocol {
-    func cancelAllOperations() {
-        formDelegate?.cancelAllOperations()
-    }
-
-    func suspendQueue(_ isSuspended: Bool) {
-        formDelegate?.suspendQueue(isSuspended)
-    }
-
-    func addOperationToQueue(_ operation: MainThreadOperation) {
-        formDelegate?.addOperationToQueue(operation)
     }
 }
 

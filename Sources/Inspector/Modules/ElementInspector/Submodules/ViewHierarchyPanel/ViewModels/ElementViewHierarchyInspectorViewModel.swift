@@ -82,13 +82,17 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
         rootReference = reference
         self.snapshot = snapshot
         
-        childViewModels = Self.makeViewModels(
+        let viewModelsIncludingRoot = Self.makeViewModels(
             reference: rootReference,
             parent: nil,
             snapshot: snapshot,
-            rootDepth: rootReference.depth
+            rootDepth: rootReference.depth + 1 // account for removal of root reference
         )
-        
+
+        let childViewModels = Array(viewModelsIncludingRoot.dropFirst())
+
+        self.childViewModels = childViewModels
+
         super.init()
         
         updateVisibleChildViews()
@@ -96,9 +100,7 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
 }
 
 extension ElementViewHierarchyInspectorViewModel: ElementViewHierarchyInspectorViewModelProtocol {
-    func shouldHighlightItem(at indexPath: IndexPath) -> Bool {
-        indexPath != IndexPath(row: .zero, section: .zero) && itemViewModel(for: indexPath) != nil
-    }
+    func shouldHighlightItem(at indexPath: IndexPath) -> Bool { true }
 
     var title: String {
         "More info"

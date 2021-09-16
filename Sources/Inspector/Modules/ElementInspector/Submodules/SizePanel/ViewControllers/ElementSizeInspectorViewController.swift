@@ -20,31 +20,27 @@
 
 import UIKit
 
-enum ElementInspectorPanel: CaseIterable, Hashable {
-    typealias AllCases = [ElementInspectorPanel]
+final class ElementSizeInspectorViewController: ElementInspectorFormViewController {
+    // MARK: - Properties
 
-    case preview
-    case attributes
-    case viewHierarchy
-    case size
+    lazy var viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
 
-    var image: UIImage {
-        switch self {
-        case .preview:
-            return IconKit.imageOfInfoCircleFill()
-
-        case .attributes:
-            return IconKit.imageOfSliderHorizontal()
-            
-        case .viewHierarchy:
-            return IconKit.imageOfListBulletIndent()
-            
-        case .size:
-            return IconKit.imageOfSetSquareFill()
+    private var viewModel: ElementSizeInspectorViewModelProtocol! {
+        didSet {
+            dataSource = viewModel
         }
     }
-    
-    static var allCases: [ElementInspectorPanel] {
-        [.preview, .attributes, .size, .viewHierarchy]
+
+    // MARK: - Init
+
+    static func create(
+        viewModel: ElementSizeInspectorViewModelProtocol,
+        viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
+    ) -> Self {
+        let viewController = Self()
+        viewController.viewModel = viewModel
+        viewController.viewCode = viewCode
+
+        return viewController
     }
 }

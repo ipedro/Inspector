@@ -22,18 +22,6 @@ import MobileCoreServices
 import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegate {
-    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
-                                        showLayerInspectorViewsInside reference: ViewHierarchyReference)
-    {
-        delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
-    }
-    
-    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
-                                        hideLayerInspectorViewsInside reference: ViewHierarchyReference)
-    {
-        delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
-    }
-    
     func elementInspectorViewController(_ viewController: ElementInspectorFormViewController, didTap colorPicker: ColorPreviewControl) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {

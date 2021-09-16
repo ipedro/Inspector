@@ -20,27 +20,31 @@
 
 import UIKit
 
-protocol ElementInspectorViewModelProtocol {
+protocol ElementInspectorViewModelProtocol: ViewHierarchyReferenceDetailViewModelProtocol {
     var reference: ViewHierarchyReference { get }
-    
+
     var availablePanels: [ElementInspectorPanel] { get }
-    
+
     var selectedPanel: ElementInspectorPanel? { get }
-    
+
     var selectedPanelSegmentIndex: Int { get }
-    
+
     var showDismissBarButton: Bool { get }
 }
 
 final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
+    let snapshot: ViewHierarchySnapshot
+
     let reference: ViewHierarchyReference
-    
+
     let showDismissBarButton: Bool
-    
+
     let inspectableElements: [InspectorElementLibraryProtocol]
-    
+
     var selectedPanel: ElementInspectorPanel?
-    
+
+    var isCollapsed: Bool = false
+
     var selectedPanelSegmentIndex: Int {
         guard
             let selectedPanel = selectedPanel,
@@ -48,20 +52,22 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         else {
             return UISegmentedControl.noSegment
         }
-        
+
         return selectedIndex
     }
-    
+
     init(
+        snapshot: ViewHierarchySnapshot,
         reference: ViewHierarchyReference,
         showDismissBarButton: Bool,
         selectedPanel: ElementInspectorPanel?,
         inspectableElements: [InspectorElementLibraryProtocol]
     ) {
+        self.snapshot = snapshot
         self.reference = reference
         self.showDismissBarButton = showDismissBarButton
         self.inspectableElements = inspectableElements
-        
+
         if let selectedPanel = selectedPanel, availablePanels.contains(selectedPanel) {
             self.selectedPanel = selectedPanel
         }
@@ -69,13 +75,33 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
             self.selectedPanel = availablePanels.first
         }
     }
-    
+
     private(set) lazy var availablePanels: [ElementInspectorPanel] = ElementInspectorPanel.allCases.compactMap { panel in
         switch panel {
-        case .viewHierarchyInspector:
+        case .viewHierarchy:
             return reference.isContainer ? panel : nil
-        case .sizeInspector, .attributesInspector:
+        case .size, .attributes, .preview:
             return panel
         }
     }
+}
+
+// MARK: - ViewHierarchyReferenceDetailViewModelProtocol
+
+extension ElementInspectorViewModel: ViewHierarchyReferenceDetailViewModelProtocol {
+    var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
+
+    var title: String { reference.elementName }
+
+    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
+
+    var subtitle: String { reference.elementDescription }
+
+    var isContainer: Bool { false }
+
+    var showCollapseButton: Bool { false }
+
+    var isHidden: Bool { false }
+
+    var relativeDepth: Int { .zero }
 }

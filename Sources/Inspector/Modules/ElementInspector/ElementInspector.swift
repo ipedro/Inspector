@@ -31,8 +31,6 @@ extension ElementInspector {
         var animationDuration: TimeInterval = CATransaction.animationDuration()
         
         var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
-        
-        var isPreviewPanelCollapsed: Bool = false
     }
 }
 

@@ -18,33 +18,30 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 
-enum ElementInspectorPanel: CaseIterable, Hashable {
-    typealias AllCases = [ElementInspectorPanel]
+import Foundation
 
-    case preview
-    case attributes
-    case viewHierarchy
-    case size
+protocol ElementPreviewInspectorViewModelProtocol {
+    var reference: ViewHierarchyReference { get }
+    var isHighlightingViews: Bool { get }
+    var isLiveUpdating: Bool { get set }
+}
 
-    var image: UIImage {
-        switch self {
-        case .preview:
-            return IconKit.imageOfInfoCircleFill()
+final class ElementPreviewInspectorViewModel: ElementPreviewInspectorViewModelProtocol {
+    let reference: ViewHierarchyReference
 
-        case .attributes:
-            return IconKit.imageOfSliderHorizontal()
-            
-        case .viewHierarchy:
-            return IconKit.imageOfListBulletIndent()
-            
-        case .size:
-            return IconKit.imageOfSetSquareFill()
-        }
+    var isHighlightingViews: Bool {
+        reference.isHidingHighlightViews == false
     }
-    
-    static var allCases: [ElementInspectorPanel] {
-        [.preview, .attributes, .size, .viewHierarchy]
+
+    var isLiveUpdating: Bool = true
+
+    init(
+        reference: ViewHierarchyReference,
+        isLiveUpdating: Bool = true
+    ) {
+        self.reference = reference
+        self.isLiveUpdating = isLiveUpdating
     }
+
 }

@@ -44,11 +44,21 @@ extension SectionHeader {
 }
 
 final class SectionHeader: BaseView {
+    var titleAlignment: NSTextAlignment {
+        get { titleLabel.textAlignment }
+        set { titleLabel.textAlignment = newValue }
+    }
+
     private lazy var titleLabel = UILabel(
         .textColor(ElementInspector.appearance.textColor)
     ).then {
         $0.font = titleFont.font()
         $0.isHidden = $0.text?.isEmpty != false
+    }
+
+    var subtitleAlignment: NSTextAlignment {
+        get { subtitleLabel.textAlignment }
+        set { subtitleLabel.textAlignment = newValue }
     }
 
     private lazy var subtitleLabel = UILabel(
@@ -125,6 +135,11 @@ final class SectionHeader: BaseView {
 
     }
 
+    var margins: NSDirectionalEdgeInsets {
+        get { contentView.directionalLayoutMargins }
+        set { contentView.directionalLayoutMargins = newValue }
+    }
+
     var titleFont: FontOptions {
         didSet {
             titleLabel.font = titleFont.font()
@@ -162,7 +177,7 @@ final class SectionHeader: BaseView {
 
         self.title = title
         self.subtitle = subtitle
-        contentView.directionalLayoutMargins = margins
+        self.margins = margins
     }
 
     @available(*, unavailable)

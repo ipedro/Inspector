@@ -26,7 +26,16 @@ extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelega
                                         with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
     {
         switch panel {
-        case .attributesInspector:
+        case .preview:
+            return ElementPreviewInspectorViewController.create(
+                viewModel: ElementPreviewInspectorViewModel(
+                    reference: reference,
+                    isLiveUpdating: true
+                )
+            ).then {
+                $0.delegate = self
+            }
+        case .attributes:
             return ElementAttributesInspectorViewController.create(
                 viewModel: AttributesInspectorViewModel(
                     reference: reference,
@@ -35,7 +44,7 @@ extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelega
                 $0.formDelegate = self
             }
 
-        case .viewHierarchyInspector:
+        case .viewHierarchy:
             return ElementViewHierarchyViewController.create(
                 viewModel: ElementViewHierarchyInspectorViewModel(
                     reference: reference,
@@ -45,12 +54,9 @@ extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelega
                 $0.delegate = self
             }
 
-        case .sizeInspector:
+        case .size:
             return ElementSizeInspectorViewController.create(
-                viewModel: ElementSizeInspectorViewModel(
-                    reference: reference,
-                    snapshot: viewHierarchySnapshot
-                )
+                viewModel: ElementSizeInspectorViewModel(reference: reference)
             ).then {
                 $0.formDelegate = self
             }

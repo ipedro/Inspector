@@ -41,19 +41,6 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
             self.updateTableView(indexPath, with: actions)
         }
 
-        cell.detailsButton.actionHandler = { [weak self] in
-            guard
-                let self = self,
-                let itemViewModel = itemViewModel
-            else { return }
-
-            self.delegate?.viewHierarchyListViewController(
-                self,
-                didSelectInfo: itemViewModel.reference,
-                from: self.viewModel.rootReference
-            )
-        }
-
         return cell
     }
 }

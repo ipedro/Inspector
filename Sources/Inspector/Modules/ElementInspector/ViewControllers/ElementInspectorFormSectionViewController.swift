@@ -26,6 +26,9 @@ public protocol InspectorElementFormSectionViewDelegate: AnyObject {
                                          to newState: UIControl.State)
 }
 
+public enum InspectorSectionSeparatorStyle {
+    case top
+}
 
 public protocol InspectorElementFormSectionView: UIControl {
     var delegate: InspectorElementFormSectionViewDelegate? { get set }
@@ -33,6 +36,8 @@ public protocol InspectorElementFormSectionView: UIControl {
     var title: String? { get set }
 
     var subtitle: String?  { get set }
+
+    var separatorStyle: InspectorSectionSeparatorStyle? { get set }
 
     var accessoryView: UIView?  { get set }
 

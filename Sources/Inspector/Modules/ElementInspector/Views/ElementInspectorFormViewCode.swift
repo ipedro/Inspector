@@ -20,36 +20,17 @@
 
 import UIKit
 
-protocol ElementInspectorFormViewCodeDelegate: AnyObject {
-    func elementInspectorFormView(_ view: ElementInspectorFormView, isPointerInUse: Bool)
-}
-
 protocol ElementInspectorFormView: BaseView {
-    var delegate: ElementInspectorFormViewCodeDelegate? { get set }
     var keyboardHeight: CGFloat { get set }
     var scrollView: UIScrollView { get }
-    var isPointerInUse: Bool { get }
 }
 
 final class ElementInspectorFormViewCode: BaseView, ElementInspectorFormView {
-    weak var delegate: ElementInspectorFormViewCodeDelegate?
-    
     private(set) lazy var scrollView = UIScrollView().then {
         $0.alwaysBounceVertical = true
         $0.keyboardDismissMode = .onDrag
         $0.indicatorStyle = .white
         $0.delaysContentTouches = false
-    }
-    
-    #if swift(>=5.0)
-    @available(iOS 13.0, *)
-    private lazy var hoverGestureRecognizer = UIHoverGestureRecognizer(target: self, action: #selector(hovering(_:)))
-    #endif
-    
-    private(set) var isPointerInUse = false {
-        didSet {
-            delegate?.elementInspectorFormView(self, isPointerInUse: isPointerInUse)
-        }
     }
     
     var keyboardHeight: CGFloat = .zero {
@@ -62,51 +43,10 @@ final class ElementInspectorFormViewCode: BaseView, ElementInspectorFormView {
         super.setup()
 
         scrollView.installView(contentView, priority: .required)
-        
+
         installView(scrollView, priority: .required)
-        
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
-        
-        contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-        
+
         contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(bottom: ElementInspector.appearance.verticalMargins)
     }
     
-    #if swift(>=5.0)
-    override func didMoveToWindow() {
-        super.didMoveToWindow()
-        
-        guard let window = window else {
-            if #available(iOS 13.0, *) {
-                hoverGestureRecognizer.isEnabled = false
-            }
-            
-            return
-        }
-        
-        if #available(iOS 13.0, *) {
-            window.addGestureRecognizer(hoverGestureRecognizer)
-            hoverGestureRecognizer.isEnabled = true
-        }
-        
-        if #available(iOS 14.0, *) {
-            hoverGestureRecognizer.isEnabled = ProcessInfo().isiOSAppOnMac == false
-        }
-    }
-    
-    @available(iOS 13.0, *)
-    @objc
-    func hovering(_ recognizer: UIHoverGestureRecognizer) {
-        switch recognizer.state {
-        case .began, .changed:
-            isPointerInUse = true
-            
-        case .ended, .cancelled:
-            isPointerInUse = false
-            
-        default:
-            break
-        }
-    }
-    #endif
 }

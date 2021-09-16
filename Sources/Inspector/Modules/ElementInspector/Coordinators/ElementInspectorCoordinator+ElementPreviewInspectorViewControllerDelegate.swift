@@ -18,33 +18,16 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 
-enum ElementInspectorPanel: CaseIterable, Hashable {
-    typealias AllCases = [ElementInspectorPanel]
+import Foundation
 
-    case preview
-    case attributes
-    case viewHierarchy
-    case size
-
-    var image: UIImage {
-        switch self {
-        case .preview:
-            return IconKit.imageOfInfoCircleFill()
-
-        case .attributes:
-            return IconKit.imageOfSliderHorizontal()
-            
-        case .viewHierarchy:
-            return IconKit.imageOfListBulletIndent()
-            
-        case .size:
-            return IconKit.imageOfSetSquareFill()
-        }
+extension ElementInspectorCoordinator: ElementPreviewInspectorViewControllerDelegate {
+    func elementPreviewViewController(_ viewController: ElementPreviewInspectorViewController,
+                                      showLayerInspectorViewsInside reference: ViewHierarchyReference) {
+        delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
     }
-    
-    static var allCases: [ElementInspectorPanel] {
-        [.preview, .attributes, .size, .viewHierarchy]
+
+    func elementPreviewViewController(_ viewController: ElementPreviewInspectorViewController, hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
+        delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
     }
 }

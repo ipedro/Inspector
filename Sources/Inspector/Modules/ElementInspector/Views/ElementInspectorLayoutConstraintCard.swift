@@ -36,6 +36,11 @@ final class ElementInspectorLayoutConstraintCard: BaseCardControl, InspectorElem
         set { header.accessoryView = newValue }
     }
 
+    var separatorStyle: InspectorSectionSeparatorStyle? {
+        get { .none }
+        set { }
+    }
+
     static func create() -> InspectorElementFormSectionView {
         ElementInspectorLayoutConstraintCard()
     }

@@ -81,7 +81,7 @@ final class ElementViewHierarchyViewController: ElementInspectorPanelViewControl
         viewCode.tableView.reloadData()
     }
     
-    func calculatePreferredContentSize() -> CGSize {
+    override func calculatePreferredContentSize() -> CGSize {
         let contentHeight = viewCode.tableView.estimatedRowHeight * CGFloat(viewModel.numberOfRows)
         let contentInset = viewCode.tableView.contentInset
         

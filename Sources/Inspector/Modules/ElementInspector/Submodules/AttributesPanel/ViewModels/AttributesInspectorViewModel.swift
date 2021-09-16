@@ -20,23 +20,9 @@
 
 import UIKit
 
-protocol AttributesInspectorViewModelProtocol: ElementInspectorPanelViewModelProtocol & ElementInspectorFormViewControllerDataSource {
-    var isHighlightingViews: Bool { get }
-
-    var isLiveUpdating: Bool { get set }
-}
+protocol AttributesInspectorViewModelProtocol: ElementInspectorFormViewControllerDataSource {}
 
 final class AttributesInspectorViewModel {
-    weak var parent: ElementInspectorPanelViewModelProtocol?
-
-    var isCollapsed: Bool = true
-
-    var isHighlightingViews: Bool {
-        reference.isHidingHighlightViews == false
-    }
-
-    var isLiveUpdating: Bool
-
     let reference: ViewHierarchyReference
 
     let snapshot: ViewHierarchySnapshot
@@ -60,7 +46,6 @@ final class AttributesInspectorViewModel {
     ) {
         self.reference = reference
         self.snapshot = snapshot
-        isLiveUpdating = true
     }
 }
 
@@ -68,20 +53,4 @@ final class AttributesInspectorViewModel {
 
 extension AttributesInspectorViewModel: AttributesInspectorViewModelProtocol {
     func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type? { nil }
-
-    var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
-
-    var title: String { reference.elementName }
-
-    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
-
-    var subtitle: String { reference.elementDescription }
-
-    var isContainer: Bool { false }
-
-    var showCollapseButton: Bool { false }
-
-    var isHidden: Bool { false }
-
-    var relativeDepth: Int { .zero }
 }

@@ -20,11 +20,10 @@
 
 import UIKit
 
-protocol ElementSizeInspectorViewModelProtocol: ElementInspectorPanelViewModelProtocol & ElementInspectorFormViewControllerDataSource {}
+protocol ElementSizeInspectorViewModelProtocol: ElementInspectorFormViewControllerDataSource {}
 
 final class ElementSizeInspectorViewModel {
     let reference: ViewHierarchyReference
-    let snapshot: ViewHierarchySnapshot
 
     private(set) lazy var sections: [ElementInspectorFormSection] = {
         guard let referenceView = reference.rootView else { return [] }
@@ -34,9 +33,8 @@ final class ElementSizeInspectorViewModel {
             .flatMap { $0 }
     }()
 
-    init(reference: ViewHierarchyReference, snapshot: ViewHierarchySnapshot) {
+    init(reference: ViewHierarchyReference) {
         self.reference = reference
-        self.snapshot = snapshot
     }
 }
 
@@ -48,31 +46,4 @@ extension ElementSizeInspectorViewModel: ElementSizeInspectorViewModelProtocol {
 
         return AutoLayoutLibrary.viewType(forViewModel: viewModel)
     }
-
-
-    var parent: ElementInspectorPanelViewModelProtocol? {
-        get { nil }
-        set {}
-    }
-
-    var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
-
-    var title: String { reference.elementName }
-
-    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
-
-    var subtitle: String { reference.elementDescription }
-
-    var isContainer: Bool { false }
-
-    var showCollapseButton: Bool { false }
-
-    var isCollapsed: Bool {
-        get { true }
-        set {}
-    }
-
-    var isHidden: Bool { false }
-
-    var relativeDepth: Int { .zero }
 }

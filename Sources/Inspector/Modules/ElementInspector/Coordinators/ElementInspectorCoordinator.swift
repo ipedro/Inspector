@@ -98,12 +98,15 @@ final class ElementInspectorCoordinator: NSObject {
         }()
         
         let populatedReferences = viewHierarchySnapshot.inspectableReferences.filter { $0.rootView === reference.rootView }
-        
+
+        let selectedPanel: ElementInspectorPanel = .preview
+
         guard let populatedReference = populatedReferences.first else {
             let rootViewController = makeElementInspectorViewController(
                 with: viewHierarchySnapshot.rootReference,
+                in: viewHierarchySnapshot,
                 showDismissBarButton: true,
-                selectedPanel: .attributesInspector,
+                selectedPanel: selectedPanel,
                 elementLibraries: viewHierarchySnapshot.elementLibraries,
                 delegate: delegate
             )
@@ -125,8 +128,9 @@ final class ElementInspectorCoordinator: NSObject {
                 
                 let viewController = makeElementInspectorViewController(
                     with: currentReference,
+                    in: viewHierarchySnapshot,
                     showDismissBarButton: currentReference === viewHierarchySnapshot.rootReference,
-                    selectedPanel: .attributesInspector,
+                    selectedPanel: selectedPanel,
                     elementLibraries: viewHierarchySnapshot.elementLibraries,
                     delegate: delegate
                 )
@@ -174,12 +178,14 @@ final class ElementInspectorCoordinator: NSObject {
     
     static func makeElementInspectorViewController(
         with reference: ViewHierarchyReference,
+        in snapshot: ViewHierarchySnapshot,
         showDismissBarButton: Bool,
         selectedPanel: ElementInspectorPanel?,
         elementLibraries: [InspectorElementLibraryProtocol],
         delegate: ElementInspectorPanelViewControllerDelegate
     ) -> ElementInspectorViewController {
         let viewModel = ElementInspectorViewModel(
+            snapshot: snapshot,
             reference: reference,
             showDismissBarButton: showDismissBarButton,
             selectedPanel: selectedPanel,

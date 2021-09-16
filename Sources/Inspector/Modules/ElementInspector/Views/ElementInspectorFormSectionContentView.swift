@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormSectionView {
+class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormSectionView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -44,11 +44,7 @@ final class ElementInspectorFormSectionContentView: BaseControl, InspectorElemen
 
     weak var delegate: InspectorElementFormSectionViewDelegate?
 
-    enum SeparatorStyle {
-        case top
-    }
-
-    var separatorStyle: SeparatorStyle? {
+    var separatorStyle: InspectorSectionSeparatorStyle? {
         get { topSeparatorView.isHidden ? .none : .top }
         set {
             switch newValue {
@@ -108,7 +104,7 @@ final class ElementInspectorFormSectionContentView: BaseControl, InspectorElemen
     var header: SectionHeader
 
     private lazy var headerControl = UIControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
-        $0.addTarget(self, action: #selector(tapHeader), for: .touchUpInside)
+        $0.addTarget(self, action: #selector(toggleSelection), for: .touchUpInside)
         $0.installView(header)
     }
 
@@ -119,6 +115,7 @@ final class ElementInspectorFormSectionContentView: BaseControl, InspectorElemen
     }
 
     private(set) lazy var collapseButton = IconButton(.chevronDown).then {
+        $0.addTarget(self, action: #selector(toggleSelection), for: .touchUpInside)
         $0.tintColor = ElementInspector.appearance.quaternaryTextColor
     }
 
@@ -154,12 +151,7 @@ final class ElementInspectorFormSectionContentView: BaseControl, InspectorElemen
 
         contentView.axis = .horizontal
         contentView.alignment = .top
-        contentView.directionalLayoutMargins = .init(
-            top: ElementInspector.appearance.verticalMargins,
-            leading: 10,
-            bottom: ElementInspector.appearance.horizontalMargins,
-            trailing: ElementInspector.appearance.horizontalMargins
-        )
+        contentView.directionalLayoutMargins = .formSectionContentMargins
         contentView.addArrangedSubviews(collapseButtonContainer, verticalStackView)
         contentView.spacing = 10
 
@@ -176,7 +168,7 @@ final class ElementInspectorFormSectionContentView: BaseControl, InspectorElemen
         topSeparatorView.topAnchor.constraint(equalTo: topAnchor).isActive = true
     }
 
-    @objc private func tapHeader() {
+    @objc private func toggleSelection() {
         isSelected.toggle()
     }
 
@@ -189,4 +181,13 @@ final class ElementInspectorFormSectionContentView: BaseControl, InspectorElemen
     override func stateDidChange(from oldState: UIControl.State, to newState: UIControl.State) {
         delegate?.inspectorElementFormSectionView(self, changedFrom: oldState, to: newState)
     }
+}
+
+extension NSDirectionalEdgeInsets {
+    static let formSectionContentMargins = NSDirectionalEdgeInsets(
+        top: ElementInspector.appearance.verticalMargins,
+        leading: 10,
+        bottom: ElementInspector.appearance.horizontalMargins,
+        trailing: ElementInspector.appearance.horizontalMargins
+    )
 }

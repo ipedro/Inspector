@@ -22,23 +22,58 @@ import UIKit
 
 final class ElementInspectorViewCode: BaseView {
     private(set) lazy var segmentedControl = UISegmentedControl()
-    
+
+    private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView().then {
+        $0.setContentHuggingPriority(.required, for: .vertical)
+    }
+
+    private(set) lazy var separatorView = SeparatorView()
+
+    private lazy var referenceDetailHeightConstraint = referenceDetailView.heightAnchor.constraint(equalToConstant: .zero).then {
+        $0.priority = .defaultHigh
+        $0.isActive = true
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        let size = referenceDetailView.systemLayoutSizeFitting(
+            frame.size,
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+
+        guard size.height != referenceDetailHeightConstraint.constant else { return }
+
+        DispatchQueue.main.async {
+            self.referenceDetailHeightConstraint.constant = size.height
+            self.layoutIfNeeded()
+        }
+    }
+
     private(set) lazy var dismissBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
     
-    private(set) lazy var emptyLabel = UILabel(
-        .text("No Element Inspector"),
-        .textStyle(.body),
-        .textAlignment(.center),
-        .viewOptions(
-            .alpha(0.5)
-        )
-    )
+    private(set) lazy var emptyLabel = SectionHeader(
+        title: "No Element Inspector",
+        titleFont: .body,
+        margins: ElementInspector.appearance.directionalInsets
+    ).then {
+        $0.titleAlignment = .center
+        $0.alpha = 0.5
+    }
+
+    private lazy var containerStackView = UIStackView.vertical().then {
+        $0.addArrangedSubviews(referenceDetailView, separatorView, contentView)
+    }
     
     override func setup() {
         super.setup()
-        
+
+        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+
         contentView.installView(emptyLabel, .margins(.zero), position: .behind)
         
-        installView(contentView, priority: .required)
+        installView(containerStackView, priority: .required)
+        containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
     }
 }

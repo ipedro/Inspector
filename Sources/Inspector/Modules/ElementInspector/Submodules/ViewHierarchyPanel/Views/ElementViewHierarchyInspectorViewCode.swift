@@ -34,7 +34,7 @@ final class ElementViewHierarchyInspectorViewCode: BaseView {
     
     override func setup() {
         super.setup()
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+
         installView(tableView)
     }
 }

@@ -36,14 +36,12 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
 
     var collapseButton: IconButton { referenceDetailView.collapseButton }
 
-    private(set) lazy var detailsButton = IconButton(.sliderHorizontal, style: .plain, size: CGSize(24))
-
-    private lazy var disclosureIcon = Icon(.chevronDown, color: ElementInspector.appearance.tertiaryTextColor).then {
+    private lazy var disclosureIcon = Icon(.chevronDown, color: ElementInspector.appearance.secondaryTextColor).then {
         $0.transform = .init(rotationAngle: -(.pi / 2))
     }
 
     private lazy var containerStackView = UIStackView.horizontal(
-        .arrangedSubviews(referenceDetailView, detailsButton, disclosureIcon),
+        .arrangedSubviews(referenceDetailView, disclosureIcon),
         .spacing(ElementInspector.appearance.verticalMargins / 2),
         .directionalLayoutMargins(trailing: ElementInspector.appearance.verticalMargins / 2),
         .horizontalAlignment(.center)

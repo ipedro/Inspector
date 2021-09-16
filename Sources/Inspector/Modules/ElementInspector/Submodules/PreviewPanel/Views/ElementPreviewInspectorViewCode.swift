@@ -21,52 +21,27 @@
 import AVFoundation
 import UIKit
 
-final class AttributesInspectorThumbnailSectionView: BaseView {
+protocol ElementPreviewInspectorViewCodeDelegate: AnyObject {
+    func elementPreviewInspectorViewCode(_ view: ElementPreviewInspectorViewCode, isPointerInUse: Bool)
+}
+
+final class ElementPreviewInspectorViewCode: BaseView {
     let reference: ViewHierarchyReference
-    
-    var isCollapsed: Bool {
-        get {
-            ElementInspector.configuration.isPreviewPanelCollapsed
-        }
-        set {
-            ElementInspector.configuration.isPreviewPanelCollapsed = newValue
-            hideAccessoryControls(newValue)
+
+    weak var delegate: ElementPreviewInspectorViewCodeDelegate?
+
+    private(set) var isPointerInUse = false {
+        didSet {
+            delegate?.elementPreviewInspectorViewCode(self, isPointerInUse: isPointerInUse)
         }
     }
-    
-    private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView()
-    
-    private func hideAccessoryControls(_ isHidden: Bool) {
-        controlsContainerView.isSafelyHidden = isHidden
-        
-        switch controlsContainerView.isHidden {
-        case true:
-            controlsContainerView.alpha = 0
-            referenceAccessoryButton.isSelected = false
-            
-        case false:
-            controlsContainerView.alpha = 1
-            referenceAccessoryButton.isSelected = true
-        }
-    }
-    
-    private(set) lazy var referenceAccessoryButton = UIButton(type: .custom).then {
-        $0.setImage(.moduleImage(named: "ellipsisCircle"), for: .normal)
-        $0.setImage(.moduleImage(named: "ellipsisCircleFill"), for: .selected)
-        $0.setContentHuggingPriority(.required, for: .horizontal)
-        $0.isSelected = true
-    }
-    
-    private lazy var headerContainerView = UIStackView.horizontal(
-        .directionalLayoutMargins(trailing: 20),
-        .arrangedSubviews(
-            referenceDetailView,
-            referenceAccessoryButton
-        )
-    )
-    
-    private lazy var controlsHeaderTitle = SectionHeader.attributesInspectorHeader(title: "Preview").then {
-        $0.contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(horizontal: ElementInspector.appearance.horizontalMargins)
+
+    private lazy var header = SectionHeader.attributesInspectorHeader(title: "Preview").then {
+        var margins = NSDirectionalEdgeInsets.formSectionContentMargins
+        margins.leading += 14
+        margins.top += ElementInspector.appearance.verticalMargins / 2
+
+        $0.margins = margins
     }
     
     private lazy var controlsContainerView = UIStackView.vertical(
@@ -106,11 +81,10 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
         $0.clipsToBounds = false
     }
     
-    private lazy var separatorView = SeparatorView()
-    
     private lazy var thumbnailHeightConstraint = thumbnailView.heightAnchor.constraint(
         greaterThanOrEqualToConstant: frame.height
     ).then {
+        $0.priority = .defaultHigh
         $0.isActive = true
     }
     
@@ -118,16 +92,8 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
         self.reference = reference
         
         super.init(frame: frame)
-        
-        guard frame.isEmpty == false else {
-            return
-        }
-        
-        widthAnchor.constraint(equalToConstant: frame.width).isActive = true
-        
-        heightAnchor.constraint(equalToConstant: frame.height).isActive = true
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -136,21 +102,14 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
     override func setup() {
         super.setup()
 
-        installView(contentView, priority: .required)
-
         contentView.addArrangedSubviews(
-            headerContainerView,
-            separatorView,
-            controlsHeaderTitle,
+            header,
             controlsContainerView,
-            thumbnailView
+            thumbnailView,
+            UIView()
         )
-        
-        contentView.spacing = ElementInspector.appearance.verticalMargins
-        
-        contentView.setCustomSpacing(.zero, after: headerContainerView)
-        
-        hideAccessoryControls(isCollapsed)
+
+        contentView.setCustomSpacing(ElementInspector.appearance.horizontalMargins, after: controlsContainerView)
     }
     
     override func layoutSubviews() {
@@ -207,4 +166,50 @@ final class AttributesInspectorThumbnailSectionView: BaseView {
         
         thumbnailView.backgroundStyle = backgroundStyle
     }
+
+    #if swift(>=5.0)
+
+    @available(iOS 13.0, *)
+    private lazy var hoverGestureRecognizer = UIHoverGestureRecognizer(
+        target: self,
+        action: #selector(hovering(_:))
+    )
+    
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+
+        guard let window = window else {
+            if #available(iOS 13.0, *) {
+                hoverGestureRecognizer.isEnabled = false
+            }
+
+            return
+        }
+
+        if #available(iOS 13.0, *) {
+            window.addGestureRecognizer(hoverGestureRecognizer)
+            hoverGestureRecognizer.isEnabled = true
+        }
+
+        if #available(iOS 14.0, *) {
+            hoverGestureRecognizer.isEnabled = ProcessInfo().isiOSAppOnMac == false
+        }
+    }
+
+    @available(iOS 13.0, *)
+    @objc
+    func hovering(_ recognizer: UIHoverGestureRecognizer) {
+        switch recognizer.state {
+        case .began, .changed:
+            isPointerInUse = true
+
+        case .ended, .cancelled:
+            isPointerInUse = false
+
+        default:
+            break
+        }
+    }
+    #endif
 }

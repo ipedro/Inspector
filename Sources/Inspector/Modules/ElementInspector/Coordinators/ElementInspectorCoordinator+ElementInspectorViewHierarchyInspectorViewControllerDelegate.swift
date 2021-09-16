@@ -26,7 +26,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorVie
         
         addOperationToQueue(MainThreadOperation(name: "push hierarchy \(reference.displayName)", closure: { [weak self] in
             
-            self?.pushElementInspector(with: reference, selectedPanel: .viewHierarchyInspector, animated: true)
+            self?.pushElementInspector(with: reference, selectedPanel: .viewHierarchy, animated: true)
             
         }))
     }
@@ -39,11 +39,11 @@ extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorVie
                 reference == rootReference,
                 let topElementInspector = self?.navigationController.topViewController as? ElementInspectorViewController
             else {
-                self?.pushElementInspector(with: reference, selectedPanel: .attributesInspector, animated: true)
+                self?.pushElementInspector(with: reference, selectedPanel: .attributes, animated: true)
                 return
             }
             
-            topElementInspector.selectPanelIfAvailable(.attributesInspector)
+            topElementInspector.selectPanelIfAvailable(.attributes)
             
         }))
     }
@@ -51,6 +51,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorVie
     private func pushElementInspector(with reference: ViewHierarchyReference, selectedPanel: ElementInspectorPanel?, animated: Bool) {
         let elementInspectorViewController = Self.makeElementInspectorViewController(
             with: reference,
+            in: viewHierarchySnapshot,
             showDismissBarButton: false,
             selectedPanel: selectedPanel,
             elementLibraries: viewHierarchySnapshot.elementLibraries,
