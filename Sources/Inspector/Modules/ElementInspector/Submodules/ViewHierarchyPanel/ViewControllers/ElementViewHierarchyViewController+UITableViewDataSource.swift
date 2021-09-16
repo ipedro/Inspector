@@ -42,7 +42,8 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
                 title: itemViewModel.title,
                 image: itemViewModel.thumbnailImage,
                 options: .displayInline,
-                for: itemViewModel.reference
+                for: itemViewModel.reference,
+                at: indexPath
             )
 
             return UIMenu(
@@ -54,7 +55,13 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
     }
 
     @available(iOS 13.0, *)
-        private func menuAction(title: String, image: UIImage?, options: UIMenu.Options = .init(), for reference: ViewHierarchyReference) -> UIMenuElement {
+        private func menuAction(
+            title: String,
+            image: UIImage?,
+            options: UIMenu.Options = .init(),
+            for reference: ViewHierarchyReference,
+            at indexPath: IndexPath
+        ) -> UIMenuElement {
         let subviewsActions: [UIMenuElement] = {
             let actions: [UIMenuElement]
 
@@ -77,7 +84,7 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
             return actions.insideDivider()
         }()
 
-        let actions = ElementInspectorPanel.cases(for: reference).map { panel in
+        let selectionActions = ElementInspectorPanel.cases(for: reference).map { panel in
             UIAction(title: panel.title, image: panel.image) { [weak self] _ in
                 guard let self = self else { return }
 
@@ -90,21 +97,27 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
             }
         }
 
+        let toggleCollapseAction = UIAction(
+            title: self.viewModel.itemViewModel(at: indexPath)?.isCollapsed == true ? "Show Children" : "Hide Children") { [weak self] _ in
+                self?.toggleCollapse(indexPath)
+            }
+
         return UIMenu(
             title: title,
             image: image,
             options: options,
-            children: actions + subviewsActions
+            children: [toggleCollapseAction] + (selectionActions + subviewsActions).insideDivider()
         )
     }
 
     @available(iOS 13.0, *)
     private func menuChildReferenceActions(for references: [ViewHierarchyReference]) -> [UIMenuElement] {
-        references.enumerated().map { _, reference in
+        references.enumerated().map { row, reference in
             menuAction(
                 title: reference.accessibilityIdentifier ?? reference.className,
                 image: viewModel.image(for: reference),
-                for: reference
+                for: reference,
+                at: IndexPath(row: row, section: .zero)
             )
         }
     }
@@ -122,12 +135,18 @@ extension ElementViewHierarchyViewController: UITableViewDataSource {
         cell.contentView.isUserInteractionEnabled = true
 
         cell.collapseButton.actionHandler = { [weak self] in
+            self?.toggleCollapse(indexPath)
+        }
+
+        return cell
+    }
+
+    private var toggleCollapse: (IndexPath) -> Void {
+        { [weak self] indexPath in
             guard let self = self else { return }
 
             let actions = self.viewModel.toggleContainer(at: indexPath)
             self.updateTableView(indexPath, with: actions)
         }
-
-        return cell
     }
 }

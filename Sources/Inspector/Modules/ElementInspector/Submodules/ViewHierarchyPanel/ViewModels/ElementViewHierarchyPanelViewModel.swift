@@ -32,24 +32,22 @@ extension ElementInspectorPanelViewModelProtocol {
 }
 
 final class ElementViewHierarchyPanelViewModel {
-    let identifier = UUID()
-    
     weak var parent: ElementInspectorPanelViewModelProtocol?
-    
+
     private var _isCollapsed: Bool
-    
+
     var title: String { reference.elementName }
-    
+
     var subtitle: String { reference.elementDescription }
-    
+
     let rootDepth: Int
-    
+
     var thumbnailImage: UIImage?
-    
+
     // MARK: - Properties
-    
+
     let reference: ViewHierarchyReference
-    
+
     init(
         reference: ViewHierarchyReference,
         parent: ElementInspectorPanelViewModelProtocol? = nil,
@@ -61,23 +59,27 @@ final class ElementViewHierarchyPanelViewModel {
         self.reference = reference
         self.rootDepth = rootDepth
         self.thumbnailImage = thumbnailImage
-        _isCollapsed = isCollapsed
+        self._isCollapsed = isCollapsed
     }
 }
 
 // MARK: - ElementViewHierarchyPanelViewModelProtocol
 
 extension ElementViewHierarchyPanelViewModel: ElementInspectorPanelViewModelProtocol {
+    var automaticallyAdjustIndentation: Bool { true }
+
     var titleFont: UIFont {
-        ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth)
-    }
-    
-    var isHidden: Bool {
-        parent?.isCollapsed == true || parent?.isHidden == true
+        ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth + 2)
     }
 
+    var isHidden: Bool { parent?.isCollapsed == true || parent?.isHidden == true }
+
     var showCollapseButton: Bool { isContainer }
-    
+
+    var isContainer: Bool { reference.isContainer }
+
+    var relativeDepth: Int { reference.depth - rootDepth }
+
     var isCollapsed: Bool {
         get {
             isContainer ? _isCollapsed : true
@@ -86,17 +88,9 @@ extension ElementViewHierarchyPanelViewModel: ElementInspectorPanelViewModelProt
             guard isContainer else {
                 return
             }
-            
+
             _isCollapsed = newValue
         }
-    }
-    
-    var isContainer: Bool {
-        reference.isContainer
-    }
-    
-    var relativeDepth: Int {
-        reference.depth - rootDepth
     }
 }
 
@@ -104,11 +98,11 @@ extension ElementViewHierarchyPanelViewModel: ElementInspectorPanelViewModelProt
 
 extension ElementViewHierarchyPanelViewModel: Hashable {
     static func == (lhs: ElementViewHierarchyPanelViewModel, rhs: ElementViewHierarchyPanelViewModel) -> Bool {
-        lhs.identifier == rhs.identifier
+        lhs.reference.viewIdentifier == rhs.reference.viewIdentifier
     }
-    
+
     func hash(into hasher: inout Hasher) {
-        identifier.hash(into: &hasher)
+        reference.viewIdentifier.hash(into: &hasher)
     }
 }
 
@@ -121,7 +115,7 @@ private extension ElementViewHierarchyPanelViewModel {
             height: ElementInspector.appearance.horizontalMargins * 1.5
         )
     ).withRenderingMode(.alwaysTemplate)
-    
+
     static let thumbnailImageIsHidden = IconKit.imageOfEyeSlashFill(
         CGSize(
             width: ElementInspector.appearance.horizontalMargins * 1.5,

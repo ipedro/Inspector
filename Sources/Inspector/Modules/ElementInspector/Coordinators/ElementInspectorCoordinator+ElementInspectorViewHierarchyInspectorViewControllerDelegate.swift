@@ -23,14 +23,23 @@ import UIKit
 extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorViewControllerDelegate {
     func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController,
                                          didSelect reference: ViewHierarchyReference,
-                                         with preferredPanel: ElementInspectorPanel,
+                                         with preferredPanel: ElementInspectorPanel?,
                                          from rootReference: ViewHierarchyReference) {
         operationQueue.cancelAllOperations()
 
         let pushOperation = MainThreadOperation(name: "Push \(reference.displayName)") { [weak self] in
             guard let self = self else { return }
             
-            let selectedPanel = ElementInspectorPanel.cases(for: reference).contains(preferredPanel) ? preferredPanel : .preview
+            let selectedPanel: ElementInspectorPanel = {
+                guard
+                    let preferredPanel = preferredPanel,
+                    ElementInspectorPanel.cases(for: reference).contains(preferredPanel)
+                else {
+                    return .preview
+                }
+
+                return preferredPanel
+            }()
 
             let elementInspectorViewController = Self.makeElementInspectorViewController(
                 with: reference,

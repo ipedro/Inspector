@@ -49,6 +49,7 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
 
     var viewModel: ElementInspectorPanelViewModelProtocol? {
         didSet {
+            contentView.isUserInteractionEnabled = true
             referenceDetailView.viewModel = viewModel
         }
     }
@@ -84,12 +85,36 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
 
         backgroundColor = ElementInspector.appearance.panelBackgroundColor
 
+        collapseButton.isEnabled = false
+
+        installView(contentView, priority: .required)
+
         contentView.installView(containerStackView)
     }
 
-    override func prepareForReuse() {
-        super.prepareForReuse()
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        guard
+            event?.type == .touches,
+            isPointNearCollapseButton(point) || super.hitTest(point, with: event) === collapseButton
+        else {
+            return super.hitTest(point, with: event)
+        }
 
-        viewModel = nil
+        DispatchQueue.main.async {
+            self.debounce(#selector(self.triggerCollapseButton), after: 0.15, object: nil)
+        }
+
+        return nil
     }
+
+    @objc private func triggerCollapseButton() {
+        collapseButton.actionHandler?()
+    }
+
+    private func isPointNearCollapseButton(_ point: CGPoint) -> Bool {
+        let buttonFrame = collapseButton.convert(collapseButton.bounds, to: self)
+
+        return bounds.contains(point) && point.x <= buttonFrame.maxX + referenceDetailView.contentView.spacing
+    }
+
 }

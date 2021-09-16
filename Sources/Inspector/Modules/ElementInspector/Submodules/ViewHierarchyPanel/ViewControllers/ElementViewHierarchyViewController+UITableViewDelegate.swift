@@ -30,7 +30,7 @@ extension ElementViewHierarchyViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let selectedItemViewModel = viewModel.itemViewModel(at: indexPath) else { return }
 
-        delegate?.viewHierarchyListViewController(self, didSelect: selectedItemViewModel.reference, with: .viewHierarchy, from: viewModel.rootReference)
+        delegate?.viewHierarchyListViewController(self, didSelect: selectedItemViewModel.reference, with: .none, from: viewModel.rootReference)
     }
 }
 
@@ -49,29 +49,30 @@ extension ElementViewHierarchyViewController {
         }
         
         tableView.performBatchUpdates({
-                                          actions.forEach {
-                                              switch $0 {
-                                              case let .inserted(indexPaths):
-                                                  insertedIndexPaths.append(contentsOf: indexPaths)
-                    
-                                                  tableView.insertRows(at: indexPaths, with: .top)
-                    
-                                              case let .deleted(indexPaths):
-                                                  tableView.deleteRows(at: indexPaths, with: .top)
-                                              }
-                                          }
-            
-                                      },
-                                      completion: { [weak self] _ in
-                                          guard let self = self else {
-                                              return
-                                          }
-            
-                                          self.updatePreferredContentSize()
-            
-                                          self.updateVisibleRowsBackgroundColor()
-            
-                                      })
+            actions.forEach {
+                  switch $0 {
+                  case let .inserted(indexPaths):
+                      insertedIndexPaths.append(contentsOf: indexPaths)
+
+                      tableView.insertRows(at: indexPaths, with: .top)
+
+                  case let .deleted(indexPaths):
+                      tableView.deleteRows(at: indexPaths, with: .top)
+                  }
+              }
+
+          },
+          completion: { [weak self] _ in
+              guard let self = self else {
+                  return
+              }
+
+              self.updatePreferredContentSize()
+
+              self.updateVisibleRowsBackgroundColor()
+
+          }
+        )
     }
     
     func updateVisibleRowsBackgroundColor(_ completion: ((Bool) -> Void)? = nil) {

@@ -84,7 +84,13 @@ final class IconButton: BaseControl {
         contentView.addArrangedSubview(icon)
         contentView.directionalLayoutMargins = style.layoutMargins
 
+        addTarget(self, action: #selector(touchUpInside), for: .touchUpInside)
+
         applyStyle()
+    }
+
+    @objc private func touchUpInside() {
+        actionHandler?()
     }
 
     override func layoutSubviews() {
@@ -95,16 +101,12 @@ final class IconButton: BaseControl {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-
         animate(.in)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-
         animate(.out)
-
-        actionHandler?()
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {

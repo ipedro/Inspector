@@ -44,9 +44,9 @@ protocol ElementViewHierarchyInspectorViewModelProtocol {
 final class ElementViewHierarchyInspectorViewModel: NSObject {
     let rootReference: ViewHierarchyReference
     
-    private(set) var childViewModels: [ElementViewHierarchyPanelViewModel] {
+    private(set) var children: [ElementViewHierarchyPanelViewModel] {
         didSet {
-            updateVisibleChildViews()
+            updateVisibleChildren()
         }
     }
     
@@ -64,7 +64,7 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
             isCollapsed: reference.depth >= rootDepth
         )
         
-        let childrenViewModels: [[ElementViewHierarchyPanelViewModel]] = reference.children.map { childReference in
+        let childrenViewModels: [ElementViewHierarchyPanelViewModel] = reference.children.flatMap { childReference in
             makeViewModels(
                 reference: childReference,
                 parent: viewModel,
@@ -73,10 +73,10 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
             )
         }
         
-        return [viewModel] + childrenViewModels.flatMap { $0 }
+        return [viewModel] + childrenViewModels
     }
     
-    private lazy var visibleChildViewModels: [ElementViewHierarchyPanelViewModel] = []
+    private lazy var visibleChildren: [ElementViewHierarchyPanelViewModel] = []
     
     let snapshot: ViewHierarchySnapshot
     
@@ -91,30 +91,26 @@ final class ElementViewHierarchyInspectorViewModel: NSObject {
             rootDepth: rootReference.depth + 1 // account for removal of root reference
         )
 
-        let childViewModels = Array(viewModelsIncludingRoot.dropFirst())
+        let children = Array(viewModelsIncludingRoot.dropFirst())
 
-        self.childViewModels = childViewModels
+        self.children = children
 
         super.init()
         
-        updateVisibleChildViews()
+        updateVisibleChildren()
     }
 }
 
 extension ElementViewHierarchyInspectorViewModel: ElementViewHierarchyInspectorViewModelProtocol {
     func shouldHighlightItem(at indexPath: IndexPath) -> Bool { true }
 
-    var title: String {
-        "More info"
-    }
+    var title: String { "More info" }
     
-    var numberOfRows: Int {
-        visibleChildViewModels.count
-    }
+    var numberOfRows: Int { visibleChildren.count }
     
     func reloadIcons() {
-        childViewModels.forEach { childViewModel in
-            childViewModel.thumbnailImage = snapshot.elementLibraries.icon(for: childViewModel.reference.rootView)
+        children.forEach { child in
+            child.thumbnailImage = snapshot.elementLibraries.icon(for: child.reference.rootView)
         }
     }
 
@@ -123,52 +119,40 @@ extension ElementViewHierarchyInspectorViewModel: ElementViewHierarchyInspectorV
     }
     
     func itemViewModel(at indexPath: IndexPath) -> ElementInspectorPanelViewModelProtocol? {
-        let visibleChildViewModels = self.visibleChildViewModels
-        
-        guard indexPath.row < visibleChildViewModels.count else {
-            return nil
-        }
-        
-        return visibleChildViewModels[indexPath.row]
+        guard indexPath.row < visibleChildren.count else { return nil }
+
+        return visibleChildren[indexPath.row]
     }
     
     func toggleContainer(at indexPath: IndexPath) -> [ElementInspector.ViewHierarchyInspectorAction] {
-        guard indexPath.row < visibleChildViewModels.count else {
-            return []
-        }
+        guard indexPath.row < visibleChildren.count else { return [] }
         
-        let container = visibleChildViewModels[indexPath.row]
+        let container = visibleChildren[indexPath.row]
         
-        guard container.isContainer else {
-            return []
-        }
+        guard container.isContainer else { return [] }
         
         container.isCollapsed.toggle()
         
-        let oldVisibleChildren = visibleChildViewModels
+        let oldVisibleChildren = visibleChildren
         
-        updateVisibleChildViews()
+        updateVisibleChildren()
         
-        let addedChildren = Set(visibleChildViewModels).subtracting(oldVisibleChildren)
+        let addedChildren = Set(visibleChildren).subtracting(oldVisibleChildren)
         
-        let deletedChildren = Set(oldVisibleChildren).subtracting(visibleChildViewModels)
+        let deletedChildren = Set(oldVisibleChildren).subtracting(visibleChildren)
         
         var deletedIndexPaths = [IndexPath]()
         
         var insertedIndexPaths = [IndexPath]()
         
         for child in deletedChildren {
-            guard let row = oldVisibleChildren.firstIndex(of: child) else {
-                continue
-            }
+            guard let row = oldVisibleChildren.firstIndex(of: child) else { continue }
             
             deletedIndexPaths.append(IndexPath(row: row, section: 0))
         }
         
         for child in addedChildren {
-            guard let row = visibleChildViewModels.firstIndex(of: child) else {
-                continue
-            }
+            guard let row = visibleChildren.firstIndex(of: child) else { continue }
             
             insertedIndexPaths.append(IndexPath(row: row, section: 0))
         }
@@ -186,7 +170,7 @@ extension ElementViewHierarchyInspectorViewModel: ElementViewHierarchyInspectorV
         return actions
     }
     
-    private func updateVisibleChildViews() {
-        visibleChildViewModels = childViewModels.filter { $0.isHidden == false }
+    private func updateVisibleChildren() {
+        visibleChildren = children.filter { $0.isHidden == false }
     }
 }

@@ -23,7 +23,7 @@ import UIKit
 protocol ElementInspectorViewHierarchyInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController,
                                          didSelect reference: ViewHierarchyReference,
-                                         with preferredPanel: ElementInspectorPanel,
+                                         with preferredPanel: ElementInspectorPanel?,
                                          from rootReference: ViewHierarchyReference)
 }
 

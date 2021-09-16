@@ -38,6 +38,8 @@ protocol ViewHierarchyReferenceDetailViewModelProtocol {
     var isHidden: Bool { get }
     
     var relativeDepth: Int { get }
+
+    var automaticallyAdjustIndentation: Bool { get }
 }
 
 final class ViewHierarchyReferenceDetailView: BaseView {
@@ -57,7 +59,8 @@ final class ViewHierarchyReferenceDetailView: BaseView {
 
             let hideCollapse = viewModel?.showCollapseButton != true
             collapseButton.isHidden = hideCollapse
-            collapseButton.isUserInteractionEnabled = !hideCollapse
+
+            collapseButtonContainer.isHidden = hideCollapse && viewModel?.automaticallyAdjustIndentation == false
 
             // Description
 
@@ -65,19 +68,19 @@ final class ViewHierarchyReferenceDetailView: BaseView {
 
             // Containers Insets
 
-            let relativeDepth = CGFloat(viewModel?.relativeDepth ?? 0)
-            let offset = (ElementInspector.appearance.verticalMargins * relativeDepth)
-            
+            let relativeDepth = viewModel?.relativeDepth ?? 0
+            let indentation = CGFloat(relativeDepth) * 15
+
             var directionalLayoutMargins = contentView.directionalLayoutMargins
-            directionalLayoutMargins.leading = offset
-            
+            directionalLayoutMargins.leading = indentation
+
             contentView.directionalLayoutMargins = directionalLayoutMargins
         }
     }
     
     var isCollapsed = false {
         didSet {
-            collapseButton.transform = .init(rotationAngle: isCollapsed ? -(.pi / 2) : .zero)
+            collapseButtonContainer.transform = .init(rotationAngle: isCollapsed ? -(.pi / 2) : .zero)
         }
     }
     
@@ -111,10 +114,14 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         $0.font = .preferredFont(forTextStyle: .caption2)
         $0.textColor = ElementInspector.appearance.secondaryTextColor
         $0.numberOfLines = .zero
-        $0.preferredMaxLayoutWidth = 200
+        //$0.preferredMaxLayoutWidth = 200
         $0.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
     }
-    
+
+    private lazy var collapseButtonContainer = UIView().then {
+        $0.installView(collapseButton)
+    }
+
     private(set) lazy var collapseButton = IconButton(.chevronDown).then {
         $0.tintColor = ElementInspector.appearance.quaternaryTextColor
     }
@@ -146,7 +153,7 @@ final class ViewHierarchyReferenceDetailView: BaseView {
         contentView.spacing = ElementInspector.appearance.verticalMargins
         contentView.alignment = .center
         
-        contentView.addArrangedSubviews(collapseButton, thumbnailImageView, textStackView)
+        contentView.addArrangedSubviews(collapseButtonContainer, thumbnailImageView, textStackView)
         
         installView(
             contentView,
