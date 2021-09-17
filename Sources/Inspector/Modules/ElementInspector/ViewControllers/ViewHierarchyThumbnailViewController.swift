@@ -62,7 +62,7 @@ final class ViewHierarchyThumbnailViewController: UIViewController {
     }
 
     private(set) lazy var viewCode = BaseView().then {
-        $0.backgroundColor = Inspector.configuration.colorStyle.highlightBackgroundColor
+        $0.backgroundColor = $0.colorStyle.highlightBackgroundColor
     }
 
     private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView().then {

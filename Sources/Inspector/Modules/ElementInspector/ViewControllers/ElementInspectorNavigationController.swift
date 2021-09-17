@@ -30,9 +30,9 @@ final class ElementInspectorNavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.tintColor = Inspector.configuration.colorStyle.textColor
+        view.tintColor = view.colorStyle.textColor
         
-        view.backgroundColor = Inspector.configuration.colorStyle.backgroundColor
+        view.backgroundColor = view.colorStyle.backgroundColor
         
         navigationBar.barStyle = .black
         

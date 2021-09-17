@@ -23,8 +23,8 @@ import UIKit
 final class AccessoryControl: BaseControl {
     override var isEnabled: Bool {
         didSet {
-            alpha = isEnabled ? 1 : Inspector.configuration.colorStyle.disabledAlpha
-            backgroundColor = isEnabled ? Inspector.configuration.colorStyle.accessoryControlBackgroundColor : Inspector.configuration.colorStyle.accessoryControlDisabledBackgroundColor
+            alpha = isEnabled ? 1 : colorStyle.disabledAlpha
+            backgroundColor = isEnabled ? colorStyle.accessoryControlBackgroundColor : colorStyle.accessoryControlDisabledBackgroundColor
         }
     }
     
@@ -41,6 +41,6 @@ final class AccessoryControl: BaseControl {
         
         layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
         
-        backgroundColor = Inspector.configuration.colorStyle.accessoryControlBackgroundColor
+        backgroundColor = colorStyle.accessoryControlBackgroundColor
     }
 }

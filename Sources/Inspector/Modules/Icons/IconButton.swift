@@ -45,7 +45,7 @@ final class IconButton: BaseControl {
         tintColor: UIColor = Inspector.configuration.colorStyle.textColor,
         actionHandler: Action? = nil
     ) {
-        icon = Icon(glyph, color: Inspector.configuration.colorStyle.textColor, size: size)
+        icon = Icon(glyph, color: tintColor, size: size)
         self.style = style
         self.actionHandler = actionHandler
         super.init(frame: .zero)

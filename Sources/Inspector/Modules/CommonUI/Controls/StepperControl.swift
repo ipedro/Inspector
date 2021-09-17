@@ -111,7 +111,7 @@ final class StepperControl: BaseFormControl {
 
     private func updateState() {
         stepperControl.alpha = isEnabled ? 1 : 0.5
-        counterLabel.textColor = isEnabled ? Inspector.configuration.colorStyle.tintColor : Inspector.configuration.colorStyle.textColor
+        counterLabel.textColor = isEnabled ? colorStyle.tintColor : colorStyle.textColor
     }
     
 }

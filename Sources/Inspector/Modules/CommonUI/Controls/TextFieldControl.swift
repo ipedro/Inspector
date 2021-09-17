@@ -26,7 +26,7 @@ final class TextFieldControl: BaseFormControl {
     // MARK: - Properties
     
     private lazy var textField = UITextField().then {
-        $0.textColor = Inspector.configuration.colorStyle.textColor
+        $0.textColor = colorStyle.textColor
         $0.adjustsFontSizeToFitWidth = true
         $0.font = defaultFont
         $0.borderStyle = .none
@@ -70,7 +70,7 @@ final class TextFieldControl: BaseFormControl {
             textField.attributedPlaceholder = NSAttributedString(
                 placeholder,
                 .font(textField.font ?? defaultFont),
-                .foregroundColor(Inspector.configuration.colorStyle.tertiaryTextColor)
+                .foregroundColor(colorStyle.tertiaryTextColor)
             )
         }
     }

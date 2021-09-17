@@ -39,13 +39,13 @@ final class OptionListControl: BaseFormControl {
     
     private lazy var icon = Icon(
         .chevronUpDown,
-        color: Inspector.configuration.colorStyle.secondaryTextColor,
+        color: colorStyle.secondaryTextColor,
         size: CGSize(width: 14, height: 14)
     )
     
     private lazy var valueLabel = UILabel(
         .textStyle(.footnote),
-        .textColor(Inspector.configuration.colorStyle.textColor),
+        .textColor(colorStyle.textColor),
         .adjustsFontSizeToFitWidth(true),
         .minimumScaleFactor(0.6)
     )

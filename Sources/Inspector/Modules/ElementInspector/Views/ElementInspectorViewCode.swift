@@ -69,7 +69,7 @@ final class ElementInspectorViewCode: BaseView {
     override func setup() {
         super.setup()
 
-        backgroundColor = Inspector.configuration.colorStyle.backgroundColor
+        backgroundColor = colorStyle.backgroundColor
 
         contentView.installView(emptyLabel, .margins(.zero), position: .behind)
         

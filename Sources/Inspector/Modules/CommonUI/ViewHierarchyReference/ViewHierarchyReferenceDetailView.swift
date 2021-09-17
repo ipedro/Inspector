@@ -102,7 +102,7 @@ final class ViewHierarchyReferenceDetailView: BaseView {
     }
     
     private(set) lazy var elementNameLabel = SelectableLabel().then {
-        $0.textColor = Inspector.configuration.colorStyle.textColor
+        $0.textColor = colorStyle.textColor
         $0.numberOfLines = 1
         $0.adjustsFontSizeToFitWidth = true
         $0.minimumScaleFactor = 0.75
@@ -112,7 +112,7 @@ final class ViewHierarchyReferenceDetailView: BaseView {
     
     private(set) lazy var descriptionLabel = SelectableLabel().then {
         $0.font = .preferredFont(forTextStyle: .caption2)
-        $0.textColor = Inspector.configuration.colorStyle.secondaryTextColor
+        $0.textColor = colorStyle.secondaryTextColor
         $0.numberOfLines = .zero
         //$0.preferredMaxLayoutWidth = 200
         $0.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
@@ -123,13 +123,13 @@ final class ViewHierarchyReferenceDetailView: BaseView {
     }
 
     private(set) lazy var collapseButton = IconButton(.chevronDown).then {
-        $0.tintColor = Inspector.configuration.colorStyle.quaternaryTextColor
+        $0.tintColor = colorStyle.quaternaryTextColor
     }
 
     private(set) lazy var thumbnailImageView = UIImageView(
         .contentMode(.center),
-        .tintColor(Inspector.configuration.colorStyle.textColor),
-        .backgroundColor(Inspector.configuration.colorStyle.quaternaryTextColor),
+        .tintColor(colorStyle.textColor),
+        .backgroundColor(colorStyle.quaternaryTextColor),
         .layerOptions(.cornerRadius(ElementInspector.appearance.verticalMargins / 2)),
         .clipsToBounds(true),
         .layoutCompression(

@@ -51,7 +51,7 @@ final class ImagePreviewControl: BaseFormControl {
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapImage))
     
     private lazy var imageContainerView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)).then {
-        $0.backgroundColor = Inspector.configuration.colorStyle.backgroundColor
+        $0.backgroundColor = colorStyle.backgroundColor
         
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 5
@@ -70,7 +70,7 @@ final class ImagePreviewControl: BaseFormControl {
     
     private lazy var imageNameLabel = UILabel(
         .textStyle(.footnote),
-        .textColor(Inspector.configuration.colorStyle.textColor),
+        .textColor(colorStyle.textColor),
         .huggingPriority(.defaultHigh, for: .horizontal)
     )
     

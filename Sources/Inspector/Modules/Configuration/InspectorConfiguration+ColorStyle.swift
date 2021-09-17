@@ -120,3 +120,7 @@ public extension InspectorConfiguration {
     }
 
 }
+
+extension UIView {
+    var colorStyle: InspectorConfiguration.ColorStyle { Inspector.configuration.colorStyle }
+}

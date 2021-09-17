@@ -28,7 +28,7 @@ final class OptionSelectorViewCode: BaseView {
     override func setup() {
         super.setup()
 
-        backgroundColor = Inspector.configuration.colorStyle.highlightBackgroundColor
+        backgroundColor = colorStyle.highlightBackgroundColor
         
         contentView.addArrangedSubview(pickerView)
     }

@@ -24,7 +24,7 @@ class BaseFormControl: BaseControl {
     private(set) lazy var titleLabel = UILabel(
         .textStyle(.footnote),
         .huggingPriority(.fittingSizeLevel, for: .horizontal),
-        .textColor(Inspector.configuration.colorStyle.textColor)
+        .textColor(colorStyle.textColor)
     )
     
     private(set) lazy var contentContainerView = UIStackView.horizontal().then {
@@ -87,7 +87,7 @@ class BaseFormControl: BaseControl {
     override open func setup() {
         super.setup()
 
-        tintColor = Inspector.configuration.colorStyle.textColor
+        tintColor = colorStyle.textColor
         
         installView(containerView, priority: .required)
         

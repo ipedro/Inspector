@@ -83,7 +83,7 @@ final class ElementInspectorLayoutConstraintCard: BaseCardControl, InspectorElem
             leading: ElementInspector.appearance.verticalMargins / 2,
             bottom: ElementInspector.appearance.verticalMargins / 2
         )
-        backgroundColor = Inspector.configuration.colorStyle.highlightBackgroundColor
+        backgroundColor = colorStyle.highlightBackgroundColor
 
         contentView.addArrangedSubview(formView)
     }

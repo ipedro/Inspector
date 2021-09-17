@@ -69,7 +69,7 @@ final class HierarchyInspectorViewCode: BaseView {
     )
     
     private lazy var blurView: UIVisualEffectView = {
-        let blur = UIBlurEffect(style: Inspector.configuration.colorStyle.blurStyle)
+        let blur = UIBlurEffect(style: colorStyle.blurStyle)
         
         let blurView = UIVisualEffectView(effect: blur)
         blurView.translatesAutoresizingMaskIntoConstraints = false
@@ -79,9 +79,9 @@ final class HierarchyInspectorViewCode: BaseView {
         blurView.layer.borderColor = {
             switch Inspector.configuration.colorStyle {
             case .dark:
-                return Inspector.configuration.colorStyle.tertiaryTextColor.cgColor
+                return colorStyle.tertiaryTextColor.cgColor
             case .light:
-                return Inspector.configuration.colorStyle.quaternaryTextColor.cgColor
+                return colorStyle.quaternaryTextColor.cgColor
             }
         }()
         
@@ -136,11 +136,11 @@ final class HierarchyInspectorViewCode: BaseView {
     override func setup() {
         super.setup()
 
-        tintColor = Inspector.configuration.colorStyle.textColor
+        tintColor = colorStyle.textColor
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
         preservesSuperviewLayoutMargins = false
         
-        layer.shadowColor = Inspector.configuration.colorStyle.shadowColor.cgColor
+        layer.shadowColor = colorStyle.shadowColor.cgColor
         layer.shadowOffset = .init(width: 0, height: 6)
         layer.shadowOpacity = 1
         layer.shadowRadius = verticalMargin / 2

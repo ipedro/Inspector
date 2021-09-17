@@ -36,7 +36,7 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
 
     var collapseButton: IconButton { referenceDetailView.collapseButton }
 
-    private lazy var disclosureIcon = Icon(.chevronDown, color: Inspector.configuration.colorStyle.secondaryTextColor).then {
+    private lazy var disclosureIcon = Icon(.chevronDown, color: colorStyle.secondaryTextColor).then {
         $0.transform = .init(rotationAngle: -(.pi / 2))
     }
 
@@ -58,10 +58,10 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
         didSet {
             switch isEvenRow {
             case true:
-                backgroundColor = Inspector.configuration.colorStyle.backgroundColor
+                backgroundColor = colorStyle.backgroundColor
 
             case false:
-                backgroundColor = Inspector.configuration.colorStyle.highlightBackgroundColor
+                backgroundColor = colorStyle.highlightBackgroundColor
             }
         }
     }
@@ -71,7 +71,7 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
     }
 
     private lazy var customSelectedBackgroundView = UIView(
-        .backgroundColor(Inspector.configuration.colorStyle.softTintColor)
+        .backgroundColor(colorStyle.softTintColor)
     )
 
     private func setup() {
@@ -83,7 +83,7 @@ final class ElementViewHierarchyInspectorTableViewCodeCell: UITableViewCell {
 
         selectedBackgroundView = customSelectedBackgroundView
 
-        backgroundColor = Inspector.configuration.colorStyle.backgroundColor
+        backgroundColor = colorStyle.backgroundColor
 
         collapseButton.isEnabled = false
 

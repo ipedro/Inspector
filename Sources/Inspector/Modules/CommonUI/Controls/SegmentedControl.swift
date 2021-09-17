@@ -25,12 +25,12 @@ extension UISegmentedControl {
 
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {
-            segmentedControl.selectedSegmentTintColor = Inspector.configuration.colorStyle.tintColor
-            segmentedControl.setTitleTextAttributes([.foregroundColor: Inspector.configuration.colorStyle.secondaryTextColor], for: .normal)
-            segmentedControl.setTitleTextAttributes([.foregroundColor: Inspector.configuration.colorStyle.selectedSegmentedControlForegroundColor], for: .selected)
+            segmentedControl.selectedSegmentTintColor = segmentedControl.colorStyle.tintColor
+            segmentedControl.setTitleTextAttributes([.foregroundColor: segmentedControl.colorStyle.secondaryTextColor], for: .normal)
+            segmentedControl.setTitleTextAttributes([.foregroundColor: segmentedControl.colorStyle.selectedSegmentedControlForegroundColor], for: .selected)
         }
         #else
-        segmentedControl.tintColor = Inspector.configuration.colorStyle.tintColor
+        segmentedControl.tintColor = colorStyle.tintColor
         #endif
 
         return segmentedControl

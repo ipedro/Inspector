@@ -259,12 +259,12 @@ private extension HighlightView {
     func updateColors(isTouching: Bool = false) {
         switch isTouching {
         case true:
-            layerBackgroundColor = color.withAlphaComponent(Inspector.configuration.colorStyle.disabledAlpha)
+            layerBackgroundColor = color.withAlphaComponent(colorStyle.disabledAlpha)
             layerBorderColor = color.withAlphaComponent(1)
             
         case false:
-            layerBackgroundColor = color.withAlphaComponent(Inspector.configuration.colorStyle.disabledAlpha / 10)
-            layerBorderColor = color.withAlphaComponent(Inspector.configuration.colorStyle.disabledAlpha * 2)
+            layerBackgroundColor = color.withAlphaComponent(colorStyle.disabledAlpha / 10)
+            layerBorderColor = color.withAlphaComponent(colorStyle.disabledAlpha * 2)
         }
     }
 }

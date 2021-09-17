@@ -59,7 +59,7 @@ final class ColorPreviewControl: BaseFormControl {
     
     private lazy var colorDisplayLabel = UILabel(
         .textStyle(.footnote),
-        .textColor(Inspector.configuration.colorStyle.textColor),
+        .textColor(colorStyle.textColor),
         .huggingPriority(.defaultHigh, for: .horizontal)
     )
     
@@ -93,7 +93,7 @@ final class ColorPreviewControl: BaseFormControl {
         }
         #else
         accessoryControl.isUserInteractionEnabled = false
-        colorDisplayLabel.textColor = Inspector.configuration.colorStyle.tintColor
+        colorDisplayLabel.textColor = colorStyle.tintColor
         accessoryControl.backgroundColor = nil
         var margins = accessoryControl.contentView.directionalLayoutMargins
         margins.leading = 0
@@ -132,7 +132,7 @@ extension ColorPreviewControl {
         override func setup() {
             super.setup()
             
-            backgroundColor = Inspector.configuration.colorStyle.tertiaryTextColor
+            backgroundColor = colorStyle.tertiaryTextColor
             
             layer.cornerRadius = 5
             
