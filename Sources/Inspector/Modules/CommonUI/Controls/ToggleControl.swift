@@ -24,7 +24,13 @@ extension UISwitch {
     static func toggleControlSyle() -> UISwitch {
         let switchControl = UISwitch()
         switchControl.onTintColor = Inspector.configuration.colorStyle.tintColor
-        switchControl.thumbTintColor = UIColor.white.withAlphaComponent(Inspector.configuration.colorStyle.disabledAlpha)
+
+        switch Inspector.configuration.colorStyle {
+        case .dark:
+            switchControl.thumbTintColor = UIColor.white.withAlphaComponent(Inspector.configuration.colorStyle.disabledAlpha)
+        case .light:
+            switchControl.thumbTintColor = UIColor.white.withAlphaComponent(Inspector.configuration.colorStyle.disabledAlpha * 2)
+        }
 
         return switchControl
     }

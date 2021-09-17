@@ -141,9 +141,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         super.viewWillAppear(animated)
 
         if animated {
-            viewCode.animate(.in) { [weak self] _ in
-                self?.reloadData()
-            }
+            viewCode.animate(.in)
         }
 
         if shouldToggleFirstResponderOnAppear {
