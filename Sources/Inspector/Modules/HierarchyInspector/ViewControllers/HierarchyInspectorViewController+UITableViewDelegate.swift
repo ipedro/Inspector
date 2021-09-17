@@ -30,7 +30,7 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
         }
         
         for cell in viewCode.tableView.visibleCells {
-            guard let cell = cell as? InspectorBaseTableViewCell else {
+            guard let cell = cell as? HierarchyInspectorTableViewCell else {
                 return
             }
             
@@ -52,7 +52,7 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterView(HierarchyInspectorHeaderView.self)
+        let header = tableView.dequeueReusableHeaderFooterView(HierarchyInspectorTableViewHeaderView.self)
         header.title = viewModel.titleForHeader(in: section)
         header.showSeparatorView = section > .zero
         return header

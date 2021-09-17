@@ -21,8 +21,8 @@
 @_implementationOnly import UIKeyCommandTableView
 import UIKit
 
-protocol HierarchyInspectorViewDelegate: AnyObject {
-    func hierarchyInspectorViewDidTapOutside(_ view: HierarchyInspectorViewCode)
+protocol HierarchyInspectorViewCodeDelegate: AnyObject {
+    func hierarchyInspectorViewCodeDidTapOutside(_ view: HierarchyInspectorViewCode)
 }
 
 final class HierarchyInspectorViewCode: BaseView {
@@ -46,7 +46,7 @@ final class HierarchyInspectorViewCode: BaseView {
         }
     }
     
-    weak var delegate: HierarchyInspectorViewDelegate?
+    weak var delegate: HierarchyInspectorViewCodeDelegate?
     
     private(set) lazy var searchView = HierarchyInspectorSearchView()
     
@@ -105,6 +105,8 @@ final class HierarchyInspectorViewCode: BaseView {
     }
     
     @objc func updateTableViewHeight() {
+        guard window != nil else { return }
+
         let height = round(tableViewContentSize.height + tableView.contentInset.verticalInsets)
         
         guard tableViewHeightConstraint.constant != height else {
@@ -169,7 +171,7 @@ final class HierarchyInspectorViewCode: BaseView {
         }
         
         DispatchQueue.main.async {
-            self.delegate?.hierarchyInspectorViewDidTapOutside(self)
+            self.delegate?.hierarchyInspectorViewCodeDidTapOutside(self)
         }
         
         return false

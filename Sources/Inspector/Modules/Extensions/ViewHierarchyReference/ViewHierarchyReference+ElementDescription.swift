@@ -19,90 +19,113 @@
 //  SOFTWARE.
 
 import Foundation
+import UIKit
 
 extension ViewHierarchyReference {
-    var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        guard let view = rootView else { return [] }
-
-        return view.constraints.compactMap {
-            NSLayoutConstraintInspectableViewModel(with: $0, in: view)
-        }
-        .uniqueValues()
-    }
-
-    var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        constraintReferences.filter { $0.axis == .horizontal }
-    }
-
-    var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        constraintReferences.filter { $0.axis == .vertical }
-    }
-
     var elementDescription: String {
-        var strings = [String?]()
-        
-        var constraints: String? {
-            let totalCount = constraintReferences.count
-
-            if totalCount == .zero {
-                return nil
-            }
-            else {
-                return totalCount == 1 ? "1 Constraint" : "\(totalCount) Constraints"
-            }
-
-//            let components: [String?] = [
-//                "\(totalCount == 1 ? "1 Constraint" : "\(totalCount) Constraints")",
-//                "",
-//                horizontal.isEmpty ? nil : "Horizontal Constraints",
-//                horizontal.prefix(3).compactMap { $0.displayName }.joined(separator: "\n"),
-//                horizontal.count > 3 ? "..." : nil,
-//                "",
-//                vertical.isEmpty ? nil : "Vertical Constraints",
-//                vertical.prefix(3).compactMap { $0.displayName }.joined(separator: "\n"),
-//                vertical.count > 3 ? "..." : nil
-//            ]
-//
-//            return components
-//            .compactMap { $0 }
-//            .joined(separator: "\n")
-        }
-        
-        var subviews: String? {
-            guard isContainer else {
-                return nil
-            }
-            return "\(flattenedSubviewReferences.count) children. (\(children.count) subviews)"
-        }
-        
-        var frame: String? {
-            guard let view = rootView else {
-                return nil
-            }
-            
-            return "x: \(Int(view.frame.origin.x)), y: \(Int(view.frame.origin.y)) – w: \(Int(view.frame.width)), h: \(Int(view.frame.height))"
-        }
-        
-        var className: String? {
-            guard let view = rootView else {
-                return nil
-            }
-            
-            guard let superclass = view.superclass else {
-                return view.className
-            }
-            
-            return "\(view.className) (\(String(describing: superclass)))"
-        }
-        
-        strings.append(className)
-        
-        strings.append(frame)
-        
-        strings.append(subviews)
-        
-        strings.append(constraints)
-        
-        return strings.compactMap { $0 }.joined(separator: "\n")
+        [
+            classNameDescription,
+            frameDescription,
+            subviewsDescription,
+            constraintsDescription,
+            warningsDescription,
+        ]
+        .compactMap { $0 }
+        .joined(separator: "\n")
     }
+}
+
+private extension ViewHierarchyReference {
+    var constraintsDescription: String? {
+        let totalCount = constraintReferences.count
+
+        if totalCount == .zero {
+            return nil
+        }
+        else {
+            return totalCount == 1 ? "1 Constraint" : "\(totalCount) Constraints"
+        }
+    }
+
+    var warningsDescription: String? {
+        let warnings = [
+            emptyFrame,
+            isUserInteractionDisabled,
+            isControlDisabled
+        ]
+        .compactMap { $0 }
+
+        if warnings.isEmpty {
+            return nil
+        }
+
+        return warnings.joined(separator: "\n").string(prepending: "\n")
+    }
+
+    var emptyFrame: String? {
+        guard
+            let view = rootView,
+            view.frame.isEmpty
+        else {
+            return nil
+        }
+
+        return "⚠️ Frame is empty"
+    }
+
+    var isUserInteractionDisabled: String? {
+        guard
+            let view = rootView,
+            view.isUserInteractionEnabled == false
+        else { return nil }
+
+        return "⚠️ User interaction disabled"
+    }
+
+    var isControlDisabled: String? {
+        guard
+            let control = rootView as? UIControl,
+            control.isEnabled == false
+        else {
+            return nil
+        }
+
+        return "⚠️ Control is disabled"
+    }
+
+    var subviewsDescription: String? {
+        guard isContainer else { return nil }
+
+        let child = children.count == 1 ? "1 Child" : "\(children.count) Children"
+        let subview = flattenedSubviewReferences.count == 1 ? "1 Subview" : "\(flattenedSubviewReferences.count) Subviews"
+
+        return "\(child) (\(subview))"
+    }
+
+    var frameDescription: String? {
+        guard let view = rootView else { return nil }
+
+        let origin = [
+            view.frame.origin.x.toString(prepending: "X:", separator: " "),
+            view.frame.origin.y.toString(prepending: "Y:", separator: " ")
+        ].joined(separator: ", ")
+
+        let size = [
+            view.frame.size.width.toString(prepending: "Width:", separator: " "),
+            view.frame.size.height.toString(prepending: "Height:", separator: " ")
+        ].joined(separator: ", ")
+
+        return [origin, size].joined(separator: "\n")
+    }
+
+    var classNameDescription: String? {
+        guard let view = rootView else { return nil}
+
+        guard let superclass = view.superclass else {
+            return view.className
+        }
+
+        return "\(view.className) (\(String(describing: superclass)))"
+    }
+
 }

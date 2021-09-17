@@ -23,6 +23,21 @@ import UIKit
 // MARK: - ViewHierarchyProtocol
 
 extension UIView: ViewHierarchyProtocol {
+    var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        constraints.compactMap { constraint in
+            NSLayoutConstraintInspectableViewModel(with: constraint, in: self)
+        }
+        .uniqueValues()
+    }
+
+    var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        constraintReferences.filter { $0.axis == .horizontal }
+    }
+
+    var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        constraintReferences.filter { $0.axis == .vertical }
+    }
+
     var canPresentOnTop: Bool {
         switch self {
         case is UITextView:

@@ -57,19 +57,23 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
             image: UIImage?,
             for reference: ViewHierarchyReference,
             options: UIMenu.Options = .init(),
+            includeCellActions: Bool = true,
             at indexPath: IndexPath
         ) -> UIMenu {
-        let subviewsActions: UIMenu? = {
-            guard reference.children.count > .zero else { return nil }
+        let childrenActions: UIMenu? = {
+            let count = reference.children.count
+
+            guard count > .zero else { return nil }
 
             return UIMenu(
-                title: "Children...",
+                title: "Children (\(count) )",
+                options: count <= ElementInspector.configuration.childrenListMaximumInlineMenuCount ? .displayInline : .init(),
                 children: menuChildReferenceActions(for: reference.children)
             )
         }()
 
-        let openActionsMenu = UIMenu(
-            title: "Open...",
+        let elementActions = UIMenu(
+            title: "Inspect",
             options: .displayInline,
             children: ElementInspectorPanel.cases(for: reference).map { panel in
                 UIAction(
@@ -90,12 +94,17 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
 
         let isCollapsed = self.viewModel.itemViewModel(at: indexPath)?.isCollapsed == true
 
-        let cellActionsMenu: UIMenu = {
+        let cellActions: UIMenu? = {
+            guard includeCellActions else { return nil }
+
             let collapseContainer: UIAction? = {
                 guard reference.isContainer else { return nil }
 
-                return UIAction(title: isCollapsed ? "Show children" : "Hide children") { [weak self] _ in
-                    self?.toggleCollapse(indexPath)
+                return UIAction(
+                    title: isCollapsed ? "Expand" : "Collapse",
+                    image: UIImage(systemName: isCollapsed ? "chevron.down.circle" : "chevron.right.circle")
+                ) { [weak self] _ in
+                    self?.toggleCollapse(at: indexPath)
                 }
             }()
 
@@ -113,9 +122,9 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
             image: image,
             options: options,
             children: [
-                cellActionsMenu,
-                openActionsMenu,
-                subviewsActions
+                cellActions,
+                elementActions,
+                childrenActions
             ]
             .compactMap { $0 }
         )
@@ -128,6 +137,7 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
                 title: reference.accessibilityIdentifier ?? reference.className,
                 image: viewModel.image(for: reference),
                 for: reference,
+                includeCellActions: false,
                 at: IndexPath(row: row, section: .zero)
             )
         }
@@ -145,20 +155,21 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
         cell.viewModel = itemViewModel
         cell.isEvenRow = indexPath.row % 2 == 0
         cell.contentView.isUserInteractionEnabled = true
-
-        cell.collapseButton.actionHandler = { [weak self] in
-            self?.toggleCollapse(indexPath)
-        }
+        cell.delegate = self
 
         return cell
     }
 
-    private var toggleCollapse: (IndexPath) -> Void {
-        { [weak self] indexPath in
-            guard let self = self else { return }
+    func toggleCollapse(at indexPath: IndexPath) {
+        let actions = self.viewModel.toggleContainer(at: indexPath)
+        updateTableView(indexPath, with: actions)
+    }
+}
 
-            let actions = self.viewModel.toggleContainer(at: indexPath)
-            self.updateTableView(indexPath, with: actions)
-        }
+extension ElementChildrenPanelViewController: ElementChildrenPanelTableViewCodeCellDelegate {
+    func elementChildrenPanelTableViewCodeCellDidToggleCollapse(_ cell: ElementChildrenPanelTableViewCodeCell) {
+        guard let indexPath = viewModel.indexPath(for: cell.viewModel) else { return }
+
+        toggleCollapse(at: indexPath)
     }
 }

@@ -99,11 +99,11 @@ extension ElementChildrenPanelViewModel.ItemViewModel: ElementChildrenPanelItemV
 
 extension ElementChildrenPanelViewModel.ItemViewModel: Hashable {
     static func == (lhs: ElementChildrenPanelViewModel.ItemViewModel, rhs: ElementChildrenPanelViewModel.ItemViewModel) -> Bool {
-        lhs.reference.viewIdentifier == rhs.reference.viewIdentifier
+        lhs.reference == rhs.reference
     }
 
     func hash(into hasher: inout Hasher) {
-        reference.viewIdentifier.hash(into: &hasher)
+        hasher.combine(reference)
     }
 }
 

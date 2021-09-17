@@ -36,9 +36,11 @@ protocol ElementChildrenPanelViewModelProtocol {
     func image(for reference: ViewHierarchyReference) -> UIImage?
     
     /// Toggle if a container displays its subviews or hides them.
-    /// - Parameter indexPath: row with
+    /// - Parameter indexPath: index path
     /// - Returns: Actions related to affected index paths
     func toggleContainer(at indexPath: IndexPath) -> [ElementInspector.ElementChildrenPanelAction]
+
+    func indexPath(for item: ElementChildrenPanelItemViewModelProtocol?) -> IndexPath?
 }
 
 final class ElementChildrenPanelViewModel: NSObject {
@@ -122,6 +124,17 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
         guard indexPath.row < visibleChildren.count else { return nil }
 
         return visibleChildren[indexPath.row]
+    }
+
+    func indexPath(for item: ElementChildrenPanelItemViewModelProtocol?) -> IndexPath? {
+        guard
+            let item = item as? ItemViewModel,
+            let row = visibleChildren.firstIndex(of: item)
+        else {
+            return nil
+        }
+
+        return IndexPath(row: row, section: .zero)
     }
     
     func toggleContainer(at indexPath: IndexPath) -> [ElementInspector.ElementChildrenPanelAction] {

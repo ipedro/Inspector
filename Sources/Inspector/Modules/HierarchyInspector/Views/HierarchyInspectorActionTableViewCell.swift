@@ -20,30 +20,21 @@
 
 import UIKit
 
-protocol InspectorElementReferenceCellViewModelProtocol {
+protocol HierarchyInspectorActionTableViewCellViewModelProtocol {
     var title: String { get }
+    var icon: UIImage? { get }
     var isEnabled: Bool { get }
-    var subtitle: String { get }
-    var image: UIImage? { get }
-    var depth: Int { get }
-    var reference: ViewHierarchyReference { get }
 }
 
-final class InspectorElementReferenceCell: InspectorBaseTableViewCell {
-    var viewModel: InspectorElementReferenceCellViewModelProtocol? {
+final class HierarchyInspectorActionTableViewCell: HierarchyInspectorTableViewCell {
+    var viewModel: HierarchyInspectorActionTableViewCellViewModelProtocol? {
         didSet {
             textLabel?.text = viewModel?.title
-            detailTextLabel?.text = viewModel?.subtitle
-            imageView?.image = viewModel?.image
             
-            let depth = CGFloat(viewModel?.depth ?? 0)
-            var margins = defaultLayoutMargins
-            margins.leading += depth * 5
-            
-            directionalLayoutMargins = margins
-            separatorInset = UIEdgeInsets(left: margins.leading, right: defaultLayoutMargins.trailing)
+            imageView?.image = viewModel?.icon
             
             contentView.alpha = viewModel?.isEnabled == true ? 1 : colorStyle.disabledAlpha
+            
             selectionStyle = viewModel?.isEnabled == true ? .default : .none
         }
     }
@@ -51,19 +42,15 @@ final class InspectorElementReferenceCell: InspectorBaseTableViewCell {
     override func setup() {
         super.setup()
         
-        textLabel?.font = .preferredFont(forTextStyle: .footnote)
-        textLabel?.numberOfLines = 2
+        tintColor = colorStyle.textColor
         
-        detailTextLabel?.numberOfLines = 0
+        textLabel?.textColor = colorStyle.textColor
+        textLabel?.font = .preferredFont(forTextStyle: .callout)
         
-        imageView?.tintColor = colorStyle.textColor
-        imageView?.clipsToBounds = true
-        imageView?.backgroundColor = colorStyle.quaternaryTextColor
-        imageView?.contentMode = .center
-        
-        imageView?.layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
         if #available(iOS 13.0, *) {
             imageView?.layer.cornerCurve = .continuous
         }
+        imageView?.layer.cornerRadius = 6
+        imageView?.layer.masksToBounds = true
     }
 }

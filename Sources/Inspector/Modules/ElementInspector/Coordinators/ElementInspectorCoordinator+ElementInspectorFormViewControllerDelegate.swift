@@ -28,7 +28,6 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDe
             let colorPickerViewController = UIColorPickerViewController(
                 .colorPickerDelegate(self),
                 .viewControllerOptions(
-                    .overrideUserInterfaceStyle(.dark),
                     .modalPresentationStyle(.popover)
                 ),
                 .popoverPresentationControllerOptions(
@@ -62,8 +61,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDe
         let navigationController = ElementInspectorNavigationController(
             .rootViewController(optionSelectorViewController),
             .viewControllerOptions(
-                .modalPresentationStyle(.popover),
-                .overrideUserInterfaceStyle(.dark)
+                .modalPresentationStyle(.popover)
             ),
             .popoverPresentationControllerOptions(
                 .sourceView(optionSelector.accessoryControl),
@@ -86,7 +84,6 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDe
         
         alertController.apply(viewControllerOptions:
             .modalPresentationStyle(.popover),
-            .overrideUserInterfaceStyle(.dark),
             .viewOptions(
                 .tintColor(Inspector.configuration.colorStyle.textColor)
             ),
@@ -133,8 +130,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDe
                             .tintColor(Inspector.configuration.colorStyle.textColor)
                         ),
                         .viewControllerOptions(
-                            .modalPresentationStyle(.popover),
-                            .overrideUserInterfaceStyle(.dark)
+                            .modalPresentationStyle(.popover)
                         ),
                         .popoverPresentationControllerOptions(
                             .sourceView(imagePicker.accessoryControl),

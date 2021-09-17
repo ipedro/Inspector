@@ -72,10 +72,10 @@ public extension InspectorConfiguration {
             switch self {
             case .light:
                 if #available(iOS 13.0, *) {
-                    return .systemChromeMaterial
+                    return .systemThinMaterial
                 }
                 else {
-                    return .light
+                    return .regular
                 }
             case .dark:
                 if #available(iOS 13.0, *) {

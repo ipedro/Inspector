@@ -28,7 +28,7 @@ final class NSLayoutConstraintReference: Hashable {
     }
 
     func hash(into hasher: inout Hasher) {
-        constraint.hash(into: &hasher)
+        hasher.combine(constraint)
     }
 
     let constraint: NSLayoutConstraint

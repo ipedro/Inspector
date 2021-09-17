@@ -29,6 +29,7 @@ enum ElementInspector {
 extension ElementInspector {
     
     struct Configuration {
+        var childrenListMaximumInlineMenuCount = 5
         var animationDuration: TimeInterval = CATransaction.animationDuration()
 
         var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
@@ -58,22 +59,23 @@ extension ElementInspector {
         }
 
         func titleFont(forRelativeDepth relativeDepth: Int) -> UIFont {
-            switch relativeDepth {
-            case 0:
-                return UIFont.preferredFont(forTextStyle: .title3).bold()
+            var style: UIFont.TextStyle {
+                switch relativeDepth {
+                case 0:
+                    return .title1
 
-            case 1:
-                return UIFont.preferredFont(forTextStyle: .headline).bold()
+                case 1:
+                    return .body
 
-            case 2:
-                return UIFont.preferredFont(forTextStyle: .body).bold()
+                case 2:
+                    return .callout
 
-            case 3:
-                return UIFont.preferredFont(forTextStyle: .callout).bold()
-
-            default:
-                return UIFont.preferredFont(forTextStyle: .footnote)
+                default:
+                    return .footnote
+                }
             }
+
+            return UIFont.preferredFont(forTextStyle: style).bold()
         }
     }
 }

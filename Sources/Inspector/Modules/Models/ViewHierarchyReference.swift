@@ -27,7 +27,7 @@ final class ViewHierarchyReference {
     
     let canHostInspectorView: Bool
     
-    let viewIdentifier: ObjectIdentifier
+    let identifier: ObjectIdentifier
     
     let isSystemView: Bool
     
@@ -71,7 +71,7 @@ final class ViewHierarchyReference {
         
         self.parent = parent
         
-        viewIdentifier = ObjectIdentifier(root)
+        identifier = ObjectIdentifier(root)
         
         canPresentOnTop = root.canPresentOnTop
         
@@ -94,6 +94,18 @@ final class ViewHierarchyReference {
 // MARK: - ViewHierarchyProtocol {
 
 extension ViewHierarchyReference: ViewHierarchyProtocol {
+    var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        rootView?.constraintReferences ?? []
+    }
+
+    var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        rootView?.horizontalConstraintReferences ?? []
+    }
+
+    var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        rootView?.verticalConstraintReferences ?? []
+    }
+    
     var elementName: String {
         guard let rootView = rootView else {
             return _elementName
@@ -133,11 +145,12 @@ extension ViewHierarchyReference: ViewHierarchyProtocol {
 
 extension ViewHierarchyReference: Hashable {
     static func == (lhs: ViewHierarchyReference, rhs: ViewHierarchyReference) -> Bool {
-        lhs.hashValue == rhs.hashValue
+        lhs.identifier == rhs.identifier
     }
     
     func hash(into hasher: inout Hasher) {
-        viewIdentifier.hash(into: &hasher)
+        hasher.combine(identifier)
+        hasher.combine(rootView)
     }
 }
 

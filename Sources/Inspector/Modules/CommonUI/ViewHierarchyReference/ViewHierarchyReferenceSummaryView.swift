@@ -101,42 +101,39 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         )
     }
     
-    private(set) lazy var elementNameLabel = SelectableLabel().then {
+    private(set) lazy var elementNameLabel = UILabel().then {
         $0.textColor = colorStyle.textColor
-        $0.numberOfLines = 1
+        $0.numberOfLines = .zero
         $0.adjustsFontSizeToFitWidth = true
-        $0.minimumScaleFactor = 0.75
+        $0.minimumScaleFactor = 0.8
         $0.allowsDefaultTighteningForTruncation = true
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
     }
     
-    private(set) lazy var descriptionLabel = SelectableLabel().then {
+    private(set) lazy var descriptionLabel = UILabel().then {
         $0.font = .preferredFont(forTextStyle: .caption2)
         $0.textColor = colorStyle.secondaryTextColor
         $0.numberOfLines = .zero
-        //$0.preferredMaxLayoutWidth = 200
-        $0.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
     }
 
     private lazy var collapseButtonContainer = UIView().then {
         $0.installView(collapseButton)
     }
 
-    private(set) lazy var collapseButton = IconButton(.chevronDown).then {
-        $0.tintColor = colorStyle.quaternaryTextColor
+    private(set) lazy var collapseButton = IconButton(.chevronDown)
+
+    private(set) lazy var thumbnailContainerView = BaseView().then {
+        $0.backgroundColor = colorStyle.accessoryControlBackgroundColor
+        $0.layer.cornerRadius = 10
+        $0.clipsToBounds = true
+        $0.installView(thumbnailImageView, .margins($0.layer.cornerRadius / 2))
     }
 
-    private(set) lazy var thumbnailImageView = UIImageView(
-        .contentMode(.center),
-        .tintColor(colorStyle.textColor),
-        .backgroundColor(colorStyle.quaternaryTextColor),
-        .layerOptions(.cornerRadius(ElementInspector.appearance.verticalMargins / 2)),
-        .clipsToBounds(true),
-        .layoutCompression(
-            .huggingPriority(.required, for: .horizontal),
-            .huggingPriority(.required, for: .vertical)
-        )
-    )
+    private(set) lazy var thumbnailImageView = UIImageView().then {
+        $0.contentMode = .scaleAspectFit
+        $0.tintColor = colorStyle.textColor
+        $0.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        $0.widthAnchor.constraint(equalTo: $0.heightAnchor).isActive = true
+    }
     
     private(set) lazy var textStackView = UIStackView.vertical(
         .arrangedSubviews(
@@ -152,8 +149,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         contentView.axis = .horizontal
         contentView.spacing = ElementInspector.appearance.verticalMargins
         contentView.alignment = .center
-        
-        contentView.addArrangedSubviews(collapseButtonContainer, thumbnailImageView, textStackView)
+        contentView.addArrangedSubviews(collapseButtonContainer, thumbnailContainerView, textStackView)
         
         installView(
             contentView,

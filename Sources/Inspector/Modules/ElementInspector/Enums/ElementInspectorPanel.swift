@@ -25,7 +25,7 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
 
     case preview
     case attributes
-    case viewHierarchy
+    case children
     case size
 
     var title: String {
@@ -34,8 +34,8 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
             return "Preview"
         case .attributes:
             return "Attributes"
-        case .viewHierarchy:
-            return "View Hierarchy"
+        case .children:
+            return "Children"
         case .size:
             return "Size"
         }
@@ -49,7 +49,7 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
         case .attributes:
             return IconKit.imageOfSliderHorizontal()
             
-        case .viewHierarchy:
+        case .children:
             return IconKit.imageOfRelationshipDiagram()
             
         case .size:
@@ -58,13 +58,13 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
     }
     
     static var allCases: [ElementInspectorPanel] {
-        [.preview, .attributes, .size, .viewHierarchy]
+        [.preview, .attributes, .size, .children]
     }
 
     static func cases(for reference: ViewHierarchyReference) -> [ElementInspectorPanel] {
         ElementInspectorPanel.allCases.compactMap { panel in
             switch panel {
-            case .viewHierarchy:
+            case .children:
                 return reference.isContainer ? panel : nil
             case .size, .attributes, .preview:
                 return panel

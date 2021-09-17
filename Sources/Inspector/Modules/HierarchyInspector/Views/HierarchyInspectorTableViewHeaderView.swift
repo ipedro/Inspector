@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class HierarchyInspectorHeaderView: UITableViewHeaderFooterView {
+final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView {
     var title: String? {
         didSet {
             titleLabel.text = title

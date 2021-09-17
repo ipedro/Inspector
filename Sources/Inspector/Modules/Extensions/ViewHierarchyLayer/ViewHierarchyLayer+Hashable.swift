@@ -24,7 +24,7 @@ import Foundation
 
 extension ViewHierarchyLayer: Hashable {
     public func hash(into hasher: inout Hasher) {
-        name.hash(into: &hasher)
+        hasher.combine(name)
     }
     
     public static func == (lhs: Inspector.ViewHierarchyLayer, rhs: Inspector.ViewHierarchyLayer) -> Bool {

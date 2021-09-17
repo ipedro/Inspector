@@ -116,7 +116,6 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
 
     private(set) lazy var collapseButton = IconButton(.chevronDown).then {
         $0.addTarget(self, action: #selector(toggleSelection), for: .touchUpInside)
-        $0.tintColor = colorStyle.quaternaryTextColor
     }
 
     convenience init() {

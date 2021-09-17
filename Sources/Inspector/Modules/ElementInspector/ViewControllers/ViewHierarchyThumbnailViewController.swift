@@ -34,7 +34,7 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelPr
 
     var title: String { reference.accessibilityIdentifier ?? reference.className }
 
-    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
+    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: 1) }
 
     var subtitle: String { reference.elementDescription }
 

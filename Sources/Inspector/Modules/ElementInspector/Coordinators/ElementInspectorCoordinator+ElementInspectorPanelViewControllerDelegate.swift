@@ -49,7 +49,7 @@ extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelega
                 $0.formDelegate = self
             }
 
-        case .viewHierarchy:
+        case .children:
             return ElementChildrenPanelViewController.create(
                 viewModel: ElementChildrenPanelViewModel(
                     reference: reference,

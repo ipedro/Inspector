@@ -56,9 +56,9 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
 
         $0.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
 
-        $0.tableView.register(InspectorActionCell.self)
-        $0.tableView.register(InspectorElementReferenceCell.self)
-        $0.tableView.registerHeaderFooter(HierarchyInspectorHeaderView.self)
+        $0.tableView.register(HierarchyInspectorActionTableViewCell.self)
+        $0.tableView.register(HierarchyInspectorReferenceSummaryTableViewCell.self)
+        $0.tableView.registerHeaderFooter(HierarchyInspectorTableViewHeaderView.self)
 
         $0.tableView.delegate = self
         $0.tableView.dataSource = self
@@ -140,6 +140,8 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        reloadData()
+        
         if animated {
             viewCode.animate(.in)
         }
@@ -161,8 +163,6 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        setup()
 
         // key commands
         addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))
@@ -224,10 +224,6 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         if animated {
             viewCode.animate(.out)
         }
-    }
-
-    private func setup() {
-        reloadData()
     }
 
     func reloadData() {
@@ -305,8 +301,8 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
 
 // MARK: - HierarchyInspectorViewDelegate
 
-extension HierarchyInspectorViewController: HierarchyInspectorViewDelegate {
-    func hierarchyInspectorViewDidTapOutside(_ view: HierarchyInspectorViewCode) {
+extension HierarchyInspectorViewController: HierarchyInspectorViewCodeDelegate {
+    func hierarchyInspectorViewCodeDidTapOutside(_ view: HierarchyInspectorViewCode) {
         delegate?.hierarchyInspectorViewControllerDidFinish(self)
     }
 }

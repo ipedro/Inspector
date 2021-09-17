@@ -22,7 +22,7 @@ import UIKit
 
 extension HierarchyInspectorViewModel {
     final class SnapshotViewModel: HierarchyInspectorSectionViewModelProtocol {
-        struct Details: InspectorElementReferenceCellViewModelProtocol {
+        struct Details: HierarchyInspectorReferenceSummaryCellViewModelProtocol {
             let title: String
             var isEnabled: Bool
             let subtitle: String

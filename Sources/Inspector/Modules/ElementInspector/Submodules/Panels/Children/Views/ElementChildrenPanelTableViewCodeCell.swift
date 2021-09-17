@@ -20,7 +20,13 @@
 
 import UIKit
 
+protocol ElementChildrenPanelTableViewCodeCellDelegate: AnyObject {
+    func elementChildrenPanelTableViewCodeCellDidToggleCollapse(_ cell: ElementChildrenPanelTableViewCodeCell)
+}
+
 final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
+    weak var delegate: ElementChildrenPanelTableViewCodeCellDelegate?
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
@@ -34,17 +40,15 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
 
     private lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView()
 
-    var collapseButton: IconButton { referenceSummaryView.collapseButton }
-
-    private lazy var disclosureIcon = Icon(.chevronDown, color: colorStyle.secondaryTextColor).then {
+    private lazy var disclosureIcon = Icon(.chevronDown, color: colorStyle.tertiaryTextColor).then {
         $0.transform = .init(rotationAngle: -(.pi / 2))
     }
 
     private lazy var containerStackView = UIStackView.horizontal(
         .arrangedSubviews(referenceSummaryView, disclosureIcon),
-        .spacing(ElementInspector.appearance.verticalMargins / 2),
-        .directionalLayoutMargins(trailing: ElementInspector.appearance.verticalMargins / 2),
-        .horizontalAlignment(.center)
+        .horizontalAlignment(.center),
+        .spacing(ElementInspector.appearance.verticalMargins),
+        .directionalLayoutMargins(trailing: ElementInspector.appearance.verticalMargins)
     )
 
     var viewModel: ElementChildrenPanelItemViewModelProtocol? {
@@ -85,37 +89,62 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
 
         backgroundColor = colorStyle.backgroundColor
 
-        collapseButton.isEnabled = false
-
-        installView(contentView, priority: .required)
+        referenceSummaryView.collapseButton.isEnabled = false
 
         contentView.installView(containerStackView)
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        delegate = nil
+    }
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard
-            event?.type == .touches,
-            let touch = touches.first,
-            collapseButton.isHidden == false,
-            isPointNearCollapseButton(touch.location(in: self))
-        else {
+        guard areTouchesInsideCollapseButton(touches, with: event) else {
             return super.touchesBegan(touches, with: event)
         }
 
-        collapseButton.animate(.in)
+        referenceSummaryView.collapseButton.animate(.in)
+    }
 
-        self.debounce(#selector(self.triggerCollapseButton), after: 0.15, object: nil)
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard areTouchesInsideCollapseButton(touches, with: event) else {
+            return super.touchesCancelled(touches, with: event)
+        }
+
+        referenceSummaryView.collapseButton.animate(.out)
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard areTouchesInsideCollapseButton(touches, with: event) else {
+            return super.touchesEnded(touches, with: event)
+        }
+
+        referenceSummaryView.collapseButton.animate(.out)
+        debounce(#selector(triggerCollapseButton), after: 0.15, object: nil)
     }
 
     @objc private func triggerCollapseButton() {
-        collapseButton.actionHandler?()
-        collapseButton.animate(.out)
+        delegate?.elementChildrenPanelTableViewCodeCellDidToggleCollapse(self)
+    }
+
+    private func areTouchesInsideCollapseButton(_ touches: Set<UITouch>, with event: UIEvent?) -> Bool {
+        guard
+            event?.type == .touches,
+            let touch = touches.first,
+            referenceSummaryView.collapseButton.isHidden == false,
+            isPointNearCollapseButton(touch.location(in: self))
+        else {
+            return false
+        }
+
+        return true
     }
 
     private func isPointNearCollapseButton(_ point: CGPoint) -> Bool {
-        let buttonFrame = collapseButton.convert(collapseButton.bounds, to: self)
+        let buttonFrame = referenceSummaryView.collapseButton.convert(referenceSummaryView.collapseButton.bounds, to: self)
 
         return bounds.contains(point) && point.x <= buttonFrame.maxX + referenceSummaryView.contentView.spacing * 1.5
     }
-
 }

@@ -33,6 +33,6 @@ extension InspectorElementViewModelProperty: Hashable {
     }
     
     public func hash(into hasher: inout Hasher) {
-        idenfitifer.hash(into: &hasher)
+        hasher.combine(idenfitifer)
     }
 }

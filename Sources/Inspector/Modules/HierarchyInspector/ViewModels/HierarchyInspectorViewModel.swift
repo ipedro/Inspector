@@ -21,8 +21,8 @@
 import UIKit
 
 enum HierarchyInspectorCellViewModel {
-    case action(InspectorActionCellViewModelProtocol)
-    case element(InspectorElementReferenceCellViewModelProtocol)
+    case action(HierarchyInspectorActionTableViewCellViewModelProtocol)
+    case element(HierarchyInspectorReferenceSummaryCellViewModelProtocol)
 }
 
 protocol HierarchyInspectorViewModelProtocol: HierarchyInspectorSectionViewModelProtocol {

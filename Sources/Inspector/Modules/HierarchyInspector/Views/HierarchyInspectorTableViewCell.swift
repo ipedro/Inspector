@@ -20,7 +20,7 @@
 
 import UIKit
 
-class InspectorBaseTableViewCell: UITableViewCell {
+class HierarchyInspectorTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
@@ -37,10 +37,6 @@ class InspectorBaseTableViewCell: UITableViewCell {
     func setup() {
         backgroundView = UIView()
         backgroundColor = nil
-        
-        // removes autoresize masks in favor of constraint based layout.
-        // fixes a height calculation bug.
-        installView(contentView)
         
         directionalLayoutMargins = defaultLayoutMargins
         separatorInset = UIEdgeInsets(left: defaultLayoutMargins.leading, right: defaultLayoutMargins.trailing)

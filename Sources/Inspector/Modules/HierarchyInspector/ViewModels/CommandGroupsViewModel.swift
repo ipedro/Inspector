@@ -22,7 +22,7 @@ import UIKit
 
 extension HierarchyInspectorViewModel {
     final class CommandGroupsViewModel: HierarchyInspectorSectionViewModelProtocol {
-        struct Details: InspectorActionCellViewModelProtocol {
+        struct Details: HierarchyInspectorActionTableViewCellViewModelProtocol {
             let title: String
             var icon: UIImage?
             var isEnabled: Bool

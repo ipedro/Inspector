@@ -27,9 +27,16 @@ final class IconButton: BaseControl {
         case rounded
         case plain
 
-        fileprivate func applyCornerRadius(to view: UIView) -> CGFloat { view.frame.height / 2 }
+        fileprivate func cornerRadius(for view: UIView) -> CGFloat {
+            switch self {
+            case .rounded:
+                return view.frame.height / 2
+            case .plain:
+                return .zero
+            }
+        }
 
-        fileprivate var layoutMargins: NSDirectionalEdgeInsets { .init(insets: ElementInspector.appearance.verticalMargins / 4) }
+        fileprivate var layoutMargins: NSDirectionalEdgeInsets { .init(insets: ElementInspector.appearance.verticalMargins / 3) }
     }
 
     let style: Style
@@ -67,8 +74,10 @@ final class IconButton: BaseControl {
         switch style {
         case .plain:
             icon.tintColor = tintColor
+            backgroundColor = .clear
         case .rounded:
-            backgroundColor = tintColor
+            icon.tintColor = tintColor
+            backgroundColor = colorStyle.accessoryControlBackgroundColor
         }
 
         clipsToBounds = true
@@ -96,7 +105,7 @@ final class IconButton: BaseControl {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        layer.cornerRadius = style.applyCornerRadius(to: self)
+        layer.cornerRadius = style.cornerRadius(for: self)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
