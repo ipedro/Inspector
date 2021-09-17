@@ -47,7 +47,7 @@ final class HierarchyInspectorHeaderView: UITableViewHeaderFooterView {
     }
     
     private(set) lazy var separatorView = SeparatorView(
-        color: ElementInspector.appearance.tertiaryTextColor
+        color: Inspector.configuration.colorStyle.tertiaryTextColor
     )
     
     private lazy var stackView = UIStackView.vertical(
@@ -60,7 +60,7 @@ final class HierarchyInspectorHeaderView: UITableViewHeaderFooterView {
     
     private(set) lazy var titleLabel = UILabel(
         .textStyle(.caption1, traits: .traitBold),
-        .textColor(ElementInspector.appearance.tertiaryTextColor)
+        .textColor(Inspector.configuration.colorStyle.tertiaryTextColor)
     )
     
     override init(reuseIdentifier: String?) {

@@ -57,7 +57,7 @@ final class ElementSizeInspectorViewCode: BaseView {
 
         installView(scrollView)
 
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        backgroundColor = Inspector.configuration.colorStyle.backgroundColor
 
         contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
 

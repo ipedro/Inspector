@@ -66,12 +66,6 @@ final class StepperControl: BaseFormControl {
 
     private lazy var stepperControl = UIStepper().then {
         $0.addTarget(self, action: #selector(step), for: .valueChanged)
-        
-        #if swift(>=5.0)
-        if #available(iOS 13.0, *) {
-            $0.overrideUserInterfaceStyle = .dark
-        }
-        #endif
     }
     
     private lazy var counterLabel = UILabel(
@@ -117,7 +111,7 @@ final class StepperControl: BaseFormControl {
 
     private func updateState() {
         stepperControl.alpha = isEnabled ? 1 : 0.5
-        counterLabel.textColor = isEnabled ? ElementInspector.appearance.tintColor : ElementInspector.appearance.secondaryTextColor
+        counterLabel.textColor = isEnabled ? Inspector.configuration.colorStyle.tintColor : Inspector.configuration.colorStyle.textColor
     }
     
 }

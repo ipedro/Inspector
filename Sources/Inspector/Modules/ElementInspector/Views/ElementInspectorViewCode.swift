@@ -21,7 +21,7 @@
 import UIKit
 
 final class ElementInspectorViewCode: BaseView {
-    private(set) lazy var segmentedControl = UISegmentedControl()
+    private(set) lazy var segmentedControl = UISegmentedControl.segmentedControlStyle()
 
     private(set) lazy var referenceView = ViewHierarchyReferenceDetailView().then {
         $0.setContentHuggingPriority(.required, for: .vertical)
@@ -69,7 +69,7 @@ final class ElementInspectorViewCode: BaseView {
     override func setup() {
         super.setup()
 
-        backgroundColor = ElementInspector.appearance.panelBackgroundColor
+        backgroundColor = Inspector.configuration.colorStyle.backgroundColor
 
         contentView.installView(emptyLabel, .margins(.zero), position: .behind)
         

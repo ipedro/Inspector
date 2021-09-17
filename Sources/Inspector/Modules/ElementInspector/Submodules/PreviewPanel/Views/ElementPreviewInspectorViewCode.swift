@@ -160,7 +160,7 @@ final class ElementPreviewInspectorViewCode: BaseView {
             let selectedIndex = backgroundAppearanceControl.selectedIndex,
             let backgroundStyle = ThumbnailBackgroundStyle(rawValue: selectedIndex)
         else {
-            thumbnailView.backgroundStyle = .light
+            thumbnailView.backgroundStyle = .strong
             return
         }
         

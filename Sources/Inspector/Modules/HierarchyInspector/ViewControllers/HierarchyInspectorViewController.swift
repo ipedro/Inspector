@@ -48,7 +48,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
 
     private(set) var viewModel: HierarchyInspectorViewModelProtocol!
 
-    private(set) lazy var viewCode = HierarchyInspectorView().then {
+    private(set) lazy var viewCode = HierarchyInspectorViewCode().then {
         $0.delegate = self
 
         $0.searchView.textField.addTarget(self, action: #selector(search), for: .editingChanged)
@@ -308,7 +308,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
 // MARK: - HierarchyInspectorViewDelegate
 
 extension HierarchyInspectorViewController: HierarchyInspectorViewDelegate {
-    func hierarchyInspectorViewDidTapOutside(_ view: HierarchyInspectorView) {
+    func hierarchyInspectorViewDidTapOutside(_ view: HierarchyInspectorViewCode) {
         delegate?.hierarchyInspectorViewControllerDidFinish(self)
     }
 }

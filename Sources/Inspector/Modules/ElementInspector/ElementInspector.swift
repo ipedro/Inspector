@@ -27,11 +27,13 @@ enum ElementInspector {
 }
 
 extension ElementInspector {
+    
     struct Configuration {
         var animationDuration: TimeInterval = CATransaction.animationDuration()
-        
+
         var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
     }
+
 }
 
 extension ElementInspector {
@@ -40,30 +42,7 @@ extension ElementInspector {
         
         let verticalMargins: CGFloat = 12
 
-        var tintColor = UIColor(hex: 0xBF5AF2)
-        
-        var accessoryControlBackgroundColor: UIColor { textColor.withAlphaComponent(disabledAlpha / 4) }
 
-        var accessoryControlDisabledBackgroundColor: UIColor { textColor.withAlphaComponent(disabledAlpha / 8) }
-        
-        var textColor: UIColor = {
-            .white
-        }()
-        
-        var secondaryTextColor: UIColor {
-            textColor.withAlphaComponent(disabledAlpha * 2)
-        }
-        
-        var tertiaryTextColor: UIColor {
-            textColor.withAlphaComponent(disabledAlpha)
-        }
-        
-        var quaternaryTextColor: UIColor {
-            textColor.withAlphaComponent(disabledAlpha / 2)
-        }
-        
-        var disabledAlpha: CGFloat = 0.3
-        
         var directionalInsets: NSDirectionalEdgeInsets {
             NSDirectionalEdgeInsets(
                 horizontal: horizontalMargins,
@@ -77,15 +56,7 @@ extension ElementInspector {
                 height: .zero
             )
         }
-        
-        var panelBackgroundColor: UIColor = {
-            UIColor(hex: 0x2C2C2E)
-        }()
-        
-        var panelHighlightBackgroundColor: UIColor = {
-            UIColor(hex: 0x3A3A3C)
-        }()
-        
+
         func titleFont(forRelativeDepth relativeDepth: Int) -> UIFont {
             switch relativeDepth {
             case 0:

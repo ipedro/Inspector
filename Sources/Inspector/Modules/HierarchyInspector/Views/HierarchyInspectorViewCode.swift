@@ -22,10 +22,10 @@
 import UIKit
 
 protocol HierarchyInspectorViewDelegate: AnyObject {
-    func hierarchyInspectorViewDidTapOutside(_ view: HierarchyInspectorView)
+    func hierarchyInspectorViewDidTapOutside(_ view: HierarchyInspectorViewCode)
 }
 
-final class HierarchyInspectorView: BaseView {
+final class HierarchyInspectorViewCode: BaseView {
     var verticalMargin: CGFloat { 30 }
     
     var horizontalMargin: CGFloat { verticalMargin / 2 }
@@ -55,7 +55,7 @@ final class HierarchyInspectorView: BaseView {
         .indicatorStyle(.white),
         .backgroundColor(nil),
         .tableFooterView(UIView()),
-        .separatorColor(ElementInspector.appearance.quaternaryTextColor),
+        .separatorStyle(.none),
         .automaticRowHeight,
         .estimatedRowHeight(100),
         .separatorInset(
@@ -68,23 +68,22 @@ final class HierarchyInspectorView: BaseView {
         )
     )
     
-    private let blurStyle: UIBlurEffect.Style = {
-        if #available(iOS 13.0, *) {
-            return .systemChromeMaterialDark
-        }
-        
-        return .dark
-    }()
-    
     private lazy var blurView: UIVisualEffectView = {
-        let blur = UIBlurEffect(style: blurStyle)
+        let blur = UIBlurEffect(style: Inspector.configuration.colorStyle.blurStyle)
         
         let blurView = UIVisualEffectView(effect: blur)
         blurView.translatesAutoresizingMaskIntoConstraints = false
         blurView.clipsToBounds = true
         blurView.layer.cornerRadius = ElementInspector.appearance.verticalMargins
-        blurView.layer.borderColor = ElementInspector.appearance.tertiaryTextColor.cgColor
         blurView.layer.borderWidth = 1
+        blurView.layer.borderColor = {
+            switch Inspector.configuration.colorStyle {
+            case .dark:
+                return Inspector.configuration.colorStyle.tertiaryTextColor.cgColor
+            case .light:
+                return Inspector.configuration.colorStyle.quaternaryTextColor.cgColor
+            }
+        }()
         
         if #available(iOS 13.0, *) {
             blurView.layer.cornerCurve = .continuous
@@ -136,18 +135,12 @@ final class HierarchyInspectorView: BaseView {
     
     override func setup() {
         super.setup()
-        
-        #if swift(>=5.0)
-        if #available(iOS 13.0, *) {
-            overrideUserInterfaceStyle = .dark
-        }
-        #endif
-        
-        tintColor = ElementInspector.appearance.tintColor
+
+        tintColor = Inspector.configuration.colorStyle.textColor
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
         preservesSuperviewLayoutMargins = false
         
-        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowColor = Inspector.configuration.colorStyle.shadowColor.cgColor
         layer.shadowOffset = .init(width: 0, height: 6)
         layer.shadowOpacity = 1
         layer.shadowRadius = verticalMargin / 2

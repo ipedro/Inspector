@@ -26,7 +26,7 @@ final class TextViewControl: BaseFormControl {
     private lazy var textView = UITextView(
         .backgroundColor(nil),
         .isScrollEnabled(false),
-        .textColor(ElementInspector.appearance.textColor),
+        .textColor(Inspector.configuration.colorStyle.textColor),
         .textStyle(.footnote),
         .delegate(self)
     ).then {
@@ -43,7 +43,7 @@ final class TextViewControl: BaseFormControl {
     private lazy var placeholderLabel = UILabel(
         .font(textView.font!),
         .numberOfLines(.zero),
-        .textColor(ElementInspector.appearance.secondaryTextColor)
+        .textColor(Inspector.configuration.colorStyle.secondaryTextColor)
     )
     
     private(set) lazy var accessoryControl = AccessoryControl().then {

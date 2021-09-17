@@ -87,7 +87,7 @@ extension Icon {
     static func chevronDownIcon() -> Icon {
         Icon(
             .chevronDown,
-            color: ElementInspector.appearance.textColor.withAlphaComponent(0.7),
+            color: Inspector.configuration.colorStyle.textColor.withAlphaComponent(0.7),
             size: CGSize(16)
         )
     }

@@ -33,7 +33,7 @@ final class InspectorActionCell: InspectorBaseTableViewCell {
             
             imageView?.image = viewModel?.icon
             
-            contentView.alpha = viewModel?.isEnabled == true ? 1 : ElementInspector.appearance.disabledAlpha
+            contentView.alpha = viewModel?.isEnabled == true ? 1 : Inspector.configuration.colorStyle.disabledAlpha
             
             selectionStyle = viewModel?.isEnabled == true ? .default : .none
         }
@@ -42,9 +42,9 @@ final class InspectorActionCell: InspectorBaseTableViewCell {
     override func setup() {
         super.setup()
         
-        tintColor = ElementInspector.appearance.textColor
+        tintColor = Inspector.configuration.colorStyle.textColor
         
-        textLabel?.textColor = ElementInspector.appearance.textColor
+        textLabel?.textColor = Inspector.configuration.colorStyle.textColor
         textLabel?.font = .preferredFont(forTextStyle: .callout)
         
         if #available(iOS 13.0, *) {

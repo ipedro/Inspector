@@ -886,7 +886,7 @@ class IconKit: NSObject {
         context.restoreGState()
     }
 
-    class func drawColorGrid(color: UIColor = .black, frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 32, height: 16), resizing: ResizingBehavior = .aspectFit) {
+    class func drawColorGrid(color: UIColor = .init(white: 0, alpha: 0.5), frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 32, height: 16), resizing: ResizingBehavior = .aspectFit) {
         /// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 

@@ -21,43 +21,53 @@
 import UIKit
 
 enum ThumbnailBackgroundStyle: Int, Swift.CaseIterable {
-    case light, medium, dark
+    case strong, medium, soft
     
     var color: UIColor {
-        switch self {
-        case .light:
+        switch (self, Inspector.configuration.colorStyle) {
+        case (.strong, .dark):
             return UIColor(white: 0.80, alpha: 1)
-            
-        case .medium:
+        case (.medium, .dark):
             return UIColor(white: 0.45, alpha: 1)
-            
-        case .dark:
+        case (.soft, .dark):
             return UIColor(white: 0.10, alpha: 1)
+
+        case (.strong, .light):
+            return UIColor(white: 0.40, alpha: 1)
+        case (.medium, .light):
+            return UIColor(white: 0.80, alpha: 1)
+        case (.soft, .light):
+            return UIColor(white: 1, alpha: 1)
         }
     }
     
     var contrastingColor: UIColor {
-        switch self {
-        case .light:
-            return .black
-            
-        case .medium:
+        switch (self, Inspector.configuration.colorStyle) {
+        case (.strong, .dark):
+            return .darkText
+        case (.medium, .dark):
             return .white
-            
-        case .dark:
+        case (.soft, .dark):
             return .lightGray
+
+        case (.strong, .light):
+            return .white
+        case (.medium, .light):
+            return .darkText
+        case (.soft, .light):
+            return .darkText
         }
     }
     
     var image: UIImage {
         switch self {
-        case .light:
+        case .strong:
             return IconKit.imageOfAppearanceLight()
             
         case .medium:
             return IconKit.imageOfAppearanceMedium()
             
-        case .dark:
+        case .soft:
             return IconKit.imageOfAppearanceDark()
         }
     }

@@ -23,8 +23,8 @@ import UIKit
 extension UISwitch {
     static func toggleControlSyle() -> UISwitch {
         let switchControl = UISwitch()
-        switchControl.onTintColor = .systemPurple
-        switchControl.thumbTintColor = ElementInspector.appearance.quaternaryTextColor
+        switchControl.onTintColor = Inspector.configuration.colorStyle.tintColor
+        switchControl.thumbTintColor = UIColor.white.withAlphaComponent(Inspector.configuration.colorStyle.disabledAlpha)
 
         return switchControl
     }
@@ -58,6 +58,14 @@ final class ToggleControl: BaseFormControl {
         $0.addTarget(self, action: #selector(toggleOn), for: .valueChanged)
     }
 
+    private lazy var switchContainer = UIStackView().then {
+        $0.addArrangedSubview(switchControl)
+        $0.isLayoutMarginsRelativeArrangement = true
+        if #available(iOS 13.0, *) {
+            $0.directionalLayoutMargins = .init(trailing: 2)
+        }
+    }
+
     // MARK: - Init
 
     init(title: String?, isOn: Bool) {
@@ -74,7 +82,7 @@ final class ToggleControl: BaseFormControl {
     override func setup() {
         super.setup()
 
-        contentView.addArrangedSubview(switchControl)
+        contentView.addArrangedSubview(switchContainer)
 
         updateViews()
     }

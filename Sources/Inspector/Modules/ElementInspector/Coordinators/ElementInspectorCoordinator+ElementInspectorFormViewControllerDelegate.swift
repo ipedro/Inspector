@@ -88,7 +88,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegat
             .modalPresentationStyle(.popover),
             .overrideUserInterfaceStyle(.dark),
             .viewOptions(
-                .tintColor(ElementInspector.appearance.tintColor)
+                .tintColor(Inspector.configuration.colorStyle.textColor)
             ),
             .popoverPresentationControllerOptions(
                 .sourceView(imagePicker.accessoryControl),
@@ -130,7 +130,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegat
                         .asCopy(true),
                         .documentPickerDelegate(self),
                         .viewOptions(
-                            .tintColor(ElementInspector.appearance.tintColor)
+                            .tintColor(Inspector.configuration.colorStyle.textColor)
                         ),
                         .viewControllerOptions(
                             .modalPresentationStyle(.popover),
@@ -149,7 +149,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegat
         )
         
         viewController.present(alertController, animated: true) {
-            alertController.view.tintColor = ElementInspector.appearance.tintColor
+            alertController.view.tintColor = Inspector.configuration.colorStyle.textColor
         }
     }
 }

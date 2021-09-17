@@ -42,10 +42,10 @@ final class IconButton: BaseControl {
         _ glyph: Icon.Glyph,
         style: Style = .rounded,
         size: CGSize = .init(16),
-        tintColor: UIColor = ElementInspector.appearance.tintColor,
+        tintColor: UIColor = Inspector.configuration.colorStyle.textColor,
         actionHandler: Action? = nil
     ) {
-        icon = Icon(glyph, color: ElementInspector.appearance.textColor, size: size)
+        icon = Icon(glyph, color: Inspector.configuration.colorStyle.textColor, size: size)
         self.style = style
         self.actionHandler = actionHandler
         super.init(frame: .zero)

@@ -45,13 +45,13 @@ class InspectorBaseTableViewCell: UITableViewCell {
         directionalLayoutMargins = defaultLayoutMargins
         separatorInset = UIEdgeInsets(left: defaultLayoutMargins.leading, right: defaultLayoutMargins.trailing)
         
-        textLabel?.textColor = ElementInspector.appearance.textColor
-        detailTextLabel?.textColor = ElementInspector.appearance.secondaryTextColor
+        textLabel?.textColor = Inspector.configuration.colorStyle.textColor
+        detailTextLabel?.textColor = Inspector.configuration.colorStyle.secondaryTextColor
         
         selectedBackgroundView = UIView().then {
             let colorView = BaseView(
                 .clipsToBounds(true),
-                .backgroundColor(ElementInspector.appearance.tintColor),
+                .backgroundColor(Inspector.configuration.colorStyle.softTintColor),
                 .layerOptions(
                     .cornerRadius(ElementInspector.appearance.verticalMargins / 2)
                 )

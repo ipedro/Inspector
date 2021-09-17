@@ -50,7 +50,7 @@ final class SectionHeader: BaseView {
     }
 
     private lazy var titleLabel = UILabel(
-        .textColor(ElementInspector.appearance.textColor)
+        .textColor(Inspector.configuration.colorStyle.textColor)
     ).then {
         $0.font = titleFont.font()
         $0.isHidden = $0.text?.isEmpty != false
@@ -62,7 +62,7 @@ final class SectionHeader: BaseView {
     }
 
     private lazy var subtitleLabel = UILabel(
-        .textColor(ElementInspector.appearance.secondaryTextColor)
+        .textColor(Inspector.configuration.colorStyle.secondaryTextColor)
     ).then {
         $0.font = subtitleFont.font()
         $0.isHidden = $0.text?.isEmpty != false

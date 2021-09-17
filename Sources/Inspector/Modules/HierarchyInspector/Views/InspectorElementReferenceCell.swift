@@ -43,7 +43,7 @@ final class InspectorElementReferenceCell: InspectorBaseTableViewCell {
             directionalLayoutMargins = margins
             separatorInset = UIEdgeInsets(left: margins.leading, right: defaultLayoutMargins.trailing)
             
-            contentView.alpha = viewModel?.isEnabled == true ? 1 : ElementInspector.appearance.disabledAlpha
+            contentView.alpha = viewModel?.isEnabled == true ? 1 : Inspector.configuration.colorStyle.disabledAlpha
             selectionStyle = viewModel?.isEnabled == true ? .default : .none
         }
     }
@@ -56,9 +56,9 @@ final class InspectorElementReferenceCell: InspectorBaseTableViewCell {
         
         detailTextLabel?.numberOfLines = 0
         
-        imageView?.tintColor = ElementInspector.appearance.textColor
+        imageView?.tintColor = Inspector.configuration.colorStyle.textColor
         imageView?.clipsToBounds = true
-        imageView?.backgroundColor = ElementInspector.appearance.quaternaryTextColor
+        imageView?.backgroundColor = Inspector.configuration.colorStyle.quaternaryTextColor
         imageView?.contentMode = .center
         
         imageView?.layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2

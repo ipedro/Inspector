@@ -19,6 +19,23 @@
 //  SOFTWARE.
 
 import UIKit
+extension UISegmentedControl {
+    static func segmentedControlStyle(items: [Any]? = nil) -> UISegmentedControl {
+        let segmentedControl = UISegmentedControl(items: items)
+
+        #if swift(>=5.0)
+        if #available(iOS 13.0, *) {
+            segmentedControl.selectedSegmentTintColor = Inspector.configuration.colorStyle.tintColor
+            segmentedControl.setTitleTextAttributes([.foregroundColor: Inspector.configuration.colorStyle.secondaryTextColor], for: .normal)
+            segmentedControl.setTitleTextAttributes([.foregroundColor: Inspector.configuration.colorStyle.selectedSegmentedControlForegroundColor], for: .selected)
+        }
+        #else
+        segmentedControl.tintColor = Inspector.configuration.colorStyle.tintColor
+        #endif
+
+        return segmentedControl
+    }
+}
 
 final class SegmentedControl: BaseFormControl {
     // MARK: - Properties
@@ -45,20 +62,8 @@ final class SegmentedControl: BaseFormControl {
         }
     }
     
-    private lazy var segmentedControl = UISegmentedControl(items: options).then {
+    private lazy var segmentedControl = UISegmentedControl.segmentedControlStyle(items: options).then {
         $0.addTarget(self, action: #selector(changeSegment), for: .valueChanged)
-        #if swift(>=5.0)
-        if #available(iOS 13.0, *) {
-            $0.selectedSegmentTintColor = ElementInspector.appearance.tintColor
-            $0.setTitleTextAttributes([.foregroundColor: ElementInspector.appearance.textColor], for: .selected)
-            $0.overrideUserInterfaceStyle = .dark
-        }
-        else {
-            $0.tintColor = .systemPurple
-        }
-        #else
-        $0.tintColor = .systemPurple
-        #endif
     }
     
     // MARK: - Init

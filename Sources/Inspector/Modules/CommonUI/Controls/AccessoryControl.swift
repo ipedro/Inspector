@@ -24,7 +24,7 @@ final class AccessoryControl: BaseControl {
     override var isEnabled: Bool {
         didSet {
             alpha = isEnabled ? 1 : 0.5
-            backgroundColor = isEnabled ? ElementInspector.appearance.accessoryControlBackgroundColor : ElementInspector.appearance.accessoryControlDisabledBackgroundColor
+            backgroundColor = isEnabled ? Inspector.configuration.colorStyle.accessoryControlBackgroundColor : Inspector.configuration.colorStyle.accessoryControlDisabledBackgroundColor
         }
     }
     
@@ -41,6 +41,6 @@ final class AccessoryControl: BaseControl {
         
         layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
         
-        backgroundColor = ElementInspector.appearance.accessoryControlBackgroundColor
+        backgroundColor = Inspector.configuration.colorStyle.accessoryControlBackgroundColor
     }
 }

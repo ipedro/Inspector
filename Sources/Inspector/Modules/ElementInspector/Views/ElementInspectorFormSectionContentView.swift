@@ -116,7 +116,7 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
 
     private(set) lazy var collapseButton = IconButton(.chevronDown).then {
         $0.addTarget(self, action: #selector(toggleSelection), for: .touchUpInside)
-        $0.tintColor = ElementInspector.appearance.quaternaryTextColor
+        $0.tintColor = Inspector.configuration.colorStyle.quaternaryTextColor
     }
 
     convenience init() {
@@ -149,6 +149,8 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
     override func setup() {
         super.setup()
 
+        clipsToBounds = true
+        
         contentView.axis = .horizontal
         contentView.alignment = .top
         contentView.directionalLayoutMargins = .formSectionContentMargins

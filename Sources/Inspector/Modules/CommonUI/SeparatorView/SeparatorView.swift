@@ -33,7 +33,7 @@ final class SeparatorView: BaseView {
             return
         }
         
-        backgroundColor = ElementInspector.appearance.quaternaryTextColor
+        backgroundColor = Inspector.configuration.colorStyle.quaternaryTextColor
     }
     
     @available(*, unavailable)

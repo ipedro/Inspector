@@ -23,7 +23,7 @@ import UIKit
 final class HierarchyInspectorSearchView: BaseView {
     private lazy var searchIcon = Icon(
         .search,
-        color: ElementInspector.appearance.textColor.withAlphaComponent(0.73),
+        color: Inspector.configuration.colorStyle.textColor.withAlphaComponent(0.73),
         size: CGSize(
             width: 19,
             height: 19
@@ -33,11 +33,11 @@ final class HierarchyInspectorSearchView: BaseView {
     private(set) lazy var textField = UITextField(
         .clearButtonMode(.whileEditing),
         .textStyle(.title2),
-        .textColor(ElementInspector.appearance.textColor),
+        .textColor(Inspector.configuration.colorStyle.textColor),
         .attributedPlaceholder(
             NSAttributedString(
                 Texts.hierarchySearch,
-                .foregroundColor(ElementInspector.appearance.tertiaryTextColor),
+                .foregroundColor(Inspector.configuration.colorStyle.tertiaryTextColor),
                 .textStyle(.title2)
             )
         )
@@ -45,7 +45,7 @@ final class HierarchyInspectorSearchView: BaseView {
     
     private(set) lazy var separatorView = SeparatorView(
         thickness: 1,
-        color: ElementInspector.appearance.tertiaryTextColor
+        color: Inspector.configuration.colorStyle.tertiaryTextColor
     )
     
     override var canBecomeFirstResponder: Bool {

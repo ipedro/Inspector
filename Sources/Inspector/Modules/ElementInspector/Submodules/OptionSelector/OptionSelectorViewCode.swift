@@ -27,17 +27,8 @@ final class OptionSelectorViewCode: BaseView {
     
     override func setup() {
         super.setup()
-        
-        #if swift(>=5.0)
-        if #available(iOS 13.0, *) {
-            backgroundColor = .tertiarySystemBackground
-        }
-        else {
-            backgroundColor = .white
-        }
-        #else
-        backgroundColor = .white
-        #endif
+
+        backgroundColor = Inspector.configuration.colorStyle.highlightBackgroundColor
         
         contentView.addArrangedSubview(pickerView)
     }
