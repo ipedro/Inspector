@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelegate {
-    func elementInspectorViewController(_ viewController: ElementInspectorViewController,
+    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorViewController,
                                         viewControllerFor panel: ElementInspectorPanel,
                                         with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
     {
@@ -31,8 +31,8 @@ extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelega
     func panelController(for panel: ElementInspectorPanel, with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {
         switch panel {
         case .preview:
-            return ElementPreviewInspectorViewController.create(
-                viewModel: ElementPreviewInspectorViewModel(
+            return ElementPreviewPanelViewController.create(
+                viewModel: ElementPreviewPanelViewModel(
                     reference: reference,
                     isLiveUpdating: true
                 )
@@ -40,8 +40,8 @@ extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelega
                 $0.delegate = self
             }
         case .attributes:
-            return ElementAttributesInspectorViewController.create(
-                viewModel: AttributesInspectorViewModel(
+            return ElementAttributesPanelViewController.create(
+                viewModel: ElementAttributesPanelViewModel(
                     reference: reference,
                     snapshot: viewHierarchySnapshot
                 )
@@ -50,8 +50,8 @@ extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelega
             }
 
         case .viewHierarchy:
-            return ElementViewHierarchyViewController.create(
-                viewModel: ElementViewHierarchyInspectorViewModel(
+            return ElementChildrenPanelViewController.create(
+                viewModel: ElementChildrenPanelViewModel(
                     reference: reference,
                     snapshot: viewHierarchySnapshot
                 )
@@ -60,8 +60,8 @@ extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelega
             }
 
         case .size:
-            return ElementSizeInspectorViewController.create(
-                viewModel: ElementSizeInspectorViewModel(reference: reference)
+            return ElementSizePanelViewController.create(
+                viewModel: ElementSizePanelViewModel(reference: reference)
             ).then {
                 $0.formDelegate = self
             }

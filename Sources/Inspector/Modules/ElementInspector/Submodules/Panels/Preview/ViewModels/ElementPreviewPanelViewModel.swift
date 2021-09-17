@@ -21,13 +21,27 @@
 
 import Foundation
 
-extension ElementInspectorCoordinator: ElementPreviewPanelViewControllerDelegate {
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
-                                      showLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
+protocol ElementPreviewPanelViewModelProtocol {
+    var reference: ViewHierarchyReference { get }
+    var isHighlightingViews: Bool { get }
+    var isLiveUpdating: Bool { get set }
+}
+
+final class ElementPreviewPanelViewModel: ElementPreviewPanelViewModelProtocol {
+    let reference: ViewHierarchyReference
+
+    var isHighlightingViews: Bool {
+        reference.isHidingHighlightViews == false
     }
 
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController, hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
+    var isLiveUpdating: Bool = true
+
+    init(
+        reference: ViewHierarchyReference,
+        isLiveUpdating: Bool = true
+    ) {
+        self.reference = reference
+        self.isLiveUpdating = isLiveUpdating
     }
+
 }

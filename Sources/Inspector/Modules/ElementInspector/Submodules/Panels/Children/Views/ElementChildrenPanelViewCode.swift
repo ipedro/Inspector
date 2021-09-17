@@ -18,16 +18,23 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+@_implementationOnly import UIKeyCommandTableView
+import UIKit
 
-import Foundation
-
-extension ElementInspectorCoordinator: ElementPreviewPanelViewControllerDelegate {
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
-                                      showLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
+final class ElementChildrenPanelViewCode: BaseView {
+    private(set) lazy var tableView = UIKeyCommandTableView(
+        .backgroundColor(backgroundColor),
+        .viewOptions(.isOpaque(true)),
+        .tableFooterView(UIView()),
+        .separatorStyle(.none),
+        .contentInset(bottom: ElementInspector.appearance.horizontalMargins)
+    ).then {
+        $0.delaysContentTouches = false
     }
 
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController, hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
+    override func setup() {
+        super.setup()
+
+        installView(tableView)
     }
 }

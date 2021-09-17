@@ -20,12 +20,12 @@
 
 import UIKit
 
-extension ElementInspectorCoordinator: ElementInspectorViewHierarchyInspectorViewControllerDelegate {
-    func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController, previewFor reference: ViewHierarchyReference) -> UIViewController? {
+extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegate {
+    func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController, previewFor reference: ViewHierarchyReference) -> UIViewController? {
         ViewHierarchyThumbnailViewController(viewModel: .init(reference: reference, snapshot: viewHierarchySnapshot))
     }
 
-    func viewHierarchyListViewController(_ viewController: ElementViewHierarchyViewController,
+    func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
                                          didSelect reference: ViewHierarchyReference,
                                          with preferredPanel: ElementInspectorPanel?,
                                          from rootReference: ViewHierarchyReference) {

@@ -21,7 +21,7 @@
 import UIKit
 
 protocol ElementInspectorPanelViewControllerDelegate: OperationQueueManagerProtocol {
-    func elementInspectorViewController(_ viewController: ElementInspectorViewController,
+    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorViewController,
                                         viewControllerFor panel: ElementInspectorPanel,
                                         with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
 
@@ -77,12 +77,12 @@ final class ElementInspectorViewController: UIViewController {
     private var viewModel: ElementInspectorViewModelProtocol! {
         didSet {
             title = viewModel.reference.elementName
-            viewCode.referenceView.viewModel = viewModel
+            viewCode.referenceSummaryView.viewModel = viewModel
 
             #if swift(>=5.0)
             if #available(iOS 13.0, *) {
                 let interaction = UIContextMenuInteraction(delegate: self)
-                viewCode.referenceView.addInteraction(interaction)
+                viewCode.referenceSummaryView.addInteraction(interaction)
             }
             #endif
         }
@@ -217,7 +217,7 @@ extension ElementInspectorViewController {
 
 private extension ElementInspectorViewController {
     func installPanel(_ panel: ElementInspectorPanel) {
-        guard let panelViewController = delegate?.elementInspectorViewController(self, viewControllerFor: panel, with: viewModel.reference) else {
+        guard let panelViewController = delegate?.elementInspectorFormPanelViewController(self, viewControllerFor: panel, with: viewModel.reference) else {
             presentedPanelViewController = nil
             return
         }

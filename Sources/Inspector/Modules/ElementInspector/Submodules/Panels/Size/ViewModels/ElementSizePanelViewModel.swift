@@ -18,16 +18,32 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import UIKit
 
-import Foundation
+protocol ElementSizePanelViewModelProtocol: ElementInspectorFormViewControllerDataSource {}
 
-extension ElementInspectorCoordinator: ElementPreviewPanelViewControllerDelegate {
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
-                                      showLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
+final class ElementSizePanelViewModel {
+    let reference: ViewHierarchyReference
+
+    private(set) lazy var sections: [ElementInspectorFormSection] = {
+        guard let referenceView = reference.rootView else { return [] }
+
+        return AutoLayoutLibrary.allCases
+            .map{ $0.viewModels(for: referenceView) }
+            .flatMap { $0 }
+    }()
+
+    init(reference: ViewHierarchyReference) {
+        self.reference = reference
     }
+}
 
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController, hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
+// MARK: - ElementSizeInspectorViewModelProtocol
+
+extension ElementSizePanelViewModel: ElementSizePanelViewModelProtocol {
+    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type? {
+        let viewModel = sections[indexPath.section].viewModels[indexPath.row]
+
+        return AutoLayoutLibrary.viewType(forViewModel: viewModel)
     }
 }

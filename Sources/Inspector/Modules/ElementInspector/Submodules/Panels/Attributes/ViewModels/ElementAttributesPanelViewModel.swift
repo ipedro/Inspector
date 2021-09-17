@@ -18,16 +18,39 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import UIKit
 
-import Foundation
+protocol ElementAttributesPanelViewModelProtocol: ElementInspectorFormViewControllerDataSource {}
 
-extension ElementInspectorCoordinator: ElementPreviewPanelViewControllerDelegate {
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
-                                      showLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
+final class ElementAttributesPanelViewModel {
+    let reference: ViewHierarchyReference
+
+    let snapshot: ViewHierarchySnapshot
+
+    private(set) lazy var sections: [ElementInspectorFormSection] = {
+        guard let referenceView = reference.rootView else { return [] }
+
+        return [
+            ElementInspectorFormSection(
+                rows: snapshot.elementLibraries.targeting(element: referenceView)
+                    .map { $0.viewModels(for: referenceView) }
+                    .flatMap { $0 }
+                    .compactMap { $0 }
+            )
+        ]
+    }()
+
+    init(
+        reference: ViewHierarchyReference,
+        snapshot: ViewHierarchySnapshot
+    ) {
+        self.reference = reference
+        self.snapshot = snapshot
     }
+}
 
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController, hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
-    }
+// MARK: - AttributesInspectorViewModelProtocol
+
+extension ElementAttributesPanelViewModel: ElementAttributesPanelViewModelProtocol {
+    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type? { nil }
 }

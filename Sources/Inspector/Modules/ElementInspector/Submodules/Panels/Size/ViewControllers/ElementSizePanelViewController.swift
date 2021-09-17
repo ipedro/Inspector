@@ -18,16 +18,29 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import UIKit
 
-import Foundation
+final class ElementSizePanelViewController: ElementInspectorFormPanelViewController {
+    // MARK: - Properties
 
-extension ElementInspectorCoordinator: ElementPreviewPanelViewControllerDelegate {
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
-                                      showLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
+    lazy var viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
+
+    private var viewModel: ElementSizePanelViewModelProtocol! {
+        didSet {
+            dataSource = viewModel
+        }
     }
 
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController, hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
+    // MARK: - Init
+
+    static func create(
+        viewModel: ElementSizePanelViewModelProtocol,
+        viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
+    ) -> Self {
+        let viewController = Self()
+        viewController.viewModel = viewModel
+        viewController.viewCode = viewCode
+
+        return viewController
     }
 }

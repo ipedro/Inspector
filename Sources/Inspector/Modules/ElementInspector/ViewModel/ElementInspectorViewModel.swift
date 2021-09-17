@@ -20,7 +20,7 @@
 
 import UIKit
 
-protocol ElementInspectorViewModelProtocol: ViewHierarchyReferenceDetailViewModelProtocol {
+protocol ElementInspectorViewModelProtocol: ViewHierarchyReferenceSummaryViewModelProtocol {
     var reference: ViewHierarchyReference { get }
 
     var snapshot: ViewHierarchySnapshot { get }
@@ -83,7 +83,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
 // MARK: - ViewHierarchyReferenceDetailViewModelProtocol
 
-extension ElementInspectorViewModel: ViewHierarchyReferenceDetailViewModelProtocol {
+extension ElementInspectorViewModel: ViewHierarchyReferenceSummaryViewModelProtocol {
     var automaticallyAdjustIndentation: Bool { false }
 
     var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }

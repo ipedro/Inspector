@@ -18,16 +18,19 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import Foundation
 
-extension ElementInspectorCoordinator: ElementPreviewPanelViewControllerDelegate {
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
-                                      showLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
-    }
-
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController, hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
+extension ElementInspector {
+    enum ElementChildrenPanelAction {
+        case inserted([IndexPath])
+        case deleted([IndexPath])
+        
+        var lastIndexPath: IndexPath? {
+            switch self {
+            case let .inserted(indexPaths),
+                 let .deleted(indexPaths):
+                return indexPaths.last
+            }
+        }
     }
 }

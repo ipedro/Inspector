@@ -21,8 +21,8 @@
 import MobileCoreServices
 import UIKit
 
-extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegate {
-    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController, didTap colorPicker: ColorPreviewControl) {
+extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDelegate {
+    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorFormPanelViewController, didTap colorPicker: ColorPreviewControl) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             let colorPickerViewController = UIColorPickerViewController(
@@ -46,7 +46,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegat
         #endif
     }
     
-    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
+    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorFormPanelViewController,
                                         didTap optionSelector: OptionListControl)
     {
         let viewModel = OptionSelectorViewModel(
@@ -75,7 +75,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormViewControllerDelegat
         viewController.present(navigationController, animated: true)
     }
     
-    func elementInspectorViewController(_ viewController: ElementInspectorFormViewController,
+    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorFormPanelViewController,
                                         didTap imagePicker: ImagePreviewControl)
     {
         let alertController = UIAlertController(

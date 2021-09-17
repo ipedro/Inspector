@@ -20,7 +20,7 @@
 
 import UIKit
 
-struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceDetailViewModelProtocol {
+struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelProtocol {
     let reference: ViewHierarchyReference
     let snapshot: ViewHierarchySnapshot
 
@@ -65,7 +65,7 @@ final class ViewHierarchyThumbnailViewController: UIViewController {
         $0.backgroundColor = $0.colorStyle.highlightBackgroundColor
     }
 
-    private(set) lazy var referenceDetailView = ViewHierarchyReferenceDetailView().then {
+    private(set) lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView().then {
         $0.viewModel = viewModel
     }
 
@@ -81,7 +81,7 @@ final class ViewHierarchyThumbnailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        viewCode.contentView.addArrangedSubviews(referenceDetailView, thumbnailView)
+        viewCode.contentView.addArrangedSubviews(referenceSummaryView, thumbnailView)
 
         thumbnailView.updateViews(afterScreenUpdates: false)
     }
