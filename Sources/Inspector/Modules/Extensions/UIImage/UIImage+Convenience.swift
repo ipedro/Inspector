@@ -20,26 +20,15 @@
 
 import UIKit
 
-#if swift(>=5.0)
-@available(iOS 13.0, *)
-extension UIMenuElement {
-    func insideDivider() -> UIMenuElement {
-        UIMenu(
-            title: String(),
-            options: .displayInline,
-            children: [self]
-        )
-    }
+// MARK: - Convenience
+
+extension UIImage {
+    static let internalViewIcon = UIImage.moduleImage(named: "InternalView-32_Normal")
 }
 
-@available(iOS 13.0, *)
-extension Array where Element: UIMenuElement {
-    func insideDivider() -> [UIMenuElement] {
-        [UIMenu(
-            title: String(),
-            options: .displayInline,
-            children: self
-        )]
-    }
+@available (iOS 13.0, *)
+extension UIImage {
+    static let copySymbol = UIImage(systemName: "doc.on.doc")
+    static let chevronDownSymbol = UIImage(systemName: "chevron.down.circle")
+    static let chevronRightSymbol = UIImage(systemName: "chevron.right.circle")
 }
-#endif

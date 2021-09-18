@@ -21,19 +21,51 @@
 import UIKit
 
 final class SeparatorView: BaseView {
-    let thickness: CGFloat
+    enum Style: ColorStylable {
+        case soft
+        case medium
+        case hard
+        case color(UIColor)
+
+        fileprivate var color: UIColor {
+            switch self {
+            case .soft:
+                return colorStyle.accessoryControlBackgroundColor
+            case .medium:
+                return colorStyle.quaternaryTextColor
+            case .hard:
+                return colorStyle.tertiaryTextColor
+            case let .color(color):
+                return color
+            }
+        }
+    }
+
+    var thickness: CGFloat {
+        didSet {
+            thicknessConstraint.constant = thickness
+        }
+    }
+
+    var style: Style {
+        didSet {
+            backgroundColor = style.color
+        }
+    }
+
+    private lazy var thicknessConstraint = heightAnchor.constraint(equalToConstant: thickness)
+
+    convenience init(color: UIColor, thickness: CGFloat = 0.5, frame: CGRect = .zero) {
+        self.init(style: .color(color), thickness: thickness, frame: frame)
+    }
     
-    init(thickness: CGFloat = 0.5, color: UIColor? = nil, frame: CGRect = .zero) {
+    init(style: Style = .medium, thickness: CGFloat = 0.5, frame: CGRect = .zero) {
         self.thickness = thickness
+        self.style = style
         
         super.init(frame: frame)
         
-        if let color = color {
-            backgroundColor = color
-            return
-        }
-        
-        backgroundColor = colorStyle.quaternaryTextColor
+        backgroundColor = style.color
     }
     
     @available(*, unavailable)
@@ -43,6 +75,6 @@ final class SeparatorView: BaseView {
     
     override func setup() {
         super.setup()
-        heightAnchor.constraint(equalToConstant: thickness).isActive = true
+        thicknessConstraint.isActive = true
     }
 }

@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UIImageViewInspectableViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case image = "Image"
@@ -68,7 +68,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .isHighlighted:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { imageView.isHighlighted }
                 ) { isHighlighted in
@@ -76,7 +76,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .adjustsImageSizeForAccessibilityContentSizeCategory:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { imageView.adjustsImageSizeForAccessibilityContentSizeCategory }
                 ) { adjustsImageSizeForAccessibilityContentSizeCategory in

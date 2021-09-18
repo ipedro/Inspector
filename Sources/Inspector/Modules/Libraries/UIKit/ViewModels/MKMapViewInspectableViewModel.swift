@@ -20,9 +20,9 @@
 
 import MapKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class MKMapViewInspectableViewModel: InspectorElementViewModelProtocol {
-        enum Property: String, Swift.CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case type = "Type"
             case groupAllows = "Allows"
             case isZoomEnabled = "Zooming"
@@ -74,7 +74,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
                 
             case .isZoomEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { mapView.isZoomEnabled }
                 ) { isZoomEnabled in
@@ -82,7 +82,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .isRotateEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { mapView.isRotateEnabled }
                 ) { isRotateEnabled in
@@ -90,7 +90,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .isScrollEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { mapView.isScrollEnabled }
                 ) { isScrollEnabled in
@@ -98,7 +98,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .isPitchEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { mapView.isPitchEnabled }
                 ) { isPitchEnabled in
@@ -109,7 +109,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
                 
             case .buildings:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { mapView.showsBuildings }
                 ) { showsBuildings in
@@ -117,7 +117,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .showsScale:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { mapView.showsScale }
                 ) { showsScale in
@@ -125,7 +125,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .showsPointsOfInterest:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { mapView.showsPointsOfInterest }
                 ) { showsPointsOfInterest in
@@ -133,7 +133,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .showsUserLocation:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { mapView.showsUserLocation }
                 ) { showsUserLocation in
@@ -141,7 +141,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .showsTraffic:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { mapView.showsTraffic }
                 ) { showsTraffic in

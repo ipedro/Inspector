@@ -116,11 +116,26 @@ public extension InspectorConfiguration {
             textColor.withAlphaComponent(disabledAlpha / 2)
         }
 
-        var disabledAlpha: CGFloat { 0.3 }
+        var disabledAlpha: CGFloat {
+            switch self {
+            case .dark:
+                return 1/3
+            case .light:
+                return 0.2
+            }
+        }
     }
 
 }
 
-extension UIView {
+// MARK: - ColorStylable
+
+protocol ColorStylable {}
+
+extension ColorStylable {
     var colorStyle: InspectorConfiguration.ColorStyle { Inspector.configuration.colorStyle }
 }
+
+extension UIView: ColorStylable {}
+
+extension UIViewController: ColorStylable {}

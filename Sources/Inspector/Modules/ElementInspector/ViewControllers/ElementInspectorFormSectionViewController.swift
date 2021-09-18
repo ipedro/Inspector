@@ -155,7 +155,7 @@ final class ElementInspectorFormSectionViewController: UIViewController {
                         $0.delegate = self
                     }
 
-                case let .toggleButton(title: title, isOn: isOnProvider, handler: _):
+                case let .switch(title: title, isOn: isOnProvider, handler: _):
                     return ToggleControl(
                         title: title,
                         isOn: isOnProvider()
@@ -249,7 +249,7 @@ extension ElementInspectorFormSectionViewController {
                 case let (.colorPicker(_, _, handler), colorPicker as ColorPreviewControl):
                     handler?(colorPicker.selectedColor)
 
-                case let (.toggleButton(_, _, handler), toggleControl as ToggleControl):
+                case let (.switch(_, _, handler), toggleControl as ToggleControl):
                     handler?(toggleControl.isOn)
 
                 case let (.textButtonGroup(_, _, _, _, handler), segmentedControl as SegmentedControl),
@@ -283,7 +283,7 @@ extension ElementInspectorFormSectionViewController {
 
                 case (.stepper, _),
                      (.colorPicker, _),
-                     (.toggleButton, _),
+                     (.switch, _),
                      (.textButtonGroup, _),
                      (.imageButtonGroup, _),
                      (.optionsList, _),
@@ -329,7 +329,7 @@ extension ElementInspectorFormSectionViewController {
                 imagePicker.image = imageProvider()
                 imagePicker.title = title
 
-            case let (.toggleButton(title: title, isOn: isOnProvider, _), toggleControl as ToggleControl):
+            case let (.switch(title: title, isOn: isOnProvider, _), toggleControl as ToggleControl):
                 toggleControl.isOn = isOnProvider()
                 toggleControl.title = title
 
@@ -370,7 +370,7 @@ extension ElementInspectorFormSectionViewController {
 
             case (.stepper, _),
                  (.colorPicker, _),
-                 (.toggleButton, _),
+                 (.switch, _),
                  (.imageButtonGroup, _),
                  (.textButtonGroup, _),
                  (.optionsList, _),

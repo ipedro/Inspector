@@ -20,9 +20,9 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UIScrollViewInspectableViewModel: InspectorElementViewModelProtocol {
-        enum Property: String, Swift.CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case groupIndicators = "Indicators"
             case indicatorStyle = "Indicator Style"
             case showsHorizontalScrollIndicator = "Show Horizontal Indicator"
@@ -83,7 +83,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .showsHorizontalScrollIndicator:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { scrollView.showsHorizontalScrollIndicator }
                 ) { showsHorizontalScrollIndicator in
@@ -91,7 +91,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .showsVerticalScrollIndicator:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { scrollView.showsVerticalScrollIndicator }
                 ) { showsVerticalScrollIndicator in
@@ -102,7 +102,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
                 
             case .isScrollEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { scrollView.isScrollEnabled }
                 ) { isScrollEnabled in
@@ -110,7 +110,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .pagingEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { scrollView.isPagingEnabled }
                 ) { isPagingEnabled in
@@ -118,7 +118,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .isDirectionalLockEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { scrollView.isDirectionalLockEnabled }
                 ) { isDirectionalLockEnabled in
@@ -129,7 +129,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
                 
             case .bounces:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { scrollView.bounces }
                 ) { bounces in
@@ -137,7 +137,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .bouncesZoom:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { scrollView.bouncesZoom }
                 ) { bouncesZoom in
@@ -145,7 +145,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .alwaysBounceHorizontal:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { scrollView.alwaysBounceHorizontal }
                 ) { alwaysBounceHorizontal in
@@ -153,7 +153,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .bounceVertically:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { scrollView.alwaysBounceVertical }
                 ) { alwaysBounceVertical in
@@ -197,7 +197,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
                 
             case .delaysContentTouches:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { scrollView.delaysContentTouches }
                 ) { delaysContentTouches in
@@ -205,7 +205,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .canCancelContentTouches:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { scrollView.canCancelContentTouches }
                 ) { canCancelContentTouches in

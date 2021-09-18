@@ -42,14 +42,14 @@ protocol ElementInspectorFormPanelViewControllerDelegate: OperationQueueManagerP
 
 public struct ElementInspectorFormSection {
     public var title: String?
-    public var viewModels: [InspectorElementViewModelProtocol]
+    public var rows: [InspectorElementViewModelProtocol]
 
     public init(
         title: String? = nil,
         rows: [InspectorElementViewModelProtocol]
     ) {
         self.title = title
-        self.viewModels = rows
+        self.rows = rows
     }
 }
 
@@ -149,7 +149,7 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
                 self.viewCode.contentView.addArrangedSubview(sectionHeaderView)
             }
 
-            for (row, viewModel) in section.viewModels.enumerated() {
+            for (row, viewModel) in section.rows.enumerated() {
                 let indexPath = IndexPath(row: row, section: sectionIndex)
 
                 let Type = dataSource.typeForRow(at: indexPath) ?? ElementInspectorFormSectionContentView.self

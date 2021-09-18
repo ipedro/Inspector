@@ -18,54 +18,76 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-final class CGRectStepperControl: BaseFormControl {
-    var rect: CGRect {
-        get {
-            CGRect(origin: originStepper.point, size: sizeStepper.size)
-        }
-        set {
-            originStepper.point = newValue.origin
-            sizeStepper.size = newValue.size
-        }
-    }
-
+class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
     override var isEnabled: Bool {
         didSet {
-            originStepper.isEnabled = isEnabled
-            sizeStepper.isEnabled = isEnabled
+            firstStepper.isEnabled = isEnabled
+            secondStepper.isEnabled = isEnabled
         }
     }
 
-    override var title: String? {
-        get { _title }
-        set { _title = newValue }
+    var firstSubtitle: String? {
+        get { firstStepper.title }
+        set { firstStepper.title = newValue }
     }
 
-    private var _title: String? {
-        didSet {
-            originStepper.title = _title
-            sizeStepper.title = _title
-        }
+    var firstValue: FloatingPoint {
+        get { FloatingPoint(firstStepper.value) }
+        set { firstStepper.value = Double(newValue) }
     }
 
-    private lazy var originStepper = CGPointStepperControl(title: title, point: .zero).then {
+    var secondSubtitle: String? {
+        get { secondStepper.title }
+        set { secondStepper.title = newValue }
+    }
+
+    var secondValue: FloatingPoint {
+        get { FloatingPoint(secondStepper.value) }
+        set { secondStepper.value = Double(newValue) }
+    }
+
+    private lazy var firstStepper = StepperControl(
+        title: .none,
+        value: .zero,
+        range: 0...Double.infinity,
+        stepValue: 1,
+        isDecimalValue: true
+    ).then {
         $0.containerView.directionalLayoutMargins.update(bottom: .zero)
         $0.isShowingSeparator = false
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
-    private lazy var sizeStepper = CGSizeStepperControl(title: title, size: .zero).then {
+    private lazy var secondStepper = StepperControl(
+        title: .none,
+        value: .zero,
+        range: 0...Double.infinity,
+        stepValue: 1,
+        isDecimalValue: true
+    ).then {
         $0.containerView.directionalLayoutMargins.update(top: .zero, bottom: .zero)
         $0.isShowingSeparator = false
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
-    convenience init(title: String?, rect: CGRect? = nil) {
-        self.init(title: .none, frame: .zero)
-        self.rect = rect ?? .zero
-        self.title = title
+    init(
+        title: String? = nil,
+        firstSubtitle: String? = nil,
+        firstValue: FloatingPoint = .zero,
+        secondSubtitle: String? = nil,
+        secondValue: FloatingPoint = .zero,
+        isEnabled: Bool = true,
+        frame: CGRect = .zero
+    ) {
+        super.init(title: title, isEnabled: isEnabled, frame: frame)
+
+        self.firstSubtitle = firstSubtitle
+        self.firstValue = firstValue
+        self.secondSubtitle = secondSubtitle
+        self.secondValue = secondValue
     }
 
     override func setup() {
@@ -75,7 +97,7 @@ final class CGRectStepperControl: BaseFormControl {
 
         contentView.axis = .vertical
         contentView.spacing = ElementInspector.appearance.verticalMargins
-        contentView.addArrangedSubviews(originStepper, sizeStepper)
+        contentView.addArrangedSubviews(firstStepper, secondStepper)
     }
 
     @objc

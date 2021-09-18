@@ -25,7 +25,7 @@ public extension InspectorElementViewModelProperty {
         textView: UITextView,
         dataDetectorType: UIDataDetectorTypes
     ) -> InspectorElementViewModelProperty {
-        .toggleButton(
+        .switch(
             title: dataDetectorType.description,
             isOn: { textView.dataDetectorTypes.contains(dataDetectorType) }
         ) { isOn in

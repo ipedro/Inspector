@@ -60,9 +60,7 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
     }
 
     func removeLayer(_ layer: ViewHierarchyLayer) {
-        guard isShowingLayers else {
-            return
-        }
+        guard isShowingLayers else { return }
         
         asyncOperation(name: layer.title) {
             self.destroy(layer: layer)

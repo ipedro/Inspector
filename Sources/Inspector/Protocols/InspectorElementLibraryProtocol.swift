@@ -21,19 +21,23 @@
 import UIKit
 
 /// Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
-public protocol InspectorElementLibraryProtocol {
+public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource {
     var targetClass: AnyClass { get }
     
-    func viewModels(for referenceView: UIView) -> [InspectorElementViewModelProtocol?]
-    
     func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol?
-    
+
     func icon(for referenceView: UIView) -> UIImage?
 }
 
 public extension InspectorElementLibraryProtocol {
-    func viewModels(for referenceView: UIView) -> [InspectorElementViewModelProtocol?] {
-        [viewModel(for: referenceView)]
+    func sections(for referenceView: UIView) -> [ElementInspectorFormSection] {
+        guard let viewModel = viewModel(for: referenceView) else {
+            return []
+        }
+
+        return [
+            ElementInspectorFormSection(rows: [viewModel])
+        ]
     }
 }
 
@@ -59,7 +63,7 @@ extension Sequence where Element == InspectorElementLibraryProtocol {
             return UIImage.moduleImage(named: "Hidden-32_Normal")
         }
         
-        guard element is InternalViewProtocol == false else {
+        guard element is NonInspectableView == false else {
             return UIImage.internalViewIcon?.withRenderingMode(element is UIControl ? .alwaysOriginal : .alwaysTemplate)
         }
         

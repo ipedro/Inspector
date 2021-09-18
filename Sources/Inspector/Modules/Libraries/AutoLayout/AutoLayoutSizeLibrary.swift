@@ -20,14 +20,10 @@
 
 import UIKit
 
-enum AutoLayoutLibrary: Swift.CaseIterable, InspectorSizeLibraryProtocol {
+enum AutoLayoutSizeLibrary: Swift.CaseIterable, InspectorSizeLibraryProtocol {
     case viewFrame
     case contentLayoutPriority
     case layoutConstraints
-
-    static var standard: AllCases {
-        Self.allCases
-    }
 
     // MARK: - InspectorSizeLibraryProtocol
 
@@ -40,7 +36,7 @@ enum AutoLayoutLibrary: Swift.CaseIterable, InspectorSizeLibraryProtocol {
         }
     }
 
-    func viewModels(for referenceView: UIView) -> [ElementInspectorFormSection] {
+    func sections(for referenceView: UIView) -> [ElementInspectorFormSection] {
         switch self {
         case .viewFrame:
             return .single(ViewFrameInspectableViewModel(view: referenceView))

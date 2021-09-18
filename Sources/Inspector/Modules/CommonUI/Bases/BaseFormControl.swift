@@ -21,11 +21,12 @@
 import UIKit
 
 class BaseFormControl: BaseControl {
-    private(set) lazy var titleLabel = UILabel(
-        .textStyle(.footnote),
-        .huggingPriority(.fittingSizeLevel, for: .horizontal),
-        .textColor(colorStyle.textColor)
-    )
+    private(set) lazy var titleLabel = UILabel().then {
+        $0.font = .preferredFont(forTextStyle: .footnote)
+        $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
+        $0.textColor = colorStyle.textColor
+        $0.isHidden = true
+    }
     
     private(set) lazy var contentContainerView = UIStackView.horizontal().then {
         $0.spacing = defaultSpacing
@@ -35,14 +36,14 @@ class BaseFormControl: BaseControl {
         )
     }
     
-    private lazy var containerView = UIStackView.vertical(
+    private(set) lazy var containerView = UIStackView.vertical(
         .arrangedSubviews(contentContainerView),
         .spacing(defaultSpacing),
         .isLayoutMarginsRelativeArrangement(true),
         .directionalLayoutMargins(vertical: defaultSpacing)
     )
     
-    private lazy var separator = SeparatorView()
+    private lazy var separator = SeparatorView(style: .soft)
     
     var isShowingSeparator: Bool {
         get {
@@ -68,6 +69,7 @@ class BaseFormControl: BaseControl {
         }
         set {
             titleLabel.text = newValue
+            titleLabel.isHidden = newValue.isNilOrEmpty
         }
     }
     

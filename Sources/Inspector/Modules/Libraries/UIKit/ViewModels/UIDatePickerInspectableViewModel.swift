@@ -20,9 +20,9 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UIDatePickerInspectableViewModel: InspectorElementViewModelProtocol {
-        enum Property: String, Swift.CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case datePickerStyle = "Style"
             case datePickerMode = "Mode"
             case locale = "Locale"

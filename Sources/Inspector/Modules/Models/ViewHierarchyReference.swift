@@ -32,6 +32,8 @@ final class ViewHierarchyReference {
     let isSystemView: Bool
     
     private let _className: String
+
+    private let _classNameWithoutQualifiers: String
     
     private let _elementName: String
     
@@ -78,6 +80,8 @@ final class ViewHierarchyReference {
         isUserInteractionEnabled = root.isUserInteractionEnabled
         
         _className = root.className
+
+        _classNameWithoutQualifiers = root.classNameWithoutQualifiers
         
         _elementName = root.elementName
         
@@ -94,6 +98,14 @@ final class ViewHierarchyReference {
 // MARK: - ViewHierarchyProtocol {
 
 extension ViewHierarchyReference: ViewHierarchyProtocol {
+    var classNameWithoutQualifiers: String {
+        guard let rootView = rootView else {
+            return _classNameWithoutQualifiers
+        }
+
+        return rootView.classNameWithoutQualifiers
+    }
+
     var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
         rootView?.constraintReferences ?? []
     }

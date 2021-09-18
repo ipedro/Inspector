@@ -76,8 +76,8 @@ final class NSLayoutConstraintReference: Hashable {
         let myBindings = Self.find(.mine, bindings: first, second, inRelationTo: view)
 
         guard
-            first.item.targetView as? InternalViewProtocol == nil,
-            second?.item.targetView as? InternalViewProtocol == nil,
+            first.item.targetView as? NonInspectableView == nil,
+            second?.item.targetView as? NonInspectableView == nil,
             myBindings.isEmpty == false
         else {
             return nil

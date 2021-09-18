@@ -19,8 +19,9 @@
 //  SOFTWARE.
 
 import UIKit
+import Inspector
 
-final class CustomButton: UIButton {
+final class CustomButton: UIButton, NonInspectableView {
     var animateOnTouch = true
     
     var roundCorners: Bool = true {

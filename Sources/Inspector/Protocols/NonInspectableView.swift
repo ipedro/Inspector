@@ -18,32 +18,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-protocol ElementSizePanelViewModelProtocol: ElementInspectorFormViewControllerDataSource {}
-
-final class ElementSizePanelViewModel {
-    let reference: ViewHierarchyReference
-
-    private(set) lazy var sections: [ElementInspectorFormSection] = {
-        guard let referenceView = reference.rootView else { return [] }
-
-        return AutoLayoutSizeLibrary.allCases
-            .map{ $0.sections(for: referenceView) }
-            .flatMap { $0 }
-    }()
-
-    init(reference: ViewHierarchyReference) {
-        self.reference = reference
-    }
-}
-
-// MARK: - ElementSizeInspectorViewModelProtocol
-
-extension ElementSizePanelViewModel: ElementSizePanelViewModelProtocol {
-    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type? {
-        let viewModel = sections[indexPath.section].rows[indexPath.row]
-
-        return AutoLayoutSizeLibrary.viewType(forViewModel: viewModel)
-    }
-}
+/// Conform to this protocol to prevent a view to be inspected.
+public protocol NonInspectableView: UIView {}

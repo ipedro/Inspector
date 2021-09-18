@@ -18,47 +18,15 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-public struct InspectorConfiguration {
-    public var appearance = Appearance()
-    
-    public var keyCommands = KeyCommandSettings()
-    
-    public var cacheExpirationTimeInterval: TimeInterval = 0.5
-    
-    public var showAllViewSearchQuery = "*"
-
-    var colorStyle: ColorStyle {
-        guard let hostWindow = Inspector.host?.window else { return .dark }
-
-        #if swift(>=5.0)
-        if #available(iOS 13.0, *) {
-            switch (hostWindow.overrideUserInterfaceStyle, hostWindow.traitCollection.userInterfaceStyle) {
-            case (.dark, _),
-                (.unspecified, .dark):
-                return .dark
-            default:
-                return .light
-            }
-        }
-        #endif
-        return .dark
+public extension InspectorElementViewModelProperty {
+    static func cgColorPicker(title: String, color: @escaping CGColorProvider, handler: @escaping CGColorHandler) -> InspectorElementViewModelProperty {
+        .colorPicker(
+            title: title,
+            color: { UIColor(cgColor: color()) },
+            handler: { handler($0?.cgColor) }
+        )
     }
-
-
-    var knownSystemContainers: [String] = [
-        "UIWindow",
-        "UITransitionView",
-        "UIDropShadowView",
-        "UILayoutContainerView",
-        "UINavigationTransitionView",
-        "UIViewControllerWrapperView",
-        // Swift UI
-        "_UIHostingView",
-        "PlatformViewHost",
-        "PlatformGroupContainer",
-        "HostingScrollView",
-    ]
-    
 }

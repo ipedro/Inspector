@@ -20,62 +20,44 @@
 
 import UIKit
 
-final class CGSizeStepperControl: BaseFormControl {
+final class CGSizeStepperControl: StepperPairControl<CGFloat> {
+    private var width: CGFloat {
+        get { firstValue }
+        set { firstValue = newValue }
+    }
+
+    private var height: CGFloat {
+        get { secondValue }
+        set { secondValue = newValue }
+    }
+
     var size: CGSize {
         get {
-            CGSize(width: widthStepper.value, height: heightStepper.value)
+            CGSize(
+                width: width,
+                height: height
+            )
         }
         set {
-            widthStepper.value = Double(newValue.width)
-            heightStepper.value = Double(newValue.height)
+            width = newValue.width
+            height = newValue.height
         }
     }
 
-    override var isEnabled: Bool {
+    override var title: String? {
+        get { _title }
+        set { _title = newValue }
+    }
+
+    private var _title: String? {
         didSet {
-            widthStepper.isEnabled = isEnabled
-            heightStepper.isEnabled = isEnabled
+            firstSubtitle = "Width".string(prepending: _title, separator: " ")
+            secondSubtitle = "Height".string(prepending: _title, separator: " ")
         }
-    }
-
-    private lazy var widthStepper = StepperControl(
-        title: "Width",
-        value: .zero,
-        range: 0...Double.infinity,
-        stepValue: 1,
-        isDecimalValue: true
-    ).then {
-        $0.isShowingSeparator = false
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
-    }
-
-    private lazy var heightStepper = StepperControl(
-        title: "Height",
-        value: .zero,
-        range: 0...Double.infinity,
-        stepValue: 1,
-        isDecimalValue: true
-    ).then {
-        $0.isShowingSeparator = false
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
     convenience init(title: String?, size: CGSize?) {
-        self.init(title: title, frame: .zero)
-        self.size = size ?? .zero
-    }
-
-    override func setup() {
-        super.setup()
-
-        axis = .vertical
-        contentView.distribution = .fillEqually
-        contentView.axis = .vertical
-        contentView.addArrangedSubviews(widthStepper, heightStepper)
-    }
-
-    @objc
-    private func valueChanged() {
-        sendActions(for: .valueChanged)
+        self.init(firstValue: size?.width ?? .zero, secondValue: size?.height ?? .zero)
+        self.title = title
     }
 }

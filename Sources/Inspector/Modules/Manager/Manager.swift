@@ -99,17 +99,11 @@ extension Inspector {
         }
         
         func start() {
-            asyncOperation { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                
-                let coordinator = ViewHierarchyLayersCoordinator()
-                coordinator.dataSource = self
-                coordinator.delegate = self
-                
-                self.viewHierarchyLayersCoordinator = coordinator
-            }
+            let coordinator = ViewHierarchyLayersCoordinator()
+            coordinator.dataSource = self
+            coordinator.delegate = self
+
+            self.viewHierarchyLayersCoordinator = coordinator
         }
         
         func finish() {
@@ -235,7 +229,7 @@ private extension InspectorHostable {
             elements.append(contentsOf: inspectorElementLibraries)
         }
         
-        elements.append(contentsOf: UIViewElementLibrary.standard)
+        elements.append(contentsOf: UIKitElementLibrary.allCases)
         
         return elements
     }

@@ -25,9 +25,3 @@ extension UIImage {
         UIImage(named: imageName, in: .module, compatibleWith: nil)
     }
 }
-
-// MARK: - Convenience
-
-extension UIImage {
-    static let internalViewIcon = UIImage.moduleImage(named: "InternalView-32_Normal")
-}

@@ -51,15 +51,16 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
                     children: [
                         UIMenu(
                             title: "Copy",
-                            image: UIImage(systemName: "doc.on.doc"),
+                            image: .copySymbol,
+                            options: .displayInline,
                             children: [
                                 UIAction.copyAction(
-                                    title: "Description",
-                                    stringProvider: { [weak self] in self?.viewModel.reference.elementDescription }
+                                    title: "Copy Class Name",
+                                    stringProvider: { [weak self] in self?.viewModel.reference.className }
                                 ),
                                 UIAction.copyAction(
-                                    title: "Class Name",
-                                    stringProvider: { [weak self] in self?.viewModel.reference.className }
+                                    title: "Copy Description",
+                                    stringProvider: { [weak self] in self?.viewModel.reference.elementDescription }
                                 )
                             ]
                         )

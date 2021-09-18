@@ -20,10 +20,12 @@
 
 import UIKit
 
-protocol LayerManagerProtocol {
-    func installLayer(_ layer: ViewHierarchyLayer)
+public protocol LayerManagerProtocol {
+    var isShowingLayers: Bool { get }
     
-    func removeLayer(_ layer: ViewHierarchyLayer)
+    func installLayer(_ layer: Inspector.ViewHierarchyLayer)
+    
+    func removeLayer(_ layer: Inspector.ViewHierarchyLayer)
     
     func installAllLayers()
     

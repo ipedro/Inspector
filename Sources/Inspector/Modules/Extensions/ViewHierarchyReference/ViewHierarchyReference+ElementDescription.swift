@@ -35,7 +35,7 @@ extension ViewHierarchyReference {
     }
 }
 
-private extension ViewHierarchyReference {
+extension ViewHierarchyReference {
     var constraintsDescription: String? {
         let totalCount = constraintReferences.count
 
@@ -62,7 +62,7 @@ private extension ViewHierarchyReference {
         return warnings.joined(separator: "\n").string(prepending: "\n")
     }
 
-    var emptyFrame: String? {
+    private var emptyFrame: String? {
         guard
             let view = rootView,
             view.frame.isEmpty
@@ -73,7 +73,7 @@ private extension ViewHierarchyReference {
         return "⚠️ Frame is empty"
     }
 
-    var isUserInteractionDisabled: String? {
+    private var isUserInteractionDisabled: String? {
         guard
             let view = rootView,
             view.isUserInteractionEnabled == false
@@ -82,7 +82,7 @@ private extension ViewHierarchyReference {
         return "⚠️ User interaction disabled"
     }
 
-    var isControlDisabled: String? {
+    private var isControlDisabled: String? {
         guard
             let control = rootView as? UIControl,
             control.isEnabled == false
@@ -108,24 +108,35 @@ private extension ViewHierarchyReference {
         let origin = [
             view.frame.origin.x.toString(prepending: "X:", separator: " "),
             view.frame.origin.y.toString(prepending: "Y:", separator: " ")
-        ].joined(separator: ", ")
+        ].joined(separator: " — ")
 
         let size = [
-            view.frame.size.width.toString(prepending: "Width:", separator: " "),
-            view.frame.size.height.toString(prepending: "Height:", separator: " ")
-        ].joined(separator: ", ")
+            view.frame.size.width.toString(prepending: "W:", separator: " "),
+            view.frame.size.height.toString(prepending: "H:", separator: " ")
+        ].joined(separator: " — ")
 
-        return [origin, size].joined(separator: "\n")
+        return "Position: \(origin)\nSize: \(size)"
+    }
+
+    var superclassName: String? {
+        guard
+            let view = rootView,
+            let superclass = view.superclass
+        else {
+            return nil
+        }
+
+        return String(describing: superclass)
     }
 
     var classNameDescription: String? {
         guard let view = rootView else { return nil}
 
-        guard let superclass = view.superclass else {
+        guard let superclassName = superclassName else {
             return view.className
         }
 
-        return "\(view.className) (\(String(describing: superclass)))"
+        return "\(view.className) (\(superclassName))"
     }
 
 }

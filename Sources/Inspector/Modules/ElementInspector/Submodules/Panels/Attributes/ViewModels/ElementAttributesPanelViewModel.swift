@@ -30,14 +30,9 @@ final class ElementAttributesPanelViewModel {
     private(set) lazy var sections: [ElementInspectorFormSection] = {
         guard let referenceView = reference.rootView else { return [] }
 
-        return [
-            ElementInspectorFormSection(
-                rows: snapshot.elementLibraries.targeting(element: referenceView)
-                    .map { $0.viewModels(for: referenceView) }
-                    .flatMap { $0 }
-                    .compactMap { $0 }
-            )
-        ]
+        return snapshot.elementLibraries.targeting(element: referenceView).flatMap { library in
+            library.sections(for: referenceView)
+        }
     }()
 
     init(

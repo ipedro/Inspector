@@ -29,6 +29,9 @@ protocol ViewHierarchyProtocol {
     /// String representation of the class name.
     var className: String { get }
 
+    /// /// String representation of the class name without Generics signature.
+    var classNameWithoutQualifiers: String { get }
+
     /// If a view has accessibility identifiers the last component will be shown, otherwise shows the class name.
     var elementName: String { get }
 

@@ -28,4 +28,18 @@ public extension InspectorManageableProtocol {
     func presentInspector(animated: Bool = true) {
         inspectorManager?.present(animated: animated)
     }
+
+    func stopInspecting() {
+        inspectorManager?.removeAllLayers()
+    }
+
+    func showInspectorLayer(_ layer: Inspector.ViewHierarchyLayer) {
+        inspectorManager?.installLayer(layer)
+    }
+
+    func hideInspectorLayer(_ layer: Inspector.ViewHierarchyLayer) {
+        inspectorManager?.removeLayer(layer)
+    }
+
+
 }

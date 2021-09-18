@@ -510,7 +510,7 @@ final class MyClassInspectableViewModel: InspectorElementViewModelProtocol {
         Properties.allCases.map { property in
             switch property {
             case .cornerRadius:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { self.myObject.roundCorners }
                 ) { [weak self] roundCorners in

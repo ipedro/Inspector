@@ -87,7 +87,7 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
                 )
 
             case .isActive:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { self.constraintReference.constraint.isActive },
                     handler: { self.constraintReference.constraint.isActive = $0 }

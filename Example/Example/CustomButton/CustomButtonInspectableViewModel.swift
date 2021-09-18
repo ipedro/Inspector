@@ -43,7 +43,7 @@ final class CustomButtonInspectableViewModel: InspectorElementViewModelProtocol 
         Properties.allCases.map { property in
             switch property {
             case .animateOnTouch:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { self.customButton.animateOnTouch }
                 ) { animateOnTouch in
@@ -51,7 +51,7 @@ final class CustomButtonInspectableViewModel: InspectorElementViewModelProtocol 
                 }
                 
             case .cornerRadius:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { self.customButton.roundCorners }
                 ) { roundCorners in

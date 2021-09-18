@@ -20,62 +20,45 @@
 
 import UIKit
 
-final class CGPointStepperControl: BaseFormControl {
+final class CGPointStepperControl: StepperPairControl<CGFloat> {
+    private var x: CGFloat {
+        get { firstValue }
+        set { firstValue = newValue }
+    }
+
+    private var y: CGFloat {
+        get { secondValue }
+        set { secondValue = newValue }
+    }
+
     var point: CGPoint {
         get {
-            CGPoint(x: xStepper.value, y: yStepper.value)
+            CGPoint(
+                x: x,
+                y: y
+            )
         }
         set {
-            xStepper.value = Double(newValue.x)
-            yStepper.value = Double(newValue.y)
+            x = newValue.x
+            y = newValue.y
         }
     }
 
-    override var isEnabled: Bool {
+    override var title: String? {
+        get { _title }
+        set { _title = newValue }
+    }
+
+    private var _title: String? {
         didSet {
-            xStepper.isEnabled = isEnabled
-            yStepper.isEnabled = isEnabled
+            firstSubtitle = "X".string(prepending: _title, separator: " ")
+            secondSubtitle = "Y".string(prepending: _title, separator: " ")
         }
-    }
-
-    private lazy var xStepper = StepperControl(
-        title: "X",
-        value: .zero,
-        range: -Double.infinity...Double.infinity,
-        stepValue: 1,
-        isDecimalValue: true
-    ).then {
-        $0.isShowingSeparator = false
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
-    }
-
-    private lazy var yStepper = StepperControl(
-        title: "Y",
-        value: .zero,
-        range: -Double.infinity...Double.infinity,
-        stepValue: 1,
-        isDecimalValue: true
-    ).then {
-        $0.isShowingSeparator = false
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
     convenience init(title: String?, point: CGPoint?) {
-        self.init(title: title, frame: .zero)
-        self.point = point ?? .zero
-    }
-
-    override func setup() {
-        super.setup()
-
-        axis = .vertical
-        contentView.axis = .horizontal
-        contentView.distribution = .fillEqually
-        contentView.addArrangedSubviews(xStepper, yStepper)
-    }
-
-    @objc
-    private func valueChanged() {
-        sendActions(for: .valueChanged)
+        self.init(firstValue: point?.x ?? .zero, secondValue: point?.y ?? .zero)
+        self.title = title
     }
 }
+

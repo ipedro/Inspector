@@ -20,9 +20,9 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UILabelInspectableViewModel: InspectorElementViewModelProtocol {
-        enum Property: String, Swift.CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case text = "Text"
             case textColor = "Text Color"
             case fontName = "Font Name"
@@ -103,7 +103,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .adjustsFontSizeToFitWidth:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { label.adjustsFontSizeToFitWidth }
                 ) { adjustsFontSizeToFitWidth in
@@ -141,7 +141,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
                 
             case .isEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { label.isEnabled }
                 ) { isEnabled in
@@ -149,7 +149,7 @@ extension UIViewElementLibrary {
                 }
             
             case .isHighlighted:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { label.isHighlighted }
                 ) { isHighlighted in
@@ -170,7 +170,7 @@ extension UIViewElementLibrary {
                 return nil
                 
             case .allowsDefaultTighteningForTruncation:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { label.allowsDefaultTighteningForTruncation }
                 ) { allowsDefaultTighteningForTruncation in

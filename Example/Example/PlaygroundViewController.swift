@@ -102,6 +102,18 @@ final class PlaygroundViewController: UIViewController {
             datePickerSegmentedControl.removeSegment(at: 1, animated: false)
         }
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        showInspectorLayer(.allViews)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        stopInspecting()
+    }
     
     func setupSegmentedControl() {
         datePickerSegmentedControl.removeAllSegments()

@@ -24,22 +24,11 @@ import UIKit
 #if swift(>=5.0)
 @available(iOS 13.0, *)
 extension UIAction {
-    static func copyAction(
-        title: String,
-        image: UIImage? = nil,
-        identifier: UIAction.Identifier? = nil,
-        discoverabilityTitle: String? = nil,
-        attributes: UIMenuElement.Attributes = [],
-        state: UIMenuElement.State = .off,
-        stringProvider: @escaping (() -> String?)
-    ) -> UIAction {
+    static func copyAction(title: String, stringProvider: @escaping (() -> String?)) -> UIAction {
         UIAction(
             title: title,
-            image: image,
-            identifier: identifier,
-            discoverabilityTitle: discoverabilityTitle,
-            attributes: attributes,
-            state: state,
+            image: .copySymbol,
+            identifier: nil,
             handler: { _ in
                 UIPasteboard.general.string = stringProvider()
             }

@@ -34,6 +34,6 @@ enum Console {
             return
         }
         
-        print([Date()] + items, separator: separator, terminator: terminator)
+        print(["[Inspector]"] + items, separator: separator, terminator: terminator)
     }
 }

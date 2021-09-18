@@ -80,20 +80,14 @@ extension ViewHierarchyLayersCoordinator: LayerReferenceManagerProtocol {
         var removedReferences = [ViewHierarchyReference]()
         
         removedLayers.forEach { layer in
-            Console.log("\(layer) was removed")
-            
             oldValue[layer]?.forEach {
-                Console.log("[Inspector] \(layer): removing reference to \($0.displayName)")
                 removedReferences.append($0)
             }
         }
         
         for (layer, references) in visibleReferences where layer != .wireframes {
-            references.forEach { reference in
-                
-                if let index = removedReferences.firstIndex(of: reference) {
-                    Console.log("[Inspector] reference to \(reference.displayName) reclaimed by \(layer)")
-                    
+            references.forEach {
+                if let index = removedReferences.firstIndex(of: $0) {
                     removedReferences.remove(at: index)
                 }
             }

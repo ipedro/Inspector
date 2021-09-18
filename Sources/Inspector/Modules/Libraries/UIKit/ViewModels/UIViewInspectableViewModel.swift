@@ -20,9 +20,9 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UIViewInspectableViewModel: InspectorElementViewModelProtocol {
-        enum Property: String, Swift.CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case contentMode = "Content Mode"
             case semanticContentAttribute = "Semantic Content"
             case tag = "Tag"
@@ -106,7 +106,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
                 
             case .isUserInteractionEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { view.hightlightView?.viewReference.isUserInteractionEnabled ?? view.isUserInteractionEnabled }
                 ) { isUserInteractionEnabled in
@@ -120,7 +120,7 @@ extension UIViewElementLibrary {
                 }
 
             case .isMultipleTouchEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { view.isMultipleTouchEnabled }
                 ) { isMultipleTouchEnabled in
@@ -160,7 +160,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
                 
             case .isOpaque:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { view.isOpaque }
                 ) { isOpaque in
@@ -168,7 +168,7 @@ extension UIViewElementLibrary {
                 }
 
             case .isHidden:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { view.isHidden }
                 ) { isHidden in
@@ -176,7 +176,7 @@ extension UIViewElementLibrary {
                 }
 
             case .clearsContextBeforeDrawing:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { view.clearsContextBeforeDrawing }
                 ) { clearsContextBeforeDrawing in
@@ -184,7 +184,7 @@ extension UIViewElementLibrary {
                 }
 
             case .clipsToBounds:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { view.clipsToBounds }
                 ) { clipsToBounds in
@@ -192,7 +192,7 @@ extension UIViewElementLibrary {
                 }
 
             case .autoresizesSubviews:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { view.autoresizesSubviews }
                 ) { autoresizesSubviews in

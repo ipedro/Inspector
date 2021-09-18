@@ -26,15 +26,10 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
     #if swift(>=5.0)
     @available(iOS 13.0, *)
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        guard
-            let itemViewModel = viewModel.itemViewModel(at: indexPath),
-            itemViewModel.availablePanels.isEmpty == false
-        else {
-            return nil
-        }
+        guard let itemViewModel = viewModel.itemViewModel(at: indexPath) else { return nil }
 
         return UIContextMenuConfiguration(
-            identifier: indexPath.description as NSString,
+            identifier: nil,
             previewProvider: { [weak self] in
                 guard let self = self else { return nil }
                 return self.delegate?.elementChildrenPanelViewController(self, previewFor: itemViewModel.reference)
@@ -54,6 +49,7 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
     @available(iOS 13.0, *)
         private func menuAction(
             title: String,
+            subtitle: String? = nil,
             image: UIImage?,
             for reference: ViewHierarchyReference,
             options: UIMenu.Options = .init(),
@@ -73,11 +69,11 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
         }()
 
         let elementActions = UIMenu(
-            title: "Inspect",
+            title: "Open",
             options: .displayInline,
             children: ElementInspectorPanel.cases(for: reference).map { panel in
                 UIAction(
-                    title: panel.title,
+                    title: "Open \(panel.title)",
                     image: panel.image
                 ) { [weak self] _ in
                     guard let self = self else { return }
@@ -101,8 +97,8 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
                 guard reference.isContainer else { return nil }
 
                 return UIAction(
-                    title: isCollapsed ? "Expand" : "Collapse",
-                    image: UIImage(systemName: isCollapsed ? "chevron.down.circle" : "chevron.right.circle")
+                    title: isCollapsed ? "Show children" : "Hide children",
+                    image: isCollapsed ? .chevronDownSymbol : .chevronRightSymbol
                 ) { [weak self] _ in
                     self?.toggleCollapse(at: indexPath)
                 }
@@ -125,9 +121,10 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
                 cellActions,
                 elementActions,
                 childrenActions
-            ]
-            .compactMap { $0 }
-        )
+            ].compactMap { $0 }
+        ).then {
+            $0.safeSubtitle = subtitle
+        }
     }
 
     @available(iOS 13.0, *)
@@ -135,6 +132,7 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
         references.enumerated().map { row, reference in
             menuAction(
                 title: reference.elementName,
+                subtitle: reference.accessibilityIdentifier == nil ? reference.superclassName : reference.classNameWithoutQualifiers,
                 image: viewModel.image(for: reference),
                 for: reference,
                 includeCellActions: false,

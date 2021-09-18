@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UIControlInspectableViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case contentHorizontalAlignment = "Horizontal Alignment"
@@ -87,7 +87,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
 
             case .isSelected:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { control.isSelected }
                 ) { isSelected in
@@ -95,7 +95,7 @@ extension UIViewElementLibrary {
                 }
 
             case .isEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { control.isEnabled }
                 ) { isEnabled in
@@ -103,7 +103,7 @@ extension UIViewElementLibrary {
                 }
 
             case .isHighlighted:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { control.isHighlighted }
                 ) { isHighlighted in

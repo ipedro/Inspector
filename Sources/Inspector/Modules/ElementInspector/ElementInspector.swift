@@ -22,12 +22,11 @@ import UIKit
 
 enum ElementInspector {
     static var configuration = Configuration()
-    
+
     static var appearance = Appearance()
 }
 
 extension ElementInspector {
-    
     struct Configuration {
         var childrenListMaximumInteractiveDepth = 4
 
@@ -35,15 +34,13 @@ extension ElementInspector {
 
         var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
     }
-
 }
 
 extension ElementInspector {
     struct Appearance {
         let horizontalMargins: CGFloat = 24
-        
-        let verticalMargins: CGFloat = 12
 
+        let verticalMargins: CGFloat = 12
 
         var directionalInsets: NSDirectionalEdgeInsets {
             NSDirectionalEdgeInsets(
@@ -51,7 +48,7 @@ extension ElementInspector {
                 vertical: verticalMargins
             )
         }
-        
+
         var panelPreferredCompressedSize: CGSize {
             CGSize(
                 width: min(UIScreen.main.bounds.width, 428),

@@ -24,63 +24,67 @@ public enum InspectorElementViewModelProperty {
     case colorPicker(title: String,
                      color: ColorProvider,
                      handler: ColorHandler?)
-    
+
     case group(title: String)
-    
+
+    case separator
+
     case imagePicker(title: String,
                      image: ImageProvider,
                      handler: ImageHandler?)
-    
+
     case optionsList(title: String,
                      emptyTitle: String = "Unspecified",
                      axis: NSLayoutConstraint.Axis = .horizontal,
                      options: [String],
                      selectedIndex: SelectionProvider,
                      handler: SelectionHandler?)
-    
+
     case textButtonGroup(title: String,
                          axis: NSLayoutConstraint.Axis = .vertical,
                          texts: [String],
                          selectedIndex: SelectionProvider,
                          handler: SelectionHandler?)
-    
+
     case imageButtonGroup(title: String,
                           axis: NSLayoutConstraint.Axis = .vertical,
                           images: [UIImage],
                           selectedIndex: SelectionProvider,
                           handler: SelectionHandler?)
-    
-    case separator(identifier: NSUUID = NSUUID())
-    
+
     case stepper(title: String,
                  value: DoubleProvider,
                  range: DoubleClosedRangeProvider,
                  stepValue: DoubleProvider,
                  isDecimalValue: Bool,
                  handler: DoubleHandler?)
-    
+
     case textField(title: String,
                    placeholder: String?,
                    axis: NSLayoutConstraint.Axis = .vertical,
                    value: StringProvider,
                    handler: StringHandler?)
-    
+
     case textView(title: String,
                   placeholder: String?,
                   value: StringProvider,
                   handler: StringHandler?)
-    
-    case toggleButton(title: String,
-                      isOn: BoolProvider,
-                      handler: BoolHandler?)
 
-    case cgRect(title: String, value: CGRectProvider, handler: CGRectHandler?)
+    case `switch`(title: String,
+                  isOn: BoolProvider,
+                  handler: BoolHandler?)
 
-    case cgPoint(title: String, value: CGPointProvider, handler: CGPointHandler?)
+    case cgRect(title: String,
+                value: CGRectProvider,
+                handler: CGRectHandler?)
 
-    case cgSize(title: String, value: CGSizeProvider, handler: CGSizeHandler?)
+    case cgPoint(title: String,
+                 value: CGPointProvider,
+                 handler: CGPointHandler?)
 
-    public static let separator: Self = .separator()
+    case cgSize(title: String,
+                value: CGSizeProvider,
+                handler: CGSizeHandler?)
 }
 
 extension InspectorElementViewModelProperty {
@@ -93,12 +97,12 @@ extension InspectorElementViewModelProperty {
             return true
         }
     }
-    
+
     var hasHandler: Bool {
         switch self {
         case .stepper(_, _, _, _, _, .some),
              .colorPicker(_, _, .some),
-             .toggleButton(_, _, .some),
+             .switch(_, _, .some),
              .textButtonGroup(_, _, _, _, .some),
              .imageButtonGroup(_, _, _, _, .some),
              .optionsList(_, _, _, _, _, .some),
@@ -109,10 +113,10 @@ extension InspectorElementViewModelProperty {
              .cgSize(_, _, .some),
              .cgPoint(_, _, .some):
             return true
-            
+
         case .stepper,
              .colorPicker,
-             .toggleButton,
+             .switch,
              .textButtonGroup,
              .imageButtonGroup,
              .optionsList,
@@ -132,43 +136,45 @@ extension InspectorElementViewModelProperty {
 // MARK: - Value Handlers
 
 public extension InspectorElementViewModelProperty {
-    typealias Handler<Type>         = ((Type) -> Void)
+    typealias Handler<Value> = ((Value) -> Void)
 
-    typealias BoolHandler           = Handler<Bool>
-    typealias CGFloatHandler        = Handler<CGFloat>
-    typealias ColorHandler          = Handler<UIColor?>
-    typealias DoubleHandler         = Handler<Double>
-    typealias FloatHandler          = Handler<Float>
-    typealias FontHandler           = Handler<UIFont?>
-    typealias ImageHandler          = Handler<UIImage?>
-    typealias IntHandler            = Handler<Int>
-    typealias SelectionHandler      = Handler<Int?>
-    typealias StringHandler         = Handler<String?>
-    typealias CGRectHandler         = Handler<CGRect?>
-    typealias CGPointHandler        = Handler<CGPoint?>
-    typealias CGSizeHandler         = Handler<CGSize?>
+    typealias BoolHandler = Handler<Bool>
+    typealias CGColorHandler = Handler<CGColor?>
+    typealias CGFloatHandler = Handler<CGFloat>
+    typealias CGPointHandler = Handler<CGPoint?>
+    typealias CGRectHandler = Handler<CGRect?>
+    typealias CGSizeHandler = Handler<CGSize?>
+    typealias ColorHandler = Handler<UIColor?>
+    typealias DoubleHandler = Handler<Double>
+    typealias FloatHandler = Handler<Float>
+    typealias FontHandler = Handler<UIFont?>
+    typealias ImageHandler = Handler<UIImage?>
+    typealias IntHandler = Handler<Int>
+    typealias SelectionHandler = Handler<Int?>
+    typealias StringHandler = Handler<String?>
 }
 
 // MARK: - Value Providers
 
 public extension InspectorElementViewModelProperty {
-    typealias Provider<Type>             = (() -> Type)
+    typealias Provider<Value> = (() -> Value)
 
-    typealias BoolProvider               = Provider<Bool>
+    typealias BoolProvider = Provider<Bool>
+    typealias CGColorProvider = Provider<CGColor?>
     typealias CGFloatClosedRangeProvider = Provider<ClosedRange<CGFloat>>
-    typealias CGFloatProvider            = Provider<CGFloat>
-    typealias ColorProvider              = Provider<UIColor?>
-    typealias DoubleClosedRangeProvider  = Provider<ClosedRange<Double>>
-    typealias DoubleProvider             = Provider<Double>
-    typealias FloatClosedRangeProvider   = Provider<ClosedRange<Float>>
-    typealias FloatProvider              = Provider<Float>
-    typealias FontProvider               = Provider<UIFont?>
-    typealias ImageProvider              = Provider<UIImage?>
-    typealias IntClosedRangeProvider     = Provider<ClosedRange<Int>>
-    typealias IntProvider                = Provider<Int>
-    typealias SelectionProvider          = Provider<Int?>
-    typealias StringProvider             = Provider<String?>
-    typealias CGRectProvider             = Provider<CGRect?>
-    typealias CGPointProvider            = Provider<CGPoint?>
-    typealias CGSizeProvider             = Provider<CGSize?>
+    typealias CGFloatProvider = Provider<CGFloat>
+    typealias CGPointProvider = Provider<CGPoint?>
+    typealias CGRectProvider = Provider<CGRect?>
+    typealias CGSizeProvider = Provider<CGSize?>
+    typealias ColorProvider = Provider<UIColor?>
+    typealias DoubleClosedRangeProvider = Provider<ClosedRange<Double>>
+    typealias DoubleProvider = Provider<Double>
+    typealias FloatClosedRangeProvider = Provider<ClosedRange<Float>>
+    typealias FloatProvider = Provider<Float>
+    typealias FontProvider = Provider<UIFont?>
+    typealias ImageProvider = Provider<UIImage?>
+    typealias IntClosedRangeProvider = Provider<ClosedRange<Int>>
+    typealias IntProvider = Provider<Int>
+    typealias SelectionProvider = Provider<Int?>
+    typealias StringProvider = Provider<String?>
 }

@@ -20,9 +20,9 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UIActivityIndicatorViewInspectableViewModel: InspectorElementViewModelProtocol {
-        enum Property: String, Swift.CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case style = "Style"
             case color = "Color"
             case groupBehavior = "Behavior"
@@ -78,7 +78,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
                 
             case .isAnimating:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { activityIndicatorView.isAnimating }
                 ) { isAnimating in
@@ -93,7 +93,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .hidesWhenStopped:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { activityIndicatorView.hidesWhenStopped }
                 ) { hidesWhenStopped in

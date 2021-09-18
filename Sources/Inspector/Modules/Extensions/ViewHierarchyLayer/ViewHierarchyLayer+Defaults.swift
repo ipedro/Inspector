@@ -69,13 +69,13 @@ public extension ViewHierarchyLayer {
     static let textInputs = ViewHierarchyLayer.layer(name: "Text inputs") { $0 is UIKeyInput || $0.superview is UIKeyInput }
     /// Shows all web views
     static let webViews = ViewHierarchyLayer.layer(name: "Web views") { $0 is WKWebView || $0.superview is WKWebView }
+    /// Shows all views
+    static let allViews = ViewHierarchyLayer.layer(name: "All views") { _ in true }
 }
 
 // MARK: - Internal Layers
 
 extension ViewHierarchyLayer {
-    static let allViews = ViewHierarchyLayer(name: "All views") { _ in true }
-    
     static let wireframes = ViewHierarchyLayer(name: "Wireframes", showLabels: false) { _ in true }
     
     static let systemViews = ViewHierarchyLayer(name: "System views", showLabels: true, allowsSystemViews: true) { $0.isSystemView && !$0.isSystemContainerView }

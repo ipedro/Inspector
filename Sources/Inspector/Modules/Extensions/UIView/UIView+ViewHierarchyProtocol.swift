@@ -71,9 +71,9 @@ extension UIView: ViewHierarchyProtocol {
             // Avoid breaking UINavigationController large title.
             superview?.className != "UIViewControllerWrapperView",
             
-            // Skip hierarchy inspector internal strcutures.
-            self is LayerViewProtocol == false,
-            superview is LayerViewProtocol == false
+            // Skip non inspectable views
+            self is NonInspectableView == false,
+            superview is NonInspectableView == false
         else {
             return false
         }
@@ -90,19 +90,14 @@ extension UIView: ViewHierarchyProtocol {
         
         return false
     }
-    
+
     var isSystemContainerView: Bool {
-        guard
-            className != "UIWindow",
-            className != "UITransitionView",
-            className != "UIDropShadowView",
-            className != "UILayoutContainerView",
-            className != "UIViewControllerWrapperView",
-            className != "UINavigationTransitionView"
-        else {
+        let className = classNameWithoutQualifiers
+
+        for systemContainer in Inspector.configuration.knownSystemContainers where className == systemContainer {
             return true
         }
-        
+
         return false
     }
     

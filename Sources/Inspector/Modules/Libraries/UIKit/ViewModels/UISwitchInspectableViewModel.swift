@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UISwitchInspectableViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case title = "Title"
@@ -84,7 +84,7 @@ extension UIViewElementLibrary {
                 return nil
                     
             case .isOn:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { switchControl.isOn }
                 ) { isOn in

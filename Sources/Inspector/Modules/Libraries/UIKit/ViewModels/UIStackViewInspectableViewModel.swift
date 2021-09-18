@@ -20,9 +20,9 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UIStackViewInspectableViewModel: InspectorElementViewModelProtocol {
-        enum Property: String, Swift.CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case axis = "Axis"
             case alignment = "Alignment"
             case distribution = "Distribution"
@@ -104,7 +104,7 @@ extension UIViewElementLibrary {
                 }
             
             case .isBaselineRelativeArrangement:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { stackView.isBaselineRelativeArrangement }
                 ) { isBaselineRelativeArrangement in

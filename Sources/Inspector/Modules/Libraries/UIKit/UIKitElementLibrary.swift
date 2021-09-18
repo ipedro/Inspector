@@ -22,7 +22,7 @@ import MapKit
 import UIKit
 import WebKit
 
-enum UIViewElementLibrary: Swift.CaseIterable {
+enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
     case activityIndicator
     case button
     case control
@@ -42,71 +42,69 @@ enum UIViewElementLibrary: Swift.CaseIterable {
     case navigationBar
     case oldWebview
     case webView
-    
-    static var standard: AllCases {
-        Self.allCases
-    }
-}
+    case coreAnimationLayer
 
-// MARK: - HierarchyInspectorElementLibraryProtocol
+    // MARK: - InspectorElementLibraryProtocol
 
-extension UIViewElementLibrary: InspectorElementLibraryProtocol {
     var targetClass: AnyClass {
         switch self {
+        case .coreAnimationLayer:
+            return UIView.self
+
         case .navigationBar:
             return UINavigationBar.self
-            
+
         case .window:
             return UIWindow.self
-            
+
         case .activityIndicator:
             return UIActivityIndicatorView.self
-            
+
         case .button:
             return UIButton.self
-            
+
         case .control:
             return UIControl.self
-            
+
         case .datePicker:
             return UIDatePicker.self
-            
+
         case .imageView:
             return UIImageView.self
-            
+
         case .label:
             return UILabel.self
-            
+
         case .mapView:
             return MKMapView.self
-            
+
         case .scrollView:
             return UIScrollView.self
-            
+
         case .segmentedControl:
             return UISegmentedControl.self
-            
+
         case .slider:
             return UISlider.self
-            
+
         case .switch:
             return UISwitch.self
-            
+
         case .stackView:
             return UIStackView.self
         
         case .textField:
             return UITextField.self
-            
+
         case .textView:
             return UITextView.self
-            
+
         case .view:
             return UIView.self
-            
+
         case .oldWebview:
             return UIWebView.self
-            
+
         case .webView:
             return WKWebView.self
         }
@@ -114,6 +112,9 @@ extension UIViewElementLibrary: InspectorElementLibraryProtocol {
     
     func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
         switch self {
+        case .coreAnimationLayer:
+            return CALayerInspectableViewModel(view: referenceView)
+
         case .window,
              .navigationBar:
             return nil
@@ -227,7 +228,8 @@ extension UIViewElementLibrary: InspectorElementLibraryProtocol {
             
         case .mapView,
              .slider,
-             .view:
+             .view,
+             .coreAnimationLayer:
             return nil
         }
     }

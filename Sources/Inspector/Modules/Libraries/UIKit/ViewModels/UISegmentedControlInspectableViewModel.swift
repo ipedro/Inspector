@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UISegmentedControlInspectableViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case selectedSegmentTintColor = "Selected Tint"
@@ -94,7 +94,7 @@ extension UIViewElementLibrary {
                 return nil
                 
             case .isMomentary:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { segmentedControl.isMomentary }
                 ) { isMomentary in
@@ -102,7 +102,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .isSpringLoaded:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { segmentedControl.isSpringLoaded }
                 ) { isSpringLoaded in
@@ -165,7 +165,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .segmentIsEnabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { [weak self] in
                         
@@ -185,7 +185,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .segmentIsSelected:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { [weak self] in self?.selectedSegment == segmentedControl.selectedSegmentIndex }
                 ) { [weak self] isSelected in

@@ -20,9 +20,9 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UIButtonInspectableViewModel: InspectorElementViewModelProtocol {
-        enum Property: String, Swift.CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case type = "Type"
             case fontName = "Font Name"
             case fontPointSize = "Font Point Size"
@@ -157,7 +157,7 @@ extension UIViewElementLibrary {
             case .isPointerInteractionEnabled:
                 #if swift(>=5.0)
                 if #available(iOS 13.4, *) {
-                    return .toggleButton(
+                    return .switch(
                         title: property.rawValue,
                         isOn: { button.isPointerInteractionEnabled }
                     ) { isPointerInteractionEnabled in
@@ -168,7 +168,7 @@ extension UIViewElementLibrary {
                 return nil
              
             case .adjustsImageSizeForAccessibilityContentSizeCategory:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { button.adjustsImageSizeForAccessibilityContentSizeCategory }
                 ) { adjustsImageSizeForAccessibilityContentSizeCategory in
@@ -179,7 +179,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
                 
             case .reversesTitleShadowWhenHighlighted:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { button.reversesTitleShadowWhenHighlighted }
                 ) { reversesTitleShadowWhenHighlighted in
@@ -187,7 +187,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .showsTouchWhenHighlighted:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { button.showsTouchWhenHighlighted }
                 ) { showsTouchWhenHighlighted in
@@ -195,7 +195,7 @@ extension UIViewElementLibrary {
                 }
                 
             case .adjustsImageWhenHighlighted:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { button.adjustsImageWhenHighlighted }
                 ) { adjustsImageWhenHighlighted in
@@ -203,7 +203,7 @@ extension UIViewElementLibrary {
                 }
             
             case .adjustsImageWhenDisabled:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { button.adjustsImageWhenDisabled }
                 ) { adjustsImageWhenDisabled in

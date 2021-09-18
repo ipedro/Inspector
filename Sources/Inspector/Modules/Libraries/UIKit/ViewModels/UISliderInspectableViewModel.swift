@@ -20,9 +20,9 @@
 
 import UIKit
 
-extension UIViewElementLibrary {
+extension UIKitElementLibrary {
     final class UISliderInspectableViewModel: InspectorElementViewModelProtocol {
-        enum Property: String, Swift.CaseIterable {
+        private enum Property: String, Swift.CaseIterable {
             case value = "Value"
             case minimumValue = "Minimum"
             case maximumValue = "Maximum"
@@ -138,7 +138,7 @@ extension UIViewElementLibrary {
                 return .group(title: property.rawValue)
                 
             case .isContinuous:
-                return .toggleButton(
+                return .switch(
                     title: property.rawValue,
                     isOn: { slider.isContinuous }
                 ) { isContinuous in
