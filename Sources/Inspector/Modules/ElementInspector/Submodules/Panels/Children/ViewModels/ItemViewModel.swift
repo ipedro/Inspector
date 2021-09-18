@@ -70,12 +70,12 @@ extension ElementChildrenPanelViewModel.ItemViewModel: ElementChildrenPanelItemV
     var automaticallyAdjustIndentation: Bool { true }
 
     var titleFont: UIFont {
-        ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth + 2)
+        ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth + 1)
     }
 
     var isHidden: Bool { parent?.isCollapsed == true || parent?.isHidden == true }
 
-    var showCollapseButton: Bool { isContainer }
+    var showCollapseButton: Bool { isContainer && relativeDepth <= ElementInspector.configuration.childrenListMaximumInteractiveDepth }
 
     var isContainer: Bool { reference.isContainer }
 

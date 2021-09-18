@@ -66,8 +66,8 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
             guard count > .zero else { return nil }
 
             return UIMenu(
-                title: "Children (\(count) )",
-                options: count <= ElementInspector.configuration.childrenListMaximumInlineMenuCount ? .displayInline : .init(),
+                title: "Children (\(count))",
+                options: count < ElementInspector.configuration.childrenListMaximumInteractiveDepth ? .displayInline : .init(),
                 children: menuChildReferenceActions(for: reference.children)
             )
         }()
@@ -134,7 +134,7 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
     private func menuChildReferenceActions(for references: [ViewHierarchyReference]) -> [UIMenuElement] {
         references.enumerated().map { row, reference in
             menuAction(
-                title: reference.accessibilityIdentifier ?? reference.className,
+                title: reference.elementName,
                 image: viewModel.image(for: reference),
                 for: reference,
                 includeCellActions: false,

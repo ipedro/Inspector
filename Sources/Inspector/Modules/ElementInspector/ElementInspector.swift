@@ -29,7 +29,8 @@ enum ElementInspector {
 extension ElementInspector {
     
     struct Configuration {
-        var childrenListMaximumInlineMenuCount = 5
+        var childrenListMaximumInteractiveDepth = 4
+
         var animationDuration: TimeInterval = CATransaction.animationDuration()
 
         var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
