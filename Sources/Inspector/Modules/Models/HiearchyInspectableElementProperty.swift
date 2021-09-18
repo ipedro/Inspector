@@ -75,16 +75,20 @@ public enum InspectorElementViewModelProperty {
                   handler: BoolHandler?)
 
     case cgRect(title: String,
-                value: CGRectProvider,
+                rect: CGRectProvider,
                 handler: CGRectHandler?)
 
     case cgPoint(title: String,
-                 value: CGPointProvider,
+                 point: CGPointProvider,
                  handler: CGPointHandler?)
 
     case cgSize(title: String,
-                value: CGSizeProvider,
+                size: CGSizeProvider,
                 handler: CGSizeHandler?)
+
+    case directionalInsets(title: String,
+                           insets: NSDirectionalEdgeInsetsProvider,
+                           handler: NSDirectionalEdgeInsetsHandler?)
 }
 
 extension InspectorElementViewModelProperty {
@@ -111,7 +115,8 @@ extension InspectorElementViewModelProperty {
              .imagePicker(_, _, .some),
              .cgRect(_, _, .some),
              .cgSize(_, _, .some),
-             .cgPoint(_, _, .some):
+             .cgPoint(_, _, .some),
+             .directionalInsets(_, _, .some):
             return true
 
         case .stepper,
@@ -127,7 +132,8 @@ extension InspectorElementViewModelProperty {
              .imagePicker,
              .cgRect,
              .cgSize,
-             .cgPoint:
+             .cgPoint,
+             .directionalInsets:
             return false
         }
     }
@@ -138,6 +144,7 @@ extension InspectorElementViewModelProperty {
 public extension InspectorElementViewModelProperty {
     typealias Handler<Value> = ((Value) -> Void)
 
+    typealias NSDirectionalEdgeInsetsHandler = Handler<NSDirectionalEdgeInsets>
     typealias BoolHandler = Handler<Bool>
     typealias CGColorHandler = Handler<CGColor?>
     typealias CGFloatHandler = Handler<CGFloat>
@@ -159,13 +166,14 @@ public extension InspectorElementViewModelProperty {
 public extension InspectorElementViewModelProperty {
     typealias Provider<Value> = (() -> Value)
 
+    typealias NSDirectionalEdgeInsetsProvider = Provider<NSDirectionalEdgeInsets>
     typealias BoolProvider = Provider<Bool>
     typealias CGColorProvider = Provider<CGColor?>
     typealias CGFloatClosedRangeProvider = Provider<ClosedRange<CGFloat>>
     typealias CGFloatProvider = Provider<CGFloat>
-    typealias CGPointProvider = Provider<CGPoint?>
-    typealias CGRectProvider = Provider<CGRect?>
-    typealias CGSizeProvider = Provider<CGSize?>
+    typealias CGPointProvider = Provider<CGPoint>
+    typealias CGRectProvider = Provider<CGRect>
+    typealias CGSizeProvider = Provider<CGSize>
     typealias ColorProvider = Provider<UIColor?>
     typealias DoubleClosedRangeProvider = Provider<ClosedRange<Double>>
     typealias DoubleProvider = Provider<Double>

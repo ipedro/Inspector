@@ -27,6 +27,7 @@ extension UIKitElementLibrary {
             case alignment = "Alignment"
             case distribution = "Distribution"
             case spacing = "Spacing"
+            case isLayoutMarginsRelativeArrangement = "Layout Margins Relative"
             case isBaselineRelativeArrangement = "Baseline Relative"
         }
         
@@ -109,6 +110,14 @@ extension UIKitElementLibrary {
                     isOn: { stackView.isBaselineRelativeArrangement }
                 ) { isBaselineRelativeArrangement in
                     stackView.isBaselineRelativeArrangement = isBaselineRelativeArrangement
+                }
+
+            case .isLayoutMarginsRelativeArrangement:
+                return .switch(
+                    title: property.rawValue,
+                    isOn: { stackView.isLayoutMarginsRelativeArrangement }
+                ) { isLayoutMarginsRelativeArrangement in
+                    stackView.isLayoutMarginsRelativeArrangement = isLayoutMarginsRelativeArrangement
                 }
             }
         }

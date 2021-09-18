@@ -46,9 +46,7 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView {
         set { separatorView.alpha = newValue ? 1 : 0.05 }
     }
     
-    private(set) lazy var separatorView = SeparatorView(
-        color: colorStyle.tertiaryTextColor
-    )
+    private(set) lazy var separatorView = SeparatorView(style: .hard)
     
     private lazy var stackView = UIStackView.vertical(
         .arrangedSubviews(

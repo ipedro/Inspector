@@ -88,7 +88,7 @@ extension OptionSelectorViewController: UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         guard let title = viewModel.title(for: row, in: component) else {
-            return SeparatorView()
+            return SeparatorView(style: .color(Inspector.configuration.colorStyle.textColor))
         }
 
         return SectionHeader(title: title, titleFont: .callout)

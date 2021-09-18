@@ -30,11 +30,11 @@ final class SeparatorView: BaseView {
         fileprivate var color: UIColor {
             switch self {
             case .soft:
-                return colorStyle.accessoryControlBackgroundColor
+                return colorStyle.textColor.withAlphaComponent(0.09)
             case .medium:
-                return colorStyle.quaternaryTextColor
+                return colorStyle.textColor.withAlphaComponent(0.18)
             case .hard:
-                return colorStyle.tertiaryTextColor
+                return colorStyle.textColor.withAlphaComponent(0.27)
             case let .color(color):
                 return color
             }
@@ -59,7 +59,7 @@ final class SeparatorView: BaseView {
         self.init(style: .color(color), thickness: thickness, frame: frame)
     }
     
-    init(style: Style = .medium, thickness: CGFloat = 0.5, frame: CGRect = .zero) {
+    init(style: Style, thickness: CGFloat = 0.5, frame: CGRect = .zero) {
         self.thickness = thickness
         self.style = style
         

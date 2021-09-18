@@ -166,7 +166,7 @@ extension UIKitElementLibrary {
                 case .shadowOffset:
                     return .cgSize(
                         title: property.rawValue,
-                        value: { layer.shadowOffset }
+                        size: { layer.shadowOffset }
                     ) {
                         guard let shadowOffset = $0 else { return }
                         layer.shadowOffset = shadowOffset

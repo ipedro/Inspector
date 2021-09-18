@@ -99,7 +99,7 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
         $0.clipsToBounds = true
     }
 
-    private lazy var topSeparatorView = SeparatorView(thickness: 1)
+    private lazy var topSeparatorView = SeparatorView(style: .medium, thickness: 1)
 
     var header: SectionHeader
 

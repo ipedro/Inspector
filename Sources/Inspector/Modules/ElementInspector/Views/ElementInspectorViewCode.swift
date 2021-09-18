@@ -27,7 +27,7 @@ final class ElementInspectorViewCode: BaseView {
         $0.setContentHuggingPriority(.required, for: .vertical)
     }
 
-    private(set) lazy var separatorView = SeparatorView()
+    private(set) lazy var separatorView = SeparatorView(style: .medium)
 
     private lazy var referenceSummaryHeightConstraint = referenceSummaryView.heightAnchor.constraint(equalToConstant: .zero).then {
         $0.priority = .defaultHigh

@@ -24,28 +24,32 @@ struct ViewFrameInspectableViewModel: InspectorElementViewModelProtocol {
     private enum Properties: String, Swift.CaseIterable {
         case frame = "Frame Rectangle"
         case autoresizingMask = "View Resizing"
+        case directionalLayoutsMargins = "Layout Margins"
     }
 
     let title: String = "View"
 
-    private let view: UIView
+    weak private var view: UIView?
 
     init(view: UIView) {
         self.view = view
     }
 
     var properties: [InspectorElementViewModelProperty] {
-        Properties.allCases.map { property in
+        guard let view = view else { return [] }
+
+        return Properties.allCases.compactMap { property in
             switch property {
             case .frame:
                 return .cgRect(
                     title: property.rawValue,
-                    value: { view.frame },
+                    rect: { view.frame },
                     handler: {
                         guard let newFrame = $0 else { return }
                         view.frame = newFrame
                     }
                 )
+
             case .autoresizingMask:
                 return .optionsList(
                     title: property.rawValue,
@@ -56,6 +60,15 @@ struct ViewFrameInspectableViewModel: InspectorElementViewModelProtocol {
 
                         let autoresizingMask = UIView.AutoresizingMask.allCases[index]
                         view.autoresizingMask = autoresizingMask
+                    }
+                )
+
+            case .directionalLayoutsMargins:
+                return .directionalInsets(
+                    title: property.rawValue,
+                    insets: { view.directionalLayoutMargins },
+                    handler: { directionalLayoutMargins in
+                        view.directionalLayoutMargins = directionalLayoutMargins
                     }
                 )
             }

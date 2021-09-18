@@ -101,7 +101,7 @@ struct ContentLayoutPriorityInspectableViewModel: InspectorElementViewModelProto
             case .instrinsicContentSize:
                 return .cgSize(
                     title: property.rawValue,
-                    value: { view.intrinsicContentSize },
+                    size: { view.intrinsicContentSize },
                     handler: nil
                 )
             }

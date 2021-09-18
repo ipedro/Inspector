@@ -119,7 +119,7 @@ final class ElementInspectorFormSectionViewController: UIViewController {
             let element: UIView? = {
                 switch property {
                 case .separator:
-                    return SeparatorView().then {
+                    return SeparatorView(style: .soft).then {
                         $0.contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(
                             vertical: ElementInspector.appearance.verticalMargins
                         )
@@ -196,14 +196,17 @@ final class ElementInspectorFormSectionViewController: UIViewController {
                         value: stringProvider(),
                         placeholder: placeholder
                     )
-                case let .cgRect(title: title, value: rectProvider, handler: _):
-                    return CGRectStepperControl(title: title, rect: rectProvider())
+                case let .cgRect(title: title, rect: rectProvider, handler: _):
+                    return CGRectControl(title: title, rect: rectProvider())
 
-                case let .cgPoint(title: title, value: pointProvider, handler: handler):
-                    return CGPointStepperControl(title: title, point: pointProvider())
+                case let .cgPoint(title: title, point: pointProvider, handler: _):
+                    return CGPointControl(title: title, point: pointProvider())
 
-                case let .cgSize(title: title, value: sizeProvider, handler: handler):
-                    return CGSizeStepperControl(title: title, size: sizeProvider())
+                case let .cgSize(title: title, size: sizeProvider, handler: _):
+                    return CGSizeControl(title: title, size: sizeProvider())
+
+                case let .directionalInsets(title: title, insets: insetsProvider, handler: _):
+                    return NSDirectionalEdgeInsetsControl(title: title, insets: insetsProvider())
                 }
             }()
 
@@ -268,14 +271,17 @@ extension ElementInspectorFormSectionViewController {
                 case let (.imagePicker(_, _, handler), imagePicker as ImagePreviewControl):
                     handler?(imagePicker.image)
 
-                case let (.cgRect(_, _, handler: handler), cgRectStepper as CGRectStepperControl):
-                    handler?(cgRectStepper.rect)
+                case let (.cgRect(_, _, handler: handler), cgRectControl as CGRectControl):
+                    handler?(cgRectControl.rect)
 
-                case let (.cgPoint(_, _, handler: handler), cgPointStepper as CGPointStepperControl):
-                    handler?(cgPointStepper.point)
+                case let (.cgPoint(_, _, handler: handler), cgPointControl as CGPointControl):
+                    handler?(cgPointControl.point)
 
-                case let (.cgSize(_, _, handler: handler), cgSizeStepper as CGSizeStepperControl):
-                    handler?(cgSizeStepper.size)
+                case let (.cgSize(_, _, handler: handler), cgSizeControl as CGSizeControl):
+                    handler?(cgSizeControl.size)
+
+                case let (.directionalInsets(_, _, handler: handler), insetsControl as NSDirectionalEdgeInsetsControl):
+                    handler?(insetsControl.insets)
 
                 case (.separator, _),
                      (.group, _):
@@ -292,7 +298,8 @@ extension ElementInspectorFormSectionViewController {
                      (.imagePicker, _),
                      (.cgRect, _),
                      (.cgSize, _),
-                     (.cgPoint, _):
+                     (.cgPoint, _),
+                     (.directionalInsets, _):
                     assertionFailure("shouldn't happen")
                 }
             }
@@ -352,17 +359,21 @@ extension ElementInspectorFormSectionViewController {
                 textViewControl.placeholder = placeholder
                 textViewControl.title = title
 
-            case let (.cgRect(title: title, value: rectProvider, _), cgRectStepperControl as CGRectStepperControl):
-                cgRectStepperControl.title = title
-                cgRectStepperControl.rect = rectProvider() ?? .zero
+            case let (.cgRect(title: title, rect: rectProvider, _), cgRectControl as CGRectControl):
+                cgRectControl.title = title
+                cgRectControl.rect = rectProvider()
 
-            case let (.cgPoint(title: title, value: pointProvider, _), cgPointStepperControl as CGPointStepperControl):
-                cgPointStepperControl.title = title
-                cgPointStepperControl.point = pointProvider() ?? .zero
+            case let (.cgPoint(title: title, point: pointProvider, _), cgPointControl as CGPointControl):
+                cgPointControl.title = title
+                cgPointControl.point = pointProvider()
 
-            case let (.cgSize(title: title, value: sizeProvider, _), cgSizeStepperControl as CGSizeStepperControl):
-                cgSizeStepperControl.title = title
-                cgSizeStepperControl.size = sizeProvider() ?? .zero
+            case let (.cgSize(title: title, size: sizeProvider, _), cgSizeControl as CGSizeControl):
+                cgSizeControl.title = title
+                cgSizeControl.size = sizeProvider()
+
+            case let (.directionalInsets(title: title, insets: insetsProvider, _), insetsControl as NSDirectionalEdgeInsetsControl):
+                insetsControl.title = title
+                insetsControl.insets = insetsProvider()
 
             case (.separator, _),
                  (.group, _):
@@ -379,7 +390,9 @@ extension ElementInspectorFormSectionViewController {
                  (.imagePicker, _),
                  (.cgRect, _),
                  (.cgSize, _),
-                 (.cgPoint, _):
+                 (.cgPoint, _),
+                 (.directionalInsets, _)
+                :
                 assertionFailure("shouldn't happen")
             }
         }
