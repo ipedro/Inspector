@@ -51,7 +51,7 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
                     children: [
                         UIMenu(
                             title: "Copy",
-                            image: UIImage(systemName: "doc.on.doc.fill"),
+                            image: UIImage(systemName: "doc.on.doc"),
                             children: [
                                 UIAction.copyAction(
                                     title: "Description",

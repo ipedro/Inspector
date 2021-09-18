@@ -51,7 +51,7 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
     override func setup() {
         super.setup()
         
-        textLabel?.font = .preferredFont(forTextStyle: .footnote)
+        textLabel?.font = .preferredFont(forTextStyle: .footnote).bold()
         textLabel?.numberOfLines = 2
         
         detailTextLabel?.numberOfLines = 0
@@ -65,5 +65,7 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
         if #available(iOS 13.0, *) {
             imageView?.layer.cornerCurve = .continuous
         }
+
+        installView(contentView)
     }
 }

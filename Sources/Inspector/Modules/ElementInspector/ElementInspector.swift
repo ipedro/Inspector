@@ -63,7 +63,7 @@ extension ElementInspector {
             var style: UIFont.TextStyle {
                 switch relativeDepth {
                 case 0:
-                    return .title1
+                    return .title2
 
                 case 1:
                     return .body
