@@ -282,11 +282,11 @@ extension NSLayoutConstraintReference {
         var displayName: String {
             switch self {
             case let .view(view):
-                return view.accessibilityIdentifierOrClassName
+                return view.elementName
 
             case let .layoutGuide(layoutGuide):
                 if let owningView = layoutGuide.owningView {
-                    return "\(owningView.accessibilityIdentifierOrClassName).\(layoutGuide.classForCoder)"
+                    return "\(owningView.elementName).\(layoutGuide.classForCoder)"
                 }
                 return String(describing: layoutGuide.classForCoder)
 

@@ -110,13 +110,17 @@ extension UIView: ViewHierarchyProtocol {
         String(describing: classForCoder)
     }
 
-    var accessibilityIdentifierOrClassName: String {
-        accessibilityIdentifier ?? className
+    var classNameWithoutQualifiers: String {
+        guard let nameWithoutQualifiers = className.split(separator: "<").first else {
+            return className
+        }
+
+        return String(nameWithoutQualifiers)
     }
-    
+
     var elementName: String {
         guard let description = accessibilityIdentifier?.split(separator: ".").last else {
-            return className
+            return classNameWithoutQualifiers
         }
         
         return String(description)

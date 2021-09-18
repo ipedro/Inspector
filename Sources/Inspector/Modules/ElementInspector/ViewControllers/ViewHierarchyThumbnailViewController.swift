@@ -32,9 +32,9 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelPr
 
     var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView)}
 
-    var title: String { reference.accessibilityIdentifier ?? reference.className }
+    var title: String { reference.elementName }
 
-    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: 1) }
+    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
 
     var subtitle: String { reference.elementDescription }
 
