@@ -66,7 +66,15 @@ final class ElementInspectorViewController: UIViewController {
             }
 
             viewCode.emptyLabel.isHidden = true
+
+            let animationDuration: TimeInterval = 0.18
+
+            viewCode.activityIndicator.alpha = 0
             viewCode.activityIndicator.startAnimating()
+
+            UIView.animate(withDuration: animationDuration, delay: animationDuration) { [weak self] in
+                self?.viewCode.activityIndicator.alpha = 1
+            }
 
             let operation = MainThreadOperation(name: "create \(panelViewController)") { [weak self] in
                 guard let self = self else { return }
@@ -84,25 +92,21 @@ final class ElementInspectorViewController: UIViewController {
 
                 panelView.alpha = 0
                 panelView.backgroundColor = self.viewCode.backgroundColor
-                panelView.transform = .init(scaleX: 0.99, y: 0.99).translatedBy(x: .zero, y: -20)
+                panelView.transform = .init(scaleX: 0.99, y: 0.99).translatedBy(x: .zero, y: -ElementInspector.appearance.verticalMargins)
 
                 UIView.animate(
-                    withDuration: 0.20,
+                    withDuration: animationDuration,
                     delay: .zero,
                     options: [.layoutSubviews, .curveEaseInOut],
-                    animations: { [weak self] in
-                        guard let self = self else { return }
-
-                        self.viewCode.activityIndicator.alpha = 0
-
+                    animations: {
                         panelView.alpha = 1
                         panelView.transform = .identity
                     },
                     completion: { [weak self] _ in
                         guard let self = self else { return }
 
+                        NSObject.cancelPreviousPerformRequests(withTarget: self.viewCode.activityIndicator)
                         self.viewCode.activityIndicator.stopAnimating()
-                        self.viewCode.activityIndicator.alpha = 1
 
                         panelViewController.didMove(toParent: self)
                     }
