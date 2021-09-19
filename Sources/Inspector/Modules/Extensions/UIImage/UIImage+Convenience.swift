@@ -23,12 +23,17 @@ import UIKit
 // MARK: - Convenience
 
 extension UIImage {
-    static let internalViewIcon = UIImage.moduleImage(named: "InternalView-32_Normal")
+    static let internalViewIcon: UIImage? = .moduleImage(named: "InternalView-32_Normal")
+    static let visibleLayerAction: UIImage? = .moduleImage(named: "LayerAction-Show")
+    static let hiddenLayerAction: UIImage? = .moduleImage(named: "LayerAction-Hide")
+    static let emptyLayerAction: UIImage? = .moduleImage(named: "LayerAction-Empty")
+    static let hideAllLayersAction: UIImage? = .moduleImage(named: "LayerAction-HideAll")
+    static let showAllLayersAction: UIImage? = .moduleImage(named: "LayerAction-ShowAll")
 }
 
 @available (iOS 13.0, *)
 extension UIImage {
-    static let copySymbol = UIImage(systemName: "doc.on.doc")
-    static let chevronDownSymbol = UIImage(systemName: "chevron.down.circle")
-    static let chevronRightSymbol = UIImage(systemName: "chevron.right.circle")
+    static let copySymbol: UIImage? = .init(systemName: "doc.on.doc")
+    static let chevronDownSymbol: UIImage? = .init(systemName: "chevron.down.circle")
+    static let chevronRightSymbol: UIImage? = .init(systemName: "chevron.right.circle")
 }

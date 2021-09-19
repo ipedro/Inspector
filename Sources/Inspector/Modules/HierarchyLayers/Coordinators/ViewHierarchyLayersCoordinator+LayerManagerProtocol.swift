@@ -40,7 +40,7 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
             return
         }
         
-        asyncOperation(name: Texts.showAllLayers) {
+        asyncOperation(name: Texts.show(Texts.allLayers)) {
             for layer in self.populatedLayers where layer.allowsSystemViews == false {
                 self.create(layer: layer, for: viewHierarchySnapshot)
             }
@@ -54,7 +54,7 @@ extension ViewHierarchyLayersCoordinator: LayerManagerProtocol {
             return
         }
         
-        asyncOperation(name: Texts.hideAllLayers) {
+        asyncOperation(name: Texts.hide(Texts.allLayers)) {
             self.destroyAllLayers()
         }
     }

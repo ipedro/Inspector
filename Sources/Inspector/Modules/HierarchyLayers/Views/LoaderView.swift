@@ -37,8 +37,6 @@ final class LoaderView: LayerViewComponent {
         .viewOptions(.isHidden(true))
     )
     
-    private lazy var colorScheme: ViewHierarchyColorScheme = .colorScheme { _ in .systemBlue }
-    
     private(set) lazy var highlightView = HighlightView(
         frame: bounds,
         name: elementName,
@@ -47,6 +45,8 @@ final class LoaderView: LayerViewComponent {
     ).then {
         $0.verticalAlignmentOffset = activityIndicator.frame.height * 2 / 3
     }
+
+    let colorScheme: ViewHierarchyColorScheme
     
     override var accessibilityIdentifier: String? {
         didSet {
@@ -55,26 +55,27 @@ final class LoaderView: LayerViewComponent {
             }
         }
     }
+
+    init(colorScheme: ViewHierarchyColorScheme, frame: CGRect = .zero) {
+        self.colorScheme = colorScheme
+        super.init(frame: frame)
+    }
     
     // MARK: - Setup
     
     override func setup() {
         super.setup()
-        
-        isUserInteractionEnabled = false
-        
-        backgroundColor = ViewHierarchyColorScheme.default.color(for: activityIndicator)
-        
+
         installView(checkmarkLabel, .centerXY)
-        
+
         installView(activityIndicator, .margins(8))
-        
+
         installView(highlightView, .autoResizingMask)
-        
+
         addInspectorViews()
-        
+
         checkmarkLabel.widthAnchor.constraint(equalTo: activityIndicator.widthAnchor).isActive = true
-        
+
         checkmarkLabel.heightAnchor.constraint(equalTo: activityIndicator.heightAnchor).isActive = true
     }
     
@@ -96,6 +97,8 @@ final class LoaderView: LayerViewComponent {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+
+        backgroundColor = colorScheme.color(for: self)
         
         highlightView.labelWidthConstraint = nil
         
@@ -109,7 +112,6 @@ final class LoaderView: LayerViewComponent {
     }
     
     func prepareForReuse() {
-//        currentOperation = nil
         
         activityIndicator.startAnimating()
         
@@ -118,37 +120,3 @@ final class LoaderView: LayerViewComponent {
         alpha = 1
     }
 }
-
-// MARK: - Loader Pool Management
-
-// extension LoaderView {
-//
-//    static var sharedPool: [UIView: LoaderView] = [:]
-//
-//    static func dequeueLoaderView(
-//        for operation: Operation,
-//        in presenter: UIView
-//    ) -> LoaderView {
-//
-//        let loaderView: LoaderView = {
-//
-//            guard let cachedView = sharedPool[presenter] else {
-//                return LoaderView()
-//            }
-//
-//            cachedView.layer.removeAllAnimations()
-//
-//            cachedView.prepareForReuse()
-//
-//            return cachedView
-//
-//        }()
-//
-//        loaderView.currentOperation = operation
-//
-//        sharedPool[presenter] = loaderView
-//
-//        return loaderView
-//    }
-//
-// }

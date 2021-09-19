@@ -48,16 +48,22 @@ enum Texts {
     static func emptyLayer(with description: String) -> String {
         "No \(description) found"
     }
+
+    static func show(_ something: String) -> String {
+        "Show \(something)"
+    }
+
+    static func hide(_ something: String) -> String {
+        "Hide \(something)"
+    }
     
     static let highlightLayers = "Highlight Layers"
-    
-    static let hideAllLayers = "Hide all layers"
     
     static let hierarchySearch = "Hierarchy Search"
     
     static let presentInspector = "Open Inspector..."
     
-    static let showAllLayers = "Show all layers"
+    static let allLayers = "all layers"
     
     static let dismissView = "Dismiss View"
     

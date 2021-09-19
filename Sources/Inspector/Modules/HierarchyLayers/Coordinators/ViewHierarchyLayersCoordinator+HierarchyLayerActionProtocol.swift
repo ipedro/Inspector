@@ -43,12 +43,12 @@ extension ViewHierarchyLayersCoordinator: LayerCommandProtocol {
         
         switch isShowingLayer(layer) {
         case true:
-            return .showLayer(layer.title, at: index) { [weak self] in
+            return .visibleLayer(layer.title, at: index) { [weak self] in
                 self?.removeLayer(layer)
             }
             
         case false:
-            return .hideLayer(layer.title, at: index) { [weak self] in
+            return .hiddenLayer(layer.title, at: index) { [weak self] in
                 self?.installLayer(layer)
             }
         }

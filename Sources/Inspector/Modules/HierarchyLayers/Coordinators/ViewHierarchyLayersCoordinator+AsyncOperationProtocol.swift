@@ -27,11 +27,11 @@ extension ViewHierarchyLayersCoordinator: AsyncOperationProtocol {
         guard let window = dataSource?.viewHierarchyWindow else {
             return operationQueue.addOperation(layerTask)
         }
-        
-        let loaderView = LoaderView(
-            .accessibilityIdentifier(name),
-            .transform(CGAffineTransform(scaleX: 0.1, y: 0.1))
-        )
+
+        let loaderView = LoaderView(colorScheme: dataSource?.viewHierarchyColorScheme ?? .default).then {
+            $0.accessibilityIdentifier = name
+            $0.transform = .init(scaleX: 0.1, y: 0.1)
+        }
         
         let showLoader = MainThreadOperation(name: "\(name): show loader") {
             window.addSubview(loaderView)

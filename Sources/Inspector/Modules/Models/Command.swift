@@ -62,16 +62,16 @@ extension Command {
     static func emptyLayer(_ title: String) -> Command {
         Command(
             title: title,
-            icon: .moduleImage(named: "LayerAction-Empty"),
+            icon: .emptyLayerAction,
             keyCommandOptions: nil,
             closure: nil
         )
     }
     
-    static func showLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
+    static func visibleLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
         Command(
-            title: title,
-            icon: .moduleImage(named: "LayerAction-Show"),
+            title: Texts.hide(title),
+            icon: .visibleLayerAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: String(index),
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
@@ -80,10 +80,10 @@ extension Command {
         )
     }
     
-    static func hideLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
+    static func hiddenLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
         Command(
-            title: title,
-            icon: .moduleImage(named: "LayerAction-Hide"),
+            title: Texts.show(title),
+            icon: .hiddenLayerAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: String(index),
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
@@ -94,8 +94,8 @@ extension Command {
     
     static func showAllLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.showAllLayers,
-            icon: .moduleImage(named: "LayerAction-ShowAll"),
+            title: Texts.show(Texts.allLayers),
+            icon: .showAllLayersAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
@@ -106,8 +106,8 @@ extension Command {
     
     static func hideVisibleLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.hideAllLayers,
-            icon: .moduleImage(named: "LayerAction-HideAll"),
+            title: Texts.hide(Texts.allLayers),
+            icon: .hideAllLayersAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
