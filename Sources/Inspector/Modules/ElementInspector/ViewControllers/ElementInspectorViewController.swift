@@ -50,6 +50,18 @@ final class ElementInspectorViewController: UIViewController {
         }
     }
 
+    private lazy var viewCode = ElementInspectorViewCode(
+        frame: CGRect(
+            origin: .zero,
+            size: ElementInspector.appearance.panelPreferredCompressedSize
+        )
+    ).then {
+        $0.segmentedControl.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
+
+        $0.dismissBarButtonItem.target = self
+        $0.dismissBarButtonItem.action = #selector(close)
+    }
+
     private var presentedPanelViewController: UIViewController? {
         didSet {
             if let oldPanelViewController = oldValue {
@@ -79,20 +91,18 @@ final class ElementInspectorViewController: UIViewController {
             let operation = MainThreadOperation(name: "create \(panelViewController)") { [weak self] in
                 guard let self = self else { return }
 
-                self.viewCode.setNeedsLayout()
                 self.addChild(panelViewController)
-
-                panelViewController.loadViewIfNeeded()
 
                 guard let panelView = panelViewController.view else {
                     fatalError("Where's my view Mr. Panel?")
                 }
 
-                self.viewCode.contentView.installView(panelView, priority: .required)
+                self.viewCode.contentView.addArrangedSubview(panelView)
 
                 panelView.alpha = 0
                 panelView.backgroundColor = self.viewCode.backgroundColor
-                panelView.transform = .init(scaleX: 0.99, y: 0.99).translatedBy(x: .zero, y: -ElementInspector.appearance.verticalMargins)
+                panelView.transform = .init(scaleX: 0.99, y: 0.99)
+                    .translatedBy(x: .zero, y: -ElementInspector.appearance.verticalMargins)
 
                 UIView.animate(
                     withDuration: animationDuration,
@@ -106,6 +116,7 @@ final class ElementInspectorViewController: UIViewController {
                         guard let self = self else { return }
 
                         NSObject.cancelPreviousPerformRequests(withTarget: self.viewCode.activityIndicator)
+
                         self.viewCode.activityIndicator.stopAnimating()
 
                         panelViewController.didMove(toParent: self)
@@ -115,22 +126,6 @@ final class ElementInspectorViewController: UIViewController {
 
             OperationQueue.main.addOperation(operation)
         }
-    }
-
-    func reloadData() {
-        viewCode.referenceSummaryView.reloadData()
-    }
-
-    private lazy var viewCode = ElementInspectorViewCode(
-        frame: CGRect(
-            origin: .zero,
-            size: ElementInspector.appearance.panelPreferredCompressedSize
-        )
-    ).then {
-        $0.segmentedControl.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
-
-        $0.dismissBarButtonItem.target = self
-        $0.dismissBarButtonItem.action = #selector(close)
     }
 
     // MARK: - Init
@@ -170,6 +165,10 @@ final class ElementInspectorViewController: UIViewController {
         if let selectedPanel = viewModel.selectedPanel {
             installPanel(selectedPanel)
         }
+    }
+
+    func reloadData() {
+        viewCode.referenceSummaryView.reloadData()
     }
 
     // MARK: - Content Size
