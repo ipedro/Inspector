@@ -68,14 +68,6 @@ final class SectionHeader: BaseView {
         $0.isHidden = $0.text?.isEmpty != false
     }
 
-    private lazy var textStackView = UIStackView.vertical(
-        .arrangedSubviews(titleLabel, subtitleLabel),
-        .spacing(ElementInspector.appearance.verticalMargins / 2)
-    ).then {
-        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        $0.clipsToBounds = false
-    }
-
     var title: String? {
         get {
             titleLabel.text
@@ -93,17 +85,6 @@ final class SectionHeader: BaseView {
         set {
             subtitleLabel.text = newValue
             subtitleLabel.isHidden = newValue?.isEmpty != false
-        }
-    }
-
-    var accessoryView: UIView? {
-        didSet {
-            if let accessoryView = accessoryView {
-                contentView.addArrangedSubview(accessoryView)
-            }
-            if let oldValue = oldValue {
-                oldValue.removeFromSuperview()
-            }
         }
     }
 
@@ -154,8 +135,9 @@ final class SectionHeader: BaseView {
 
     override func setup() {
         super.setup()
-        contentView.axis = .horizontal
-        contentView.addArrangedSubview(textStackView)
+        contentView.axis = .vertical
+        contentView.addArrangedSubviews(titleLabel, subtitleLabel)
+        contentView.spacing = ElementInspector.appearance.verticalMargins / 2
     }
 
     override func didMoveToSuperview() {

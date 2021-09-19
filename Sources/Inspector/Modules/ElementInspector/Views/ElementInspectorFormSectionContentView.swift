@@ -31,11 +31,6 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
         set { header.subtitle = newValue }
     }
 
-    var accessoryView: UIView? {
-        get { header.accessoryView }
-        set { header.accessoryView = newValue }
-    }
-
     static func createSectionView() -> InspectorElementFormSectionView {
         ElementInspectorFormSectionContentView()
     }
@@ -72,17 +67,14 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
 
     var header: SectionHeader
 
-    private lazy var headerContainerControl = BaseControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
+    private lazy var headerControl = BaseControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
         $0.addTarget(self, action: #selector(changeState), for: .touchUpInside)
-        $0.addTarget(self, action: #selector(styleHeaderContainerControl), for: .stateChanged)
-        $0.installView(headerStackView)
-    }
+        $0.addTarget(self, action: #selector(headerControlDidChangeState), for: .stateChanged)
 
-    private lazy var headerStackView = UIStackView.horizontal().then {
-        $0.clipsToBounds = true
-        $0.spacing = ElementInspector.appearance.verticalMargins
-        $0.addArrangedSubviews(collapseButton, header)
-        $0.alignment = .center
+        $0.contentView.isUserInteractionEnabled = false
+        $0.contentView.spacing = ElementInspector.appearance.verticalMargins
+        $0.contentView.addArrangedSubviews(collapseButton, header)
+        $0.contentView.alignment = .center
     }
 
     private(set) lazy var collapseButton = IconButton(.chevronDown).then {
@@ -91,20 +83,6 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
 
     convenience init() {
         self.init(header: SectionHeader.attributesInspectorHeader(), frame: .zero)
-    }
-
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if let headerAccessoryView = header.accessoryView,
-           headerAccessoryView.point(inside: convert(point, to: headerAccessoryView), with: event)
-        {
-            return headerAccessoryView
-        }
-
-        if headerContainerControl.point(inside: convert(point, to: headerContainerControl), with: event) {
-            return headerContainerControl
-        }
-
-        return super.hitTest(point, with: event)
     }
 
     init(header: SectionHeader, state: InspectorElementFormSectionState = .collapsed, frame: CGRect = .zero) {
@@ -125,10 +103,10 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
         updateViewsForState()
         installSeparator()
 
-        headerStackView.directionalLayoutMargins = .formSectionContentMargins
+        headerControl.contentView.directionalLayoutMargins = .formSectionContentMargins
         formStackView.directionalLayoutMargins = .formSectionContentMargins
 
-        contentView.addArrangedSubviews(headerContainerControl, formStackView)
+        contentView.addArrangedSubviews(headerControl, formStackView)
     }
 
     private func updateViewsForState() {
@@ -172,18 +150,15 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
         delegate?.inspectorElementFormSectionView(self, willChangeFrom: state, to: newState)
     }
 
-    func styleHeaderContainerControl() {
+    func headerControlDidChangeState() {
         UIView.animate(withDuration: 0.15) {
-            switch self.headerContainerControl.state {
+            switch self.headerControl.state {
             case .highlighted:
-                self.headerContainerControl.alpha = 0.77
-                self.headerContainerControl.transform = .init(scaleX: 0.98, y: 0.93)
-            case .disabled:
-                self.headerContainerControl.alpha = self.colorStyle.disabledAlpha
-                self.headerContainerControl.transform = .identity
+                self.headerControl.alpha = 0.77
+                self.headerControl.transform = .init(scaleX: 0.98, y: 0.93)
             default:
-                self.headerContainerControl.alpha = 1
-                self.headerContainerControl.transform = .identity
+                self.headerControl.alpha = 1
+                self.headerControl.transform = .identity
             }
         }
     }

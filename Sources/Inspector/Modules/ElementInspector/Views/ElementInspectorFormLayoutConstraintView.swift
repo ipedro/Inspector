@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ElementInspectorFormLayoutConstraintView: BaseCardView, InspectorElementFormSectionView {
+final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElementFormSectionView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -31,14 +31,9 @@ final class ElementInspectorFormLayoutConstraintView: BaseCardView, InspectorEle
         set { header.subtitle = newValue }
     }
 
-    var accessoryView: UIView? {
-        get { header.accessoryView }
-        set { header.accessoryView = newValue }
-    }
-
     var separatorStyle: InspectorElementFormSectionSeparatorStyle {
         get { .none }
-        set { }
+        set {}
     }
 
     static func createSectionView() -> InspectorElementFormSectionView {
@@ -59,32 +54,30 @@ final class ElementInspectorFormLayoutConstraintView: BaseCardView, InspectorEle
         set { formView.state = newValue }
     }
 
-    func addFormViews(_ formViews: [UIView]) {
-        formView.addFormViews(formViews)
-    }
-
     private(set) lazy var header = SectionHeader(
         titleFont: .init(.footnote, .traitBold),
         subtitleFont: .footnote,
         margins: .init(vertical: ElementInspector.appearance.verticalMargins / 2)
     )
 
-    override func setup() {
-        super.setup()
-
+    private lazy var cardView = BaseCardView().then {
         var insets = ElementInspector.appearance.directionalInsets
         insets.bottom = insets.leading
         insets.top = .zero
 
-        self.insets = insets
+        $0.insets = insets
+        $0.backgroundColor = colorStyle.highlightBackgroundColor
+        $0.contentView.addArrangedSubview(formView)
 
-        contentMargins = .init(
-            top: ElementInspector.appearance.verticalMargins / 2,
-            leading: ElementInspector.appearance.verticalMargins / 2,
-            bottom: ElementInspector.appearance.verticalMargins / 2
-        )
-        backgroundColor = colorStyle.highlightBackgroundColor
+    }
 
-        contentView.addArrangedSubview(formView)
+    override func setup() {
+        super.setup()
+
+        contentView.addArrangedSubview(cardView)
+    }
+
+    func addFormViews(_ formViews: [UIView]) {
+        formView.addFormViews(formViews)
     }
 }

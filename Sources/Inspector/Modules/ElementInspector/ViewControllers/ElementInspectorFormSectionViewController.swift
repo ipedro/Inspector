@@ -72,8 +72,7 @@ final class ElementInspectorFormSectionViewController: UIViewController {
 
         viewCode.title = viewModel.title
         viewCode.subtitle = viewModel.subtitle
-        viewCode.accessoryView = viewModel.headerAccessoryView
-
+        
         let subviews = viewModel.properties.compactMap { viewForProperties[$0] }
 
         viewCode.addFormViews(subviews)

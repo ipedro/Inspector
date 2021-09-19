@@ -50,8 +50,6 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
 
     var subtitle: String? { constraintReference.constraint.safeIdentifier }
 
-    var headerAccessoryView: UIView? { nil }
-
     var properties: [InspectorElementViewModelProperty] {
         Property.allCases.compactMap { property in
             switch property {

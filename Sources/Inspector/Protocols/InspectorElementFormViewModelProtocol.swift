@@ -23,11 +23,9 @@ import UIKit
 public protocol InspectorElementViewModelProtocol {
     var title: String { get }
     var subtitle: String? { get }
-    var headerAccessoryView: UIView? { get }
     var properties: [InspectorElementViewModelProperty] { get }
 }
 
 public extension InspectorElementViewModelProtocol {
-    var headerAccessoryView: UIView? { nil }
     var subtitle: String? { nil }
 }

@@ -39,9 +39,6 @@ public protocol InspectorElementFormSectionView: UIView {
     /// Defines the section separator appearance.
     var separatorStyle: InspectorElementFormSectionSeparatorStyle { get set }
 
-    /// Optional view that is usually shown next to the section title.
-    var accessoryView: UIView?  { get set }
-
     /// The current state of the section.
     var state: InspectorElementFormSectionState { get set }
 
