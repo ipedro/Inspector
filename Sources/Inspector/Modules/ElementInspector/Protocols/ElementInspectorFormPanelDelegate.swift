@@ -18,18 +18,20 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
-    func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
-    {
-        panelViewController(for: panel, with: reference)
-    }
+protocol ElementInspectorFormPanelDelegate: OperationQueueManagerProtocol {
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel,
+                                   didTap colorPicker: ColorPreviewControl)
 
-    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController) {
-        navigationController.dismiss(animated: true) { [weak self] in
-            self?.finish()
-        }
-    }
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel,
+                                   didTap imagePicker: ImagePreviewControl)
+
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel,
+                                   didTap optionSelector: OptionListControl)
+
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel,
+                                   didUpdateProperty: InspectorElementViewModelProperty,
+                                   in item: ElementInspectorFormItem)
 }

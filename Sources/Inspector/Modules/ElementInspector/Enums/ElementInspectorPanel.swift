@@ -66,7 +66,9 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
             switch panel {
             case .children:
                 return reference.isContainer ? panel : nil
-            case .size, .attributes, .preview:
+            case .preview:
+                return ElementInspector.configuration.isPresentingFromBottomSheet ? nil : panel
+            case .size, .attributes:
                 return panel
             }
         }

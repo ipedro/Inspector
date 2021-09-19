@@ -28,6 +28,16 @@ enum ElementInspector {
 
 extension ElementInspector {
     struct Configuration {
+
+        var isPresentingFromBottomSheet: Bool {
+            #if swift(>=5.5)
+            if #available(iOS 15.0, *) {
+                return true
+            }
+            #endif
+            return false
+        }
+
         var childrenListMaximumInteractiveDepth = 4
 
         var animationDuration: TimeInterval = CATransaction.animationDuration()
@@ -57,9 +67,11 @@ extension ElementInspector {
         }
 
         func titleFont(forRelativeDepth relativeDepth: Int) -> UIFont {
+            let adjustedRelativeDepth = ElementInspector.configuration.isPresentingFromBottomSheet ? relativeDepth + 1 : relativeDepth
+
             var style: UIFont.TextStyle {
-                switch relativeDepth {
-                case 0:
+                switch adjustedRelativeDepth {
+                case .zero:
                     return .title2
 
                 case 1:

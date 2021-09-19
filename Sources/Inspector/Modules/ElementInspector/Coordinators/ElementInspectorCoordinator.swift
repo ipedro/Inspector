@@ -96,6 +96,17 @@ final class ElementInspectorCoordinator: NSObject {
             
             return .formSheet
         }()
+
+        if ElementInspector.configuration.isPresentingFromBottomSheet {
+            #if swift(>=5.5)
+            if #available(iOS 15.0, *) {
+                if let sheetPresentationController = navigationController.presentationController as? UISheetPresentationController {
+                    sheetPresentationController.detents = [.medium(), .large()]
+                    sheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = false
+                }
+            }
+            #endif
+        }
         
         let populatedReferences = viewHierarchySnapshot.inspectableReferences.filter { $0.rootView === reference.rootView }
 
@@ -198,125 +209,75 @@ final class ElementInspectorCoordinator: NSObject {
         
         return viewController
     }
-}
 
-extension ElementInspectorCoordinator: ElementInspectorNavigationControllerDismissDelegate {
-    func elementInspectorNavigationControllerDidFinish(_ navigationController: ElementInspectorNavigationController) {
-        navigationController.dismiss(animated: true) { [weak self] in
-            self?.finish()
-        }
-    }
-}
-
-// MARK: - UIAdaptivePresentationControllerDelegate
-
-extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate {
-    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-        switch controller.presentedViewController {
-        case is UIDocumentPickerViewController:
-            return .pageSheet
-        
-        default:
-            return .none
-        }
-    }
-
-    #if swift(>=5.0)
-    @available(iOS 13.0, *)
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        guard presentationController.presentedViewController === navigationController else {
-            return
-        }
-        
-        finish()
-    }
-    #endif
-}
-
-// MARK: - UIPopoverPresentationControllerDelegate
-
-extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
-    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
-        guard popoverPresentationController.presentedViewController === navigationController else {
-            return
-        }
-        
-        finish()
-    }
-}
-
-#if swift(>=5.3)
-
-// MARK: - UIColorPickerViewControllerDelegate
-
-@available(iOS 14.0, *)
-extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
-    func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
-        topAttributesInspectorViewController?.selectColor(viewController.selectedColor)
-    }
     
-    func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
-        topAttributesInspectorViewController?.finishColorSelection()
+
+    func panelViewController(for panel: ElementInspectorPanel, with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {
+        switch panel {
+        case .preview:
+            return ElementPreviewPanelViewController.create(
+                viewModel: ElementPreviewPanelViewModel(
+                    reference: reference,
+                    isLiveUpdating: true
+                )
+            ).then {
+                $0.delegate = self
+            }
+
+        case .attributes:
+            return ElementAttributesPanelViewController(
+                dataSource: DefaultFormPanelDataSource(
+                    items: {
+                        guard let referenceView = reference.rootView else { return [] }
+
+                        return viewHierarchySnapshot.elementLibraries.targeting(element: referenceView).flatMap { library in
+                            library.items(for: referenceView)
+                        }
+                    }()
+                )
+            ).then {
+                $0.formDelegate = self
+            }
+
+        case .children:
+            return ElementChildrenPanelViewController.create(
+                viewModel: ElementChildrenPanelViewModel(
+                    reference: reference,
+                    snapshot: viewHierarchySnapshot
+                )
+            ).then {
+                $0.delegate = self
+            }
+
+        case .size:
+            let items: [ElementInspectorFormItem] = {
+                guard let referenceView = reference.rootView else { return [] }
+
+                return AutoLayoutSizeLibrary.allCases
+                    .map{ $0.items(for: referenceView) }
+                    .flatMap { $0 }
+            }()
+
+            return ElementSizePanelViewController(
+                dataSource: DefaultFormPanelDataSource(items: items) { indexPath in
+                    let viewModel = items[indexPath.section].rows[indexPath.row]
+                    return AutoLayoutSizeLibrary.viewType(forViewModel: viewModel)
+                }
+            ).then {
+                $0.formDelegate = self
+            }
+        }
     }
-}
 
-#endif
-
-// MARK: - OptionSelectorViewControllerDelegate
-
-extension ElementInspectorCoordinator: OptionSelectorViewControllerDelegate {
-    func optionSelectorViewController(_ viewController: OptionSelectorViewController, didSelectIndex selectedIndex: Int?) {
-        topAttributesInspectorViewController?.selectOptionAtIndex(selectedIndex)
-    }
-}
-
-private extension ElementInspectorCoordinator {
     var topAttributesInspectorViewController: ElementAttributesPanelViewController? {
         guard let topElementInspectorViewController = navigationController.topViewController as? ElementInspectorViewController else {
             return nil
         }
-        
+
         return topElementInspectorViewController.children.first as? ElementAttributesPanelViewController
     }
 }
 
-// MARK: - UIDocumentPickerDelegate
+final class ElementAttributesPanelViewController: ElementInspectorFormPanelViewController {}
 
-extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        for url in urls {
-            guard let imageData = try? Data(contentsOf: url) else {
-                continue
-            }
-            
-            let image = UIImage(data: imageData)
-            
-            topAttributesInspectorViewController?.selectImage(image)
-            break
-        }
-    }
-    
-    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-        controller.dismiss(animated: true)
-    }
-}
-
-// MARK: - OperationQueueManagerProtocol
-
-extension ElementInspectorCoordinator: OperationQueueManagerProtocol {
-    func cancelAllOperations() {
-        operationQueue.cancelAllOperations()
-    }
-    
-    func addOperationToQueue(_ operation: MainThreadOperation) {
-        guard operationQueue.operations.contains(operation) == false else {
-            return
-        }
-        
-        operationQueue.addOperation(operation)
-    }
-    
-    func suspendQueue(_ isSuspended: Bool) {
-        operationQueue.isSuspended = isSuspended
-    }
-}
+final class ElementSizePanelViewController: ElementInspectorFormPanelViewController {}

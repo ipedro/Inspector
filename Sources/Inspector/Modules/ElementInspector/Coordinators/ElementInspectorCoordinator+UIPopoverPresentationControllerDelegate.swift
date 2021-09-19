@@ -18,34 +18,17 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-protocol ElementAttributesPanelViewModelProtocol: ElementInspectorFormViewControllerDataSource {}
+// MARK: - UIPopoverPresentationControllerDelegate
 
-final class ElementAttributesPanelViewModel {
-    let reference: ViewHierarchyReference
-
-    let snapshot: ViewHierarchySnapshot
-
-    private(set) lazy var items: [ElementInspectorFormItem] = {
-        guard let referenceView = reference.rootView else { return [] }
-
-        return snapshot.elementLibraries.targeting(element: referenceView).flatMap { library in
-            library.items(for: referenceView)
+extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        guard popoverPresentationController.presentedViewController === navigationController else {
+            return
         }
-    }()
 
-    init(
-        reference: ViewHierarchyReference,
-        snapshot: ViewHierarchySnapshot
-    ) {
-        self.reference = reference
-        self.snapshot = snapshot
+        finish()
     }
-}
-
-// MARK: - AttributesInspectorViewModelProtocol
-
-extension ElementAttributesPanelViewModel: ElementAttributesPanelViewModelProtocol {
-    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormItemView.Type? { nil }
 }

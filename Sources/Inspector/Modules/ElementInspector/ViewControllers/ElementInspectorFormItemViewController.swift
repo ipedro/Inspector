@@ -21,46 +21,60 @@
 import UIKit
 
 protocol ElementInspectorFormItemViewControllerDelegate: OperationQueueManagerProtocol {
-    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
-                                                   didTap colorPicker: ColorPreviewControl)
+    func elementInspectorFormItemViewController(
+        _ formItemController: ElementInspectorFormItemViewController,
+        didTap colorPicker: ColorPreviewControl
+    )
 
-    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
-                                                   didTap imagePicker: ImagePreviewControl)
+    func elementInspectorFormItemViewController(
+        _ formItemController: ElementInspectorFormItemViewController,
+        didTap imagePicker: ImagePreviewControl
+    )
 
-    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
-                                                   didTap optionSelector: OptionListControl)
+    func elementInspectorFormItemViewController(
+        _ formItemController: ElementInspectorFormItemViewController,
+        didTap optionSelector: OptionListControl
+    )
 
-    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
-                                                   didUpdate property: InspectorElementViewModelProperty)
+    func elementInspectorFormItemViewController(
+        _ formItemController: ElementInspectorFormItemViewController,
+        didUpdate property: InspectorElementViewModelProperty
+    )
 
-    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
-                                                   willUpdate property: InspectorElementViewModelProperty)
+    func elementInspectorFormItemViewController(
+        _ formItemController: ElementInspectorFormItemViewController,
+        willUpdate property: InspectorElementViewModelProperty
+    )
 
-    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
-                                                   willChangeFrom oldState: InspectorElementFormItemState?,
-                                                   to newState: InspectorElementFormItemState)
+    func elementInspectorFormItemViewController(
+        _ formItemController: ElementInspectorFormItemViewController,
+        willChangeFrom oldState: InspectorElementFormItemState?,
+        to newState: InspectorElementFormItemState
+    )
 }
 
 final class ElementInspectorFormItemViewController: UIViewController {
     weak var delegate: ElementInspectorFormItemViewControllerDelegate?
 
-    private(set) var viewCode: InspectorElementFormItemView! {
-        didSet {
-            viewCode.delegate = self
-        }
-    }
+    let viewCode: InspectorElementFormItemView
 
-    private var viewModel: InspectorElementViewModelProtocol!
+    private var viewModel: InspectorElementViewModelProtocol
 
-    static func create(
+    init(
         viewModel: InspectorElementViewModelProtocol,
         viewCode: InspectorElementFormItemView
-    ) -> ElementInspectorFormItemViewController {
-        let viewController = ElementInspectorFormItemViewController()
-        viewController.viewModel = viewModel
-        viewController.viewCode = viewCode
+    ) {
+        self.viewModel = viewModel
+        self.viewCode = viewCode
 
-        return viewController
+        super.init(nibName: nil, bundle: nil)
+
+        viewCode.delegate = self
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func loadView() {
@@ -362,8 +376,7 @@ extension ElementInspectorFormItemViewController {
                  (.cgRect, _),
                  (.cgSize, _),
                  (.cgPoint, _),
-                 (.directionalInsets, _)
-                :
+                 (.directionalInsets, _):
                 assertionFailure("shouldn't happen")
             }
         }
@@ -397,9 +410,11 @@ extension ElementInspectorFormItemViewController: ImagePreviewControlDelegate {
 // MARK: - ElementInspectorFormItemViewCodeDelegate
 
 extension ElementInspectorFormItemViewController: InspectorElementFormItemViewDelegate {
-    func inspectorElementFormItemView(_ item: InspectorElementFormItemView,
-                                         willChangeFrom oldState: InspectorElementFormItemState?,
-                                         to newState: InspectorElementFormItemState) {
+    func inspectorElementFormItemView(
+        _ item: InspectorElementFormItemView,
+        willChangeFrom oldState: InspectorElementFormItemState?,
+        to newState: InspectorElementFormItemState
+    ) {
         delegate?.elementInspectorFormItemViewController(self, willChangeFrom: oldState, to: newState)
     }
 }

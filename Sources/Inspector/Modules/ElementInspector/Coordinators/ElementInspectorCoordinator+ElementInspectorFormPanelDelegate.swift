@@ -21,9 +21,9 @@
 import MobileCoreServices
 import UIKit
 
-extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDelegate {
-    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorFormPanelViewController, didUpdateProperty: InspectorElementViewModelProperty, in item: ElementInspectorFormItem) {
-        guard let elementViewController = viewController.parent as? ElementInspectorViewController else {
+extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel, didUpdateProperty: InspectorElementViewModelProperty, in item: ElementInspectorFormItem) {
+        guard let elementViewController = formPanelViewController.parent as? ElementInspectorViewController else {
             assertionFailure("whaaaat")
             return
         }
@@ -31,7 +31,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDe
         elementViewController.reloadData()
     }
 
-    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorFormPanelViewController, didTap colorPicker: ColorPreviewControl) {
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel, didTap colorPicker: ColorPreviewControl) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             let colorPickerViewController = UIColorPickerViewController(
@@ -44,29 +44,29 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDe
                     .permittedArrowDirections([.up, .down])
                 )
             )
-            
+
             if let selectedColor = colorPicker.selectedColor {
                 colorPickerViewController.selectedColor = selectedColor
             }
-            
-            viewController.present(colorPickerViewController, animated: true)
+
+            formPanelViewController.present(colorPickerViewController, animated: true)
         }
         #endif
     }
-    
-    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorFormPanelViewController,
-                                        didTap optionSelector: OptionListControl)
+
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel,
+                                   didTap optionSelector: OptionListControl)
     {
         let viewModel = OptionSelectorViewModel(
             title: optionSelector.title,
             options: optionSelector.options,
             selectedIndex: optionSelector.selectedIndex
         )
-        
+
         let optionSelectorViewController = OptionSelectorViewController.create(viewModel: viewModel).then {
             $0.delegate = self
         }
-        
+
         let navigationController = ElementInspectorNavigationController(
             .rootViewController(optionSelectorViewController),
             .viewControllerOptions(
@@ -78,19 +78,19 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDe
                 .popoverPresentationDelegate(self)
             )
         )
-        
-        viewController.present(navigationController, animated: true)
+
+        formPanelViewController.present(navigationController, animated: true)
     }
-    
-    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorFormPanelViewController,
-                                        didTap imagePicker: ImagePreviewControl)
+
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel,
+                                   didTap imagePicker: ImagePreviewControl)
     {
         let alertController = UIAlertController(
             title: nil,
             message: nil,
             preferredStyle: .actionSheet
         )
-        
+
         alertController.apply(viewControllerOptions:
             .modalPresentationStyle(.popover),
             .viewOptions(
@@ -101,7 +101,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDe
                 .permittedArrowDirections([.up, .down]),
                 .popoverPresentationDelegate(self)
             ))
-        
+
         alertController.addAction(
             UIAlertAction(
                 title: Texts.cancel,
@@ -109,19 +109,19 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDe
                 handler: nil
             )
         )
-        
+
         if imagePicker.image != nil {
             alertController.addAction(
                 UIAlertAction(
                     title: Texts.clearImage,
                     style: .destructive,
                     handler: { _ in
-                        viewController.selectImage(nil)
+                        formPanelViewController.selectImage(nil)
                     }
                 )
             )
         }
-        
+
         alertController.addAction(
             UIAlertAction(
                 title: Texts.importImage,
@@ -130,7 +130,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDe
                     guard let self = self else {
                         return
                     }
-                    
+
                     let documentPicker = UIDocumentPickerViewController.forImporting(
                         .documentTypes(.image),
                         .asCopy(true),
@@ -147,14 +147,14 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDe
                             .popoverPresentationDelegate(self)
                         )
                     )
-                    
-                    viewController.present(documentPicker, animated: true)
+
+                    formPanelViewController.present(documentPicker, animated: true)
                 }
             )
         )
-        
-        viewController.present(alertController, animated: true) {
-            alertController.view.tintColor = Inspector.configuration.colorStyle.textColor
+
+        formPanelViewController.present(alertController, animated: true) {
+            alertController.view.tintColor = formPanelViewController.colorStyle.textColor
         }
     }
 }

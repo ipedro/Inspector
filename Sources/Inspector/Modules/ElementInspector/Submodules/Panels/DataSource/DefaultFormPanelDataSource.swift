@@ -20,16 +20,22 @@
 
 import UIKit
 
-extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
-    func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
-    {
-        panelViewController(for: panel, with: reference)
+struct DefaultFormPanelDataSource: ElementInspectorFormPanelDataSource {
+    typealias FormItemViewTypeProvider = ((IndexPath) -> InspectorElementFormItemView.Type?)
+
+    let items: [ElementInspectorFormItem]
+
+    let provider: FormItemViewTypeProvider?
+
+    init(
+        items: [ElementInspectorFormItem],
+        provider: FormItemViewTypeProvider? = nil
+    ) {
+        self.items = items
+        self.provider = provider
     }
 
-    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController) {
-        navigationController.dismiss(animated: true) { [weak self] in
-            self?.finish()
-        }
+    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormItemView.Type {
+        provider?(indexPath) ?? ElementInspectorFormItemContentView.self
     }
 }

@@ -18,63 +18,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-@_implementationOnly import UIKeyboardAnimatable
 import UIKit
 
-typealias ElementInspectorFormPanelViewController = ElementInspectorBaseFormPanelViewController & ElementInspectorBaseViewControllerProtocol
-
-protocol ElementInspectorFormPanelViewControllerDelegate: OperationQueueManagerProtocol {
-    func elementInspectorFormPanelViewController(
-        _ viewController: ElementInspectorFormPanelViewController,
-        didTap colorPicker: ColorPreviewControl
-    )
-
-    func elementInspectorFormPanelViewController(
-        _ viewController: ElementInspectorFormPanelViewController,
-        didTap imagePicker: ImagePreviewControl
-    )
-
-    func elementInspectorFormPanelViewController(
-        _ viewController: ElementInspectorFormPanelViewController,
-        didTap optionSelector: OptionListControl
-    )
-
-    func elementInspectorFormPanelViewController(
-        _ viewController: ElementInspectorFormPanelViewController,
-        didUpdateProperty: InspectorElementViewModelProperty,
-        in item: ElementInspectorFormItem
-    )
-}
-
-public struct ElementInspectorFormItem {
-    public var title: String?
-    public var rows: [InspectorElementViewModelProtocol]
-
-    public init(
-        title: String? = nil,
-        rows: [InspectorElementViewModelProtocol]
-    ) {
-        self.title = title
-        self.rows = rows
-    }
-}
-
-public extension Array where Element == ElementInspectorFormItem {
-    static func single(_ viewModel: InspectorElementViewModelProtocol) -> Self {
-        [.init(rows: [viewModel])]
-    }
-}
-
-protocol ElementInspectorFormViewControllerDataSource: AnyObject {
-    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormItemView.Type?
-    var items: [ElementInspectorFormItem] { get }
-}
-
-protocol ElementInspectorBaseViewControllerProtocol {
-    var viewCode: ElementInspectorFormView { get }
-}
-
-class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewController, KeyboardAnimatable {
+class ElementInspectorFormPanelViewController: ElementInspectorPanelViewController, ElementInspectorFormPanel {
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
     }
@@ -88,19 +34,19 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
     }
 
     func elementInspectorFormItemViewController(
-        _ sectionController: ElementInspectorFormItemViewController,
+        _ formItemController: ElementInspectorFormItemViewController,
         willChangeFrom oldState: InspectorElementFormItemState?,
         to newState: InspectorElementFormItemState
     ) {
         animatePanel { [weak self] in
-            sectionController.state = newState
+            formItemController.state = newState
 
             guard let self = self else { return }
 
             switch newState {
             case .expanded:
-                for aSectionController in self.sectionViewControllers where aSectionController !== sectionController {
-                    aSectionController.state = .collapsed
+                for aFormItemController in self.sectionViewControllers where aFormItemController !== formItemController {
+                    aFormItemController.state = .collapsed
                 }
 
             case .collapsed:
@@ -109,9 +55,13 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
         }
     }
 
-    weak var formDelegate: ElementInspectorFormPanelViewControllerDelegate?
+    weak var formDelegate: ElementInspectorFormPanelDelegate?
 
-    weak var dataSource: ElementInspectorFormViewControllerDataSource?
+    var dataSource: ElementInspectorFormPanelDataSource {
+        didSet {
+            reloadData()
+        }
+    }
 
     var selectedColorPicker: ColorPreviewControl?
 
@@ -119,20 +69,37 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
 
     var selectedOptionSelector: OptionListControl?
 
-    private var sections: [ElementInspectorFormItemViewController: ElementInspectorFormItem] = [:]
+    private var itemsDictionary: [ElementInspectorFormItemViewController: ElementInspectorFormItem] = [:]
 
     var sectionViewControllers: [ElementInspectorFormItemViewController] {
         children.compactMap { $0 as? ElementInspectorFormItemViewController }
     }
 
+    let viewCode: ElementInspectorFormView
+
+    // MARK: - Init
+
+    init(
+        dataSource: ElementInspectorFormPanelDataSource,
+        viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
+    ) {
+        self.dataSource = dataSource
+        self.viewCode = viewCode
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func loadView() {
-        view = (self as? ElementInspectorFormPanelViewController)?.viewCode ?? UIView()
+        view = viewCode
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        guard let self = self as? ElementInspectorFormPanelViewController else { return }
 
         reloadData()
 
@@ -143,14 +110,9 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
     }
 
     func reloadData() {
-        guard let self = self as? ElementInspectorFormPanelViewController else { return }
-
-        self.viewCode.contentView.removeAllArrangedSubviews()
-
-        guard let dataSource = self.dataSource else { return }
+        viewCode.contentView.removeAllArrangedSubviews()
 
         dataSource.items.enumerated().forEach { sectionIndex, item in
-
             if let title = item.title {
                 self.viewCode.contentView.addArrangedSubview(
                     SectionHeader(
@@ -171,29 +133,37 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
             for (row, viewModel) in item.rows.enumerated() {
                 let indexPath = IndexPath(row: row, section: sectionIndex)
 
-                let ItemView = dataSource.typeForRow(at: indexPath) ?? ElementInspectorFormItemContentView.self
+                let ItemType = dataSource.typeForRow(at: indexPath)
 
-                let itemView = ItemView.createItemView().then {
+                let itemView = ItemType.createItemView().then {
                     $0.separatorStyle = indexPath.isFirst ? .none : .top
                 }
 
-                let sectionViewController = ElementInspectorFormItemViewController.create(
+                let formItemViewController = ElementInspectorFormItemViewController(
                     viewModel: viewModel,
                     viewCode: itemView
                 ).then {
-                    $0.state = indexPath.isFirst ? .expanded : .collapsed
                     $0.delegate = self
+
+                    if
+                        indexPath.isFirst,
+                        ElementInspector.configuration.isPresentingFromBottomSheet == false
+                    {
+                        $0.state = .expanded
+                    }
                 }
 
-                addChild(sectionViewController)
+                addChild(formItemViewController)
 
-                self.sections[sectionViewController] = item
+                formItemViewController.viewWillAppear(false)
 
-                self.viewCode.contentView.addArrangedSubview(sectionViewController.view)
+                self.viewCode.contentView.addArrangedSubview(itemView)
 
-                sectionViewController.view.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+                itemView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
 
-                sectionViewController.didMove(toParent: self)
+                formItemViewController.didMove(toParent: self)
+
+                self.itemsDictionary[formItemViewController] = item
             }
         }
     }
@@ -237,22 +207,22 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
 
 // MARK: - ElementInspectorFormItemViewControllerDelegate
 
-extension ElementInspectorBaseFormPanelViewController: ElementInspectorFormItemViewControllerDelegate {
+extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewControllerDelegate {
     func elementInspectorFormItemViewController(
-        _ sectionController: ElementInspectorFormItemViewController,
+        _ formItemController: ElementInspectorFormItemViewController,
         willUpdate property: InspectorElementViewModelProperty
     ) {
         willUpdate(property: property)
     }
 
     func elementInspectorFormItemViewController(
-        _ sectionController: ElementInspectorFormItemViewController,
+        _ formItemController: ElementInspectorFormItemViewController,
         didUpdate property: InspectorElementViewModelProperty
     ) {
         let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
             guard
-                let self = self as? ElementInspectorFormPanelViewController,
-                let section = self.sections[sectionController]
+                let self = self,
+                let item = self.itemsDictionary[formItemController]
             else {
                 return
             }
@@ -261,14 +231,14 @@ extension ElementInspectorBaseFormPanelViewController: ElementInspectorFormItemV
 
             self.didUpdate(property: property)
 
-            self.formDelegate?.elementInspectorFormPanelViewController(self, didUpdateProperty: property, in: section)
+            self.formDelegate?.elementInspectorFormPanel(self, didUpdateProperty: property, in: item)
         }
 
         formDelegate?.addOperationToQueue(updateOperation)
     }
 
     func elementInspectorFormItemViewController(
-        _ sectionController: ElementInspectorFormItemViewController,
+        _ formItemController: ElementInspectorFormItemViewController,
         didChangeState newState: UIControl.State,
         from oldState: UIControl.State
     ) {
@@ -284,43 +254,34 @@ extension ElementInspectorBaseFormPanelViewController: ElementInspectorFormItemV
                     section.state = .collapsed
                 }
 
-                sectionController.state = .expanded
+                formItemController.state = .expanded
             },
             completion: nil
         )
     }
 
     func elementInspectorFormItemViewController(
-        _ sectionController: ElementInspectorFormItemViewController,
+        _ formItemController: ElementInspectorFormItemViewController,
         didTap imagePicker: ImagePreviewControl
     ) {
         selectedImagePicker = imagePicker
-
-        guard let self = self as? ElementInspectorFormPanelViewController else { return }
-
-        self.formDelegate?.elementInspectorFormPanelViewController(self, didTap: imagePicker)
+        formDelegate?.elementInspectorFormPanel(self, didTap: imagePicker)
     }
 
     func elementInspectorFormItemViewController(
-        _ sectionController: ElementInspectorFormItemViewController,
+        _ formItemController: ElementInspectorFormItemViewController,
         didTap colorPicker: ColorPreviewControl
     ) {
         selectedColorPicker = colorPicker
-
-        guard let self = self as? ElementInspectorFormPanelViewController else { return }
-
-        self.formDelegate?.elementInspectorFormPanelViewController(self, didTap: colorPicker)
+        formDelegate?.elementInspectorFormPanel(self, didTap: colorPicker)
     }
 
     func elementInspectorFormItemViewController(
-        _ sectionController: ElementInspectorFormItemViewController,
+        _ formItemController: ElementInspectorFormItemViewController,
         didTap optionSelector: OptionListControl
     ) {
         selectedOptionSelector = optionSelector
-
-        guard let self = self as? ElementInspectorFormPanelViewController else { return }
-
-        self.formDelegate?.elementInspectorFormPanelViewController(self, didTap: optionSelector)
+        formDelegate?.elementInspectorFormPanel(self, didTap: optionSelector)
     }
 }
 

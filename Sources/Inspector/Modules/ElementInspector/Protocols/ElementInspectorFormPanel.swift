@@ -18,18 +18,34 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
+@_implementationOnly import UIKeyboardAnimatable
 
-extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
-    func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
-    {
-        panelViewController(for: panel, with: reference)
-    }
+protocol ElementInspectorFormPanel: ElementInspectorPanelViewController & OperationQueueManagerProtocol & KeyboardAnimatable {
+    var formDelegate: ElementInspectorFormPanelDelegate? { get set }
 
-    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController) {
-        navigationController.dismiss(animated: true) { [weak self] in
-            self?.finish()
-        }
-    }
+    var dataSource: ElementInspectorFormPanelDataSource { get set }
+
+    var selectedColorPicker: ColorPreviewControl? { get set }
+
+    var selectedImagePicker: ImagePreviewControl? { get set }
+
+    var selectedOptionSelector: OptionListControl? { get set }
+
+    var sectionViewControllers: [ElementInspectorFormItemViewController] { get }
+
+    var viewCode: ElementInspectorFormView { get }
+
+    func reloadData()
+
+    func selectImage(_ image: UIImage?)
+
+    func selectColor(_ color: UIColor)
+
+    func selectOptionAtIndex(_ index: Int?)
+
+    func finishColorSelection()
+
+    func finishOptionSelction()
 }

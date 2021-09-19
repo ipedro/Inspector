@@ -18,32 +18,19 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+#if swift(>=5.3)
 import UIKit
 
-protocol ElementSizePanelViewModelProtocol: ElementInspectorFormViewControllerDataSource {}
+// MARK: - UIColorPickerViewControllerDelegate
 
-final class ElementSizePanelViewModel {
-    let reference: ViewHierarchyReference
+@available(iOS 14.0, *)
+extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
+    func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
+        topAttributesInspectorViewController?.selectColor(viewController.selectedColor)
+    }
 
-    private(set) lazy var items: [ElementInspectorFormItem] = {
-        guard let referenceView = reference.rootView else { return [] }
-
-        return AutoLayoutSizeLibrary.allCases
-            .map{ $0.items(for: referenceView) }
-            .flatMap { $0 }
-    }()
-
-    init(reference: ViewHierarchyReference) {
-        self.reference = reference
+    func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
+        topAttributesInspectorViewController?.finishColorSelection()
     }
 }
-
-// MARK: - ElementSizeInspectorViewModelProtocol
-
-extension ElementSizePanelViewModel: ElementSizePanelViewModelProtocol {
-    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormItemView.Type? {
-        let viewModel = items[indexPath.section].rows[indexPath.row]
-
-        return AutoLayoutSizeLibrary.viewType(forViewModel: viewModel)
-    }
-}
+#endif

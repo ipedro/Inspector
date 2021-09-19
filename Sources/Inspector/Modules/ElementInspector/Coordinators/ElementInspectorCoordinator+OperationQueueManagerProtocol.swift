@@ -18,18 +18,25 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 
-extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
-    func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
-    {
-        panelViewController(for: panel, with: reference)
+import Foundation
+
+// MARK: - OperationQueueManagerProtocol
+
+extension ElementInspectorCoordinator: OperationQueueManagerProtocol {
+    func cancelAllOperations() {
+        operationQueue.cancelAllOperations()
     }
 
-    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController) {
-        navigationController.dismiss(animated: true) { [weak self] in
-            self?.finish()
+    func addOperationToQueue(_ operation: MainThreadOperation) {
+        guard operationQueue.operations.contains(operation) == false else {
+            return
         }
+
+        operationQueue.addOperation(operation)
+    }
+
+    func suspendQueue(_ isSuspended: Bool) {
+        operationQueue.isSuspended = isSuspended
     }
 }

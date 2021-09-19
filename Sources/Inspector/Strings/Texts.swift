@@ -72,4 +72,6 @@ enum Texts {
     static let clearImage = "Clear image"
     
     static let importImage = "Import image..."
+
+    static let noElementInspector = "No Element Inspector"
 }

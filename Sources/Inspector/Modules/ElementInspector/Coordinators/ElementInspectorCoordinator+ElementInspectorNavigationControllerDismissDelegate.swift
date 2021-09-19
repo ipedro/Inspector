@@ -18,16 +18,11 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
-    func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
-    {
-        panelViewController(for: panel, with: reference)
-    }
-
-    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController) {
+extension ElementInspectorCoordinator: ElementInspectorNavigationControllerDismissDelegate {
+    func elementInspectorNavigationControllerDidFinish(_ navigationController: ElementInspectorNavigationController) {
         navigationController.dismiss(animated: true) { [weak self] in
             self?.finish()
         }

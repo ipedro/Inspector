@@ -18,30 +18,30 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-final class ElementAttributesPanelViewController: ElementInspectorFormPanelViewController {
-    // MARK: - Properties
+// MARK: - UIAdaptivePresentationControllerDelegate
 
-    private(set) lazy var viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
+extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate {
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        switch controller.presentedViewController {
+        case is UIDocumentPickerViewController:
+            return .pageSheet
 
-    private var viewModel: ElementAttributesPanelViewModelProtocol! {
-        didSet {
-            dataSource = viewModel
+        default:
+            return .none
         }
     }
 
-    // MARK: - Init
+    #if swift(>=5.0)
+    @available(iOS 13.0, *)
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        guard presentationController.presentedViewController === navigationController else {
+            return
+        }
 
-    static func create(
-        viewModel: ElementAttributesPanelViewModelProtocol,
-        viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
-    ) -> Self {
-        let viewController = Self()
-        viewController.viewModel = viewModel
-        viewController.viewCode = viewCode
-
-        return viewController
+        finish()
     }
-
+    #endif
 }

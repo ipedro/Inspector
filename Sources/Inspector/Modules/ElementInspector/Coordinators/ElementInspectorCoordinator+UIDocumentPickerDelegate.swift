@@ -18,29 +18,26 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-final class ElementSizePanelViewController: ElementInspectorFormPanelViewController {
-    // MARK: - Properties
+// MARK: - UIDocumentPickerDelegate
 
-    lazy var viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
+extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        for url in urls {
+            guard let imageData = try? Data(contentsOf: url) else {
+                continue
+            }
 
-    private var viewModel: ElementSizePanelViewModelProtocol! {
-        didSet {
-            dataSource = viewModel
+            let image = UIImage(data: imageData)
+
+            topAttributesInspectorViewController?.selectImage(image)
+            break
         }
     }
 
-    // MARK: - Init
-
-    static func create(
-        viewModel: ElementSizePanelViewModelProtocol,
-        viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
-    ) -> Self {
-        let viewController = Self()
-        viewController.viewModel = viewModel
-        viewController.viewCode = viewCode
-
-        return viewController
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        controller.dismiss(animated: true)
     }
 }

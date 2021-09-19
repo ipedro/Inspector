@@ -18,18 +18,26 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 
-extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
-    func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
-    {
-        panelViewController(for: panel, with: reference)
+import Foundation
+
+public struct ElementInspectorFormItem {
+    public var title: String?
+    public var rows: [InspectorElementViewModelProtocol]
+
+    public init(
+        title: String? = nil,
+        rows: [InspectorElementViewModelProtocol]
+    ) {
+        self.title = title
+        self.rows = rows
     }
+}
 
-    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController) {
-        navigationController.dismiss(animated: true) { [weak self] in
-            self?.finish()
-        }
+// MARK: - Array Extension
+
+public extension Array where Element == ElementInspectorFormItem {
+    static func single(_ viewModel: InspectorElementViewModelProtocol) -> Self {
+        [.init(rows: [viewModel])]
     }
 }
