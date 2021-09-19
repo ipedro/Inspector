@@ -22,7 +22,7 @@ import MobileCoreServices
 import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDelegate {
-    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorFormPanelViewController, didUpdateProperty: InspectorElementViewModelProperty) {
+    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorFormPanelViewController, didUpdateProperty: InspectorElementViewModelProperty, in item: ElementInspectorFormItem) {
         guard let elementViewController = viewController.parent as? ElementInspectorViewController else {
             assertionFailure("whaaaat")
             return

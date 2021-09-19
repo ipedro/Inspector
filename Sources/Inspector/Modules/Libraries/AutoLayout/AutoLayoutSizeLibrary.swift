@@ -27,16 +27,16 @@ enum AutoLayoutSizeLibrary: Swift.CaseIterable, InspectorSizeLibraryProtocol {
 
     // MARK: - InspectorSizeLibraryProtocol
 
-    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormSectionView.Type {
+    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormItemView.Type {
         switch viewModel {
         case is NSLayoutConstraintInspectableViewModel:
             return ElementInspectorFormLayoutConstraintView.self
         default:
-            return ElementInspectorFormSectionContentView.self
+            return ElementInspectorFormItemContentView.self
         }
     }
 
-    func sections(for referenceView: UIView) -> [ElementInspectorFormSection] {
+    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
         switch self {
         case .viewFrame:
             return .single(ViewFrameInspectableViewModel(view: referenceView))
@@ -63,26 +63,26 @@ enum AutoLayoutSizeLibrary: Swift.CaseIterable, InspectorSizeLibraryProtocol {
                 }
             }
 
-            var sections: [ElementInspectorFormSection] = []
+            var items: [ElementInspectorFormItem] = []
 
             if horizontalConstraints.isEmpty == false {
-                sections.append(
-                    ElementInspectorFormSection(
+                items.append(
+                    ElementInspectorFormItem(
                         title: "Horizontal Constraints",
                         rows: horizontalConstraints
                     )
                 )
             }
             if verticalConstraints.isEmpty == false {
-                sections.append(
-                    ElementInspectorFormSection(
+                items.append(
+                    ElementInspectorFormItem(
                         title: "Vertical Constraints",
                         rows: verticalConstraints
                     )
                 )
             }
 
-            return sections
+            return items
         }
     }
 

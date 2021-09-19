@@ -41,11 +41,12 @@ protocol ElementInspectorFormPanelViewControllerDelegate: OperationQueueManagerP
 
     func elementInspectorFormPanelViewController(
         _ viewController: ElementInspectorFormPanelViewController,
-        didUpdateProperty: InspectorElementViewModelProperty
+        didUpdateProperty: InspectorElementViewModelProperty,
+        in item: ElementInspectorFormItem
     )
 }
 
-public struct ElementInspectorFormSection {
+public struct ElementInspectorFormItem {
     public var title: String?
     public var rows: [InspectorElementViewModelProtocol]
 
@@ -58,15 +59,15 @@ public struct ElementInspectorFormSection {
     }
 }
 
-public extension Array where Element == ElementInspectorFormSection {
+public extension Array where Element == ElementInspectorFormItem {
     static func single(_ viewModel: InspectorElementViewModelProtocol) -> Self {
         [.init(rows: [viewModel])]
     }
 }
 
 protocol ElementInspectorFormViewControllerDataSource: AnyObject {
-    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type?
-    var sections: [ElementInspectorFormSection] { get }
+    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormItemView.Type?
+    var items: [ElementInspectorFormItem] { get }
 }
 
 protocol ElementInspectorBaseViewControllerProtocol {
@@ -86,10 +87,10 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
         formDelegate?.cancelAllOperations()
     }
 
-    func elementInspectorFormSectionViewController(
-        _ sectionController: ElementInspectorFormSectionViewController,
-        willChangeFrom oldState: InspectorElementFormSectionState?,
-        to newState: InspectorElementFormSectionState
+    func elementInspectorFormItemViewController(
+        _ sectionController: ElementInspectorFormItemViewController,
+        willChangeFrom oldState: InspectorElementFormItemState?,
+        to newState: InspectorElementFormItemState
     ) {
         animatePanel { [weak self] in
             sectionController.state = newState
@@ -118,8 +119,10 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
 
     var selectedOptionSelector: OptionListControl?
 
-    var sectionViewControllers: [ElementInspectorFormSectionViewController] {
-        children.compactMap { $0 as? ElementInspectorFormSectionViewController }
+    private var sections: [ElementInspectorFormItemViewController: ElementInspectorFormItem] = [:]
+
+    var sectionViewControllers: [ElementInspectorFormItemViewController] {
+        children.compactMap { $0 as? ElementInspectorFormItemViewController }
     }
 
     override func loadView() {
@@ -131,7 +134,7 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
 
         guard let self = self as? ElementInspectorFormPanelViewController else { return }
 
-        loadSections()
+        reloadData()
 
         animateWhenKeyboard(.willChangeFrame) { info in
             self.viewCode.keyboardHeight = info.keyboardFrame.height
@@ -139,35 +142,44 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
         }
     }
 
-    func loadSections() {
-        guard
-            let self = self as? ElementInspectorFormPanelViewController,
-            let dataSource = dataSource
-        else { return }
+    func reloadData() {
+        guard let self = self as? ElementInspectorFormPanelViewController else { return }
 
-        dataSource.sections.enumerated().forEach { sectionIndex, section in
-            if let title = section.title {
-                let sectionHeaderView = SectionHeader(
-                    title: title,
-                    titleFont: .headline,
-                    margins: .init(insets: ElementInspector.appearance.horizontalMargins)
-                ).then {
-                    $0.alpha = 0.5
-                }
+        self.viewCode.contentView.removeAllArrangedSubviews()
 
-                self.viewCode.contentView.addArrangedSubview(sectionHeaderView)
+        guard let dataSource = self.dataSource else { return }
+
+        dataSource.items.enumerated().forEach { sectionIndex, item in
+
+            if let title = item.title {
+                self.viewCode.contentView.addArrangedSubview(
+                    SectionHeader(
+                        title: title,
+                        titleFont: .init(.headline, .traitBold),
+                        margins: .init(
+                            top: ElementInspector.appearance.horizontalMargins,
+                            leading: ElementInspector.appearance.horizontalMargins + ElementInspector.appearance.verticalMargins + 24,
+                            bottom: ElementInspector.appearance.horizontalMargins,
+                            trailing: ElementInspector.appearance.horizontalMargins + ElementInspector.appearance.verticalMargins
+                        )
+                    ).then {
+                        $0.alpha = 0.5
+                    }
+                )
             }
 
-            for (row, viewModel) in section.rows.enumerated() {
+            for (row, viewModel) in item.rows.enumerated() {
                 let indexPath = IndexPath(row: row, section: sectionIndex)
 
-                let Type = dataSource.typeForRow(at: indexPath) ?? ElementInspectorFormSectionContentView.self
-                let viewCode = Type.createSectionView()
-                viewCode.separatorStyle = indexPath.isFirst ? .none : .top
+                let ItemView = dataSource.typeForRow(at: indexPath) ?? ElementInspectorFormItemContentView.self
 
-                let sectionViewController = ElementInspectorFormSectionViewController.create(
+                let itemView = ItemView.createItemView().then {
+                    $0.separatorStyle = indexPath.isFirst ? .none : .top
+                }
+
+                let sectionViewController = ElementInspectorFormItemViewController.create(
                     viewModel: viewModel,
-                    viewCode: viewCode
+                    viewCode: itemView
                 ).then {
                     $0.state = indexPath.isFirst ? .expanded : .collapsed
                     $0.delegate = self
@@ -175,9 +187,12 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
 
                 addChild(sectionViewController)
 
+                self.sections[sectionViewController] = item
+
                 self.viewCode.contentView.addArrangedSubview(sectionViewController.view)
 
                 sectionViewController.view.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+
                 sectionViewController.didMove(toParent: self)
             }
         }
@@ -220,36 +235,40 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
     func didUpdate(property: InspectorElementViewModelProperty) {}
 }
 
-// MARK: - ElementInspectorFormSectionViewControllerDelegate
+// MARK: - ElementInspectorFormItemViewControllerDelegate
 
-extension ElementInspectorBaseFormPanelViewController: ElementInspectorFormSectionViewControllerDelegate {
-
-    func elementInspectorFormSectionViewController(
-        _ sectionController: ElementInspectorFormSectionViewController,
+extension ElementInspectorBaseFormPanelViewController: ElementInspectorFormItemViewControllerDelegate {
+    func elementInspectorFormItemViewController(
+        _ sectionController: ElementInspectorFormItemViewController,
         willUpdate property: InspectorElementViewModelProperty
     ) {
         willUpdate(property: property)
     }
 
-    func elementInspectorFormSectionViewController(
-        _ sectionController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormItemViewController(
+        _ sectionController: ElementInspectorFormItemViewController,
         didUpdate property: InspectorElementViewModelProperty
     ) {
         let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
-            guard let self = self as? ElementInspectorFormPanelViewController else { return }
+            guard
+                let self = self as? ElementInspectorFormPanelViewController,
+                let section = self.sections[sectionController]
+            else {
+                return
+            }
 
             self.sectionViewControllers.forEach { $0.reloadData() }
 
             self.didUpdate(property: property)
 
-            self.formDelegate?.elementInspectorFormPanelViewController(self, didUpdateProperty: property)
+            self.formDelegate?.elementInspectorFormPanelViewController(self, didUpdateProperty: property, in: section)
         }
 
         formDelegate?.addOperationToQueue(updateOperation)
     }
 
-    func elementInspectorFormSectionViewController(
-        _ sectionController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormItemViewController(
+        _ sectionController: ElementInspectorFormItemViewController,
         didChangeState newState: UIControl.State,
         from oldState: UIControl.State
     ) {
@@ -257,8 +276,8 @@ extension ElementInspectorBaseFormPanelViewController: ElementInspectorFormSecti
             animations: { [weak self] in
                 guard let self = self else { return }
 
-                let selectedSections: [ElementInspectorFormSectionViewController] = self.children
-                    .compactMap { $0 as? ElementInspectorFormSectionViewController }
+                let selectedSections: [ElementInspectorFormItemViewController] = self.children
+                    .compactMap { $0 as? ElementInspectorFormItemViewController }
                     .filter { $0.state == .expanded }
 
                 for section in selectedSections {
@@ -271,8 +290,8 @@ extension ElementInspectorBaseFormPanelViewController: ElementInspectorFormSecti
         )
     }
 
-    func elementInspectorFormSectionViewController(
-        _ sectionController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormItemViewController(
+        _ sectionController: ElementInspectorFormItemViewController,
         didTap imagePicker: ImagePreviewControl
     ) {
         selectedImagePicker = imagePicker
@@ -282,8 +301,8 @@ extension ElementInspectorBaseFormPanelViewController: ElementInspectorFormSecti
         self.formDelegate?.elementInspectorFormPanelViewController(self, didTap: imagePicker)
     }
 
-    func elementInspectorFormSectionViewController(
-        _ sectionController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormItemViewController(
+        _ sectionController: ElementInspectorFormItemViewController,
         didTap colorPicker: ColorPreviewControl
     ) {
         selectedColorPicker = colorPicker
@@ -293,8 +312,8 @@ extension ElementInspectorBaseFormPanelViewController: ElementInspectorFormSecti
         self.formDelegate?.elementInspectorFormPanelViewController(self, didTap: colorPicker)
     }
 
-    func elementInspectorFormSectionViewController(
-        _ sectionController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormItemViewController(
+        _ sectionController: ElementInspectorFormItemViewController,
         didTap optionSelector: OptionListControl
     ) {
         selectedOptionSelector = optionSelector

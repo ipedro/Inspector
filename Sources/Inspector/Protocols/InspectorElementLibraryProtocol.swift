@@ -30,13 +30,13 @@ public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource 
 }
 
 public extension InspectorElementLibraryProtocol {
-    func sections(for referenceView: UIView) -> [ElementInspectorFormSection] {
+    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
         guard let viewModel = viewModel(for: referenceView) else {
             return []
         }
 
         return [
-            ElementInspectorFormSection(rows: [viewModel])
+            ElementInspectorFormItem(rows: [viewModel])
         ]
     }
 }

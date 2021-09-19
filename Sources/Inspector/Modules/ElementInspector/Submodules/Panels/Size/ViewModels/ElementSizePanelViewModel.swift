@@ -25,11 +25,11 @@ protocol ElementSizePanelViewModelProtocol: ElementInspectorFormViewControllerDa
 final class ElementSizePanelViewModel {
     let reference: ViewHierarchyReference
 
-    private(set) lazy var sections: [ElementInspectorFormSection] = {
+    private(set) lazy var items: [ElementInspectorFormItem] = {
         guard let referenceView = reference.rootView else { return [] }
 
         return AutoLayoutSizeLibrary.allCases
-            .map{ $0.sections(for: referenceView) }
+            .map{ $0.items(for: referenceView) }
             .flatMap { $0 }
     }()
 
@@ -41,8 +41,8 @@ final class ElementSizePanelViewModel {
 // MARK: - ElementSizeInspectorViewModelProtocol
 
 extension ElementSizePanelViewModel: ElementSizePanelViewModelProtocol {
-    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type? {
-        let viewModel = sections[indexPath.section].rows[indexPath.row]
+    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormItemView.Type? {
+        let viewModel = items[indexPath.section].rows[indexPath.row]
 
         return AutoLayoutSizeLibrary.viewType(forViewModel: viewModel)
     }

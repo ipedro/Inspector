@@ -36,12 +36,8 @@ final class ElementPreviewPanelViewCode: BaseView {
         }
     }
 
-    private lazy var header = SectionHeader.attributesInspectorHeader(title: "Preview").then {
-        var margins = NSDirectionalEdgeInsets.formSectionContentMargins
-        margins.leading += 14
-        margins.top += ElementInspector.appearance.verticalMargins / 2
-
-        $0.margins = margins
+    private lazy var header = SectionHeader.formSectionTitle(title: "Preview").then {
+        $0.margins = ElementInspector.appearance.directionalInsets
     }
     
     private lazy var controlsContainerView = UIStackView.vertical(

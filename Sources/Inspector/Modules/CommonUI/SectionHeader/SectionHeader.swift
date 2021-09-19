@@ -21,7 +21,7 @@
 import UIKit
 
 extension SectionHeader {
-    static func attributesInspectorHeader(title: String? = nil) -> SectionHeader {
+    static func formSectionTitle(title: String? = nil) -> SectionHeader {
         SectionHeader(
             title: title,
             titleFont: .init(.body, .traitBold),
@@ -53,7 +53,8 @@ final class SectionHeader: BaseView {
         .textColor(colorStyle.textColor)
     ).then {
         $0.font = titleFont.font()
-        $0.isHidden = $0.text?.isEmpty != false
+        $0.adjustsFontSizeToFitWidth = true
+        $0.isHidden = $0.text.isNilOrEmpty
     }
 
     var subtitleAlignment: NSTextAlignment {
@@ -65,7 +66,8 @@ final class SectionHeader: BaseView {
         .textColor(colorStyle.secondaryTextColor)
     ).then {
         $0.font = subtitleFont.font()
-        $0.isHidden = $0.text?.isEmpty != false
+        $0.adjustsFontSizeToFitWidth = true
+        $0.isHidden = $0.text.isNilOrEmpty
     }
 
     var title: String? {
@@ -74,7 +76,7 @@ final class SectionHeader: BaseView {
         }
         set {
             titleLabel.text = newValue
-            titleLabel.isHidden = newValue?.isEmpty != false
+            titleLabel.isHidden = newValue.isNilOrEmpty
         }
     }
 
@@ -84,7 +86,7 @@ final class SectionHeader: BaseView {
         }
         set {
             subtitleLabel.text = newValue
-            subtitleLabel.isHidden = newValue?.isEmpty != false
+            subtitleLabel.isHidden = newValue.isNilOrEmpty
         }
     }
 
@@ -96,6 +98,7 @@ final class SectionHeader: BaseView {
             self.style = style
             self.traits = traits
         }
+
         func font() -> UIFont {
             .preferredFont(forTextStyle: style, with: traits.union(.traitUIOptimized))
         }
@@ -113,7 +116,6 @@ final class SectionHeader: BaseView {
         static let footnote: Self = .init(.footnote)
         static let caption1: Self = .init(.caption1)
         static let caption2: Self = .init(.caption2)
-
     }
 
     var margins: NSDirectionalEdgeInsets {

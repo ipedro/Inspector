@@ -29,7 +29,6 @@ final class ElementInspectorFormViewCode: BaseView, ElementInspectorFormView {
     private(set) lazy var scrollView = UIScrollView().then {
         $0.alwaysBounceVertical = true
         $0.keyboardDismissMode = .onDrag
-        $0.indicatorStyle = .white
         $0.delaysContentTouches = false
     }
     
@@ -46,7 +45,7 @@ final class ElementInspectorFormViewCode: BaseView, ElementInspectorFormView {
 
         installView(scrollView, priority: .required)
 
-        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(bottom: ElementInspector.appearance.verticalMargins)
+        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(bottom: ElementInspector.appearance.horizontalMargins)
     }
     
 }

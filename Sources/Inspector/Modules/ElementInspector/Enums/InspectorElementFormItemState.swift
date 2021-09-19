@@ -18,33 +18,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import Foundation
 
-import UIKit
-
-public protocol InspectorElementFormSectionViewDelegate: AnyObject {
-    func inspectorElementFormSectionView(_ section: InspectorElementFormSectionView,
-                                         willChangeFrom oldState: InspectorElementFormSectionState?,
-                                         to newState: InspectorElementFormSectionState)
-}
-
-public protocol InspectorElementFormSectionView: UIView {
-    var delegate: InspectorElementFormSectionViewDelegate? { get set }
-
-    /// Optional section title.
-    var title: String? { get set }
-
-    /// Optional section subtitle.
-    var subtitle: String?  { get set }
-
-    /// Defines the section separator appearance.
-    var separatorStyle: InspectorElementFormSectionSeparatorStyle { get set }
-
-    /// The current state of the section.
-    var state: InspectorElementFormSectionState { get set }
-
-    /// When this method is called is your view's responsibility to add the given form views to it's hiearchy.
-    func addFormViews(_ formViews: [UIView])
-
-    /// Creates a section view.
-    static func createSectionView() -> InspectorElementFormSectionView
+/// Constants describing the states of a form section.
+public enum InspectorElementFormItemState: Hashable {
+    case expanded, collapsed
 }

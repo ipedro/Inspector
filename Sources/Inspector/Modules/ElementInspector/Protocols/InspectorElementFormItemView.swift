@@ -18,34 +18,33 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-protocol ElementAttributesPanelViewModelProtocol: ElementInspectorFormViewControllerDataSource {}
-
-final class ElementAttributesPanelViewModel {
-    let reference: ViewHierarchyReference
-
-    let snapshot: ViewHierarchySnapshot
-
-    private(set) lazy var items: [ElementInspectorFormItem] = {
-        guard let referenceView = reference.rootView else { return [] }
-
-        return snapshot.elementLibraries.targeting(element: referenceView).flatMap { library in
-            library.items(for: referenceView)
-        }
-    }()
-
-    init(
-        reference: ViewHierarchyReference,
-        snapshot: ViewHierarchySnapshot
-    ) {
-        self.reference = reference
-        self.snapshot = snapshot
-    }
+public protocol InspectorElementFormItemViewDelegate: AnyObject {
+    func inspectorElementFormItemView(_ item: InspectorElementFormItemView,
+                                         willChangeFrom oldState: InspectorElementFormItemState?,
+                                         to newState: InspectorElementFormItemState)
 }
 
-// MARK: - AttributesInspectorViewModelProtocol
+public protocol InspectorElementFormItemView: UIView {
+    var delegate: InspectorElementFormItemViewDelegate? { get set }
 
-extension ElementAttributesPanelViewModel: ElementAttributesPanelViewModelProtocol {
-    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormItemView.Type? { nil }
+    /// Optional section title.
+    var title: String? { get set }
+
+    /// Optional section subtitle.
+    var subtitle: String?  { get set }
+
+    /// Defines the section separator appearance.
+    var separatorStyle: InspectorElementFormItemSeparatorStyle { get set }
+
+    /// The current state of the section.
+    var state: InspectorElementFormItemState { get set }
+
+    /// When this method is called is your view's responsibility to add the given form views to it's hiearchy.
+    func addFormViews(_ formViews: [UIView])
+
+    /// Create and return a container view that conforms to the `InspectorElementFormItemView` protocol.
+    static func createItemView() -> InspectorElementFormItemView
 }

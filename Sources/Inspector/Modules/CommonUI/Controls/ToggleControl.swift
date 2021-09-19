@@ -60,7 +60,7 @@ final class ToggleControl: BaseFormControl {
         }
     }
 
-    private lazy var switchControl = UISwitch.toggleControlSyle().then {
+    private(set) lazy var switchControl = UISwitch.toggleControlSyle().then {
         $0.addTarget(self, action: #selector(toggleOn), for: .valueChanged)
     }
 

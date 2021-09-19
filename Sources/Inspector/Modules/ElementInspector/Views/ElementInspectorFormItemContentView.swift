@@ -20,7 +20,7 @@
 
 import UIKit
 
-class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSectionView {
+class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -31,15 +31,15 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
         set { header.subtitle = newValue }
     }
 
-    static func createSectionView() -> InspectorElementFormSectionView {
-        ElementInspectorFormSectionContentView()
+    static func createItemView() -> InspectorElementFormItemView {
+        ElementInspectorFormItemContentView(header: SectionHeader.formSectionTitle(), frame: .zero)
     }
 
     // MARK: - Properties
 
-    weak var delegate: InspectorElementFormSectionViewDelegate?
+    weak var delegate: InspectorElementFormItemViewDelegate?
 
-    var separatorStyle: InspectorElementFormSectionSeparatorStyle {
+    var separatorStyle: InspectorElementFormItemSeparatorStyle {
         get { topSeparatorView.isHidden ? .none : .top }
         set {
             switch newValue {
@@ -51,7 +51,7 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
         }
     }
 
-    var state: InspectorElementFormSectionState {
+    var state: InspectorElementFormItemState {
         didSet {
             updateViewsForState()
         }
@@ -59,13 +59,21 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
 
     // MARK: - Views
 
-    private lazy var formStackView = UIStackView.vertical().then {
+    private(set) lazy var formStackView = UIStackView.vertical().then {
         $0.clipsToBounds = true
     }
 
-    private lazy var topSeparatorView = SeparatorView(style: .medium, thickness: 1)
+    private lazy var topSeparatorView = SeparatorView(style: .hard)
 
     var header: SectionHeader
+
+    private(set) lazy var headerStackView = UIStackView.horizontal().then {
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.alignment = .center
+        $0.directionalLayoutMargins = .init(trailing: ElementInspector.appearance.horizontalMargins)
+        $0.addArrangedSubview(headerControl)
+        $0.clipsToBounds = true
+    }
 
     private lazy var headerControl = BaseControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
         $0.addTarget(self, action: #selector(changeState), for: .touchUpInside)
@@ -81,11 +89,7 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
         $0.isUserInteractionEnabled = false
     }
 
-    convenience init() {
-        self.init(header: SectionHeader.attributesInspectorHeader(), frame: .zero)
-    }
-
-    init(header: SectionHeader, state: InspectorElementFormSectionState = .collapsed, frame: CGRect = .zero) {
+    init(header: SectionHeader, state: InspectorElementFormItemState = .collapsed, frame: CGRect = .zero) {
         self.state = state
         self.header = header
 
@@ -106,7 +110,8 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
         headerControl.contentView.directionalLayoutMargins = .formSectionContentMargins
         formStackView.directionalLayoutMargins = .formSectionContentMargins
 
-        contentView.addArrangedSubviews(headerControl, formStackView)
+        installView(contentView, priority: .required)
+        contentView.addArrangedSubviews(headerStackView, formStackView)
     }
 
     private func updateViewsForState() {
@@ -136,9 +141,9 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
     }
 }
 
-@objc private extension ElementInspectorFormSectionContentView {
+@objc private extension ElementInspectorFormItemContentView {
     func changeState() {
-        let newState: InspectorElementFormSectionState = {
+        let newState: InspectorElementFormItemState = {
             switch state {
             case .expanded:
                 return .collapsed
@@ -147,7 +152,7 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
             }
         }()
 
-        delegate?.inspectorElementFormSectionView(self, willChangeFrom: state, to: newState)
+        delegate?.inspectorElementFormItemView(self, willChangeFrom: state, to: newState)
     }
 
     func headerControlDidChangeState() {

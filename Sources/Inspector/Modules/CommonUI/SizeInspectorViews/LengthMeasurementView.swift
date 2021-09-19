@@ -28,7 +28,7 @@ final class LengthMeasurementView: BaseView {
     var measurementName: String? {
         didSet {
             nameLabel.text = measurementName
-            nameLabel.isHidden = measurementName?.isEmpty != false
+            nameLabel.isHidden = measurementName.isNilOrEmpty
         }
     }
     
@@ -43,7 +43,7 @@ final class LengthMeasurementView: BaseView {
         .textStyle(.caption2),
         .textAlignment(.center),
         .textColor(color),
-        .viewOptions(.isHidden(measurementName?.isEmpty != false))
+        .viewOptions(.isHidden(measurementName.isNilOrEmpty))
     )
     
     private lazy var arrowView = ArrowView(

@@ -22,5 +22,5 @@
 import UIKit
 
 public protocol InspectorElementFormDataSource {
-    func sections(for referenceView: UIView) -> [ElementInspectorFormSection]
+    func items(for referenceView: UIView) -> [ElementInspectorFormItem]
 }

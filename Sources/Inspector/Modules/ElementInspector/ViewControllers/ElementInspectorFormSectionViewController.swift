@@ -20,31 +20,31 @@
 
 import UIKit
 
-protocol ElementInspectorFormSectionViewControllerDelegate: OperationQueueManagerProtocol {
-    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+protocol ElementInspectorFormItemViewControllerDelegate: OperationQueueManagerProtocol {
+    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
                                                    didTap colorPicker: ColorPreviewControl)
 
-    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
                                                    didTap imagePicker: ImagePreviewControl)
 
-    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
                                                    didTap optionSelector: OptionListControl)
 
-    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
                                                    didUpdate property: InspectorElementViewModelProperty)
 
-    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
                                                    willUpdate property: InspectorElementViewModelProperty)
 
-    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
-                                                   willChangeFrom oldState: InspectorElementFormSectionState?,
-                                                   to newState: InspectorElementFormSectionState)
+    func elementInspectorFormItemViewController(_ sectionController: ElementInspectorFormItemViewController,
+                                                   willChangeFrom oldState: InspectorElementFormItemState?,
+                                                   to newState: InspectorElementFormItemState)
 }
 
-final class ElementInspectorFormSectionViewController: UIViewController {
-    weak var delegate: ElementInspectorFormSectionViewControllerDelegate?
+final class ElementInspectorFormItemViewController: UIViewController {
+    weak var delegate: ElementInspectorFormItemViewControllerDelegate?
 
-    private(set) var viewCode: InspectorElementFormSectionView! {
+    private(set) var viewCode: InspectorElementFormItemView! {
         didSet {
             viewCode.delegate = self
         }
@@ -54,9 +54,9 @@ final class ElementInspectorFormSectionViewController: UIViewController {
 
     static func create(
         viewModel: InspectorElementViewModelProtocol,
-        viewCode: InspectorElementFormSectionView
-    ) -> ElementInspectorFormSectionViewController {
-        let viewController = ElementInspectorFormSectionViewController()
+        viewCode: InspectorElementFormItemView
+    ) -> ElementInspectorFormItemViewController {
+        let viewController = ElementInspectorFormItemViewController()
         viewController.viewModel = viewModel
         viewController.viewCode = viewCode
 
@@ -78,7 +78,7 @@ final class ElementInspectorFormSectionViewController: UIViewController {
         viewCode.addFormViews(subviews)
     }
 
-    var state: InspectorElementFormSectionState {
+    var state: InspectorElementFormItemState {
         get { viewCode.state }
         set { viewCode.state = newValue }
     }
@@ -202,9 +202,9 @@ final class ElementInspectorFormSectionViewController: UIViewController {
 
 // MARK: - Actions
 
-extension ElementInspectorFormSectionViewController {
+extension ElementInspectorFormItemViewController {
     @objc private func stateChanged() {
-        delegate?.elementInspectorFormSectionViewController(self, willChangeFrom: .none, to: viewCode.state)
+        delegate?.elementInspectorFormItemViewController(self, willChangeFrom: .none, to: viewCode.state)
     }
 
     @objc private func valueChanged(_ sender: AnyObject) {
@@ -213,7 +213,7 @@ extension ElementInspectorFormSectionViewController {
 
     private func handleChange(with sender: AnyObject) {
         for (property, formView) in viewForProperties where formView === sender {
-            delegate?.elementInspectorFormSectionViewController(self, willUpdate: property)
+            delegate?.elementInspectorFormItemViewController(self, willUpdate: property)
 
             let updateValueOperation = MainThreadOperation(name: "update property value") {
                 switch (property, formView) {
@@ -280,7 +280,7 @@ extension ElementInspectorFormSectionViewController {
                     return
                 }
 
-                self.delegate?.elementInspectorFormSectionViewController(self, didUpdate: property)
+                self.delegate?.elementInspectorFormItemViewController(self, didUpdate: property)
             }
 
             didUpdateOperation.addDependency(updateValueOperation)
@@ -372,34 +372,34 @@ extension ElementInspectorFormSectionViewController {
 
 // MARK: - ColorPreviewControlDelegate
 
-extension ElementInspectorFormSectionViewController: ColorPreviewControlDelegate {
+extension ElementInspectorFormItemViewController: ColorPreviewControlDelegate {
     func colorPreviewControlDidTap(_ colorPreviewControl: ColorPreviewControl) {
-        delegate?.elementInspectorFormSectionViewController(self, didTap: colorPreviewControl)
+        delegate?.elementInspectorFormItemViewController(self, didTap: colorPreviewControl)
     }
 }
 
 // MARK: - OptionListControlDelegate
 
-extension ElementInspectorFormSectionViewController: OptionListControlDelegate {
+extension ElementInspectorFormItemViewController: OptionListControlDelegate {
     func optionListControlDidTap(_ optionListControl: OptionListControl) {
-        delegate?.elementInspectorFormSectionViewController(self, didTap: optionListControl)
+        delegate?.elementInspectorFormItemViewController(self, didTap: optionListControl)
     }
 }
 
 // MARK: - ImagePreviewControlDelegate
 
-extension ElementInspectorFormSectionViewController: ImagePreviewControlDelegate {
+extension ElementInspectorFormItemViewController: ImagePreviewControlDelegate {
     func imagePreviewControlDidTap(_ imagePreviewControl: ImagePreviewControl) {
-        delegate?.elementInspectorFormSectionViewController(self, didTap: imagePreviewControl)
+        delegate?.elementInspectorFormItemViewController(self, didTap: imagePreviewControl)
     }
 }
 
-// MARK: - ElementInspectorFormSectionViewCodeDelegate
+// MARK: - ElementInspectorFormItemViewCodeDelegate
 
-extension ElementInspectorFormSectionViewController: InspectorElementFormSectionViewDelegate {
-    func inspectorElementFormSectionView(_ section: InspectorElementFormSectionView,
-                                         willChangeFrom oldState: InspectorElementFormSectionState?,
-                                         to newState: InspectorElementFormSectionState) {
-        delegate?.elementInspectorFormSectionViewController(self, willChangeFrom: oldState, to: newState)
+extension ElementInspectorFormItemViewController: InspectorElementFormItemViewDelegate {
+    func inspectorElementFormItemView(_ item: InspectorElementFormItemView,
+                                         willChangeFrom oldState: InspectorElementFormItemState?,
+                                         to newState: InspectorElementFormItemState) {
+        delegate?.elementInspectorFormItemViewController(self, willChangeFrom: oldState, to: newState)
     }
 }

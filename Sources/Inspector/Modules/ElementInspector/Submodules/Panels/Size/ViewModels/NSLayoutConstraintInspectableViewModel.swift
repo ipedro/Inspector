@@ -24,6 +24,8 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
     typealias Axis = NSLayoutConstraintReference.Axis
 
     private enum Property: String, Swift.CaseIterable {
+        case isActive = "Installed"
+        case spacer0
         case firstItem = "First Item"
         case relation = "Relation"
         case secondItem = "Second Item"
@@ -33,8 +35,6 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
         case multiplier = "Multiplier"
         case spacer2
         case identifier = "Identifier"
-        case spacer3
-        case isActive = "Installed"
     }
 
     init?(with constraint: NSLayoutConstraint, in view: UIView) {
@@ -61,9 +61,9 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
                     stepValue: { 1 },
                     handler: { self.constraintReference.constraint.constant = $0 }
                 )
-            case .spacer1,
-                 .spacer2,
-                 .spacer3:
+            case .spacer0,
+                 .spacer1,
+                 .spacer2:
                 return .separator
 
             case .multiplier:

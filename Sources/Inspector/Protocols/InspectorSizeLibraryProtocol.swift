@@ -22,7 +22,7 @@ import UIKit
 
 /// AutoLayout Libraries are entities that conform to `InspectorSizeLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
 public protocol InspectorSizeLibraryProtocol: InspectorElementFormDataSource {
-    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormSectionView.Type
+    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormItemView.Type
 
     func icon(for viewModel: InspectorElementViewModelProtocol) -> UIImage?
 }

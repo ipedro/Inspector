@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElementFormSectionView {
+final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElementFormItemView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -31,25 +31,25 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         set { header.subtitle = newValue }
     }
 
-    var separatorStyle: InspectorElementFormSectionSeparatorStyle {
+    var separatorStyle: InspectorElementFormItemSeparatorStyle {
         get { .none }
         set {}
     }
 
-    static func createSectionView() -> InspectorElementFormSectionView {
+    static func createItemView() -> InspectorElementFormItemView {
         ElementInspectorFormLayoutConstraintView()
     }
 
-    private lazy var formView = ElementInspectorFormSectionContentView(header: header).then {
+    private lazy var formView = ElementInspectorFormItemContentView(header: header).then {
         $0.separatorStyle = .none
     }
 
-    var delegate: InspectorElementFormSectionViewDelegate? {
+    var delegate: InspectorElementFormItemViewDelegate? {
         get { formView.delegate }
         set { formView.delegate = newValue }
     }
 
-    var state: InspectorElementFormSectionState {
+    var state: InspectorElementFormItemState {
         get { formView.state }
         set { formView.state = newValue }
     }
@@ -74,10 +74,24 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
     override func setup() {
         super.setup()
 
+        installView(contentView, priority: .required)
         contentView.addArrangedSubview(cardView)
     }
 
     func addFormViews(_ formViews: [UIView]) {
+
+        // very hacky but nice ui benefit of moving the constraint active control to the header. shrug.
+        formViews.forEach { view in
+            guard
+                let toggleControl = view as? ToggleControl,
+                toggleControl.title == "Installed"
+            else {
+                return
+            }
+            toggleControl.isHidden = true
+            formView.headerStackView.addArrangedSubviews(toggleControl.switchControl)
+        }
+
         formView.addFormViews(formViews)
     }
 }
