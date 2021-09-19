@@ -21,13 +21,15 @@
 import UIKit
 
 public struct InspectorConfiguration {
-    public var appearance = Appearance()
+    public var appearance: Appearance = .init()
     
-    public var keyCommands = KeyCommandSettings()
+    public var keyCommands: KeyCommandSettings = .init()
     
     public var cacheExpirationTimeInterval: TimeInterval = 0.5
     
-    public var showAllViewSearchQuery = "*"
+    public var showAllViewSearchQuery: String = "*"
+
+    public var nonInspectableClassNames: [String] = []
 
     var colorStyle: ColorStyle {
         guard let hostWindow = Inspector.host?.window else { return .dark }
@@ -46,14 +48,20 @@ public struct InspectorConfiguration {
         return .dark
     }
 
-
-    var knownSystemContainers: [String] = [
+    let knownSystemContainers: [String] = [
         "UIWindow",
         "UITransitionView",
         "UIDropShadowView",
         "UILayoutContainerView",
         "UINavigationTransitionView",
         "UIViewControllerWrapperView",
+        // Tab bar
+        "UITabBar",
+        "UITabBarSwappableImageView",
+        "UITabBarButton",
+        "UITabBarButtonLabel",
+        // Navigation bar
+        "UINavigationBar",
         // Swift UI
         "_UIHostingView",
         "PlatformViewHost",

@@ -52,6 +52,9 @@ extension UIView: ViewHierarchyProtocol {
     }
     
     var canHostInspectorView: Bool {
+        let className = self.className
+        let superViewClassName = superview?.className ?? ""
+
         guard
             // Adding subviews directly to a UIVisualEffectView throws runtime exception.
             self is UIVisualEffectView == false,
@@ -60,7 +63,7 @@ extension UIView: ViewHierarchyProtocol {
             className != "_UIPageViewControllerContentView",
             subviews.map(\.className).contains("_UIPageViewControllerContentView") == false,
             className != "_UIQueuingScrollView",
-            superview?.className != "_UIQueuingScrollView",
+            superViewClassName != "_UIQueuingScrollView",
             
             // Avoid breaking UIButton layout.
             superview is UIButton == false,
@@ -69,11 +72,15 @@ extension UIView: ViewHierarchyProtocol {
             className != "UITableViewCellContentView",
             
             // Avoid breaking UINavigationController large title.
-            superview?.className != "UIViewControllerWrapperView",
+            superViewClassName != "UIViewControllerWrapperView",
             
             // Skip non inspectable views
             self is NonInspectableView == false,
-            superview is NonInspectableView == false
+            superview is NonInspectableView == false,
+
+            // Skip custom classes
+            Inspector.configuration.nonInspectableClassNames.contains(className) == false,
+            Inspector.configuration.nonInspectableClassNames.contains(superViewClassName) == false
         else {
             return false
         }
