@@ -89,6 +89,13 @@ public enum InspectorElementViewModelProperty {
     case directionalInsets(title: String,
                            insets: NSDirectionalEdgeInsetsProvider,
                            handler: NSDirectionalEdgeInsetsHandler?)
+
+    @available(iOS *, deprecated, message: "Use `switch(title:isOn:handler:)` instead, this will be removed at a later version.")
+    public static func toggleControl(title: String,
+                                     isOn: BoolProvider,
+                                     handler: BoolHandler?) -> InspectorElementViewModelProperty {
+        .switch(title: title, isOn: isOn, handler: handler)
+    }
 }
 
 extension InspectorElementViewModelProperty {
