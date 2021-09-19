@@ -52,18 +52,6 @@ final class ElementInspectorViewController: UIViewController {
 
     private var presentedPanelViewController: UIViewController? {
         didSet {
-            viewCode.emptyLabel.isHidden = presentedPanelViewController != nil
-
-            if let panelViewController = presentedPanelViewController {
-                addChild(panelViewController)
-
-                view.setNeedsLayout()
-
-                viewCode.contentView.installView(panelViewController.view, priority: .required)
-
-                panelViewController.didMove(toParent: self)
-            }
-
             if let oldPanelViewController = oldValue {
                 oldPanelViewController.willMove(toParent: nil)
 
@@ -71,6 +59,30 @@ final class ElementInspectorViewController: UIViewController {
 
                 oldPanelViewController.removeFromParent()
             }
+
+            guard let panelViewController = presentedPanelViewController else {
+                viewCode.emptyLabel.isHidden = false
+                return
+            }
+
+            viewCode.emptyLabel.isHidden = true
+            viewCode.activityIndicator.startAnimating()
+
+            let operation = MainThreadOperation(name: "create \(panelViewController)") { [weak self] in
+                guard let self = self else { return }
+
+                self.addChild(panelViewController)
+
+                self.view.setNeedsLayout()
+
+                self.viewCode.contentView.installView(panelViewController.view, priority: .required)
+
+                panelViewController.didMove(toParent: self)
+
+                self.viewCode.activityIndicator.stopAnimating()
+            }
+
+            OperationQueue.main.addOperation(operation)
         }
     }
 
