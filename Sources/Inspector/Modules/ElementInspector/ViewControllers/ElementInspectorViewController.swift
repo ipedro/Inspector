@@ -20,60 +20,15 @@
 
 import UIKit
 
-protocol ElementInspectorPanelViewControllerDelegate: OperationQueueManagerProtocol {
-    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorViewController,
-                                        viewControllerFor panel: ElementInspectorPanel,
-                                        with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
+protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
+    func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
+                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
 
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController)
 }
 
-#if swift(>=5.0)
-@available(iOS 13.0, *)
-extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        UIContextMenuConfiguration(
-            identifier: nil,
-            previewProvider: {
-                ViewHierarchyThumbnailViewController(
-                    viewModel: .init(
-                        reference: self.viewModel.reference,
-                        snapshot: self.viewModel.snapshot
-                    )
-                )
-            },
-            actionProvider: { [weak self] _ in
-                guard let self = self else { return nil }
-
-                return UIMenu(
-                    title: self.viewModel.title,
-                    image: self.viewModel.thumbnailImage,
-                    children: [
-                        UIMenu(
-                            title: "Copy",
-                            image: .copySymbol,
-                            options: .displayInline,
-                            children: [
-                                UIAction.copyAction(
-                                    title: "Copy Class Name",
-                                    stringProvider: { [weak self] in self?.viewModel.reference.className }
-                                ),
-                                UIAction.copyAction(
-                                    title: "Copy Description",
-                                    stringProvider: { [weak self] in self?.viewModel.reference.elementDescription }
-                                )
-                            ]
-                        )
-                    ]
-                )
-            }
-        )
-    }
-}
-#endif
-
 final class ElementInspectorViewController: UIViewController {
-    weak var delegate: ElementInspectorPanelViewControllerDelegate?
+    weak var delegate: ElementInspectorViewControllerDelegate?
 
     private var viewModel: ElementInspectorViewModelProtocol! {
         didSet {
@@ -117,6 +72,10 @@ final class ElementInspectorViewController: UIViewController {
                 oldPanelViewController.removeFromParent()
             }
         }
+    }
+
+    func reloadData() {
+        viewCode.referenceSummaryView.reloadData()
     }
 
     private lazy var viewCode = ElementInspectorViewCode(
@@ -218,7 +177,9 @@ extension ElementInspectorViewController {
 
 private extension ElementInspectorViewController {
     func installPanel(_ panel: ElementInspectorPanel) {
-        guard let panelViewController = delegate?.elementInspectorFormPanelViewController(self, viewControllerFor: panel, with: viewModel.reference) else {
+        guard
+            let panelViewController = delegate?.elementInspectorViewController(viewControllerWith: panel, and: viewModel.reference)
+        else {
             presentedPanelViewController = nil
             return
         }
@@ -245,3 +206,49 @@ private extension ElementInspectorViewController {
         delegate?.elementInspectorViewControllerDidFinish(self)
     }
 }
+
+// MARK: - Context Menu Interaction
+
+#if swift(>=5.0)
+@available(iOS 13.0, *)
+extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: {
+                ViewHierarchyThumbnailViewController(
+                    viewModel: .init(
+                        reference: self.viewModel.reference,
+                        snapshot: self.viewModel.snapshot
+                    )
+                )
+            },
+            actionProvider: { [weak self] _ in
+                guard let self = self else { return nil }
+
+                return UIMenu(
+                    title: self.viewModel.title,
+                    image: self.viewModel.thumbnailImage,
+                    children: [
+                        UIMenu(
+                            title: "Copy",
+                            image: .copySymbol,
+                            options: .displayInline,
+                            children: [
+                                UIAction.copyAction(
+                                    title: "Copy Class Name",
+                                    stringProvider: { [weak self] in self?.viewModel.reference.className }
+                                ),
+                                UIAction.copyAction(
+                                    title: "Copy Description",
+                                    stringProvider: { [weak self] in self?.viewModel.reference.elementDescription }
+                                )
+                            ]
+                        )
+                    ]
+                )
+            }
+        )
+    }
+}
+#endif

@@ -45,36 +45,7 @@ protocol ViewHierarchyReferenceSummaryViewModelProtocol {
 final class ViewHierarchyReferenceSummaryView: BaseView {
     var viewModel: ViewHierarchyReferenceSummaryViewModelProtocol? {
         didSet {
-            // Name
-            
-            elementNameLabel.text = viewModel?.title
-
-            elementNameLabel.font = viewModel?.titleFont
-            
-            thumbnailImageView.image = viewModel?.thumbnailImage
-            
-            // Collapsed
-
-            isCollapsed = viewModel?.isCollapsed == true
-
-            let hideCollapse = viewModel?.showCollapseButton != true
-            collapseButton.isHidden = hideCollapse
-
-            collapseButtonContainer.isHidden = hideCollapse && viewModel?.automaticallyAdjustIndentation == false
-
-            // Description
-
-            descriptionLabel.text = viewModel?.subtitle
-
-            // Containers Insets
-
-            let relativeDepth = viewModel?.relativeDepth ?? 0
-            let indentation = CGFloat(relativeDepth) * ElementInspector.appearance.horizontalMargins
-
-            var directionalLayoutMargins = contentView.directionalLayoutMargins
-            directionalLayoutMargins.leading = indentation
-
-            contentView.directionalLayoutMargins = directionalLayoutMargins
+            reloadData()
         }
     }
     
@@ -82,6 +53,39 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         didSet {
             collapseButtonContainer.transform = .init(rotationAngle: isCollapsed ? -(.pi / 2) : .zero)
         }
+    }
+
+    func reloadData() {
+        // Name
+
+        elementNameLabel.text = viewModel?.title
+
+        elementNameLabel.font = viewModel?.titleFont
+
+        thumbnailImageView.image = viewModel?.thumbnailImage
+
+        // Collapsed
+
+        isCollapsed = viewModel?.isCollapsed == true
+
+        let hideCollapse = viewModel?.showCollapseButton != true
+        collapseButton.isHidden = hideCollapse
+
+        collapseButtonContainer.isHidden = hideCollapse && viewModel?.automaticallyAdjustIndentation == false
+
+        // Description
+
+        descriptionLabel.text = viewModel?.subtitle
+
+        // Containers Insets
+
+        let relativeDepth = viewModel?.relativeDepth ?? 0
+        let indentation = CGFloat(relativeDepth) * ElementInspector.appearance.horizontalMargins
+
+        var directionalLayoutMargins = contentView.directionalLayoutMargins
+        directionalLayoutMargins.leading = indentation
+
+        contentView.directionalLayoutMargins = directionalLayoutMargins
     }
     
     func toggleCollapse(animated: Bool) {

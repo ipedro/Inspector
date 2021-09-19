@@ -22,6 +22,15 @@ import MobileCoreServices
 import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorFormPanelViewControllerDelegate {
+    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorFormPanelViewController, didUpdateProperty: InspectorElementViewModelProperty) {
+        guard let elementViewController = viewController.parent as? ElementInspectorViewController else {
+            assertionFailure("whaaaat")
+            return
+        }
+
+        elementViewController.reloadData()
+    }
+
     func elementInspectorFormPanelViewController(_ viewController: ElementInspectorFormPanelViewController, didTap colorPicker: ColorPreviewControl) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {

@@ -38,6 +38,11 @@ protocol ElementInspectorFormPanelViewControllerDelegate: OperationQueueManagerP
         _ viewController: ElementInspectorFormPanelViewController,
         didTap optionSelector: OptionListControl
     )
+
+    func elementInspectorFormPanelViewController(
+        _ viewController: ElementInspectorFormPanelViewController,
+        didUpdateProperty: InspectorElementViewModelProperty
+    )
 }
 
 public struct ElementInspectorFormSection {
@@ -68,7 +73,7 @@ protocol ElementInspectorBaseViewControllerProtocol {
     var viewCode: ElementInspectorFormView { get }
 }
 
-class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewController, ElementInspectorFormSectionViewControllerDelegate, KeyboardAnimatable {
+class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewController, KeyboardAnimatable {
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
     }
@@ -210,25 +215,34 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
         )
     }
 
-    // MARK: - ElementInspectorFormSectionViewControllerDelegate
+    func willUpdate(property: InspectorElementViewModelProperty) {}
+
+    func didUpdate(property: InspectorElementViewModelProperty) {}
+}
+
+// MARK: - ElementInspectorFormSectionViewControllerDelegate
+
+extension ElementInspectorBaseFormPanelViewController: ElementInspectorFormSectionViewControllerDelegate {
 
     func elementInspectorFormSectionViewController(
         _ sectionController: ElementInspectorFormSectionViewController,
         willUpdate property: InspectorElementViewModelProperty
-    ) {}
+    ) {
+        willUpdate(property: property)
+    }
 
     func elementInspectorFormSectionViewController(
         _ sectionController: ElementInspectorFormSectionViewController,
         didUpdate property: InspectorElementViewModelProperty
     ) {
         let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
-            self?.children.forEach {
-                guard let sectionViewController = $0 as? ElementInspectorFormSectionViewController else {
-                    return
-                }
+            guard let self = self as? ElementInspectorFormPanelViewController else { return }
 
-                sectionViewController.updateValues()
-            }
+            self.sectionViewControllers.forEach { $0.reloadData() }
+
+            self.didUpdate(property: property)
+
+            self.formDelegate?.elementInspectorFormPanelViewController(self, didUpdateProperty: property)
         }
 
         formDelegate?.addOperationToQueue(updateOperation)

@@ -72,7 +72,7 @@ final class ElementInspectorFormSectionViewController: UIViewController {
 
         viewCode.title = viewModel.title
         viewCode.subtitle = viewModel.subtitle
-        
+
         let subviews = viewModel.properties.compactMap { viewForProperties[$0] }
 
         viewCode.addFormViews(subviews)
@@ -290,7 +290,7 @@ extension ElementInspectorFormSectionViewController {
         }
     }
 
-    func updateValues() {
+    func reloadData() {
         for (property, formView) in viewForProperties {
             switch (property, formView) {
             case let (.stepper(title: title, value: valueProvider, range: rangeProvider, stepValue: stepValueProvider, _, _), stepperControl as StepperControl):

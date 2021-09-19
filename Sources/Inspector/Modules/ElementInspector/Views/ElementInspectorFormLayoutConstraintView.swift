@@ -57,7 +57,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
     private(set) lazy var header = SectionHeader(
         titleFont: .init(.footnote, .traitBold),
         subtitleFont: .footnote,
-        margins: .init(vertical: ElementInspector.appearance.verticalMargins / 2)
+        margins: .init(vertical: ElementInspector.appearance.verticalMargins)
     )
 
     private lazy var cardView = BaseCardView().then {

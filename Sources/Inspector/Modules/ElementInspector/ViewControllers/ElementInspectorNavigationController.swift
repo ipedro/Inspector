@@ -33,9 +33,7 @@ final class ElementInspectorNavigationController: UINavigationController {
         view.tintColor = colorStyle.textColor
         
         view.backgroundColor = colorStyle.backgroundColor
-        
-        navigationBar.barStyle = .black
-        
+
         addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))
         
         becomeFirstResponder()

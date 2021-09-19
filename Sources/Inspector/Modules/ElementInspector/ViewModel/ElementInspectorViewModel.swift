@@ -43,6 +43,8 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     let inspectableElements: [InspectorElementLibraryProtocol]
 
+    let availablePanels: [ElementInspectorPanel]
+
     var selectedPanel: ElementInspectorPanel?
 
     var isCollapsed: Bool = false
@@ -63,12 +65,14 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         reference: ViewHierarchyReference,
         showDismissBarButton: Bool,
         selectedPanel: ElementInspectorPanel?,
-        inspectableElements: [InspectorElementLibraryProtocol]
+        inspectableElements: [InspectorElementLibraryProtocol],
+        availablePanels: [ElementInspectorPanel]
     ) {
         self.snapshot = snapshot
         self.reference = reference
         self.showDismissBarButton = showDismissBarButton
         self.inspectableElements = inspectableElements
+        self.availablePanels = availablePanels
 
         if let selectedPanel = selectedPanel, availablePanels.contains(selectedPanel) {
             self.selectedPanel = selectedPanel
@@ -77,8 +81,6 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
             self.selectedPanel = availablePanels.first
         }
     }
-
-    private(set) lazy var availablePanels: [ElementInspectorPanel] = ElementInspectorPanel.cases(for: reference)
 }
 
 // MARK: - ViewHierarchyReferenceDetailViewModelProtocol

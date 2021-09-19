@@ -20,10 +20,9 @@
 
 import UIKit
 
-extension ElementInspectorCoordinator: ElementInspectorPanelViewControllerDelegate {
-    func elementInspectorFormPanelViewController(_ viewController: ElementInspectorViewController,
-                                        viewControllerFor panel: ElementInspectorPanel,
-                                        with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
+extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
+    func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
+                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
     {
         panelController(for: panel, with: reference)
     }

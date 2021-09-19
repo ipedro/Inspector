@@ -62,6 +62,7 @@ final class ViewHierarchyThumbnailViewController: UIViewController {
     }
 
     private(set) lazy var viewCode = BaseView().then {
+        $0.installView($0.contentView, priority: .required)
         $0.backgroundColor = $0.colorStyle.highlightBackgroundColor
     }
 
@@ -100,14 +101,6 @@ final class ViewHierarchyThumbnailViewController: UIViewController {
             withHorizontalFittingPriority: .required,
             verticalFittingPriority: .fittingSizeLevel
         )
-
-        preferredContentSize = CGSize(
-            width: size.width + ElementInspector.appearance.horizontalMargins * 2,
-            height: size.height + ElementInspector.appearance.verticalMargins * 2
-        )
+        preferredContentSize = size
     }
-}
-
-private extension CGSize {
-    var aspectRatio: CGFloat { width / height }
 }
