@@ -23,7 +23,7 @@ import UIKit
 
 public protocol InspectorElementFormSectionViewDelegate: AnyObject {
     func inspectorElementFormSectionView(_ section: InspectorElementFormSectionView,
-                                         changedFrom oldState: InspectorElementFormSectionState?,
+                                         willChangeFrom oldState: InspectorElementFormSectionState?,
                                          to newState: InspectorElementFormSectionState)
 }
 

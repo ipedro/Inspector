@@ -58,25 +58,13 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
 
     var state: InspectorElementFormSectionState {
         didSet {
-            switch state {
-            case .collapsed:
-                hideContent(true)
-
-            case .expanded:
-                hideContent(false)
-            }
+            updateViewsForState()
         }
     }
 
     // MARK: - Views
 
-    private lazy var verticalStackView = UIStackView.vertical().then {
-        $0.isLayoutMarginsRelativeArrangement = true
-        $0.addArrangedSubviews(headerControl, contentContainerView)
-        $0.setCustomSpacing(ElementInspector.appearance.verticalMargins, after: headerControl)
-    }
-
-    private lazy var contentContainerView = UIStackView.vertical().then {
+    private lazy var formStackView = UIStackView.vertical().then {
         $0.clipsToBounds = true
     }
 
@@ -84,19 +72,21 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
 
     var header: SectionHeader
 
-    private lazy var headerControl = UIControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
+    private lazy var headerContainerControl = BaseControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
         $0.addTarget(self, action: #selector(changeState), for: .touchUpInside)
-        $0.installView(header)
+        $0.addTarget(self, action: #selector(styleHeaderContainerControl), for: .stateChanged)
+        $0.installView(headerStackView)
     }
 
-    private lazy var collapseButtonContainer = UIStackView.vertical().then {
-        $0.addArrangedSubview(collapseButton)
-        $0.isLayoutMarginsRelativeArrangement = true
-        $0.directionalLayoutMargins = .init(top: 5.5)
+    private lazy var headerStackView = UIStackView.horizontal().then {
+        $0.clipsToBounds = true
+        $0.spacing = ElementInspector.appearance.verticalMargins
+        $0.addArrangedSubviews(collapseButton, header)
+        $0.alignment = .center
     }
 
     private(set) lazy var collapseButton = IconButton(.chevronDown).then {
-        $0.addTarget(self, action: #selector(changeState), for: .touchUpInside)
+        $0.isUserInteractionEnabled = false
     }
 
     convenience init() {
@@ -105,40 +95,50 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         if let headerAccessoryView = header.accessoryView,
-           headerAccessoryView.point(inside: convert(point, to: headerAccessoryView), with: event) {
+           headerAccessoryView.point(inside: convert(point, to: headerAccessoryView), with: event)
+        {
             return headerAccessoryView
         }
 
-        if headerControl.point(inside: convert(point, to: headerControl), with: event) {
-            return headerControl
+        if headerContainerControl.point(inside: convert(point, to: headerContainerControl), with: event) {
+            return headerContainerControl
         }
 
         return super.hitTest(point, with: event)
     }
 
     init(header: SectionHeader, state: InspectorElementFormSectionState = .collapsed, frame: CGRect = .zero) {
-        self.header = header
         self.state = state
+        self.header = header
 
         super.init(frame: frame)
     }
 
     func addFormViews(_ formViews: [UIView]) {
-        contentContainerView.addArrangedSubviews(formViews)
+        formStackView.addArrangedSubviews(formViews)
     }
 
     override func setup() {
         super.setup()
 
         clipsToBounds = true
-        
-        contentView.axis = .horizontal
-        contentView.alignment = .top
-        contentView.directionalLayoutMargins = .formSectionContentMargins
-        contentView.addArrangedSubviews(collapseButtonContainer, verticalStackView)
-        contentView.spacing = 10
-
+        updateViewsForState()
         installSeparator()
+
+        headerStackView.directionalLayoutMargins = .formSectionContentMargins
+        formStackView.directionalLayoutMargins = .formSectionContentMargins
+
+        contentView.addArrangedSubviews(headerContainerControl, formStackView)
+    }
+
+    private func updateViewsForState() {
+        switch state {
+        case .collapsed:
+            hideContent(true)
+
+        case .expanded:
+            hideContent(false)
+        }
     }
 
     private func installSeparator() {
@@ -151,32 +151,44 @@ class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSect
         topSeparatorView.topAnchor.constraint(equalTo: topAnchor).isActive = true
     }
 
-    @objc private func changeState() {
-        let oldState = state
-
-        switch state {
-        case .expanded:
-            state = .collapsed
-        case .collapsed:
-            state = .expanded
-        }
-
-        delegate?.inspectorElementFormSectionView(self, changedFrom: oldState, to: state)
-    }
-
     private func hideContent(_ hide: Bool) {
-        contentContainerView.isSafelyHidden = hide
-        contentContainerView.alpha = hide ? 0 : 1
+        formStackView.alpha = hide ? 0 : 1
+        formStackView.isSafelyHidden = hide
         collapseButton.transform = hide ? CGAffineTransform(rotationAngle: -(.pi / 2)) : .identity
     }
+}
 
+@objc private extension ElementInspectorFormSectionContentView {
+    func changeState() {
+        let newState: InspectorElementFormSectionState = {
+            switch state {
+            case .expanded:
+                return .collapsed
+            case .collapsed:
+                return .expanded
+            }
+        }()
+
+        delegate?.inspectorElementFormSectionView(self, willChangeFrom: state, to: newState)
+    }
+
+    func styleHeaderContainerControl() {
+        UIView.animate(withDuration: 0.15) {
+            switch self.headerContainerControl.state {
+            case .highlighted:
+                self.headerContainerControl.alpha = 0.77
+                self.headerContainerControl.transform = .init(scaleX: 0.98, y: 0.93)
+            case .disabled:
+                self.headerContainerControl.alpha = self.colorStyle.disabledAlpha
+                self.headerContainerControl.transform = .identity
+            default:
+                self.headerContainerControl.alpha = 1
+                self.headerContainerControl.transform = .identity
+            }
+        }
+    }
 }
 
 extension NSDirectionalEdgeInsets {
-    static let formSectionContentMargins = NSDirectionalEdgeInsets(
-        top: ElementInspector.appearance.verticalMargins,
-        leading: 10,
-        bottom: ElementInspector.appearance.horizontalMargins,
-        trailing: ElementInspector.appearance.horizontalMargins
-    )
+    static let formSectionContentMargins = ElementInspector.appearance.directionalInsets
 }

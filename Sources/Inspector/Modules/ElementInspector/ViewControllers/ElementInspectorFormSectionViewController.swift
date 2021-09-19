@@ -37,7 +37,7 @@ protocol ElementInspectorFormSectionViewControllerDelegate: OperationQueueManage
                                                    willUpdate property: InspectorElementViewModelProperty)
 
     func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
-                                                   changedFrom oldState: InspectorElementFormSectionState?,
+                                                   willChangeFrom oldState: InspectorElementFormSectionState?,
                                                    to newState: InspectorElementFormSectionState)
 }
 
@@ -205,7 +205,7 @@ final class ElementInspectorFormSectionViewController: UIViewController {
 
 extension ElementInspectorFormSectionViewController {
     @objc private func stateChanged() {
-        delegate?.elementInspectorFormSectionViewController(self, changedFrom: .none, to: viewCode.state)
+        delegate?.elementInspectorFormSectionViewController(self, willChangeFrom: .none, to: viewCode.state)
     }
 
     @objc private func valueChanged(_ sender: AnyObject) {
@@ -399,8 +399,8 @@ extension ElementInspectorFormSectionViewController: ImagePreviewControlDelegate
 
 extension ElementInspectorFormSectionViewController: InspectorElementFormSectionViewDelegate {
     func inspectorElementFormSectionView(_ section: InspectorElementFormSectionView,
-                                         changedFrom oldState: InspectorElementFormSectionState?,
+                                         willChangeFrom oldState: InspectorElementFormSectionState?,
                                          to newState: InspectorElementFormSectionState) {
-        delegate?.elementInspectorFormSectionViewController(self, changedFrom: oldState, to: newState)
+        delegate?.elementInspectorFormSectionViewController(self, willChangeFrom: oldState, to: newState)
     }
 }

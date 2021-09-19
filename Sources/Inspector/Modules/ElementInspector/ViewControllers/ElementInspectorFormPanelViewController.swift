@@ -69,7 +69,6 @@ protocol ElementInspectorBaseViewControllerProtocol {
 }
 
 class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewController, ElementInspectorFormSectionViewControllerDelegate, KeyboardAnimatable {
-
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
     }
@@ -82,24 +81,26 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
         formDelegate?.cancelAllOperations()
     }
 
-    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
-                                                   changedFrom oldState: InspectorElementFormSectionState?,
-                                                   to newState: InspectorElementFormSectionState) {
-        animatePanel(animations: { [weak self] in
-            guard let self = self else { return }
-
+    func elementInspectorFormSectionViewController(
+        _ sectionController: ElementInspectorFormSectionViewController,
+        willChangeFrom oldState: InspectorElementFormSectionState?,
+        to newState: InspectorElementFormSectionState
+    ) {
+        animatePanel { [weak self] in
             sectionController.state = newState
 
-            guard newState == .expanded else { return }
+            guard let self = self else { return }
 
-            let expandedSections = self.children
-                .compactMap { $0 as? ElementInspectorFormSectionViewController }
-                .filter { $0.state == .expanded }
+            switch newState {
+            case .expanded:
+                for aSectionController in self.sectionViewControllers where aSectionController !== sectionController {
+                    aSectionController.state = .collapsed
+                }
 
-            for aSectionController in expandedSections where aSectionController !== sectionController {
-                aSectionController.state = .collapsed
+            case .collapsed:
+                break
             }
-        })
+        }
     }
 
     weak var formDelegate: ElementInspectorFormPanelViewControllerDelegate?
@@ -111,6 +112,10 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
     var selectedImagePicker: ImagePreviewControl?
 
     var selectedOptionSelector: OptionListControl?
+
+    var sectionViewControllers: [ElementInspectorFormSectionViewController] {
+        children.compactMap { $0 as? ElementInspectorFormSectionViewController }
+    }
 
     override func loadView() {
         view = (self as? ElementInspectorFormPanelViewController)?.viewCode ?? UIView()
