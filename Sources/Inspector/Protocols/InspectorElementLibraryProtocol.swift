@@ -31,6 +31,8 @@ public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource 
     func icon(for referenceView: UIView) -> UIImage?
 }
 
+// MARK: - Default Implementations
+
 public extension InspectorElementLibraryProtocol {
     func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
         guard let viewModel = viewModel(for: referenceView) else {
@@ -42,6 +44,8 @@ public extension InspectorElementLibraryProtocol {
         ]
     }
 }
+
+// MARK: - Sequenece Extension
 
 extension Sequence where Element == InspectorElementLibraryProtocol {
     func targeting(element: NSObject) -> [InspectorElementLibraryProtocol] {
