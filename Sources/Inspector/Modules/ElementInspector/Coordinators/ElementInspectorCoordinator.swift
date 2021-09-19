@@ -103,6 +103,7 @@ final class ElementInspectorCoordinator: NSObject {
                 if let sheetPresentationController = navigationController.presentationController as? UISheetPresentationController {
                     sheetPresentationController.detents = [.medium(), .large()]
                     sheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = false
+                    sheetPresentationController.prefersEdgeAttachedInCompactHeight = true
                 }
             }
             #endif
@@ -204,7 +205,7 @@ final class ElementInspectorCoordinator: NSObject {
             availablePanels: ElementInspectorPanel.cases(for: reference)
         )
         
-        let viewController = ElementInspectorViewController.create(viewModel: viewModel)
+        let viewController = ElementInspectorViewController(viewModel: viewModel)
         viewController.delegate = delegate
         
         return viewController
@@ -240,7 +241,7 @@ final class ElementInspectorCoordinator: NSObject {
             }
 
         case .children:
-            return ElementChildrenPanelViewController.create(
+            return ElementChildrenPanelViewController(
                 viewModel: ElementChildrenPanelViewModel(
                     reference: reference,
                     snapshot: viewHierarchySnapshot

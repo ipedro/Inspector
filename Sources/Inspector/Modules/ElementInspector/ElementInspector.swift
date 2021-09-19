@@ -67,10 +67,8 @@ extension ElementInspector {
         }
 
         func titleFont(forRelativeDepth relativeDepth: Int) -> UIFont {
-            let adjustedRelativeDepth = ElementInspector.configuration.isPresentingFromBottomSheet ? relativeDepth + 1 : relativeDepth
-
             var style: UIFont.TextStyle {
-                switch adjustedRelativeDepth {
+                switch relativeDepth {
                 case .zero:
                     return .title2
 

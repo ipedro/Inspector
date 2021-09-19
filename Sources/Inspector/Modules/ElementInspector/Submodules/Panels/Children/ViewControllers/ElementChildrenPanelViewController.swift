@@ -49,17 +49,21 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
         $0.tableView.delegate = self
     }
     
-    var viewModel: ElementChildrenPanelViewModelProtocol!
+    let viewModel: ElementChildrenPanelViewModelProtocol
     
     // MARK: - Init
     
-    static func create(viewModel: ElementChildrenPanelViewModelProtocol) -> ElementChildrenPanelViewController {
-        let viewController = ElementChildrenPanelViewController()
-        viewController.viewModel = viewModel
-        
-        return viewController
+    init(viewModel: ElementChildrenPanelViewModelProtocol) {
+        self.viewModel = viewModel
+
+        super.init(nibName: nil, bundle: nil)
     }
-    
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     // MARK: - Lifecycle
     
     override func loadView() {

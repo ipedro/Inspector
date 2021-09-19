@@ -24,15 +24,17 @@ typealias ElementInspectorPanelViewController = ElementInspectorBasePanelViewCon
 
 class ElementInspectorBasePanelViewController: UIViewController {
     // MARK: - Layout
+
+    var hasScrollView: Bool {
+        view.subviews.contains { $0 is UIScrollView }
+    }
     
     private var needsLayout = true
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        guard needsLayout else {
-            return
-        }
+        guard needsLayout else { return }
         
         needsLayout = false
         

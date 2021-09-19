@@ -20,7 +20,23 @@
 
 import UIKit
 
-class ElementInspectorFormPanelViewController: ElementInspectorPanelViewController, ElementInspectorFormPanel {
+protocol ElementInspectorFormPanelDelegate: OperationQueueManagerProtocol {
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
+                                   didTap colorPicker: ColorPreviewControl)
+
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
+                                   didTap imagePicker: ImagePreviewControl)
+
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
+                                   didTap optionSelector: OptionListControl)
+
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
+                                   didUpdateProperty: InspectorElementViewModelProperty,
+                                   in item: ElementInspectorFormItem)
+}
+
+
+class ElementInspectorFormPanelViewController: ElementInspectorPanelViewController {
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
     }
@@ -75,16 +91,12 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         children.compactMap { $0 as? ElementInspectorFormItemViewController }
     }
 
-    let viewCode: ElementInspectorFormView
+    private lazy var viewCode = BaseView()
 
     // MARK: - Init
 
-    init(
-        dataSource: ElementInspectorFormPanelDataSource,
-        viewCode: ElementInspectorFormView = ElementInspectorFormViewCode()
-    ) {
+    init(dataSource: ElementInspectorFormPanelDataSource) {
         self.dataSource = dataSource
-        self.viewCode = viewCode
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -103,10 +115,6 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
         reloadData()
 
-        animateWhenKeyboard(.willChangeFrame) { info in
-            self.viewCode.keyboardHeight = info.keyboardFrame.height
-            self.viewCode.layoutIfNeeded()
-        }
     }
 
     func reloadData() {

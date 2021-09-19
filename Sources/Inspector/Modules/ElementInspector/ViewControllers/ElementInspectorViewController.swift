@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+@_implementationOnly import UIKeyboardAnimatable
 import UIKit
 
 protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
@@ -27,22 +28,10 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController)
 }
 
-final class ElementInspectorViewController: UIViewController {
+final class ElementInspectorViewController: UIViewController, KeyboardAnimatable {
     weak var delegate: ElementInspectorViewControllerDelegate?
 
-    private var viewModel: ElementInspectorViewModelProtocol! {
-        didSet {
-            title = viewModel.reference.elementName
-            viewCode.referenceSummaryView.viewModel = viewModel
-
-            #if swift(>=5.0)
-            if #available(iOS 13.0, *) {
-                let interaction = UIContextMenuInteraction(delegate: self)
-                viewCode.referenceSummaryView.addInteraction(interaction)
-            }
-            #endif
-        }
-    }
+    let viewModel: ElementInspectorViewModelProtocol
 
     override var preferredContentSize: CGSize {
         didSet {
@@ -62,7 +51,7 @@ final class ElementInspectorViewController: UIViewController {
         $0.dismissBarButtonItem.action = #selector(close)
     }
 
-    private var presentedPanelViewController: UIViewController? {
+    private var presentedPanelViewController: ElementInspectorPanelViewController? {
         didSet {
             if let oldPanelViewController = oldValue {
                 oldPanelViewController.willMove(toParent: nil)
@@ -71,6 +60,8 @@ final class ElementInspectorViewController: UIViewController {
 
                 oldPanelViewController.removeFromParent()
             }
+
+            viewCode.containerStyle = .default
 
             guard let panelViewController = presentedPanelViewController else {
                 viewCode.emptyLabel.isHidden = false
@@ -96,6 +87,8 @@ final class ElementInspectorViewController: UIViewController {
                 guard let panelView = panelViewController.view else {
                     fatalError("Where's my view Mr. Panel?")
                 }
+
+                self.viewCode.containerStyle = panelViewController.hasScrollView ? .default : .scrollView
 
                 self.viewCode.contentView.addArrangedSubview(panelView)
 
@@ -130,11 +123,15 @@ final class ElementInspectorViewController: UIViewController {
 
     // MARK: - Init
 
-    static func create(viewModel: ElementInspectorViewModelProtocol) -> ElementInspectorViewController {
-        let viewController = ElementInspectorViewController()
-        viewController.viewModel = viewModel
+    init(viewModel: ElementInspectorViewModelProtocol) {
+        self.viewModel = viewModel
 
-        return viewController
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - Lifecycle
@@ -145,6 +142,21 @@ final class ElementInspectorViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        title = viewModel.reference.elementName
+        viewCode.referenceSummaryView.viewModel = viewModel
+
+        #if swift(>=5.0)
+        if #available(iOS 13.0, *) {
+            let interaction = UIContextMenuInteraction(delegate: self)
+            viewCode.referenceSummaryView.addInteraction(interaction)
+        }
+        #endif
+
+        animateWhenKeyboard(.willChangeFrame) { info in
+            self.viewCode.keyboardHeight = info.keyboardFrame.height
+            self.viewCode.layoutIfNeeded()
+        }
 
         navigationItem.titleView = viewCode.segmentedControl
 

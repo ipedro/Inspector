@@ -22,7 +22,7 @@ import MobileCoreServices
 import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
-    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel, didUpdateProperty: InspectorElementViewModelProperty, in item: ElementInspectorFormItem) {
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController, didUpdateProperty: InspectorElementViewModelProperty, in item: ElementInspectorFormItem) {
         guard let elementViewController = formPanelViewController.parent as? ElementInspectorViewController else {
             assertionFailure("whaaaat")
             return
@@ -31,7 +31,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
         elementViewController.reloadData()
     }
 
-    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel, didTap colorPicker: ColorPreviewControl) {
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController, didTap colorPicker: ColorPreviewControl) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             let colorPickerViewController = UIColorPickerViewController(
@@ -54,7 +54,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
         #endif
     }
 
-    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel,
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
                                    didTap optionSelector: OptionListControl)
     {
         let viewModel = OptionSelectorViewModel(
@@ -82,7 +82,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
         formPanelViewController.present(navigationController, animated: true)
     }
 
-    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanel,
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
                                    didTap imagePicker: ImagePreviewControl)
     {
         let alertController = UIAlertController(
