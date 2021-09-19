@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ElementInspectorLayoutConstraintCard: BaseCardControl, InspectorElementFormSectionView {
+final class ElementInspectorFormLayoutConstraintView: BaseCardView, InspectorElementFormSectionView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -36,13 +36,13 @@ final class ElementInspectorLayoutConstraintCard: BaseCardControl, InspectorElem
         set { header.accessoryView = newValue }
     }
 
-    var separatorStyle: InspectorSectionSeparatorStyle? {
+    var separatorStyle: InspectorElementFormSectionSeparatorStyle {
         get { .none }
         set { }
     }
 
-    static func create() -> InspectorElementFormSectionView {
-        ElementInspectorLayoutConstraintCard()
+    static func createSectionView() -> InspectorElementFormSectionView {
+        ElementInspectorFormLayoutConstraintView()
     }
 
     private lazy var formView = ElementInspectorFormSectionContentView(header: header).then {
@@ -54,13 +54,13 @@ final class ElementInspectorLayoutConstraintCard: BaseCardControl, InspectorElem
         set { formView.delegate = newValue }
     }
 
-    var sectionState: UIControl.State {
-        get { formView.sectionState }
-        set { formView.sectionState = newValue }
+    var state: InspectorElementFormSectionState {
+        get { formView.state }
+        set { formView.state = newValue }
     }
 
-    func addFormViews(_ views: [UIView]) {
-        formView.addFormViews(views)
+    func addFormViews(_ formViews: [UIView]) {
+        formView.addFormViews(formViews)
     }
 
     private(set) lazy var header = SectionHeader(

@@ -20,34 +20,6 @@
 
 import UIKit
 
-public protocol InspectorElementFormSectionViewDelegate: AnyObject {
-    func inspectorElementFormSectionView(_ section: InspectorElementFormSectionView,
-                                         changedFrom oldState: UIControl.State?,
-                                         to newState: UIControl.State)
-}
-
-public enum InspectorSectionSeparatorStyle {
-    case top
-}
-
-public protocol InspectorElementFormSectionView: UIControl {
-    var delegate: InspectorElementFormSectionViewDelegate? { get set }
-
-    var title: String? { get set }
-
-    var subtitle: String?  { get set }
-
-    var separatorStyle: InspectorSectionSeparatorStyle? { get set }
-
-    var accessoryView: UIView?  { get set }
-
-    var sectionState: State { get set }
-
-    func addFormViews(_ views: [UIView])
-
-    static func create() -> InspectorElementFormSectionView
-}
-
 protocol ElementInspectorFormSectionViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
                                                    didTap colorPicker: ColorPreviewControl)
@@ -65,8 +37,8 @@ protocol ElementInspectorFormSectionViewControllerDelegate: OperationQueueManage
                                                    willUpdate property: InspectorElementViewModelProperty)
 
     func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
-                                                   didChangeState newState: UIControl.State,
-                                                   from oldState: UIControl.State?)
+                                                   changedFrom oldState: InspectorElementFormSectionState?,
+                                                   to newState: InspectorElementFormSectionState)
 }
 
 final class ElementInspectorFormSectionViewController: UIViewController {
@@ -107,9 +79,9 @@ final class ElementInspectorFormSectionViewController: UIViewController {
         viewCode.addFormViews(subviews)
     }
 
-    var sectionState: UIControl.State {
-        get { viewCode.sectionState }
-        set { viewCode.sectionState = newValue }
+    var state: InspectorElementFormSectionState {
+        get { viewCode.state }
+        set { viewCode.state = newValue }
     }
 
     private lazy var viewForProperties: [InspectorElementViewModelProperty: UIView] = {
@@ -233,7 +205,7 @@ final class ElementInspectorFormSectionViewController: UIViewController {
 
 extension ElementInspectorFormSectionViewController {
     @objc private func stateChanged() {
-        delegate?.elementInspectorFormSectionViewController(self, didChangeState: viewCode.sectionState, from: nil)
+        delegate?.elementInspectorFormSectionViewController(self, changedFrom: .none, to: viewCode.state)
     }
 
     @objc private func valueChanged(_ sender: AnyObject) {
@@ -427,8 +399,8 @@ extension ElementInspectorFormSectionViewController: ImagePreviewControlDelegate
 
 extension ElementInspectorFormSectionViewController: InspectorElementFormSectionViewDelegate {
     func inspectorElementFormSectionView(_ section: InspectorElementFormSectionView,
-                                         changedFrom oldState: UIControl.State?,
-                                         to newState: UIControl.State) {
-        delegate?.elementInspectorFormSectionViewController(self, didChangeState: newState, from: oldState)
+                                         changedFrom oldState: InspectorElementFormSectionState?,
+                                         to newState: InspectorElementFormSectionState) {
+        delegate?.elementInspectorFormSectionViewController(self, changedFrom: oldState, to: newState)
     }
 }

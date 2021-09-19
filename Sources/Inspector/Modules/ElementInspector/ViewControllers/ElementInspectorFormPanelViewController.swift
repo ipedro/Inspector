@@ -69,6 +69,7 @@ protocol ElementInspectorBaseViewControllerProtocol {
 }
 
 class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewController, ElementInspectorFormSectionViewControllerDelegate, KeyboardAnimatable {
+
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
     }
@@ -81,24 +82,22 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
         formDelegate?.cancelAllOperations()
     }
 
-    func elementInspectorFormSectionViewController(
-        _ sectionController: ElementInspectorFormSectionViewController,
-        didChangeState newState: UIControl.State,
-        from oldState: UIControl.State?
-    ) {
+    func elementInspectorFormSectionViewController(_ sectionController: ElementInspectorFormSectionViewController,
+                                                   changedFrom oldState: InspectorElementFormSectionState?,
+                                                   to newState: InspectorElementFormSectionState) {
         animatePanel(animations: { [weak self] in
             guard let self = self else { return }
 
-            sectionController.sectionState = newState
+            sectionController.state = newState
 
-            guard newState == .selected else { return }
+            guard newState == .expanded else { return }
 
-            let selectedSections = self.children
+            let expandedSections = self.children
                 .compactMap { $0 as? ElementInspectorFormSectionViewController }
-                .filter { $0.sectionState == .selected }
+                .filter { $0.state == .expanded }
 
-            for section in selectedSections where section !== sectionController {
-                section.sectionState = .normal
+            for aSectionController in expandedSections where aSectionController !== sectionController {
+                aSectionController.state = .collapsed
             }
         })
     }
@@ -153,14 +152,14 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
                 let indexPath = IndexPath(row: row, section: sectionIndex)
 
                 let Type = dataSource.typeForRow(at: indexPath) ?? ElementInspectorFormSectionContentView.self
-                let viewCode = Type.create()
+                let viewCode = Type.createSectionView()
                 viewCode.separatorStyle = indexPath.isFirst ? .none : .top
 
                 let sectionViewController = ElementInspectorFormSectionViewController.create(
                     viewModel: viewModel,
                     viewCode: viewCode
                 ).then {
-                    $0.sectionState = indexPath.isFirst ? .selected : .normal
+                    $0.state = indexPath.isFirst ? .expanded : .collapsed
                     $0.delegate = self
                 }
 
@@ -241,13 +240,13 @@ class ElementInspectorBaseFormPanelViewController: ElementInspectorPanelViewCont
 
                 let selectedSections: [ElementInspectorFormSectionViewController] = self.children
                     .compactMap { $0 as? ElementInspectorFormSectionViewController }
-                    .filter { $0.sectionState == .selected }
+                    .filter { $0.state == .expanded }
 
                 for section in selectedSections {
-                    section.sectionState = .normal
+                    section.state = .collapsed
                 }
 
-                sectionController.sectionState = .selected
+                sectionController.state = .expanded
             },
             completion: nil
         )

@@ -20,7 +20,7 @@
 
 import UIKit
 
-class BaseCardControl: BaseControl {
+class BaseCardView: BaseView {
     private(set) lazy var backgroundView = UIView().then {
         $0.installView(contentView, priority: .required)
         $0.clipsToBounds = true

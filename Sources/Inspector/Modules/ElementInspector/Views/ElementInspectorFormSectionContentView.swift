@@ -20,7 +20,7 @@
 
 import UIKit
 
-class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormSectionView {
+class ElementInspectorFormSectionContentView: BaseView, InspectorElementFormSectionView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -36,7 +36,7 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
         set { header.accessoryView = newValue }
     }
 
-    static func create() -> InspectorElementFormSectionView {
+    static func createSectionView() -> InspectorElementFormSectionView {
         ElementInspectorFormSectionContentView()
     }
 
@@ -44,7 +44,7 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
 
     weak var delegate: InspectorElementFormSectionViewDelegate?
 
-    var separatorStyle: InspectorSectionSeparatorStyle? {
+    var separatorStyle: InspectorElementFormSectionSeparatorStyle {
         get { topSeparatorView.isHidden ? .none : .top }
         set {
             switch newValue {
@@ -56,32 +56,13 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
         }
     }
 
-    var sectionState: UIControl.State {
-        get { state }
-        set {
-            switch newValue {
-            case .disabled:
-                alpha = 0.5
-                isSelected = false
-                isEnabled = false
+    var state: InspectorElementFormSectionState {
+        didSet {
+            switch state {
+            case .collapsed:
                 hideContent(true)
 
-            case .normal:
-                alpha = 1
-                isEnabled = true
-                isSelected = false
-                hideContent(true)
-
-            case .selected:
-                alpha = 1
-                isEnabled = true
-                isSelected = true
-                hideContent(false)
-
-            default:
-                alpha = 1
-                isSelected = false
-                isEnabled = true
+            case .expanded:
                 hideContent(false)
             }
         }
@@ -104,7 +85,7 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
     var header: SectionHeader
 
     private lazy var headerControl = UIControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
-        $0.addTarget(self, action: #selector(toggleSelection), for: .touchUpInside)
+        $0.addTarget(self, action: #selector(changeState), for: .touchUpInside)
         $0.installView(header)
     }
 
@@ -115,7 +96,7 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
     }
 
     private(set) lazy var collapseButton = IconButton(.chevronDown).then {
-        $0.addTarget(self, action: #selector(toggleSelection), for: .touchUpInside)
+        $0.addTarget(self, action: #selector(changeState), for: .touchUpInside)
     }
 
     convenience init() {
@@ -135,14 +116,15 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
         return super.hitTest(point, with: event)
     }
 
-    init(header: SectionHeader, frame: CGRect = .zero) {
+    init(header: SectionHeader, state: InspectorElementFormSectionState = .collapsed, frame: CGRect = .zero) {
         self.header = header
+        self.state = state
 
         super.init(frame: frame)
     }
 
-    func addFormViews(_ views: [UIView]) {
-        contentContainerView.addArrangedSubviews(views)
+    func addFormViews(_ formViews: [UIView]) {
+        contentContainerView.addArrangedSubviews(formViews)
     }
 
     override func setup() {
@@ -169,8 +151,17 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
         topSeparatorView.topAnchor.constraint(equalTo: topAnchor).isActive = true
     }
 
-    @objc private func toggleSelection() {
-        isSelected.toggle()
+    @objc private func changeState() {
+        let oldState = state
+
+        switch state {
+        case .expanded:
+            state = .collapsed
+        case .collapsed:
+            state = .expanded
+        }
+
+        delegate?.inspectorElementFormSectionView(self, changedFrom: oldState, to: state)
     }
 
     private func hideContent(_ hide: Bool) {
@@ -179,9 +170,6 @@ class ElementInspectorFormSectionContentView: BaseControl, InspectorElementFormS
         collapseButton.transform = hide ? CGAffineTransform(rotationAngle: -(.pi / 2)) : .identity
     }
 
-    override func stateDidChange(from oldState: UIControl.State, to newState: UIControl.State) {
-        delegate?.inspectorElementFormSectionView(self, changedFrom: oldState, to: newState)
-    }
 }
 
 extension NSDirectionalEdgeInsets {

@@ -30,7 +30,7 @@ enum AutoLayoutSizeLibrary: Swift.CaseIterable, InspectorSizeLibraryProtocol {
     static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormSectionView.Type {
         switch viewModel {
         case is NSLayoutConstraintInspectableViewModel:
-            return ElementInspectorLayoutConstraintCard.self
+            return ElementInspectorFormLayoutConstraintView.self
         default:
             return ElementInspectorFormSectionContentView.self
         }
