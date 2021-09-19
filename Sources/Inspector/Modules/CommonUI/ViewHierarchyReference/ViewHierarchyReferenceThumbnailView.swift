@@ -65,7 +65,11 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
     }
     
     // MARK: - Componentns
-    
+
+    private lazy var emptyHeightConstraint = widthAnchor.constraint(equalTo: heightAnchor, multiplier: aspectRatio).then {
+        $0.priority = .defaultHigh
+    }
+
     private lazy var gridImageView = UIImageView(
         .image(IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero))
     )
@@ -115,7 +119,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
             snapshotContainerView.frame.isEmpty == false,
             originalSnapshotSize != .zero
         else {
-            return 0
+            return 3
         }
         
         return snapshotContainerView.frame.size.width / originalSnapshotSize.width
@@ -138,6 +142,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
                 let proportionalFrame = calculateFrame(with: newSnapshot.bounds.size)
                 
                 guard proportionalFrame != .zero else {
+                    state = .frameIsEmpty(proportionalFrame)
                     return
                 }
                 
@@ -158,35 +163,38 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
                 }
 
                 snapshotContainerView.addSubview(newSnapshot)
+                emptyHeightConstraint.isActive = false
                 
             case .isHidden:
-                installStatusView(icon: .eyeSlashFill, text: "View is hidden.")
+                showStatus(icon: .eyeSlashFill, message: "View is hidden.")
                 
             case .lostConnection:
-                installStatusView(icon: .wifiExlusionMark, text: "Lost connection to view.")
+                showStatus(icon: .wifiExlusionMark, message: "Lost connection to view.")
                 
             case let .frameIsEmpty(frame):
-                installStatusView(icon: .eyeSlashFill, text: "View frame is empty.\n\(frame)")
+                showStatus(icon: .eyeSlashFill, message: "View frame is empty.\n\(frame)")
             }
         }
     }
-    
-    private func installStatusView(icon glyph: Icon.Glyph, text: String) {
-        statusContentView.subviews.forEach { $0.removeFromSuperview() }
+
+    private func showStatus(icon glyph: Icon.Glyph, message: String) {
+        emptyHeightConstraint.isActive = true
+
+        statusContentView.removeAllArrangedSubviews()
         
         let color = backgroundStyle.contrastingColor
         
         let icon = Icon(glyph, color: color, size: CGSize(width: 36, height: 36))
         
         statusContentView.addArrangedSubview(icon)
-        
+
         guard showEmptyStatusMessage else {
             return
         }
         
         let label = UILabel(
             .textStyle(.footnote),
-            .text(text),
+            .text(message),
             .textAlignment(.center),
             .textColor(color)
         )
