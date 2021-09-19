@@ -71,15 +71,42 @@ final class ElementInspectorViewController: UIViewController {
             let operation = MainThreadOperation(name: "create \(panelViewController)") { [weak self] in
                 guard let self = self else { return }
 
+                self.viewCode.setNeedsLayout()
                 self.addChild(panelViewController)
 
-                self.view.setNeedsLayout()
+                panelViewController.loadViewIfNeeded()
 
-                self.viewCode.contentView.installView(panelViewController.view, priority: .required)
+                guard let panelView = panelViewController.view else {
+                    fatalError("Where's my view Mr. Panel?")
+                }
 
-                panelViewController.didMove(toParent: self)
+                self.viewCode.contentView.installView(panelView, priority: .required)
 
-                self.viewCode.activityIndicator.stopAnimating()
+                panelView.alpha = 0
+                panelView.backgroundColor = self.viewCode.backgroundColor
+                panelView.transform = .init(scaleX: 0.99, y: 0.99).translatedBy(x: .zero, y: -20)
+
+                UIView.animate(
+                    withDuration: 0.20,
+                    delay: .zero,
+                    options: [.layoutSubviews, .curveEaseInOut],
+                    animations: { [weak self] in
+                        guard let self = self else { return }
+
+                        self.viewCode.activityIndicator.alpha = 0
+
+                        panelView.alpha = 1
+                        panelView.transform = .identity
+                    },
+                    completion: { [weak self] _ in
+                        guard let self = self else { return }
+
+                        self.viewCode.activityIndicator.stopAnimating()
+                        self.viewCode.activityIndicator.alpha = 1
+
+                        panelViewController.didMove(toParent: self)
+                    }
+                )
             }
 
             OperationQueue.main.addOperation(operation)
