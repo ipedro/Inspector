@@ -48,7 +48,6 @@ extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegat
             let elementInspectorViewController = Self.makeElementInspectorViewController(
                 with: reference,
                 in: self.viewHierarchySnapshot,
-                showDismissBarButton: false,
                 selectedPanel: selectedPanel,
                 elementLibraries: self.viewHierarchySnapshot.elementLibraries,
                 delegate: self

@@ -67,15 +67,20 @@ final class ElementInspectorViewCode: BaseView {
         $0.isActive = true
     }
 
-    private(set) lazy var dismissBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
+    private(set) lazy var dismissBarButtonItem: UIBarButtonItem = {
+        if #available(iOS 13.0, *) {
+            return UIBarButtonItem(barButtonSystemItem: .close, target: nil, action: nil)
+        } else {
+            return UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
+        }
+    }()
 
     private(set) lazy var emptyLabel = SectionHeader(
         title: "No Element Inspector",
         titleFont: .body,
         margins: ElementInspector.appearance.directionalInsets
     ).then {
-        contentView.installView($0, .margins(.zero), position: .behind)
-
+        contentView.installView($0, position: .behind)
         $0.titleAlignment = .center
         $0.alpha = 0.5
     }

@@ -117,7 +117,6 @@ final class ElementInspectorCoordinator: NSObject {
             let rootViewController = makeElementInspectorViewController(
                 with: viewHierarchySnapshot.rootReference,
                 in: viewHierarchySnapshot,
-                showDismissBarButton: true,
                 selectedPanel: selectedPanel,
                 elementLibraries: viewHierarchySnapshot.elementLibraries,
                 delegate: delegate
@@ -141,7 +140,6 @@ final class ElementInspectorCoordinator: NSObject {
                 let viewController = makeElementInspectorViewController(
                     with: currentReference,
                     in: viewHierarchySnapshot,
-                    showDismissBarButton: currentReference === viewHierarchySnapshot.rootReference,
                     selectedPanel: selectedPanel,
                     elementLibraries: viewHierarchySnapshot.elementLibraries,
                     delegate: delegate
@@ -191,7 +189,6 @@ final class ElementInspectorCoordinator: NSObject {
     static func makeElementInspectorViewController(
         with reference: ViewHierarchyReference,
         in snapshot: ViewHierarchySnapshot,
-        showDismissBarButton: Bool,
         selectedPanel: ElementInspectorPanel?,
         elementLibraries: [InspectorElementLibraryProtocol],
         delegate: ElementInspectorViewControllerDelegate
@@ -199,7 +196,6 @@ final class ElementInspectorCoordinator: NSObject {
         let viewModel = ElementInspectorViewModel(
             snapshot: snapshot,
             reference: reference,
-            showDismissBarButton: showDismissBarButton,
             selectedPanel: selectedPanel,
             inspectableElements: elementLibraries,
             availablePanels: ElementInspectorPanel.cases(for: reference)

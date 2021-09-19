@@ -30,16 +30,12 @@ protocol ElementInspectorViewModelProtocol: ViewHierarchyReferenceSummaryViewMod
     var selectedPanel: ElementInspectorPanel? { get }
 
     var selectedPanelSegmentIndex: Int { get }
-
-    var showDismissBarButton: Bool { get }
 }
 
 final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     let snapshot: ViewHierarchySnapshot
 
     let reference: ViewHierarchyReference
-
-    let showDismissBarButton: Bool
 
     let inspectableElements: [InspectorElementLibraryProtocol]
 
@@ -63,14 +59,12 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     init(
         snapshot: ViewHierarchySnapshot,
         reference: ViewHierarchyReference,
-        showDismissBarButton: Bool,
         selectedPanel: ElementInspectorPanel?,
         inspectableElements: [InspectorElementLibraryProtocol],
         availablePanels: [ElementInspectorPanel]
     ) {
         self.snapshot = snapshot
         self.reference = reference
-        self.showDismissBarButton = showDismissBarButton
         self.inspectableElements = inspectableElements
         self.availablePanels = availablePanels
 

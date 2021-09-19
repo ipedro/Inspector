@@ -58,12 +58,10 @@ final class OptionSelectorViewController: UIViewController {
         
         preferredContentSize = CGSize(width: 280, height: 260)
     }
-    
-    static func create(viewModel: OptionSelectorViewModelProtocol) -> OptionSelectorViewController {
-        let viewController = OptionSelectorViewController()
-        viewController.viewModel = viewModel
-        
-        return viewController
+
+    convenience init(viewModel: OptionSelectorViewModelProtocol) {
+        self.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
     }
     
     @objc private func close() {

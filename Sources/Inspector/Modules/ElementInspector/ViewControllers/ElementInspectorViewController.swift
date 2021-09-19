@@ -159,10 +159,7 @@ final class ElementInspectorViewController: UIViewController, KeyboardAnimatable
         }
 
         navigationItem.titleView = viewCode.segmentedControl
-
-        if viewModel.showDismissBarButton {
-            navigationItem.leftBarButtonItem = viewCode.dismissBarButtonItem
-        }
+        navigationItem.rightBarButtonItem = viewCode.dismissBarButtonItem
 
         viewModel.availablePanels.reversed().forEach {
             viewCode.segmentedControl.insertSegment(

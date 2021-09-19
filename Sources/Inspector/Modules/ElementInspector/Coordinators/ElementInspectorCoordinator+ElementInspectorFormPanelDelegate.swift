@@ -63,7 +63,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
             selectedIndex: optionSelector.selectedIndex
         )
 
-        let optionSelectorViewController = OptionSelectorViewController.create(viewModel: viewModel).then {
+        let optionSelectorViewController = OptionSelectorViewController(viewModel: viewModel).then {
             $0.delegate = self
         }
 
