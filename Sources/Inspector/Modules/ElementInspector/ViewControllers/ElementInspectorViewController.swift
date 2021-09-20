@@ -94,6 +94,7 @@ final class ElementInspectorViewController: UIViewController, KeyboardAnimatable
 
                 panelView.alpha = 0
                 panelView.backgroundColor = self.viewCode.backgroundColor
+                panelView.isOpaque = true
                 panelView.transform = .init(scaleX: 0.99, y: 0.99)
                     .translatedBy(x: .zero, y: -ElementInspector.appearance.verticalMargins)
 
@@ -108,11 +109,10 @@ final class ElementInspectorViewController: UIViewController, KeyboardAnimatable
                     completion: { [weak self] _ in
                         guard let self = self else { return }
 
+                        panelViewController.didMove(toParent: self)
                         NSObject.cancelPreviousPerformRequests(withTarget: self.viewCode.activityIndicator)
-
                         self.viewCode.activityIndicator.stopAnimating()
 
-                        panelViewController.didMove(toParent: self)
                     }
                 )
             }

@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
 #if swift(>=5.0)
@@ -35,9 +34,14 @@ extension UIAction {
         )
     }
 
-    static func collapseAction(isCollapsed: Bool, title: String, handler: @escaping UIActionHandler) -> UIAction {
+    static func collapseAction(_ isCollapsed: Bool, title: String? = nil, handler: @escaping UIActionHandler) -> UIAction {
         UIAction(
-            title: title,
+            title: {
+                guard let string = title else {
+                    return isCollapsed ? Texts.expand : Texts.collapse
+                }
+                return string
+            }(),
             image: isCollapsed ? .chevronDownSymbol : .chevronRightSymbol,
             handler: handler
         )

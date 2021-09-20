@@ -32,7 +32,7 @@ extension ElementInspector {
         var isPresentingFromBottomSheet: Bool {
             #if swift(>=5.5)
             if #available(iOS 15.0, *) {
-                return true
+                return Inspector.host?.window?.traitCollection.userInterfaceIdiom == .phone
             }
             #endif
             return false

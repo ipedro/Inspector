@@ -80,21 +80,12 @@ final class ElementInspectorCoordinator: NSObject {
                 return .pageSheet
             }
             
-            guard window.traitCollection.userInterfaceIdiom != .phone else {
+            switch window.traitCollection.userInterfaceIdiom {
+            case .phone:
                 return .pageSheet
-            }
-            
-            let referenceViewArea = viewHierarchySnapshot.rootReference.frame.height * viewHierarchySnapshot.rootReference.frame.width
-            
-            let windowArea = window.frame.height * window.frame.width
-            
-            let occupiedRatio = referenceViewArea / windowArea
-            
-            if occupiedRatio <= 0.35 {
+            default:
                 return .popover
             }
-            
-            return .formSheet
         }()
 
         if ElementInspector.configuration.isPresentingFromBottomSheet {
@@ -103,6 +94,8 @@ final class ElementInspectorCoordinator: NSObject {
                 if let sheetPresentationController = navigationController.presentationController as? UISheetPresentationController {
                     sheetPresentationController.detents = [.medium(), .large()]
                     sheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = false
+                    sheetPresentationController.preferredCornerRadius = 28
+                    sheetPresentationController.sourceView = reference.rootView
                     sheetPresentationController.prefersEdgeAttachedInCompactHeight = true
                 }
             }

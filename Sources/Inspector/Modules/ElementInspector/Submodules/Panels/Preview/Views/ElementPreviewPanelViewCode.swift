@@ -100,8 +100,8 @@ final class ElementPreviewPanelViewCode: BaseView {
 
         contentView.addArrangedSubviews(
             header,
-            controlsContainerView,
             thumbnailView,
+            controlsContainerView,
             UIView()
         )
 

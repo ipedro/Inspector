@@ -57,13 +57,13 @@ final class ElementInspectorViewCode: BaseView {
     private(set) lazy var segmentedControl = UISegmentedControl.segmentedControlStyle()
 
     private(set) lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView().then {
-        $0.setContentHuggingPriority(.required, for: .vertical)
+        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        $0.setContentCompressionResistancePriority(.required, for: .vertical)
     }
 
     private(set) lazy var separatorView = SeparatorView(style: .medium)
 
     private lazy var referenceSummaryHeightConstraint = referenceSummaryView.heightAnchor.constraint(equalToConstant: .zero).then {
-        $0.priority = .defaultHigh
         $0.isActive = true
     }
 

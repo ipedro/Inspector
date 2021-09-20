@@ -163,7 +163,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         UIView.animate(withDuration: 0.15) {
             switch self.headerControl.state {
             case .highlighted:
-                self.headerControl.alpha = 0.77
+                self.headerControl.alpha = 0.66
                 self.headerControl.transform = .init(scaleX: 0.98, y: 0.93)
             default:
                 self.headerControl.alpha = 1
@@ -196,13 +196,9 @@ extension ElementInspectorFormItemContentView: UIContextMenuInteractionDelegate 
                     identifier: nil,
                     options: .displayInline,
                     children: [
-                        UIAction.collapseAction(
-                            isCollapsed: self.state == .collapsed,
-                            title: self.state == .collapsed ? Texts.expand : Texts.collapse,
-                            handler: { [weak self] _ in
-                                self?.changeState()
-                            }
-                        )
+                        UIAction.collapseAction(self.state == .collapsed) { [weak self] _ in
+                            self?.changeState()
+                        }
                     ]
                 )
             }

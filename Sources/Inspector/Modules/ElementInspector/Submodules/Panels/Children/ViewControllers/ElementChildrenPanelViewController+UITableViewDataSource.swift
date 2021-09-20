@@ -96,10 +96,7 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
             let collapseContainer: UIAction? = {
                 guard reference.isContainer else { return nil }
 
-                return UIAction.collapseAction(
-                    isCollapsed: isCollapsed,
-                    title: isCollapsed ? "Show children" : "Hide children"
-                ) { [weak self] _ in
+                return UIAction.collapseAction(isCollapsed) { [weak self] _ in
                     self?.toggleCollapse(at: indexPath)
                 }
             }()
