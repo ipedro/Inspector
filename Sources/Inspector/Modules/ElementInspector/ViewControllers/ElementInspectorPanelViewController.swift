@@ -53,6 +53,7 @@ class ElementInspectorPanelViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         updateVerticalPresentationState()
     }
 
@@ -71,7 +72,8 @@ class ElementInspectorPanelViewController: UIViewController {
         updateVerticalPresentationState()
     }
 
-    func updateVerticalPresentationState() {
+    @objc
+    private func updateVerticalPresentationState() {
         guard let parent = parent else { return }
 
         let newValue: Bool = {
@@ -96,7 +98,7 @@ class ElementInspectorPanelViewController: UIViewController {
     }
 
     @objc
-    func updatePreferredContentSize() {
+    private func updatePreferredContentSize() {
         guard modalPresentationStyle == .popover else { return }
 
         preferredContentSize = calculatePreferredContentSize()

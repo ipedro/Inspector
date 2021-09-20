@@ -170,14 +170,14 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
         // here the view has updated its vertical compactness and we can load the panels
         if viewCode.segmentedControl.numberOfSegments == .zero {
+
             reloadData()
+
+            updatePanelsSegmentedControl()
+
+            installPanel(viewModel.currentPanel)
+
         }
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        updateVerticalPresentationState()
     }
 
     func updatePanelsSegmentedControl() {
@@ -195,8 +195,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     }
 
     func reloadData() {
-        updatePanelsSegmentedControl()
-        installPanel(viewModel.currentPanel)
         viewCode.referenceSummaryView.reloadData()
     }
 

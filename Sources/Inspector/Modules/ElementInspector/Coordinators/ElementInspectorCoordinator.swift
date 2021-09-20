@@ -106,20 +106,17 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         delegate: ElementInspectorViewControllerDelegate,
         in snapshot: ViewHierarchySnapshot
     ) -> ElementInspectorViewController {
-        let availablePanels = ElementInspectorPanel.availablePanels(for: reference)
-
-        let viewModel = ElementInspectorViewModel(
-            snapshot: snapshot,
-            reference: reference,
-            selectedPanel: selectedPanel,
-            inspectableElements: elementLibraries,
-            availablePanels: ElementInspectorPanel.availablePanels(for: reference)
-        )
-
-        let viewController = ElementInspectorViewController(viewModel: viewModel)
-        viewController.delegate = delegate
-
-        return viewController
+        ElementInspectorViewController(
+            viewModel: ElementInspectorViewModel(
+                snapshot: snapshot,
+                reference: reference,
+                selectedPanel: selectedPanel,
+                inspectableElements: elementLibraries,
+                availablePanels: ElementInspectorPanel.availablePanels(for: reference)
+            )
+        ).then {
+            $0.delegate = delegate
+        }
     }
 
     func panelViewController(for panel: ElementInspectorPanel, with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {

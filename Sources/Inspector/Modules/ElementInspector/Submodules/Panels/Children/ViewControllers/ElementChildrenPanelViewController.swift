@@ -74,8 +74,6 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
         super.viewWillAppear(animated)
 
         reloadData()
-
-        updatePreferredContentSize()
     }
 
     override func viewDidAppear(_ animated: Bool) {

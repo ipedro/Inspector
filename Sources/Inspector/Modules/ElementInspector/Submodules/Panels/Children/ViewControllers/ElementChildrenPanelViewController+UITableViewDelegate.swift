@@ -48,29 +48,21 @@ extension ElementChildrenPanelViewController {
             cell.toggleCollapse(animated: true)
         }
 
-        tableView.performBatchUpdates({
-                                          actions.forEach {
-                                              switch $0 {
-                                              case let .inserted(indexPaths):
-                                                  insertedIndexPaths.append(contentsOf: indexPaths)
+        tableView.performBatchUpdates {
+            actions.forEach {
+                switch $0 {
+                case let .inserted(indexPaths):
+                    insertedIndexPaths.append(contentsOf: indexPaths)
 
-                                                  tableView.insertRows(at: indexPaths, with: .top)
+                    tableView.insertRows(at: indexPaths, with: .top)
 
-                                              case let .deleted(indexPaths):
-                                                  tableView.deleteRows(at: indexPaths, with: .top)
-                                              }
-                                          }
-
-                                      },
-                                      completion: { [weak self] _ in
-                                          guard let self = self else {
-                                              return
-                                          }
-
-                                          self.updatePreferredContentSize()
-
-                                          self.updateVisibleRowsBackgroundColor()
-                                      })
+                case let .deleted(indexPaths):
+                    tableView.deleteRows(at: indexPaths, with: .top)
+                }
+            }
+        } completion: { [weak self] _ in
+            self?.updateVisibleRowsBackgroundColor()
+        }
     }
 
     func updateVisibleRowsBackgroundColor(_ completion: ((Bool) -> Void)? = nil) {
