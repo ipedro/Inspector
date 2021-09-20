@@ -18,7 +18,6 @@
 		EB5E1FE7261A48EC002301F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE6261A48EC002301F5 /* Assets.xcassets */; };
 		EB5E1FEA261A48EC002301F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE8261A48EC002301F5 /* LaunchScreen.storyboard */; };
 		EB5E2004261A4EC9002301F5 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E2003261A4EC9002301F5 /* CustomButton.swift */; };
-		EB6595E7266B29060021CC91 /* UIVIewController+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6595E6266B29060021CC91 /* UIVIewController+Convenience.swift */; };
 		EB6595ED266B45C10021CC91 /* Down in Frameworks */ = {isa = PBXBuildFile; productRef = EB6595EC266B45C10021CC91 /* Down */; };
 		EB6595F0266BE2BA0021CC91 /* UIView+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6595EF266BE2BA0021CC91 /* UIView+Animations.swift */; };
 		EB76A4FE26C7A7A40088E571 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */; };
@@ -42,7 +41,6 @@
 		EB5E1FE9261A48EC002301F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EB5E1FEB261A48EC002301F5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EB5E2003261A4EC9002301F5 /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
-		EB6595E6266B29060021CC91 /* UIVIewController+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIVIewController+Convenience.swift"; sourceTree = "<group>"; };
 		EB6595EF266BE2BA0021CC91 /* UIView+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Animations.swift"; sourceTree = "<group>"; };
 		EB76A4FB26C7A7A40088E571 /* SwiftUI Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftUI Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
@@ -121,7 +119,6 @@
 				EB5E1FE1261A48EB002301F5 /* ReadMeViewController.swift */,
 				EB5E1FDF261A48EB002301F5 /* SceneDelegate.swift */,
 				EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */,
-				EB6595E6266B29060021CC91 /* UIVIewController+Convenience.swift */,
 				EB210C7E2624E5090032B9AE /* CustomButton */,
 				EB5E1FE8261A48EC002301F5 /* LaunchScreen.storyboard */,
 				EB5E1FE3261A48EB002301F5 /* Main.storyboard */,
@@ -314,7 +311,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB6595E7266B29060021CC91 /* UIVIewController+Convenience.swift in Sources */,
 				EB5E2004261A4EC9002301F5 /* CustomButton.swift in Sources */,
 				EB04BCF0266B052C00F106C2 /* PlaygroundViewController.swift in Sources */,
 				EBC0288226354CAB00502C90 /* ExampleElementLibrary.swift in Sources */,

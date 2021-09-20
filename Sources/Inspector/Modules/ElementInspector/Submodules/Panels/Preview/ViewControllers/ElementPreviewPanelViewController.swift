@@ -65,11 +65,9 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
 
     // MARK: - Init
 
-    static func create(viewModel: ElementPreviewPanelViewModelProtocol) -> Self {
-        let viewController = Self()
-        viewController.viewModel = viewModel
-
-        return viewController
+    convenience init(viewModel: ElementPreviewPanelViewModelProtocol) {
+        self.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
     }
 
     // MARK: - Lifecycle

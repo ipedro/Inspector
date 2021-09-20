@@ -22,7 +22,7 @@
 import SwiftUI
 
 @available(iOS 14.0, *)
-final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHostable {
+final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost {
     // MARK: - InspectorSwiftUIHostable
 
     let inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]?
@@ -55,7 +55,7 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHostable
         self.didFinish = didFinish
     }
 
-    func hierarchyInspectorDidFinish(_ coordinator: HierarchyInspectorCoordinator) {
+    func insectorViewDidFinishPresentation() {
         didFinish?()
     }
 
@@ -86,7 +86,7 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHostable
     func makeUIViewController(context: Context) -> UIViewController {
         Inspector.manager.swiftUIhost = self
 
-        guard let coordinator = Inspector.manager.makeHierarchyInspectorCoordinator() else {
+        guard let coordinator = Inspector.manager.makeInspectorViewCoordinator() else {
             return alertController(title: "Couldn't present inspector")
         }
 

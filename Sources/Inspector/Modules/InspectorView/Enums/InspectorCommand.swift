@@ -18,41 +18,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
+import Foundation
 
-struct ViewHierarchySnapshot {
-    let expiryDate = Date().addingTimeInterval(Inspector.configuration.cacheExpirationTimeInterval)
-
-    var isValid: Bool { expiryDate > Date() }
-
-    let availableLayers: [ViewHierarchyLayer]
-
-    let populatedLayers: [ViewHierarchyLayer]
-
-    let rootReference: ViewHierarchyReference
-
-    let inspectableReferences: [ViewHierarchyReference]
-
-    let elementLibraries: [InspectorElementLibraryProtocol]
-
-    init(
-        availableLayers: [ViewHierarchyLayer],
-        elementLibraries: [InspectorElementLibraryProtocol],
-        in rootView: UIView
-    ) {
-        self.availableLayers = availableLayers.uniqueValues()
-
-        self.elementLibraries = elementLibraries
-
-        rootReference = ViewHierarchyReference(rootView)
-
-        inspectableReferences = rootReference.inspectableViewReferences
-
-        let inspectableViews = rootReference.inspectableViewReferences.compactMap(\.rootView)
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
-        }
-    }
-
+enum InspectorCommand {
+    case execute(Closure)
+    case inspect(ViewHierarchyReference)
 }

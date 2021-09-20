@@ -48,8 +48,6 @@ final class ReadMeViewController: UIViewController {
         return activityIndicatorView
     }()
 
-    override var keyCommands: [UIKeyCommand]? { inspectorManager?.keyCommands }
-
     private lazy var markdownView: DownView = {
         guard let markdownView = try? DownView(frame: .zero, markdownString: "") else { fatalError() }
         markdownView.translatesAutoresizingMaskIntoConstraints = false

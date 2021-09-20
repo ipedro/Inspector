@@ -18,41 +18,46 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-struct ViewHierarchySnapshot {
-    let expiryDate = Date().addingTimeInterval(Inspector.configuration.cacheExpirationTimeInterval)
+public protocol InspectorPresentable {}
 
-    var isValid: Bool { expiryDate > Date() }
+extension InspectorPresentable {
 
-    let availableLayers: [ViewHierarchyLayer]
+    private var manager: Manager { Inspector.manager }
 
-    let populatedLayers: [ViewHierarchyLayer]
+    var isInspectingHierarchy: Bool { manager.isInspectingHierarchy }
 
-    let rootReference: ViewHierarchyReference
-
-    let inspectableReferences: [ViewHierarchyReference]
-
-    let elementLibraries: [InspectorElementLibraryProtocol]
-
-    init(
-        availableLayers: [ViewHierarchyLayer],
-        elementLibraries: [InspectorElementLibraryProtocol],
-        in rootView: UIView
-    ) {
-        self.availableLayers = availableLayers.uniqueValues()
-
-        self.elementLibraries = elementLibraries
-
-        rootReference = ViewHierarchyReference(rootView)
-
-        inspectableReferences = rootReference.inspectableViewReferences
-
-        let inspectableViews = rootReference.inspectableViewReferences.compactMap(\.rootView)
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
-        }
+    func isInspecting(_ element: UIView) -> Bool {
+        element.allSubviews.contains { $0 is InternalViewProtocol }
     }
 
+    public func inspect(_ element: UIView, animated: Bool = true) {
+        manager.presentElementInspector(for: .init(element), animated: animated, from: element)
+    }
+
+    public func inspect(_ layer: Inspector.ViewHierarchyLayer) {
+        manager.installLayer(layer)
+    }
+
+    public func inspectAll() {
+        manager.installAllLayers()
+    }
+
+    public func stopInspecting(_ layer: Inspector.ViewHierarchyLayer) {
+        manager.removeLayer(layer)
+    }
+
+    public func stopInspectingAll() {
+        manager.removeAllLayers()
+    }
+
+    public func presentInspector(animated: Bool = true) {
+        manager.presentInspector(animated: animated)
+    }
 }
+
+extension UIView: InspectorPresentable {}
+
+extension UIViewController: InspectorPresentable {}

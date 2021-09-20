@@ -24,29 +24,45 @@ import UIKit
 
 extension Manager: ElementInspectorCoordinatorDelegate {
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        viewHierarchyLayersCoordinator?.toggleHighlightViews(visibility: true, inside: reference)
+        for child in children {
+            if let viewHierarchyCoordinator = child as? ViewHierarchyCoordinator {
+                viewHierarchyCoordinator.toggleHighlightViews(visibility: true, inside: reference)
+            }
+        }
     }
 
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, hideHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        viewHierarchyLayersCoordinator?.toggleHighlightViews(visibility: false, inside: reference)
+        for child in children {
+            if let viewHierarchyCoordinator = child as? ViewHierarchyCoordinator {
+                viewHierarchyCoordinator.toggleHighlightViews(visibility: false, inside: reference)
+            }
+        }
     }
 
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference) {
-        viewHierarchyLayersCoordinator?.toggleHighlightViews(visibility: true, inside: reference)
-        elementInspectorCoordinator = nil
+        for child in children {
+            if let viewHierarchyCoordinator = child as? ViewHierarchyCoordinator {
+                viewHierarchyCoordinator.toggleHighlightViews(visibility: true, inside: reference)
+            }
+        }
+
+        removeChild(coordinator)
     }
 }
 
 extension Manager {
     func presentElementInspector(for reference: ViewHierarchyReference, animated: Bool, from sourceView: UIView?) {
-        guard let viewHierarchySnapshot = viewHierarchySnapshot else {
-            return
+        guard let snapshot = viewHierarchyCoordinator.currentSnapshot() else { return }
+
+        let coordinator = ElementInspectorCoordinator(
+            reference: reference,
+            in: snapshot,
+            from: sourceView
+        ).then {
+            $0.delegate = self
         }
 
-        let coordinator = ElementInspectorCoordinator(reference: reference, in: viewHierarchySnapshot, from: sourceView)
-        coordinator.delegate = self
-
-        elementInspectorCoordinator = coordinator
+        addChild(coordinator)
 
         hostViewController?.present(coordinator.start(), animated: animated)
     }

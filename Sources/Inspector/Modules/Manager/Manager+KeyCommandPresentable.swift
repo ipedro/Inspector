@@ -20,39 +20,32 @@
 
 import UIKit
 
-struct ViewHierarchySnapshot {
-    let expiryDate = Date().addingTimeInterval(Inspector.configuration.cacheExpirationTimeInterval)
+// MARK: - KeyCommandPresentable
 
-    var isValid: Bool { expiryDate > Date() }
-
-    let availableLayers: [ViewHierarchyLayer]
-
-    let populatedLayers: [ViewHierarchyLayer]
-
-    let rootReference: ViewHierarchyReference
-
-    let inspectableReferences: [ViewHierarchyReference]
-
-    let elementLibraries: [InspectorElementLibraryProtocol]
-
-    init(
-        availableLayers: [ViewHierarchyLayer],
-        elementLibraries: [InspectorElementLibraryProtocol],
-        in rootView: UIView
-    ) {
-        self.availableLayers = availableLayers.uniqueValues()
-
-        self.elementLibraries = elementLibraries
-
-        rootReference = ViewHierarchyReference(rootView)
-
-        inspectableReferences = rootReference.inspectableViewReferences
-
-        let inspectableViews = rootReference.inspectableViewReferences.compactMap(\.rootView)
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
-        }
+extension Manager: KeyCommandPresentable {
+    var commandGroups: CommandGroups {
+        viewHierarchyCoordinator.commandGroups()
     }
 
+    private var keyCommandSettings: InspectorConfiguration.KeyCommandSettings {
+        Inspector.configuration.keyCommands
+    }
+
+    var keyCommands: [UIKeyCommand] {
+        hierarchyInspectorKeyCommands(selector: #selector(UIViewController.inspectorKeyCommandHandler(_:)))
+    }
+
+    func hierarchyInspectorKeyCommands(selector aSelector: Selector) -> [UIKeyCommand] {
+        let keyCommands = commandGroups.flatMap { commandGroup in
+            commandGroup.commands.compactMap { command -> UIKeyCommand? in
+                guard let options = command.keyCommandOptions else {
+                    return nil
+                }
+
+                return UIKeyCommand(.discoverabilityTitle(title: command.title, key: options), action: aSelector)
+            }
+        }
+
+        return keyCommands.sortedByInputKey()
+    }
 }

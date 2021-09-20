@@ -137,7 +137,6 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
         isCompactVerticalPresentation = {
             if let popover = parent.popoverPresentationController {
-
                 #if swift(>=5.5)
                 if #available(iOS 15.0, *) {
                     return popover.adaptiveSheetPresentationController.selectedDetentIdentifier != .large
@@ -177,7 +176,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
                 let ItemType = dataSource.typeForRow(at: indexPath)
 
-                let itemView = ItemType.createItemView().then {
+                let itemView = ItemType.makeItemView().then {
                     $0.separatorStyle = indexPath.isFirst ? .none : .top
                 }
 
@@ -185,7 +184,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
                     viewModel: viewModel,
                     viewCode: itemView,
                     state: {
-                        if isCompactVerticalPresentation == false && indexPath.isFirst {
+                        if isCompactVerticalPresentation == false, indexPath.isFirst {
                             return .expanded
                         }
                         return .collapsed

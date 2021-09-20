@@ -20,39 +20,24 @@
 
 import UIKit
 
-struct ViewHierarchySnapshot {
-    let expiryDate = Date().addingTimeInterval(Inspector.configuration.cacheExpirationTimeInterval)
+public protocol InspectorHost: InspectorPresentable & AnyObject {
+    var window: UIWindow? { get }
 
-    var isValid: Bool { expiryDate > Date() }
+    /// `ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with `Ctrl + Shift + 1 - 9`. Add your own custom inspector layers.
+    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }
 
-    let availableLayers: [ViewHierarchyLayer]
+    /// Return your own color scheme for the hierarchy label colors.
+    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }
 
-    let populatedLayers: [ViewHierarchyLayer]
+    /// Return your own command groups as sections on the Inspector interface. You can have as many groups, with as many actions as you would like.
+    var inspectorCommandGroups: [Inspector.CommandsGroup]? { get }
 
-    let rootReference: ViewHierarchyReference
+    /// Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.
+    var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { get }
+}
 
-    let inspectableReferences: [ViewHierarchyReference]
+// MARK: - Convenience
 
-    let elementLibraries: [InspectorElementLibraryProtocol]
-
-    init(
-        availableLayers: [ViewHierarchyLayer],
-        elementLibraries: [InspectorElementLibraryProtocol],
-        in rootView: UIView
-    ) {
-        self.availableLayers = availableLayers.uniqueValues()
-
-        self.elementLibraries = elementLibraries
-
-        rootReference = ViewHierarchyReference(rootView)
-
-        inspectableReferences = rootReference.inspectableViewReferences
-
-        let inspectableViews = rootReference.inspectableViewReferences.compactMap(\.rootView)
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
-        }
-    }
-
+protocol InspectorSwiftUIHost: InspectorHost {
+    func insectorViewDidFinishPresentation()
 }

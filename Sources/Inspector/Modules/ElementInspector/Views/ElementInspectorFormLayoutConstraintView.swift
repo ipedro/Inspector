@@ -36,7 +36,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         set {}
     }
 
-    static func createItemView() -> InspectorElementFormItemView {
+    static func makeItemView() -> InspectorElementFormItemView {
         ElementInspectorFormLayoutConstraintView()
     }
 

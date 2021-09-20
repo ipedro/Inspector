@@ -20,26 +20,24 @@
 
 import UIKit
 
-// MARK: - LayerManagerProtocol
-
 extension Manager: LayerManagerProtocol {
-    public var isShowingLayers: Bool {
-        viewHierarchyLayersCoordinator?.isShowingLayers ?? false
+    var isInspectingHierarchy: Bool {
+        viewHierarchyCoordinator.isInspectingHierarchy
     }
 
-    public func installLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        viewHierarchyLayersCoordinator?.installLayer(layer)
+    func installLayer(_ layer: Inspector.ViewHierarchyLayer) {
+        viewHierarchyCoordinator.installLayer(layer)
     }
 
-    public func installAllLayers() {
-        viewHierarchyLayersCoordinator?.installAllLayers()
+    func installAllLayers() {
+        viewHierarchyCoordinator.installAllLayers()
     }
 
-    public func removeAllLayers() {
-        viewHierarchyLayersCoordinator?.removeAllLayers()
+    func removeAllLayers() {
+        viewHierarchyCoordinator.removeAllLayers()
     }
 
-    public func removeLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        viewHierarchyLayersCoordinator?.removeLayer(layer)
+    func removeLayer(_ layer: Inspector.ViewHierarchyLayer) {
+        viewHierarchyCoordinator.removeLayer(layer)
     }
 }

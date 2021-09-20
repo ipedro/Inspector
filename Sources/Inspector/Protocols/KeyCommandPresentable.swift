@@ -20,39 +20,31 @@
 
 import UIKit
 
-struct ViewHierarchySnapshot {
-    let expiryDate = Date().addingTimeInterval(Inspector.configuration.cacheExpirationTimeInterval)
+protocol KeyCommandPresentable {
 
-    var isValid: Bool { expiryDate > Date() }
+    var commandGroups: CommandGroups { get }
 
-    let availableLayers: [ViewHierarchyLayer]
+    var keyCommands: [UIKeyCommand] { get }
 
-    let populatedLayers: [ViewHierarchyLayer]
+}
 
-    let rootReference: ViewHierarchyReference
-
-    let inspectableReferences: [ViewHierarchyReference]
-
-    let elementLibraries: [InspectorElementLibraryProtocol]
-
-    init(
-        availableLayers: [ViewHierarchyLayer],
-        elementLibraries: [InspectorElementLibraryProtocol],
-        in rootView: UIView
-    ) {
-        self.availableLayers = availableLayers.uniqueValues()
-
-        self.elementLibraries = elementLibraries
-
-        rootReference = ViewHierarchyReference(rootView)
-
-        inspectableReferences = rootReference.inspectableViewReferences
-
-        let inspectableViews = rootReference.inspectableViewReferences.compactMap(\.rootView)
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
-        }
+extension KeyCommandPresentable {
+    
+    var keyCommands: [UIKeyCommand] {
+        makeKeyCommands(withSelector: keyCommandAction)
     }
 
+    private var keyCommandAction: Selector {
+        #selector(UIViewController.inspectorKeyCommandHandler(_:))
+    }
+
+    private func makeKeyCommands(withSelector aSelector: Selector) -> [UIKeyCommand] {
+        commandGroups.flatMap { commandGroup in
+            commandGroup.commands.compactMap { action -> UIKeyCommand? in
+                guard let options = action.keyCommandOptions else { return nil }
+                return UIKeyCommand(.discoverabilityTitle(title: action.title, key: options), action: aSelector)
+            }
+        }
+        .sortedByInputKey()
+    }
 }

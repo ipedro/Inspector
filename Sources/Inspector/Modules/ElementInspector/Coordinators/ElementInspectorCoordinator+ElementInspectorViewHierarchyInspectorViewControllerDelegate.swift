@@ -22,7 +22,7 @@ import UIKit
 
 extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegate {
     func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController, previewFor reference: ViewHierarchyReference) -> UIViewController? {
-        ViewHierarchyThumbnailViewController(viewModel: .init(reference: reference, snapshot: viewHierarchySnapshot))
+        ViewHierarchyThumbnailViewController(viewModel: .init(reference: reference, snapshot: snapshot))
     }
 
     func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
@@ -48,9 +48,9 @@ extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegat
 
             let elementInspectorViewController = Self.makeElementInspectorViewController(
                 with: reference,
-                in: self.viewHierarchySnapshot,
+                in: self.snapshot,
                 selectedPanel: selectedPanel,
-                elementLibraries: self.viewHierarchySnapshot.elementLibraries,
+                elementLibraries: self.snapshot.elementLibraries,
                 delegate: self
             )
 

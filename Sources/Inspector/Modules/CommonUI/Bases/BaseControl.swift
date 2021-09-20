@@ -127,6 +127,20 @@ class BaseControl: UIControl, InternalViewProtocol {
         }
     }
 
+    /// Returns the farthest descendant of the receiver in the view hierarchy (including itself) that contains a specified point.
+    override open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        switch super.hitTest(point, with: event) {
+        case let control as UIControl where control.isEnabled:
+            return control
+
+        case let view? where view.hasEnabledGestureRecognizers:
+            return view
+
+        default:
+            return self
+        }
+    }
+
     // MARK: - Private Methods
 
     private func checkState() {
@@ -145,4 +159,12 @@ class BaseControl: UIControl, InternalViewProtocol {
 extension UIControl.Event {
     /// Event happens when the control's state is changed.
     static var stateChanged = UIControl.Event(rawValue: 1 << 24)
+}
+
+// MARK: - UIView Extension
+
+public extension UIView {
+    var hasEnabledGestureRecognizers: Bool {
+        gestureRecognizers?.filter(\.isEnabled).isEmpty == false
+    }
 }

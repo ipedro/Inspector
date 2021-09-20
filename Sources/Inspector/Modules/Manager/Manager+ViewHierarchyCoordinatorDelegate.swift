@@ -20,39 +20,10 @@
 
 import UIKit
 
-struct ViewHierarchySnapshot {
-    let expiryDate = Date().addingTimeInterval(Inspector.configuration.cacheExpirationTimeInterval)
+// MARK: - ViewHierarchyCoordinatorDelegate
 
-    var isValid: Bool { expiryDate > Date() }
-
-    let availableLayers: [ViewHierarchyLayer]
-
-    let populatedLayers: [ViewHierarchyLayer]
-
-    let rootReference: ViewHierarchyReference
-
-    let inspectableReferences: [ViewHierarchyReference]
-
-    let elementLibraries: [InspectorElementLibraryProtocol]
-
-    init(
-        availableLayers: [ViewHierarchyLayer],
-        elementLibraries: [InspectorElementLibraryProtocol],
-        in rootView: UIView
-    ) {
-        self.availableLayers = availableLayers.uniqueValues()
-
-        self.elementLibraries = elementLibraries
-
-        rootReference = ViewHierarchyReference(rootView)
-
-        inspectableReferences = rootReference.inspectableViewReferences
-
-        let inspectableViews = rootReference.inspectableViewReferences.compactMap(\.rootView)
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
-        }
+extension Manager: ViewHierarchyCoordinatorDelegate {
+    func viewHierarchyCoordinator(_ coordinator: ViewHierarchyCoordinator, didSelect reference: ViewHierarchyReference, from sourceView: HighlightView) {
+        presentElementInspector(for: reference, animated: true, from: sourceView.labelContentView)
     }
-
 }

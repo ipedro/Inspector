@@ -20,39 +20,32 @@
 
 import UIKit
 
-struct ViewHierarchySnapshot {
-    let expiryDate = Date().addingTimeInterval(Inspector.configuration.cacheExpirationTimeInterval)
-
-    var isValid: Bool { expiryDate > Date() }
-
-    let availableLayers: [ViewHierarchyLayer]
-
-    let populatedLayers: [ViewHierarchyLayer]
-
-    let rootReference: ViewHierarchyReference
-
-    let inspectableReferences: [ViewHierarchyReference]
-
-    let elementLibraries: [InspectorElementLibraryProtocol]
-
-    init(
-        availableLayers: [ViewHierarchyLayer],
-        elementLibraries: [InspectorElementLibraryProtocol],
-        in rootView: UIView
-    ) {
-        self.availableLayers = availableLayers.uniqueValues()
-
-        self.elementLibraries = elementLibraries
-
-        rootReference = ViewHierarchyReference(rootView)
-
-        inspectableReferences = rootReference.inspectableViewReferences
-
-        let inspectableViews = rootReference.inspectableViewReferences.compactMap(\.rootView)
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
-        }
+extension InspectorViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        viewModel.numberOfSections
     }
 
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        viewModel.numberOfRows(in: section)
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell = {
+            switch viewModel.cellViewModelForRow(at: indexPath) {
+            case let .action(cellViewModel):
+                let cell = tableView.dequeueReusableCell(HierarchyInspectorActionTableViewCell.self, for: indexPath)
+                cell.viewModel = cellViewModel
+                return cell
+
+            case let .element(cellViewModel):
+                let cell = tableView.dequeueReusableCell(HierarchyInspectorReferenceSummaryTableViewCell.self, for: indexPath)
+                cell.viewModel = cellViewModel
+                return cell
+            }
+
+        }()
+
+        cell.isSelected = tableView.indexPathForSelectedRow == indexPath
+        return cell
+    }
 }

@@ -45,5 +45,5 @@ public protocol InspectorElementFormItemView: UIView {
     func addFormViews(_ formViews: [UIView])
 
     /// Create and return a container view that conforms to the `InspectorElementFormItemView` protocol.
-    static func createItemView() -> InspectorElementFormItemView
+    static func makeItemView() -> InspectorElementFormItemView
 }

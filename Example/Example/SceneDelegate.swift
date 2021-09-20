@@ -66,7 +66,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 // MARK: - InspectorHostable
 
-extension SceneDelegate: InspectorHostable {
+extension SceneDelegate: InspectorHost {
     var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { ExampleElementLibrary.allCases }
 
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
@@ -167,11 +167,9 @@ extension UIWindow {
     override open func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         super.motionBegan(motion, with: event)
 
-        guard motion == .motionShake else {
-            return
-        }
+        guard motion == .motionShake else { return }
 
-        presentInspector(animated: true)
+        inspectAll()
     }
 }
 

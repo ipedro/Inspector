@@ -19,6 +19,7 @@
 //  SOFTWARE.
 
 import UIKit
+@_implementationOnly import Coordinator
 
 // MARK: - Content View Controllers
 
@@ -38,17 +39,17 @@ protocol ElementInspectorCoordinatorDelegate: AnyObject {
 
 // MARK: - ElementInspectorCoordinator
 
-final class ElementInspectorCoordinator: NSObject {
+final class ElementInspectorCoordinator: NavigationCoordinator {
     weak var delegate: ElementInspectorCoordinatorDelegate?
 
-    let viewHierarchySnapshot: ViewHierarchySnapshot
+    let snapshot: ViewHierarchySnapshot
 
     let reference: ViewHierarchyReference
 
     weak var sourceView: UIView?
 
     private(set) lazy var navigationController: ElementInspectorNavigationController = {
-        let navigationController = createNavigationController(from: sourceView)
+        let navigationController = makeNavigationController(from: sourceView)
 
         addElementInspectorsForReferences(in: navigationController)
 
@@ -59,11 +60,11 @@ final class ElementInspectorCoordinator: NSObject {
 
     init(
         reference: ViewHierarchyReference,
-        in viewHierarchySnapshot: ViewHierarchySnapshot,
+        in snapshot: ViewHierarchySnapshot,
         from sourceView: UIView?
     ) {
         self.reference = reference
-        self.viewHierarchySnapshot = viewHierarchySnapshot
+        self.snapshot = snapshot
         self.sourceView = sourceView ?? reference.rootView
     }
 
@@ -86,7 +87,7 @@ final class ElementInspectorCoordinator: NSObject {
         }
     }
 
-    func start() -> UIViewController {
+    func start() -> UINavigationController {
         navigationController
     }
 
@@ -94,7 +95,8 @@ final class ElementInspectorCoordinator: NSObject {
         operationQueue.cancelAllOperations()
         operationQueue.isSuspended = true
 
-        delegate?.elementInspectorCoordinator(self, didFinishWith: viewHierarchySnapshot.rootReference)
+        navigationController.dismiss(animated: true)
+        delegate?.elementInspectorCoordinator(self, didFinishWith: snapshot.rootReference)
     }
 
     static func makeElementInspectorViewController(
@@ -121,7 +123,7 @@ final class ElementInspectorCoordinator: NSObject {
     func panelViewController(for panel: ElementInspectorPanel, with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {
         switch panel {
         case .preview:
-            return ElementPreviewPanelViewController.create(
+            return ElementPreviewPanelViewController(
                 viewModel: ElementPreviewPanelViewModel(
                     reference: reference,
                     isLiveUpdating: true
@@ -136,7 +138,7 @@ final class ElementInspectorCoordinator: NSObject {
                     items: {
                         guard let referenceView = reference.rootView else { return [] }
 
-                        return viewHierarchySnapshot.elementLibraries.targeting(element: referenceView).flatMap { library in
+                        return snapshot.elementLibraries.targeting(element: referenceView).flatMap { library in
                             library.items(for: referenceView)
                         }
                     }()
@@ -149,7 +151,7 @@ final class ElementInspectorCoordinator: NSObject {
             return ElementChildrenPanelViewController(
                 viewModel: ElementChildrenPanelViewModel(
                     reference: reference,
-                    snapshot: viewHierarchySnapshot
+                    snapshot: snapshot
                 )
             ).then {
                 $0.delegate = self
@@ -175,7 +177,6 @@ final class ElementInspectorCoordinator: NSObject {
         }
     }
 
-
     var topElementInspectorViewController: ElementInspectorViewController? {
         navigationController.topViewController as? ElementInspectorViewController
     }
@@ -184,7 +185,7 @@ final class ElementInspectorCoordinator: NSObject {
         topElementInspectorViewController?.presentedPanelViewController
     }
 
-    func createNavigationController(from sourceView: UIView?) -> ElementInspectorNavigationController {
+    func makeNavigationController(from sourceView: UIView?) -> ElementInspectorNavigationController {
         let navigationController = ElementInspectorNavigationController()
         navigationController.dismissDelegate = self
         navigationController.setPopoverModalPresentationStyle(delegate: self, from: sourceView)
@@ -196,18 +197,17 @@ final class ElementInspectorCoordinator: NSObject {
 // MARK: - Private Helpers
 
 private extension ElementInspectorCoordinator {
-
     func addElementInspectorsForReferences(in navigationController: ElementInspectorNavigationController) {
-        let populatedReferences = viewHierarchySnapshot.inspectableReferences.filter { $0.rootView === reference.rootView }
+        let populatedReferences = snapshot.inspectableReferences.filter { $0.rootView === reference.rootView }
 
         let selectedPanel: ElementInspectorPanel = .preview
 
         guard let populatedReference = populatedReferences.first else {
             let rootViewController = Self.makeElementInspectorViewController(
-                with: viewHierarchySnapshot.rootReference,
-                in: viewHierarchySnapshot,
+                with: snapshot.rootReference,
+                in: snapshot,
                 selectedPanel: selectedPanel,
-                elementLibraries: viewHierarchySnapshot.elementLibraries,
+                elementLibraries: snapshot.elementLibraries,
                 delegate: self
             )
 
@@ -228,9 +228,9 @@ private extension ElementInspectorCoordinator {
 
                 let viewController = Self.makeElementInspectorViewController(
                     with: currentReference,
-                    in: viewHierarchySnapshot,
+                    in: snapshot,
                     selectedPanel: selectedPanel,
-                    elementLibraries: viewHierarchySnapshot.elementLibraries,
+                    elementLibraries: snapshot.elementLibraries,
                     delegate: self
                 )
 

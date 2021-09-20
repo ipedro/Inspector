@@ -20,27 +20,51 @@
 
 import UIKit
 
-typealias Closure = () -> Void
+// MARK: - LayerManagerProtocol
 
-public enum Inspector {
-    static let manager: Inspector.Manager = Inspector.Manager()
+extension ViewHierarchyCoordinator: LayerManagerProtocol {
 
-    public static var configuration = InspectorConfiguration()
-
-    public static var host: InspectorHost? {
-        get { manager.host }
-        set { manager.host = newValue }
+    var isInspectingHierarchy: Bool {
+        visibleReferences.isEmpty == false
     }
 
-    public static func start() {
-        manager.start()
+    // MARK: - Install
+
+    func installLayer(_ layer: Inspector.ViewHierarchyLayer) {
+        guard let snapshot = currentSnapshot() else { return }
+
+        asyncOperation(name: layer.title) {
+            self.make(layer: layer, for: snapshot)
+        }
     }
 
-    public static func finish() {
-        manager.finish()
+    func installAllLayers() {
+        guard let snapshot = currentSnapshot() else { return }
+
+        asyncOperation(name: Texts.show(Texts.allLayers)) {
+            for layer in self.populatedLayers where layer.allowsSystemViews == false {
+                self.make(layer: layer, for: snapshot)
+            }
+        }
     }
 
-    public static func restart() {
-        manager.restart()
+    // MARK: - Remove
+
+    func removeAllLayers() {
+        guard isShowingLayers else {
+            return
+        }
+
+        asyncOperation(name: Texts.hide(Texts.allLayers)) {
+            self.destroyAllLayers()
+        }
+    }
+
+    func removeLayer(_ layer: ViewHierarchyLayer) {
+        guard isShowingLayers else { return }
+
+        asyncOperation(name: layer.title) {
+            self.destroy(layer: layer)
+        }
     }
 }

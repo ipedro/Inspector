@@ -19,20 +19,18 @@
 //  SOFTWARE.
 
 import UIKit
+@_implementationOnly import Coordinator
 
 typealias Manager = Inspector.Manager
 
-extension Inspector {
-    enum InspectorError: Error {
-        case noViewHierarchySnapshot
-    }
+typealias Coordinator = BaseCoordinator<Void> & StartProtocol
 
-    public final class Manager: Create {
+extension Inspector {
+
+    final class Manager: Coordinator {
         // MARK: - Properties
 
-        static let shared = Manager()
-
-        weak var host: InspectorHostable? {
+        weak var host: InspectorHost? {
             didSet {
                 if oldValue != nil {
                     finish()
@@ -43,47 +41,22 @@ extension Inspector {
             }
         }
 
-        var swiftUIhost: InspectorSwiftUIHostable? {
+        var swiftUIhost: InspectorSwiftUIHost? {
             didSet {
                 host = swiftUIhost
             }
         }
 
-        // MARK: - Properties
+        let operationQueue = OperationQueue.main
 
-        private(set) lazy var operationQueue = OperationQueue.main
-
-        var elementInspectorCoordinator: ElementInspectorCoordinator? {
-            didSet {
-                asyncOperation {
-                    oldValue?.finish()
-                }
-            }
-        }
-
-        var hierarchyInspectorCoordinator: HierarchyInspectorCoordinator? {
-            didSet {
-                asyncOperation {
-                    oldValue?.finish()
-                }
-            }
-        }
-
-        var viewHierarchyLayersCoordinator: ViewHierarchyLayersCoordinator? {
-            didSet {
-                asyncOperation {
-                    oldValue?.finish()
-                }
-            }
-        }
-
-        var shouldCacheViewHierarchySnapshot = true
-
-        private var cachedSnapshots: [UIView: ViewHierarchySnapshot] = [:]
+        private(set) lazy var viewHierarchyCoordinator = ViewHierarchyCoordinator(
+            dataSource: self,
+            delegate: self
+        )
 
         // MARK: - Init
 
-        private init() {}
+        init() {}
 
         deinit {
             operationQueue.cancelAllOperations()
@@ -96,104 +69,25 @@ extension Inspector {
         }
 
         func start() {
-            let coordinator = ViewHierarchyLayersCoordinator()
-            coordinator.dataSource = self
-            coordinator.delegate = self
-
-            viewHierarchyLayersCoordinator = coordinator
+            viewHierarchyCoordinator.start()
         }
 
         func finish() {
-            viewHierarchyLayersCoordinator = nil
-            elementInspectorCoordinator = nil
-            hierarchyInspectorCoordinator = nil
+            viewHierarchyCoordinator.clearData()
 
-            cachedSnapshots.removeAll()
+            children.forEach { removeChild($0) }
+
             operationQueue.cancelAllOperations()
         }
 
-        public func present(animated: Bool = true) {
-            guard let coordinator = makeHierarchyInspectorCoordinator() else { return }
-
-            let inspectorViewController = coordinator.start()
-
-            hostViewController?.present(inspectorViewController, animated: animated)
-        }
-
-        func makeHierarchyInspectorCoordinator() -> HierarchyInspectorCoordinator? {
-            guard let viewHierarchySnapshot = viewHierarchySnapshot else { return nil }
-
-            let coordinator = HierarchyInspectorCoordinator(
-                hierarchySnapshot: viewHierarchySnapshot,
-                commandGroupsProvider: { [weak self] in self?.availableCommandGroups }
-            ).then {
-                $0.delegate = self
-            }
-
-            hierarchyInspectorCoordinator = coordinator
-
-            return coordinator
-        }
     }
 }
 
-// MARK: - Commands
-
-extension Manager {
-    var availableCommandGroups: CommandGroups {
-        guard
-            let snapshot = viewHierarchySnapshot,
-            let host = host,
-            let viewHierarchyLayersCoordinator = viewHierarchyLayersCoordinator
-        else {
-            return []
-        }
-
-        let layerCommands = viewHierarchyLayersCoordinator.availableLayerCommands(for: snapshot)
-        let toggleAllLayersCommands = viewHierarchyLayersCoordinator.toggleAllLayersCommands(for: snapshot)
-
-        var commandGroups = host.inspectorCommandGroups ?? []
-        commandGroups.append(toggleAllLayersCommands)
-        commandGroups.append(layerCommands)
-
-        return commandGroups
-    }
-}
-
-// MARK: - Host ViewController
+// MARK: - Host ViewController n
 
 extension Manager {
     var hostViewController: UIViewController? {
-        viewHierarchyWindow?.rootViewController?.presentedViewController ?? viewHierarchyWindow?.rootViewController
-    }
-}
-
-// MARK: - Snapshot
-
-extension Manager {
-    var viewHierarchySnapshot: ViewHierarchySnapshot? {
-        guard let window = viewHierarchyWindow else { return nil }
-        return snapshot(of: window)
-    }
-
-    private func snapshot(of referenceView: UIView) -> ViewHierarchySnapshot {
-        guard
-            shouldCacheViewHierarchySnapshot,
-            let cachedSnapshot = cachedSnapshots[referenceView],
-            Date() <= cachedSnapshot.expiryDate
-        else {
-            let snapshot = ViewHierarchySnapshot(
-                availableLayers: host?.availableLayers ?? [],
-                elementLibraries: host?.availableElementLibraries ?? [],
-                in: referenceView
-            )
-
-            cachedSnapshots[referenceView] = snapshot
-
-            return snapshot
-        }
-
-        return cachedSnapshot
+        host?.window?.rootViewController?.presentedViewController ?? host?.window?.rootViewController
     }
 }
 
@@ -204,30 +98,5 @@ extension Manager: AsyncOperationProtocol {
         let asyncOperation = MainThreadAsyncOperation(name: name, closure: closure)
 
         operationQueue.addOperation(asyncOperation)
-    }
-}
-
-// MARK: - InspectorHostable Extension
-
-private extension InspectorHostable {
-    var availableLayers: [ViewHierarchyLayer] {
-        var layers = inspectorViewHierarchyLayers ?? []
-        layers.append(.allViews)
-        layers.append(.systemViews)
-        layers.append(.systemContainers)
-
-        return layers.uniqueValues()
-    }
-
-    var availableElementLibraries: [InspectorElementLibraryProtocol] {
-        var elements = [InspectorElementLibraryProtocol]()
-
-        if let inspectorElementLibraries = inspectorElementLibraries {
-            elements.append(contentsOf: inspectorElementLibraries)
-        }
-
-        elements.append(contentsOf: UIKitElementLibrary.allCases)
-
-        return elements
     }
 }

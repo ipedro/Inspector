@@ -82,10 +82,6 @@ final class PlaygroundViewController: UIViewController {
         }
     }
 
-    override var keyCommands: [UIKeyCommand]? {
-        inspectorManager?.keyCommands
-    }
-
     private var hasAppeared = false
 
     // MARK: - Life cycle
@@ -106,13 +102,13 @@ final class PlaygroundViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        showInspectorLayer(.allViews)
+        inspectAll()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        stopInspecting()
+        stopInspectingAll()
     }
 
     func setupSegmentedControl() {
@@ -160,5 +156,9 @@ final class PlaygroundViewController: UIViewController {
             self.textField.isEnabled = sender.isOn
             self.textField.alpha = sender.isOn ? 1 : 0.25
         }
+    }
+
+    @IBAction func openInspector(_ sender: Any) {
+        presentInspector(animated: true)
     }
 }

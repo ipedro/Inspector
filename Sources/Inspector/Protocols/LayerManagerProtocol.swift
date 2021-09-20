@@ -20,8 +20,8 @@
 
 import UIKit
 
-public protocol LayerManagerProtocol {
-    var isShowingLayers: Bool { get }
+protocol LayerManagerProtocol {
+    var isInspectingHierarchy: Bool { get }
 
     func installLayer(_ layer: Inspector.ViewHierarchyLayer)
 

@@ -31,7 +31,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         set { header.subtitle = newValue }
     }
 
-    static func createItemView() -> InspectorElementFormItemView {
+    static func makeItemView() -> InspectorElementFormItemView {
         ElementInspectorFormItemContentView(header: SectionHeader.formSectionTitle(), frame: .zero)
     }
 

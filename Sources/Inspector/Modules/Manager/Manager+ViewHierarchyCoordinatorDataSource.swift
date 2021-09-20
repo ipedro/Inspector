@@ -20,39 +20,32 @@
 
 import UIKit
 
-struct ViewHierarchySnapshot {
-    let expiryDate = Date().addingTimeInterval(Inspector.configuration.cacheExpirationTimeInterval)
+// MARK: - ViewHierarchyCoordinatorDataSource
 
-    var isValid: Bool { expiryDate > Date() }
+extension Manager: ViewHierarchyCoordinatorDataSource {
+    var rootView: UIView? { host?.window }
 
-    let availableLayers: [ViewHierarchyLayer]
+    var viewHierarchyLayers: [Inspector.ViewHierarchyLayer] {
+        var layers = host?.inspectorViewHierarchyLayers ?? []
 
-    let populatedLayers: [ViewHierarchyLayer]
-
-    let rootReference: ViewHierarchyReference
-
-    let inspectableReferences: [ViewHierarchyReference]
-
-    let elementLibraries: [InspectorElementLibraryProtocol]
-
-    init(
-        availableLayers: [ViewHierarchyLayer],
-        elementLibraries: [InspectorElementLibraryProtocol],
-        in rootView: UIView
-    ) {
-        self.availableLayers = availableLayers.uniqueValues()
-
-        self.elementLibraries = elementLibraries
-
-        rootReference = ViewHierarchyReference(rootView)
-
-        inspectableReferences = rootReference.inspectableViewReferences
-
-        let inspectableViews = rootReference.inspectableViewReferences.compactMap(\.rootView)
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
+        if layers.firstIndex(of: .allViews) == nil {
+            layers.append(.allViews)
         }
+
+        layers.append(.systemViews)
+        layers.append(.systemContainers)
+
+        return layers.uniqueValues()
     }
 
+    var viewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme {
+        host?.inspectorViewHierarchyColorScheme ?? .default
+    }
+
+    var elementLibraries: [InspectorElementLibraryProtocol] {
+        var elements = host?.inspectorElementLibraries ?? []
+        elements.append(contentsOf: UIKitElementLibrary.allCases)
+
+        return elements
+    }
 }

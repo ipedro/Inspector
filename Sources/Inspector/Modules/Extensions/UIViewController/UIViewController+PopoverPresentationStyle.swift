@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
 extension UIViewController {
@@ -36,6 +35,7 @@ extension UIViewController {
 
             adaptiveSheetPresentationController.detents = [.medium(), .large()]
             adaptiveSheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = false
+            adaptiveSheetPresentationController.largestUndimmedDetentIdentifier = .medium
             adaptiveSheetPresentationController.preferredCornerRadius = 27
             adaptiveSheetPresentationController.prefersEdgeAttachedInCompactHeight = true
             adaptiveSheetPresentationController.delegate = delegate as? UISheetPresentationControllerDelegate

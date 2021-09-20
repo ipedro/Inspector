@@ -49,7 +49,9 @@ final class ViewHierarchyReference {
 
     private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
 
-    private(set) lazy var children: [ViewHierarchyReference] = rootView?.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1, parent: self) } ?? []
+    private(set) lazy var children: [ViewHierarchyReference] = {
+        rootView?.originalSubviews.map { .init($0, depth: depth + 1, parent: self) } ?? []
+    }()
 
     var deepestRelativeLevel: Int {
         deepestAbsoulteLevel - depth
@@ -62,36 +64,40 @@ final class ViewHierarchyReference {
                 return
             }
 
-            children = view.originalSubviews.map { ViewHierarchyReference(root: $0, depth: depth + 1, parent: self) }
+            children = view.originalSubviews.map { .init($0, depth: depth + 1, parent: self) }
         }
     }
 
-    init(root: UIView, depth: Int = 0, parent: ViewHierarchyReference? = nil) {
-        rootView = root
+    convenience init(_ rootView: UIView) {
+        self.init(rootView, depth: .zero, parent: nil)
+    }
+
+    init(_ rootView: UIView, depth: Int, parent: ViewHierarchyReference?) {
+        self.rootView = rootView
 
         self.depth = depth
 
         self.parent = parent
 
-        identifier = ObjectIdentifier(root)
+        identifier = ObjectIdentifier(rootView)
 
-        canPresentOnTop = root.canPresentOnTop
+        canPresentOnTop = rootView.canPresentOnTop
 
-        isUserInteractionEnabled = root.isUserInteractionEnabled
+        isUserInteractionEnabled = rootView.isUserInteractionEnabled
 
-        _className = root.className
+        _className = rootView.className
 
-        _classNameWithoutQualifiers = root.classNameWithoutQualifiers
+        _classNameWithoutQualifiers = rootView.classNameWithoutQualifiers
 
-        _elementName = root.elementName
+        _elementName = rootView.elementName
 
-        isSystemView = root.isSystemView
+        isSystemView = rootView.isSystemView
 
-        frame = root.frame
+        frame = rootView.frame
 
-        accessibilityIdentifier = root.accessibilityIdentifier
+        accessibilityIdentifier = rootView.accessibilityIdentifier
 
-        canHostInspectorView = root.canHostInspectorView
+        canHostInspectorView = rootView.canHostInspectorView
     }
 }
 

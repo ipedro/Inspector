@@ -116,7 +116,7 @@ extension Command {
         )
     }
 
-    static func presentInspector(from host: InspectorHostable, animated: Bool = true) -> Command {
+    static func presentInspector(from host: InspectorHost, animated: Bool = true) -> Command {
         Command(
             title: Texts.presentInspector,
             icon: nil,

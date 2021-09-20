@@ -20,15 +20,49 @@
 
 import UIKit
 
-protocol LayerConstructorProtocol {
-    func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool
+extension ViewHierarchyCoordinator: LayerConstructorProtocol {
+    func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool {
+        activeLayers.contains(layer)
+    }
+
+    // MARK: - Make
 
     @discardableResult
-    func make(layer: ViewHierarchyLayer, for snapshot: ViewHierarchySnapshot) -> Bool
+    func make(layer: ViewHierarchyLayer, for snapshot: ViewHierarchySnapshot) -> Bool {
+        guard visibleReferences[layer] == nil else {
+            return false
+        }
+
+        if layer != .wireframes, visibleReferences.keys.contains(.wireframes) == false {
+            make(layer: .wireframes, for: snapshot)
+        }
+
+        let filteredHirerarchy = layer.filter(snapshot: snapshot)
+
+        let viewHierarchyRefences = filteredHirerarchy.map { ViewHierarchyReference($0) }
+
+        visibleReferences.updateValue(viewHierarchyRefences, forKey: layer)
+
+        return true
+    }
+
+    // MARK: - Destroy
 
     @discardableResult
-    func destroy(layer: ViewHierarchyLayer) -> Bool
+    func destroyAllLayers() -> Bool {
+        visibleReferences.removeAll()
+
+        return true
+    }
 
     @discardableResult
-    func destroyAllLayers() -> Bool
+    func destroy(layer: ViewHierarchyLayer) -> Bool {
+        visibleReferences.removeValue(forKey: layer)
+
+        if Array(visibleReferences.keys) == [.wireframes] {
+            visibleReferences.removeValue(forKey: .wireframes)
+        }
+
+        return true
+    }
 }

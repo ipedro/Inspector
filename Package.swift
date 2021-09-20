@@ -16,7 +16,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/ipedro/UIKeyCommandTableView.git", from: "0.2.1"),
         .package(url: "https://github.com/ipedro/UIKeyboardAnimatable.git", from: "0.3.0"),
-        .package(url: "https://github.com/ipedro/UIKitOptions.git", from: "0.3.2")
+        .package(url: "https://github.com/ipedro/UIKitOptions.git", from: "0.3.2"),
+        .package(url: "https://github.com/ipedro/Coordinator.git", from: "1.0.1"),
     ],
     targets: [
         .target(
@@ -24,7 +25,8 @@ let package = Package(
             dependencies: [
                 "UIKeyCommandTableView",
                 "UIKeyboardAnimatable",
-                "UIKitOptions"
+                "UIKitOptions",
+                "Coordinator"
             ],
             resources: [
                 .process("Resources")

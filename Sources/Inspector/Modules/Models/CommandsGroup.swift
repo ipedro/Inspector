@@ -29,8 +29,17 @@ public extension Inspector {
         public var title: String?
         public var commands: [Command]
 
-        public static func group(title: String?, commands: [Command]) -> CommandsGroup {
+        private init(title: String?, commands: [Command]) {
+            self.title = title
+            self.commands = commands
+        }
+
+        public static func group(title: String? = nil, commands: [Command]) -> CommandsGroup {
             CommandsGroup(title: title, commands: commands)
+        }
+
+        public static func group(with command: Command) -> CommandsGroup {
+            CommandsGroup(title: nil, commands: [command])
         }
     }
 }

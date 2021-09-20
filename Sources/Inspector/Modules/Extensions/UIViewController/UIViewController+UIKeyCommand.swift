@@ -20,16 +20,11 @@
 
 import UIKit
 
-extension UIViewController {
-    @objc public func inspectorKeyCommandHandler(_ sender: Any) {
-        guard
-            let keyCommand = sender as? UIKeyCommand,
-            let inspectorManager = inspectorManager
-        else {
-            return
-        }
+@objc extension UIViewController {
+    public func inspectorKeyCommandHandler(_ sender: Any) {
+        guard let keyCommand = sender as? UIKeyCommand else { return }
 
-        let flattenedCommands = inspectorManager.availableGroupsForKeyCommand.flatMap(\.commands)
+        let flattenedCommands = Inspector.manager.commandGroups.flatMap(\.commands)
 
         for action in flattenedCommands where action.title == keyCommand.discoverabilityTitle {
             action.closure?()
@@ -46,4 +41,6 @@ extension UIViewController {
             action: action
         )
     }
+
+    override open var keyCommands: [UIKeyCommand]? { Inspector.manager.keyCommands }
 }
