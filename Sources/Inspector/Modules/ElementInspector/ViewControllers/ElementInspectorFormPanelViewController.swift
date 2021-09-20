@@ -35,7 +35,6 @@ protocol ElementInspectorFormPanelDelegate: OperationQueueManagerProtocol {
                                    in item: ElementInspectorFormItem)
 }
 
-
 class ElementInspectorFormPanelViewController: ElementInspectorPanelViewController {
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
@@ -114,7 +113,6 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         super.viewDidLoad()
 
         reloadData()
-
     }
 
     func reloadData() {

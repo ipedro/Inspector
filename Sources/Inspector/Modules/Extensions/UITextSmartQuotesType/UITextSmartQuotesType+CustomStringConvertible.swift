@@ -25,13 +25,13 @@ extension UITextSmartQuotesType: CustomStringConvertible {
         switch self {
         case .default:
             return "Default"
-            
+
         case .no:
             return "No"
-            
+
         case .yes:
             return "Yes"
-            
+
         @unknown default:
             return "\(self) (unsupported)"
         }

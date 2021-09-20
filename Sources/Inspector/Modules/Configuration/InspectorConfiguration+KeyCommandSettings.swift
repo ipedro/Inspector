@@ -24,11 +24,11 @@ import UIKit
 public extension InspectorConfiguration {
     struct KeyCommandSettings {
         public var layerToggleInputRange: ClosedRange<Int> = (1...9)
-        
+
         public var layerToggleModifierFlags: UIKeyModifierFlags = [.control]
-        
+
         public var allLayersToggleInput = String(0)
-        
+
         private var presentationOptions: UIKeyCommand.Options {
             .discoverabilityTitle(
                 title: Texts.presentInspector,

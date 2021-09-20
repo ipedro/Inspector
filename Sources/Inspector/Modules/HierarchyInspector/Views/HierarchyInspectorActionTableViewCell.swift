@@ -30,23 +30,23 @@ final class HierarchyInspectorActionTableViewCell: HierarchyInspectorTableViewCe
     var viewModel: HierarchyInspectorActionTableViewCellViewModelProtocol? {
         didSet {
             textLabel?.text = viewModel?.title
-            
+
             imageView?.image = viewModel?.icon
-            
+
             contentView.alpha = viewModel?.isEnabled == true ? 1 : colorStyle.disabledAlpha
-            
+
             selectionStyle = viewModel?.isEnabled == true ? .default : .none
         }
     }
-    
+
     override func setup() {
         super.setup()
-        
+
         tintColor = colorStyle.textColor
-        
+
         textLabel?.textColor = colorStyle.textColor
         textLabel?.font = .preferredFont(forTextStyle: .callout)
-        
+
         if #available(iOS 13.0, *) {
             imageView?.layer.cornerCurve = .continuous
         }

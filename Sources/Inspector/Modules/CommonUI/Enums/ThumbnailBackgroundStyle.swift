@@ -22,7 +22,7 @@ import UIKit
 
 enum ThumbnailBackgroundStyle: Int, Swift.CaseIterable {
     case strong, medium, soft
-    
+
     var color: UIColor {
         switch (self, Inspector.configuration.colorStyle) {
         case (.strong, .dark):
@@ -40,7 +40,7 @@ enum ThumbnailBackgroundStyle: Int, Swift.CaseIterable {
             return UIColor(white: 1, alpha: 1)
         }
     }
-    
+
     var contrastingColor: UIColor {
         switch (self, Inspector.configuration.colorStyle) {
         case (.strong, .dark):
@@ -58,15 +58,15 @@ enum ThumbnailBackgroundStyle: Int, Swift.CaseIterable {
             return .darkText
         }
     }
-    
+
     var image: UIImage {
         switch self {
         case .strong:
             return IconKit.imageOfAppearanceLight()
-            
+
         case .medium:
             return IconKit.imageOfAppearanceMedium()
-            
+
         case .soft:
             return IconKit.imageOfAppearanceDark()
         }

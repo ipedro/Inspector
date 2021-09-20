@@ -28,7 +28,6 @@ enum ElementInspector {
 
 extension ElementInspector {
     struct Configuration {
-
         var isPresentingFromBottomSheet: Bool {
             #if swift(>=5.5)
             if #available(iOS 15.0, *) {

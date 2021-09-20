@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import Foundation
 
 protocol ElementPreviewPanelViewModelProtocol {
@@ -43,5 +42,4 @@ final class ElementPreviewPanelViewModel: ElementPreviewPanelViewModelProtocol {
         self.reference = reference
         self.isLiveUpdating = isLiveUpdating
     }
-
 }

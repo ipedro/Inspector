@@ -26,7 +26,7 @@ extension Manager: ViewHierarchyLayersCoordinatorDataSource {
     var viewHierarchyWindow: UIWindow? {
         host?.window
     }
-    
+
     var viewHierarchyColorScheme: ViewHierarchyColorScheme {
         host?.inspectorViewHierarchyColorScheme ?? .default
     }

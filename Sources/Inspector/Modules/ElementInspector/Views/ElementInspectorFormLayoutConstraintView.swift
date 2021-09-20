@@ -68,7 +68,6 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         $0.insets = insets
         $0.backgroundColor = colorStyle.highlightBackgroundColor
         $0.contentView.addArrangedSubview(formView)
-
     }
 
     override func setup() {
@@ -79,7 +78,6 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
     }
 
     func addFormViews(_ formViews: [UIView]) {
-
         // very hacky but nice ui benefit of moving the constraint active control to the header. shrug.
         formViews.forEach { view in
             guard
@@ -88,7 +86,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
             else {
                 return
             }
-            
+
             toggleControl.isHidden = true
 
             let switchContainerView = UIStackView().then {

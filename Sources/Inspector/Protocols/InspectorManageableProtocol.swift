@@ -40,6 +40,4 @@ public extension InspectorManageableProtocol {
     func hideInspectorLayer(_ layer: Inspector.ViewHierarchyLayer) {
         inspectorManager?.removeLayer(layer)
     }
-
-
 }

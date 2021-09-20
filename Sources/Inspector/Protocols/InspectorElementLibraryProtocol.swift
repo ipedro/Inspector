@@ -53,28 +53,28 @@ extension Sequence where Element == InspectorElementLibraryProtocol {
             filter { $0.targetClass == aElementClass }
         }
     }
-    
+
     func icon(for element: UIView?, sized size: CGSize = .elementIconSize) -> UIImage? {
         icon(for: element)?.resized(size)
     }
-    
+
     private func icon(for element: UIView?) -> UIImage? {
         let emptyImage = UIImage.moduleImage(named: "EmptyView-32_Normal")
-        
+
         guard let element = element else {
             return emptyImage
         }
-        
+
         if element.isHidden {
             return UIImage.moduleImage(named: "Hidden-32_Normal")
         }
-        
+
         guard element is NonInspectableView == false else {
             return UIImage.internalViewIcon?.withRenderingMode(element is UIControl ? .alwaysOriginal : .alwaysTemplate)
         }
-        
+
         let candidateIcons = targeting(element: element).compactMap { $0.icon(for: element) }
-        
+
         return candidateIcons.first ?? emptyImage
     }
 }

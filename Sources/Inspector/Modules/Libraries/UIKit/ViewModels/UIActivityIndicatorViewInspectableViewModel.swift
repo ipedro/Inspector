@@ -29,19 +29,19 @@ extension UIKitElementLibrary {
             case isAnimating = "Animating"
             case hidesWhenStopped = "Hides When Stopped"
         }
-        
+
         let title = "Activity Indicator"
-        
+
         private(set) weak var activityIndicatorView: UIActivityIndicatorView?
-        
+
         init?(view: UIView) {
             guard let activityIndicatorView = view as? UIActivityIndicatorView else {
                 return nil
             }
-            
+
             self.activityIndicatorView = activityIndicatorView
         }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let activityIndicatorView = activityIndicatorView else {
                 return nil
@@ -57,9 +57,9 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let style = UIActivityIndicatorView.Style.allCases[newIndex]
-                        
+
                     activityIndicatorView.style = style
                 }
             case .color:
@@ -70,28 +70,28 @@ extension UIKitElementLibrary {
                     guard let color = $0 else {
                         return
                     }
-                    
+
                     activityIndicatorView.color = color
                 }
-                
+
             case .groupBehavior:
                 return .group(title: property.rawValue)
-                
+
             case .isAnimating:
                 return .switch(
                     title: property.rawValue,
                     isOn: { activityIndicatorView.isAnimating }
                 ) { isAnimating in
-                    
+
                     switch isAnimating {
                     case true:
                         activityIndicatorView.startAnimating()
-                            
+
                     case false:
                         activityIndicatorView.stopAnimating()
                     }
                 }
-                
+
             case .hidesWhenStopped:
                 return .switch(
                     title: property.rawValue,

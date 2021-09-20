@@ -58,21 +58,21 @@ final class SeparatorView: BaseView {
     convenience init(color: UIColor, thickness: CGFloat = 0.5, frame: CGRect = .zero) {
         self.init(style: .color(color), thickness: thickness, frame: frame)
     }
-    
+
     init(style: Style, thickness: CGFloat = 0.5, frame: CGRect = .zero) {
         self.thickness = thickness
         self.style = style
-        
+
         super.init(frame: frame)
-        
+
         backgroundColor = style.color
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func setup() {
         super.setup()
         thicknessConstraint.isActive = true

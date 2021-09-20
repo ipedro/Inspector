@@ -28,16 +28,16 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
         else {
             return
         }
-        
+
         for cell in viewCode.tableView.visibleCells {
             guard let cell = cell as? HierarchyInspectorTableViewCell else {
                 return
             }
-            
+
             let headerHeight: CGFloat = headerView.frame.height
-            
+
             let hiddenFrameHeight = scrollView.contentOffset.y + headerHeight - cell.frame.origin.y
-            
+
             if hiddenFrameHeight >= 0 || hiddenFrameHeight <= cell.frame.size.height {
                 cell.maskCellFromTop(margin: hiddenFrameHeight)
             }
@@ -46,29 +46,29 @@ extension HierarchyInspectorViewController: UITableViewDelegate {
             }
         }
     }
-    
+
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         viewModel.isRowEnabled(at: indexPath) ? indexPath : nil
     }
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(HierarchyInspectorTableViewHeaderView.self)
         header.title = viewModel.titleForHeader(in: section)
         header.showSeparatorView = section > .zero
         return header
     }
-    
+
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         UIView()
     }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         viewModel.numberOfRows(in: section) == .zero ? .zero : ElementInspector.appearance.verticalMargins
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let command = viewModel.selectRow(at: indexPath)
-        
+
         delegate?.hierarchyInspectorViewController(self, didSelect: command)
     }
 }

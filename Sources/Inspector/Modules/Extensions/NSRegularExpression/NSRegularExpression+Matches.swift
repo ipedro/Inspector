@@ -24,7 +24,7 @@ extension NSRegularExpression {
     func matches(in string: String, options: NSRegularExpression.MatchingOptions = []) -> [NSTextCheckingResult] {
         matches(in: string, options: options, range: NSMakeRange(.zero, string.count))
     }
-    
+
     func firstMatch(in string: String, options: NSRegularExpression.MatchingOptions = []) -> NSTextCheckingResult? {
         firstMatch(in: string, options: options, range: NSMakeRange(.zero, string.count))
     }
@@ -34,7 +34,7 @@ extension String {
     func replacingCharacters(in range: NSRange, with string: String) -> String {
         (self as NSString).replacingCharacters(in: range, with: string)
     }
-    
+
     func substring(with range: NSRange) -> String {
         (self as NSString).substring(with: range)
     }

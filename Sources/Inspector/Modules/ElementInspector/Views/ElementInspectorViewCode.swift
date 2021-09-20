@@ -47,7 +47,7 @@ final class ElementInspectorViewCode: BaseView {
             containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         }
     }
-    
+
     private(set) lazy var scrollView = UIScrollView().then {
         $0.alwaysBounceVertical = true
         $0.keyboardDismissMode = .onDrag
@@ -70,7 +70,8 @@ final class ElementInspectorViewCode: BaseView {
     private(set) lazy var dismissBarButtonItem: UIBarButtonItem = {
         if #available(iOS 13.0, *) {
             return UIBarButtonItem(barButtonSystemItem: .close, target: nil, action: nil)
-        } else {
+        }
+        else {
             return UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
         }
     }()

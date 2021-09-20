@@ -24,7 +24,7 @@ extension UIStackView {
     static func vertical(_ options: Option...) -> UIStackView {
         UIStackView(options + [.axis(.vertical)])
     }
-    
+
     static func horizontal(_ options: Option...) -> UIStackView {
         UIStackView(options + [.axis(.horizontal)])
     }

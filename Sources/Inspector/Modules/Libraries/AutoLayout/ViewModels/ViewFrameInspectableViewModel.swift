@@ -29,7 +29,7 @@ struct ViewFrameInspectableViewModel: InspectorElementViewModelProtocol {
 
     let title: String = "View"
 
-    weak private var view: UIView?
+    private weak var view: UIView?
 
     init(view: UIView) {
         self.view = view
@@ -85,7 +85,7 @@ extension UIView.AutoresizingMask: CaseIterable {
         .flexibleRightMargin,
         .flexibleTopMargin,
         .flexibleHeight,
-        .flexibleBottomMargin,
+        .flexibleBottomMargin
     ]
 }
 
@@ -114,7 +114,7 @@ extension UIView.AutoresizingMask: CustomStringConvertible {
     var description: String {
         var strings = [String]()
 
-        for mask in Self.allCases where self.contains(mask) {
+        for mask in Self.allCases where contains(mask) {
             strings.append(mask.name)
         }
 

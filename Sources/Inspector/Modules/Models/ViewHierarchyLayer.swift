@@ -25,38 +25,38 @@ typealias ViewHierarchyLayer = Inspector.ViewHierarchyLayer
 public extension Inspector {
     struct ViewHierarchyLayer {
         public typealias Filter = (UIView) -> Bool
-        
+
         // MARK: - Properties
-        
+
         public var name: String
-        
+
         var showLabels: Bool = true
-        
+
         var allowsSystemViews: Bool = false
-        
+
         public var filter: Filter
-        
+
         // MARK: - Init
-        
+
         public static func layer(name: String, filter: @escaping Filter) -> ViewHierarchyLayer {
             ViewHierarchyLayer(name: name, filter: filter)
         }
-        
+
         // MARK: - Metods
-        
+
         func filter(snapshot: ViewHierarchySnapshot) -> [UIView] {
             let inspectableViews = snapshot.inspectableReferences.compactMap(\.rootView)
-            
+
             return filter(flattenedViewHierarchy: inspectableViews)
         }
-        
+
         func filter(flattenedViewHierarchy: [UIView]) -> [UIView] {
             let filteredViews = flattenedViewHierarchy.filter(filter)
-            
+
             switch allowsSystemViews {
             case true:
                 return filteredViews
-                
+
             case false:
                 return filteredViews.filter { $0.isSystemView == false }
             }

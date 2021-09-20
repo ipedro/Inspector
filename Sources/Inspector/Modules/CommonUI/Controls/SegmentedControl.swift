@@ -39,15 +39,15 @@ extension UISegmentedControl {
 
 final class SegmentedControl: BaseFormControl {
     // MARK: - Properties
-    
+
     let options: [Any]
-    
+
     override var isEnabled: Bool {
         didSet {
             segmentedControl.isEnabled = isEnabled
         }
     }
-    
+
     var selectedIndex: Int? {
         get {
             segmentedControl.selectedSegmentIndex == UISegmentedControl.noSegment ? nil : segmentedControl.selectedSegmentIndex
@@ -57,30 +57,30 @@ final class SegmentedControl: BaseFormControl {
                 segmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
                 return
             }
-            
+
             segmentedControl.selectedSegmentIndex = newValue
         }
     }
-    
+
     private lazy var segmentedControl = UISegmentedControl.segmentedControlStyle(items: options).then {
         $0.addTarget(self, action: #selector(changeSegment), for: .valueChanged)
     }
-    
+
     // MARK: - Init
-    
+
     init(title: String?, images: [UIImage], selectedIndex: Int?) {
         options = images
-        
+
         super.init(title: title)
-        
+
         self.selectedIndex = selectedIndex
     }
-    
+
     init(title: String?, texts: [String], selectedIndex: Int?) {
         options = texts
-        
+
         super.init(title: title)
-        
+
         self.selectedIndex = selectedIndex
     }
 
@@ -88,12 +88,12 @@ final class SegmentedControl: BaseFormControl {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func setup() {
         super.setup()
-        
+
         axis = .vertical
-        
+
         contentView.installView(segmentedControl)
     }
 

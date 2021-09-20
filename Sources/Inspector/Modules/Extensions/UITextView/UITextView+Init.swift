@@ -31,7 +31,7 @@ extension UITextView {
         isEditable: Bool = false
     ) {
         self.init()
-        
+
         self.text = text
         font = .preferredFont(forTextStyle: fontStyle)
         self.textAlignment = textAlignment
@@ -39,11 +39,11 @@ extension UITextView {
         self.isSelectable = isSelectable
         self.isEditable = isEditable
         backgroundColor = nil
-        
+
         if let textColor = textColor {
             self.textColor = textColor
         }
-        
+
         textContainerInset = UIEdgeInsets(
             left: -textContainer.lineFragmentPadding,
             right: -textContainer.lineFragmentPadding

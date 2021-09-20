@@ -139,7 +139,7 @@ extension UITextContentType: CustomStringConvertible {
             return "\(self) (unsupported)"
         }
         #endif
-        
+
         return String(describing: self)
     }
 }

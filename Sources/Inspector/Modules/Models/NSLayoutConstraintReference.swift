@@ -41,7 +41,6 @@ final class NSLayoutConstraintReference: Hashable {
 
     let second: Binding?
 
-    
     let axis: Axis
 
     init?(with constraint: NSLayoutConstraint, in view: UIView) {
@@ -83,7 +82,7 @@ final class NSLayoutConstraintReference: Hashable {
             return nil
         }
 
-        self.axis = firstAxis
+        axis = firstAxis
         self.first = first
         self.second = second
         self.constraint = constraint

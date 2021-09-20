@@ -28,23 +28,23 @@ extension UIKitElementLibrary {
             case locale = "Locale"
             case minuteInterval = "Interval"
         }
-        
+
         let title = "Date Picker"
-        
+
         private(set) weak var datePicker: UIDatePicker?
-        
+
         init?(view: UIView) {
             guard let datePicker = view as? UIDatePicker else {
                 return nil
             }
-            
+
             self.datePicker = datePicker
         }
-        
+
         private let minuteIntervalRange = 1...30
-        
+
         private lazy var validMinuteIntervals = minuteIntervalRange.filter { 60 % $0 == 0 }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let datePicker = datePicker else {
                 return nil
@@ -62,9 +62,9 @@ extension UIKitElementLibrary {
                         guard let newIndex = $0 else {
                             return
                         }
-                        
+
                         let datePickerStyle = UIDatePickerStyle.allCases[newIndex]
-                        
+
                         if #available(iOS 14.0, *) {
                             if
                                 datePicker.datePickerMode == .countDownTimer,
@@ -73,13 +73,13 @@ extension UIKitElementLibrary {
                                 datePicker.datePickerMode = .dateAndTime
                             }
                         }
-                        
+
                         datePicker.preferredDatePickerStyle = datePickerStyle
                     }
                 }
                 #endif
                 return nil
-                
+
             case .datePickerMode:
                 return .optionsList(
                     title: property.rawValue,
@@ -89,9 +89,9 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let datePickerMode = UIDatePicker.Mode.allCases[newIndex]
-                    
+
                     #if swift(>=5.3)
                     if #available(iOS 14.0, *) {
                         if
@@ -102,13 +102,13 @@ extension UIKitElementLibrary {
                         }
                     }
                     #endif
-                    
+
                     datePicker.datePickerMode = datePickerMode
                 }
-                
+
             case .locale:
                 return nil
-                
+
             case .minuteInterval:
                 return .optionsList(
                     title: property.rawValue,
@@ -118,9 +118,9 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let minuteInterval = self.validMinuteIntervals[newIndex]
-                    
+
                     datePicker.minuteInterval = minuteInterval
                 }
             }

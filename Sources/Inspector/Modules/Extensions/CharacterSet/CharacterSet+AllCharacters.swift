@@ -28,7 +28,7 @@ extension CharacterSet {
                 result.append(base + j)
             }
         }
-        
+
         return result
     }
 }

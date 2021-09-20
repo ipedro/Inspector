@@ -25,16 +25,16 @@ extension UIDatePicker.Mode: CustomStringConvertible {
         switch self {
         case .time:
             return "Time"
-            
+
         case .date:
             return "Date"
-            
+
         case .dateAndTime:
             return "Date And Time"
-            
+
         case .countDownTimer:
             return "Count Down Timer"
-            
+
         @unknown default:
             return "Unknown"
         }

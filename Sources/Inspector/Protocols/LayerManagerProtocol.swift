@@ -22,12 +22,12 @@ import UIKit
 
 public protocol LayerManagerProtocol {
     var isShowingLayers: Bool { get }
-    
+
     func installLayer(_ layer: Inspector.ViewHierarchyLayer)
-    
+
     func removeLayer(_ layer: Inspector.ViewHierarchyLayer)
-    
+
     func installAllLayers()
-    
+
     func removeAllLayers()
 }

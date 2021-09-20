@@ -21,11 +21,11 @@
 import UIKit
 
 #if swift(>=5.5)
-    @available(iOS 15.0, *)
-    extension ElementInspectorCoordinator: UISheetPresentationControllerDelegate {
-        func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
-            print(sheetPresentationController.debugDescription)
-            print("did change selection")
-        }
+@available(iOS 15.0, *)
+extension ElementInspectorCoordinator: UISheetPresentationControllerDelegate {
+    func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
+        print(sheetPresentationController.debugDescription)
+        print("did change selection")
     }
+}
 #endif

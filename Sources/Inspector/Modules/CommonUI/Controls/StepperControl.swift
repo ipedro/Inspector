@@ -30,7 +30,7 @@ final class StepperControl: BaseFormControl {
             updateState()
         }
     }
-    
+
     var value: Double {
         get {
             stepperControl.value
@@ -40,7 +40,7 @@ final class StepperControl: BaseFormControl {
             updateCounterLabel()
         }
     }
-    
+
     var range: ClosedRange<Double> {
         get {
             stepperControl.minimumValue...stepperControl.maximumValue
@@ -50,7 +50,7 @@ final class StepperControl: BaseFormControl {
             stepperControl.maximumValue = newValue.upperBound
         }
     }
-    
+
     var stepValue: Double {
         get {
             stepperControl.stepValue
@@ -59,33 +59,33 @@ final class StepperControl: BaseFormControl {
             stepperControl.stepValue = newValue
         }
     }
-    
+
     let isDecimalValue: Bool
-    
+
     // MARK: - Components
 
     private lazy var stepperControl = UIStepper().then {
         $0.addTarget(self, action: #selector(step), for: .valueChanged)
     }
-    
+
     private lazy var counterLabel = UILabel(
         .font(titleLabel.font!.withTraits(.traitMonoSpace)),
         .huggingPriority(.required, for: .horizontal)
     )
-    
+
     // MARK: - Init
-    
+
     init(title: String?, value: Double, range: ClosedRange<Double>, stepValue: Double, isDecimalValue: Bool) {
         self.isDecimalValue = isDecimalValue
-        
+
         super.init(title: title)
-        
-        self.stepperControl.maximumValue = range.upperBound
-        self.stepperControl.minimumValue = range.lowerBound
-        self.stepperControl.stepValue = stepValue
+
+        stepperControl.maximumValue = range.upperBound
+        stepperControl.minimumValue = range.lowerBound
+        stepperControl.stepValue = stepValue
         self.value = value
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -104,7 +104,7 @@ final class StepperControl: BaseFormControl {
 
         sendActions(for: .valueChanged)
     }
-    
+
     private func updateCounterLabel() {
         counterLabel.text = stepperControl.value.toString()
     }
@@ -113,5 +113,4 @@ final class StepperControl: BaseFormControl {
         stepperControl.alpha = isEnabled ? 1 : 0.5
         counterLabel.textColor = isEnabled ? colorStyle.tintColor : colorStyle.textColor
     }
-    
 }

@@ -54,7 +54,6 @@ protocol ElementInspectorFormItemViewControllerDelegate: OperationQueueManagerPr
 }
 
 final class ElementInspectorFormItemViewController: UIViewController {
-
     weak var delegate: ElementInspectorFormItemViewControllerDelegate?
 
     let viewCode: InspectorElementFormItemView

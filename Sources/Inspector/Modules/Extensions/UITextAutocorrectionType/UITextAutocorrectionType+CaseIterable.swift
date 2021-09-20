@@ -22,7 +22,7 @@ import UIKit
 
 extension UITextAutocorrectionType: CaseIterable {
     typealias AllCases = [UITextAutocorrectionType]
-    
+
     static let allCases: [UITextAutocorrectionType] = [
         .default,
         .no,

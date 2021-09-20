@@ -26,36 +26,36 @@ extension Manager: KeyCommandPresenterProtocol {
     private var keyCommandSettings: InspectorConfiguration.KeyCommandSettings {
         Inspector.configuration.keyCommands
     }
-    
+
     var availableGroupsForKeyCommand: CommandGroups {
         guard let host = host else {
             return []
         }
-        
+
         let openInspectorGroup = CommandsGroup(
             title: nil,
             commands: [
                 .presentInspector(from: host)
             ]
         )
-        
+
         var commandGroups = [openInspectorGroup]
         commandGroups.append(contentsOf: availableCommandGroups)
-        
+
         return commandGroups
     }
-    
+
     public var keyCommands: [UIKeyCommand] {
         hierarchyInspectorKeyCommands(selector: #selector(UIViewController.inspectorKeyCommandHandler(_:)))
     }
-    
+
     func hierarchyInspectorKeyCommands(selector aSelector: Selector) -> [UIKeyCommand] {
         let keyCommands = availableGroupsForKeyCommand.flatMap { actionGroup in
             actionGroup.commands.compactMap { action -> UIKeyCommand? in
                 guard let options = action.keyCommandOptions else {
                     return nil
                 }
-                
+
                 return UIKeyCommand(.discoverabilityTitle(title: action.title, key: options), action: aSelector)
             }
         }

@@ -29,7 +29,7 @@ final class HierarchyInspectorSearchView: BaseView {
             height: 19
         )
     )
-    
+
     private(set) lazy var textField = UITextField(
         .clearButtonMode(.whileEditing),
         .textStyle(.title2),
@@ -42,35 +42,35 @@ final class HierarchyInspectorSearchView: BaseView {
             )
         )
     )
-    
+
     private(set) lazy var separatorView = SeparatorView(style: .medium, thickness: 1)
-    
+
     override var canBecomeFirstResponder: Bool {
         textField.canBecomeFirstResponder
     }
-    
+
     override var isFirstResponder: Bool {
         textField.isFirstResponder
     }
-    
+
     @discardableResult
     override func becomeFirstResponder() -> Bool {
         super.becomeFirstResponder()
-        
+
         return textField.becomeFirstResponder()
     }
-    
+
     override func setup() {
         super.setup()
-        
+
         contentView.axis = .horizontal
         contentView.alignment = .center
         contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
         contentView.spacing = ElementInspector.appearance.horizontalMargins / 2
-        
+
         contentView.addArrangedSubview(searchIcon)
         contentView.addArrangedSubview(textField)
-        
+
         installView(separatorView, .margins(leading: .zero, bottom: .zero, trailing: .zero))
     }
 }
@@ -81,15 +81,15 @@ extension HierarchyInspectorSearchView {
     var query: String? {
         textField.text
     }
-    
+
     var hasText: Bool {
         textField.hasText
     }
-    
+
     func insertText(_ text: String) {
         textField.insertText(text)
     }
-    
+
     func deleteBackward() {
         textField.deleteBackward()
     }

@@ -23,22 +23,22 @@ import UIKit
 
 final class CustomButtonInspectableViewModel: InspectorElementViewModelProtocol {
     var title: String = "Custom Button"
-    
+
     let customButton: CustomButton
-    
+
     init?(view: UIView) {
         guard let customButton = view as? CustomButton else {
             return nil
         }
         self.customButton = customButton
     }
-    
+
     enum Properties: String, CaseIterable {
         case animateOnTouch = "Animate On Touch"
         case cornerRadius = "Round Corners"
         case backgroundColor = "Background Color"
     }
-    
+
     var properties: [InspectorElementViewModelProperty] {
         Properties.allCases.map { property in
             switch property {
@@ -49,7 +49,7 @@ final class CustomButtonInspectableViewModel: InspectorElementViewModelProtocol 
                 ) { animateOnTouch in
                     self.customButton.animateOnTouch = animateOnTouch
                 }
-                
+
             case .cornerRadius:
                 return .switch(
                     title: property.rawValue,
@@ -57,13 +57,13 @@ final class CustomButtonInspectableViewModel: InspectorElementViewModelProtocol 
                 ) { roundCorners in
                     self.customButton.roundCorners = roundCorners
                 }
-                
+
             case .backgroundColor:
                 return .colorPicker(
                     title: property.rawValue,
                     color: { self.customButton.backgroundColor }
                 ) { newBackgroundColor in
-                    
+
                     self.customButton.backgroundColor = newBackgroundColor
                 }
             }

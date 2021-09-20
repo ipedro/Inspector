@@ -32,11 +32,11 @@ protocol ElementChildrenPanelViewControllerDelegate: OperationQueueManagerProtoc
 
 final class ElementChildrenPanelViewController: ElementInspectorPanelViewController {
     // MARK: - Properties
-    
+
     weak var delegate: ElementChildrenPanelViewControllerDelegate?
-    
+
     private var needsSetup = true
-    
+
     private(set) lazy var viewCode = ElementChildrenPanelViewCode(
         frame: CGRect(
             origin: .zero,
@@ -48,11 +48,11 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
         $0.tableView.dataSource = self
         $0.tableView.delegate = self
     }
-    
+
     let viewModel: ElementChildrenPanelViewModelProtocol
-    
+
     // MARK: - Init
-    
+
     init(viewModel: ElementChildrenPanelViewModelProtocol) {
         self.viewModel = viewModel
 
@@ -65,34 +65,34 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
     }
 
     // MARK: - Lifecycle
-    
+
     override func loadView() {
         view = viewCode
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         reloadData()
-        
+
         updatePreferredContentSize()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         viewCode.tableView.becomeFirstResponder()
     }
-    
+
     func reloadData() {
         viewModel.reloadIcons()
         viewCode.tableView.reloadData()
     }
-    
+
     override func calculatePreferredContentSize() -> CGSize {
         let contentHeight = viewCode.tableView.estimatedRowHeight * CGFloat(viewModel.numberOfRows)
         let contentInset = viewCode.tableView.contentInset
-        
+
         return CGSize(
             width: ElementInspector.appearance.panelPreferredCompressedSize.width,
             height: contentHeight + contentInset.top + contentInset.bottom

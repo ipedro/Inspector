@@ -32,7 +32,7 @@ extension ViewHierarchyLayer: AdditiveArithmetic {
             lhs.filter($0) && rhs.filter($0) == false
         }
     }
-    
+
     public static func + (lhs: Inspector.ViewHierarchyLayer, rhs: Inspector.ViewHierarchyLayer) -> Inspector.ViewHierarchyLayer {
         ViewHierarchyLayer(
             name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",+"),
@@ -42,7 +42,7 @@ extension ViewHierarchyLayer: AdditiveArithmetic {
             lhs.filter($0) || rhs.filter($0)
         }
     }
-    
+
     public static var zero: Inspector.ViewHierarchyLayer {
         ViewHierarchyLayer(name: "zero", showLabels: false) { _ in false }
     }

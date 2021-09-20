@@ -24,11 +24,11 @@ extension HierarchyInspectorViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         viewModel.numberOfSections
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.numberOfRows(in: section)
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell = {
             switch viewModel.cellViewModelForRow(at: indexPath) {
@@ -36,15 +36,15 @@ extension HierarchyInspectorViewController: UITableViewDataSource {
                 let cell = tableView.dequeueReusableCell(HierarchyInspectorActionTableViewCell.self, for: indexPath)
                 cell.viewModel = cellViewModel
                 return cell
-                
+
             case let .element(cellViewModel):
                 let cell = tableView.dequeueReusableCell(HierarchyInspectorReferenceSummaryTableViewCell.self, for: indexPath)
                 cell.viewModel = cellViewModel
                 return cell
             }
-            
+
         }()
-        
+
         cell.isSelected = tableView.indexPathForSelectedRow == indexPath
         return cell
     }

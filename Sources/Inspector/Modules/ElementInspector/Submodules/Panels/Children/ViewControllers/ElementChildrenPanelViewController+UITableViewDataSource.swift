@@ -47,15 +47,15 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
     }
 
     @available(iOS 13.0, *)
-        private func menuAction(
-            title: String,
-            subtitle: String? = nil,
-            image: UIImage?,
-            for reference: ViewHierarchyReference,
-            options: UIMenu.Options = .init(),
-            includeCellActions: Bool = true,
-            at indexPath: IndexPath
-        ) -> UIMenu {
+    private func menuAction(
+        title: String,
+        subtitle: String? = nil,
+        image: UIImage?,
+        for reference: ViewHierarchyReference,
+        options: UIMenu.Options = .init(),
+        includeCellActions: Bool = true,
+        at indexPath: IndexPath
+    ) -> UIMenu {
         let childrenActions: UIMenu? = {
             let count = reference.children.count
 
@@ -88,7 +88,7 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
             }
         )
 
-        let isCollapsed = self.viewModel.itemViewModel(at: indexPath)?.isCollapsed == true
+        let isCollapsed = viewModel.itemViewModel(at: indexPath)?.isCollapsed == true
 
         let cellActions: UIMenu? = {
             guard includeCellActions else { return nil }
@@ -136,7 +136,6 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
                 at: IndexPath(row: row, section: .zero)
             )
         }
-
     }
     #endif
 
@@ -156,7 +155,7 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
     }
 
     func toggleCollapse(at indexPath: IndexPath) {
-        let actions = self.viewModel.toggleContainer(at: indexPath)
+        let actions = viewModel.toggleContainer(at: indexPath)
         updateTableView(indexPath, with: actions)
     }
 }

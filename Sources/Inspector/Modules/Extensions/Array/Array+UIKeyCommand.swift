@@ -30,10 +30,10 @@ extension Array where Element == UIKeyCommand {
             else {
                 return true
             }
-            
+
             return lhsInput < rhsInput
         }
-        
+
         return copy
     }
 }

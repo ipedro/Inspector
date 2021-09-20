@@ -22,13 +22,13 @@ import UIKit
 
 protocol LayerConstructorProtocol {
     func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool
-    
+
     @discardableResult
     func create(layer: ViewHierarchyLayer, for viewHierarchySnapshot: ViewHierarchySnapshot) -> Bool
-    
+
     @discardableResult
     func destroy(layer: ViewHierarchyLayer) -> Bool
-    
+
     @discardableResult
     func destroyAllLayers() -> Bool
 }

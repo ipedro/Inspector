@@ -25,18 +25,18 @@ extension UIView {
         case slowly = 0.6
         case `default` = 0.3
         case quickly = 0.2
-        
+
         fileprivate var duration: TimeInterval { TimeInterval(rawValue) }
-        
+
         fileprivate var delay: TimeInterval { .zero }
-        
+
         fileprivate var springWithDamping: CGFloat { 1 - (rawValue / 3) }
-        
+
         fileprivate var springVelocity: CGFloat { rawValue * 10 }
-        
+
         fileprivate var options: AnimationOptions { [.beginFromCurrentState, .allowUserInteraction] }
     }
-    
+
     static func animate(_ mode: AnimationMode = .default, animations: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {
         animate(
             withDuration: mode.duration,

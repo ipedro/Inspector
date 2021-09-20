@@ -45,28 +45,28 @@ extension UIKitElementLibrary {
             case canCancelContentTouches = "Can Cancel On Scroll"
             case keyboardDismissMode = "Keyboard"
         }
-        
+
         let title = "Scroll View"
-        
+
         private(set) weak var scrollView: UIScrollView?
-        
+
         init?(view: UIView) {
             guard let scrollView = view as? UIScrollView else {
                 return nil
             }
-            
+
             self.scrollView = scrollView
         }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let scrollView = scrollView else {
                 return nil
             }
-            
+
             switch property {
             case .groupIndicators:
                 return .group(title: property.rawValue)
-                
+
             case .indicatorStyle:
                 return .optionsList(
                     title: property.rawValue,
@@ -76,12 +76,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let indicatorStyle = UIScrollView.IndicatorStyle.allCases[newIndex]
-                    
+
                     scrollView.indicatorStyle = indicatorStyle
                 }
-                
+
             case .showsHorizontalScrollIndicator:
                 return .switch(
                     title: property.rawValue,
@@ -89,7 +89,7 @@ extension UIKitElementLibrary {
                 ) { showsHorizontalScrollIndicator in
                     scrollView.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
                 }
-                
+
             case .showsVerticalScrollIndicator:
                 return .switch(
                     title: property.rawValue,
@@ -97,10 +97,10 @@ extension UIKitElementLibrary {
                 ) { showsVerticalScrollIndicator in
                     scrollView.showsVerticalScrollIndicator = showsVerticalScrollIndicator
                 }
-                
+
             case .groupScrolling:
                 return .group(title: property.rawValue)
-                
+
             case .isScrollEnabled:
                 return .switch(
                     title: property.rawValue,
@@ -108,7 +108,7 @@ extension UIKitElementLibrary {
                 ) { isScrollEnabled in
                     scrollView.isScrollEnabled = isScrollEnabled
                 }
-                
+
             case .pagingEnabled:
                 return .switch(
                     title: property.rawValue,
@@ -116,7 +116,7 @@ extension UIKitElementLibrary {
                 ) { isPagingEnabled in
                     scrollView.isPagingEnabled = isPagingEnabled
                 }
-                
+
             case .isDirectionalLockEnabled:
                 return .switch(
                     title: property.rawValue,
@@ -124,10 +124,10 @@ extension UIKitElementLibrary {
                 ) { isDirectionalLockEnabled in
                     scrollView.isDirectionalLockEnabled = isDirectionalLockEnabled
                 }
-                
+
             case .groupBounce:
                 return .group(title: property.rawValue)
-                
+
             case .bounces:
                 return .switch(
                     title: property.rawValue,
@@ -135,7 +135,7 @@ extension UIKitElementLibrary {
                 ) { bounces in
                     scrollView.bounces = bounces
                 }
-                
+
             case .bouncesZoom:
                 return .switch(
                     title: property.rawValue,
@@ -143,7 +143,7 @@ extension UIKitElementLibrary {
                 ) { bouncesZoom in
                     scrollView.bouncesZoom = bouncesZoom
                 }
-                
+
             case .alwaysBounceHorizontal:
                 return .switch(
                     title: property.rawValue,
@@ -151,7 +151,7 @@ extension UIKitElementLibrary {
                 ) { alwaysBounceHorizontal in
                     scrollView.alwaysBounceHorizontal = alwaysBounceHorizontal
                 }
-                
+
             case .bounceVertically:
                 return .switch(
                     title: property.rawValue,
@@ -159,10 +159,10 @@ extension UIKitElementLibrary {
                 ) { alwaysBounceVertical in
                     scrollView.alwaysBounceVertical = alwaysBounceVertical
                 }
-                
+
             case .groupZoom:
                 return .separator
-                
+
             case .zoomScale:
                 return .cgFloatStepper(
                     title: property.rawValue,
@@ -172,7 +172,7 @@ extension UIKitElementLibrary {
                 ) { zoomScale in
                     scrollView.zoomScale = zoomScale
                 }
-                
+
             case .minimumZoomScale:
                 return .cgFloatStepper(
                     title: property.rawValue,
@@ -182,7 +182,7 @@ extension UIKitElementLibrary {
                 ) { minimumZoomScale in
                     scrollView.minimumZoomScale = minimumZoomScale
                 }
-                
+
             case .maximumZoomScale:
                 return .cgFloatStepper(
                     title: property.rawValue,
@@ -192,10 +192,10 @@ extension UIKitElementLibrary {
                 ) { maximumZoomScale in
                     scrollView.maximumZoomScale = maximumZoomScale
                 }
-                
+
             case .groupContentTouch:
                 return .group(title: property.rawValue)
-                
+
             case .delaysContentTouches:
                 return .switch(
                     title: property.rawValue,
@@ -203,7 +203,7 @@ extension UIKitElementLibrary {
                 ) { delaysContentTouches in
                     scrollView.delaysContentTouches = delaysContentTouches
                 }
-                
+
             case .canCancelContentTouches:
                 return .switch(
                     title: property.rawValue,
@@ -211,7 +211,7 @@ extension UIKitElementLibrary {
                 ) { canCancelContentTouches in
                     scrollView.canCancelContentTouches = canCancelContentTouches
                 }
-                
+
             case .keyboardDismissMode:
                 return .optionsList(
                     title: property.rawValue,
@@ -221,9 +221,9 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let keyboardDismissMode = UIScrollView.KeyboardDismissMode.allCases[newIndex]
-                    
+
                     scrollView.keyboardDismissMode = keyboardDismissMode
                 }
             }

@@ -22,7 +22,7 @@ import UIKit
 
 extension UITextAutocapitalizationType: CaseIterable {
     typealias AllCases = [UITextAutocapitalizationType]
-    
+
     static let allCases: [UITextAutocapitalizationType] = [
         .none,
         .words,

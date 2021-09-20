@@ -22,7 +22,7 @@ import UIKit
 
 extension UIControl.ContentVerticalAlignment: CaseIterable {
     typealias AllCases = [UIControl.ContentVerticalAlignment]
-    
+
     static let allCases: [UIControl.ContentVerticalAlignment] = [
         .top,
         .center,

@@ -25,13 +25,13 @@ extension UIScrollView.IndicatorStyle: CustomStringConvertible {
         switch self {
         case .default:
             return "Default Style"
-            
+
         case .black:
             return "Black"
-            
+
         case .white:
             return "White"
-            
+
         @unknown default:
             return "\(self) (unsupported)"
         }

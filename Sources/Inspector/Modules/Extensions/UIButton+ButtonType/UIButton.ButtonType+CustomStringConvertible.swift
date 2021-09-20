@@ -27,25 +27,25 @@ extension UIButton.ButtonType: CustomStringConvertible {
             switch self {
             case .custom:
                 return "Custom"
-                
+
             case .system:
                 return "System"
-                
+
             case .detailDisclosure:
                 return "Detail Disclosure"
-                
+
             case .infoLight:
                 return "Info Light"
-                
+
             case .infoDark:
                 return "Info Dark"
-                
+
             case .contactAdd:
                 return "Contact Add"
-                
+
             case .close:
                 return "Close"
-                
+
             @unknown default:
                 return "Unknown"
             }
@@ -54,22 +54,22 @@ extension UIButton.ButtonType: CustomStringConvertible {
         switch self {
         case .custom:
             return "Custom"
-            
+
         case .system:
             return "System"
-            
+
         case .detailDisclosure:
             return "Detail Disclosure"
-            
+
         case .infoLight:
             return "Info Light"
-            
+
         case .infoDark:
             return "Info Dark"
-            
+
         case .contactAdd:
             return "Contact Add"
-            
+
         default:
             return "Unknown"
         }

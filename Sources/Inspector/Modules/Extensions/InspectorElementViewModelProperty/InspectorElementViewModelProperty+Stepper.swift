@@ -37,7 +37,7 @@ public extension InspectorElementViewModelProperty {
             handler: handler == nil ? nil : { handler?(Int($0)) }
         )
     }
-    
+
     static func cgFloatStepper(
         title: String,
         value: @escaping CGFloatProvider,
@@ -54,7 +54,7 @@ public extension InspectorElementViewModelProperty {
             handler: handler == nil ? nil : { handler?(CGFloat($0)) }
         )
     }
-    
+
     static func floatStepper(
         title: String,
         value: @escaping (() -> Float),

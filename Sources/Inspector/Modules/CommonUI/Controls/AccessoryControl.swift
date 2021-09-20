@@ -27,20 +27,20 @@ final class AccessoryControl: BaseControl {
             backgroundColor = isEnabled ? colorStyle.accessoryControlBackgroundColor : colorStyle.accessoryControlDisabledBackgroundColor
         }
     }
-    
+
     override func setup() {
         super.setup()
-        
+
         animateOnTouch = true
-        
+
         contentView.axis = .horizontal
-        
+
         contentView.spacing = ElementInspector.appearance.verticalMargins / 2
-        
+
         contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(horizontal: 12, vertical: 9) // matches UIStepper
-        
+
         layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
-        
+
         backgroundColor = colorStyle.accessoryControlBackgroundColor
     }
 }

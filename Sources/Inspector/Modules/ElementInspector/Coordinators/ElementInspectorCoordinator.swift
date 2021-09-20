@@ -192,33 +192,34 @@ private extension ElementInspectorCoordinator {
         navigationController.dismissDelegate = self
 
         #if swift(>=5.5)
-            if #available(iOS 15.0, *) {
-                navigationController.modalPresentationStyle = .popover
+        if #available(iOS 15.0, *) {
+            navigationController.modalPresentationStyle = .popover
 
-                if let popover = navigationController.popoverPresentationController {
-                    popover.sourceView = sourceView
-                    popover.delegate = self
+            if let popover = navigationController.popoverPresentationController {
+                popover.sourceView = sourceView
+                popover.delegate = self
 
-                    let sheet = popover.adaptiveSheetPresentationController
-                    sheet.detents = [.medium(), .large()]
-                    sheet.prefersScrollingExpandsWhenScrolledToEdge = false
-                    sheet.preferredCornerRadius = 28
-                    sheet.prefersEdgeAttachedInCompactHeight = true
-                    sheet.delegate = self
-                }
+                let sheet = popover.adaptiveSheetPresentationController
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+                sheet.preferredCornerRadius = 28
+                sheet.prefersEdgeAttachedInCompactHeight = true
+                sheet.delegate = self
             }
+        }
         #else
-            if sourceView?.traitCollection.userInterfaceIdiom == .phone {
-                navigationController.modalPresentationStyle = .pageSheet
-                navigationController.presentationController?.delegate = self
-            } else {
-                navigationController.modalPresentationStyle = .popover
+        if sourceView?.traitCollection.userInterfaceIdiom == .phone {
+            navigationController.modalPresentationStyle = .pageSheet
+            navigationController.presentationController?.delegate = self
+        }
+        else {
+            navigationController.modalPresentationStyle = .popover
 
-                if let popover = navigationController.popoverPresentationController {
-                    popover.sourceView = sourceView
-                    popover.delegate = self
-                }
+            if let popover = navigationController.popoverPresentationController {
+                popover.sourceView = sourceView
+                popover.delegate = self
             }
+        }
         #endif
 
         return navigationController

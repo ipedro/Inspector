@@ -22,7 +22,7 @@ import UIKit
 
 extension UIButton.ButtonType: CaseIterable {
     typealias AllCases = [UIButton.ButtonType]
-    
+
     static let allCases: [UIButton.ButtonType] = {
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {

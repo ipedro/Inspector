@@ -23,7 +23,7 @@ import UIKit
 @available(iOS 13.4, *)
 extension UIDatePickerStyle: CaseIterable {
     typealias AllCases = [UIDatePickerStyle]
-    
+
     static let allCases: [UIDatePickerStyle] = {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {

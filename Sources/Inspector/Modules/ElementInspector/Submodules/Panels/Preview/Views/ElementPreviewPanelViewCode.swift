@@ -39,7 +39,7 @@ final class ElementPreviewPanelViewCode: BaseView {
     private lazy var header = SectionHeader.formSectionTitle(title: "Preview").then {
         $0.margins = ElementInspector.appearance.directionalInsets
     }
-    
+
     private lazy var controlsContainerView = UIStackView.vertical(
         .directionalLayoutMargins(horizontal: ElementInspector.appearance.horizontalMargins),
         .arrangedSubviews(
@@ -48,7 +48,7 @@ final class ElementPreviewPanelViewCode: BaseView {
             isLiveUpdatingControl
         )
     )
-    
+
     private lazy var backgroundAppearanceControl = SegmentedControl(
         title: "Background Appearance",
         images: ThumbnailBackgroundStyle.allCases.map(\.image),
@@ -57,36 +57,36 @@ final class ElementPreviewPanelViewCode: BaseView {
         $0.axis = .horizontal
         $0.addTarget(self, action: #selector(changeBackground), for: .valueChanged)
     }
-    
+
     private(set) lazy var isHighlightingViewsControl = ToggleControl(
         title: "Highlight Views",
         isOn: true
     )
-    
+
     private(set) lazy var isLiveUpdatingControl = ToggleControl(
         title: "Live Update",
         isOn: true
     ).then {
         $0.isShowingSeparator = false
     }
-    
+
     private(set) lazy var thumbnailView = ViewHierarchyReferenceThumbnailView(
         frame: .zero,
         reference: reference
     ).then {
         $0.clipsToBounds = false
     }
-    
+
     private lazy var thumbnailHeightConstraint = thumbnailView.heightAnchor.constraint(
         greaterThanOrEqualToConstant: frame.height
     ).then {
         $0.priority = .defaultHigh
         $0.isActive = true
     }
-    
+
     init(reference: ViewHierarchyReference, frame: CGRect) {
         self.reference = reference
-        
+
         super.init(frame: frame)
     }
 
@@ -94,7 +94,7 @@ final class ElementPreviewPanelViewCode: BaseView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func setup() {
         super.setup()
 
@@ -107,23 +107,23 @@ final class ElementPreviewPanelViewCode: BaseView {
 
         contentView.setCustomSpacing(ElementInspector.appearance.horizontalMargins, after: controlsContainerView)
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         guard frame.isEmpty == false else {
             return
         }
-        
+
         switch thumbnailView.state {
         case .frameIsEmpty, .isHidden, .lostConnection:
             thumbnailHeightConstraint.constant = ElementInspector.appearance.horizontalMargins * 4
-            
+
         default:
             thumbnailHeightConstraint.constant = calculateContentHeight()
         }
     }
-    
+
     private func calculateContentHeight() -> CGFloat {
         let frame = AVMakeRect(
             aspectRatio: CGSize(
@@ -135,21 +135,21 @@ final class ElementPreviewPanelViewCode: BaseView {
                 size: CGSize(width: bounds.width, height: bounds.width * 2 / 3)
             )
         )
-        
+
         guard frame.height.isNormal else {
             Console.log(#function, "skipping frame content frame calc for frame \(frame), original snapshot \(thumbnailView.originalSnapshotSize)")
             return 0
         }
-        
+
         let height = frame.height + thumbnailView.contentView.directionalLayoutMargins.top + thumbnailView.contentView.directionalLayoutMargins.bottom
-        
+
         return height
     }
-    
+
     func updateSnapshot(afterScreenUpdates: Bool = true) {
         thumbnailView.updateViews(afterScreenUpdates: afterScreenUpdates)
     }
-    
+
     @objc
     func changeBackground() {
         guard
@@ -159,7 +159,7 @@ final class ElementPreviewPanelViewCode: BaseView {
             thumbnailView.backgroundStyle = .strong
             return
         }
-        
+
         thumbnailView.backgroundStyle = backgroundStyle
     }
 
@@ -169,7 +169,6 @@ final class ElementPreviewPanelViewCode: BaseView {
         target: self,
         action: #selector(hovering(_:))
     )
-    
 
     override func didMoveToWindow() {
         super.didMoveToWindow()

@@ -22,7 +22,7 @@ import MapKit
 
 extension MKMapType: CaseIterable {
     typealias AllCases = [MKMapType]
-    
+
     static let allCases: [MKMapType] = [
         .standard,
         .satellite,

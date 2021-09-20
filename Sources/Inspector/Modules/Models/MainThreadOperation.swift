@@ -22,15 +22,15 @@ import Foundation
 
 class MainThreadOperation: Operation {
     let closure: Closure
-    
+
     init(name: String, closure: @escaping Closure) {
         self.closure = closure
-        
+
         super.init()
-        
+
         self.name = name
     }
-    
+
     override func main() {
         guard Thread.isMainThread else {
             DispatchQueue.main.sync {
@@ -38,7 +38,7 @@ class MainThreadOperation: Operation {
             }
             return
         }
-        
+
         closure()
     }
 }

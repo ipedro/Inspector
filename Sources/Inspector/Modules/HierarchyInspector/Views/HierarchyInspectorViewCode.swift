@@ -27,29 +27,29 @@ protocol HierarchyInspectorViewCodeDelegate: AnyObject {
 
 final class HierarchyInspectorViewCode: BaseView {
     var verticalMargin: CGFloat { 30 }
-    
+
     var horizontalMargin: CGFloat { verticalMargin / 2 }
-    
+
     var keyboardFrame: CGRect? {
         didSet {
             let visibleHeight: CGFloat = {
                 guard let keyboardFrame = keyboardFrame else {
                     return .zero
                 }
-                
+
                 let globalFrame = convert(frame, to: nil)
-                
+
                 return globalFrame.height + globalFrame.origin.y - safeAreaInsets.bottom - keyboardFrame.origin.y
             }()
-            
+
             bottomAnchorConstraint.constant = (visibleHeight + verticalMargin) * -1
         }
     }
-    
+
     weak var delegate: HierarchyInspectorViewCodeDelegate?
-    
+
     private(set) lazy var searchView = HierarchyInspectorSearchView()
-    
+
     private(set) lazy var tableView = UIKeyCommandTableView(
         .keyboardDismissMode(.onDrag),
         .indicatorStyle(.white),
@@ -67,10 +67,10 @@ final class HierarchyInspectorViewCode: BaseView {
             bottom: ElementInspector.appearance.verticalMargins
         )
     )
-    
+
     private lazy var blurView: UIVisualEffectView = {
         let blur = UIBlurEffect(style: colorStyle.blurStyle)
-        
+
         let blurView = UIVisualEffectView(effect: blur)
         blurView.translatesAutoresizingMaskIntoConstraints = false
         blurView.clipsToBounds = true
@@ -84,14 +84,14 @@ final class HierarchyInspectorViewCode: BaseView {
                 return colorStyle.quaternaryTextColor.cgColor
             }
         }()
-        
+
         if #available(iOS 13.0, *) {
             blurView.layer.cornerCurve = .continuous
         }
-        
+
         return blurView
     }()
-    
+
     private lazy var stackView = UIStackView.vertical(
         .arrangedSubviews(
             searchView,
@@ -103,12 +103,12 @@ final class HierarchyInspectorViewCode: BaseView {
         tableView.reloadData()
         updateTableViewHeight()
     }
-    
+
     @objc func updateTableViewHeight() {
         guard window != nil else { return }
 
         let height = round(tableViewContentSize.height + tableView.contentInset.verticalInsets)
-        
+
         guard tableViewHeightConstraint.constant != height else {
             return
         }
@@ -118,39 +118,39 @@ final class HierarchyInspectorViewCode: BaseView {
             self.layoutIfNeeded()
         }
     }
-    
+
     var tableViewContentSize: CGSize = .zero {
         didSet {
             debounce(#selector(updateTableViewHeight), after: 0.01)
         }
     }
-    
+
     private lazy var tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: .zero).then {
         $0.priority = .defaultLow
         $0.isActive = true
     }
-    
+
     private lazy var bottomAnchorConstraint = blurView.bottomAnchor.constraint(
         lessThanOrEqualTo: safeAreaLayoutGuide.bottomAnchor,
         constant: -verticalMargin
     )
-    
+
     override func setup() {
         super.setup()
 
         tintColor = colorStyle.textColor
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
         preservesSuperviewLayoutMargins = false
-        
+
         layer.shadowColor = colorStyle.shadowColor.cgColor
         layer.shadowOffset = .init(width: 0, height: 6)
         layer.shadowOpacity = 1
         layer.shadowRadius = verticalMargin / 2
-        
+
         blurView.contentView.installView(stackView)
-        
+
         contentView.addSubview(blurView)
-        
+
         [
             blurView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: verticalMargin),
             blurView.leadingAnchor.constraint(equalTo: readableContentGuide.leadingAnchor, constant: horizontalMargin),
@@ -162,18 +162,18 @@ final class HierarchyInspectorViewCode: BaseView {
             $0.isActive = true
         }
     }
-    
+
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         let convertedPoint = convert(point, to: blurView)
-        
+
         if blurView.point(inside: convertedPoint, with: event) {
             return true
         }
-        
+
         DispatchQueue.main.async {
             self.delegate?.hierarchyInspectorViewCodeDidTapOutside(self)
         }
-        
+
         return false
     }
 }

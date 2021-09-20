@@ -33,47 +33,47 @@ extension UIKitElementLibrary {
             case segmentIsEnabled = "Enabled"
             case segmentIsSelected = "Selected"
         }
-        
+
         let title = "Segmented Control"
-        
+
         private(set) weak var segmentedControl: UISegmentedControl?
-        
+
         init?(view: UIView) {
             guard let segmentedControl = view as? UISegmentedControl else {
                 return nil
             }
-            
+
             self.segmentedControl = segmentedControl
-            
+
             selectedSegment = segmentedControl.numberOfSegments == 0 ? nil : 0
         }
-        
+
         private var segmentsOptions: [CustomStringConvertible] {
             guard let segmentedControl = segmentedControl else {
                 return []
             }
-            
+
             var options = [String]()
-            
+
             for index in 0 ..< segmentedControl.numberOfSegments {
                 var title: String {
                     let segmentIndex = "Segment \(index)"
-                    
+
                     guard let titleForSegment = segmentedControl.titleForSegment(at: index) else {
                         return segmentIndex
                     }
-                    
+
                     return segmentIndex + " – " + titleForSegment
                 }
-                
+
                 options.append(title)
             }
-            
+
             return options
         }
-        
+
         private var selectedSegment: Int?
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let segmentedControl = segmentedControl else {
                 return nil
@@ -92,7 +92,7 @@ extension UIKitElementLibrary {
                 }
                 #endif
                 return nil
-                
+
             case .isMomentary:
                 return .switch(
                     title: property.rawValue,
@@ -100,7 +100,7 @@ extension UIKitElementLibrary {
                 ) { isMomentary in
                     segmentedControl.isMomentary = isMomentary
                 }
-                
+
             case .isSpringLoaded:
                 return .switch(
                     title: property.rawValue,
@@ -108,10 +108,10 @@ extension UIKitElementLibrary {
                 ) { isSpringLoaded in
                     segmentedControl.isSpringLoaded = isSpringLoaded
                 }
-                
+
             case .groupSegment:
                 return .separator
-                
+
             case .segmentPicker:
                 return .optionsList(
                     title: property.rawValue,
@@ -119,85 +119,85 @@ extension UIKitElementLibrary {
                     options: segmentsOptions.map(\.description),
                     selectedIndex: { [weak self] in self?.selectedSegment }
                 ) { [weak self] selectedSegment in
-                    
+
                     self?.selectedSegment = selectedSegment
                 }
-                
+
             case .segmentTitle:
                 return .textField(
                     title: property.rawValue,
                     placeholder: property.rawValue,
                     value: { [weak self] in
-                        
+
                         guard let selectedSegment = self?.selectedSegment else {
                             return nil
                         }
-                        
+
                         return segmentedControl.titleForSegment(at: selectedSegment)
                     }
                 ) { [weak self] segmentTitle in
-                    
+
                     guard let selectedSegment = self?.selectedSegment else {
                         return
                     }
-                    
+
                     segmentedControl.setTitle(segmentTitle, forSegmentAt: selectedSegment)
                 }
-                
+
             case .segmentImage:
                 return .imagePicker(
                     title: property.rawValue,
                     image: { [weak self] in
-                        
+
                         guard let selectedSegment = self?.selectedSegment else {
                             return nil
                         }
-                        
+
                         return segmentedControl.imageForSegment(at: selectedSegment)
                     }
                 ) { [weak self] segmentImage in
-                    
+
                     guard let selectedSegment = self?.selectedSegment else {
                         return
                     }
-                    
+
                     segmentedControl.setImage(segmentImage, forSegmentAt: selectedSegment)
                 }
-                
+
             case .segmentIsEnabled:
                 return .switch(
                     title: property.rawValue,
                     isOn: { [weak self] in
-                        
+
                         guard let selectedSegment = self?.selectedSegment else {
                             return false
                         }
-                        
+
                         return segmentedControl.isEnabledForSegment(at: selectedSegment)
                     }
                 ) { [weak self] isEnabled in
-                    
+
                     guard let selectedSegment = self?.selectedSegment else {
                         return
                     }
-                    
+
                     segmentedControl.setEnabled(isEnabled, forSegmentAt: selectedSegment)
                 }
-                
+
             case .segmentIsSelected:
                 return .switch(
                     title: property.rawValue,
                     isOn: { [weak self] in self?.selectedSegment == segmentedControl.selectedSegmentIndex }
                 ) { [weak self] isSelected in
-                    
+
                     guard let selectedSegment = self?.selectedSegment else {
                         return
                     }
-                    
+
                     switch isSelected {
                     case true:
                         segmentedControl.selectedSegmentIndex = selectedSegment
-                        
+
                     case false:
                         segmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
                     }

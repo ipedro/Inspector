@@ -28,19 +28,19 @@ class ElementInspectorBasePanelViewController: UIViewController {
     var hasScrollView: Bool {
         view.subviews.contains { $0 is UIScrollView }
     }
-    
+
     private var needsLayout = true
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
+
         guard needsLayout else { return }
-        
+
         needsLayout = false
-        
+
         updatePreferredContentSize()
     }
-    
+
     @objc
     func updatePreferredContentSize() {
         guard
@@ -49,7 +49,7 @@ class ElementInspectorBasePanelViewController: UIViewController {
         else {
             return
         }
-        
+
         preferredContentSize = self.calculatePreferredContentSize()
     }
 

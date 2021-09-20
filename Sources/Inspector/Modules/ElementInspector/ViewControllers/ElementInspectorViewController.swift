@@ -112,7 +112,6 @@ final class ElementInspectorViewController: UIViewController, KeyboardAnimatable
                         panelViewController.didMove(toParent: self)
                         NSObject.cancelPreviousPerformRequests(withTarget: self.viewCode.activityIndicator)
                         self.viewCode.activityIndicator.stopAnimating()
-
                     }
                 )
             }

@@ -53,24 +53,24 @@ extension UIKitElementLibrary {
             case enablesReturnKeyAutomatically = "Auto-enable Return Key"
             case isSecureTextEntry = "Secure Text Entry"
         }
-        
+
         let title = "Text View"
-        
+
         private(set) weak var textView: UITextView?
-        
+
         init?(view: UIView) {
             guard let textView = view as? UITextView else {
                 return nil
             }
-            
+
             self.textView = textView
         }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let textView = textView else {
                 return nil
             }
-            
+
             switch property {
             case .text:
                 return .textView(
@@ -80,7 +80,7 @@ extension UIKitElementLibrary {
                 ) { text in
                     textView.text = text
                 }
-                
+
             case .textColor:
                 return .colorPicker(
                     title: property.rawValue,
@@ -88,7 +88,7 @@ extension UIKitElementLibrary {
                 ) { textColor in
                     textView.textColor = textColor
                 }
-                
+
             case .fontName:
                 return .fontNamePicker(
                     title: property.rawValue,
@@ -97,10 +97,10 @@ extension UIKitElementLibrary {
                     guard let font = font else {
                         return
                     }
-                    
+
                     textView.font = font
                 }
-                
+
             case .fontSize:
                 return .fontSizeStepper(
                     title: property.rawValue,
@@ -109,10 +109,10 @@ extension UIKitElementLibrary {
                     guard let font = font else {
                         return
                     }
-                    
+
                     textView.font = font
                 }
-                
+
             case .adjustsFontForContentSizeCategory:
                 return .switch(
                     title: property.rawValue,
@@ -120,10 +120,10 @@ extension UIKitElementLibrary {
                 ) { adjustsFontForContentSizeCategory in
                     textView.adjustsFontForContentSizeCategory = adjustsFontForContentSizeCategory
                 }
-            
+
             case .textAlignment:
                 let allCases = NSTextAlignment.allCases.withImages
-                
+
                 return .imageButtonGroup(
                     title: property.rawValue,
                     images: allCases.compactMap(\.image),
@@ -132,15 +132,15 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let textAlignment = allCases[newIndex]
-                    
+
                     textView.textAlignment = textAlignment
                 }
-                
+
             case .groupBehavior:
                 return .group(title: property.rawValue)
-                
+
             case .isEditable:
                 return .switch(
                     title: property.rawValue,
@@ -148,7 +148,7 @@ extension UIKitElementLibrary {
                 ) { isEditable in
                     textView.isEditable = isEditable
                 }
-                
+
             case .isSelectable:
                 return .switch(
                     title: property.rawValue,
@@ -156,34 +156,34 @@ extension UIKitElementLibrary {
                 ) { isSelectable in
                     textView.isSelectable = isSelectable
                 }
-                
+
             case .groupDataDetectors:
                 return .group(title: property.rawValue)
-                
+
             case .dataDetectorPhoneNumber:
                 return .dataDetectorType(textView: textView, dataDetectorType: .phoneNumber)
-                
+
             case .dataDetectorLink:
                 return .dataDetectorType(textView: textView, dataDetectorType: .link)
-                
+
             case .dataDetectorAddress:
                 return .dataDetectorType(textView: textView, dataDetectorType: .address)
-                
+
             case .dataDetectorCalendarEvent:
                 return .dataDetectorType(textView: textView, dataDetectorType: .calendarEvent)
-                
+
             case .dataDetectorShipmentTrackingNumber:
                 return .dataDetectorType(textView: textView, dataDetectorType: .shipmentTrackingNumber)
-                
+
             case .dataDetectorFlightNumber:
                 return .dataDetectorType(textView: textView, dataDetectorType: .flightNumber)
-                
+
             case .dataDetectorLookupSuggestion:
                 return .dataDetectorType(textView: textView, dataDetectorType: .lookupSuggestion)
-                
+
             case .groupTextInputTraits:
                 return .group(title: property.rawValue)
-                
+
             case .textContentType:
                 return .optionsList(
                     title: property.rawValue,
@@ -192,19 +192,19 @@ extension UIKitElementLibrary {
                         guard let textContentType = textView.textContentType else {
                             return nil
                         }
-                        
+
                         return UITextContentType.allCases.firstIndex(of: textContentType)
                     }
                 ) {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let textContentType = UITextContentType.allCases[newIndex]
-                    
+
                     textView.textContentType = textContentType
                 }
-                
+
             case .autocapitalizationType:
                 return .optionsList(
                     title: property.rawValue,
@@ -214,12 +214,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let autocapitalizationType = UITextAutocapitalizationType.allCases[newIndex]
-                    
+
                     textView.autocapitalizationType = autocapitalizationType
                 }
-                
+
             case .autocorrectionType:
                 return .optionsList(
                     title: property.rawValue,
@@ -229,12 +229,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let autocorrectionType = UITextAutocorrectionType.allCases[newIndex]
-                    
+
                     textView.autocorrectionType = autocorrectionType
                 }
-                
+
             case .smartDashesType:
                 return .optionsList(
                     title: property.rawValue,
@@ -244,12 +244,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let smartDashesType = UITextSmartDashesType.allCases[newIndex]
-                    
+
                     textView.smartDashesType = smartDashesType
                 }
-                
+
             case .smartQuotesType:
                 return .optionsList(
                     title: property.rawValue,
@@ -259,12 +259,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let smartQuotesType = UITextSmartQuotesType.allCases[newIndex]
-                    
+
                     textView.smartQuotesType = smartQuotesType
                 }
-                
+
             case .spellCheckingType:
                 return .optionsList(
                     title: property.rawValue,
@@ -274,12 +274,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let spellCheckingType = UITextSpellCheckingType.allCases[newIndex]
-                    
+
                     textView.spellCheckingType = spellCheckingType
                 }
-                
+
             case .keyboardType:
                 return .optionsList(
                     title: property.rawValue,
@@ -289,12 +289,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let keyboardType = UIKeyboardType.allCases[newIndex]
-                    
+
                     textView.keyboardType = keyboardType
                 }
-                
+
             case .keyboardAppearance:
                 return .optionsList(
                     title: property.rawValue,
@@ -304,12 +304,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let keyboardAppearance = UIKeyboardAppearance.allCases[newIndex]
-                    
+
                     textView.keyboardAppearance = keyboardAppearance
                 }
-                
+
             case .returnKey:
                 return .optionsList(
                     title: property.rawValue,
@@ -319,12 +319,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let returnKeyType = UIReturnKeyType.allCases[newIndex]
-                    
+
                     textView.returnKeyType = returnKeyType
                 }
-                
+
             case .enablesReturnKeyAutomatically:
                 return .switch(
                     title: property.rawValue,
@@ -332,7 +332,7 @@ extension UIKitElementLibrary {
                 ) { enablesReturnKeyAutomatically in
                     textView.enablesReturnKeyAutomatically = enablesReturnKeyAutomatically
                 }
-                
+
             case .isSecureTextEntry:
                 return .switch(
                     title: property.rawValue,

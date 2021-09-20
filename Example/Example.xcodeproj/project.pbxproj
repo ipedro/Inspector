@@ -170,6 +170,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EB5E1FEE261A48EC002301F5 /* Build configuration list for PBXNativeTarget "Example" */;
 			buildPhases = (
+				EB93B61B26F89EF000FBD7AC /* SwiftFormat */,
 				EB5E1FD6261A48EB002301F5 /* Sources */,
 				EB5E1FD7261A48EB002301F5 /* Frameworks */,
 				EB5E1FD8261A48EB002301F5 /* Resources */,
@@ -191,6 +192,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EB76A50926C7A7A50088E571 /* Build configuration list for PBXNativeTarget "SwiftUI Example" */;
 			buildPhases = (
+				EB93B61C26F89F1D00FBD7AC /* SwiftFormat */,
 				EB76A4F726C7A7A40088E571 /* Sources */,
 				EB76A4F826C7A7A40088E571 /* Frameworks */,
 				EB76A4F926C7A7A40088E571 /* Resources */,
@@ -267,6 +269,45 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		EB93B61B26F89EF000FBD7AC /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftformat >/dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
+		};
+		EB93B61C26F89F1D00FBD7AC /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftformat >/dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		EB5E1FD6261A48EB002301F5 /* Sources */ = {

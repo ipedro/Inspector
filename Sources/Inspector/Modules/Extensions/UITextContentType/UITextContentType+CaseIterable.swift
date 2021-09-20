@@ -22,7 +22,7 @@ import UIKit
 
 extension UITextContentType: CaseIterable {
     typealias AllCases = [UITextContentType]
-    
+
     static let allCases: [UITextContentType] = {
         #if swift(>=4.2)
         if #available(iOS 12.0, *) {

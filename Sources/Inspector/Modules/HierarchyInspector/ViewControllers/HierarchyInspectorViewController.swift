@@ -141,7 +141,7 @@ final class HierarchyInspectorViewController: UIViewController, KeyboardAnimatab
         super.viewWillAppear(animated)
 
         reloadData()
-        
+
         if animated {
             viewCode.animate(.in)
         }

@@ -31,12 +31,12 @@ extension Manager: HierarchyInspectorCoordinatorDelegate {
         guard let command = command else {
             return
         }
-        
+
         asyncOperation { [weak self] in
             switch command {
             case let .execute(closure):
                 closure()
-                
+
             case let .inspect(reference):
                 self?.presentElementInspector(for: reference, animated: true, from: nil)
             }

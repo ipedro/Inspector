@@ -35,32 +35,32 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
             textLabel?.text = viewModel?.title
             detailTextLabel?.text = viewModel?.subtitle
             imageView?.image = viewModel?.image
-            
+
             let depth = CGFloat(viewModel?.depth ?? 0)
             var margins = defaultLayoutMargins
             margins.leading += depth * 5
-            
+
             directionalLayoutMargins = margins
             separatorInset = UIEdgeInsets(left: margins.leading, right: defaultLayoutMargins.trailing)
-            
+
             contentView.alpha = viewModel?.isEnabled == true ? 1 : colorStyle.disabledAlpha
             selectionStyle = viewModel?.isEnabled == true ? .default : .none
         }
     }
-    
+
     override func setup() {
         super.setup()
-        
+
         textLabel?.font = .preferredFont(forTextStyle: .footnote).bold()
         textLabel?.numberOfLines = 2
-        
+
         detailTextLabel?.numberOfLines = 0
-        
+
         imageView?.tintColor = colorStyle.textColor
         imageView?.clipsToBounds = true
         imageView?.backgroundColor = colorStyle.quaternaryTextColor
         imageView?.contentMode = .center
-        
+
         imageView?.layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
         if #available(iOS 13.0, *) {
             imageView?.layer.cornerCurve = .continuous

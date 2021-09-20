@@ -31,7 +31,7 @@ extension UIImage {
     static let showAllLayersAction: UIImage? = .moduleImage(named: "LayerAction-ShowAll")
 }
 
-@available (iOS 13.0, *)
+@available(iOS 13.0, *)
 extension UIImage {
     static let copySymbol: UIImage? = .init(systemName: "doc.on.doc")
     static let chevronDownSymbol: UIImage? = .init(systemName: "chevron.down.circle")

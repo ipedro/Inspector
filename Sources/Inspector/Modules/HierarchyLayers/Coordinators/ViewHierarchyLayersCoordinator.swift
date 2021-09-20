@@ -28,48 +28,48 @@ protocol ViewHierarchyLayersCoordinatorDelegate: AnyObject {
 
 protocol ViewHierarchyLayersCoordinatorDataSource: AnyObject {
     var viewHierarchySnapshot: ViewHierarchySnapshot? { get }
-    
+
     var viewHierarchyWindow: UIWindow? { get }
-    
+
     var viewHierarchyColorScheme: ViewHierarchyColorScheme { get }
 }
 
 final class ViewHierarchyLayersCoordinator: Create {
     weak var delegate: ViewHierarchyLayersCoordinatorDelegate?
-    
+
     weak var dataSource: ViewHierarchyLayersCoordinatorDataSource?
-    
+
     let operationQueue = OperationQueue.main
-    
+
     var wireframeViews: [ViewHierarchyReference: WireframeView] = [:] {
         didSet {
             updateLayerViews(to: wireframeViews, from: oldValue)
         }
     }
-    
+
     var highlightViews: [ViewHierarchyReference: HighlightView] = [:] {
         didSet {
             updateLayerViews(to: highlightViews, from: oldValue)
         }
     }
-    
+
     var visibleReferences: [ViewHierarchyLayer: [ViewHierarchyReference]] = [:] {
         didSet {
             let layers = Set<ViewHierarchyLayer>(visibleReferences.keys)
             let oldLayers = Set<ViewHierarchyLayer>(oldValue.keys)
             let newLayers = layers.subtracting(oldLayers)
             let removedLayers = oldLayers.subtracting(layers)
-            
+
             removeReferences(for: removedLayers, in: oldValue)
-            
+
             guard let colorScheme = dataSource?.viewHierarchyColorScheme else {
                 return
             }
-            
+
             addReferences(for: newLayers, with: colorScheme)
         }
     }
-    
+
     func finish() {
         visibleReferences.removeAll()
         wireframeViews.removeAll()

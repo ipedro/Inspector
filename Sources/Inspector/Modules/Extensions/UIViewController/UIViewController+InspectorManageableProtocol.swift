@@ -24,9 +24,9 @@ extension UIViewController: InspectorManageableProtocol {
     public var inspectorManager: Inspector.Manager? {
         view.window?.inspectorManager
     }
-    
+
     // MARK: - Convenience
-    
+
     public var inspectorBarButtonItem: UIBarButtonItem {
         UIBarButtonItem(
             title: "🧬",
@@ -36,11 +36,11 @@ extension UIViewController: InspectorManageableProtocol {
         ).then {
             let control = UIControl()
             control.addTarget(UIViewController(), action: #selector(UIViewController.inspectorManagerPresentation), for: .touchUpInside)
-            
+
             $0.customView = control
         }
     }
-    
+
     @objc public func inspectorManagerPresentation() {
         inspectorManager?.present(animated: true)
     }

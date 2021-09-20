@@ -36,19 +36,19 @@ extension UIKitElementLibrary {
             case showsUserLocation = "User Location"
             case showsTraffic = "Traffic"
         }
-        
+
         let title = "Map View"
-        
+
         private(set) weak var mapView: MKMapView?
-        
+
         init?(view: UIView) {
             guard let mapView = view as? MKMapView else {
                 return nil
             }
-            
+
             self.mapView = mapView
         }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let mapView = mapView else {
                 return nil
@@ -64,15 +64,15 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let mapType = MKMapType.allCases[newIndex]
-                    
+
                     mapView.mapType = mapType
                 }
-                
+
             case .groupAllows:
                 return .group(title: property.rawValue)
-                
+
             case .isZoomEnabled:
                 return .switch(
                     title: property.rawValue,
@@ -80,7 +80,7 @@ extension UIKitElementLibrary {
                 ) { isZoomEnabled in
                     mapView.isZoomEnabled = isZoomEnabled
                 }
-                
+
             case .isRotateEnabled:
                 return .switch(
                     title: property.rawValue,
@@ -88,7 +88,7 @@ extension UIKitElementLibrary {
                 ) { isRotateEnabled in
                     mapView.isRotateEnabled = isRotateEnabled
                 }
-                
+
             case .isScrollEnabled:
                 return .switch(
                     title: property.rawValue,
@@ -96,7 +96,7 @@ extension UIKitElementLibrary {
                 ) { isScrollEnabled in
                     mapView.isScrollEnabled = isScrollEnabled
                 }
-                
+
             case .isPitchEnabled:
                 return .switch(
                     title: property.rawValue,
@@ -104,10 +104,10 @@ extension UIKitElementLibrary {
                 ) { isPitchEnabled in
                     mapView.isPitchEnabled = isPitchEnabled
                 }
-                
+
             case .groupShows:
                 return .group(title: property.rawValue)
-                
+
             case .buildings:
                 return .switch(
                     title: property.rawValue,
@@ -115,7 +115,7 @@ extension UIKitElementLibrary {
                 ) { showsBuildings in
                     mapView.showsBuildings = showsBuildings
                 }
-                
+
             case .showsScale:
                 return .switch(
                     title: property.rawValue,
@@ -123,7 +123,7 @@ extension UIKitElementLibrary {
                 ) { showsScale in
                     mapView.showsScale = showsScale
                 }
-                
+
             case .showsPointsOfInterest:
                 return .switch(
                     title: property.rawValue,
@@ -131,7 +131,7 @@ extension UIKitElementLibrary {
                 ) { showsPointsOfInterest in
                     mapView.showsPointsOfInterest = showsPointsOfInterest
                 }
-                
+
             case .showsUserLocation:
                 return .switch(
                     title: property.rawValue,
@@ -139,7 +139,7 @@ extension UIKitElementLibrary {
                 ) { showsUserLocation in
                     mapView.showsUserLocation = showsUserLocation
                 }
-                
+
             case .showsTraffic:
                 return .switch(
                     title: property.rawValue,

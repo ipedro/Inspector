@@ -61,4 +61,3 @@ final class CGPointControl: StepperPairControl<CGFloat> {
         self.title = title
     }
 }
-

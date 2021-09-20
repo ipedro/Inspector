@@ -22,19 +22,19 @@ import UIKit
 
 protocol ElementChildrenPanelViewModelProtocol {
     var title: String { get }
-    
+
     var rootReference: ViewHierarchyReference { get }
-    
+
     var numberOfRows: Int { get }
 
     func shouldHighlightItem(at indexPath: IndexPath) -> Bool
-    
+
     func reloadIcons()
-    
+
     func itemViewModel(at indexPath: IndexPath) -> ElementChildrenPanelItemViewModelProtocol?
 
     func image(for reference: ViewHierarchyReference) -> UIImage?
-    
+
     /// Toggle if a container displays its subviews or hides them.
     /// - Parameter indexPath: index path
     /// - Returns: Actions related to affected index paths
@@ -45,13 +45,13 @@ protocol ElementChildrenPanelViewModelProtocol {
 
 final class ElementChildrenPanelViewModel: NSObject {
     let rootReference: ViewHierarchyReference
-    
+
     private(set) var children: [ItemViewModel] {
         didSet {
             updateVisibleChildren()
         }
     }
-    
+
     private static func makeViewModels(
         reference: ViewHierarchyReference,
         parent: ItemViewModel?,
@@ -65,7 +65,7 @@ final class ElementChildrenPanelViewModel: NSObject {
             thumbnailImage: snapshot.elementLibraries.icon(for: reference.rootView),
             isCollapsed: reference.depth >= rootDepth
         )
-        
+
         let childrenViewModels: [ItemViewModel] = reference.children.flatMap { childReference in
             makeViewModels(
                 reference: childReference,
@@ -74,18 +74,18 @@ final class ElementChildrenPanelViewModel: NSObject {
                 rootDepth: rootDepth
             )
         }
-        
+
         return [viewModel] + childrenViewModels
     }
-    
+
     private lazy var visibleChildren: [ItemViewModel] = []
-    
+
     let snapshot: ViewHierarchySnapshot
-    
+
     init(reference: ViewHierarchyReference, snapshot: ViewHierarchySnapshot) {
         rootReference = reference
         self.snapshot = snapshot
-        
+
         let viewModelsIncludingRoot = Self.makeViewModels(
             reference: rootReference,
             parent: nil,
@@ -98,7 +98,7 @@ final class ElementChildrenPanelViewModel: NSObject {
         self.children = children
 
         super.init()
-        
+
         updateVisibleChildren()
     }
 }
@@ -107,9 +107,9 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
     func shouldHighlightItem(at indexPath: IndexPath) -> Bool { true }
 
     var title: String { "More info" }
-    
+
     var numberOfRows: Int { visibleChildren.count }
-    
+
     func reloadIcons() {
         children.forEach { child in
             child.thumbnailImage = snapshot.elementLibraries.icon(for: child.reference.rootView)
@@ -119,7 +119,7 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
     func image(for reference: ViewHierarchyReference) -> UIImage? {
         snapshot.elementLibraries.icon(for: reference.rootView)
     }
-    
+
     func itemViewModel(at indexPath: IndexPath) -> ElementChildrenPanelItemViewModelProtocol? {
         guard indexPath.row < visibleChildren.count else { return nil }
 
@@ -136,53 +136,53 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
 
         return IndexPath(row: row, section: .zero)
     }
-    
+
     func toggleContainer(at indexPath: IndexPath) -> [ElementInspector.ElementChildrenPanelAction] {
         guard indexPath.row < visibleChildren.count else { return [] }
-        
+
         let container = visibleChildren[indexPath.row]
-        
+
         guard container.isContainer else { return [] }
-        
+
         container.isCollapsed.toggle()
-        
+
         let oldVisibleChildren = visibleChildren
-        
+
         updateVisibleChildren()
-        
+
         let addedChildren = Set(visibleChildren).subtracting(oldVisibleChildren)
-        
+
         let deletedChildren = Set(oldVisibleChildren).subtracting(visibleChildren)
-        
+
         var deletedIndexPaths = [IndexPath]()
-        
+
         var insertedIndexPaths = [IndexPath]()
-        
+
         for child in deletedChildren {
             guard let row = oldVisibleChildren.firstIndex(of: child) else { continue }
-            
+
             deletedIndexPaths.append(IndexPath(row: row, section: 0))
         }
-        
+
         for child in addedChildren {
             guard let row = visibleChildren.firstIndex(of: child) else { continue }
-            
+
             insertedIndexPaths.append(IndexPath(row: row, section: 0))
         }
-        
+
         var actions = [ElementInspector.ElementChildrenPanelAction]()
-        
+
         if insertedIndexPaths.isEmpty == false {
             actions.append(.inserted(insertedIndexPaths))
         }
-        
+
         if deletedIndexPaths.isEmpty == false {
             actions.append(.deleted(deletedIndexPaths))
         }
-        
+
         return actions
     }
-    
+
     private func updateVisibleChildren() {
         visibleChildren = children.filter { $0.isHidden == false }
     }

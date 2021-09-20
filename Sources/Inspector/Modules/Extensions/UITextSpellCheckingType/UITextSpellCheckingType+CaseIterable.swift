@@ -22,7 +22,7 @@ import UIKit
 
 extension UITextSpellCheckingType: CaseIterable {
     typealias AllCases = [UITextSpellCheckingType]
-    
+
     static let allCases: [UITextSpellCheckingType] = [
         .default,
         .no,

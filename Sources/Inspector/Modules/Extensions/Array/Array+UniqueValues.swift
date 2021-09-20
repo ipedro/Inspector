@@ -28,7 +28,7 @@ extension Array where Element: Equatable {
                 uniqueValues += [item]
             }
         }
-        
+
         return uniqueValues
     }
 }

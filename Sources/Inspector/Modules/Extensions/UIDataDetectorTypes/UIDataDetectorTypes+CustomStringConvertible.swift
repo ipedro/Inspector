@@ -25,28 +25,28 @@ extension UIDataDetectorTypes: CustomStringConvertible {
         switch self {
         case .phoneNumber:
             return "Phone Number"
-            
+
         case .link:
             return "Link"
-            
+
         case .address:
             return "Address"
-            
+
         case .calendarEvent:
             return "Calendar Event"
-            
+
         case .shipmentTrackingNumber:
             return "Shipment Tracking Number"
-            
+
         case .flightNumber:
             return "Flight Number"
-            
+
         case .lookupSuggestion:
             return "Lookup Suggestion"
-            
+
         case .all:
             return "All"
-        
+
         default:
             return "\(self) (unsupported)"
         }

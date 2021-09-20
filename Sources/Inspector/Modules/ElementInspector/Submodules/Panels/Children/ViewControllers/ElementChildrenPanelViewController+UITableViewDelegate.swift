@@ -39,55 +39,53 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
 extension ElementChildrenPanelViewController {
     func updateTableView(_ indexPath: IndexPath, with actions: [ElementInspector.ElementChildrenPanelAction]) {
         guard actions.isEmpty == false else { return }
-        
+
         let tableView = viewCode.tableView
-        
+
         var insertedIndexPaths = [IndexPath]()
-        
+
         if let cell = tableView.cellForRow(at: indexPath) as? ElementChildrenPanelTableViewCodeCell {
             cell.toggleCollapse(animated: true)
         }
-        
+
         tableView.performBatchUpdates({
-            actions.forEach {
-                  switch $0 {
-                  case let .inserted(indexPaths):
-                      insertedIndexPaths.append(contentsOf: indexPaths)
+                                          actions.forEach {
+                                              switch $0 {
+                                              case let .inserted(indexPaths):
+                                                  insertedIndexPaths.append(contentsOf: indexPaths)
 
-                      tableView.insertRows(at: indexPaths, with: .top)
+                                                  tableView.insertRows(at: indexPaths, with: .top)
 
-                  case let .deleted(indexPaths):
-                      tableView.deleteRows(at: indexPaths, with: .top)
-                  }
-              }
+                                              case let .deleted(indexPaths):
+                                                  tableView.deleteRows(at: indexPaths, with: .top)
+                                              }
+                                          }
 
-          },
-          completion: { [weak self] _ in
-              guard let self = self else {
-                  return
-              }
+                                      },
+                                      completion: { [weak self] _ in
+                                          guard let self = self else {
+                                              return
+                                          }
 
-              self.updatePreferredContentSize()
+                                          self.updatePreferredContentSize()
 
-              self.updateVisibleRowsBackgroundColor()
-
-          }
-        )
+                                          self.updateVisibleRowsBackgroundColor()
+                                      })
     }
-    
+
     func updateVisibleRowsBackgroundColor(_ completion: ((Bool) -> Void)? = nil) {
         UIView.animate(
             withDuration: ElementInspector.configuration.animationDuration,
             animations: { [weak self] in
-            
+
                 self?.viewCode.tableView.indexPathsForVisibleRows?.forEach { indexPath in
                     guard let cell = self?.viewCode.tableView.cellForRow(at: indexPath) as? ElementChildrenPanelTableViewCodeCell else {
                         return
                     }
-                    
+
                     cell.isEvenRow = indexPath.row % 2 == 0
                 }
-            
+
             },
             completion: completion
         )

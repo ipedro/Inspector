@@ -24,7 +24,7 @@ extension ElementInspector {
     enum ElementChildrenPanelAction {
         case inserted([IndexPath])
         case deleted([IndexPath])
-        
+
         var lastIndexPath: IndexPath? {
             switch self {
             case let .inserted(indexPaths),

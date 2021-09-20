@@ -28,12 +28,12 @@ extension UIImage {
         else {
             return nil
         }
-        
+
         let assetName = description.substring(with: firstMatch.range)
-        
+
         return assetName
     }
-    
+
     var sizeDesription: String {
         guard
             let width = formatter.string(from: size.width * scale / screenScale),
@@ -41,9 +41,9 @@ extension UIImage {
         else {
             return "None"
         }
-        
+
         let sizeDesription = "w: \(width), h: \(height) @\(Int(screenScale))x"
-        
+
         return sizeDesription
     }
 }
@@ -52,11 +52,11 @@ private extension UIImage {
     static var sharedFormatter = NumberFormatter().then {
         $0.maximumFractionDigits = 1
     }
-    
+
     var formatter: NumberFormatter {
         Self.sharedFormatter
     }
-    
+
     var screenScale: CGFloat {
         UIScreen.main.scale
     }

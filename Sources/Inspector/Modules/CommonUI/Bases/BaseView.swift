@@ -24,10 +24,10 @@ class BaseView: UIView, InternalViewProtocol {
     private(set) lazy var contentView = UIStackView.vertical().then {
         installView($0)
     }
-    
+
     override init(frame: CGRect = .zero) {
         super.init(frame: frame)
-        
+
         setup()
     }
 
@@ -35,12 +35,12 @@ class BaseView: UIView, InternalViewProtocol {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     func setup() {
         preservesSuperviewLayoutMargins = true
-        
+
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             layer.cornerCurve = .continuous

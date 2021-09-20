@@ -22,7 +22,7 @@ import UIKit
 
 extension UITextField.ViewMode: CaseIterable {
     typealias AllCases = [UITextField.ViewMode]
-    
+
     static let allCases: [UITextField.ViewMode] = [
         .never,
         .whileEditing,

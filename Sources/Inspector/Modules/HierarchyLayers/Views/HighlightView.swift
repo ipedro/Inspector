@@ -29,7 +29,7 @@ extension HighlightViewDelegate {
         guard let referenceRootView = reference.rootView else {
             return
         }
-        
+
         for view in referenceRootView.allSubviews where view is LayerViewProtocol {
             view.isSafelyHidden = isVisible == false
         }
@@ -38,37 +38,37 @@ extension HighlightViewDelegate {
 
 class HighlightView: LayerView {
     weak var delegate: HighlightViewDelegate?
-    
+
     // MARK: - Properties
-    
+
     var name: String {
         didSet {
             label.text = name
         }
     }
-    
+
     let colorScheme: ViewHierarchyColorScheme
-    
+
     override var color: UIColor {
         didSet {
             guard color != oldValue else {
                 return
             }
-            
+
             labelContentView.backgroundColor = color
         }
     }
-    
+
     var labelWidthConstraint: NSLayoutConstraint? {
         didSet {
             guard let oldConstraint = oldValue else {
                 return
             }
-            
+
             oldConstraint.isActive = false
         }
     }
-    
+
     var verticalAlignmentOffset: CGFloat {
         get {
             verticalAlignmentConstraint.constant
@@ -77,11 +77,11 @@ class HighlightView: LayerView {
             verticalAlignmentConstraint.constant = newValue
         }
     }
-    
+
     private lazy var verticalAlignmentConstraint = labelContainerView.centerYAnchor.constraint(equalTo: centerYAnchor)
-    
+
     // MARK: - Components
-    
+
     private lazy var label = UILabel(
         .huggingPriority(.required, for: .horizontal),
         .textColor(.white),
@@ -97,7 +97,7 @@ class HighlightView: LayerView {
             .shadowOpacity(0.4)
         )
     )
-    
+
     private(set) lazy var labelContentView = LayerViewComponent(
         .backgroundColor(color),
         .cornerRadius(6),
@@ -105,7 +105,7 @@ class HighlightView: LayerView {
     ).then {
         $0.installView(label, .margins(horizontal: 4, vertical: 2))
     }
-    
+
     private lazy var labelContainerView = LayerViewComponent(
         .layerOptions(
             .shadowOffset(CGSize(width: 0, height: 1)),
@@ -118,11 +118,11 @@ class HighlightView: LayerView {
     ).then {
         $0.installView(labelContentView, .autoResizingMask)
     }
-    
+
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
-    
+
     // MARK: - Init
-    
+
     init(
         frame: CGRect,
         name: String,
@@ -131,90 +131,90 @@ class HighlightView: LayerView {
         borderWidth: CGFloat = 1
     ) {
         self.colorScheme = colorScheme
-        
+
         self.name = name
-        
+
         super.init(
             frame: frame,
             reference: reference,
             color: .systemGray,
             borderWidth: borderWidth
         )
-        
+
         shouldPresentOnTop = true
-        
+
         isUserInteractionEnabled = true
-        
+
         addGestureRecognizer(tapGestureRecognizer)
     }
-    
+
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         labelContainerView.frame.contains(point)
     }
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        
+
         updateColors(isTouching: true)
     }
-    
+
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        
+
         updateColors()
     }
-    
+
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-        
+
         updateColors()
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
-        
+
         guard let superview = superview else {
             labelContainerView.removeFromSuperview()
             label.text = nil
             return
         }
-        
+
         setupViews(with: superview)
     }
-    
+
     override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
-        
+
         guard newSuperview == nil else {
             return
         }
-        
+
         viewReference.rootView?.isUserInteractionEnabled = viewReference.isUserInteractionEnabled
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         updateViews()
     }
-    
+
     func updateViews() {
         updateElementName()
-        
+
         updateLabelWidth()
-        
+
         if let superview = superview {
             color = colorScheme.color(for: superview)
         }
     }
-    
+
     func updateElementName() {
         var superViewName: String {
             guard let superview = superview else {
@@ -222,7 +222,7 @@ class HighlightView: LayerView {
             }
             return superview.elementName
         }
-        
+
         name = superViewName
     }
 }
@@ -232,36 +232,36 @@ private extension HighlightView {
     func tap() {
         delegate?.highlightView(self, didTapWith: viewReference)
     }
-    
+
     func updateLabelWidth() {
         labelWidthConstraint?.constant = frame.width * 4 / 3
     }
-    
+
     func setupViews(with hostView: UIView) {
         updateColors()
-        
+
         installView(labelContainerView, .centerX)
-        
+
         verticalAlignmentConstraint.isActive = true
-        
+
         label.text = name
-        
+
         labelWidthConstraint = label.widthAnchor.constraint(equalToConstant: frame.width).then {
             $0.priority = .defaultHigh
             $0.isActive = true
         }
-        
+
         isSafelyHidden = false
-        
+
         hostView.isUserInteractionEnabled = true
     }
-    
+
     func updateColors(isTouching: Bool = false) {
         switch isTouching {
         case true:
             layerBackgroundColor = color.withAlphaComponent(colorStyle.disabledAlpha)
             layerBorderColor = color.withAlphaComponent(1)
-            
+
         case false:
             layerBackgroundColor = color.withAlphaComponent(colorStyle.disabledAlpha / 10)
             layerBorderColor = color.withAlphaComponent(colorStyle.disabledAlpha * 2)

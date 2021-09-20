@@ -22,7 +22,7 @@ import UIKit
 
 extension UIKeyboardType: CaseIterable {
     typealias AllCases = [UIKeyboardType]
-    
+
     static let allCases: [UIKeyboardType] = [
         .default,
         .asciiCapable,

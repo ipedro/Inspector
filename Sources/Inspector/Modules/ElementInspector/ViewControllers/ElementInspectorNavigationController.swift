@@ -26,12 +26,12 @@ protocol ElementInspectorNavigationControllerDismissDelegate: AnyObject {
 
 final class ElementInspectorNavigationController: UINavigationController {
     weak var dismissDelegate: ElementInspectorNavigationControllerDismissDelegate?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         view.tintColor = colorStyle.textColor
-        
+
         view.backgroundColor = colorStyle.backgroundColor
 
         navigationBar.barTintColor = colorStyle.highlightBackgroundColor
@@ -42,16 +42,16 @@ final class ElementInspectorNavigationController: UINavigationController {
 
         becomeFirstResponder()
     }
-    
+
     override var canBecomeFirstResponder: Bool { true }
-    
+
     override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
         // Async here is preventing weird popover behavior.
         DispatchQueue.main.async {
             self.preferredContentSize = container.preferredContentSize
         }
     }
-    
+
     @objc private func finish() {
         dismissDelegate?.elementInspectorNavigationControllerDidFinish(self)
     }

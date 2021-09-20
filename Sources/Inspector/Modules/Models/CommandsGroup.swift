@@ -28,7 +28,7 @@ public extension Inspector {
     struct CommandsGroup {
         public var title: String?
         public var commands: [Command]
-        
+
         public static func group(title: String?, commands: [Command]) -> CommandsGroup {
             CommandsGroup(title: title, commands: commands)
         }

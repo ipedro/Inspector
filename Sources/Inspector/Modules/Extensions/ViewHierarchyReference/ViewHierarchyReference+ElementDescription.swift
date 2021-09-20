@@ -28,7 +28,7 @@ extension ViewHierarchyReference {
             frameDescription,
             subviewsDescription,
             constraintsDescription,
-            warningsDescription,
+            warningsDescription
         ]
         .compactMap { $0 }
         .joined(separator: "\n")
@@ -130,7 +130,7 @@ extension ViewHierarchyReference {
     }
 
     var classNameDescription: String? {
-        guard let view = rootView else { return nil}
+        guard let view = rootView else { return nil }
 
         guard let superclassName = superclassName else {
             return view.className
@@ -138,5 +138,4 @@ extension ViewHierarchyReference {
 
         return "\(view.className) (\(superclassName))"
     }
-
 }

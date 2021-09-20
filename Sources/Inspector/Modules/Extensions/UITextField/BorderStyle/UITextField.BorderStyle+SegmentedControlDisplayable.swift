@@ -25,16 +25,16 @@ extension UITextField.BorderStyle: CustomImageConvertible {
         switch self {
         case .none:
             return IconKit.imageOfBorderStyleNone()
-            
+
         case .line:
             return IconKit.imageOfBorderStyleLine()
-            
+
         case .bezel:
             return IconKit.imageOfBorderStyleBezel()
-            
+
         case .roundedRect:
             return IconKit.imageOfBorderStyleRoundedRect()
-            
+
         @unknown default:
             return nil
         }

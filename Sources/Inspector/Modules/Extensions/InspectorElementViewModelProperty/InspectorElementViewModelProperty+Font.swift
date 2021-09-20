@@ -28,14 +28,14 @@ public extension InspectorElementViewModelProperty {
         handler: @escaping FontHandler
     ) -> InspectorElementViewModelProperty {
         typealias FontReference = (fontName: String, displayName: String)
-        
+
         let availableFonts: [FontReference] = {
             var array = [FontReference("", emptyTitle)]
-            
+
             UIFont.familyNames.forEach { familyName in
-                
+
                 let familyNames = UIFont.fontNames(forFamilyName: familyName)
-                
+
                 if
                     familyNames.count == 1,
                     let fontName = familyNames.first
@@ -43,7 +43,7 @@ public extension InspectorElementViewModelProperty {
                     array.append((fontName: fontName, displayName: familyName))
                     return
                 }
-                
+
                 familyNames.forEach { fontName in
                     guard
                         let lastName = fontName.split(separator: "-").last,
@@ -53,14 +53,14 @@ public extension InspectorElementViewModelProperty {
                         array.append((fontName: fontName, displayName: fontName))
                         return
                     }
-                    
+
                     array.append((fontName: fontName, displayName: "\(familyName) \(lastName)"))
                 }
             }
-            
+
             return array
         }()
-        
+
         return .optionsList(
             title: title,
             emptyTitle: emptyTitle,
@@ -71,20 +71,20 @@ public extension InspectorElementViewModelProperty {
             guard let newIndex = $0 else {
                 return
             }
-            
+
             let fontNames = availableFonts.map(\.fontName)
             let fontName = fontNames[newIndex]
-            
+
             guard let pointSize = fontProvider()?.pointSize else {
                 return
             }
-            
+
             let newFont = UIFont(name: fontName, size: pointSize)
-            
+
             handler(newFont)
         }
     }
-    
+
     static func fontSizeStepper(
         title: String,
         fontProvider: @escaping FontProvider,
@@ -96,9 +96,9 @@ public extension InspectorElementViewModelProperty {
             range: { 0...256 },
             stepValue: { 1 }
         ) { fontSize in
-            
+
             let newFont = fontProvider()?.withSize(fontSize)
-            
+
             handler(newFont)
         }
     }

@@ -22,7 +22,7 @@ import UIKit
 
 extension NSLayoutConstraint.Axis: CaseIterable {
     typealias AllCases = [NSLayoutConstraint.Axis]
-    
+
     static let allCases: [NSLayoutConstraint.Axis] = [
         .horizontal,
         vertical

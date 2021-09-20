@@ -62,6 +62,7 @@ class BaseCardView: BaseView {
             layer.borderColor = color.cgColor
         }
     }
+
     override func setup() {
         super.setup()
 

@@ -22,8 +22,8 @@ import UIKit
 
 protocol KeyCommandPresenterProtocol {
     var availableGroupsForKeyCommand: CommandGroups { get }
-    
+
     var keyCommands: [UIKeyCommand] { get }
-    
+
     func hierarchyInspectorKeyCommands(selector aSelector: Selector) -> [UIKeyCommand]
 }

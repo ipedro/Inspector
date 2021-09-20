@@ -22,9 +22,9 @@ import UIKit
 
 final class TextFieldControl: BaseFormControl {
     private let defaultFont: UIFont = .preferredFont(forTextStyle: .footnote)
-    
+
     // MARK: - Properties
-    
+
     private lazy var textField = UITextField().then {
         $0.textColor = colorStyle.textColor
         $0.adjustsFontSizeToFitWidth = true
@@ -35,20 +35,20 @@ final class TextFieldControl: BaseFormControl {
         $0.delegate = self
         $0.addTarget(self, action: #selector(editText), for: .editingChanged)
     }
-        
+
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.contentView.addArrangedSubview(textField)
     }
-    
+
     override var isEnabled: Bool {
         didSet {
             textField.isEnabled = isEnabled
             accessoryControl.isEnabled = isEnabled
         }
     }
-    
+
     // MARK: - Init
-    
+
     var value: String? {
         get {
             textField.text
@@ -57,7 +57,7 @@ final class TextFieldControl: BaseFormControl {
             textField.text = newValue
         }
     }
-    
+
     var placeholder: String? {
         get {
             textField.placeholder
@@ -89,7 +89,7 @@ final class TextFieldControl: BaseFormControl {
 
     override func setup() {
         super.setup()
-        
+
         axis = .vertical
         contentView.addArrangedSubview(accessoryControl)
     }
@@ -97,11 +97,11 @@ final class TextFieldControl: BaseFormControl {
     override var canBecomeFirstResponder: Bool {
         textField.canBecomeFirstResponder
     }
-    
+
     override var canBecomeFocused: Bool {
         textField.canBecomeFocused
     }
-    
+
     override func becomeFirstResponder() -> Bool {
         textField.becomeFirstResponder()
     }
@@ -117,7 +117,7 @@ private extension TextFieldControl {
 extension TextFieldControl: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        
+
         return true
     }
 }

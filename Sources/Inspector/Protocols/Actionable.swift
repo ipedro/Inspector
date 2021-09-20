@@ -22,6 +22,6 @@ import UIKit
 
 protocol Actionable {
     var title: String { get }
-    
+
     var emptyActionTitle: String { get }
 }

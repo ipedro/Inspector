@@ -25,13 +25,13 @@ extension UIScrollView.KeyboardDismissMode: CustomStringConvertible {
         switch self {
         case .none:
             return "Do Not Dismiss"
-            
+
         case .onDrag:
             return "Dismiss On Drag"
-            
+
         case .interactive:
             return "Dismiss Interactively"
-            
+
         @unknown default:
             return "\(self) (unsupported)"
         }

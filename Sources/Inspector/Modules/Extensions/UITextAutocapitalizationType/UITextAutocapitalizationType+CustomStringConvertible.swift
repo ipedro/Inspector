@@ -25,16 +25,16 @@ extension UITextAutocapitalizationType: CustomStringConvertible {
         switch self {
         case .none:
             return "None"
-            
+
         case .words:
             return "Words"
-            
+
         case .sentences:
             return "Sentences"
-            
+
         case .allCharacters:
             return "All Characters"
-            
+
         @unknown default:
             return "\(self) (unsupported)"
         }

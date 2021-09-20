@@ -27,26 +27,26 @@ protocol HierarchyInspectorCoordinatorDelegate: AnyObject {
 
 final class HierarchyInspectorCoordinator: NSObject {
     typealias CommandGroupsProvider = HierarchyInspectorViewModel.CommandGroupsProvider
-    
+
     weak var delegate: HierarchyInspectorCoordinatorDelegate?
-    
+
     let hierarchySnapshot: ViewHierarchySnapshot
-    
+
     let commandGroupsProvider: CommandGroupsProvider
-    
+
     private lazy var hierarchyInspectorViewController: HierarchyInspectorViewController = {
         let viewModel = HierarchyInspectorViewModel(
             commandGroupsProvider: commandGroupsProvider,
             snapshot: hierarchySnapshot
         )
-        
+
         return HierarchyInspectorViewController.create(viewModel: viewModel).then {
             $0.modalPresentationStyle = .overCurrentContext
             $0.modalTransitionStyle = .crossDissolve
             $0.delegate = self
         }
     }()
-    
+
     init(
         hierarchySnapshot: ViewHierarchySnapshot,
         commandGroupsProvider: @escaping CommandGroupsProvider
@@ -54,7 +54,7 @@ final class HierarchyInspectorCoordinator: NSObject {
         self.hierarchySnapshot = hierarchySnapshot
         self.commandGroupsProvider = commandGroupsProvider
     }
-    
+
     func start() -> UIViewController {
         hierarchyInspectorViewController
     }

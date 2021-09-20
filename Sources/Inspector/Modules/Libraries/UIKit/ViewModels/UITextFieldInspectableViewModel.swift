@@ -53,24 +53,24 @@ extension UIKitElementLibrary {
             case enablesReturnKeyAutomatically = "Auto-enable Return Key"
             case isSecureTextEntry = "Secure Text Entry"
         }
-        
+
         let title = "Text Field"
-        
+
         private(set) weak var textField: UITextField?
-        
+
         init?(view: UIView) {
             guard let textField = view as? UITextField else {
                 return nil
             }
-            
+
             self.textField = textField
         }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let textField = textField else {
                 return nil
             }
-            
+
             switch property {
             case .text:
                 return .textField(
@@ -80,7 +80,7 @@ extension UIKitElementLibrary {
                 ) { text in
                     textField.text = text
                 }
-                
+
             case .textColor:
                 return .colorPicker(
                     title: property.rawValue,
@@ -88,7 +88,7 @@ extension UIKitElementLibrary {
                 ) { textColor in
                     textField.textColor = textColor
                 }
-                
+
             case .fontName:
                 return .fontNamePicker(
                     title: property.rawValue,
@@ -97,10 +97,10 @@ extension UIKitElementLibrary {
                     guard let font = font else {
                         return
                     }
-                    
+
                     textField.font = font
                 }
-                
+
             case .fontSize:
                 return .fontSizeStepper(
                     title: property.rawValue,
@@ -109,13 +109,13 @@ extension UIKitElementLibrary {
                     guard let font = font else {
                         return
                     }
-                    
+
                     textField.font = font
                 }
-                
+
             case .textAlignment:
                 let allCases = NSTextAlignment.allCases.withImages
-                
+
                 return .imageButtonGroup(
                     title: property.rawValue,
                     images: allCases.compactMap(\.image),
@@ -124,12 +124,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let textAlignment = allCases[newIndex]
-                    
+
                     textField.textAlignment = textAlignment
                 }
-                
+
             case .placeholder:
                 return .textField(
                     title: property.rawValue,
@@ -138,10 +138,10 @@ extension UIKitElementLibrary {
                 ) { placeholder in
                     textField.placeholder = placeholder
                 }
-                
+
             case .groupImages:
                 return .group(title: property.rawValue)
-                
+
             case .background:
                 return .imagePicker(
                     title: property.rawValue,
@@ -149,7 +149,7 @@ extension UIKitElementLibrary {
                 ) { background in
                     textField.background = background
                 }
-                
+
             case .disabledBackground:
                 return .imagePicker(
                     title: property.rawValue,
@@ -157,13 +157,13 @@ extension UIKitElementLibrary {
                 ) { disabledBackground in
                     textField.disabledBackground = disabledBackground
                 }
-                
+
             case .groupBorder:
                 return .separator
-                
+
             case .borderStyle:
                 let allCases = UITextField.BorderStyle.allCases.withImages
-                
+
                 return .imageButtonGroup(
                     title: property.rawValue,
                     axis: .vertical,
@@ -173,15 +173,15 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let borderStyle = allCases[newIndex]
-                    
+
                     textField.borderStyle = borderStyle
                 }
-                
+
             case .groupClearButton:
                 return .separator
-                
+
             case .clearButton:
                 return .optionsList(
                     title: property.rawValue,
@@ -191,12 +191,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let clearButtonMode = UITextField.ViewMode.allCases[newIndex]
-                    
+
                     textField.clearButtonMode = clearButtonMode
                 }
-            
+
             case .clearWhenEditingBegins:
                 return .switch(
                     title: property.rawValue,
@@ -204,10 +204,10 @@ extension UIKitElementLibrary {
                 ) { clearsOnBeginEditing in
                     textField.clearsOnBeginEditing = clearsOnBeginEditing
                 }
-                
+
             case .groupAdditionalFontOptions:
                 return .separator
-                
+
             case .minFontSize:
                 return .cgFloatStepper(
                     title: property.rawValue,
@@ -217,7 +217,7 @@ extension UIKitElementLibrary {
                 ) { minimumFontSize in
                     textField.minimumFontSize = minimumFontSize
                 }
-                
+
             case .adjustsFontSizeToFitWidth:
                 return .switch(
                     title: property.rawValue,
@@ -225,10 +225,10 @@ extension UIKitElementLibrary {
                 ) { adjustsFontSizeToFitWidth in
                     textField.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
                 }
-                
+
             case .groupTextInputTraits:
                 return .group(title: property.rawValue)
-                
+
             case .textContentType:
                 return .optionsList(
                     title: property.rawValue,
@@ -237,19 +237,19 @@ extension UIKitElementLibrary {
                         guard let textContentType = textField.textContentType else {
                             return nil
                         }
-                        
+
                         return UITextContentType.allCases.firstIndex(of: textContentType)
                     }
                 ) {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let textContentType = UITextContentType.allCases[newIndex]
-                    
+
                     textField.textContentType = textContentType
                 }
-                
+
             case .autocapitalizationType:
                 return .optionsList(
                     title: property.rawValue,
@@ -259,12 +259,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let autocapitalizationType = UITextAutocapitalizationType.allCases[newIndex]
-                    
+
                     textField.autocapitalizationType = autocapitalizationType
                 }
-                
+
             case .autocorrectionType:
                 return .optionsList(
                     title: property.rawValue,
@@ -274,12 +274,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let autocorrectionType = UITextAutocorrectionType.allCases[newIndex]
-                    
+
                     textField.autocorrectionType = autocorrectionType
                 }
-                
+
             case .smartDashesType:
                 return .optionsList(
                     title: property.rawValue,
@@ -289,12 +289,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let smartDashesType = UITextSmartDashesType.allCases[newIndex]
-                    
+
                     textField.smartDashesType = smartDashesType
                 }
-                
+
             case .smartQuotesType:
                 return .optionsList(
                     title: property.rawValue,
@@ -304,12 +304,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let smartQuotesType = UITextSmartQuotesType.allCases[newIndex]
-                    
+
                     textField.smartQuotesType = smartQuotesType
                 }
-                
+
             case .spellCheckingType:
                 return .optionsList(
                     title: property.rawValue,
@@ -319,12 +319,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let spellCheckingType = UITextSpellCheckingType.allCases[newIndex]
-                    
+
                     textField.spellCheckingType = spellCheckingType
                 }
-                
+
             case .keyboardType:
                 return .optionsList(
                     title: property.rawValue,
@@ -334,12 +334,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let keyboardType = UIKeyboardType.allCases[newIndex]
-                    
+
                     textField.keyboardType = keyboardType
                 }
-                
+
             case .keyboardAppearance:
                 return .optionsList(
                     title: property.rawValue,
@@ -349,12 +349,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let keyboardAppearance = UIKeyboardAppearance.allCases[newIndex]
-                    
+
                     textField.keyboardAppearance = keyboardAppearance
                 }
-                
+
             case .returnKey:
                 return .optionsList(
                     title: property.rawValue,
@@ -364,12 +364,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let returnKeyType = UIReturnKeyType.allCases[newIndex]
-                    
+
                     textField.returnKeyType = returnKeyType
                 }
-                
+
             case .enablesReturnKeyAutomatically:
                 return .switch(
                     title: property.rawValue,
@@ -377,7 +377,7 @@ extension UIKitElementLibrary {
                 ) { enablesReturnKeyAutomatically in
                     textField.enablesReturnKeyAutomatically = enablesReturnKeyAutomatically
                 }
-                
+
             case .isSecureTextEntry:
                 return .switch(
                     title: property.rawValue,

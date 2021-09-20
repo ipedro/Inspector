@@ -23,27 +23,27 @@ import UIKit
 class HierarchyInspectorTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-        
+
         setup()
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     let defaultLayoutMargins = NSDirectionalEdgeInsets(insets: ElementInspector.appearance.horizontalMargins)
-    
+
     func setup() {
         backgroundView = UIView()
         backgroundColor = nil
-        
+
         directionalLayoutMargins = defaultLayoutMargins
         separatorInset = UIEdgeInsets(left: defaultLayoutMargins.leading, right: defaultLayoutMargins.trailing)
-        
+
         textLabel?.textColor = colorStyle.textColor
         detailTextLabel?.textColor = colorStyle.secondaryTextColor
-        
+
         selectedBackgroundView = UIView().then {
             let colorView = BaseView(
                 .clipsToBounds(true),
@@ -52,7 +52,7 @@ class HierarchyInspectorTableViewCell: UITableViewCell {
                     .cornerRadius(ElementInspector.appearance.verticalMargins / 2)
                 )
             )
-            
+
             $0.installView(
                 colorView,
                 .margins(
@@ -62,12 +62,12 @@ class HierarchyInspectorTableViewCell: UITableViewCell {
             )
         }
     }
-    
+
     func maskCellFromTop(margin: CGFloat) {
         layer.mask = visibilityMaskWithLocation(location: margin / frame.size.height)
         layer.masksToBounds = true
     }
-    
+
     func visibilityMaskWithLocation(location: CGFloat) -> CAGradientLayer {
         let mask = CAGradientLayer()
         mask.frame = bounds
@@ -79,13 +79,13 @@ class HierarchyInspectorTableViewCell: UITableViewCell {
             UIColor(white: 1, alpha: 0).cgColor,
             UIColor(white: 1, alpha: 1).cgColor
         ]
-        
+
         return mask
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
-        
+
         layer.mask = nil
     }
 }

@@ -50,7 +50,7 @@ extension UIView: ViewHierarchyProtocol {
             return true
         }
     }
-    
+
     var canHostInspectorView: Bool {
         let className = self.className
         let superViewClassName = superview?.className ?? ""
@@ -58,22 +58,22 @@ extension UIView: ViewHierarchyProtocol {
         guard
             // Adding subviews directly to a UIVisualEffectView throws runtime exception.
             self is UIVisualEffectView == false,
-            
+
             // Adding subviews to UIPageViewController containers throws runtime exception.
             className != "_UIPageViewControllerContentView",
             subviews.map(\.className).contains("_UIPageViewControllerContentView") == false,
             className != "_UIQueuingScrollView",
             superViewClassName != "_UIQueuingScrollView",
-            
+
             // Avoid breaking UIButton layout.
             superview is UIButton == false,
-            
+
             // Avoid breaking UITableView self sizing cells.
             className != "UITableViewCellContentView",
-            
+
             // Avoid breaking UINavigationController large title.
             superViewClassName != "UIViewControllerWrapperView",
-            
+
             // Skip non inspectable views
             self is NonInspectableView == false,
             superview is NonInspectableView == false,
@@ -86,7 +86,7 @@ extension UIView: ViewHierarchyProtocol {
         }
         return true
     }
-    
+
     var isSystemView: Bool {
         guard
             isSystemContainerView == false,
@@ -94,7 +94,7 @@ extension UIView: ViewHierarchyProtocol {
         else {
             return true
         }
-        
+
         return false
     }
 
@@ -107,7 +107,7 @@ extension UIView: ViewHierarchyProtocol {
 
         return false
     }
-    
+
     var className: String {
         String(describing: classForCoder)
     }
@@ -124,16 +124,16 @@ extension UIView: ViewHierarchyProtocol {
         guard let description = accessibilityIdentifier?.split(separator: ".").last else {
             return classNameWithoutQualifiers
         }
-        
+
         return String(description)
     }
-    
+
     var displayName: String {
         // prefer text content
         if let textContent = (self as? TextElement)?.content {
             return "\"" + textContent + "\""
         }
-        
+
         return elementName
     }
 }

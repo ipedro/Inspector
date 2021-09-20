@@ -27,55 +27,55 @@ extension HierarchyInspectorViewModel {
             var icon: UIImage?
             var isEnabled: Bool
         }
-        
+
         private(set) lazy var layerCommandGroups = CommandGroups()
-        
+
         let provider: CommandGroupsProvider
-        
+
         init(commandGroupsProvider: @escaping CommandGroupsProvider) {
             provider = commandGroupsProvider
         }
-        
+
         var isEmpty: Bool {
             var totalActionCount = 0
-            
+
             for group in layerCommandGroups {
                 totalActionCount += group.commands.count
             }
-            
+
             return totalActionCount == 0
         }
-        
+
         func loadData() {
             layerCommandGroups = provider() ?? []
         }
-        
+
         func selectRow(at indexPath: IndexPath) -> HierarchyInspectorCommand? {
             guard let closure = action(at: indexPath).closure else {
                 return nil
             }
             return .execute(closure)
         }
-        
+
         func isRowEnabled(at indexPath: IndexPath) -> Bool {
             action(at: indexPath).isEnabled
         }
-        
+
         var numberOfSections: Int {
             layerCommandGroups.count
         }
-        
+
         func numberOfRows(in section: Int) -> Int {
             group(in: section).commands.count
         }
-        
+
         func titleForHeader(in section: Int) -> String? {
             group(in: section).title
         }
-        
+
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
             let action = self.action(at: indexPath)
-            
+
             return .action(
                 Details(
                     title: action.title,
@@ -84,11 +84,11 @@ extension HierarchyInspectorViewModel {
                 )
             )
         }
-        
+
         private func group(in section: Int) -> CommandsGroup {
             layerCommandGroups[section]
         }
-        
+
         private func action(at indexPath: IndexPath) -> Command {
             group(in: indexPath.section).commands[indexPath.row]
         }

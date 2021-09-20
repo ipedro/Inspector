@@ -28,15 +28,15 @@ extension UIViewController {
         else {
             return
         }
-        
+
         let flattenedCommands = inspectorManager.availableGroupsForKeyCommand.flatMap(\.commands)
-        
+
         for action in flattenedCommands where action.title == keyCommand.discoverabilityTitle {
             action.closure?()
             return
         }
     }
-    
+
     func dismissModalKeyCommand(action: Selector) -> UIKeyCommand {
         UIKeyCommand(
             .discoverabilityTitle(

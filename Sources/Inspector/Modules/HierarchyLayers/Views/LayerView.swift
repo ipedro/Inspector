@@ -22,19 +22,19 @@ import UIKit
 
 class LayerView: UIImageView, LayerViewProtocol {
     var shouldPresentOnTop = false
-    
+
     // MARK: - Properties
-    
+
     var color: UIColor {
         didSet {
             guard color != oldValue else {
                 return
             }
-            
+
             layerBorderColor = color.withAlphaComponent(0.5)
         }
     }
-    
+
     var layerBorderWidth: CGFloat {
         get {
             borderedView.layer.borderWidth
@@ -43,7 +43,7 @@ class LayerView: UIImageView, LayerViewProtocol {
             borderedView.layer.borderWidth = newValue
         }
     }
-    
+
     var layerBackgroundColor: UIColor? {
         get {
             borderedView.backgroundColor
@@ -52,65 +52,65 @@ class LayerView: UIImageView, LayerViewProtocol {
             borderedView.backgroundColor = newValue
         }
     }
-    
+
     var layerBorderColor: UIColor? {
         get {
             guard let borderColor = borderedView.layer.borderColor else {
                 return nil
             }
-            
+
             return UIColor(cgColor: borderColor)
         }
         set {
             borderedView.layer.borderColor = newValue?.cgColor
         }
     }
-    
+
     private lazy var borderedView = LayerViewComponent(frame: bounds)
-    
+
     let viewReference: ViewHierarchyReference
-    
+
     // MARK: - Init
-    
+
     init(frame: CGRect, reference: ViewHierarchyReference, color: UIColor, borderWidth: CGFloat) {
         viewReference = reference
         self.color = color
-        
+
         super.init(frame: frame)
-        
+
         isUserInteractionEnabled = false
-        
+
         borderedView.layer.borderWidth = borderWidth
-        
+
         borderedView.layer.borderColor = color.withAlphaComponent(0.5).cgColor
-        
+
         installView(borderedView, .autoResizingMask)
-        
+
         autoresizingMask = [.flexibleHeight, .flexibleWidth]
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         guard let superview = superview else {
             return
         }
-        
+
         #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             borderedView.layer.cornerCurve = superview.layer.cornerCurve
         }
         #endif
-        
+
         borderedView.layer.maskedCorners = superview.layer.maskedCorners
-        
+
         borderedView.layer.cornerRadius = superview.layer.cornerRadius
     }
 }

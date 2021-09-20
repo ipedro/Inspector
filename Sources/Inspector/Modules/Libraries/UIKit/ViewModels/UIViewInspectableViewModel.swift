@@ -41,15 +41,15 @@ extension UIKitElementLibrary {
             case clipsToBounds = "Clips To Bounds"
             case autoresizesSubviews = "Autoresize Subviews"
         }
-        
+
         let title = "View"
-        
+
         private(set) weak var view: UIView?
-        
+
         init?(view: UIView) {
             self.view = view
         }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let view = view else {
                 return nil
@@ -65,7 +65,7 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else { return }
 
                     let contentMode = UIView.ContentMode.allCases[newIndex]
-                    
+
                     view.contentMode = contentMode
                 }
 
@@ -76,7 +76,7 @@ extension UIKitElementLibrary {
                     selectedIndex: { UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute) }
                 ) {
                     guard let newIndex = $0 else { return }
-                    
+
                     let semanticContentAttribute = UISemanticContentAttribute.allCases[newIndex]
 
                     view.semanticContentAttribute = semanticContentAttribute
@@ -91,7 +91,7 @@ extension UIKitElementLibrary {
                 ) { newValue in
                     view.tag = newValue
                 }
-                
+
             case .accessibilityIdentifier:
                 return .textField(
                     title: property.rawValue,
@@ -101,10 +101,10 @@ extension UIKitElementLibrary {
                     view.accessibilityIdentifier = accessibilityIdentifier?.trimmed
                     view.hightlightView?.updateElementName()
                 }
-                
+
             case .groupInteraction:
                 return .group(title: property.rawValue)
-                
+
             case .isUserInteractionEnabled:
                 return .switch(
                     title: property.rawValue,
@@ -114,7 +114,7 @@ extension UIKitElementLibrary {
                         view.isUserInteractionEnabled = isUserInteractionEnabled
                         return
                     }
-                    
+
                     viewReference.isUserInteractionEnabled = isUserInteractionEnabled
                     view.hightlightView?.updateViews()
                 }
@@ -126,10 +126,10 @@ extension UIKitElementLibrary {
                 ) { isMultipleTouchEnabled in
                     view.isMultipleTouchEnabled = isMultipleTouchEnabled
                 }
-            
+
             case .groupAlphaAndColors:
                 return .separator
-            
+
             case .alpha:
                 return .cgFloatStepper(
                     title: property.rawValue,
@@ -155,10 +155,10 @@ extension UIKitElementLibrary {
                 ) { tintColor in
                     view.tintColor = tintColor
                 }
-                
+
             case .groupDrawing:
                 return .group(title: property.rawValue)
-                
+
             case .isOpaque:
                 return .switch(
                     title: property.rawValue,

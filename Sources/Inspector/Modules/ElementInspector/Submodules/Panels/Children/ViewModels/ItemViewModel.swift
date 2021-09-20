@@ -59,7 +59,7 @@ extension ElementChildrenPanelViewModel {
             self.reference = reference
             self.rootDepth = rootDepth
             self.thumbnailImage = thumbnailImage
-            self._isCollapsed = isCollapsed
+            _isCollapsed = isCollapsed
         }
     }
 }

@@ -25,16 +25,16 @@ import UIKit
 
 final class PlaygroundViewController: UIViewController {
     // MARK: - Components
-    
+
     @IBOutlet var activityIndicator: UIActivityIndicatorView! {
         didSet {
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(toggleActivityIndicator))
-            
+
             activityIndicator.addGestureRecognizer(gestureRecognizer)
             activityIndicator.isUserInteractionEnabled = true
         }
     }
-    
+
     @objc func toggleActivityIndicator() {
         if activityIndicator.isAnimating {
             activityIndicator.stopAnimating()
@@ -43,33 +43,33 @@ final class PlaygroundViewController: UIViewController {
             activityIndicator.startAnimating()
         }
     }
-    
+
     @IBOutlet var inspectBarButton: CustomButton!
-    
+
     @IBOutlet var datePickerSegmentedControl: UISegmentedControl!
-    
+
     @IBOutlet var loadingView: UIView!
-    
+
     @IBOutlet var datePicker: UIDatePicker!
-    
+
     @IBOutlet var textField: UITextField! {
         didSet {
             toggleTextField(self.switch)
         }
     }
-    
+
     @IBOutlet var longTextLabel: UILabel!
-    
+
     @IBOutlet var textStackView: UIStackView!
-    
+
     @IBOutlet var switchTextField: UITextField!
-    
+
     @IBOutlet var `switch`: UISwitch!
-    
+
     @IBOutlet var mapView: MKMapView!
-    
+
     @IBOutlet var scrollView: UIScrollView!
-    
+
     @IBOutlet var containerStackView: UIStackView! {
         didSet {
             containerStackView.isLayoutMarginsRelativeArrangement = true
@@ -81,20 +81,20 @@ final class PlaygroundViewController: UIViewController {
             )
         }
     }
-    
+
     override var keyCommands: [UIKeyCommand]? {
         inspectorManager?.keyCommands
     }
-    
+
     private var hasAppeared = false
-    
+
     // MARK: - Life cycle
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         guard hasAppeared == false else { return }
-        
+
         if #available(iOS 13.4, *) {
             setupSegmentedControl()
         }
@@ -114,10 +114,10 @@ final class PlaygroundViewController: UIViewController {
 
         stopInspecting()
     }
-    
+
     func setupSegmentedControl() {
         datePickerSegmentedControl.removeAllSegments()
-        
+
         UIDatePickerStyle.allCases.forEach { style in
             datePickerSegmentedControl.insertSegment(
                 withTitle: style.description,
@@ -125,18 +125,18 @@ final class PlaygroundViewController: UIViewController {
                 animated: false
             )
         }
-        
+
         datePickerSegmentedControl.selectedSegmentIndex = 0
         datePicker.preferredDatePickerStyle = .automatic
     }
-    
+
     // MARK: - Interface Actions
-    
+
     @IBAction func changeDatePickerStyle(_ sender: UISegmentedControl) {
         guard let datePickerStyle = UIDatePickerStyle(rawValue: sender.selectedSegmentIndex) else {
             return
         }
-        
+
         if #available(iOS 14.0, *) {
             if
                 datePicker.datePickerMode == .countDownTimer,
@@ -145,16 +145,16 @@ final class PlaygroundViewController: UIViewController {
                 datePicker.datePickerMode = .dateAndTime
             }
         }
-        
+
         datePicker.preferredDatePickerStyle = datePickerStyle
     }
-    
+
     @IBAction func rotateActivityIndicator(_ sender: UISlider) {
         let angle = (sender.value - 1) * .pi
-        
+
         activityIndicator.transform = CGAffineTransform(rotationAngle: CGFloat(angle))
     }
-    
+
     @IBAction func toggleTextField(_ sender: UISwitch) {
         UIView.animate {
             self.textField.isEnabled = sender.isOn

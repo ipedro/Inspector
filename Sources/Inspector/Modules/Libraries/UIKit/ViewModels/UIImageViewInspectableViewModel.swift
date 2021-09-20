@@ -29,19 +29,19 @@ extension UIKitElementLibrary {
             case isHighlighted = "Highlighted"
             case adjustsImageSizeForAccessibilityContentSizeCategory = "Adjusts Image Size"
         }
-        
+
         let title = "Image"
-        
+
         private(set) weak var imageView: UIImageView?
-        
+
         init?(view: UIView) {
             guard let imageView = view as? UIImageView else {
                 return nil
             }
-            
+
             self.imageView = imageView
         }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let imageView = imageView else {
                 return nil
@@ -50,7 +50,7 @@ extension UIKitElementLibrary {
             switch property {
             case .separator:
                 return .separator
-                
+
             case .image:
                 return .imagePicker(
                     title: property.rawValue,
@@ -58,7 +58,7 @@ extension UIKitElementLibrary {
                 ) { image in
                     imageView.image = image
                 }
-                
+
             case .highlightedImage:
                 return .imagePicker(
                     title: property.rawValue,
@@ -66,7 +66,7 @@ extension UIKitElementLibrary {
                 ) { highlightedImage in
                     imageView.highlightedImage = highlightedImage
                 }
-                
+
             case .isHighlighted:
                 return .switch(
                     title: property.rawValue,
@@ -74,7 +74,7 @@ extension UIKitElementLibrary {
                 ) { isHighlighted in
                     imageView.isHighlighted = isHighlighted
                 }
-                
+
             case .adjustsImageSizeForAccessibilityContentSizeCategory:
                 return .switch(
                     title: property.rawValue,

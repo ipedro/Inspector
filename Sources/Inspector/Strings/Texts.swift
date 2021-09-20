@@ -24,27 +24,27 @@ enum Texts {
     static func inspect(_ name: Any) -> String {
         "Inspect \(String(describing: name))..."
     }
-    
+
     static func inspectableViews(_ viewCount: Int, in className: String) -> String {
         switch viewCount {
         case 1:
             return "\(viewCount) inspectable view in \(className)"
-            
+
         default:
             return "\(viewCount) inspectable views in \(className)"
         }
     }
-    
+
     static func allResults(count: Int, in elementName: String) -> String {
         switch count {
         case 1:
             return "\(count) Search result in \(elementName)"
-            
+
         default:
             return "\(count) Search results in \(elementName)"
         }
     }
-    
+
     static func emptyLayer(with description: String) -> String {
         "No \(description) found"
     }
@@ -56,26 +56,26 @@ enum Texts {
     static func hide(_ something: String) -> String {
         "Hide \(something)"
     }
-    
+
     static let highlightLayers = "Highlight Layers"
-    
+
     static let hierarchySearch = "Hierarchy Search"
-    
+
     static let presentInspector = "Open Inspector..."
-    
+
     static let allLayers = "all layers"
-    
+
     static let dismissView = "Dismiss View"
-    
+
     static let cancel = "Cancel"
-    
+
     static let clearImage = "Clear image"
-    
+
     static let importImage = "Import image..."
 
     static let noElementInspector = "No Element Inspector"
 
     static let expand = "Expand"
-    
+
     static let collapse = "Collapse"
 }

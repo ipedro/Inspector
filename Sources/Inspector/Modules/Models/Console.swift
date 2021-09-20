@@ -28,12 +28,12 @@ enum Console {
         return false
         #endif
     }()
-    
+
     static func log(_ items: Any..., separator: String = " ", terminator: String = "\n") {
         guard showDebugLogs else {
             return
         }
-        
+
         print(["[Inspector]"] + items, separator: separator, terminator: terminator)
     }
 }

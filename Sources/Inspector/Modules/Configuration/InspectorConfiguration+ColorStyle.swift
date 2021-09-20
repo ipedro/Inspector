@@ -119,13 +119,12 @@ public extension InspectorConfiguration {
         var disabledAlpha: CGFloat {
             switch self {
             case .dark:
-                return 1/3
+                return 1 / 3
             case .light:
                 return 0.2
             }
         }
     }
-
 }
 
 // MARK: - ColorStylable

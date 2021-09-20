@@ -48,15 +48,15 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
 
         case .attributes:
             return IconKit.imageOfSliderHorizontal()
-            
+
         case .children:
             return IconKit.imageOfRelationshipDiagram()
-            
+
         case .size:
             return IconKit.imageOfSetSquareFill()
         }
     }
-    
+
     static var allCases: [ElementInspectorPanel] {
         [.preview, .attributes, .size, .children]
     }

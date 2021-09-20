@@ -25,16 +25,16 @@ extension UITextField.ViewMode: CustomStringConvertible {
         switch self {
         case .never:
             return "Never"
-            
+
         case .whileEditing:
             return "While Editing"
-            
+
         case .unlessEditing:
             return "Unless Editing"
-            
+
         case .always:
             return "Always"
-            
+
         @unknown default:
             return "Unknown"
         }

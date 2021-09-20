@@ -22,7 +22,7 @@ import UIKit
 
 extension UIKeyboardAppearance: CaseIterable {
     typealias AllCases = [UIKeyboardAppearance]
-    
+
     static let allCases: [UIKeyboardAppearance] = [
         .default,
         .dark,

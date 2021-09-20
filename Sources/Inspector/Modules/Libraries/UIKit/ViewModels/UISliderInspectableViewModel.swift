@@ -36,24 +36,24 @@ extension UIKitElementLibrary {
             case groupEvent = "Event"
             case isContinuous = "Continuous updates"
         }
-        
+
         let title = "Slider"
-        
+
         private(set) weak var slider: UISlider?
-        
+
         init?(view: UIView) {
             guard let slider = view as? UISlider else {
                 return nil
             }
-            
+
             self.slider = slider
         }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let slider = slider else {
                 return nil
             }
-            
+
             let stepValueProvider = { max(0.01, (slider.maximumValue - slider.minimumValue) / 100) }
 
             switch property {
@@ -67,7 +67,7 @@ extension UIKitElementLibrary {
                     slider.value = value
                     slider.sendActions(for: .valueChanged)
                 }
-            
+
             case .minimumValue:
                 return .floatStepper(
                     title: property.rawValue,
@@ -77,7 +77,7 @@ extension UIKitElementLibrary {
                 ) { minimumValue in
                     slider.minimumValue = minimumValue
                 }
-            
+
             case .maximumValue:
                 return .floatStepper(
                     title: property.rawValue,
@@ -87,10 +87,10 @@ extension UIKitElementLibrary {
                 ) { maximumValue in
                     slider.maximumValue = maximumValue
                 }
-            
+
             case .groupImages:
                 return .separator
-            
+
             case .minimumValueImage:
                 return .imagePicker(
                     title: property.rawValue,
@@ -98,7 +98,7 @@ extension UIKitElementLibrary {
                 ) { minimumValueImage in
                     slider.minimumValueImage = minimumValueImage
                 }
-            
+
             case .maximumValueImage:
                 return .imagePicker(
                     title: property.rawValue,
@@ -106,10 +106,10 @@ extension UIKitElementLibrary {
                 ) { maximumValueImage in
                     slider.maximumValueImage = maximumValueImage
                 }
-            
+
             case .groupColors:
                 return .separator
-            
+
             case .minimumTrackTintColor:
                 return .colorPicker(
                     title: property.rawValue,
@@ -117,7 +117,7 @@ extension UIKitElementLibrary {
                 ) { minimumTrackTintColor in
                     slider.minimumTrackTintColor = minimumTrackTintColor
                 }
-            
+
             case .maxTrack:
                 return .colorPicker(
                     title: property.rawValue,
@@ -125,7 +125,7 @@ extension UIKitElementLibrary {
                 ) { maximumTrackTintColor in
                     slider.maximumTrackTintColor = maximumTrackTintColor
                 }
-            
+
             case .thumbTintColor:
                 return .colorPicker(
                     title: property.rawValue,
@@ -133,10 +133,10 @@ extension UIKitElementLibrary {
                 ) { thumbTintColor in
                     slider.thumbTintColor = thumbTintColor
                 }
-            
+
             case .groupEvent:
                 return .group(title: property.rawValue)
-                
+
             case .isContinuous:
                 return .switch(
                     title: property.rawValue,

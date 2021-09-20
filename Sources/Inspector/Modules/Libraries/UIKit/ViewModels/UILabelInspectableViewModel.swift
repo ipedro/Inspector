@@ -42,19 +42,19 @@ extension UIKitElementLibrary {
             case highlightedTextColor = "Highlighted Color"
             case shadowColor = "Shadow"
         }
-        
+
         let title = "Label"
-        
+
         private(set) weak var label: UILabel?
-        
+
         init?(view: UIView) {
             guard let label = view as? UILabel else {
                 return nil
             }
-            
+
             self.label = label
         }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let label = label else {
                 return nil
@@ -69,7 +69,7 @@ extension UIKitElementLibrary {
                 ) { text in
                     label.text = text
                 }
-                
+
             case .textColor:
                 return .colorPicker(
                     title: property.rawValue,
@@ -77,7 +77,7 @@ extension UIKitElementLibrary {
                 ) { textColor in
                     label.textColor = textColor
                 }
-                
+
             case .fontName:
                 return .fontNamePicker(
                     title: property.rawValue,
@@ -86,10 +86,10 @@ extension UIKitElementLibrary {
                     guard let font = font else {
                         return
                     }
-                    
+
                     label.font = font
                 }
-                
+
             case .fontSize:
                 return .fontSizeStepper(
                     title: property.rawValue,
@@ -98,10 +98,10 @@ extension UIKitElementLibrary {
                     guard let font = font else {
                         return
                     }
-                    
+
                     label.font = font
                 }
-                
+
             case .adjustsFontSizeToFitWidth:
                 return .switch(
                     title: property.rawValue,
@@ -109,10 +109,10 @@ extension UIKitElementLibrary {
                 ) { adjustsFontSizeToFitWidth in
                     label.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
                 }
-                
+
             case .textAlignment:
                 let allCases = NSTextAlignment.allCases.withImages
-                
+
                 return .imageButtonGroup(
                     title: property.rawValue,
                     images: allCases.compactMap(\.image),
@@ -121,12 +121,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let textAlignment = allCases[newIndex]
-                    
+
                     label.textAlignment = textAlignment
                 }
-                
+
             case .numberOfLines:
                 return .integerStepper(
                     title: property.rawValue,
@@ -136,10 +136,10 @@ extension UIKitElementLibrary {
                 ) { numberOfLines in
                     label.numberOfLines = numberOfLines
                 }
-                
+
             case .groupBehavior:
                 return .group(title: property.rawValue)
-                
+
             case .isEnabled:
                 return .switch(
                     title: property.rawValue,
@@ -147,7 +147,7 @@ extension UIKitElementLibrary {
                 ) { isEnabled in
                     label.isEnabled = isEnabled
                 }
-            
+
             case .isHighlighted:
                 return .switch(
                     title: property.rawValue,
@@ -155,20 +155,20 @@ extension UIKitElementLibrary {
                 ) { isHighlighted in
                     label.isHighlighted = isHighlighted
                 }
-                
+
             case .separator0,
                  .separator1:
                 return .separator
-                
+
             case .baseline:
                 return nil
-                
+
             case .lineBreak:
                 return nil
-                
+
             case .autoShrink:
                 return nil
-                
+
             case .allowsDefaultTighteningForTruncation:
                 return .switch(
                     title: property.rawValue,
@@ -176,7 +176,7 @@ extension UIKitElementLibrary {
                 ) { allowsDefaultTighteningForTruncation in
                     label.allowsDefaultTighteningForTruncation = allowsDefaultTighteningForTruncation
                 }
-                
+
             case .highlightedTextColor:
                 return .colorPicker(
                     title: property.rawValue,
@@ -184,7 +184,7 @@ extension UIKitElementLibrary {
                 ) { highlightedTextColor in
                     label.highlightedTextColor = highlightedTextColor
                 }
-                
+
             case .shadowColor:
                 return .colorPicker(
                     title: property.rawValue,

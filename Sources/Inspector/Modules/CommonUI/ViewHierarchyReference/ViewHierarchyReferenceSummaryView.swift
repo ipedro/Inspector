@@ -22,21 +22,21 @@ import UIKit
 
 protocol ViewHierarchyReferenceSummaryViewModelProtocol {
     var thumbnailImage: UIImage? { get }
-    
+
     var title: String { get }
-    
+
     var titleFont: UIFont { get }
-    
+
     var subtitle: String { get }
-    
+
     var isContainer: Bool { get }
-    
+
     var isCollapsed: Bool { get set }
-    
+
     var showCollapseButton: Bool { get }
-    
+
     var isHidden: Bool { get }
-    
+
     var relativeDepth: Int { get }
 
     var automaticallyAdjustIndentation: Bool { get }
@@ -48,7 +48,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
             reloadData()
         }
     }
-    
+
     var isCollapsed = false {
         didSet {
             collapseButtonContainer.transform = .init(rotationAngle: isCollapsed ? -(.pi / 2) : .zero)
@@ -87,13 +87,13 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
         contentView.directionalLayoutMargins = directionalLayoutMargins
     }
-    
+
     func toggleCollapse(animated: Bool) {
         guard animated else {
             isCollapsed.toggle()
             return
         }
-        
+
         UIView.animate(
             withDuration: ElementInspector.configuration.animationDuration,
             delay: 0,
@@ -104,7 +104,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
             completion: nil
         )
     }
-    
+
     private(set) lazy var elementNameLabel = UILabel().then {
         $0.textColor = colorStyle.textColor
         $0.numberOfLines = .zero
@@ -112,7 +112,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         $0.minimumScaleFactor = 0.8
         $0.allowsDefaultTighteningForTruncation = true
     }
-    
+
     private(set) lazy var descriptionLabel = UILabel().then {
         $0.font = .preferredFont(forTextStyle: .caption2)
         $0.textColor = colorStyle.secondaryTextColor
@@ -138,7 +138,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         $0.widthAnchor.constraint(equalToConstant: 32).isActive = true
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor).isActive = true
     }
-    
+
     private(set) lazy var textStackView = UIStackView.vertical(
         .arrangedSubviews(
             elementNameLabel,
@@ -146,15 +146,15 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         ),
         .spacing(ElementInspector.appearance.verticalMargins / 2)
     )
-    
+
     override func setup() {
         super.setup()
-        
+
         contentView.axis = .horizontal
         contentView.spacing = ElementInspector.appearance.verticalMargins
         contentView.alignment = .center
         contentView.addArrangedSubviews(collapseButtonContainer, thumbnailContainerView, textStackView)
-        
+
         installView(
             contentView,
             .insets(ElementInspector.appearance.directionalInsets),

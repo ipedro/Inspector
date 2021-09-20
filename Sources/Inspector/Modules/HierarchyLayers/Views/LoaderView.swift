@@ -22,12 +22,12 @@ import UIKit
 
 final class LoaderView: LayerViewComponent {
     // MARK: - Components
-    
+
     private lazy var activityIndicator = UIActivityIndicatorView(style: .whiteLarge).then {
         $0.hidesWhenStopped = true
         $0.startAnimating()
     }
-    
+
     private lazy var checkmarkLabel = UILabel(
         .text("✓"),
         .adjustsFontSizeToFitWidth(true),
@@ -36,7 +36,7 @@ final class LoaderView: LayerViewComponent {
         .textAlignment(.center),
         .viewOptions(.isHidden(true))
     )
-    
+
     private(set) lazy var highlightView = HighlightView(
         frame: bounds,
         name: elementName,
@@ -47,7 +47,7 @@ final class LoaderView: LayerViewComponent {
     }
 
     let colorScheme: ViewHierarchyColorScheme
-    
+
     override var accessibilityIdentifier: String? {
         didSet {
             if let name = accessibilityIdentifier {
@@ -60,9 +60,9 @@ final class LoaderView: LayerViewComponent {
         self.colorScheme = colorScheme
         super.init(frame: frame)
     }
-    
+
     // MARK: - Setup
-    
+
     override func setup() {
         super.setup()
 
@@ -78,45 +78,44 @@ final class LoaderView: LayerViewComponent {
 
         checkmarkLabel.heightAnchor.constraint(equalTo: activityIndicator.heightAnchor).isActive = true
     }
-    
+
     func addInspectorViews() {
         for element in subviews where element.canHostInspectorView {
             element.layer.cornerRadius = layer.cornerRadius / 2
-            
+
             let inspectorView = WireframeView(
                 frame: element.bounds,
                 reference: ViewHierarchyReference(root: element),
                 color: .white
             )
-            
+
             element.installView(inspectorView, .autoResizingMask, position: .inFront)
         }
-        
+
         installView(highlightView, .autoResizingMask)
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
 
         backgroundColor = colorScheme.color(for: self)
-        
+
         highlightView.labelWidthConstraint = nil
-        
+
         layer.cornerRadius = frame.height / .pi
     }
-    
+
     func done() {
         activityIndicator.stopAnimating()
-        
+
         checkmarkLabel.isSafelyHidden = false
     }
-    
+
     func prepareForReuse() {
-        
         activityIndicator.startAnimating()
-        
+
         checkmarkLabel.isSafelyHidden = true
-        
+
         alpha = 1
     }
 }

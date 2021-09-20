@@ -22,7 +22,7 @@ import UIKit
 
 extension UISemanticContentAttribute: CaseIterable {
     typealias AllCases = [UISemanticContentAttribute]
-    
+
     static let allCases: [UISemanticContentAttribute] = [
         .unspecified,
         .playback,

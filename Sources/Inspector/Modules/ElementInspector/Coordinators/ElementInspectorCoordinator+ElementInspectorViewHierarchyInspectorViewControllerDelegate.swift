@@ -26,14 +26,15 @@ extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegat
     }
 
     func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
-                                         didSelect reference: ViewHierarchyReference,
-                                         with preferredPanel: ElementInspectorPanel?,
-                                         from rootReference: ViewHierarchyReference) {
+                                            didSelect reference: ViewHierarchyReference,
+                                            with preferredPanel: ElementInspectorPanel?,
+                                            from rootReference: ViewHierarchyReference)
+    {
         operationQueue.cancelAllOperations()
 
         let pushOperation = MainThreadOperation(name: "Push \(reference.displayName)") { [weak self] in
             guard let self = self else { return }
-            
+
             let selectedPanel: ElementInspectorPanel = {
                 guard
                     let preferredPanel = preferredPanel,

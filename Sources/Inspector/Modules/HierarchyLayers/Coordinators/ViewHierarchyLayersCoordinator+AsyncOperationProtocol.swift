@@ -23,7 +23,7 @@ import UIKit
 extension ViewHierarchyLayersCoordinator: AsyncOperationProtocol {
     func asyncOperation(name: String, execute closure: @escaping Closure) {
         let layerTask = MainThreadOperation(name: name, closure: closure)
-        
+
         guard let window = dataSource?.viewHierarchyWindow else {
             return operationQueue.addOperation(layerTask)
         }
@@ -32,12 +32,12 @@ extension ViewHierarchyLayersCoordinator: AsyncOperationProtocol {
             $0.accessibilityIdentifier = name
             $0.transform = .init(scaleX: 0.1, y: 0.1)
         }
-        
+
         let showLoader = MainThreadOperation(name: "\(name): show loader") {
             window.addSubview(loaderView)
-            
+
             window.installView(loaderView, .centerXY)
-            
+
             UIView.animate(
                 withDuration: ElementInspector.configuration.animationDuration,
                 delay: 0,
@@ -49,12 +49,12 @@ extension ViewHierarchyLayersCoordinator: AsyncOperationProtocol {
                 }
             )
         }
-        
+
         layerTask.addDependency(showLoader)
-        
+
         let hideLoader = MainThreadOperation(name: "\(name): hide loader") {
             loaderView.done()
-            
+
             UIView.animate(
                 withDuration: ElementInspector.configuration.animationDuration,
                 delay: 1,
@@ -67,9 +67,9 @@ extension ViewHierarchyLayersCoordinator: AsyncOperationProtocol {
                 }
             )
         }
-        
+
         hideLoader.addDependency(layerTask)
-        
+
         operationQueue.addOperations([showLoader, layerTask, hideLoader], waitUntilFinished: false)
     }
 }

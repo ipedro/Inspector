@@ -22,7 +22,7 @@ import UIKit
 
 extension NSTextAlignment: CaseIterable {
     typealias AllCases = [NSTextAlignment]
-    
+
     static let allCases: [NSTextAlignment] = [
         .left,
         .center,

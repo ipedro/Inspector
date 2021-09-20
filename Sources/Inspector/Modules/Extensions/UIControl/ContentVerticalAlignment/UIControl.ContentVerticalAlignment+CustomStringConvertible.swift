@@ -25,16 +25,16 @@ extension UIControl.ContentVerticalAlignment: CustomImageConvertible {
         switch self {
         case .center:
             return IconKit.imageOfVerticalAlignmentCenter()
-            
+
         case .top:
             return IconKit.imageOfVerticalAlignmentTop()
-            
+
         case .bottom:
             return IconKit.imageOfVerticalAlignmentBottom()
-            
+
         case .fill:
             return IconKit.imageOfVerticalAlignmentFill()
-            
+
         @unknown default:
             return nil
         }

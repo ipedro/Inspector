@@ -24,12 +24,12 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView {
     var title: String? {
         didSet {
             titleLabel.text = title
-            
+
             switch title {
             case .none:
                 titleLabel.isHidden = true
                 stackView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
-                
+
             case .some:
                 titleLabel.isHidden = false
                 stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(
@@ -40,14 +40,14 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView {
             }
         }
     }
-    
+
     var showSeparatorView: Bool {
         get { separatorView.alpha == 1 }
         set { separatorView.alpha = newValue ? 1 : 0.05 }
     }
-    
+
     private(set) lazy var separatorView = SeparatorView(style: .hard)
-    
+
     private lazy var stackView = UIStackView.vertical(
         .arrangedSubviews(
             separatorView,
@@ -55,26 +55,26 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView {
         ),
         .spacing(ElementInspector.appearance.verticalMargins)
     )
-    
+
     private(set) lazy var titleLabel = UILabel(
         .textStyle(.caption1, traits: .traitBold),
         .textColor(colorStyle.tertiaryTextColor)
     )
-    
+
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
-        
+
         setup()
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func setup() {
         backgroundView = UIView()
-        
+
         contentView.installView(stackView)
     }
 }

@@ -24,7 +24,7 @@ import UIKit
 extension UIKeyCommand.Options {
     init(input: String, modifierFlags: UIKeyModifierFlags) {
         var options = UIKeyCommand.Options.key(input)
-        
+
         let allModifiers: [UIKeyModifierFlags] = [
             .control,
             .command,
@@ -33,32 +33,32 @@ extension UIKeyCommand.Options {
             .alternate,
             .numericPad
         ]
-        
+
         for modifier in allModifiers where modifierFlags.contains(modifier) {
             switch modifier {
             case .control:
                 options = .control(options)
-                
+
             case .command:
                 options = .command(options)
-                
+
             case .alphaShift:
                 options = .capsLock(options)
-                
+
             case .shift:
                 options = .shift(options)
-                
+
             case .alternate:
                 options = .alternate(options)
-                
+
             case .numericPad:
                 options = .numericPad(options)
-                
+
             default:
                 continue
             }
         }
-        
+
         self = options
     }
 }

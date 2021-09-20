@@ -24,14 +24,14 @@ extension InspectorElementViewModelProperty: Hashable {
     private var idenfitifer: String {
         String(describing: self)
     }
-    
+
     public static func == (
         lhs: InspectorElementViewModelProperty,
         rhs: InspectorElementViewModelProperty
     ) -> Bool {
         lhs.idenfitifer == rhs.idenfitifer
     }
-    
+
     public func hash(into hasher: inout Hasher) {
         hasher.combine(idenfitifer)
     }

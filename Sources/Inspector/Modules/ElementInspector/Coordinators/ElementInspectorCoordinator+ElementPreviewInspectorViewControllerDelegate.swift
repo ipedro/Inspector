@@ -18,12 +18,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import Foundation
 
 extension ElementInspectorCoordinator: ElementPreviewPanelViewControllerDelegate {
     func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
-                                      showLayerInspectorViewsInside reference: ViewHierarchyReference) {
+                                           showLayerInspectorViewsInside reference: ViewHierarchyReference)
+    {
         delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
     }
 

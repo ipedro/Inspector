@@ -77,8 +77,8 @@ public extension ViewHierarchyLayer {
 
 extension ViewHierarchyLayer {
     static let wireframes = ViewHierarchyLayer(name: "Wireframes", showLabels: false) { _ in true }
-    
+
     static let systemViews = ViewHierarchyLayer(name: "System views", showLabels: true, allowsSystemViews: true) { $0.isSystemView && !$0.isSystemContainerView }
-    
+
     static let systemContainers = ViewHierarchyLayer(name: "System containers", showLabels: true, allowsSystemViews: true) { $0.isSystemContainerView }
 }

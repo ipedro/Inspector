@@ -23,7 +23,7 @@ import Foundation
 extension String {
     var trimmed: String? {
         let trimmedString = trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
         return trimmedString.isEmpty ? nil : trimmedString
     }
 

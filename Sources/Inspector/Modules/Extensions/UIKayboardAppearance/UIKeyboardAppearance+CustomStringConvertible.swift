@@ -25,13 +25,13 @@ extension UIKeyboardAppearance: CustomStringConvertible {
         switch self {
         case .default:
             return "Default"
-            
+
         case .dark:
             return "Dark"
-            
+
         case .light:
             return "Light"
-            
+
         @unknown default:
             return "\(self) (unsupported)"
         }

@@ -25,19 +25,19 @@ typealias Command = Inspector.Command
 public extension Inspector {
     struct Command {
         public typealias Closure = () -> Void
-        
+
         public var title: String
-        
+
         public var icon: UIImage?
-        
+
         public var keyCommandOptions: UIKeyCommand.Options?
-        
+
         var closure: Closure?
-        
+
         var isEnabled: Bool {
             closure != nil
         }
-        
+
         public init(
             title: String,
             icon: UIImage?,
@@ -58,7 +58,7 @@ extension Command {
     private static var keyCommandSettings: InspectorConfiguration.KeyCommandSettings {
         Inspector.configuration.keyCommands
     }
-    
+
     static func emptyLayer(_ title: String) -> Command {
         Command(
             title: title,
@@ -67,7 +67,7 @@ extension Command {
             closure: nil
         )
     }
-    
+
     static func visibleLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
         Command(
             title: Texts.hide(title),
@@ -79,7 +79,7 @@ extension Command {
             closure: closure
         )
     }
-    
+
     static func hiddenLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
         Command(
             title: Texts.show(title),
@@ -91,7 +91,7 @@ extension Command {
             closure: closure
         )
     }
-    
+
     static func showAllLayers(closure: @escaping Closure) -> Command {
         Command(
             title: Texts.show(Texts.allLayers),
@@ -103,7 +103,7 @@ extension Command {
             closure: closure
         )
     }
-    
+
     static func hideVisibleLayers(closure: @escaping Closure) -> Command {
         Command(
             title: Texts.hide(Texts.allLayers),
@@ -115,7 +115,7 @@ extension Command {
             closure: closure
         )
     }
-    
+
     static func presentInspector(from host: InspectorHostable, animated: Bool = true) -> Command {
         Command(
             title: Texts.presentInspector,

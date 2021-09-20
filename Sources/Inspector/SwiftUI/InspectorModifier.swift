@@ -67,12 +67,10 @@ struct InspectorModifier: ViewModifier {
                     didFinish: {
                         isPresented = false
                     }
-
                 )
                 .transition(.opacity)
                 .animation(.easeInOut(duration: 0.5))
             }
-
         }
     }
 }

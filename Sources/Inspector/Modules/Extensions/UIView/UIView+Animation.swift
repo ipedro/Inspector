@@ -29,13 +29,13 @@ extension UIView {
         switch event?.type {
         case .presses, .touches:
             break
-            
+
         default:
             return
         }
-        
+
         let delay = type == .in ? 0 : 0.15
-        
+
         UIView.animate(
             withDuration: ElementInspector.configuration.animationDuration,
             delay: delay,
@@ -44,7 +44,7 @@ extension UIView {
                 switch type {
                 case .in:
                     self.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
-                    
+
                 case .out:
                     self.transform = .identity
                 }

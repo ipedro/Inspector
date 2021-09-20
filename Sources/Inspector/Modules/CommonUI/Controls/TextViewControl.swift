@@ -22,7 +22,7 @@ import UIKit
 
 final class TextViewControl: BaseFormControl {
     // MARK: - Properties
-    
+
     private lazy var textView = UITextView(
         .backgroundColor(nil),
         .isScrollEnabled(false),
@@ -31,7 +31,7 @@ final class TextViewControl: BaseFormControl {
         .delegate(self)
     ).then {
         let padding = $0.textContainer.lineFragmentPadding
-        
+
         $0.textContainerInset = UIEdgeInsets(
             top: padding,
             left: padding * -1,
@@ -39,36 +39,36 @@ final class TextViewControl: BaseFormControl {
             right: padding * -1
         )
     }
-    
+
     private lazy var placeholderLabel = UILabel(
         .font(textView.font!),
         .numberOfLines(.zero),
         .textColor(colorStyle.secondaryTextColor)
     )
-    
+
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.animateOnTouch = false
         $0.contentView.addArrangedSubview(textView)
     }
-    
+
     override var isEnabled: Bool {
         didSet {
             textView.isEditable = isEnabled
         }
     }
-    
+
     // MARK: - Init
-    
+
     var value: String? {
         didSet {
             guard value != textView.text else {
                 return
             }
-            
+
             textView.text = value
         }
     }
-    
+
     var placeholder: String? {
         didSet {
             placeholderLabel.text = placeholder
@@ -79,7 +79,7 @@ final class TextViewControl: BaseFormControl {
         self.value = value
 
         super.init(title: title)
-        
+
         self.placeholder = placeholder
     }
 
@@ -90,11 +90,11 @@ final class TextViewControl: BaseFormControl {
 
     override func setup() {
         super.setup()
-        
+
         axis = .vertical
-        
+
         contentView.addArrangedSubview(accessoryControl)
-        
+
         textView.installView(
             placeholderLabel,
             .margins(
@@ -104,30 +104,30 @@ final class TextViewControl: BaseFormControl {
                 trailing: .zero
             )
         )
-        
+
         updateViews()
     }
-    
+
     func updateViews() {
         placeholderLabel.text = placeholder
         textView.text = value
     }
-    
+
     override var canBecomeFirstResponder: Bool {
         textView.canBecomeFirstResponder
     }
-    
+
     override var canBecomeFocused: Bool {
         textView.canBecomeFocused
     }
-    
+
     override func becomeFirstResponder() -> Bool {
         textView.becomeFirstResponder()
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         placeholderLabel.preferredMaxLayoutWidth = placeholderLabel.frame.width
     }
 }
@@ -140,10 +140,10 @@ private extension TextViewControl {
         guard value != textView.text else {
             return
         }
-        
+
         value = textView.text
         placeholderLabel.isHidden = !value.isNilOrEmpty
-        
+
         sendActions(for: .valueChanged)
     }
 }

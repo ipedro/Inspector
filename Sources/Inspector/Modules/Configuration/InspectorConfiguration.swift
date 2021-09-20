@@ -22,11 +22,11 @@ import UIKit
 
 public struct InspectorConfiguration {
     public var appearance: Appearance = .init()
-    
+
     public var keyCommands: KeyCommandSettings = .init()
-    
+
     public var cacheExpirationTimeInterval: TimeInterval = 0.5
-    
+
     public var showAllViewSearchQuery: String = "*"
 
     public var nonInspectableClassNames: [String] = []
@@ -38,7 +38,7 @@ public struct InspectorConfiguration {
         if #available(iOS 13.0, *) {
             switch (hostWindow.overrideUserInterfaceStyle, hostWindow.traitCollection.userInterfaceStyle) {
             case (.dark, _),
-                (.unspecified, .dark):
+                 (.unspecified, .dark):
                 return .dark
             default:
                 return .light
@@ -66,7 +66,6 @@ public struct InspectorConfiguration {
         "_UIHostingView",
         "PlatformViewHost",
         "PlatformGroupContainer",
-        "HostingScrollView",
+        "HostingScrollView"
     ]
-    
 }

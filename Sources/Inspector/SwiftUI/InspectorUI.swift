@@ -23,7 +23,6 @@ import SwiftUI
 
 @available(iOS 14.0, *)
 final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHostable {
-
     // MARK: - InspectorSwiftUIHostable
 
     let inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]?

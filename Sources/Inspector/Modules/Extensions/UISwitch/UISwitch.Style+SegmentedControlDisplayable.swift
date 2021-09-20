@@ -27,13 +27,13 @@ extension UISwitch.Style: CustomStringConvertible {
         switch self {
         case .automatic:
             return "Automatic"
-            
+
         case .checkbox:
             return "Checkbox"
-            
+
         case .sliding:
             return "Sliding"
-            
+
         @unknown default:
             return "\(self) (unsupported)"
         }

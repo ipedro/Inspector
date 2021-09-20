@@ -22,7 +22,7 @@ import UIKit
 
 extension UIScrollView.IndicatorStyle: CaseIterable {
     typealias AllCases = [UIScrollView.IndicatorStyle]
-    
+
     static let allCases: [UIScrollView.IndicatorStyle] = [
         .default,
         .black,

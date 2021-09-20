@@ -30,19 +30,19 @@ extension UIKitElementLibrary {
             case isEnabled = "Enabled"
             case isHighlighted = "Highlighted"
         }
-        
+
         let title = "Control"
-        
+
         private(set) weak var control: UIControl?
-        
+
         init?(view: UIView) {
             guard let control = view as? UIControl else {
                 return nil
             }
-            
+
             self.control = control
         }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let control = control else {
                 return nil
@@ -51,7 +51,7 @@ extension UIKitElementLibrary {
             switch property {
             case .contentHorizontalAlignment:
                 let allCases = UIControl.ContentHorizontalAlignment.allCases.withImages
-                
+
                 return .imageButtonGroup(
                     title: property.rawValue,
                     images: allCases.compactMap(\.image),
@@ -62,7 +62,7 @@ extension UIKitElementLibrary {
                     }
 
                     let contentHorizontalAlignment = allCases[newIndex]
-                    
+
                     control.contentHorizontalAlignment = contentHorizontalAlignment
                 }
 

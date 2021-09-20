@@ -22,14 +22,14 @@ import UIKit
 
 final class OptionSelectorViewCode: BaseView {
     private(set) lazy var dismissBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
-    
+
     private(set) lazy var pickerView = UIPickerView()
-    
+
     override func setup() {
         super.setup()
 
         backgroundColor = colorStyle.highlightBackgroundColor
-        
+
         contentView.addArrangedSubview(pickerView)
     }
 }

@@ -22,7 +22,7 @@ import UIKit
 
 extension UIDatePicker.Mode: CaseIterable {
     typealias AllCases = [UIDatePicker.Mode]
-    
+
     static let allCases: [UIDatePicker.Mode] = [
         .time,
         .date,

@@ -30,19 +30,19 @@ extension UIKitElementLibrary {
             case isLayoutMarginsRelativeArrangement = "Layout Margins Relative"
             case isBaselineRelativeArrangement = "Baseline Relative"
         }
-        
+
         let title = "Stack View"
-        
+
         private(set) weak var stackView: UIStackView?
-        
+
         init?(view: UIView) {
             guard let stackView = view as? UIStackView else {
                 return nil
             }
-            
+
             self.stackView = stackView
         }
-        
+
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
             guard let stackView = stackView else {
                 return nil
@@ -58,12 +58,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let axis = NSLayoutConstraint.Axis.allCases[newIndex]
-                    
+
                     stackView.axis = axis
                 }
-                
+
             case .alignment:
                 return .optionsList(
                     title: property.rawValue,
@@ -73,12 +73,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let alignment = UIStackView.Alignment.allCases[newIndex]
-                    
+
                     stackView.alignment = alignment
                 }
-                
+
             case .distribution:
                 return .optionsList(
                     title: property.rawValue,
@@ -88,12 +88,12 @@ extension UIKitElementLibrary {
                     guard let newIndex = $0 else {
                         return
                     }
-                    
+
                     let distribution = UIStackView.Distribution.allCases[newIndex]
-                    
+
                     stackView.distribution = distribution
                 }
-                
+
             case .spacing:
                 return .cgFloatStepper(
                     title: property.rawValue,
@@ -103,7 +103,7 @@ extension UIKitElementLibrary {
                 ) { spacing in
                     stackView.spacing = spacing
                 }
-            
+
             case .isBaselineRelativeArrangement:
                 return .switch(
                     title: property.rawValue,

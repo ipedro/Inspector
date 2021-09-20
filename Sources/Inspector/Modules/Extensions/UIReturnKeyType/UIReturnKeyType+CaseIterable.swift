@@ -22,7 +22,7 @@ import UIKit
 
 extension UIReturnKeyType: CaseIterable {
     typealias AllCases = [UIReturnKeyType]
-    
+
     static let allCases: [UIReturnKeyType] = [
         .default,
         .go,

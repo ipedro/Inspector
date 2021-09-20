@@ -22,38 +22,38 @@ import UIKit
 
 struct ViewHierarchySnapshot {
     // MARK: - Properties
-    
+
     static var cacheExpirationInterval: TimeInterval {
         Inspector.configuration.cacheExpirationTimeInterval
     }
-    
+
     let expiryDate = Date().addingTimeInterval(Self.cacheExpirationInterval)
-    
+
     let availableLayers: [ViewHierarchyLayer]
-    
+
     let populatedLayers: [ViewHierarchyLayer]
-    
+
     let rootReference: ViewHierarchyReference
-    
+
     let inspectableReferences: [ViewHierarchyReference]
-    
+
     let elementLibraries: [InspectorElementLibraryProtocol]
-    
+
     init(
         availableLayers: [ViewHierarchyLayer],
         elementLibraries: [InspectorElementLibraryProtocol],
         in rootView: UIView
     ) {
         self.availableLayers = availableLayers.uniqueValues()
-        
+
         self.elementLibraries = elementLibraries
-        
+
         rootReference = ViewHierarchyReference(root: rootView)
-        
+
         inspectableReferences = rootReference.inspectableViewReferences
-        
+
         let inspectableViews = rootReference.inspectableViewReferences.compactMap(\.rootView)
-        
+
         populatedLayers = availableLayers.filter {
             $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
         }
