@@ -23,7 +23,6 @@ import UIKit
 // MARK: - LayerManagerProtocol
 
 extension ViewHierarchyCoordinator: LayerManagerProtocol {
-
     var isInspectingHierarchy: Bool {
         visibleReferences.isEmpty == false
     }

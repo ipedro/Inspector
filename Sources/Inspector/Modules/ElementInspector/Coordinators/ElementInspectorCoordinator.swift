@@ -18,8 +18,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 @_implementationOnly import Coordinator
+import UIKit
 
 // MARK: - Content View Controllers
 
@@ -101,17 +101,19 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     static func makeElementInspectorViewController(
         with reference: ViewHierarchyReference,
-        in snapshot: ViewHierarchySnapshot,
-        selectedPanel: ElementInspectorPanel?,
         elementLibraries: [InspectorElementLibraryProtocol],
-        delegate: ElementInspectorViewControllerDelegate
+        selectedPanel: ElementInspectorPanel? = nil,
+        delegate: ElementInspectorViewControllerDelegate,
+        in snapshot: ViewHierarchySnapshot
     ) -> ElementInspectorViewController {
+        let availablePanels = ElementInspectorPanel.availablePanels(for: reference)
+
         let viewModel = ElementInspectorViewModel(
             snapshot: snapshot,
             reference: reference,
             selectedPanel: selectedPanel,
             inspectableElements: elementLibraries,
-            availablePanels: ElementInspectorPanel.cases(for: reference)
+            availablePanels: ElementInspectorPanel.availablePanels(for: reference)
         )
 
         let viewController = ElementInspectorViewController(viewModel: viewModel)
@@ -200,15 +202,12 @@ private extension ElementInspectorCoordinator {
     func addElementInspectorsForReferences(in navigationController: ElementInspectorNavigationController) {
         let populatedReferences = snapshot.inspectableReferences.filter { $0.rootView === reference.rootView }
 
-        let selectedPanel: ElementInspectorPanel = .preview
-
         guard let populatedReference = populatedReferences.first else {
             let rootViewController = Self.makeElementInspectorViewController(
                 with: snapshot.rootReference,
-                in: snapshot,
-                selectedPanel: selectedPanel,
                 elementLibraries: snapshot.elementLibraries,
-                delegate: self
+                delegate: self,
+                in: snapshot
             )
 
             navigationController.viewControllers = [rootViewController]
@@ -228,10 +227,9 @@ private extension ElementInspectorCoordinator {
 
                 let viewController = Self.makeElementInspectorViewController(
                     with: currentReference,
-                    in: snapshot,
-                    selectedPanel: selectedPanel,
                     elementLibraries: snapshot.elementLibraries,
-                    delegate: self
+                    delegate: self,
+                    in: snapshot
                 )
 
                 array.append(viewController)

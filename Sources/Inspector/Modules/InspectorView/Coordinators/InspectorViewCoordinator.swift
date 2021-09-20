@@ -18,8 +18,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 @_implementationOnly import Coordinator
+import UIKit
 
 protocol InspectorViewCoordinatorDelegate: AnyObject {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, didFinishWith command: InspectorCommand?)
@@ -51,8 +51,8 @@ final class InspectorViewCoordinator: ViewCoordinator {
         snapshot: ViewHierarchySnapshot,
         commandGroups: @escaping CommandGroupsProvider
     ) {
-        self.hierarchySnapshot = snapshot
-        self.commandGroupsProvider = commandGroups
+        hierarchySnapshot = snapshot
+        commandGroupsProvider = commandGroups
 
         super.init()
     }

@@ -20,16 +20,18 @@
 
 import UIKit
 
-protocol ElementInspectorViewModelProtocol: ViewHierarchyReferenceSummaryViewModelProtocol {
+protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyReferenceSummaryViewModelProtocol {
     var reference: ViewHierarchyReference { get }
 
     var snapshot: ViewHierarchySnapshot { get }
 
     var availablePanels: [ElementInspectorPanel] { get }
 
-    var selectedPanel: ElementInspectorPanel? { get }
+    var currentPanel: ElementInspectorPanel { get }
 
-    var selectedPanelSegmentIndex: Int { get }
+    var isCompactVerticalPresentation: Bool { get set }
+
+    var currentPanelIndex: Int { get }
 }
 
 final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
@@ -43,17 +45,30 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     var selectedPanel: ElementInspectorPanel?
 
+    var currentPanel: ElementInspectorPanel { selectedPanel ?? defaultPanel }
+
     var isCollapsed: Bool = false
 
-    var selectedPanelSegmentIndex: Int {
-        guard
-            let selectedPanel = selectedPanel,
-            let selectedIndex = availablePanels.firstIndex(of: selectedPanel)
-        else {
-            return UISegmentedControl.noSegment
+    var isCompactVerticalPresentation: Bool = false
+
+    private var defaultPanel: ElementInspectorPanel {
+        if isCompactVerticalPresentation, let firstOtherPanel = availablePanels.filter({ $0 != .preview }).first {
+            return firstOtherPanel
+        }
+        else if let firstPanel = availablePanels.first {
+            return firstPanel
+        }
+        return .preview
+    }
+
+    var currentPanelIndex: Int {
+        let selectedPanel = selectedPanel ?? defaultPanel
+
+        if let selectedIndex = availablePanels.firstIndex(of: selectedPanel) {
+            return selectedIndex
         }
 
-        return selectedIndex
+        return UISegmentedControl.noSegment
     }
 
     init(
@@ -67,13 +82,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         self.reference = reference
         self.inspectableElements = inspectableElements
         self.availablePanels = availablePanels
-
-        if let selectedPanel = selectedPanel, availablePanels.contains(selectedPanel) {
-            self.selectedPanel = selectedPanel
-        }
-        else {
-            self.selectedPanel = availablePanels.first
-        }
+        self.selectedPanel = selectedPanel
     }
 }
 

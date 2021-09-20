@@ -169,7 +169,7 @@ extension UIWindow {
 
         guard motion == .motionShake else { return }
 
-        inspectAll()
+        toggleInspectionPresentation()
     }
 }
 

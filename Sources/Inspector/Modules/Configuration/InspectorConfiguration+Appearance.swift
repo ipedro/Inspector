@@ -28,7 +28,7 @@ public extension InspectorConfiguration {
             if #available(iOS 13.0, *) {
                 return .tertiarySystemFill
             }
-            
+
             return .systemGray
         }()
 

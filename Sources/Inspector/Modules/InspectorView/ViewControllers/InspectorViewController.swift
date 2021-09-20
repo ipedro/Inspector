@@ -18,10 +18,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import GameController
 @_implementationOnly import UIKeyboardAnimatable
 @_implementationOnly import UIKeyCommandTableView
 import UIKit
-import GameController
 
 protocol InspectorViewControllerDelegate: AnyObject {
     func inspectorViewController(
@@ -33,7 +33,6 @@ protocol InspectorViewControllerDelegate: AnyObject {
 }
 
 final class InspectorViewController: UIViewController, KeyboardAnimatable {
-
     // MARK: - Init
 
     convenience init(viewModel: HierarchyInspectorViewModelProtocol) {

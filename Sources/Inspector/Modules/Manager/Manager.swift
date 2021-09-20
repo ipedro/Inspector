@@ -18,15 +18,14 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 @_implementationOnly import Coordinator
+import UIKit
 
 typealias Manager = Inspector.Manager
 
 typealias Coordinator = BaseCoordinator<Void> & StartProtocol
 
 extension Inspector {
-
     final class Manager: Coordinator {
         // MARK: - Properties
 
@@ -79,7 +78,6 @@ extension Inspector {
 
             operationQueue.cancelAllOperations()
         }
-
     }
 }
 

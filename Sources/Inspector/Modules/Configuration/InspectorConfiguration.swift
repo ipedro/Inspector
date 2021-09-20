@@ -43,7 +43,7 @@ public struct InspectorConfiguration {
                 return .light
             }
         }
-        
+
         return .dark
     }
 

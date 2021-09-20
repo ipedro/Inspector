@@ -35,23 +35,11 @@ extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegat
         let pushOperation = MainThreadOperation(name: "Push \(reference.displayName)") { [weak self] in
             guard let self = self else { return }
 
-            let selectedPanel: ElementInspectorPanel = {
-                guard
-                    let preferredPanel = preferredPanel,
-                    ElementInspectorPanel.cases(for: reference).contains(preferredPanel)
-                else {
-                    return .preview
-                }
-
-                return preferredPanel
-            }()
-
             let elementInspectorViewController = Self.makeElementInspectorViewController(
                 with: reference,
-                in: self.snapshot,
-                selectedPanel: selectedPanel,
                 elementLibraries: self.snapshot.elementLibraries,
-                delegate: self
+                delegate: self,
+                in: self.snapshot
             )
 
             self.navigationController.pushViewController(elementInspectorViewController, animated: true)

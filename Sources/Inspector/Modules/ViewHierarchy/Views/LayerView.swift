@@ -106,7 +106,7 @@ class LayerView: UIImageView, LayerViewProtocol {
         if #available(iOS 13.0, *) {
             borderedView.layer.cornerCurve = superview.layer.cornerCurve
         }
-        
+
         borderedView.layer.maskedCorners = superview.layer.maskedCorners
 
         borderedView.layer.cornerRadius = superview.layer.cornerRadius

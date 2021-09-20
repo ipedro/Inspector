@@ -70,7 +70,7 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
         let elementActions = UIMenu(
             title: "Open",
             options: .displayInline,
-            children: ElementInspectorPanel.cases(for: reference).map { panel in
+            children: ElementInspectorPanel.availablePanels(for: reference).map { panel in
                 UIAction(
                     title: "Open \(panel.title)",
                     image: panel.image
@@ -136,7 +136,7 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
             )
         }
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.numberOfRows
     }

@@ -37,6 +37,14 @@ extension ElementInspector {
             return false
         }
 
+        var isPhoneIdiom: Bool {
+            guard let userInterfaceIdiom = Inspector.host?.window?.traitCollection.userInterfaceIdiom else {
+                // assume true
+                return true
+            }
+            return userInterfaceIdiom == .phone
+        }
+
         var childrenListMaximumInteractiveDepth = 4
 
         var animationDuration: TimeInterval = CATransaction.animationDuration()

@@ -18,42 +18,49 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
 public protocol InspectorPresentable {}
 
-extension InspectorPresentable {
-
+public extension InspectorPresentable {
     private var manager: Manager { Inspector.manager }
 
     var isInspectingHierarchy: Bool { manager.isInspectingHierarchy }
+
+    func toggleInspectionPresentation() {
+        if isInspectingHierarchy {
+            stopInspectingAll()
+        }
+        else {
+            inspectAll()
+        }
+    }
 
     func isInspecting(_ element: UIView) -> Bool {
         element.allSubviews.contains { $0 is InternalViewProtocol }
     }
 
-    public func inspect(_ element: UIView, animated: Bool = true) {
+    func inspect(_ element: UIView, animated: Bool = true) {
         manager.presentElementInspector(for: .init(element), animated: animated, from: element)
     }
 
-    public func inspect(_ layer: Inspector.ViewHierarchyLayer) {
+    func inspect(_ layer: Inspector.ViewHierarchyLayer) {
         manager.installLayer(layer)
     }
 
-    public func inspectAll() {
+    func inspectAll() {
         manager.installAllLayers()
     }
 
-    public func stopInspecting(_ layer: Inspector.ViewHierarchyLayer) {
+    func stopInspecting(_ layer: Inspector.ViewHierarchyLayer) {
         manager.removeLayer(layer)
     }
 
-    public func stopInspectingAll() {
+    func stopInspectingAll() {
         manager.removeAllLayers()
     }
 
-    public func presentInspector(animated: Bool = true) {
+    func presentInspector(animated: Bool = true) {
         manager.presentInspector(animated: animated)
     }
 }

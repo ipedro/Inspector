@@ -28,7 +28,7 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController)
 }
 
-final class ElementInspectorViewController: UIViewController, KeyboardAnimatable {
+final class ElementInspectorViewController: ElementInspectorPanelViewController, KeyboardAnimatable {
     weak var delegate: ElementInspectorViewControllerDelegate?
 
     let viewModel: ElementInspectorViewModelProtocol
@@ -36,6 +36,12 @@ final class ElementInspectorViewController: UIViewController, KeyboardAnimatable
     override var preferredContentSize: CGSize {
         didSet {
             Console.log(classForCoder, #function, preferredContentSize)
+        }
+    }
+
+    override var isCompactVerticalPresentation: Bool {
+        didSet {
+            viewModel.isCompactVerticalPresentation = isCompactVerticalPresentation
         }
     }
 
@@ -157,7 +163,26 @@ final class ElementInspectorViewController: UIViewController, KeyboardAnimatable
 
         navigationItem.titleView = viewCode.segmentedControl
         navigationItem.rightBarButtonItem = viewCode.dismissBarButtonItem
+    }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // here the view has updated its vertical compactness and we can load the panels
+        if viewCode.segmentedControl.numberOfSegments == .zero {
+            reloadData()
+        }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        updateVerticalPresentationState()
+    }
+
+    func updatePanelsSegmentedControl() {
+        viewCode.segmentedControl.removeAllSegments()
+        
         viewModel.availablePanels.reversed().forEach {
             viewCode.segmentedControl.insertSegment(
                 with: $0.image.withRenderingMode(.alwaysTemplate),
@@ -166,14 +191,12 @@ final class ElementInspectorViewController: UIViewController, KeyboardAnimatable
             )
         }
 
-        viewCode.segmentedControl.selectedSegmentIndex = viewModel.selectedPanelSegmentIndex
-
-        if let selectedPanel = viewModel.selectedPanel {
-            installPanel(selectedPanel)
-        }
+        viewCode.segmentedControl.selectedSegmentIndex = viewModel.currentPanelIndex
     }
 
     func reloadData() {
+        updatePanelsSegmentedControl()
+        installPanel(viewModel.currentPanel)
         viewCode.referenceSummaryView.reloadData()
     }
 

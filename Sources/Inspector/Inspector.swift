@@ -23,7 +23,7 @@ import UIKit
 typealias Closure = () -> Void
 
 public enum Inspector {
-    static let manager: Inspector.Manager = Inspector.Manager()
+    static let manager = Inspector.Manager()
 
     public static var configuration = InspectorConfiguration()
 

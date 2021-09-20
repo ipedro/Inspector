@@ -21,15 +21,12 @@
 import UIKit
 
 protocol KeyCommandPresentable {
-
     var commandGroups: CommandGroups { get }
 
     var keyCommands: [UIKeyCommand] { get }
-
 }
 
 extension KeyCommandPresentable {
-    
     var keyCommands: [UIKeyCommand] {
         makeKeyCommands(withSelector: keyCommandAction)
     }

@@ -20,9 +20,7 @@
 
 import UIKit
 
-typealias ElementInspectorPanelViewController = ElementInspectorBasePanelViewController & ElementInspectorPanelViewControllerProtocol
-
-class ElementInspectorBasePanelViewController: UIViewController {
+class ElementInspectorPanelViewController: UIViewController {
     // MARK: - Layout
 
     var hasScrollView: Bool {
@@ -30,6 +28,8 @@ class ElementInspectorBasePanelViewController: UIViewController {
     }
 
     private var needsLayout = true
+
+    var isCompactVerticalPresentation: Bool = false
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -41,16 +41,65 @@ class ElementInspectorBasePanelViewController: UIViewController {
         updatePreferredContentSize()
     }
 
+    override func willMove(toParent parent: UIViewController?) {
+        super.willMove(toParent: parent)
+        updateVerticalPresentationState()
+    }
+
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        updateVerticalPresentationState()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateVerticalPresentationState()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateVerticalPresentationState()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        updateVerticalPresentationState()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        updateVerticalPresentationState()
+    }
+
+    func updateVerticalPresentationState() {
+        guard let parent = parent else { return }
+
+        let newValue: Bool = {
+            if let popover = parent.popoverPresentationController {
+                #if swift(>=5.5)
+                if #available(iOS 15.0, *) {
+                    return popover.adaptiveSheetPresentationController.selectedDetentIdentifier != .large
+                }
+                #endif
+
+                _ = popover
+
+                return true
+            }
+
+            return false
+        }()
+
+        guard newValue != isCompactVerticalPresentation else { return }
+
+        isCompactVerticalPresentation = newValue
+    }
+
     @objc
     func updatePreferredContentSize() {
-        guard
-            let self = self as? ElementInspectorPanelViewController,
-            modalPresentationStyle == .popover
-        else {
-            return
-        }
+        guard modalPresentationStyle == .popover else { return }
 
-        preferredContentSize = self.calculatePreferredContentSize()
+        preferredContentSize = calculatePreferredContentSize()
     }
 
     func calculatePreferredContentSize() -> CGSize {

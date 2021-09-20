@@ -35,7 +35,7 @@ extension UIDatePickerStyle: CustomStringConvertible {
 
         case .inline:
             return "Inline"
-        
+
         @unknown default:
             return "Unknown"
         }

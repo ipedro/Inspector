@@ -54,5 +54,4 @@ struct ViewHierarchySnapshot {
             $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
         }
     }
-
 }

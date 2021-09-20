@@ -61,7 +61,7 @@ enum ElementInspectorPanel: CaseIterable, Hashable {
         [.preview, .attributes, .size, .children]
     }
 
-    static func cases(for reference: ViewHierarchyReference) -> [ElementInspectorPanel] {
+    static func availablePanels(for reference: ViewHierarchyReference) -> [ElementInspectorPanel] {
         ElementInspectorPanel.allCases.compactMap { panel in
             switch panel {
             case .children:

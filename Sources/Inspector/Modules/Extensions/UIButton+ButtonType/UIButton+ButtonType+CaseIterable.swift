@@ -35,7 +35,7 @@ extension UIButton.ButtonType: CaseIterable {
                 .close
             ]
         }
-        
+
         return [
             .custom,
             .system,

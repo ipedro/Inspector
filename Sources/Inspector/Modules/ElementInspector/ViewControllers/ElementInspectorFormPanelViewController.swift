@@ -90,7 +90,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         children.compactMap { $0 as? ElementInspectorFormItemViewController }
     }
 
-    var isCompactVerticalPresentation: Bool! {
+    override var isCompactVerticalPresentation: Bool {
         didSet {
             let formItemViewControllers = formItemViewControllers
 
@@ -128,26 +128,6 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         super.viewDidLoad()
 
         reloadData()
-    }
-
-    override func willMove(toParent parent: UIViewController?) {
-        super.willMove(toParent: parent)
-
-        guard let parent = parent else { return }
-
-        isCompactVerticalPresentation = {
-            if let popover = parent.popoverPresentationController {
-                #if swift(>=5.5)
-                if #available(iOS 15.0, *) {
-                    return popover.adaptiveSheetPresentationController.selectedDetentIdentifier != .large
-                }
-                #endif
-
-                return true
-            }
-
-            return false
-        }()
     }
 
     func reloadData() {
