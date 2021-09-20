@@ -34,5 +34,13 @@ extension UIAction {
             }
         )
     }
+
+    static func collapseAction(isCollapsed: Bool, title: String, handler: @escaping UIActionHandler) -> UIAction {
+        UIAction(
+            title: title,
+            image: isCollapsed ? .chevronDownSymbol : .chevronRightSymbol,
+            handler: handler
+        )
+    }
 }
 #endif

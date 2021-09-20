@@ -74,4 +74,8 @@ enum Texts {
     static let importImage = "Import image..."
 
     static let noElementInspector = "No Element Inspector"
+
+    static let expand = "Expand"
+    
+    static let collapse = "Collapse"
 }

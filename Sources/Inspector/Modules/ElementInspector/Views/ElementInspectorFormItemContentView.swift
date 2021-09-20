@@ -67,12 +67,15 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
 
     var header: SectionHeader
 
-    private(set) lazy var headerStackView = UIStackView.horizontal().then {
+    private lazy var headerStackView = UIStackView.horizontal().then {
         $0.isLayoutMarginsRelativeArrangement = true
         $0.alignment = .center
-        $0.directionalLayoutMargins = .init(trailing: ElementInspector.appearance.horizontalMargins)
         $0.addArrangedSubview(headerControl)
         $0.clipsToBounds = true
+    }
+
+    func addHeaderArrangedSubviews(_ views: UIView...) {
+        headerStackView.addArrangedSubviews(views)
     }
 
     private lazy var headerControl = BaseControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
@@ -102,6 +105,13 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
 
     override func setup() {
         super.setup()
+
+        #if swift(>=5.0)
+        if #available(iOS 13.0, *) {
+            let interaction = UIContextMenuInteraction(delegate: self)
+            headerControl.addInteraction(interaction)
+        }
+        #endif
 
         clipsToBounds = true
         updateViewsForState()
@@ -143,14 +153,8 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
 
 @objc private extension ElementInspectorFormItemContentView {
     func changeState() {
-        let newState: InspectorElementFormItemState = {
-            switch state {
-            case .expanded:
-                return .collapsed
-            case .collapsed:
-                return .expanded
-            }
-        }()
+        var newState = state
+        newState.toggle()
 
         delegate?.inspectorElementFormItemView(self, willChangeFrom: state, to: newState)
     }
@@ -172,3 +176,37 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
 extension NSDirectionalEdgeInsets {
     static let formSectionContentMargins = ElementInspector.appearance.directionalInsets
 }
+
+#if swift(>=5.0)
+
+// MARK: - UIContextMenuInteractionDelegate
+
+@available(iOS 13.0, *)
+extension ElementInspectorFormItemContentView: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil,
+            actionProvider: { [weak self] _ in
+                guard let self = self else { return nil }
+
+                return UIMenu(
+                    title: String(),
+                    image: nil,
+                    identifier: nil,
+                    options: .displayInline,
+                    children: [
+                        UIAction.collapseAction(
+                            isCollapsed: self.state == .collapsed,
+                            title: self.state == .collapsed ? Texts.expand : Texts.collapse,
+                            handler: { [weak self] _ in
+                                self?.changeState()
+                            }
+                        )
+                    ]
+                )
+            }
+        )
+    }
+}
+#endif

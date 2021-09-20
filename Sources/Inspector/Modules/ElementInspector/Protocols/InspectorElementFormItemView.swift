@@ -18,13 +18,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
 public protocol InspectorElementFormItemViewDelegate: AnyObject {
     func inspectorElementFormItemView(_ item: InspectorElementFormItemView,
-                                         willChangeFrom oldState: InspectorElementFormItemState?,
-                                         to newState: InspectorElementFormItemState)
+                                      willChangeFrom oldState: InspectorElementFormItemState?,
+                                      to newState: InspectorElementFormItemState)
 }
 
 public protocol InspectorElementFormItemView: UIView {
@@ -34,7 +33,7 @@ public protocol InspectorElementFormItemView: UIView {
     var title: String? { get set }
 
     /// Optional section subtitle.
-    var subtitle: String?  { get set }
+    var subtitle: String? { get set }
 
     /// Defines the section separator appearance.
     var separatorStyle: InspectorElementFormItemSeparatorStyle { get set }

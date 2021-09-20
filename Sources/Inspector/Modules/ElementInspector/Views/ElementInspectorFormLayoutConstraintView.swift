@@ -88,8 +88,16 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
             else {
                 return
             }
+            
             toggleControl.isHidden = true
-            formView.headerStackView.addArrangedSubviews(toggleControl.switchControl)
+
+            let switchContainerView = UIStackView().then {
+                $0.addArrangedSubviews(toggleControl.switchControl)
+                $0.isLayoutMarginsRelativeArrangement = true
+                $0.directionalLayoutMargins = .init(trailing: ElementInspector.appearance.horizontalMargins)
+            }
+
+            formView.addHeaderArrangedSubviews(switchContainerView)
         }
 
         formView.addFormViews(formViews)
