@@ -18,7 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-#if swift(>=5.3)
+#if canImport(SwiftUI)
 import SwiftUI
 
 @available(iOS 14.0, *)
@@ -67,9 +67,10 @@ struct InspectorModifier: ViewModifier {
                     didFinish: {
                         isPresented = false
                     }
+
                 )
-                .animation(.easeInOut(duration: 0.5))
                 .transition(.opacity)
+                .animation(.easeInOut(duration: 0.5))
             }
 
         }

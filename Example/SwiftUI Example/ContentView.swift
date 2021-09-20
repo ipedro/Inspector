@@ -44,15 +44,15 @@ struct ContentView: View {
                 }
                 .padding(20)
             }
-            .inspect(
-                isPresented: $isInspecting,
-                inspectorViewHierarchyLayers: nil,
-                inspectorViewHierarchyColorScheme: nil,
-                inspectorCommandGroups: nil,
-                inspectorElementLibraries: nil
-            )
             .navigationTitle("SwiftUI Inspector")
         }
+        .onAppear {
+            Inspector.host?.window?.showInspectorLayer(.allViews)
+        }
+        .onShake {
+            self.isInspecting.toggle()
+        }
+        .inspect(isPresented: $isInspecting)
     }
 }
 

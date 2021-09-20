@@ -18,7 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-#if swift(>=5.3)
+#if canImport(SwiftUI)
 import SwiftUI
 
 @available(iOS 14.0, *)
@@ -91,11 +91,7 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHostable
             return alertController(title: "Couldn't present inspector")
         }
 
-        let startController = coordinator.start()
-        startController.loadViewIfNeeded()
-        startController.viewWillAppear(true)
-
-        return startController
+        return coordinator.start()
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
