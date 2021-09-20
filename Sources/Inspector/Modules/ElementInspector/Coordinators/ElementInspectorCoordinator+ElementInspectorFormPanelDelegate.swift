@@ -32,7 +32,6 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
     }
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController, didTap colorPicker: ColorPreviewControl) {
-        #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             let colorPickerViewController = UIColorPickerViewController().then {
                 $0.setPopoverModalPresentationStyle(delegate: self, from: colorPicker.accessoryControl)
@@ -45,7 +44,6 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
 
             formPanelViewController.present(colorPickerViewController, animated: true)
         }
-        #endif
     }
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
@@ -61,7 +59,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
             $0.delegate = self
         }
 
-        let navigationController = createNavigationController(from: optionSelector.accessoryControl).then {
+        let navigationController = makeNavigationController(from: optionSelector.accessoryControl).then {
             $0.viewControllers = [optionSelectorViewController]
             $0.shouldAdaptModalPresentation = false
         }

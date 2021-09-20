@@ -21,7 +21,6 @@
 import UIKit
 
 extension UIActivityIndicatorView.Style: CustomStringConvertible {
-    #if swift(>=5.0)
     var description: String {
         switch self {
         case .medium:
@@ -43,21 +42,4 @@ extension UIActivityIndicatorView.Style: CustomStringConvertible {
             return "\(self) (unsupported)"
         }
     }
-    #else
-    var description: String {
-        switch self {
-        case .whiteLarge:
-            return "White Large"
-
-        case .white:
-            return "White"
-
-        case .gray:
-            return "Gray"
-
-        @unknown default:
-            return "\(self) (unsupported)"
-        }
-    }
-    #endif
 }

@@ -49,7 +49,6 @@ extension UIKitElementLibrary {
 
             switch property {
             case .title:
-                #if swift(>=5.3)
                 if #available(iOS 14.0, *) {
                     return .textField(
                         title: property.rawValue,
@@ -59,11 +58,9 @@ extension UIKitElementLibrary {
                         switchControl.title = title
                     }
                 }
-                #endif
                 return nil
 
             case .preferredStyle:
-                #if swift(>=5.3)
                 if #available(iOS 14.0, *) {
                     return .textButtonGroup(
                         title: property.rawValue,
@@ -80,7 +77,6 @@ extension UIKitElementLibrary {
                         }
                     )
                 }
-                #endif
                 return nil
 
             case .isOn:

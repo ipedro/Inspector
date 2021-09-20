@@ -155,7 +155,6 @@ extension UIKitElementLibrary {
                 }
 
             case .isPointerInteractionEnabled:
-                #if swift(>=5.0)
                 if #available(iOS 13.4, *) {
                     return .switch(
                         title: property.rawValue,
@@ -164,7 +163,6 @@ extension UIKitElementLibrary {
                         button.isPointerInteractionEnabled = isPointerInteractionEnabled
                     }
                 }
-                #endif
                 return nil
 
             case .adjustsImageSizeForAccessibilityContentSizeCategory:

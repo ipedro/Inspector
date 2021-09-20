@@ -145,12 +145,10 @@ final class ElementInspectorViewController: UIViewController, KeyboardAnimatable
         title = viewModel.reference.elementName
         viewCode.referenceSummaryView.viewModel = viewModel
 
-        #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             let interaction = UIContextMenuInteraction(delegate: self)
             viewCode.referenceSummaryView.addInteraction(interaction)
         }
-        #endif
 
         animateWhenKeyboard(.willChangeFrame) { info in
             self.viewCode.keyboardHeight = info.keyboardFrame.height
@@ -259,7 +257,6 @@ private extension ElementInspectorViewController {
 
 // MARK: - Context Menu Interaction
 
-#if swift(>=5.0)
 @available(iOS 13.0, *)
 extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
@@ -301,4 +298,3 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
         )
     }
 }
-#endif

@@ -106,12 +106,10 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
     override func setup() {
         super.setup()
 
-        #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             let interaction = UIContextMenuInteraction(delegate: self)
             headerControl.addInteraction(interaction)
         }
-        #endif
 
         clipsToBounds = true
         updateViewsForState()
@@ -177,8 +175,6 @@ extension NSDirectionalEdgeInsets {
     static let formSectionContentMargins = ElementInspector.appearance.directionalInsets
 }
 
-#if swift(>=5.0)
-
 // MARK: - UIContextMenuInteractionDelegate
 
 @available(iOS 13.0, *)
@@ -205,4 +201,3 @@ extension ElementInspectorFormItemContentView: UIContextMenuInteractionDelegate 
         )
     }
 }
-#endif

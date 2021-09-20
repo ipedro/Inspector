@@ -86,13 +86,11 @@ final class ViewHierarchyCoordinator: Coordinator {
     func start() {
         cachedSnapshot = makeSnapshot()
     }
-
 }
 
 // MARK: - Internal Interface
 
 extension ViewHierarchyCoordinator {
-
     func clearData() {
         cachedSnapshot = nil
         visibleReferences.removeAll()

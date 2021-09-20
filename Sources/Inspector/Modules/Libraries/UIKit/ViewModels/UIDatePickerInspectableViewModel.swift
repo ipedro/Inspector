@@ -52,7 +52,6 @@ extension UIKitElementLibrary {
 
             switch property {
             case .datePickerStyle:
-                #if swift(>=5.3)
                 if #available(iOS 13.4, *) {
                     return .optionsList(
                         title: property.rawValue,
@@ -77,7 +76,7 @@ extension UIKitElementLibrary {
                         datePicker.preferredDatePickerStyle = datePickerStyle
                     }
                 }
-                #endif
+
                 return nil
 
             case .datePickerMode:
@@ -92,7 +91,6 @@ extension UIKitElementLibrary {
 
                     let datePickerMode = UIDatePicker.Mode.allCases[newIndex]
 
-                    #if swift(>=5.3)
                     if #available(iOS 14.0, *) {
                         if
                             datePickerMode == .countDownTimer,
@@ -101,8 +99,7 @@ extension UIKitElementLibrary {
                             return
                         }
                     }
-                    #endif
-
+                    
                     datePicker.datePickerMode = datePickerMode
                 }
 

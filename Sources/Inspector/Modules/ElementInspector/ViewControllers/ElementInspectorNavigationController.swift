@@ -71,7 +71,5 @@ class ElementInspectorNavigationController: UINavigationController {
 }
 
 extension ElementInspectorNavigationController: UIPopoverPresentationControllerDelegate {
-
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle { .none }
-
 }

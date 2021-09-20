@@ -23,15 +23,14 @@ extension UISegmentedControl {
     static func segmentedControlStyle(items: [Any]? = nil) -> UISegmentedControl {
         let segmentedControl = UISegmentedControl(items: items)
 
-        #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             segmentedControl.selectedSegmentTintColor = segmentedControl.colorStyle.tintColor
             segmentedControl.setTitleTextAttributes([.foregroundColor: segmentedControl.colorStyle.secondaryTextColor], for: .normal)
             segmentedControl.setTitleTextAttributes([.foregroundColor: segmentedControl.colorStyle.selectedSegmentedControlForegroundColor], for: .selected)
         }
-        #else
-        segmentedControl.tintColor = colorStyle.tintColor
-        #endif
+        else {
+            segmentedControl.tintColor = segmentedControl.colorStyle.tintColor
+        }
 
         return segmentedControl
     }
@@ -49,17 +48,8 @@ final class SegmentedControl: BaseFormControl {
     }
 
     var selectedIndex: Int? {
-        get {
-            segmentedControl.selectedSegmentIndex == UISegmentedControl.noSegment ? nil : segmentedControl.selectedSegmentIndex
-        }
-        set {
-            guard let newValue = newValue else {
-                segmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
-                return
-            }
-
-            segmentedControl.selectedSegmentIndex = newValue
-        }
+        get { segmentedControl.selectedSegmentIndex == UISegmentedControl.noSegment ? nil : segmentedControl.selectedSegmentIndex }
+        set { segmentedControl.selectedSegmentIndex = newValue ?? UISegmentedControl.noSegment }
     }
 
     private lazy var segmentedControl = UISegmentedControl.segmentedControlStyle(items: options).then {

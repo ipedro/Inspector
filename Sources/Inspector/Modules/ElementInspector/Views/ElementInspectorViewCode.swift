@@ -92,16 +92,12 @@ final class ElementInspectorViewCode: BaseView {
 
         contentView.installView($0, .centerXY, position: .behind)
 
-        #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             $0.style = .large
         }
         else {
             $0.style = .whiteLarge
         }
-        #else
-        $0.style = .whiteLarge
-        #endif
     }
 
     private lazy var containerStackView = UIStackView.vertical().then {

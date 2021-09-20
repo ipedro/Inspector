@@ -34,7 +34,6 @@ public struct InspectorConfiguration {
     var colorStyle: ColorStyle {
         guard let hostWindow = Inspector.host?.window else { return .dark }
 
-        #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             switch (hostWindow.overrideUserInterfaceStyle, hostWindow.traitCollection.userInterfaceStyle) {
             case (.dark, _),
@@ -44,7 +43,7 @@ public struct InspectorConfiguration {
                 return .light
             }
         }
-        #endif
+        
         return .dark
     }
 

@@ -20,7 +20,6 @@
 
 import UIKit
 
-#if swift(>=5.0)
 @available(iOS 13.0, *)
 extension UIAction {
     static func copyAction(title: String, stringProvider: @escaping (() -> String?)) -> UIAction {
@@ -47,4 +46,3 @@ extension UIAction {
         )
     }
 }
-#endif

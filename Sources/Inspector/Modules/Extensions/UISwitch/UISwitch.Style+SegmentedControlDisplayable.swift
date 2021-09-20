@@ -20,7 +20,6 @@
 
 import UIKit
 
-#if swift(>=5.3)
 @available(iOS 14.0, *)
 extension UISwitch.Style: CustomStringConvertible {
     var description: String {
@@ -39,4 +38,3 @@ extension UISwitch.Style: CustomStringConvertible {
         }
     }
 }
-#endif

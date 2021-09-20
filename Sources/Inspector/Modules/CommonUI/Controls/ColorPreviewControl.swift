@@ -87,20 +87,19 @@ final class ColorPreviewControl: BaseFormControl {
 
         contentView.addArrangedSubview(accessoryControl)
 
-        #if swift(>=5.3)
         if #available(iOS 14.0, *) {
             colorDisplayControl.isEnabled = true
         }
-        #else
-        accessoryControl.isUserInteractionEnabled = false
-        colorDisplayLabel.textColor = colorStyle.tintColor
-        accessoryControl.backgroundColor = nil
-        var margins = accessoryControl.contentView.directionalLayoutMargins
-        margins.leading = 0
-        margins.trailing = 0
+        else {
+            accessoryControl.isUserInteractionEnabled = false
+            colorDisplayLabel.textColor = colorStyle.tintColor
+            accessoryControl.backgroundColor = nil
+            var margins = accessoryControl.contentView.directionalLayoutMargins
+            margins.leading = 0
+            margins.trailing = 0
 
-        accessoryControl.contentView.directionalLayoutMargins = margins
-        #endif
+            accessoryControl.contentView.directionalLayoutMargins = margins
+        }
 
         updateViews()
     }

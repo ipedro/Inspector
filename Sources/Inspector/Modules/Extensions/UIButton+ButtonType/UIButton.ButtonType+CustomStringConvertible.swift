@@ -22,7 +22,6 @@ import UIKit
 
 extension UIButton.ButtonType: CustomStringConvertible {
     var description: String {
-        #if swift(>=5.0)
         if #available(iOS 13.0, *) {
             switch self {
             case .custom:
@@ -50,7 +49,7 @@ extension UIButton.ButtonType: CustomStringConvertible {
                 return "Unknown"
             }
         }
-        #endif
+
         switch self {
         case .custom:
             return "Custom"

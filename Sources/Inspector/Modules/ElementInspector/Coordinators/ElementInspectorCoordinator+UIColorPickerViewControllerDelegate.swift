@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-#if swift(>=5.3)
 import UIKit
 
 // MARK: - UIColorPickerViewControllerDelegate
@@ -37,4 +36,3 @@ extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
         formPanelController.finishColorSelection()
     }
 }
-#endif

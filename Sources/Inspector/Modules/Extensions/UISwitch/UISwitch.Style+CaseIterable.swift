@@ -20,7 +20,6 @@
 
 import UIKit
 
-#if swift(>=5.3)
 @available(iOS 14.0, *)
 extension UISwitch.Style: CaseIterable {
     typealias AllCases = [UISwitch.Style]
@@ -31,4 +30,3 @@ extension UISwitch.Style: CaseIterable {
         .sliding
     ]
 }
-#endif

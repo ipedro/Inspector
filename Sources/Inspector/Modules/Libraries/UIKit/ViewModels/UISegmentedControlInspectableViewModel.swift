@@ -81,7 +81,6 @@ extension UIKitElementLibrary {
 
             switch property {
             case .selectedSegmentTintColor:
-                #if swift(>=5.0)
                 if #available(iOS 13.0, *) {
                     return .colorPicker(
                         title: property.rawValue,
@@ -90,7 +89,7 @@ extension UIKitElementLibrary {
                         segmentedControl.selectedSegmentTintColor = selectedSegmentTintColor
                     }
                 }
-                #endif
+
                 return nil
 
             case .isMomentary:

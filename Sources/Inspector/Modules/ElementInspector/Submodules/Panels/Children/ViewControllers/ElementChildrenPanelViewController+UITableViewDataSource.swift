@@ -23,7 +23,6 @@ import UIKit
 // MARK: - UITableViewDataSource
 
 extension ElementChildrenPanelViewController: UITableViewDataSource {
-    #if swift(>=5.0)
     @available(iOS 13.0, *)
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         guard let itemViewModel = viewModel.itemViewModel(at: indexPath) else { return nil }
@@ -137,8 +136,7 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
             )
         }
     }
-    #endif
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.numberOfRows
     }
