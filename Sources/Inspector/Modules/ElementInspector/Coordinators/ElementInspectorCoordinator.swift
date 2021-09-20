@@ -20,45 +20,43 @@
 
 import UIKit
 
+// MARK: - Content View Controllers
+
+final class ElementAttributesPanelViewController: ElementInspectorFormPanelViewController {}
+
+final class ElementSizePanelViewController: ElementInspectorFormPanelViewController {}
+
+// MARK: - ElementInspectorCoordinatorDelegate
+
 protocol ElementInspectorCoordinatorDelegate: AnyObject {
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
-                                     didFinishWith reference: ViewHierarchyReference)
-    
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
-                                     showHighlightViewsVisibilityOf reference: ViewHierarchyReference)
-    
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
-                                     hideHighlightViewsVisibilityOf reference: ViewHierarchyReference)
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference)
+
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference)
+
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, hideHighlightViewsVisibilityOf reference: ViewHierarchyReference)
 }
+
+// MARK: - ElementInspectorCoordinator
 
 final class ElementInspectorCoordinator: NSObject {
     weak var delegate: ElementInspectorCoordinatorDelegate?
-    
+
     let viewHierarchySnapshot: ViewHierarchySnapshot
-    
+
     let reference: ViewHierarchyReference
-    
+
     weak var sourceView: UIView?
-    
-    private(set) lazy var navigationController = Self.makeNavigationController(
-        reference: reference,
-        viewHierarchySnapshot: viewHierarchySnapshot,
-        delegate: self
-    ).then {
-        $0.dismissDelegate = self
-        
-        switch $0.modalPresentationStyle {
-        case .popover:
-            $0.popoverPresentationController?.delegate = self
-            $0.popoverPresentationController?.sourceView = sourceView
-            
-        default:
-            $0.presentationController?.delegate = self
-        }
-    }
-    
+
+    private(set) lazy var navigationController: ElementInspectorNavigationController = {
+        let navigationController = createNavigationController()
+
+        addElementInspectorsForReferences(in: navigationController)
+
+        return navigationController
+    }()
+
     private(set) lazy var operationQueue = OperationQueue.main
-    
+
     init(
         reference: ViewHierarchyReference,
         in viewHierarchySnapshot: ViewHierarchySnapshot,
@@ -68,117 +66,37 @@ final class ElementInspectorCoordinator: NSObject {
         self.viewHierarchySnapshot = viewHierarchySnapshot
         self.sourceView = sourceView ?? reference.rootView
     }
-    
-    static func makeNavigationController(
-        reference: ViewHierarchyReference,
-        viewHierarchySnapshot: ViewHierarchySnapshot,
-        delegate: ElementInspectorViewControllerDelegate
-    ) -> ElementInspectorNavigationController {
-        let navigationController = ElementInspectorNavigationController()
-        navigationController.modalPresentationStyle = {
-            guard let window = viewHierarchySnapshot.rootReference.rootView else {
-                return .pageSheet
-            }
-            
-            switch window.traitCollection.userInterfaceIdiom {
-            case .phone:
-                return .pageSheet
-            default:
-                return .popover
-            }
-        }()
 
-        if ElementInspector.configuration.isPresentingFromBottomSheet {
-            #if swift(>=5.5)
-            if #available(iOS 15.0, *) {
-                if let sheetPresentationController = navigationController.presentationController as? UISheetPresentationController {
-                    sheetPresentationController.detents = [.medium(), .large()]
-                    sheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = false
-                    sheetPresentationController.preferredCornerRadius = 28
-                    sheetPresentationController.sourceView = reference.rootView
-                    sheetPresentationController.prefersEdgeAttachedInCompactHeight = true
-                }
-            }
-            #endif
-        }
-        
-        let populatedReferences = viewHierarchySnapshot.inspectableReferences.filter { $0.rootView === reference.rootView }
-
-        let selectedPanel: ElementInspectorPanel = .preview
-
-        guard let populatedReference = populatedReferences.first else {
-            let rootViewController = makeElementInspectorViewController(
-                with: viewHierarchySnapshot.rootReference,
-                in: viewHierarchySnapshot,
-                selectedPanel: selectedPanel,
-                elementLibraries: viewHierarchySnapshot.elementLibraries,
-                delegate: delegate
-            )
-            
-            navigationController.viewControllers = [rootViewController]
-            
-            return navigationController
-        }
-        
-        navigationController.viewControllers = {
-            var array = [UIViewController]()
-            
-            var reference: ViewHierarchyReference? = populatedReference
-            
-            while reference != nil {
-                guard let currentReference = reference else {
-                    break
-                }
-                
-                let viewController = makeElementInspectorViewController(
-                    with: currentReference,
-                    in: viewHierarchySnapshot,
-                    selectedPanel: selectedPanel,
-                    elementLibraries: viewHierarchySnapshot.elementLibraries,
-                    delegate: delegate
-                )
-                
-                array.append(viewController)
-                
-                reference = currentReference.parent
-            }
-            
-            return array.reversed()
-        }()
-        
-        return navigationController
-    }
-    
     var permittedPopoverArrowDirections: UIPopoverArrowDirection {
         switch navigationController.popoverPresentationController?.arrowDirection {
         case .some(.up):
             return [.up, .left, .right]
-            
+
         case .some(.down):
             return [.down, .left, .right]
-            
+
         case .some(.left):
             return [.left]
-            
+
         case .some(.right):
             return [.right]
-            
+
         default:
             return .any
         }
     }
-    
+
     func start() -> UIViewController {
         navigationController
     }
-    
+
     func finish() {
         operationQueue.cancelAllOperations()
         operationQueue.isSuspended = true
-        
+
         delegate?.elementInspectorCoordinator(self, didFinishWith: viewHierarchySnapshot.rootReference)
     }
-    
+
     static func makeElementInspectorViewController(
         with reference: ViewHierarchyReference,
         in snapshot: ViewHierarchySnapshot,
@@ -193,14 +111,12 @@ final class ElementInspectorCoordinator: NSObject {
             inspectableElements: elementLibraries,
             availablePanels: ElementInspectorPanel.cases(for: reference)
         )
-        
+
         let viewController = ElementInspectorViewController(viewModel: viewModel)
         viewController.delegate = delegate
-        
+
         return viewController
     }
-
-    
 
     func panelViewController(for panel: ElementInspectorPanel, with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {
         switch panel {
@@ -244,7 +160,7 @@ final class ElementInspectorCoordinator: NSObject {
                 guard let referenceView = reference.rootView else { return [] }
 
                 return AutoLayoutSizeLibrary.allCases
-                    .map{ $0.items(for: referenceView) }
+                    .map { $0.items(for: referenceView) }
                     .flatMap { $0 }
             }()
 
@@ -268,6 +184,89 @@ final class ElementInspectorCoordinator: NSObject {
     }
 }
 
-final class ElementAttributesPanelViewController: ElementInspectorFormPanelViewController {}
+// MARK: - Private Helpers
 
-final class ElementSizePanelViewController: ElementInspectorFormPanelViewController {}
+private extension ElementInspectorCoordinator {
+    func createNavigationController() -> ElementInspectorNavigationController {
+        let navigationController = ElementInspectorNavigationController()
+        navigationController.dismissDelegate = self
+
+        #if swift(>=5.5)
+            if #available(iOS 15.0, *) {
+                navigationController.modalPresentationStyle = .popover
+
+                if let popover = navigationController.popoverPresentationController {
+                    popover.sourceView = sourceView
+                    popover.delegate = self
+
+                    let sheet = popover.adaptiveSheetPresentationController
+                    sheet.detents = [.medium(), .large()]
+                    sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+                    sheet.preferredCornerRadius = 28
+                    sheet.prefersEdgeAttachedInCompactHeight = true
+                    sheet.delegate = self
+                }
+            }
+        #else
+            if sourceView?.traitCollection.userInterfaceIdiom == .phone {
+                navigationController.modalPresentationStyle = .pageSheet
+                navigationController.presentationController?.delegate = self
+            } else {
+                navigationController.modalPresentationStyle = .popover
+
+                if let popover = navigationController.popoverPresentationController {
+                    popover.sourceView = sourceView
+                    popover.delegate = self
+                }
+            }
+        #endif
+
+        return navigationController
+    }
+
+    func addElementInspectorsForReferences(in navigationController: ElementInspectorNavigationController) {
+        let populatedReferences = viewHierarchySnapshot.inspectableReferences.filter { $0.rootView === reference.rootView }
+
+        let selectedPanel: ElementInspectorPanel = .preview
+
+        guard let populatedReference = populatedReferences.first else {
+            let rootViewController = Self.makeElementInspectorViewController(
+                with: viewHierarchySnapshot.rootReference,
+                in: viewHierarchySnapshot,
+                selectedPanel: selectedPanel,
+                elementLibraries: viewHierarchySnapshot.elementLibraries,
+                delegate: self
+            )
+
+            navigationController.viewControllers = [rootViewController]
+
+            return
+        }
+
+        navigationController.viewControllers = {
+            var array = [UIViewController]()
+
+            var reference: ViewHierarchyReference? = populatedReference
+
+            while reference != nil {
+                guard let currentReference = reference else {
+                    break
+                }
+
+                let viewController = Self.makeElementInspectorViewController(
+                    with: currentReference,
+                    in: viewHierarchySnapshot,
+                    selectedPanel: selectedPanel,
+                    elementLibraries: viewHierarchySnapshot.elementLibraries,
+                    delegate: self
+                )
+
+                array.append(viewController)
+
+                reference = currentReference.parent
+            }
+
+            return array.reversed()
+        }()
+    }
+}
