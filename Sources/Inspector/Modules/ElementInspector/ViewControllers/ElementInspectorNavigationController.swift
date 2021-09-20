@@ -24,8 +24,21 @@ protocol ElementInspectorNavigationControllerDismissDelegate: AnyObject {
     func elementInspectorNavigationControllerDidFinish(_ navigationController: ElementInspectorNavigationController)
 }
 
-final class ElementInspectorNavigationController: UINavigationController {
+class ElementInspectorNavigationController: UINavigationController {
     weak var dismissDelegate: ElementInspectorNavigationControllerDismissDelegate?
+
+    var shouldAdaptModalPresentation: Bool = true {
+        didSet {
+            if shouldAdaptModalPresentation {
+                if popoverPresentationController?.delegate === self {
+                    popoverPresentationController?.delegate = nil
+                }
+                return
+            }
+
+            popoverPresentationController?.delegate = self
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,4 +68,10 @@ final class ElementInspectorNavigationController: UINavigationController {
     @objc private func finish() {
         dismissDelegate?.elementInspectorNavigationControllerDidFinish(self)
     }
+}
+
+extension ElementInspectorNavigationController: UIPopoverPresentationControllerDelegate {
+
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle { .none }
+
 }

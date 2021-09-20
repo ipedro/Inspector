@@ -24,6 +24,8 @@ import UIKit
 
 extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        guard let formPanelController = presentedElementInspectorPanelViewController as? ElementInspectorFormPanelViewController else { return }
+
         for url in urls {
             guard let imageData = try? Data(contentsOf: url) else {
                 continue
@@ -31,7 +33,7 @@ extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
 
             let image = UIImage(data: imageData)
 
-            topAttributesInspectorViewController?.selectImage(image)
+            formPanelController.selectImage(image)
             break
         }
     }

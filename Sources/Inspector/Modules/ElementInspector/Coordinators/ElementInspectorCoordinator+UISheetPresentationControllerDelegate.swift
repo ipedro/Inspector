@@ -24,8 +24,11 @@ import UIKit
 @available(iOS 15.0, *)
 extension ElementInspectorCoordinator: UISheetPresentationControllerDelegate {
     func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
-        print(sheetPresentationController.debugDescription)
-        print("did change selection")
+        guard let formPanelController = presentedElementInspectorPanelViewController as? ElementInspectorFormPanelViewController else { return }
+
+        sheetPresentationController.animateChanges {
+            formPanelController.isCompactVerticalPresentation = sheetPresentationController.selectedDetentIdentifier == .medium
+        }
     }
 }
 #endif

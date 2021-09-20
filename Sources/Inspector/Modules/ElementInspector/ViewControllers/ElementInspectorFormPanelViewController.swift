@@ -60,7 +60,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
             switch newState {
             case .expanded:
-                for aFormItemController in self.sectionViewControllers where aFormItemController !== formItemController {
+                for aFormItemController in self.formItemViewControllers where aFormItemController !== formItemController {
                     aFormItemController.state = .collapsed
                 }
 
@@ -86,8 +86,23 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     private var itemsDictionary: [ElementInspectorFormItemViewController: ElementInspectorFormItem] = [:]
 
-    var sectionViewControllers: [ElementInspectorFormItemViewController] {
+    var formItemViewControllers: [ElementInspectorFormItemViewController] {
         children.compactMap { $0 as? ElementInspectorFormItemViewController }
+    }
+
+    var isCompactVerticalPresentation: Bool! {
+        didSet {
+            let formItemViewControllers = formItemViewControllers
+
+            if isCompactVerticalPresentation {
+                formItemViewControllers.forEach { $0.state = .collapsed }
+                return
+            }
+
+            if formItemViewControllers.first(where: { $0.state == .expanded }) == nil {
+                formItemViewControllers.first?.state = .expanded
+            }
+        }
     }
 
     private lazy var viewCode = BaseView()
@@ -115,10 +130,31 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         reloadData()
     }
 
+    override func willMove(toParent parent: UIViewController?) {
+        super.willMove(toParent: parent)
+
+        guard let parent = parent else { return }
+
+        isCompactVerticalPresentation = {
+            if let popover = parent.popoverPresentationController {
+
+                #if swift(>=5.5)
+                if #available(iOS 15.0, *) {
+                    return popover.adaptiveSheetPresentationController.selectedDetentIdentifier != .large
+                }
+                #endif
+
+                return true
+            }
+
+            return false
+        }()
+    }
+
     func reloadData() {
         viewCode.contentView.removeAllArrangedSubviews()
 
-        dataSource.items.enumerated().forEach { sectionIndex, item in
+        dataSource.items.enumerated().forEach { section, item in
             if let title = item.title {
                 self.viewCode.contentView.addArrangedSubview(
                     SectionHeader(
@@ -137,7 +173,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
             }
 
             for (row, viewModel) in item.rows.enumerated() {
-                let indexPath = IndexPath(row: row, section: sectionIndex)
+                let indexPath = IndexPath(row: row, section: section)
 
                 let ItemType = dataSource.typeForRow(at: indexPath)
 
@@ -147,16 +183,15 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
                 let formItemViewController = ElementInspectorFormItemViewController(
                     viewModel: viewModel,
-                    viewCode: itemView
+                    viewCode: itemView,
+                    state: {
+                        if isCompactVerticalPresentation == false && indexPath.isFirst {
+                            return .expanded
+                        }
+                        return .collapsed
+                    }()
                 ).then {
                     $0.delegate = self
-
-                    if
-                        indexPath.isFirst,
-                        ElementInspector.configuration.isPresentingFromBottomSheet == false
-                    {
-                        $0.state = .expanded
-                    }
                 }
 
                 addChild(formItemViewController)
@@ -233,7 +268,7 @@ extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewC
                 return
             }
 
-            self.sectionViewControllers.forEach { $0.reloadData() }
+            self.formItemViewControllers.forEach { $0.reloadData() }
 
             self.didUpdate(property: property)
 

@@ -48,7 +48,7 @@ final class ElementInspectorCoordinator: NSObject {
     weak var sourceView: UIView?
 
     private(set) lazy var navigationController: ElementInspectorNavigationController = {
-        let navigationController = createNavigationController()
+        let navigationController = createNavigationController(from: sourceView)
 
         addElementInspectorsForReferences(in: navigationController)
 
@@ -175,55 +175,27 @@ final class ElementInspectorCoordinator: NSObject {
         }
     }
 
-    var topAttributesInspectorViewController: ElementAttributesPanelViewController? {
-        guard let topElementInspectorViewController = navigationController.topViewController as? ElementInspectorViewController else {
-            return nil
-        }
 
-        return topElementInspectorViewController.children.first as? ElementAttributesPanelViewController
+    var topElementInspectorViewController: ElementInspectorViewController? {
+        navigationController.topViewController as? ElementInspectorViewController
+    }
+
+    var presentedElementInspectorPanelViewController: ElementInspectorPanelViewController? {
+        topElementInspectorViewController?.presentedPanelViewController
+    }
+
+    func createNavigationController(from sourceView: UIView?) -> ElementInspectorNavigationController {
+        let navigationController = ElementInspectorNavigationController()
+        navigationController.dismissDelegate = self
+        navigationController.setPopoverModalPresentationStyle(delegate: self, from: sourceView)
+
+        return navigationController
     }
 }
 
 // MARK: - Private Helpers
 
 private extension ElementInspectorCoordinator {
-    func createNavigationController() -> ElementInspectorNavigationController {
-        let navigationController = ElementInspectorNavigationController()
-        navigationController.dismissDelegate = self
-
-        #if swift(>=5.5)
-        if #available(iOS 15.0, *) {
-            navigationController.modalPresentationStyle = .popover
-
-            if let popover = navigationController.popoverPresentationController {
-                popover.sourceView = sourceView
-                popover.delegate = self
-
-                let sheet = popover.adaptiveSheetPresentationController
-                sheet.detents = [.medium(), .large()]
-                sheet.prefersScrollingExpandsWhenScrolledToEdge = false
-                sheet.preferredCornerRadius = 28
-                sheet.prefersEdgeAttachedInCompactHeight = true
-                sheet.delegate = self
-            }
-        }
-        #else
-        if sourceView?.traitCollection.userInterfaceIdiom == .phone {
-            navigationController.modalPresentationStyle = .pageSheet
-            navigationController.presentationController?.delegate = self
-        }
-        else {
-            navigationController.modalPresentationStyle = .popover
-
-            if let popover = navigationController.popoverPresentationController {
-                popover.sourceView = sourceView
-                popover.delegate = self
-            }
-        }
-        #endif
-
-        return navigationController
-    }
 
     func addElementInspectorsForReferences(in navigationController: ElementInspectorNavigationController) {
         let populatedReferences = viewHierarchySnapshot.inspectableReferences.filter { $0.rootView === reference.rootView }

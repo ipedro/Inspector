@@ -51,7 +51,7 @@ final class ElementInspectorViewController: UIViewController, KeyboardAnimatable
         $0.dismissBarButtonItem.action = #selector(close)
     }
 
-    private var presentedPanelViewController: ElementInspectorPanelViewController? {
+    private(set) var presentedPanelViewController: ElementInspectorPanelViewController? {
         didSet {
             if let oldPanelViewController = oldValue {
                 oldPanelViewController.willMove(toParent: nil)

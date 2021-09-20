@@ -25,15 +25,20 @@ import UIKit
 extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
         switch controller.presentedViewController {
-        case is UIDocumentPickerViewController:
-            return .pageSheet
+        case let navigationController as ElementInspectorNavigationController where navigationController.shouldAdaptModalPresentation == false:
+            return .none
 
         default:
-            return .none
+            if #available(iOS 15.0, *) {
+                if controller is UIPopoverPresentationController {
+                    return controller.presentationStyle
+                }
+            }
+
+            return .formSheet
         }
     }
 
-    #if swift(>=5.0)
     @available(iOS 13.0, *)
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         guard presentationController.presentedViewController === navigationController else {
@@ -42,5 +47,4 @@ extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate 
 
         finish()
     }
-    #endif
 }

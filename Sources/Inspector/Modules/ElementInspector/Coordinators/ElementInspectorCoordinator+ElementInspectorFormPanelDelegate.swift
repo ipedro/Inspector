@@ -34,19 +34,13 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController, didTap colorPicker: ColorPreviewControl) {
         #if swift(>=5.3)
         if #available(iOS 14.0, *) {
-            let colorPickerViewController = UIColorPickerViewController(
-                .colorPickerDelegate(self),
-                .viewControllerOptions(
-                    .modalPresentationStyle(.popover)
-                ),
-                .popoverPresentationControllerOptions(
-                    .sourceView(colorPicker.accessoryControl),
-                    .permittedArrowDirections([.up, .down])
-                )
-            )
+            let colorPickerViewController = UIColorPickerViewController().then {
+                $0.setPopoverModalPresentationStyle(delegate: self, from: colorPicker.accessoryControl)
+                $0.delegate = self
 
-            if let selectedColor = colorPicker.selectedColor {
-                colorPickerViewController.selectedColor = selectedColor
+                if let selectedColor = colorPicker.selectedColor {
+                    $0.selectedColor = selectedColor
+                }
             }
 
             formPanelViewController.present(colorPickerViewController, animated: true)
@@ -67,17 +61,10 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
             $0.delegate = self
         }
 
-        let navigationController = ElementInspectorNavigationController(
-            .rootViewController(optionSelectorViewController),
-            .viewControllerOptions(
-                .modalPresentationStyle(.popover)
-            ),
-            .popoverPresentationControllerOptions(
-                .sourceView(optionSelector.accessoryControl),
-                .permittedArrowDirections([.up, .down]),
-                .popoverPresentationDelegate(self)
-            )
-        )
+        let navigationController = createNavigationController(from: optionSelector.accessoryControl).then {
+            $0.viewControllers = [optionSelectorViewController]
+            $0.shouldAdaptModalPresentation = false
+        }
 
         formPanelViewController.present(navigationController, animated: true)
     }
@@ -89,18 +76,10 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
             title: nil,
             message: nil,
             preferredStyle: .actionSheet
-        )
-
-        alertController.apply(viewControllerOptions:
-            .modalPresentationStyle(.popover),
-            .viewOptions(
-                .tintColor(Inspector.configuration.colorStyle.textColor)
-            ),
-            .popoverPresentationControllerOptions(
-                .sourceView(imagePicker.accessoryControl),
-                .permittedArrowDirections([.up, .down]),
-                .popoverPresentationDelegate(self)
-            ))
+        ).then {
+            $0.setPopoverModalPresentationStyle(delegate: self, from: imagePicker.accessoryControl)
+            $0.view.tintColor = $0.colorStyle.textColor
+        }
 
         alertController.addAction(
             UIAlertAction(
@@ -137,16 +116,10 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
                         .documentPickerDelegate(self),
                         .viewOptions(
                             .tintColor(Inspector.configuration.colorStyle.textColor)
-                        ),
-                        .viewControllerOptions(
-                            .modalPresentationStyle(.popover)
-                        ),
-                        .popoverPresentationControllerOptions(
-                            .sourceView(imagePicker.accessoryControl),
-                            .permittedArrowDirections([.up, .down]),
-                            .popoverPresentationDelegate(self)
                         )
-                    )
+                    ).then {
+                        $0.setPopoverModalPresentationStyle(delegate: self, from: imagePicker.accessoryControl)
+                    }
 
                     formPanelViewController.present(documentPicker, animated: true)
                 }

@@ -62,7 +62,8 @@ final class ElementInspectorFormItemViewController: UIViewController {
 
     init(
         viewModel: InspectorElementViewModelProtocol,
-        viewCode: InspectorElementFormItemView
+        viewCode: InspectorElementFormItemView,
+        state: InspectorElementFormItemState = .collapsed
     ) {
         self.viewModel = viewModel
         self.viewCode = viewCode
@@ -70,6 +71,7 @@ final class ElementInspectorFormItemViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         viewCode.delegate = self
+        viewCode.state = state
     }
 
     @available(*, unavailable)
