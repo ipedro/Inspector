@@ -31,7 +31,6 @@ final class OptionListControl: BaseFormControl {
 
     override var isEnabled: Bool {
         didSet {
-            tapGestureRecognizer.isEnabled = isEnabled
             icon.isHidden = isEnabled == false
             accessoryControl.isEnabled = isEnabled
         }
@@ -54,10 +53,8 @@ final class OptionListControl: BaseFormControl {
         $0.contentView.addArrangedSubviews(valueLabel, icon)
         $0.contentView.alignment = .center
         $0.contentView.spacing = ElementInspector.appearance.verticalMargins
-        $0.addGestureRecognizer(tapGestureRecognizer)
+        $0.addTarget(self, action: #selector(tap), for: .touchUpInside)
     }
-
-    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
 
     // MARK: - Init
 

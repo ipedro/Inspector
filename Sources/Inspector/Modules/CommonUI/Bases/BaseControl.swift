@@ -20,6 +20,13 @@
 
 import UIKit
 
+// MARK: - UIControl.Event Extension
+
+extension UIControl.Event {
+    /// Event happens when the control's state is changed.
+    static var stateChanged = UIControl.Event(rawValue: 1 << 24)
+}
+
 class BaseControl: UIControl, InternalViewProtocol {
     // MARK: - Properties
 
@@ -127,21 +134,10 @@ class BaseControl: UIControl, InternalViewProtocol {
         }
     }
 
-//    /// Returns the farthest descendant of the receiver in the view hierarchy (including itself) that contains a specified point.
-//    override open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        switch super.hitTest(point, with: event) {
-//        case let control as UIControl where control.isEnabled:
-//            return control
-//
-//        case let view? where view.hasEnabledGestureRecognizers:
-//            return view
-//
-//        default:
-//            return self
-//        }
-//    }
+    // MARK: - State Methods
 
-    // MARK: - Private Methods
+    /// Gets called when the control state changes, default implementation does nothing.
+    open func stateDidChange(from oldState: State, to newState: State) {}
 
     private func checkState() {
         guard state != oldState, state != lastNotification else { return }
@@ -151,20 +147,55 @@ class BaseControl: UIControl, InternalViewProtocol {
         sendActions(for: .stateChanged)
     }
 
-    func stateDidChange(from oldState: State, to newState: State) {}
+    override open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        guard let hitView = super.hitTest(point, with: event) else { return nil }
+
+        // If there is no interactive parent on the view abort.
+        guard let parent = hitView.nearestInteractiveParent else { return hitView }
+
+        // Check if this view belongs to another interactive view (i.e. nested control)
+        guard parent === self else { return parent }
+
+        // If not we return self.
+        //
+        // By returning `self` we keep the control interactive without needing
+        // to actively manage which subviews have `isUserInteractionEnabled` enabled or not.
+        return self
+    }
 }
 
-// MARK: - UIControl.Event Extension
+// MARK: - Helpers
 
-extension UIControl.Event {
-    /// Event happens when the control's state is changed.
-    static var stateChanged = UIControl.Event(rawValue: 1 << 24)
-}
+private extension UIView {
+    var hasInteraction: Bool {
+        guard isUserInteractionEnabled else { return false }
 
-// MARK: - UIView Extension
+        if let control = self as? UIControl {
+            return control.isEnabled
+        }
 
-public extension UIView {
-    var hasEnabledGestureRecognizers: Bool {
-        gestureRecognizers?.filter(\.isEnabled).isEmpty == false
+        if let gestureRecognizers = gestureRecognizers, !gestureRecognizers.isEmpty {
+            return true
+        }
+
+        if !interactions.isEmpty {
+            return true
+        }
+
+        return false
+    }
+
+    var nearestInteractiveParent: UIView? {
+        var view: UIView? = self
+
+        while view != nil {
+            if view?.hasInteraction == true {
+                return view
+            }
+
+            view = view?.superview
+        }
+
+        return nil
     }
 }

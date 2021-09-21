@@ -23,17 +23,17 @@ import UIKit
 protocol ElementInspectorFormItemViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorFormItemViewController(
         _ formItemController: ElementInspectorFormItemViewController,
-        didTap colorPicker: ColorPreviewControl
+        didTap colorPreviewControl: ColorPreviewControl
     )
 
     func elementInspectorFormItemViewController(
         _ formItemController: ElementInspectorFormItemViewController,
-        didTap imagePicker: ImagePreviewControl
+        didTap imagePreviewControl: ImagePreviewControl
     )
 
     func elementInspectorFormItemViewController(
         _ formItemController: ElementInspectorFormItemViewController,
-        didTap optionSelector: OptionListControl
+        didTap optionListControl: OptionListControl
     )
 
     func elementInspectorFormItemViewController(

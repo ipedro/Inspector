@@ -34,16 +34,16 @@ extension UIView {
             return
         }
 
-        let delay = type == .in ? 0 : 0.15
+        let duration = type == .in ? 0.10 : 0.15
 
         UIView.animate(
-            withDuration: ElementInspector.configuration.animationDuration,
-            delay: delay,
+            withDuration: duration,
+            delay: .zero,
             options: [.curveEaseInOut, .beginFromCurrentState],
             animations: {
                 switch type {
                 case .in:
-                    self.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+                    self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
 
                 case .out:
                     self.transform = .identity

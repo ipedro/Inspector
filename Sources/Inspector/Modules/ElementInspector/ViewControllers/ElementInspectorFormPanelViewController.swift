@@ -22,13 +22,13 @@ import UIKit
 
 protocol ElementInspectorFormPanelDelegate: OperationQueueManagerProtocol {
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
-                                   didTap colorPicker: ColorPreviewControl)
+                                   didTap colorPreviewControl: ColorPreviewControl)
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
-                                   didTap imagePicker: ImagePreviewControl)
+                                   didTap imagePreviewControl: ImagePreviewControl)
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
-                                   didTap optionSelector: OptionListControl)
+                                   didTap optionListControl: OptionListControl)
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
                                    didUpdateProperty: InspectorElementViewModelProperty,
@@ -48,11 +48,10 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         formDelegate?.cancelAllOperations()
     }
 
-    func elementInspectorFormItemViewController(
-        _ formItemController: ElementInspectorFormItemViewController,
-        willChangeFrom oldState: InspectorElementFormItemState?,
-        to newState: InspectorElementFormItemState
-    ) {
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                willChangeFrom oldState: InspectorElementFormItemState?,
+                                                to newState: InspectorElementFormItemState)
+    {
         animatePanel { [weak self] in
             formItemController.state = newState
 
@@ -78,11 +77,11 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         }
     }
 
-    var selectedColorPicker: ColorPreviewControl?
+    var selectedColorPreviewControl: ColorPreviewControl?
 
-    var selectedImagePicker: ImagePreviewControl?
+    var selectedImagePreviewControl: ImagePreviewControl?
 
-    var selectedOptionSelector: OptionListControl?
+    var selectedOptionListControl: OptionListControl?
 
     private var itemsDictionary: [ElementInspectorFormItemViewController: ElementInspectorFormItem] = [:]
 
@@ -194,23 +193,23 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
     }
 
     func selectImage(_ image: UIImage?) {
-        selectedImagePicker?.updateSelectedImage(image)
+        selectedImagePreviewControl?.updateSelectedImage(image)
     }
 
     func selectColor(_ color: UIColor) {
-        selectedColorPicker?.updateSelectedColor(color)
+        selectedColorPreviewControl?.updateSelectedColor(color)
     }
 
     func selectOptionAtIndex(_ index: Int?) {
-        selectedOptionSelector?.updateSelectedIndex(index)
+        selectedOptionListControl?.updateSelectedIndex(index)
     }
 
     func finishColorSelection() {
-        selectedColorPicker = nil
+        selectedColorPreviewControl = nil
     }
 
     func finishOptionSelction() {
-        selectedOptionSelector = nil
+        selectedOptionListControl = nil
     }
 
     func animatePanel(animations: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {
@@ -233,17 +232,15 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 // MARK: - ElementInspectorFormItemViewControllerDelegate
 
 extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewControllerDelegate {
-    func elementInspectorFormItemViewController(
-        _ formItemController: ElementInspectorFormItemViewController,
-        willUpdate property: InspectorElementViewModelProperty
-    ) {
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                willUpdate property: InspectorElementViewModelProperty)
+{
         willUpdate(property: property)
     }
 
-    func elementInspectorFormItemViewController(
-        _ formItemController: ElementInspectorFormItemViewController,
-        didUpdate property: InspectorElementViewModelProperty
-    ) {
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                didUpdate property: InspectorElementViewModelProperty)
+    {
         let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
             guard
                 let self = self,
@@ -262,11 +259,10 @@ extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewC
         formDelegate?.addOperationToQueue(updateOperation)
     }
 
-    func elementInspectorFormItemViewController(
-        _ formItemController: ElementInspectorFormItemViewController,
-        didChangeState newState: UIControl.State,
-        from oldState: UIControl.State
-    ) {
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                didChangeState newState: UIControl.State,
+                                                from oldState: UIControl.State)
+    {
         animatePanel(
             animations: { [weak self] in
                 guard let self = self else { return }
@@ -285,28 +281,25 @@ extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewC
         )
     }
 
-    func elementInspectorFormItemViewController(
-        _ formItemController: ElementInspectorFormItemViewController,
-        didTap imagePicker: ImagePreviewControl
-    ) {
-        selectedImagePicker = imagePicker
-        formDelegate?.elementInspectorFormPanel(self, didTap: imagePicker)
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                didTap imagePreviewControl: ImagePreviewControl)
+    {
+        selectedImagePreviewControl = imagePreviewControl
+        formDelegate?.elementInspectorFormPanel(self, didTap: imagePreviewControl)
     }
 
-    func elementInspectorFormItemViewController(
-        _ formItemController: ElementInspectorFormItemViewController,
-        didTap colorPicker: ColorPreviewControl
-    ) {
-        selectedColorPicker = colorPicker
-        formDelegate?.elementInspectorFormPanel(self, didTap: colorPicker)
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                didTap colorPreviewControl: ColorPreviewControl)
+    {
+        selectedColorPreviewControl = colorPreviewControl
+        formDelegate?.elementInspectorFormPanel(self, didTap: colorPreviewControl)
     }
 
-    func elementInspectorFormItemViewController(
-        _ formItemController: ElementInspectorFormItemViewController,
-        didTap optionSelector: OptionListControl
-    ) {
-        selectedOptionSelector = optionSelector
-        formDelegate?.elementInspectorFormPanel(self, didTap: optionSelector)
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                didTap optionListControl: OptionListControl)
+    {
+        selectedOptionListControl = optionListControl
+        formDelegate?.elementInspectorFormPanel(self, didTap: optionListControl)
     }
 }
 

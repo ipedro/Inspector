@@ -31,13 +31,13 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
         elementViewController.reloadData()
     }
 
-    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController, didTap colorPicker: ColorPreviewControl) {
+    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController, didTap colorPreviewControl: ColorPreviewControl) {
         if #available(iOS 14.0, *) {
             let colorPickerViewController = UIColorPickerViewController().then {
-                $0.setPopoverModalPresentationStyle(delegate: self, from: colorPicker.accessoryControl)
+                $0.setPopoverModalPresentationStyle(delegate: self, from: colorPreviewControl.accessoryControl)
                 $0.delegate = self
 
-                if let selectedColor = colorPicker.selectedColor {
+                if let selectedColor = colorPreviewControl.selectedColor {
                     $0.selectedColor = selectedColor
                 }
             }
@@ -47,19 +47,19 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
     }
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
-                                   didTap optionSelector: OptionListControl)
+                                   didTap optionListControl: OptionListControl)
     {
         let viewModel = OptionSelectorViewModel(
-            title: optionSelector.title,
-            options: optionSelector.options,
-            selectedIndex: optionSelector.selectedIndex
+            title: optionListControl.title,
+            options: optionListControl.options,
+            selectedIndex: optionListControl.selectedIndex
         )
 
         let optionSelectorViewController = OptionSelectorViewController(viewModel: viewModel).then {
             $0.delegate = self
         }
 
-        let navigationController = makeNavigationController(from: optionSelector.accessoryControl).then {
+        let navigationController = makeNavigationController(from: optionListControl.accessoryControl).then {
             $0.viewControllers = [optionSelectorViewController]
             $0.shouldAdaptModalPresentation = false
         }
@@ -68,14 +68,14 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
     }
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
-                                   didTap imagePicker: ImagePreviewControl)
+                                   didTap imagePreviewControl: ImagePreviewControl)
     {
         let alertController = UIAlertController(
             title: nil,
             message: nil,
             preferredStyle: .actionSheet
         ).then {
-            $0.setPopoverModalPresentationStyle(delegate: self, from: imagePicker.accessoryControl)
+            $0.setPopoverModalPresentationStyle(delegate: self, from: imagePreviewControl.accessoryControl)
             $0.view.tintColor = $0.colorStyle.textColor
         }
 
@@ -87,7 +87,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
             )
         )
 
-        if imagePicker.image != nil {
+        if imagePreviewControl.image != nil {
             alertController.addAction(
                 UIAlertAction(
                     title: Texts.clearImage,
@@ -116,7 +116,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
                             .tintColor(Inspector.configuration.colorStyle.textColor)
                         )
                     ).then {
-                        $0.setPopoverModalPresentationStyle(delegate: self, from: imagePicker.accessoryControl)
+                        $0.setPopoverModalPresentationStyle(delegate: self, from: imagePreviewControl.accessoryControl)
                     }
 
                     formPanelViewController.present(documentPicker, animated: true)
