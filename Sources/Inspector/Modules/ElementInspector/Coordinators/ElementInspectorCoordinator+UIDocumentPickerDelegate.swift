@@ -22,7 +22,7 @@ import UIKit
 
 extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        guard let formPanelController = presentedElementInspectorPanelViewController as? ElementInspectorFormPanelViewController else { return }
+        guard let formPanelController = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
 
         for url in urls {
             guard let imageData = try? Data(contentsOf: url) else {

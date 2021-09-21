@@ -180,8 +180,8 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         navigationController.topViewController as? ElementInspectorViewController
     }
 
-    var presentedElementInspectorPanelViewController: ElementInspectorPanelViewController? {
-        topElementInspectorViewController?.presentedPanelViewController
+    var currentPanelViewController: ElementInspectorPanelViewController? {
+        topElementInspectorViewController?.currentPanelViewController
     }
 
     func makeNavigationController(from sourceView: UIView?) -> ElementInspectorNavigationController {

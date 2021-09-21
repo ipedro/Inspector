@@ -57,7 +57,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         $0.dismissBarButtonItem.action = #selector(close)
     }
 
-    private(set) var presentedPanelViewController: ElementInspectorPanelViewController? {
+    private(set) var currentPanelViewController: ElementInspectorPanelViewController? {
         didSet {
             if let oldPanelViewController = oldValue {
                 oldPanelViewController.willMove(toParent: nil)
@@ -69,7 +69,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
             viewCode.containerStyle = .default
 
-            guard let panelViewController = presentedPanelViewController else {
+            guard let panelViewController = currentPanelViewController else {
                 viewCode.emptyLabel.isHidden = false
                 return
             }
@@ -236,7 +236,7 @@ extension ElementInspectorViewController {
     }
 
     func removeCurrentPanel() {
-        presentedPanelViewController = nil
+        currentPanelViewController = nil
     }
 }
 
@@ -247,11 +247,11 @@ private extension ElementInspectorViewController {
         guard
             let panelViewController = delegate?.elementInspectorViewController(viewControllerWith: panel, and: viewModel.reference)
         else {
-            presentedPanelViewController = nil
+            currentPanelViewController = nil
             return
         }
 
-        presentedPanelViewController = panelViewController
+        currentPanelViewController = panelViewController
     }
 
     @objc

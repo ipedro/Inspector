@@ -92,16 +92,21 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     override var isCompactVerticalPresentation: Bool {
         didSet {
-            let formItemViewControllers = formItemViewControllers
+            animatePanel(
+                animations: {
+                    let formItemViewControllers = self.formItemViewControllers
 
-            if isCompactVerticalPresentation {
-                formItemViewControllers.forEach { $0.state = .collapsed }
-                return
-            }
+                    if self.isCompactVerticalPresentation {
+                        formItemViewControllers.forEach { $0.state = .collapsed }
+                        return
+                    }
 
-            if formItemViewControllers.first(where: { $0.state == .expanded }) == nil {
-                formItemViewControllers.first?.state = .expanded
-            }
+                    if formItemViewControllers.first(where: { $0.state == .expanded }) == nil {
+                        formItemViewControllers.first?.state = .expanded
+                    }
+                },
+                completion: nil
+            )
         }
     }
 

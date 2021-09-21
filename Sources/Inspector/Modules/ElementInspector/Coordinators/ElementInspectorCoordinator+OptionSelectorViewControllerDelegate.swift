@@ -22,7 +22,7 @@ import UIKit
 
 extension ElementInspectorCoordinator: OptionSelectorViewControllerDelegate {
     func optionSelectorViewController(_ viewController: OptionSelectorViewController, didSelectIndex selectedIndex: Int?) {
-        guard let formPanelController = presentedElementInspectorPanelViewController as? ElementInspectorFormPanelViewController else { return }
+        guard let formPanelController = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
 
         formPanelController.selectOptionAtIndex(selectedIndex)
     }

@@ -23,13 +23,13 @@ import UIKit
 @available(iOS 14.0, *)
 extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
-        guard let formPanelController = presentedElementInspectorPanelViewController as? ElementInspectorFormPanelViewController else { return }
+        guard let formPanelController = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
 
         formPanelController.selectColor(viewController.selectedColor)
     }
 
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
-        guard let formPanelController = presentedElementInspectorPanelViewController as? ElementInspectorFormPanelViewController else { return }
+        guard let formPanelController = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
 
         formPanelController.finishColorSelection()
     }
