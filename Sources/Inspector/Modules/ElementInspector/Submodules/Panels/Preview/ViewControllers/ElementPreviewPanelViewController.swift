@@ -58,8 +58,11 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
         frame: .zero
     ).then {
         $0.isHighlightingViewsControl.isOn = viewModel.isHighlightingViews
+
         $0.isLiveUpdatingControl.isOn = viewModel.isLiveUpdating
+
         $0.isHighlightingViewsControl.addTarget(self, action: #selector(toggleHighlightViews), for: .valueChanged)
+
         $0.isLiveUpdatingControl.addTarget(self, action: #selector(toggleLiveUpdate), for: .valueChanged)
     }
 
@@ -85,7 +88,7 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        debounce(#selector(startLiveUpdatingSnaphost), after: ElementInspector.configuration.animationDuration)
+        startLiveUpdatingSnaphost()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -107,11 +110,10 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
     // MARK: - Actions
 
     func renderInitialSnapshotIfNeeded() {
-        guard needsInitialSnapshotRender else {
-            return
-        }
+        guard needsInitialSnapshotRender else { return }
 
         needsInitialSnapshotRender = false
+
         refresh()
     }
 
@@ -120,6 +122,7 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
         switch viewModel.isHighlightingViews {
         case true:
             delegate?.elementPreviewPanelViewController(self, hideLayerInspectorViewsInside: viewModel.reference)
+
         case false:
             delegate?.elementPreviewPanelViewController(self, showLayerInspectorViewsInside: viewModel.reference)
         }
@@ -139,6 +142,11 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
 
     @objc
     func startLiveUpdatingSnaphost() {
+        debounce(#selector(makeDisplayLink), after: ElementInspector.configuration.animationDuration)
+    }
+
+    @objc
+    func makeDisplayLink() {
         displayLink = CADisplayLink(target: self, selector: #selector(refresh))
     }
 
@@ -146,11 +154,29 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
     func stopLiveUpdatingSnaphost() {
         Self.cancelPreviousPerformRequests(
             withTarget: self,
-            selector: #selector(startLiveUpdatingSnaphost),
+            selector: #selector(makeDisplayLink),
             object: nil
         )
 
         displayLink = nil
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+
+        startLiveUpdatingSnaphost()
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+
+        stopLiveUpdatingSnaphost()
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+
+        stopLiveUpdatingSnaphost()
     }
 
     @objc
@@ -176,6 +202,7 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
 extension ElementPreviewPanelViewController: ElementPreviewPanelViewCodeDelegate {
     func elementPreviewPanelViewCode(_ view: ElementPreviewPanelViewCode, isPointerInUse: Bool) {
         view.isLiveUpdatingControl.isEnabled = isPointerInUse == false
+
         view.isLiveUpdatingControl.setOn(isPointerInUse == false && viewModel.isLiveUpdating, animated: true)
     }
 }
