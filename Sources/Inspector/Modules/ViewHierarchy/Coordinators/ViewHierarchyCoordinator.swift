@@ -108,14 +108,12 @@ extension ViewHierarchyCoordinator {
         return snapshot
     }
 
-    func commandGroups() -> CommandGroups {
+    func commandGroups() -> CommandGroups? {
+        guard let snapshot = currentSnapshot() else { return nil }
+
         var commands = CommandGroups()
-
-        guard let snapshot = currentSnapshot() else { return commands }
-
-        commands.append(availableLayerCommands(for: snapshot))
-
         commands.append(toggleAllLayersCommands(for: snapshot))
+        commands.append(availableLayerCommands(for: snapshot))
 
         return commands
     }

@@ -22,28 +22,13 @@ import UIKit
 
 extension Manager: KeyCommandPresentable {
     var commandGroups: CommandGroups {
-        viewHierarchyCoordinator.commandGroups()
-    }
+        let userCommands = host?.inspectorCommandGroups ?? []
+        let viewHierarchyCommands = viewHierarchyCoordinator.commandGroups() ?? []
 
-    private var keyCommandSettings: InspectorConfiguration.KeyCommandSettings {
-        Inspector.configuration.keyCommands
-    }
+        var commands = CommandGroups()
+        commands.append(contentsOf: userCommands)
+        commands.append(contentsOf: viewHierarchyCommands)
 
-    var keyCommands: [UIKeyCommand] {
-        hierarchyInspectorKeyCommands(selector: #selector(UIViewController.inspectorKeyCommandHandler(_:)))
-    }
-
-    func hierarchyInspectorKeyCommands(selector aSelector: Selector) -> [UIKeyCommand] {
-        let keyCommands = commandGroups.flatMap { commandGroup in
-            commandGroup.commands.compactMap { command -> UIKeyCommand? in
-                guard let options = command.keyCommandOptions else {
-                    return nil
-                }
-
-                return UIKeyCommand(.discoverabilityTitle(title: command.title, key: options), action: aSelector)
-            }
-        }
-
-        return keyCommands.sortedByInputKey()
+        return commands
     }
 }
