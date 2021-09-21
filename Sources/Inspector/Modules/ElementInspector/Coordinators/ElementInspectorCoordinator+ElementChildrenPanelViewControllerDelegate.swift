@@ -38,6 +38,7 @@ extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegat
             let elementInspectorViewController = Self.makeElementInspectorViewController(
                 with: reference,
                 elementLibraries: self.snapshot.elementLibraries,
+                selectedPanel: preferredPanel,
                 delegate: self,
                 in: self.snapshot
             )
