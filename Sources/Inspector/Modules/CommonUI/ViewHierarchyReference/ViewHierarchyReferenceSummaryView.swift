@@ -158,7 +158,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         installView(
             contentView,
             .insets(ElementInspector.appearance.directionalInsets),
-            priority: .required
+            priority: .init(rawValue: 999)
         )
     }
 }
