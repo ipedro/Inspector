@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - UIDocumentPickerDelegate
-
 extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let formPanelController = presentedElementInspectorPanelViewController as? ElementInspectorFormPanelViewController else { return }

@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - UIColorPickerViewControllerDelegate
-
 @available(iOS 14.0, *)
 extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {

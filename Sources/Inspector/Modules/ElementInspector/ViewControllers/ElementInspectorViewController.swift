@@ -170,19 +170,17 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
         // here the view has updated its vertical compactness and we can load the panels
         if viewCode.segmentedControl.numberOfSegments == .zero {
-
             reloadData()
 
             updatePanelsSegmentedControl()
 
             installPanel(viewModel.currentPanel)
-
         }
     }
 
     func updatePanelsSegmentedControl() {
         viewCode.segmentedControl.removeAllSegments()
-        
+
         viewModel.availablePanels.reversed().forEach {
             viewCode.segmentedControl.insertSegment(
                 with: $0.image.withRenderingMode(.alwaysTemplate),

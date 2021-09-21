@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - UITableViewDataSource
-
 extension ElementChildrenPanelViewController: UITableViewDataSource {
     @available(iOS 13.0, *)
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {

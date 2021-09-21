@@ -53,7 +53,7 @@ class ElementInspectorPanelViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         updateVerticalPresentationState()
     }
 

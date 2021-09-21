@@ -20,8 +20,6 @@
 
 import Foundation
 
-// MARK: - CustomStringConvertible
-
 extension ViewHierarchyLayer: CustomStringConvertible {
     var description: String {
         guard name.contains(",+") || name.contains(",-") else {

@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - OptionSelectorViewControllerDelegate
-
 extension ElementInspectorCoordinator: OptionSelectorViewControllerDelegate {
     func optionSelectorViewController(_ viewController: OptionSelectorViewController, didSelectIndex selectedIndex: Int?) {
         guard let formPanelController = presentedElementInspectorPanelViewController as? ElementInspectorFormPanelViewController else { return }

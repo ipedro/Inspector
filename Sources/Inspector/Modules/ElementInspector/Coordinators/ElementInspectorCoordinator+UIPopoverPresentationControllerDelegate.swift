@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - UIPopoverPresentationControllerDelegate
-
 extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
         guard popoverPresentationController.presentedViewController === navigationController else {

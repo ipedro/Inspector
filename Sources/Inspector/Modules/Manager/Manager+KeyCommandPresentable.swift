@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - KeyCommandPresentable
-
 extension Manager: KeyCommandPresentable {
     var commandGroups: CommandGroups {
         viewHierarchyCoordinator.commandGroups()

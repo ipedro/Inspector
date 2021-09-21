@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - ViewHierarchyProtocol
-
 extension UIView: ViewHierarchyProtocol {
     var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
         constraints.compactMap { constraint in

@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - ViewHierarchyCoordinatorDataSource
-
 extension Manager: ViewHierarchyCoordinatorDataSource {
     var rootView: UIView? { host?.window }
 

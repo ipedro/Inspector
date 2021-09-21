@@ -20,8 +20,6 @@
 
 import Foundation
 
-// MARK: - Hashable
-
 extension ViewHierarchyLayer: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(name)

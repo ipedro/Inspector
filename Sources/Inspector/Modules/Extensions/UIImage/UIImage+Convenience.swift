@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - Convenience
-
 extension UIImage {
     static let internalViewIcon: UIImage? = .moduleImage(named: "InternalView-32_Normal")
     static let visibleLayerAction: UIImage? = .moduleImage(named: "LayerAction-Show")

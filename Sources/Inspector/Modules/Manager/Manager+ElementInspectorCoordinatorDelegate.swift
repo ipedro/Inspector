@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - ElementInspectorCoordinatorDelegate
-
 extension Manager: ElementInspectorCoordinatorDelegate {
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
         for child in children {

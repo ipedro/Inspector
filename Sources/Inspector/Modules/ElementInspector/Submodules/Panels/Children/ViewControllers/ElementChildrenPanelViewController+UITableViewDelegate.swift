@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - UITableViewDelegate
-
 extension ElementChildrenPanelViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         viewModel.shouldHighlightItem(at: indexPath)
@@ -30,7 +28,12 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let selectedItemViewModel = viewModel.itemViewModel(at: indexPath) else { return }
 
-        delegate?.elementChildrenPanelViewController(self, didSelect: selectedItemViewModel.reference, with: .none, from: viewModel.rootReference)
+        delegate?.elementChildrenPanelViewController(
+            self,
+            didSelect: selectedItemViewModel.reference,
+            with: .children,
+            from: viewModel.rootReference
+        )
     }
 }
 

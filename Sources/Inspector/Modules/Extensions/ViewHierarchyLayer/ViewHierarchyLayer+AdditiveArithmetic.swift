@@ -20,8 +20,6 @@
 
 import Foundation
 
-// MARK: - AdditiveArithmetic
-
 extension ViewHierarchyLayer: AdditiveArithmetic {
     public static func - (lhs: Inspector.ViewHierarchyLayer, rhs: Inspector.ViewHierarchyLayer) -> Inspector.ViewHierarchyLayer {
         ViewHierarchyLayer(

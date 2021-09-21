@@ -20,8 +20,6 @@
 
 import Foundation
 
-// MARK: - OperationQueueManagerProtocol
-
 extension ElementInspectorCoordinator: OperationQueueManagerProtocol {
     func cancelAllOperations() {
         operationQueue.cancelAllOperations()

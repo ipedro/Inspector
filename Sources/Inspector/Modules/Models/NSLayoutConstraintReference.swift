@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - NSLayoutConstraintReference
-
 final class NSLayoutConstraintReference: Hashable {
     static func == (lhs: NSLayoutConstraintReference, rhs: NSLayoutConstraintReference) -> Bool {
         lhs.constraint == rhs.constraint

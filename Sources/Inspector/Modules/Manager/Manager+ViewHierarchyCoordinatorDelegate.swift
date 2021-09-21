@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - ViewHierarchyCoordinatorDelegate
-
 extension Manager: ViewHierarchyCoordinatorDelegate {
     func viewHierarchyCoordinator(_ coordinator: ViewHierarchyCoordinator, didSelect reference: ViewHierarchyReference, from sourceView: HighlightView) {
         presentElementInspector(for: reference, animated: true, from: sourceView.labelContentView)

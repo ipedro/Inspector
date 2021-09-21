@@ -20,8 +20,6 @@
 
 import UIKit
 
-// MARK: - UIAdaptivePresentationControllerDelegate
-
 extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
         switch controller.presentedViewController {
