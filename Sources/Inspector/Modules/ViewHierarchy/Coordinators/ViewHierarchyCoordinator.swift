@@ -98,7 +98,7 @@ extension ViewHierarchyCoordinator {
         highlightViews.removeAll()
     }
 
-    func currentSnapshot() -> ViewHierarchySnapshot? {
+    func latestSnapshot() -> ViewHierarchySnapshot? {
         if cachedSnapshot?.isValid == true { return cachedSnapshot }
 
         let snapshot = makeSnapshot()
@@ -109,7 +109,7 @@ extension ViewHierarchyCoordinator {
     }
 
     func commandGroups() -> CommandGroups? {
-        guard let snapshot = currentSnapshot() else { return nil }
+        guard let snapshot = latestSnapshot() else { return nil }
 
         var commands = CommandGroups()
         commands.append(toggleAllLayersCommands(for: snapshot))

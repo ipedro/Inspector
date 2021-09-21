@@ -21,7 +21,8 @@
 import UIKit
 
 extension Manager: InspectorViewCoordinatorDelegate {
-    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, didFinishWith command: InspectorCommand?) {
+    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator,
+                                  didFinishWith command: InspectorCommand?) {
         removeChild(coordinator)
 
         swiftUIhost?.insectorViewDidFinishPresentation()
@@ -60,7 +61,7 @@ extension Manager {
     }
 
     func makeInspectorViewCoordinator() -> InspectorViewCoordinator? {
-        guard let snapshot = viewHierarchyCoordinator.currentSnapshot() else { return nil }
+        guard let snapshot = viewHierarchySnaphost else { return nil }
 
         let coordinator = InspectorViewCoordinator(
             snapshot: snapshot,

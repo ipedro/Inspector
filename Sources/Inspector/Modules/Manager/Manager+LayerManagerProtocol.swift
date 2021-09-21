@@ -22,22 +22,22 @@ import UIKit
 
 extension Manager: LayerManagerProtocol {
     var isInspectingHierarchy: Bool {
-        viewHierarchyCoordinator.isInspectingHierarchy
+        viewHierarchyCoordinator?.isInspectingHierarchy ?? false
     }
 
     func installLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        viewHierarchyCoordinator.installLayer(layer)
+        viewHierarchyCoordinator?.installLayer(layer)
     }
 
     func installAllLayers() {
-        viewHierarchyCoordinator.installAllLayers()
+        viewHierarchyCoordinator?.installAllLayers()
     }
 
     func removeAllLayers() {
-        viewHierarchyCoordinator.removeAllLayers()
+        viewHierarchyCoordinator?.removeAllLayers()
     }
 
     func removeLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        viewHierarchyCoordinator.removeLayer(layer)
+        viewHierarchyCoordinator?.removeLayer(layer)
     }
 }

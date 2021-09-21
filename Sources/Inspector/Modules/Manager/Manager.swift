@@ -48,10 +48,13 @@ extension Inspector {
 
         let operationQueue = OperationQueue.main
 
-        private(set) lazy var viewHierarchyCoordinator = ViewHierarchyCoordinator(
-            dataSource: self,
-            delegate: self
-        )
+        var viewHierarchyCoordinator: ViewHierarchyCoordinator? {
+            children.compactMap({ $0 as? ViewHierarchyCoordinator }).first
+        }
+
+        var viewHierarchySnaphost: ViewHierarchySnapshot? {
+            viewHierarchyCoordinator?.latestSnapshot()
+        }
 
         // MARK: - Init
 
@@ -68,12 +71,14 @@ extension Inspector {
         }
 
         func start() {
+            let viewHierarchyCoordinator = ViewHierarchyCoordinator(dataSource: self, delegate: self)
+
+            addChild(viewHierarchyCoordinator)
+
             viewHierarchyCoordinator.start()
         }
 
         func finish() {
-            viewHierarchyCoordinator.clearData()
-
             children.forEach { removeChild($0) }
 
             operationQueue.cancelAllOperations()

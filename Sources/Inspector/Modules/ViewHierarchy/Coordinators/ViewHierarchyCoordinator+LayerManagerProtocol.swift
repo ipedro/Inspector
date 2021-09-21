@@ -28,7 +28,7 @@ extension ViewHierarchyCoordinator: LayerManagerProtocol {
     // MARK: - Install
 
     func installLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        guard let snapshot = currentSnapshot() else { return }
+        guard let snapshot = latestSnapshot() else { return }
 
         asyncOperation(name: layer.title) {
             self.make(layer: layer, for: snapshot)
@@ -36,7 +36,7 @@ extension ViewHierarchyCoordinator: LayerManagerProtocol {
     }
 
     func installAllLayers() {
-        guard let snapshot = currentSnapshot() else { return }
+        guard let snapshot = latestSnapshot() else { return }
 
         asyncOperation(name: Texts.show(Texts.allLayers)) {
             for layer in self.populatedLayers where layer.allowsSystemViews == false {

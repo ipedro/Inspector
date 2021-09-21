@@ -36,11 +36,11 @@ extension ViewHierarchyCoordinator: LayerReferenceManagerProtocol {
     }
 
     var availableLayers: [ViewHierarchyLayer] {
-        currentSnapshot()?.availableLayers ?? []
+        latestSnapshot()?.availableLayers ?? []
     }
 
     var populatedLayers: [ViewHierarchyLayer] {
-        currentSnapshot()?.populatedLayers ?? []
+        latestSnapshot()?.populatedLayers ?? []
     }
 
     func updateLayerViews(to newValue: [ViewHierarchyReference: LayerView],

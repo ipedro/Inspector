@@ -22,27 +22,15 @@ import UIKit
 
 extension Manager: ElementInspectorCoordinatorDelegate {
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        for child in children {
-            if let viewHierarchyCoordinator = child as? ViewHierarchyCoordinator {
-                viewHierarchyCoordinator.toggleHighlightViews(visibility: true, inside: reference)
-            }
-        }
+        viewHierarchyCoordinator?.toggleHighlightViews(visibility: true, inside: reference)
     }
 
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, hideHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        for child in children {
-            if let viewHierarchyCoordinator = child as? ViewHierarchyCoordinator {
-                viewHierarchyCoordinator.toggleHighlightViews(visibility: false, inside: reference)
-            }
-        }
+        viewHierarchyCoordinator?.toggleHighlightViews(visibility: false, inside: reference)
     }
 
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference) {
-        for child in children {
-            if let viewHierarchyCoordinator = child as? ViewHierarchyCoordinator {
-                viewHierarchyCoordinator.toggleHighlightViews(visibility: true, inside: reference)
-            }
-        }
+        // viewHierarchyCoordinator?.toggleHighlightViews(visibility: true, inside: reference)
 
         removeChild(coordinator)
     }
@@ -50,7 +38,7 @@ extension Manager: ElementInspectorCoordinatorDelegate {
 
 extension Manager {
     func presentElementInspector(for reference: ViewHierarchyReference, animated: Bool, from sourceView: UIView?) {
-        guard let snapshot = viewHierarchyCoordinator.currentSnapshot() else { return }
+        guard let snapshot = viewHierarchySnaphost else { return }
 
         let coordinator = ElementInspectorCoordinator(
             reference: reference,
