@@ -21,9 +21,41 @@
 import Inspector
 import MapKit
 import UIKit
-@_implementationOnly import UIKitOptions
 
 final class PlaygroundViewController: UIViewController {
+    // MARK: - Stack Views
+
+    @IBOutlet var sliderStackView: UIStackView! {
+        didSet {
+            sliderStackView.accessibilityIdentifier = "Slider Stack View"
+        }
+    }
+
+    @IBOutlet var datePickerStackView: UIStackView! {
+        didSet {
+            datePickerStackView.accessibilityIdentifier = "Date Picker Stack View"
+        }
+    }
+
+    @IBOutlet var contentStackView: UIStackView! {
+        didSet {
+            contentStackView.accessibilityIdentifier = "Content Stack View"
+            contentStackView.isLayoutMarginsRelativeArrangement = true
+        }
+    }
+
+    @IBOutlet var textViewStack: UIStackView! {
+        didSet {
+            textViewStack.accessibilityIdentifier = "Text Stack View"
+        }
+    }
+
+    @IBOutlet var mapStackView: UIStackView! {
+        didSet {
+            mapStackView.accessibilityIdentifier = "Map Stack View"
+        }
+    }
+
     // MARK: - Components
 
     @IBOutlet var activityIndicator: UIActivityIndicatorView! {
@@ -48,37 +80,13 @@ final class PlaygroundViewController: UIViewController {
 
     @IBOutlet var datePickerSegmentedControl: UISegmentedControl!
 
-    @IBOutlet var loadingView: UIView!
-
     @IBOutlet var datePicker: UIDatePicker!
-
-    @IBOutlet var textField: UITextField! {
-        didSet {
-            toggleTextField(self.switch)
-        }
-    }
-
-    @IBOutlet var longTextLabel: UILabel!
-
-    @IBOutlet var textStackView: UIStackView!
-
-    @IBOutlet var switchTextField: UITextField!
-
-    @IBOutlet var `switch`: UISwitch!
 
     @IBOutlet var mapView: MKMapView!
 
-    @IBOutlet var scrollView: UIScrollView!
-
-    @IBOutlet var containerStackView: UIStackView! {
+    @IBOutlet var scrollView: UIScrollView! {
         didSet {
-            containerStackView.isLayoutMarginsRelativeArrangement = true
-            containerStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(
-                top: 30,
-                leading: 30,
-                bottom: 30,
-                trailing: 30
-            )
+            scrollView.contentInset = .init(top: .zero, left: .zero, bottom: -80, right: .zero)
         }
     }
 
@@ -151,14 +159,20 @@ final class PlaygroundViewController: UIViewController {
         activityIndicator.transform = CGAffineTransform(rotationAngle: CGFloat(angle))
     }
 
-    @IBAction func toggleTextField(_ sender: UISwitch) {
-        UIView.animate {
-            self.textField.isEnabled = sender.isOn
-            self.textField.alpha = sender.isOn ? 1 : 0.25
-        }
-    }
-
     @IBAction func openInspector(_ sender: Any) {
         presentInspector(animated: true)
+    }
+}
+
+final class PlaygroundContainerStackView: UIStackView, NonInspectableView {
+    override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
+        isLayoutMarginsRelativeArrangement = true
+        directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: 60,
+            leading: 30,
+            bottom: 30,
+            trailing: 30
+        )
     }
 }

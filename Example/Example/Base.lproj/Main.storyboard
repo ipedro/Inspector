@@ -34,7 +34,7 @@
                     <tabBarItem key="tabBarItem" title="Inspector" image="tab-bar-inspector-off" selectedImage="tab-bar-inspector-on" id="2Ki-oj-dQl"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="99r-xO-ddw">
-                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="119"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" systemColor="systemBackgroundColor"/>
                         <textAttributes key="titleTextAttributes">
@@ -84,153 +84,127 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" layoutMarginsFollowReadableWidth="YES" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="d8e-2x-EDf">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="d8e-2x-EDf">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="60" translatesAutoresizingMaskIntoConstraints="NO" id="d2F-0P-dbg">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="1821"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="INB-xo-Zbl" userLabel="Container Stack View" customClass="PlaygroundContainerStackView" customModule="Example" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="1350.5"/>
                                         <subviews>
-                                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eib-Tf-N4k">
-                                                <rect key="frame" x="0.0" y="0.0" width="414" height="128"/>
-                                            </view>
-                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="sRK-tj-a7O">
-                                                <rect key="frame" x="0.0" y="188" width="414" height="212.5"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="60" translatesAutoresizingMaskIntoConstraints="NO" id="d2F-0P-dbg">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="1215"/>
                                                 <subviews>
-                                                    <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cJS-og-qBk">
-                                                        <rect key="frame" x="0.0" y="-3" width="414" height="42"/>
-                                                        <color key="tintColor" name="AccentColor"/>
-                                                        <imageReference key="image" image="hand.point.down.fill" catalog="system" symbolScale="large"/>
-                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
-                                                    </imageView>
-                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="wOa-fI-euV">
-                                                        <rect key="frame" x="0.0" y="65.5" width="414" height="37"/>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="edQ-YE-7ct">
+                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="102.5"/>
                                                         <subviews>
-                                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="PYA-Fo-nTT">
-                                                                <rect key="frame" x="-2" y="0.0" width="361" height="38"/>
-                                                                <accessibility key="accessibilityConfiguration" identifier="activityIndicatorSlider"/>
-                                                                <connections>
-                                                                    <action selector="rotateActivityIndicator:" destination="rlf-Ro-weQ" eventType="valueChanged" id="19b-wd-H9D"/>
-                                                                </connections>
-                                                            </slider>
-                                                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="U4a-4K-CaA">
-                                                                <rect key="frame" x="377" y="0.0" width="37" height="37"/>
-                                                                <color key="tintColor" systemColor="labelColor"/>
-                                                                <color key="color" name="AccentColor"/>
-                                                            </activityIndicatorView>
+                                                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wKv-vg-Jpd">
+                                                                <rect key="frame" x="0.0" y="-3" width="414" height="42"/>
+                                                                <color key="tintColor" name="AccentColor"/>
+                                                                <imageReference key="image" image="hand.point.down.fill" catalog="system" symbolScale="large"/>
+                                                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
+                                                            </imageView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="gpQ-D6-lFG">
+                                                                <rect key="frame" x="0.0" y="65.5" width="414" height="37"/>
+                                                                <subviews>
+                                                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="V4B-vZ-KPb">
+                                                                        <rect key="frame" x="-2" y="0.0" width="361" height="38"/>
+                                                                        <accessibility key="accessibilityConfiguration" identifier="activityIndicatorSlider"/>
+                                                                        <connections>
+                                                                            <action selector="rotateActivityIndicator:" destination="rlf-Ro-weQ" eventType="valueChanged" id="vCe-yp-kQO"/>
+                                                                        </connections>
+                                                                    </slider>
+                                                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="76I-g8-jHc">
+                                                                        <rect key="frame" x="377" y="0.0" width="37" height="37"/>
+                                                                        <color key="tintColor" systemColor="labelColor"/>
+                                                                        <color key="color" name="AccentColor"/>
+                                                                    </activityIndicatorView>
+                                                                </subviews>
+                                                            </stackView>
                                                         </subviews>
                                                     </stackView>
-                                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rb4-Wb-ocJ">
-                                                        <rect key="frame" x="0.0" y="132.5" width="414" height="80"/>
-                                                        <accessibility key="accessibilityConfiguration" identifier="textView"/>
-                                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
-                                                        <color key="textColor" systemColor="secondaryLabelColor"/>
-                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                    </textView>
-                                                </subviews>
-                                            </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="FBD-HN-Mlr">
-                                                <rect key="frame" x="0.0" y="460.5" width="414" height="198"/>
-                                                <subviews>
-                                                    <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="h9n-hE-XJ6">
-                                                        <rect key="frame" x="0.0" y="-0.5" width="414" height="36.5"/>
-                                                        <color key="tintColor" name="AccentColor"/>
-                                                        <imageReference key="image" image="text.quote" catalog="system" symbolScale="large"/>
-                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
-                                                    </imageView>
-                                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="hQ6-LK-v3h">
-                                                        <rect key="frame" x="0.0" y="65.5" width="414" height="40"/>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="CIc-jj-6GV">
+                                                        <rect key="frame" x="0.0" y="162.5" width="414" height="341.5"/>
                                                         <subviews>
-                                                            <textField opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="749" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enable me" borderStyle="roundedRect" placeholder="Text field" textAlignment="natural" clearsOnBeginEditing="YES" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="hrk-dv-7cM">
-                                                                <rect key="frame" x="0.0" y="0.0" width="345" height="40"/>
-                                                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="01c-30-mvW">
+                                                                <rect key="frame" x="0.0" y="-1.5" width="416.5" height="42.5"/>
+                                                                <color key="tintColor" name="AccentColor"/>
+                                                                <imageReference key="image" image="calendar.badge.clock" catalog="system" symbolScale="large"/>
+                                                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
+                                                            </imageView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="hws-vV-thU">
+                                                                <rect key="frame" x="0.0" y="65.5" width="414" height="276"/>
+                                                                <subviews>
+                                                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Cp5-q0-d7b">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="41"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="height" constant="40" id="vKl-8f-QT5"/>
+                                                                        </constraints>
+                                                                        <segments>
+                                                                            <segment title="First Segment"/>
+                                                                            <segment title="Second segment"/>
+                                                                        </segments>
+                                                                        <connections>
+                                                                            <action selector="changeDatePickerStyle:" destination="rlf-Ro-weQ" eventType="valueChanged" id="MhZ-mu-NX8"/>
+                                                                        </connections>
+                                                                    </segmentedControl>
+                                                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="eMf-HW-SoS">
+                                                                        <rect key="frame" x="0.0" y="60" width="414" height="216"/>
+                                                                    </datePicker>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="sRK-tj-a7O">
+                                                        <rect key="frame" x="0.0" y="564" width="414" height="145.5"/>
+                                                        <subviews>
+                                                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cJS-og-qBk">
+                                                                <rect key="frame" x="0.0" y="-3" width="414" height="42"/>
+                                                                <color key="tintColor" name="AccentColor"/>
+                                                                <imageReference key="image" image="hand.point.down.fill" catalog="system" symbolScale="large"/>
+                                                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
+                                                            </imageView>
+                                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rb4-Wb-ocJ">
+                                                                <rect key="frame" x="0.0" y="65.5" width="414" height="80"/>
+                                                                <accessibility key="accessibilityConfiguration" identifier="textView"/>
+                                                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+                                                                <color key="textColor" systemColor="secondaryLabelColor"/>
+                                                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                            </textView>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="kbE-m8-pTl">
+                                                        <rect key="frame" x="0.0" y="769.5" width="414" height="445.5"/>
+                                                        <subviews>
+                                                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pYB-gM-szJ">
+                                                                <rect key="frame" x="0.0" y="-2" width="414" height="40.5"/>
+                                                                <color key="tintColor" name="AccentColor"/>
+                                                                <imageReference key="image" image="location.fill.viewfinder" catalog="system" symbolScale="large"/>
+                                                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
+                                                            </imageView>
+                                                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="XAi-RD-PNd">
+                                                                <rect key="frame" x="0.0" y="65.5" width="414" height="380"/>
                                                                 <constraints>
-                                                                    <constraint firstAttribute="height" constant="40" id="T33-Eo-Q6L"/>
+                                                                    <constraint firstAttribute="height" constant="380" id="Qcw-TS-WO3"/>
                                                                 </constraints>
-                                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                                <textInputTraits key="textInputTraits"/>
-                                                            </textField>
-                                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="gCc-Al-G0A">
-                                                                <rect key="frame" x="365" y="4.5" width="51" height="31"/>
-                                                                <color key="onTintColor" name="AccentColor"/>
-                                                                <connections>
-                                                                    <action selector="toggleTextField:" destination="rlf-Ro-weQ" eventType="valueChanged" id="Rea-FY-4ZB"/>
-                                                                </connections>
-                                                            </switch>
-                                                        </subviews>
-                                                    </stackView>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pOk-Ds-yBO">
-                                                        <rect key="frame" x="0.0" y="135.5" width="414" height="62.5"/>
-                                                        <string key="text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                                                        <color key="textColor" systemColor="secondaryLabelColor"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                </subviews>
-                                            </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="CIc-jj-6GV">
-                                                <rect key="frame" x="0.0" y="718.5" width="414" height="341.5"/>
-                                                <subviews>
-                                                    <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="01c-30-mvW">
-                                                        <rect key="frame" x="0.0" y="-1.5" width="416.5" height="42.5"/>
-                                                        <color key="tintColor" name="AccentColor"/>
-                                                        <imageReference key="image" image="calendar.badge.clock" catalog="system" symbolScale="large"/>
-                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
-                                                    </imageView>
-                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="hws-vV-thU">
-                                                        <rect key="frame" x="0.0" y="65.5" width="414" height="276"/>
-                                                        <subviews>
-                                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Cp5-q0-d7b">
-                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="41"/>
-                                                                <constraints>
-                                                                    <constraint firstAttribute="height" constant="40" id="vKl-8f-QT5"/>
-                                                                </constraints>
-                                                                <segments>
-                                                                    <segment title="First Segment"/>
-                                                                    <segment title="Second segment"/>
-                                                                </segments>
-                                                                <connections>
-                                                                    <action selector="changeDatePickerStyle:" destination="rlf-Ro-weQ" eventType="valueChanged" id="MhZ-mu-NX8"/>
-                                                                </connections>
-                                                            </segmentedControl>
-                                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="eMf-HW-SoS">
-                                                                <rect key="frame" x="0.0" y="60" width="414" height="216"/>
-                                                            </datePicker>
+                                                                <userDefinedRuntimeAttributes>
+                                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.clipsToBounds" value="YES"/>
+                                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                                        <integer key="value" value="24"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                </userDefinedRuntimeAttributes>
+                                                            </mapView>
                                                         </subviews>
                                                     </stackView>
                                                 </subviews>
                                             </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="kbE-m8-pTl">
-                                                <rect key="frame" x="0.0" y="1120" width="414" height="445.5"/>
-                                                <subviews>
-                                                    <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pYB-gM-szJ">
-                                                        <rect key="frame" x="0.0" y="-2" width="414" height="40.5"/>
-                                                        <color key="tintColor" name="AccentColor"/>
-                                                        <imageReference key="image" image="location.fill.viewfinder" catalog="system" symbolScale="large"/>
-                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
-                                                    </imageView>
-                                                    <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="XAi-RD-PNd">
-                                                        <rect key="frame" x="0.0" y="65.5" width="414" height="380"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="380" id="Qcw-TS-WO3"/>
-                                                        </constraints>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.clipsToBounds" value="YES"/>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                                <integer key="value" value="24"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                        </userDefinedRuntimeAttributes>
-                                                    </mapView>
-                                                </subviews>
-                                            </stackView>
-                                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZsW-RJ-obT" userLabel="Spacer View">
-                                                <rect key="frame" x="0.0" y="1625.5" width="414" height="100"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZsW-RJ-obT" userLabel="Spacer View">
+                                                <rect key="frame" x="0.0" y="1215" width="414" height="100"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="100" id="reL-Zp-4S5"/>
                                                 </constraints>
                                             </view>
-                                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dWo-nZ-I2z">
-                                                <rect key="frame" x="0.0" y="1777.5" width="414" height="51.5"/>
+                                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dWo-nZ-I2z">
+                                                <rect key="frame" x="0.0" y="1307" width="414" height="51.5"/>
                                                 <color key="tintColor" name="AccentColor"/>
                                                 <imageReference key="image" image="hands.clap.fill" catalog="system" symbolScale="large"/>
                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
@@ -241,11 +215,12 @@
                                 <viewLayoutGuide key="safeArea" id="ksU-08-F7e"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="d2F-0P-dbg" firstAttribute="top" secondItem="d8e-2x-EDf" secondAttribute="top" id="02B-Hm-WP1"/>
-                                    <constraint firstItem="d2F-0P-dbg" firstAttribute="centerX" secondItem="d8e-2x-EDf" secondAttribute="centerX" id="87d-0r-Pun"/>
-                                    <constraint firstItem="d2F-0P-dbg" firstAttribute="leading" secondItem="d8e-2x-EDf" secondAttribute="leading" id="W8x-mI-GRP"/>
-                                    <constraint firstAttribute="trailing" secondItem="d2F-0P-dbg" secondAttribute="trailing" id="fFh-MY-Ant"/>
-                                    <constraint firstAttribute="bottom" secondItem="d2F-0P-dbg" secondAttribute="bottom" constant="-200" id="jtM-pk-e2c"/>
+                                    <constraint firstAttribute="bottom" secondItem="INB-xo-Zbl" secondAttribute="bottom" id="4rk-D4-Jj0"/>
+                                    <constraint firstItem="INB-xo-Zbl" firstAttribute="top" secondItem="d8e-2x-EDf" secondAttribute="top" id="8e8-Mp-zfa"/>
+                                    <constraint firstItem="INB-xo-Zbl" firstAttribute="top" secondItem="ksU-08-F7e" secondAttribute="top" id="O1V-d4-bpZ"/>
+                                    <constraint firstAttribute="trailing" secondItem="INB-xo-Zbl" secondAttribute="trailing" id="WG8-R1-ylU"/>
+                                    <constraint firstItem="INB-xo-Zbl" firstAttribute="leading" secondItem="d8e-2x-EDf" secondAttribute="leading" id="XRr-c0-uOn"/>
+                                    <constraint firstAttribute="bottom" secondItem="INB-xo-Zbl" secondAttribute="bottom" id="ZYQ-0r-hs5"/>
                                 </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="apo-OZ-FyQ"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="tza-rv-MY8"/>
@@ -259,6 +234,7 @@
                         <constraints>
                             <constraint firstItem="d8e-2x-EDf" firstAttribute="leading" secondItem="3iS-UF-k48" secondAttribute="leading" id="6rH-fb-avx"/>
                             <constraint firstItem="d8e-2x-EDf" firstAttribute="top" secondItem="zl3-QB-Cvw" secondAttribute="top" id="CaK-nE-Oi1"/>
+                            <constraint firstItem="INB-xo-Zbl" firstAttribute="width" secondItem="zl3-QB-Cvw" secondAttribute="width" id="QDN-Rm-0XM"/>
                             <constraint firstItem="d8e-2x-EDf" firstAttribute="bottom" secondItem="3iS-UF-k48" secondAttribute="bottom" id="cYM-bG-jGW"/>
                             <constraint firstItem="d8e-2x-EDf" firstAttribute="centerX" secondItem="zl3-QB-Cvw" secondAttribute="centerX" id="zIS-Ix-JVA"/>
                         </constraints>
@@ -283,18 +259,16 @@
                     </navigationItem>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="activityIndicator" destination="U4a-4K-CaA" id="2dY-f3-8D7"/>
-                        <outlet property="containerStackView" destination="d2F-0P-dbg" id="iWD-Yc-6he"/>
+                        <outlet property="contentStackView" destination="d2F-0P-dbg" id="iWD-Yc-6he"/>
                         <outlet property="datePicker" destination="eMf-HW-SoS" id="uMA-EL-j3f"/>
                         <outlet property="datePickerSegmentedControl" destination="Cp5-q0-d7b" id="1Fm-Sl-mnY"/>
+                        <outlet property="datePickerStackView" destination="CIc-jj-6GV" id="Dgv-Ox-8I6"/>
                         <outlet property="inspectBarButton" destination="8GJ-XY-T7m" id="b4B-t1-iDt"/>
-                        <outlet property="longTextLabel" destination="pOk-Ds-yBO" id="jDY-g8-tBA"/>
+                        <outlet property="mapStackView" destination="kbE-m8-pTl" id="Dew-5s-pUc"/>
                         <outlet property="mapView" destination="XAi-RD-PNd" id="e9J-nq-Abb"/>
                         <outlet property="scrollView" destination="d8e-2x-EDf" id="1Ez-1D-4k3"/>
-                        <outlet property="switch" destination="gCc-Al-G0A" id="rer-1z-k4d"/>
-                        <outlet property="switchTextField" destination="hrk-dv-7cM" id="utk-Mh-ST9"/>
-                        <outlet property="textField" destination="hrk-dv-7cM" id="TWn-U9-wev"/>
-                        <outlet property="textStackView" destination="hQ6-LK-v3h" id="Hel-f1-h8u"/>
+                        <outlet property="sliderStackView" destination="edQ-YE-7ct" id="0Q7-LE-KOP"/>
+                        <outlet property="textViewStack" destination="sRK-tj-a7O" id="J17-kZ-HW2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lBU-AY-w2g" sceneMemberID="firstResponder"/>
@@ -308,7 +282,7 @@
                     <tabBarItem key="tabBarItem" title="Playground" image="tab-bar-playground-off" selectedImage="tab-bar-playground-on" id="hZK-SV-H0t"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="RgH-s8-kZS">
-                        <rect key="frame" x="0.0" y="44" width="414" height="119"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" systemColor="systemBackgroundColor"/>
                         <textAttributes key="titleTextAttributes">
@@ -341,7 +315,6 @@
         <image name="tab-bar-inspector-on" width="40" height="40"/>
         <image name="tab-bar-playground-off" width="40" height="40"/>
         <image name="tab-bar-playground-on" width="40" height="40"/>
-        <image name="text.quote" catalog="system" width="128" height="100"/>
         <namedColor name="AccentColor">
             <color red="0.68599998950958252" green="0.32199999690055847" blue="0.87100005149841309" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
@@ -356,9 +329,6 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemGray5Color">
-            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemGray6Color">
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
