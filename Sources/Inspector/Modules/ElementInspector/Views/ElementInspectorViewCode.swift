@@ -51,7 +51,6 @@ final class ElementInspectorViewCode: BaseView {
     private(set) lazy var scrollView = UIScrollView().then {
         $0.alwaysBounceVertical = true
         $0.keyboardDismissMode = .onDrag
-        $0.delaysContentTouches = false
     }
 
     private(set) lazy var segmentedControl = UISegmentedControl.segmentedControlStyle()
