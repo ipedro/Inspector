@@ -62,10 +62,10 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         didSet {
             switch isEvenRow {
             case true:
-                backgroundColor = colorStyle.backgroundColor
+                backgroundColor = colorStyle.highlightBackgroundColor
 
             case false:
-                backgroundColor = colorStyle.highlightBackgroundColor
+                backgroundColor = colorStyle.backgroundColor
             }
         }
     }
