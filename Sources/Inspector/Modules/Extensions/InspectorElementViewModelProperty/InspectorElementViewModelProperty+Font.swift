@@ -23,66 +23,31 @@ import UIKit
 public extension InspectorElementViewModelProperty {
     static func fontNamePicker(
         title: String,
-        emptyTitle: String = "System Font",
+        emptyTitle: String = .systemFontFamilyName,
         fontProvider: @escaping FontProvider,
         handler: @escaping FontHandler
     ) -> InspectorElementViewModelProperty {
-        typealias FontReference = (fontName: String, displayName: String)
-
-        let availableFonts: [FontReference] = {
-            var array = [FontReference("", emptyTitle)]
-
-            UIFont.familyNames.forEach { familyName in
-
-                let familyNames = UIFont.fontNames(forFamilyName: familyName)
-
-                if
-                    familyNames.count == 1,
-                    let fontName = familyNames.first
-                {
-                    array.append((fontName: fontName, displayName: familyName))
-                    return
-                }
-
-                familyNames.forEach { fontName in
-                    guard
-                        let lastName = fontName.split(separator: "-").last,
-                        lastName.replacingOccurrences(of: " ", with: "")
-                        .caseInsensitiveCompare(familyName.replacingOccurrences(of: " ", with: "")) != .orderedSame
-                    else {
-                        array.append((fontName: fontName, displayName: fontName))
-                        return
-                    }
-
-                    array.append((fontName: fontName, displayName: "\(familyName) \(lastName)"))
-                }
-            }
-
-            return array
-        }()
-
-        return .optionsList(
+        .optionsList(
             title: title,
             emptyTitle: emptyTitle,
             axis: .vertical,
-            options: availableFonts.map(\.displayName),
-            selectedIndex: { availableFonts.firstIndex { $0.fontName == fontProvider()?.fontName } }
-        ) {
-            guard let newIndex = $0 else {
-                return
+            options: FontReference.allCases.map(\.description),
+            selectedIndex: {
+                guard let fontName = fontProvider()?.fontName else { return nil }
+                return FontReference.firstIndex(of: fontName)
+            },
+            handler: {
+                guard
+                    let newIndex = $0,
+                    let pointSize = fontProvider()?.pointSize,
+                    let newFont = FontReference.font(at: newIndex, size: pointSize)
+                else {
+                    return handler(nil)
+                }
+
+                handler(newFont)
             }
-
-            let fontNames = availableFonts.map(\.fontName)
-            let fontName = fontNames[newIndex]
-
-            guard let pointSize = fontProvider()?.pointSize else {
-                return
-            }
-
-            let newFont = UIFont(name: fontName, size: pointSize)
-
-            handler(newFont)
-        }
+        )
     }
 
     static func fontSizeStepper(
@@ -93,7 +58,7 @@ public extension InspectorElementViewModelProperty {
         .cgFloatStepper(
             title: title,
             value: { fontProvider()?.pointSize ?? 0 },
-            range: { 0...256 },
+            range: { 0 ... 256 },
             stepValue: { 1 }
         ) { fontSize in
 

@@ -20,8 +20,8 @@
 
 import UIKit
 
-final class NSLayoutConstraintReference: Hashable {
-    static func == (lhs: NSLayoutConstraintReference, rhs: NSLayoutConstraintReference) -> Bool {
+final class LayoutConstraintReference: Hashable {
+    static func == (lhs: LayoutConstraintReference, rhs: LayoutConstraintReference) -> Bool {
         lhs.constraint == rhs.constraint
     }
 
@@ -139,7 +139,7 @@ final class NSLayoutConstraintReference: Hashable {
 
 // MARK: - Computed Properties
 
-extension NSLayoutConstraintReference {
+extension LayoutConstraintReference {
     var mine: Binding? {
         guard let rootView = view else { return nil }
 
@@ -187,7 +187,7 @@ extension NSLayoutConstraintReference {
 
 // MARK: - Binding
 
-extension NSLayoutConstraintReference {
+extension LayoutConstraintReference {
     struct Binding: Hashable {
         var item: Item
         var attribute: NSLayoutConstraint.Attribute
@@ -208,7 +208,7 @@ extension NSLayoutConstraintReference {
 
 // MARK: - Axis
 
-extension NSLayoutConstraintReference {
+extension LayoutConstraintReference {
     enum Axis: Int, Swift.CaseIterable, Hashable {
         case horizontal = 0
         case vertical = 1
@@ -228,7 +228,7 @@ extension NSLayoutConstraintReference {
 
 // MARK: - Item
 
-extension NSLayoutConstraintReference {
+extension LayoutConstraintReference {
     enum Item: Hashable {
         case view(UIView)
         case layoutGuide(UILayoutGuide)
@@ -296,7 +296,7 @@ extension NSLayoutConstraintReference {
 
 // MARK: - Type
 
-extension NSLayoutConstraintReference {
+extension LayoutConstraintReference {
     enum `Type`: CustomStringConvertible, Hashable {
         case aspectRatio(multiplier: CGFloat)
         case proportional(attribute: String? = nil, to: String)

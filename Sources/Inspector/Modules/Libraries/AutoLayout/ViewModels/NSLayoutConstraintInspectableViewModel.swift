@@ -21,7 +21,7 @@
 import UIKit
 
 struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol, Hashable {
-    typealias Axis = NSLayoutConstraintReference.Axis
+    typealias Axis = LayoutConstraintReference.Axis
 
     private enum Property: String, Swift.CaseIterable {
         case isActive = "Installed"
@@ -38,11 +38,11 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
     }
 
     init?(with constraint: NSLayoutConstraint, in view: UIView) {
-        guard let constraintReference = NSLayoutConstraintReference(with: constraint, in: view) else { return nil }
+        guard let constraintReference = LayoutConstraintReference(with: constraint, in: view) else { return nil }
         self.constraintReference = constraintReference
     }
 
-    let constraintReference: NSLayoutConstraintReference
+    let constraintReference: LayoutConstraintReference
 
     var axis: Axis { constraintReference.axis }
 

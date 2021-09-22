@@ -224,10 +224,6 @@ extension ElementInspectorFormItemViewController {
     }
 
     @objc private func valueChanged(_ sender: AnyObject) {
-        handleChange(with: sender)
-    }
-
-    private func handleChange(with sender: AnyObject) {
         for (property, formView) in viewForProperties where formView === sender {
             delegate?.elementInspectorFormItemViewController(self, willUpdate: property)
 
@@ -396,6 +392,10 @@ extension ElementInspectorFormItemViewController: ColorPreviewControlDelegate {
 // MARK: - OptionListControlDelegate
 
 extension ElementInspectorFormItemViewController: OptionListControlDelegate {
+    func optionListControlDidChangeSelectedIndex(_ optionListControl: OptionListControl) {
+        valueChanged(optionListControl)
+    }
+
     func optionListControlDidTap(_ optionListControl: OptionListControl) {
         delegate?.elementInspectorFormItemViewController(self, didTap: optionListControl)
     }
