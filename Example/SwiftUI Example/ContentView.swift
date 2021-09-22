@@ -47,7 +47,7 @@ struct ContentView: View {
             .navigationTitle("SwiftUI Inspector")
         }
         .onAppear {
-            Inspector.host?.window?.inspect(.allViews)
+            Inspector.inspect(.allViews)
         }
         .onShake {
             self.isInspecting.toggle()
