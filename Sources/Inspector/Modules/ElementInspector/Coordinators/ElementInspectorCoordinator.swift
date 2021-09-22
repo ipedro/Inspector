@@ -30,11 +30,27 @@ final class ElementSizePanelViewController: ElementInspectorFormPanelViewControl
 // MARK: - ElementInspectorCoordinatorDelegate
 
 protocol ElementInspectorCoordinatorDelegate: AnyObject {
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference)
+    func elementInspectorCoordinator(
+        _ coordinator: ElementInspectorCoordinator,
+        didFinishWith reference: ViewHierarchyReference
+    )
 
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference)
+    func elementInspectorCoordinator(
+        _ coordinator: ElementInspectorCoordinator,
+        showHighlightViewsVisibilityOf reference: ViewHierarchyReference
+    )
 
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, hideHighlightViewsVisibilityOf reference: ViewHierarchyReference)
+    func elementInspectorCoordinator(
+        _ coordinator: ElementInspectorCoordinator,
+        hideHighlightViewsVisibilityOf reference: ViewHierarchyReference
+    )
+
+    func elementInspectorCoordinator(
+        _ coordinator: ElementInspectorCoordinator,
+        didSelect reference: ViewHierarchyReference,
+        with action: ViewHierarchyAction?,
+        from fromReference: ViewHierarchyReference
+    )
 }
 
 // MARK: - ElementInspectorCoordinator
@@ -44,7 +60,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     let snapshot: ViewHierarchySnapshot
 
-    let reference: ViewHierarchyReference
+    let rootReference: ViewHierarchyReference
 
     let initialAction: ViewHierarchyAction?
 
@@ -66,7 +82,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         in snapshot: ViewHierarchySnapshot,
         from sourceView: UIView?
     ) {
-        self.reference = reference
+        self.rootReference = reference
         self.initialAction = action
         self.snapshot = snapshot
         self.sourceView = sourceView ?? reference.rootView
@@ -116,7 +132,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
                 reference: reference,
                 selectedPanel: selectedPanel,
                 inspectableElements: elementLibraries,
-                availablePanels: ElementInspectorPanel.availablePanels(for: reference.actions)
+                availablePanels: ElementInspectorPanel.panels(for: reference.actions)
             )
         ).then {
             $0.delegate = delegate
@@ -201,7 +217,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
 private extension ElementInspectorCoordinator {
     func addElementInspectorsForReferences(in navigationController: ElementInspectorNavigationController) {
-        let populatedReferences = snapshot.inspectableReferences.filter { $0.rootView === reference.rootView }
+        let populatedReferences = snapshot.inspectableReferences.filter { $0.rootView === rootReference.rootView }
 
         guard let populatedReference = populatedReferences.first else {
             let rootViewController = Self.makeElementInspectorViewController(

@@ -21,6 +21,10 @@
 import UIKit
 
 extension Manager: ElementInspectorCoordinatorDelegate {
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didSelect reference: ViewHierarchyReference, with action: ViewHierarchyAction?, from fromReference: ViewHierarchyReference) {
+        startElementInspectorCoordinator(for: reference, with: action, animated: true, from: reference.rootView)
+    }
+
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
         viewHierarchyCoordinator.toggleHighlightViews(visibility: true, inside: reference)
     }

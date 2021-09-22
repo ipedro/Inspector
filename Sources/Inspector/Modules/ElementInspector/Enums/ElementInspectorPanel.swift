@@ -28,7 +28,7 @@ enum ElementInspectorPanel: Swift.CaseIterable, Hashable {
     case size
     case children
 
-    static func availablePanels(for actions: [ViewHierarchyAction]) -> [ElementInspectorPanel] {
+    static func panels(for actions: [ViewHierarchyAction]) -> [ElementInspectorPanel] {
         actions.compactMap { .init(rawValue: $0) }
     }
 

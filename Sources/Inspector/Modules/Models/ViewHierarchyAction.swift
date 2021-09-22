@@ -43,26 +43,21 @@ enum ViewHierarchyAction: Swift.CaseIterable {
         switch self {
         case .preview:
             return IconKit.imageOfInfoCircleFill()
-
         case .attributes:
             return IconKit.imageOfSliderHorizontal()
-
         case .children:
             return IconKit.imageOfRelationshipDiagram()
-
         case .size:
             return IconKit.imageOfSetSquareFill()
         }
     }
 
-    static func availableActions(for view: UIView) -> [ViewHierarchyAction] {
+    static func actions(for reference: ViewHierarchyReference) -> [ViewHierarchyAction] {
         allCases.filter { action in
             switch action {
             case .children:
-                return view.subviews.isEmpty == false
-            case .preview,
-                 .attributes,
-                 .size:
+                return reference.isContainer
+            default:
                 return true
             }
         }

@@ -25,6 +25,11 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
                                         and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
 
+    func elementInspectorViewController(_ viewController: ElementInspectorViewController,
+                                        didSelect reference: ViewHierarchyReference,
+                                        with action: ViewHierarchyAction?,
+                                        from fromReference: ViewHierarchyReference)
+
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController)
 }
 
@@ -292,27 +297,16 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
             actionProvider: { [weak self] _ in
                 guard let self = self else { return nil }
 
-                return UIMenu(
-                    title: self.viewModel.title,
-                    image: self.viewModel.thumbnailImage,
-                    children: [
-                        UIMenu(
-                            title: "Copy",
-                            image: .copySymbol,
-                            options: .displayInline,
-                            children: [
-                                UIAction.copyAction(
-                                    title: "Copy Class Name",
-                                    stringProvider: { [weak self] in self?.viewModel.reference.className }
-                                ),
-                                UIAction.copyAction(
-                                    title: "Copy Description",
-                                    stringProvider: { [weak self] in self?.viewModel.reference.elementDescription }
-                                )
-                            ]
-                        )
-                    ]
-                )
+                return self.viewModel.reference.menu { [weak self] reference, action in
+                    guard let self = self else { return }
+
+                    self.delegate?.elementInspectorViewController(
+                        self,
+                        didSelect: reference,
+                        with: action,
+                        from: self.viewModel.reference
+                    )
+                }
             }
         )
     }

@@ -24,7 +24,7 @@ protocol ElementChildrenPanelViewControllerDelegate: OperationQueueManagerProtoc
     func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
                                             didSelect reference: ViewHierarchyReference,
                                             with action: ViewHierarchyAction?,
-                                            from rootReference: ViewHierarchyReference)
+                                            from fromReference: ViewHierarchyReference)
 
     func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
                                             previewFor reference: ViewHierarchyReference) -> UIViewController?

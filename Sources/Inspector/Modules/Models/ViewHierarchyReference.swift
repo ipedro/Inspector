@@ -41,7 +41,7 @@ final class ViewHierarchyReference {
 
     let accessibilityIdentifier: String?
 
-    let actions: [ViewHierarchyAction]
+    private(set) lazy var actions = ViewHierarchyAction.actions(for: self)
 
     var parent: ViewHierarchyReference?
 
@@ -81,8 +81,6 @@ final class ViewHierarchyReference {
 
         self.parent = parent
 
-        actions = ViewHierarchyAction.availableActions(for: rootView)
-
         identifier = ObjectIdentifier(rootView)
 
         canPresentOnTop = rootView.canPresentOnTop
@@ -102,6 +100,93 @@ final class ViewHierarchyReference {
         accessibilityIdentifier = rootView.accessibilityIdentifier
 
         canHostInspectorView = rootView.canHostInspectorView
+    }
+}
+
+// MARK: - Menu
+
+@available(iOS 13.0, *)
+extension ViewHierarchyReference {
+    typealias MenuActionHandler = (ViewHierarchyReference, ViewHierarchyAction) -> Void
+
+    func menu(handler: @escaping MenuActionHandler) -> UIMenu? {
+        var menus: [UIMenuElement] = []
+
+        if let actionsMenu = self.actionsMenu(options: .displayInline, handler: handler) {
+            menus.append(actionsMenu)
+        }
+
+        let copyMenu = copyMenu(options: .displayInline)
+        menus.append(copyMenu)
+
+        if !children.isEmpty {
+            if #available(iOS 14.0, *) {
+                let childrenMenu = UIDeferredMenuElement { completion in
+                    if let menu = self.childrenMenu(handler: handler) {
+                        completion([menu])
+                    }
+                    else {
+                        completion([])
+                    }
+                }
+                menus.append(childrenMenu)
+            }
+            else if let childrenMenu = self.childrenMenu(handler: handler) {
+                menus.append(childrenMenu)
+            }
+        }
+
+        return UIMenu(
+            title: elementName,
+            image: nil,
+            identifier: nil,
+            children: menus
+        )
+    }
+
+    private func childrenMenu(options: UIMenu.Options = .init(), handler: @escaping MenuActionHandler) -> UIMenu? {
+        guard !children.isEmpty else { return nil }
+
+        return UIMenu(
+            title: Texts.children.appending(" (\(children.count))"),
+            image: nil,
+            identifier: nil,
+            options: options,
+            children: children.compactMap { $0.menu(handler: handler) }
+        )
+    }
+
+    private func actionsMenu(options: UIMenu.Options = .init(), handler: @escaping MenuActionHandler) -> UIMenu? {
+        guard !actions.isEmpty else { return nil }
+
+        return UIMenu(
+            title: Texts.open,
+            options: options,
+            children: actions.map { action in
+                UIAction(title: Texts.open(action.title), image: action.image) { [weak self] _ in
+                    guard let self = self else { return }
+                    handler(self, action)
+                }
+            }
+        )
+    }
+
+    private func copyMenu(options: UIMenu.Options = .init()) -> UIMenu {
+        UIMenu(
+            title: Texts.copy,
+            image: .none,
+            options: options,
+            children: [
+                UIAction.copyAction(
+                    title: Texts.copy("Class Name"),
+                    stringProvider: { [weak self] in self?.className }
+                ),
+                UIAction.copyAction(
+                    title: Texts.copy("Description"),
+                    stringProvider: { [weak self] in self?.elementDescription }
+                )
+            ]
+        )
     }
 }
 

@@ -246,22 +246,11 @@ extension HighlightView: UIContextMenuInteractionDelegate {
 
             guard let self = self else { return nil }
 
-            return UIMenu(
-                title: self.viewReference.elementName,
-                image: self.superview?.snapshot(afterScreenUpdates: false, with: nil),
-                identifier: nil,
-                options: .displayInline,
-                children: self.viewReference.actions.map { action in
-                    UIAction(
-                        title: action.title,
-                        image: action.image,
-                        identifier: nil,
-                        discoverabilityTitle: nil
-                    ) { _ in
-                        self.delegate?.highlightView(self, didSelect: self.viewReference, with: action)
-                    }
-                }
-            )
+            return self.viewReference.menu { [weak self] reference, action in
+                guard let self = self else { return }
+
+                self.delegate?.highlightView(self, didSelect: reference, with: action)
+            }
         }
     }
 }

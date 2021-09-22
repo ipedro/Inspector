@@ -57,6 +57,18 @@ enum Texts {
         "Hide \(something)"
     }
 
+    static func open(_ something: String) -> String {
+        "Open \(something)"
+    }
+
+    static func copy(_ something: String) -> String {
+        "Copy \(something)"
+    }
+
+    static let open = "Open"
+
+    static let copy = "Copy"
+
     static let highlightLayers = "Highlight Layers"
 
     static let hierarchySearch = "Hierarchy Search"
@@ -78,4 +90,6 @@ enum Texts {
     static let expand = "Expand"
 
     static let collapse = "Collapse"
+
+    static let children = "Children"
 }

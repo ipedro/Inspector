@@ -21,14 +21,15 @@
 import UIKit
 
 extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegate {
-    func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController, previewFor reference: ViewHierarchyReference) -> UIViewController? {
+    func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
+                                            previewFor reference: ViewHierarchyReference) -> UIViewController? {
         ViewHierarchyThumbnailViewController(viewModel: .init(reference: reference, snapshot: snapshot))
     }
 
     func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
                                             didSelect reference: ViewHierarchyReference,
                                             with action: ViewHierarchyAction?,
-                                            from rootReference: ViewHierarchyReference)
+                                            from fromReference: ViewHierarchyReference)
     {
         operationQueue.cancelAllOperations()
 
