@@ -60,6 +60,6 @@ extension Manager {
 
         addChild(coordinator)
 
-        hostViewController?.present(coordinator.start(), animated: animated)
+        host?.window?.topPresentedViewController?.present(coordinator.start(), animated: animated)
     }
 }

@@ -297,7 +297,7 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
             actionProvider: { [weak self] _ in
                 guard let self = self else { return nil }
 
-                return self.viewModel.reference.menu { [weak self] reference, action in
+                return self.viewModel.reference.menu(includeActions: false) { [weak self] reference, action in
                     guard let self = self else { return }
 
                     self.delegate?.elementInspectorViewController(

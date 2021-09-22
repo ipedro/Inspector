@@ -108,11 +108,11 @@ final class ViewHierarchyReference {
 @available(iOS 13.0, *)
 extension ViewHierarchyReference {
     typealias MenuActionHandler = (ViewHierarchyReference, ViewHierarchyAction) -> Void
-
-    func menu(handler: @escaping MenuActionHandler) -> UIMenu? {
+    
+    func menu(includeActions: Bool = true, handler: @escaping MenuActionHandler) -> UIMenu? {
         var menus: [UIMenuElement] = []
 
-        if let actionsMenu = self.actionsMenu(options: .displayInline, handler: handler) {
+        if includeActions, let actionsMenu = self.actionsMenu(options: .displayInline, handler: handler) {
             menus.append(actionsMenu)
         }
 

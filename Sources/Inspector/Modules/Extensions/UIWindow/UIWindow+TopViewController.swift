@@ -18,23 +18,11 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-extension Manager: ViewHierarchyCoordinatorDelegate {
-    func viewHierarchyCoordinator(_ coordinator: ViewHierarchyCoordinator,
-                                  didSelect reference: ViewHierarchyReference,
-                                  with action: ViewHierarchyAction?,
-                                  in sourceView: HighlightView) {
-
-        for coordinator in children where (coordinator as? ElementInspectorCoordinator)?.rootReference == reference {
-            return
-        }
-
-        startElementInspectorCoordinator(
-            for: reference,
-               with: action,
-               animated: true,
-               from: sourceView.labelContentView
-        )
+extension UIWindow {
+    var topPresentedViewController: UIViewController? {
+        rootViewController?.topPresentedViewController
     }
 }
