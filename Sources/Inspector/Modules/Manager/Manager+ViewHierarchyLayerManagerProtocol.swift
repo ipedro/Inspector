@@ -20,15 +20,40 @@
 
 import UIKit
 
-protocol LayerConstructorProtocol {
-    func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool
+extension Manager: ViewHierarchyLayerManagerProtocol {
+    var isShowingLayers: Bool {
+        viewHierarchyCoordinator.isShowingLayers
+    }
 
-    @discardableResult
-    func make(layer: ViewHierarchyLayer, for snapshot: ViewHierarchySnapshot) -> Bool
+    func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool {
+        viewHierarchyCoordinator.isShowingLayer(layer)
+    }
 
-    @discardableResult
-    func destroy(layer: ViewHierarchyLayer) -> Bool
+    func toggleLayer(_ layer: Inspector.ViewHierarchyLayer) {
+        if viewHierarchyCoordinator.isShowingLayer(layer) {
+            viewHierarchyCoordinator.removeLayer(layer)
+        }
+        else {
+            viewHierarchyCoordinator.installLayer(layer)
+        }
+    }
 
-    @discardableResult
-    func destroyAllLayers() -> Bool
+    func removeLayer(_ layer: Inspector.ViewHierarchyLayer) {
+        if viewHierarchyCoordinator.isShowingLayer(layer) {
+            viewHierarchyCoordinator.removeLayer(layer)
+        }
+    }
+
+    func toggleAllLayers() {
+        if viewHierarchyCoordinator.isShowingAllPopulatedLayers {
+            viewHierarchyCoordinator.removeAllLayers()
+        }
+        else {
+            viewHierarchyCoordinator.installAllLayers()
+        }
+    }
+
+    func removeAllLayers() {
+        viewHierarchyCoordinator.removeAllLayers()
+    }
 }

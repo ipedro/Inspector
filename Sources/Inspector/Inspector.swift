@@ -44,3 +44,51 @@ public enum Inspector {
         manager.restart()
     }
 }
+
+// MARK: - Presentation
+
+public extension Inspector {
+    static func present(animated: Bool = true) {
+        manager.presentInspector(animated: animated)
+    }
+}
+
+// MARK: - Element
+
+public extension Inspector {
+    static func isInspecting(_ element: UIView) -> Bool {
+        element.allSubviews.contains { $0 is LayerViewProtocol }
+    }
+
+    static func inspect(_ element: UIView, animated: Bool = true) {
+        manager.presentElementInspector(for: .init(element), animated: animated, from: element)
+    }
+}
+
+// MARK: - View Hierarchy Layer
+
+public extension Inspector {
+    static func isInspecting(_ layer: Inspector.ViewHierarchyLayer) -> Bool {
+        manager.isShowingLayer(layer)
+    }
+
+    static func inspect(_ layer: Inspector.ViewHierarchyLayer) {
+        manager.toggleLayer(layer)
+    }
+
+    static func toggle(_ layer: Inspector.ViewHierarchyLayer) {
+        manager.toggleLayer(layer)
+    }
+
+    static func toggleAllLayers() {
+        manager.toggleAllLayers()
+    }
+
+    static func stopInspecting(_ layer: Inspector.ViewHierarchyLayer) {
+        manager.removeLayer(layer)
+    }
+
+    static func removeAllLayers() {
+        manager.removeAllLayers()
+    }
+}

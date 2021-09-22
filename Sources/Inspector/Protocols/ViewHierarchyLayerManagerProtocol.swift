@@ -20,14 +20,16 @@
 
 import UIKit
 
-protocol LayerManagerProtocol {
-    var isInspectingHierarchy: Bool { get }
+protocol ViewHierarchyLayerManagerProtocol {
+    var isShowingLayers: Bool { get }
 
-    func installLayer(_ layer: Inspector.ViewHierarchyLayer)
+    func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool
+
+    func toggleLayer(_ layer: Inspector.ViewHierarchyLayer)
 
     func removeLayer(_ layer: Inspector.ViewHierarchyLayer)
 
-    func installAllLayers()
+    func toggleAllLayers()
 
     func removeAllLayers()
 }

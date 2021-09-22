@@ -20,24 +20,40 @@
 
 import UIKit
 
-extension Manager: LayerManagerProtocol {
-    var isInspectingHierarchy: Bool {
-        viewHierarchyCoordinator?.isInspectingHierarchy ?? false
-    }
+protocol ViewHierarchyLayerConstructorProtocol {
 
-    func installLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        viewHierarchyCoordinator?.installLayer(layer)
-    }
+    var isShowingLayers: Bool { get }
 
-    func installAllLayers() {
-        viewHierarchyCoordinator?.installAllLayers()
-    }
+    var isShowingAllPopulatedLayers: Bool { get }
 
-    func removeAllLayers() {
-        viewHierarchyCoordinator?.removeAllLayers()
-    }
+    var activeLayers: [ViewHierarchyLayer] { get }
 
-    func removeLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        viewHierarchyCoordinator?.removeLayer(layer)
-    }
+    var availableLayers: [ViewHierarchyLayer] { get }
+
+    var populatedLayers: [ViewHierarchyLayer] { get }
+
+    // MARK: - Layer Methods
+
+    func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool
+
+    func installLayer(_ layer: Inspector.ViewHierarchyLayer)
+
+    func removeLayer(_ layer: Inspector.ViewHierarchyLayer)
+
+    func installAllLayers()
+
+    func removeAllLayers()
+
+    // MARK: - LayerView Methods
+
+    func updateLayerViews(to newValue: [ViewHierarchyReference: LayerView],
+                          from oldValue: [ViewHierarchyReference: LayerView])
+
+    // MARK: - Element Reference Methods
+
+    func removeReferences(for removedLayers: Set<ViewHierarchyLayer>,
+                          in oldValue: [ViewHierarchyLayer: [ViewHierarchyReference]])
+
+    func addReferences(for newLayers: Set<ViewHierarchyLayer>,
+                       with colorScheme: ViewHierarchyColorScheme)
 }

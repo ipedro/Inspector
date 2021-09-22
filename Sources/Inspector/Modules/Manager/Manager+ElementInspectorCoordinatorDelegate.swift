@@ -22,15 +22,15 @@ import UIKit
 
 extension Manager: ElementInspectorCoordinatorDelegate {
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        viewHierarchyCoordinator?.toggleHighlightViews(visibility: true, inside: reference)
+        viewHierarchyCoordinator.toggleHighlightViews(visibility: true, inside: reference)
     }
 
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, hideHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        viewHierarchyCoordinator?.toggleHighlightViews(visibility: false, inside: reference)
+        viewHierarchyCoordinator.toggleHighlightViews(visibility: false, inside: reference)
     }
 
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference) {
-        // viewHierarchyCoordinator?.toggleHighlightViews(visibility: true, inside: reference)
+        // viewHierarchyCoordinator.toggleHighlightViews(visibility: true, inside: reference)
 
         removeChild(coordinator)
     }

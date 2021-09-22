@@ -20,7 +20,7 @@
 
 import UIKit
 
-public protocol InspectorHost: InspectorPresentable & AnyObject {
+public protocol InspectorHost: AnyObject {
     var window: UIWindow? { get }
 
     /// `ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with `Ctrl + Shift + 1 - 9`. Add your own custom inspector layers.
@@ -36,7 +36,7 @@ public protocol InspectorHost: InspectorPresentable & AnyObject {
     var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { get }
 }
 
-// MARK: - Convenience
+// MARK: - Swift UI
 
 protocol InspectorSwiftUIHost: InspectorHost {
     func insectorViewDidFinishPresentation()

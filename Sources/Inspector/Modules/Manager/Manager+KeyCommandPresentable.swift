@@ -23,20 +23,11 @@ import UIKit
 extension Manager: KeyCommandPresentable {
     var commandGroups: CommandGroups {
         let userCommands = host?.inspectorCommandGroups ?? []
-        
+        let viewHierarchyCommands = viewHierarchyCoordinator.commandGroups() ?? []
+
         var commands = CommandGroups()
         commands.append(contentsOf: userCommands)
-
-        for child in children {
-            guard
-                let viewHierarchyCoordinator = child as? ViewHierarchyCoordinator,
-                let viewHierarchyCommands = viewHierarchyCoordinator.commandGroups()
-            else {
-                continue
-            }
-
-            commands.append(contentsOf: viewHierarchyCommands)
-        }
+        commands.append(contentsOf: viewHierarchyCommands)
 
         return commands
     }
