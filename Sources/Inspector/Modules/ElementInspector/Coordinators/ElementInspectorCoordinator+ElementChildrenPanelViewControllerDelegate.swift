@@ -27,7 +27,7 @@ extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegat
 
     func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
                                             didSelect reference: ViewHierarchyReference,
-                                            with preferredPanel: ElementInspectorPanel?,
+                                            with selectedPanel: ElementInspectorPanel?,
                                             from rootReference: ViewHierarchyReference)
     {
         operationQueue.cancelAllOperations()
@@ -38,7 +38,7 @@ extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegat
             let elementInspectorViewController = Self.makeElementInspectorViewController(
                 with: reference,
                 elementLibraries: self.snapshot.elementLibraries,
-                selectedPanel: preferredPanel,
+                selectedPanel: selectedPanel,
                 delegate: self,
                 in: self.snapshot
             )

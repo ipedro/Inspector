@@ -23,7 +23,7 @@ import UIKit
 protocol ElementChildrenPanelViewControllerDelegate: OperationQueueManagerProtocol {
     func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
                                             didSelect reference: ViewHierarchyReference,
-                                            with preferredPanel: ElementInspectorPanel?,
+                                            with selectedPanel: ElementInspectorPanel?,
                                             from rootReference: ViewHierarchyReference)
 
     func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
