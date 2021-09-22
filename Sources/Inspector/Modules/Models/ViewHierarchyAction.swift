@@ -23,8 +23,8 @@ import UIKit
 enum ViewHierarchyAction: Swift.CaseIterable {
     case preview
     case attributes
-    case children
     case size
+    case children
 
     var title: String {
         switch self {
