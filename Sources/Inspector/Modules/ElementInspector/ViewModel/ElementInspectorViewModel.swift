@@ -82,7 +82,10 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         self.reference = reference
         self.inspectableElements = inspectableElements
         self.availablePanels = availablePanels
-        self.selectedPanel = selectedPanel
+
+        if let selectedPanel = selectedPanel {
+            self.selectedPanel = availablePanels.contains(selectedPanel) ? selectedPanel : nil
+        }
     }
 }
 
