@@ -22,6 +22,7 @@ import UIKit
 
 protocol OptionListControlDelegate: AnyObject {
     func optionListControlDidTap(_ optionListControl: OptionListControl)
+    func optionListControlDidChangeSelectedIndex(_ optionListControl: OptionListControl)
 }
 
 final class OptionListControl: BaseFormControl {
@@ -53,7 +54,6 @@ final class OptionListControl: BaseFormControl {
         $0.contentView.addArrangedSubviews(valueLabel, icon)
         $0.contentView.alignment = .center
         $0.contentView.spacing = ElementInspector.appearance.verticalMargins
-        $0.addTarget(self, action: #selector(tap), for: .touchUpInside)
     }
 
     // MARK: - Init
@@ -98,6 +98,14 @@ final class OptionListControl: BaseFormControl {
         tintColor = valueLabel.textColor
 
         updateViews()
+
+        if #available(iOS 14.0, *) {
+            showsMenuAsPrimaryAction = true
+            isContextMenuInteractionEnabled = true
+        }
+        else {
+            accessoryControl.addTarget(self, action: #selector(tap), for: .touchUpInside)
+        }
     }
 
     func updateSelectedIndex(_ selectedIndex: Int?) {
@@ -115,7 +123,58 @@ final class OptionListControl: BaseFormControl {
         valueLabel.text = options[selectedIndex].description
     }
 
+    // MARK: - Actions
+
     @objc private func tap() {
         delegate?.optionListControlDidTap(self)
+    }
+
+    @available(iOS 14.0, *)
+    override func menuAttachmentPoint(for configuration: UIContextMenuConfiguration) -> CGPoint {
+        switch axis {
+        case .horizontal:
+            let point = CGPoint(x: accessoryControl.bounds.maxX, y: accessoryControl.bounds.minY)
+            let localPoint = accessoryControl.convert(point, to: self)
+            return localPoint
+
+        default:
+            return super.menuAttachmentPoint(for: configuration)
+        }
+    }
+
+    @available(iOS 14.0, *)
+    override func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        let localPoint = convert(location, to: accessoryControl)
+
+        guard accessoryControl.point(inside: localPoint, with: nil) else { return nil }
+
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
+            print(suggestedActions)
+
+            return self.makeOptionSelectionMenu()
+        }
+    }
+
+    @available(iOS 14.0, *)
+    private func makeOptionSelectionMenu() -> UIMenu {
+        UIMenu(
+            title: String(),
+            image: nil,
+            identifier: nil,
+            options: .displayInline,
+            children: options.enumerated().map { index, option in
+                UIAction(
+                    title: option.description,
+                    identifier: nil,
+                    discoverabilityTitle: option.description,
+                    state: index == self.selectedIndex ? .on : .off
+                ) { [weak self] _ in
+                    guard let self = self else { return }
+
+                    self.selectedIndex = index
+                    self.delegate?.optionListControlDidChangeSelectedIndex(self)
+                }
+            }
+        )
     }
 }
