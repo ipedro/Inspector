@@ -175,6 +175,9 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable {
             )
         )
 
+        // swift ui handles keyboard affordances on it's own
+        guard Inspector.manager.swiftUIhost == nil else { return }
+
         // keyboard event handlers
         animateWhenKeyboard(.willHide) { _ in
             self.viewCode.keyboardFrame = nil
