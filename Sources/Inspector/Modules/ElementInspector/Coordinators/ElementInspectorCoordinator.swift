@@ -46,6 +46,8 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     let reference: ViewHierarchyReference
 
+    let initialAction: ViewHierarchyAction?
+
     weak var sourceView: UIView?
 
     private(set) lazy var navigationController: ElementInspectorNavigationController = {
@@ -60,10 +62,12 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     init(
         reference: ViewHierarchyReference,
+        with action: ViewHierarchyAction?,
         in snapshot: ViewHierarchySnapshot,
         from sourceView: UIView?
     ) {
         self.reference = reference
+        self.initialAction = action
         self.snapshot = snapshot
         self.sourceView = sourceView ?? reference.rootView
     }
@@ -102,7 +106,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     static func makeElementInspectorViewController(
         with reference: ViewHierarchyReference,
         elementLibraries: [InspectorElementLibraryProtocol],
-        selectedPanel: ElementInspectorPanel? = nil,
+        selectedPanel: ElementInspectorPanel?,
         delegate: ElementInspectorViewControllerDelegate,
         in snapshot: ViewHierarchySnapshot
     ) -> ElementInspectorViewController {
@@ -112,7 +116,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
                 reference: reference,
                 selectedPanel: selectedPanel,
                 inspectableElements: elementLibraries,
-                availablePanels: ElementInspectorPanel.availablePanels(for: reference)
+                availablePanels: ElementInspectorPanel.availablePanels(for: reference.actions)
             )
         ).then {
             $0.delegate = delegate
@@ -203,6 +207,7 @@ private extension ElementInspectorCoordinator {
             let rootViewController = Self.makeElementInspectorViewController(
                 with: snapshot.rootReference,
                 elementLibraries: snapshot.elementLibraries,
+                selectedPanel: ElementInspectorPanel(rawValue: initialAction),
                 delegate: self,
                 in: snapshot
             )
@@ -225,6 +230,7 @@ private extension ElementInspectorCoordinator {
                 let viewController = Self.makeElementInspectorViewController(
                     with: currentReference,
                     elementLibraries: snapshot.elementLibraries,
+                    selectedPanel: ElementInspectorPanel(rawValue: initialAction),
                     delegate: self,
                     in: snapshot
                 )

@@ -20,16 +20,51 @@
 
 import UIKit
 
-extension Manager: ViewHierarchyCoordinatorDelegate {
-    func viewHierarchyCoordinator(_ coordinator: ViewHierarchyCoordinator,
-                                  didSelect reference: ViewHierarchyReference,
-                                  with action: ViewHierarchyAction?,
-                                  in sourceView: HighlightView) {
-        startElementInspectorCoordinator(
-            for: reference,
-               with: action,
-               animated: true,
-               from: sourceView.labelContentView
-        )
+enum ViewHierarchyAction: Swift.CaseIterable {
+    case preview
+    case attributes
+    case children
+    case size
+
+    var title: String {
+        switch self {
+        case .preview:
+            return "Preview"
+        case .attributes:
+            return "Attributes"
+        case .children:
+            return "Children"
+        case .size:
+            return "Size"
+        }
+    }
+
+    var image: UIImage {
+        switch self {
+        case .preview:
+            return IconKit.imageOfInfoCircleFill()
+
+        case .attributes:
+            return IconKit.imageOfSliderHorizontal()
+
+        case .children:
+            return IconKit.imageOfRelationshipDiagram()
+
+        case .size:
+            return IconKit.imageOfSetSquareFill()
+        }
+    }
+
+    static func availableActions(for view: UIView) -> [ViewHierarchyAction] {
+        allCases.filter { action in
+            switch action {
+            case .children:
+                return view.subviews.isEmpty == false
+            case .preview,
+                 .attributes,
+                 .size:
+                return true
+            }
+        }
     }
 }

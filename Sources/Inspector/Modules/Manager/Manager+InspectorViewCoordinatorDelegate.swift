@@ -22,7 +22,8 @@ import UIKit
 
 extension Manager: InspectorViewCoordinatorDelegate {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator,
-                                  didFinishWith command: InspectorCommand?) {
+                                  didFinishWith command: InspectorCommand?)
+    {
         removeChild(coordinator)
 
         swiftUIhost?.insectorViewDidFinishPresentation()
@@ -35,7 +36,12 @@ extension Manager: InspectorViewCoordinatorDelegate {
                 closure()
 
             case let .inspect(reference):
-                self?.presentElementInspector(for: reference, animated: true, from: nil)
+                self?.startElementInspectorCoordinator(
+                    for: reference,
+                    with: .none,
+                    animated: true,
+                    from: .none
+                )
             }
         }
     }

@@ -41,6 +41,8 @@ final class ViewHierarchyReference {
 
     let accessibilityIdentifier: String?
 
+    let actions: [ViewHierarchyAction]
+
     var parent: ViewHierarchyReference?
 
     var isUserInteractionEnabled: Bool
@@ -78,6 +80,8 @@ final class ViewHierarchyReference {
         self.depth = depth
 
         self.parent = parent
+
+        actions = ViewHierarchyAction.availableActions(for: rootView)
 
         identifier = ObjectIdentifier(rootView)
 

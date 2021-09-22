@@ -22,7 +22,12 @@
 import UIKit
 
 protocol ViewHierarchyCoordinatorDelegate: AnyObject {
-    func viewHierarchyCoordinator(_ coordinator: ViewHierarchyCoordinator, didSelect reference: ViewHierarchyReference, from sourceView: HighlightView)
+    func viewHierarchyCoordinator(
+        _ coordinator: ViewHierarchyCoordinator,
+        didSelect reference: ViewHierarchyReference,
+        with action: ViewHierarchyAction?,
+        in sourceView: HighlightView
+    )
 }
 
 protocol ViewHierarchyCoordinatorDataSource: AnyObject {
@@ -137,7 +142,7 @@ extension ViewHierarchyCoordinator {
 // MARK: - HighlightViewDelegate
 
 extension ViewHierarchyCoordinator: HighlightViewDelegate {
-    func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference) {
-        delegate?.viewHierarchyCoordinator(self, didSelect: reference, from: highlightView)
+    func highlightView(_ highlightView: HighlightView, didSelect reference: ViewHierarchyReference, with action: ViewHierarchyAction?) {
+        delegate?.viewHierarchyCoordinator(self, didSelect: reference, with: action, in: highlightView)
     }
 }

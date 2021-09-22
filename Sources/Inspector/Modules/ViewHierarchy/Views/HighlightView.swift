@@ -21,7 +21,7 @@
 import UIKit
 
 protocol HighlightViewDelegate: AnyObject {
-    func highlightView(_ highlightView: HighlightView, didTapWith reference: ViewHierarchyReference)
+    func highlightView(_ highlightView: HighlightView, didSelect reference: ViewHierarchyReference, with action: ViewHierarchyAction?)
 }
 
 extension HighlightViewDelegate {
@@ -192,12 +192,21 @@ class HighlightView: LayerView {
     override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
 
-        guard newSuperview == nil else {
-            return
+        if #available(iOS 13.0, *) {
+            newSuperview?.addInteraction(menuInteraction)
         }
 
+        guard newSuperview == nil else { return }
+
+        // reset views
         viewReference.rootView?.isUserInteractionEnabled = viewReference.isUserInteractionEnabled
+        if #available(iOS 13.0, *) {
+            superview?.removeInteraction(menuInteraction)
+        }
     }
+
+    @available(iOS 13.0, *)
+    private lazy var menuInteraction = UIContextMenuInteraction(delegate: self)
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -227,10 +236,40 @@ class HighlightView: LayerView {
     }
 }
 
+@available(iOS 13.0, *)
+extension HighlightView: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil
+        ) { [weak self] _ in
+
+            guard let self = self else { return nil }
+
+            return UIMenu(
+                title: self.viewReference.elementName,
+                image: self.superview?.snapshot(afterScreenUpdates: false, with: nil),
+                identifier: nil,
+                options: .displayInline,
+                children: self.viewReference.actions.map { action in
+                    UIAction(
+                        title: action.title,
+                        image: action.image,
+                        identifier: nil,
+                        discoverabilityTitle: nil
+                    ) { _ in
+                        self.delegate?.highlightView(self, didSelect: self.viewReference, with: action)
+                    }
+                }
+            )
+        }
+    }
+}
+
 private extension HighlightView {
     @objc
     func tap() {
-        delegate?.highlightView(self, didTapWith: viewReference)
+        delegate?.highlightView(self, didSelect: viewReference, with: .none)
     }
 
     func updateLabelWidth() {

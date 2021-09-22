@@ -61,7 +61,7 @@ public extension Inspector {
     }
 
     static func inspect(_ element: UIView, animated: Bool = true) {
-        manager.presentElementInspector(for: .init(element), animated: animated, from: element)
+        manager.startElementInspectorCoordinator(for: ViewHierarchyReference(element), with: .none, animated: animated, from: element)
     }
 }
 

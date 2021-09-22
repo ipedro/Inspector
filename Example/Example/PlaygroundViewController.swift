@@ -110,13 +110,14 @@ final class PlaygroundViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        inspectAll()
+        Inspector.removeAllLayers()
+        Inspector.toggleAllLayers()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        stopInspectingAll()
+        Inspector.removeAllLayers()
     }
 
     func setupSegmentedControl() {
@@ -160,7 +161,7 @@ final class PlaygroundViewController: UIViewController {
     }
 
     @IBAction func openInspector(_ sender: Any) {
-        presentInspector(animated: true)
+        Inspector.present(animated: true)
     }
 }
 

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -167,7 +167,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EB5E1FEE261A48EC002301F5 /* Build configuration list for PBXNativeTarget "Example" */;
 			buildPhases = (
-				EB93B61B26F89EF000FBD7AC /* SwiftFormat */,
+				EBEDAB6626FB9B7300BB95FB /* SwiftFormat */,
 				EB5E1FD6261A48EB002301F5 /* Sources */,
 				EB5E1FD7261A48EB002301F5 /* Frameworks */,
 				EB5E1FD8261A48EB002301F5 /* Resources */,
@@ -268,8 +268,9 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		EB93B61B26F89EF000FBD7AC /* SwiftFormat */ = {
+		EB93B61C26F89F1D00FBD7AC /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -286,8 +287,9 @@
 			shellPath = /bin/sh;
 			shellScript = "if which swiftformat >/dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
 		};
-		EB93B61C26F89F1D00FBD7AC /* SwiftFormat */ = {
+		EBEDAB6626FB9B7300BB95FB /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

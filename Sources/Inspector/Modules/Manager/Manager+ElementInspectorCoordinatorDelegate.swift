@@ -37,11 +37,17 @@ extension Manager: ElementInspectorCoordinatorDelegate {
 }
 
 extension Manager {
-    func presentElementInspector(for reference: ViewHierarchyReference, animated: Bool, from sourceView: UIView?) {
+    func startElementInspectorCoordinator(
+        for reference: ViewHierarchyReference,
+        with action: ViewHierarchyAction?,
+        animated: Bool,
+        from sourceView: UIView?
+    ) {
         guard let snapshot = viewHierarchySnaphost else { return }
 
         let coordinator = ElementInspectorCoordinator(
             reference: reference,
+            with: action,
             in: snapshot,
             from: sourceView
         ).then {

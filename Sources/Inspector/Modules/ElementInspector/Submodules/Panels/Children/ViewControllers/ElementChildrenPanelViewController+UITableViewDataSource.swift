@@ -68,17 +68,17 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
         let elementActions = UIMenu(
             title: "Open",
             options: .displayInline,
-            children: ElementInspectorPanel.availablePanels(for: reference).map { panel in
+            children: reference.actions.map { action in
                 UIAction(
-                    title: "Open \(panel.title)",
-                    image: panel.image
+                    title: "Open \(action.title)",
+                    image: action.image
                 ) { [weak self] _ in
                     guard let self = self else { return }
 
                     self.delegate?.elementChildrenPanelViewController(
                         self,
                         didSelect: reference,
-                        with: panel,
+                        with: action,
                         from: self.viewModel.rootReference
                     )
                 }
