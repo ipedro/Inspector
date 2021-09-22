@@ -91,6 +91,8 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
 
         referenceSummaryView.collapseButton.isEnabled = false
 
+        installView(contentView, priority: .required)
+
         contentView.installView(containerStackView)
     }
 
