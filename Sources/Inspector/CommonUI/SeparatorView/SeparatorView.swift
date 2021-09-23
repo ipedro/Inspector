@@ -43,9 +43,11 @@ final class SeparatorView: BaseView {
 
     var thickness: CGFloat {
         didSet {
-            thicknessConstraint.constant = thickness
+            thicknessConstraint.constant = thicknesInPixels
         }
     }
+
+    private var thicknesInPixels: CGFloat { thickness / UIScreen.main.scale }
 
     var style: Style {
         didSet {
@@ -53,13 +55,13 @@ final class SeparatorView: BaseView {
         }
     }
 
-    private lazy var thicknessConstraint = heightAnchor.constraint(equalToConstant: thickness)
+    private lazy var thicknessConstraint = heightAnchor.constraint(equalToConstant: thicknesInPixels)
 
-    convenience init(color: UIColor, thickness: CGFloat = 0.5, frame: CGRect = .zero) {
+    convenience init(color: UIColor, thickness: CGFloat = 1, frame: CGRect = .zero) {
         self.init(style: .color(color), thickness: thickness, frame: frame)
     }
 
-    init(style: Style, thickness: CGFloat = 0.5, frame: CGRect = .zero) {
+    init(style: Style, thickness: CGFloat = 1, frame: CGRect = .zero) {
         self.thickness = thickness
         self.style = style
 

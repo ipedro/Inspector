@@ -38,7 +38,9 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView()
+    private lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView().then {
+        $0.directionalLayoutMargins.update(trailing: .zero)
+    }
 
     private lazy var disclosureIcon = Icon(.chevronDown, color: colorStyle.tertiaryTextColor).then {
         $0.transform = .init(rotationAngle: -(.pi / 2))

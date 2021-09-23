@@ -43,7 +43,7 @@ final class HierarchyInspectorSearchView: BaseView {
         )
     )
 
-    private(set) lazy var separatorView = SeparatorView(style: .medium, thickness: 1)
+    private(set) lazy var separatorView = SeparatorView(style: .medium, thickness: UIScreen.main.scale)
 
     override var canBecomeFirstResponder: Bool {
         textField.canBecomeFirstResponder

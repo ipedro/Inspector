@@ -106,7 +106,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                 panelView.alpha = 0
                 panelView.backgroundColor = self.viewCode.backgroundColor
                 panelView.isOpaque = true
-                panelView.transform = .init(scaleX: 0.99, y: 0.99)
+                panelView.transform = .init(scaleX: 0.99, y: 0.98)
                     .translatedBy(x: .zero, y: -ElementInspector.appearance.verticalMargins)
 
                 UIView.animate(
@@ -123,6 +123,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                         panelViewController.didMove(toParent: self)
                         NSObject.cancelPreviousPerformRequests(withTarget: self.viewCode.activityIndicator)
                         self.viewCode.activityIndicator.stopAnimating()
+                        self.configureNavigationBar()
                     }
                 )
             }
@@ -137,6 +138,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
+
+        self.title = viewModel.title
     }
 
     @available(*, unavailable)
@@ -153,12 +156,11 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = viewModel.reference.elementName
         viewCode.referenceSummaryView.viewModel = viewModel
 
         if #available(iOS 13.0, *) {
             let interaction = UIContextMenuInteraction(delegate: self)
-            viewCode.referenceSummaryView.addInteraction(interaction)
+            viewCode.headerView.addInteraction(interaction)
         }
 
         animateWhenKeyboard(.willChangeFrame) { info in
@@ -166,8 +168,17 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             self.viewCode.layoutIfNeeded()
         }
 
-        navigationItem.titleView = viewCode.segmentedControl
+        configureNavigationBar()
+    }
+
+    private func configureNavigationBar() {
         navigationItem.rightBarButtonItem = viewCode.dismissBarButtonItem
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.directionalLayoutMargins.update(leading: ElementInspector.appearance.horizontalMargins)
+        navigationController?.navigationBar.largeTitleTextAttributes = [.font: ElementInspector.appearance.titleFont(forRelativeDepth: .zero)]
+
+        navigationItem.titleView = viewCode.segmentedControl
+        navigationItem.backButtonTitle = viewModel.reference.elementName
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -82,7 +82,18 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         let relativeDepth = viewModel?.relativeDepth ?? 0
         let indentation = CGFloat(relativeDepth) * ElementInspector.appearance.horizontalMargins
 
-        contentView.directionalLayoutMargins.update(leading: indentation)
+        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(leading: indentation)
+    }
+
+    private lazy var containerStackView = UIStackView().then {
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
+        $0.addArrangedSubview(contentView)
+    }
+
+    override var directionalLayoutMargins: NSDirectionalEdgeInsets {
+        get { containerStackView.directionalLayoutMargins }
+        set { containerStackView.directionalLayoutMargins = newValue }
     }
 
     func toggleCollapse(animated: Bool) {
@@ -126,7 +137,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         $0.backgroundColor = colorStyle.accessoryControlBackgroundColor
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
-        $0.installView(thumbnailImageView, .spacing(all: $0.layer.cornerRadius / 2))
+        $0.installView(thumbnailImageView, .spacing(all: $0.layer.cornerRadius / 2), priority: .required)
     }
 
     private(set) lazy var thumbnailImageView = UIImageView().then {
@@ -150,12 +161,8 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         contentView.axis = .horizontal
         contentView.spacing = ElementInspector.appearance.verticalMargins
         contentView.alignment = .center
-        contentView.addArrangedSubviews(collapseButtonContainer, thumbnailContainerView, textStackView)
+        contentView.addArrangedSubviews(collapseButtonContainer, textStackView, thumbnailContainerView)
 
-        installView(
-            contentView,
-            .spacing(ElementInspector.appearance.directionalInsets),
-            priority: .init(rawValue: 999)
-        )
+        installView(containerStackView)
     }
 }

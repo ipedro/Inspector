@@ -37,7 +37,7 @@ final class ElementInspectorViewCode: BaseView {
             case .scrollView:
                 scrollView.contentOffset = CGPoint(x: .zero, y: -scrollView.adjustedContentInset.top)
                 scrollView.installView(containerStackView, priority: .required)
-                installView(scrollView, priority: .required)
+                installView(scrollView, position: .behind, priority: .required)
 
             case .default:
                 scrollView.removeFromSuperview()
@@ -45,6 +45,7 @@ final class ElementInspectorViewCode: BaseView {
             }
 
             containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+            layoutIfNeeded()
         }
     }
 
@@ -58,6 +59,8 @@ final class ElementInspectorViewCode: BaseView {
     private(set) lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView().then {
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.setContentCompressionResistancePriority(.required, for: .vertical)
+        $0.elementNameLabel.isSafelyHidden = true
+        $0.directionalLayoutMargins = .zero
     }
 
     private(set) lazy var separatorView = SeparatorView(style: .medium)
@@ -99,9 +102,17 @@ final class ElementInspectorViewCode: BaseView {
         }
     }
 
+    private(set) lazy var headerView = UIStackView.vertical().then {
+        $0.addArrangedSubviews(referenceSummaryView, segmentedControl)
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.spacing = ElementInspector.appearance.verticalMargins
+        $0.directionalLayoutMargins = ElementInspector.appearance.directionalInsets.with(top: .zero, bottom: ElementInspector.appearance.horizontalMargins, trailing: 40)
+    }
+
     private lazy var containerStackView = UIStackView.vertical().then {
+        $0.isLayoutMarginsRelativeArrangement = true
         $0.directionalLayoutMargins = NSDirectionalEdgeInsets(bottom: ElementInspector.appearance.horizontalMargins)
-        $0.addArrangedSubviews(referenceSummaryView, segmentedControl, separatorView, contentView)
+        $0.addArrangedSubviews(headerView, separatorView, contentView)
     }
 
     override func layoutSubviews() {
@@ -125,10 +136,11 @@ final class ElementInspectorViewCode: BaseView {
         super.setup()
 
         backgroundColor = colorStyle.backgroundColor
+        headerView.backgroundColor = backgroundColor
 
         scrollView.installView(containerStackView, priority: .required)
 
-        installView(scrollView, priority: .required)
+        installView(scrollView, position: .behind, priority: .required)
 
         containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
     }
