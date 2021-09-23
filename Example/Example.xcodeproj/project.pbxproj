@@ -508,6 +508,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9U37VDVBP4;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"VERBOSE=1",
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = "Example/Example-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -553,6 +558,11 @@
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI Example/Preview Content\"";
 				DEVELOPMENT_TEAM = 9U37VDVBP4;
 				ENABLE_PREVIEWS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"VERBOSE=1",
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = "SwiftUI Example/SwiftUI-Example-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (

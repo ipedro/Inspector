@@ -45,7 +45,6 @@ final class ElementInspectorViewCode: BaseView {
             }
 
             containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-            layoutIfNeeded()
         }
     }
 
@@ -126,10 +125,7 @@ final class ElementInspectorViewCode: BaseView {
 
         guard size.height != referenceSummaryHeightConstraint.constant else { return }
 
-        DispatchQueue.main.async {
-            self.referenceSummaryHeightConstraint.constant = size.height
-            self.layoutIfNeeded()
-        }
+        self.referenceSummaryHeightConstraint.constant = size.height
     }
 
     override func setup() {

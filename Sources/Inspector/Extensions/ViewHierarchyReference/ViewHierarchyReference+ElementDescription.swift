@@ -115,7 +115,7 @@ extension ViewHierarchyReference {
             view.frame.size.height.toString(prepending: "H:", separator: " ")
         ].joined(separator: " — ")
 
-        return "Position: \(origin)   |   Size: \(size)"
+        return "Position: \(origin)\nSize: \(size)"
     }
 
     var superclassName: String? {

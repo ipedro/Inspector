@@ -61,7 +61,7 @@ enum ViewBinding {
 
 extension UIView {
     var allSubviews: [UIView] {
-        subviews.flatMap { [$0] + $0.allSubviews }
+        subviews.reversed().flatMap { [$0] + $0.allSubviews }
     }
 
     var originalSubviews: [UIView] {

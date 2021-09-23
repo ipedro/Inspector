@@ -51,9 +51,24 @@ class ElementInspectorNavigationController: UINavigationController {
 
         navigationBar.tintColor = view.tintColor
 
+        navigationBar.directionalLayoutMargins.update(leading: ElementInspector.appearance.horizontalMargins, trailing: ElementInspector.appearance.horizontalMargins)
+
+        navigationBar.largeTitleTextAttributes = [.font: ElementInspector.appearance.titleFont(forRelativeDepth: .zero)]
+
         addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))
 
         becomeFirstResponder()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        transitionCoordinator?.animate(
+            alongsideTransition: { context in
+                self.navigationBar.prefersLargeTitles = true
+            },
+            completion: nil
+        )
     }
 
     override var canBecomeFirstResponder: Bool { true }

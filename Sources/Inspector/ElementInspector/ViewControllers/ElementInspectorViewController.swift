@@ -56,6 +56,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             size: ElementInspector.appearance.panelPreferredCompressedSize
         )
     ).then {
+        $0.referenceSummaryView.viewModel = viewModel
+
         $0.segmentedControl.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
 
         $0.dismissBarButtonItem.target = self
@@ -123,7 +125,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                         panelViewController.didMove(toParent: self)
                         NSObject.cancelPreviousPerformRequests(withTarget: self.viewCode.activityIndicator)
                         self.viewCode.activityIndicator.stopAnimating()
-                        self.configureNavigationBar()
+                        self.configureNavigationBarViews()
                     }
                 )
             }
@@ -156,8 +158,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        viewCode.referenceSummaryView.viewModel = viewModel
-
         if #available(iOS 13.0, *) {
             let interaction = UIContextMenuInteraction(delegate: self)
             viewCode.headerView.addInteraction(interaction)
@@ -168,30 +168,41 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             self.viewCode.layoutIfNeeded()
         }
 
-        configureNavigationBar()
+        reloadData()
+        configureNavigationBarViews()
     }
 
-    private func configureNavigationBar() {
+    private func configureNavigationBarViews() {
         navigationItem.rightBarButtonItem = viewCode.dismissBarButtonItem
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.directionalLayoutMargins.update(leading: ElementInspector.appearance.horizontalMargins)
-        navigationController?.navigationBar.largeTitleTextAttributes = [.font: ElementInspector.appearance.titleFont(forRelativeDepth: .zero)]
-
         navigationItem.titleView = viewCode.segmentedControl
-        navigationItem.backButtonTitle = viewModel.reference.elementName
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        reloadData()
+
         // here the view has updated its vertical compactness and we can load the panels
-        if viewCode.segmentedControl.numberOfSegments == .zero {
-            reloadData()
+        guard viewCode.segmentedControl.numberOfSegments == .zero else { return }
 
+        guard
+            animated,
+            let transitionCoordinator = transitionCoordinator
+        else {
             updatePanelsSegmentedControl()
-
             installPanel(viewModel.currentPanel)
+            return
         }
+
+        viewCode.alpha = 0
+
+        transitionCoordinator.animate(
+            alongsideTransition: { context in
+                self.viewCode.alpha = 1
+                self.updatePanelsSegmentedControl()
+                self.installPanel(self.viewModel.currentPanel)
+            }
+        )
     }
 
     func updatePanelsSegmentedControl() {

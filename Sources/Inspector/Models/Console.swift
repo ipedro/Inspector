@@ -22,7 +22,7 @@ import Foundation
 
 enum Console {
     static var showDebugLogs: Bool = {
-        #if DEBUG
+        #if VERBOSE
         return true
         #else
         return false
