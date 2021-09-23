@@ -68,8 +68,8 @@
                         <color key="tintColor" systemColor="labelColor"/>
                     </tabBar>
                     <connections>
-                        <segue destination="Vmb-ZK-Aaj" kind="relationship" relationship="viewControllers" id="MML-wC-c45"/>
                         <segue destination="g4a-vO-77o" kind="relationship" relationship="viewControllers" id="NNg-PV-3fG"/>
+                        <segue destination="Vmb-ZK-Aaj" kind="relationship" relationship="viewControllers" id="MML-wC-c45"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RdW-GK-GBi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -99,6 +99,8 @@ final class PlaygroundViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        Inspector.removeAllLayers()
+
         guard hasAppeared == false else { return }
 
         if #available(iOS 13.4, *) {
@@ -112,7 +114,6 @@ final class PlaygroundViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        Inspector.removeAllLayers()
         Inspector.toggleAllLayers()
     }
 
