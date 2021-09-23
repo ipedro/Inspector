@@ -32,10 +32,6 @@ public enum Inspector {
         set { manager.host = newValue }
     }
 
-    public static func start() {
-        manager.start()
-    }
-
     public static func finish() {
         manager.finish()
     }

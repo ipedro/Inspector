@@ -88,9 +88,7 @@ final class ViewHierarchyCoordinator: Coordinator {
         self.delegate = delegate
     }
 
-    func start() {
-        cachedSnapshot = makeSnapshot()
-    }
+    func start() {}
 }
 
 // MARK: - Internal Interface
