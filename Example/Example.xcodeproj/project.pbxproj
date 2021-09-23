@@ -30,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		EB04BCEF266B052C00F106C2 /* PlaygroundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundViewController.swift; sourceTree = "<group>"; };
+		EB1D6D2E26FCA2A80063EB60 /* SampleCode.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SampleCode.xcconfig; sourceTree = "<group>"; };
 		EB210C7A2624E4D00032B9AE /* CustomButtonInspectableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonInspectableViewModel.swift; sourceTree = "<group>"; };
 		EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDatePickerStyle+Extensions.swift"; sourceTree = "<group>"; };
 		EB5E1FDA261A48EB002301F5 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -39,14 +40,14 @@
 		EB5E1FE4261A48EB002301F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EB5E1FE6261A48EC002301F5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EB5E1FE9261A48EC002301F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		EB5E1FEB261A48EC002301F5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EB5E1FEB261A48EC002301F5 /* Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Example-Info.plist"; sourceTree = "<group>"; };
 		EB5E2003261A4EC9002301F5 /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		EB6595EF266BE2BA0021CC91 /* UIView+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Animations.swift"; sourceTree = "<group>"; };
 		EB76A4FB26C7A7A40088E571 /* SwiftUI Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftUI Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
 		EB76A4FF26C7A7A40088E571 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		EB76A50426C7A7A50088E571 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		EB76A50626C7A7A50088E571 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EB76A50626C7A7A50088E571 /* SwiftUI-Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SwiftUI-Example-Info.plist"; sourceTree = "<group>"; };
 		EBC0288126354CAB00502C90 /* ExampleElementLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleElementLibrary.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -79,23 +80,23 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		EB210C7E2624E5090032B9AE /* CustomButton */ = {
+		EB1D6D2D26FCA2A80063EB60 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
-				EB5E2003261A4EC9002301F5 /* CustomButton.swift */,
-				EB210C7A2624E4D00032B9AE /* CustomButtonInspectableViewModel.swift */,
+				EB1D6D2E26FCA2A80063EB60 /* SampleCode.xcconfig */,
 			);
-			path = CustomButton;
+			path = Configuration;
 			sourceTree = "<group>";
 		};
 		EB5E1FD1261A48EB002301F5 = {
 			isa = PBXGroup;
 			children = (
-				EB090A8326C82A9C00CA938E /* Resources */,
+				EB1D6D2D26FCA2A80063EB60 /* Configuration */,
 				EB5E1FDC261A48EB002301F5 /* Example */,
-				EB76A4FC26C7A7A40088E571 /* SwiftUI Example */,
-				EB5E1FDB261A48EB002301F5 /* Products */,
 				EBEC3E20263AC75B00131D60 /* Frameworks */,
+				EB5E1FDB261A48EB002301F5 /* Products */,
+				EB090A8326C82A9C00CA938E /* Resources */,
+				EB76A4FC26C7A7A40088E571 /* SwiftUI Example */,
 			);
 			sourceTree = "<group>";
 		};
@@ -111,24 +112,49 @@
 		EB5E1FDC261A48EB002301F5 /* Example */ = {
 			isa = PBXGroup;
 			children = (
-				EB6595EE266BE2A50021CC91 /* Extensions */,
-				EB5E1FEB261A48EC002301F5 /* Info.plist */,
 				EB5E1FDD261A48EB002301F5 /* AppDelegate.swift */,
-				EBC0288126354CAB00502C90 /* ExampleElementLibrary.swift */,
+				EB5E2003261A4EC9002301F5 /* CustomButton.swift */,
 				EB04BCEF266B052C00F106C2 /* PlaygroundViewController.swift */,
 				EB5E1FE1261A48EB002301F5 /* ReadMeViewController.swift */,
 				EB5E1FDF261A48EB002301F5 /* SceneDelegate.swift */,
-				EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */,
-				EB210C7E2624E5090032B9AE /* CustomButton */,
-				EB5E1FE8261A48EC002301F5 /* LaunchScreen.storyboard */,
 				EB5E1FE3261A48EB002301F5 /* Main.storyboard */,
+				EB5E6EFE26FC8900000D13CD /* ElementLibrary */,
+				EB5E6EFF26FC891E000D13CD /* Extensions */,
+				EB5E6EFB26FC88C8000D13CD /* Support Files */,
 			);
 			path = Example;
 			sourceTree = "<group>";
 		};
-		EB6595EE266BE2A50021CC91 /* Extensions */ = {
+		EB5E6EFA26FC88B5000D13CD /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
+				EB76A50626C7A7A50088E571 /* SwiftUI-Example-Info.plist */,
+			);
+			name = "Support Files";
+			sourceTree = "<group>";
+		};
+		EB5E6EFB26FC88C8000D13CD /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				EB5E1FE8261A48EC002301F5 /* LaunchScreen.storyboard */,
+				EB5E1FEB261A48EC002301F5 /* Example-Info.plist */,
+			);
+			name = "Support Files";
+			sourceTree = "<group>";
+		};
+		EB5E6EFE26FC8900000D13CD /* ElementLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				EB210C7A2624E4D00032B9AE /* CustomButtonInspectableViewModel.swift */,
+				EBC0288126354CAB00502C90 /* ExampleElementLibrary.swift */,
+			);
+			path = ElementLibrary;
+			sourceTree = "<group>";
+		};
+		EB5E6EFF26FC891E000D13CD /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */,
 				EB6595EF266BE2BA0021CC91 /* UIView+Animations.swift */,
 			);
 			path = Extensions;
@@ -139,7 +165,7 @@
 			children = (
 				EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */,
 				EB76A4FF26C7A7A40088E571 /* ContentView.swift */,
-				EB76A50626C7A7A50088E571 /* Info.plist */,
+				EB5E6EFA26FC88B5000D13CD /* Support Files */,
 				EB76A50326C7A7A50088E571 /* Preview Content */,
 			);
 			path = "SwiftUI Example";
@@ -479,16 +505,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9U37VDVBP4;
-				INFOPLIST_FILE = Example/Info.plist;
+				INFOPLIST_FILE = "Example/Example-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = am.pedro.Inspector.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = "am.pedro.Inspector.${PRODUCT_NAME:identifier}${SAMPLE_CODE_DISAMBIGUATOR}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -499,16 +527,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9U37VDVBP4;
-				INFOPLIST_FILE = Example/Info.plist;
+				INFOPLIST_FILE = "Example/Example-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = am.pedro.Inspector.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = "am.pedro.Inspector.${PRODUCT_NAME:identifier}${SAMPLE_CODE_DISAMBIGUATOR}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -523,13 +553,13 @@
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI Example/Preview Content\"";
 				DEVELOPMENT_TEAM = 9U37VDVBP4;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "SwiftUI Example/Info.plist";
+				INFOPLIST_FILE = "SwiftUI Example/SwiftUI-Example-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "am.pedro.Inspector.SwiftUI-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "am.pedro.Inspector.${PRODUCT_NAME:identifier}${SAMPLE_CODE_DISAMBIGUATOR}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -545,13 +575,13 @@
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI Example/Preview Content\"";
 				DEVELOPMENT_TEAM = 9U37VDVBP4;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "SwiftUI Example/Info.plist";
+				INFOPLIST_FILE = "SwiftUI Example/SwiftUI-Example-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "am.pedro.Inspector.SwiftUI-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "am.pedro.Inspector.${PRODUCT_NAME:identifier}${SAMPLE_CODE_DISAMBIGUATOR}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
