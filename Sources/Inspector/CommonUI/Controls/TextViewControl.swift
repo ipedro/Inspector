@@ -97,7 +97,7 @@ final class TextViewControl: BaseFormControl {
 
         textView.installView(
             placeholderLabel,
-            .margins(
+            .spacing(
                 top: textView.textContainerInset.top,
                 leading: .zero,
                 bottom: textView.textContainerInset.bottom,

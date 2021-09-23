@@ -101,7 +101,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
 
         isUserInteractionEnabled = false
 
-        installView(gridImageView, .margins(.zero), position: .behind)
+        installView(gridImageView, position: .behind)
 
         contentView.installView(statusContentView, .centerXY)
 

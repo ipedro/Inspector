@@ -82,10 +82,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         let relativeDepth = viewModel?.relativeDepth ?? 0
         let indentation = CGFloat(relativeDepth) * ElementInspector.appearance.horizontalMargins
 
-        var directionalLayoutMargins = contentView.directionalLayoutMargins
-        directionalLayoutMargins.leading = indentation
-
-        contentView.directionalLayoutMargins = directionalLayoutMargins
+        contentView.directionalLayoutMargins.update(leading: indentation)
     }
 
     func toggleCollapse(animated: Bool) {
@@ -129,7 +126,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         $0.backgroundColor = colorStyle.accessoryControlBackgroundColor
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
-        $0.installView(thumbnailImageView, .margins($0.layer.cornerRadius / 2))
+        $0.installView(thumbnailImageView, .spacing(all: $0.layer.cornerRadius / 2))
     }
 
     private(set) lazy var thumbnailImageView = UIImageView().then {
@@ -157,7 +154,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
         installView(
             contentView,
-            .insets(ElementInspector.appearance.directionalInsets),
+            .spacing(ElementInspector.appearance.directionalInsets),
             priority: .init(rawValue: 999)
         )
     }

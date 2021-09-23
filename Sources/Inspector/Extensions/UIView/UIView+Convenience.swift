@@ -31,7 +31,7 @@ enum ViewBinding {
 
     case centerY
 
-    case margins(
+    case spacing(
         top: CGFloat? = nil,
         leading: CGFloat? = nil,
         bottom: CGFloat? = nil,
@@ -42,20 +42,20 @@ enum ViewBinding {
 
     static let autoResizingMask = ViewBinding.autoResizingMask([.flexibleWidth, .flexibleHeight])
 
-    static func margins(_ margins: CGFloat) -> ViewBinding {
-        .margins(top: margins, leading: margins, bottom: margins, trailing: margins)
+    static func spacing(all: CGFloat) -> ViewBinding {
+        .spacing(top: all, leading: all, bottom: all, trailing: all)
     }
 
-    static func margins(horizontal: CGFloat, vertical: CGFloat) -> ViewBinding {
-        .margins(top: vertical, leading: horizontal, bottom: vertical, trailing: horizontal)
+    static func spacing(horizontal: CGFloat, vertical: CGFloat) -> ViewBinding {
+        .spacing(top: vertical, leading: horizontal, bottom: vertical, trailing: horizontal)
     }
 
-    static func insets(_ insets: UIEdgeInsets) -> ViewBinding {
-        .margins(top: insets.top, leading: insets.left, bottom: insets.bottom, trailing: insets.right)
+    static func spacing(_ edgeInsets: UIEdgeInsets) -> ViewBinding {
+        .spacing(top: edgeInsets.top, leading: edgeInsets.left, bottom: edgeInsets.bottom, trailing: edgeInsets.right)
     }
 
-    static func insets(_ insets: NSDirectionalEdgeInsets) -> ViewBinding {
-        .margins(top: insets.top, leading: insets.leading, bottom: insets.bottom, trailing: insets.trailing)
+    static func spacing(_ directionalEdgeInsets: NSDirectionalEdgeInsets) -> ViewBinding {
+        .spacing(top: directionalEdgeInsets.top, leading: directionalEdgeInsets.leading, bottom: directionalEdgeInsets.bottom, trailing: directionalEdgeInsets.trailing)
     }
 }
 
@@ -70,7 +70,7 @@ extension UIView {
 
     func installView(
         _ view: UIView,
-        _ viewBinding: ViewBinding = .margins(.zero),
+        _ viewBinding: ViewBinding = .spacing(all: .zero),
         position: ViewInstallationPosition = .inFront,
         priority: UILayoutPriority = .defaultHigh
     ) {
@@ -89,7 +89,7 @@ extension UIView {
         case .centerX,
              .centerY,
              .centerXY,
-             .margins:
+             .spacing:
             let constraints = viewBinding.constraints(for: view, inside: self)
 
             view.translatesAutoresizingMaskIntoConstraints = false
@@ -137,7 +137,7 @@ private extension ViewBinding {
         case .autoResizingMask:
             return []
 
-        case let .margins(top, leading, bottom, trailing):
+        case let .spacing(top, leading, bottom, trailing):
             var constraints = [NSLayoutConstraint]()
 
             if let top = top {

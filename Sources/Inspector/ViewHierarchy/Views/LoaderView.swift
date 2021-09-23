@@ -68,7 +68,7 @@ final class LoaderView: LayerViewComponent {
 
         installView(checkmarkLabel, .centerXY)
 
-        installView(activityIndicator, .margins(8))
+        installView(activityIndicator, .spacing(all: 8))
 
         installView(highlightView, .autoResizingMask)
 

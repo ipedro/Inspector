@@ -55,7 +55,7 @@ class HierarchyInspectorTableViewCell: UITableViewCell {
 
             $0.installView(
                 colorView,
-                .margins(
+                .spacing(
                     horizontal: ElementInspector.appearance.verticalMargins,
                     vertical: .zero
                 )

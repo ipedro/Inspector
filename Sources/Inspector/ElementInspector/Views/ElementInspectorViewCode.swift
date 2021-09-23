@@ -101,7 +101,7 @@ final class ElementInspectorViewCode: BaseView {
 
     private lazy var containerStackView = UIStackView.vertical().then {
         $0.directionalLayoutMargins = NSDirectionalEdgeInsets(bottom: ElementInspector.appearance.horizontalMargins)
-        $0.addArrangedSubviews(referenceSummaryView, separatorView, contentView)
+        $0.addArrangedSubviews(referenceSummaryView, segmentedControl, separatorView, contentView)
     }
 
     override func layoutSubviews() {

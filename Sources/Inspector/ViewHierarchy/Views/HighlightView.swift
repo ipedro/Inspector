@@ -103,7 +103,7 @@ class HighlightView: LayerView {
         .cornerRadius(6),
         .masksToBounds(true)
     ).then {
-        $0.installView(label, .margins(horizontal: 4, vertical: 2))
+        $0.installView(label, .spacing(horizontal: 4, vertical: 2))
     }
 
     private lazy var labelContainerView = LayerViewComponent(
