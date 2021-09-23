@@ -78,6 +78,8 @@ final class ReadMeViewController: UIViewController {
         }
     }
 
+    override var keyCommands: [UIKeyCommand]? { Inspector.keyCommands }
+
     // MARK: - Life cycle
 
     override func viewDidLoad() {

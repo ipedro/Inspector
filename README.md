@@ -215,7 +215,7 @@ Extend the root view controller class to enable `Inspector` key commands.
 
 #if DEBUG
 override var keyCommands: [UIKeyCommand]? {
-    return inspectorManager?.keyCommands
+    return Inspector.keyCommands
 }
 #endif
 ```

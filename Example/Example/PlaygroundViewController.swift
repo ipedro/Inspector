@@ -92,6 +92,8 @@ final class PlaygroundViewController: UIViewController {
 
     private var hasAppeared = false
 
+    override var keyCommands: [UIKeyCommand]? { Inspector.keyCommands }
+
     // MARK: - Life cycle
 
     override func viewWillAppear(_ animated: Bool) {

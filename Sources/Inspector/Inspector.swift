@@ -92,3 +92,11 @@ public extension Inspector {
         manager.removeAllLayers()
     }
 }
+
+// MARK: - KeyCommands
+
+public extension Inspector {
+    static var keyCommands: [UIKeyCommand] {
+        manager.keyCommands
+    }
+}
