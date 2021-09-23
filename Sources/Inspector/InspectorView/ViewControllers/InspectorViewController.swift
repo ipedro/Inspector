@@ -139,7 +139,8 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable {
         reloadData()
 
         if animated {
-            viewCode.animate(.in)
+            viewCode.transform = .init(scaleX: 0.8, y: 0.8)
+            viewCode.animate(.out, duration: ElementInspector.configuration.animationDuration * 1.5)
         }
 
         if shouldToggleFirstResponderOnAppear {
@@ -153,7 +154,7 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable {
         super.viewWillDisappear(animated)
 
         if animated {
-            viewCode.animate(.out)
+            viewCode.animate(.in)
         }
     }
 

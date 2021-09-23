@@ -23,9 +23,9 @@ import UIKit
 enum Animation {
     case `in`, out
 
-    private var scale: CGAffineTransform { CGAffineTransform(scaleX: 1.1, y: 1.04) }
+    private var scale: CGAffineTransform { CGAffineTransform(scaleX: 0.9, y: 0.96) }
 
-    var damping: CGFloat { 0.84 }
+    var damping: CGFloat { 0.82 }
 
     var velocity: CGFloat { .zero }
 
@@ -44,10 +44,10 @@ enum Animation {
     var endTransform: CGAffineTransform {
         switch self {
         case .in:
-            return .identity
+            return scale
 
         case .out:
-            return scale
+            return .identity
         }
     }
 }
@@ -59,8 +59,6 @@ extension UIView {
         delay: TimeInterval = .zero,
         completion: ((Bool) -> Void)? = nil
     ) {
-        transform = animation.startTransform
-
         Self.animate(
             withDuration: duration,
             delay: delay,
