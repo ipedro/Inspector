@@ -25,7 +25,52 @@ import SwiftUI
 struct ExampleApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Content()
         }
+    }
+}
+
+struct Content: View {
+    @State var text = "Hello, world!"
+    @State var date = Date()
+    @State var isInspecting = false
+
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 15) {
+                    DatePicker("Date", selection: $date)
+                        .datePickerStyle(GraphicalDatePickerStyle())
+
+                    TextField("text field", text: $text)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+
+                    Button("Inspect") {
+                        withAnimation(.spring()) {
+                            isInspecting.toggle()
+                        }
+                    }
+                    .padding()
+                }
+                .padding(20)
+            }
+            .navigationTitle("SwiftUI Inspector")
+        }
+        .onAppear {
+            Inspector.inspect(.allViews)
+        }
+        .onShake {
+            withAnimation(.spring()) {
+                isInspecting.toggle()
+            }
+        }
+        .inspect(isPresented: $isInspecting)
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        Content()
     }
 }

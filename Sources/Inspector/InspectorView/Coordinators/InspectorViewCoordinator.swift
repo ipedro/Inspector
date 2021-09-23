@@ -21,14 +21,14 @@
 @_implementationOnly import Coordinator
 import UIKit
 
-protocol InspectorViewCoordinatorDelegate: AnyObject {
-    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, didFinishWith command: InspectorCommand?)
+protocol InspectorViewCoordinatorSwiftUIDelegate: AnyObject {
+    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, willFinishWith command: InspectorCommand?)
 }
 
 final class InspectorViewCoordinator: ViewCoordinator {
     typealias CommandGroupsProvider = HierarchyInspectorViewModel.CommandGroupsProvider
 
-    weak var delegate: InspectorViewCoordinatorDelegate?
+    weak var swiftUIDelegate: InspectorViewCoordinatorSwiftUIDelegate?
 
     let hierarchySnapshot: ViewHierarchySnapshot
 
@@ -66,13 +66,16 @@ final class InspectorViewCoordinator: ViewCoordinator {
     }
 
     func finish() {
-        finish(with: nil)
+        finish(command: .none)
     }
 
-    func finish(with command: InspectorCommand?) {
-        inspectorViewController.dismiss(animated: true) {
-            self.delegate?.inspectorViewCoordinator(self, didFinishWith: command)
+    func finish(command: InspectorCommand?) {
+        guard let delegate = swiftUIDelegate else {
+            inspectorViewController.dismiss(animated: true)
+            return
         }
+
+        delegate.inspectorViewCoordinator(self, willFinishWith: command)
     }
 }
 
@@ -80,7 +83,7 @@ final class InspectorViewCoordinator: ViewCoordinator {
 
 extension InspectorViewCoordinator: InspectorViewControllerDelegate {
     func inspectorViewController(_ viewController: InspectorViewController, didSelect command: InspectorCommand?) {
-        finish(with: command)
+        finish(command: command)
     }
 
     func inspectorViewControllerDidFinish(_ viewController: InspectorViewController) {

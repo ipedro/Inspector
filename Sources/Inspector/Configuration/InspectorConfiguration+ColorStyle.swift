@@ -24,39 +24,60 @@ public extension InspectorConfiguration {
     enum ColorStyle {
         case light, dark
 
+        init(with traitCollection: UITraitCollection) {
+            if #available(iOS 13.0, *) {
+                switch traitCollection.userInterfaceStyle {
+                case .dark:
+                    self = .dark
+                default:
+                    self = .light
+                }
+            } else {
+                self = .dark
+            }
+        }
+
         var textColor: UIColor {
-            switch self {
-            case .light:
-                return .darkText
-            case .dark:
-                return .white
+            dynamicColor { colorStyle in
+                switch colorStyle {
+                case .light:
+                    return .darkText
+                case .dark:
+                    return .white
+                }
             }
         }
 
         var shadowColor: UIColor {
-            switch self {
-            case .dark:
-                return .black
-            case .light:
-                return .init(white: 0, alpha: disabledAlpha)
+            dynamicColor { colorStyle in
+                switch colorStyle {
+                case .dark:
+                    return .black
+                case .light:
+                    return .init(white: 0, alpha: disabledAlpha)
+                }
             }
         }
 
         var backgroundColor: UIColor {
-            switch self {
-            case .dark:
-                return UIColor(hex: 0x2C2C2E)
-            case .light:
-                return UIColor(hex: 0xF5F5F5)
+            dynamicColor { colorStyle in
+                switch colorStyle {
+                case .dark:
+                    return UIColor(hex: 0x2C2C2E)
+                case .light:
+                    return UIColor(hex: 0xF5F5F5)
+                }
             }
         }
 
         var highlightBackgroundColor: UIColor {
-            switch self {
-            case .dark:
-                return UIColor(hex: 0x3A3A3C)
-            case .light:
-                return .white
+            dynamicColor { colorStyle in
+                switch colorStyle {
+                case .dark:
+                    return UIColor(hex: 0x3A3A3C)
+                case .light:
+                    return .white
+                }
             }
         }
 
@@ -69,30 +90,22 @@ public extension InspectorConfiguration {
         }
 
         var blurStyle: UIBlurEffect.Style {
-            switch self {
-            case .light:
-                if #available(iOS 13.0, *) {
-                    return .systemThinMaterial
-                }
-                else {
-                    return .regular
-                }
-            case .dark:
-                if #available(iOS 13.0, *) {
-                    return .systemChromeMaterialDark
-                }
-                else {
-                    return .dark
-                }
+            if #available(iOS 13.0, *) {
+                return .systemChromeMaterial
+            }
+            else {
+                return .regular
             }
         }
 
         var selectedSegmentedControlForegroundColor: UIColor {
-            switch self {
-            case .dark:
-                return textColor
-            case .light:
-                return backgroundColor
+            dynamicColor { colorStyle in
+                switch colorStyle {
+                case .dark:
+                    return textColor
+                case .light:
+                    return backgroundColor
+                }
             }
         }
 
@@ -123,6 +136,16 @@ public extension InspectorConfiguration {
             case .light:
                 return 0.2
             }
+        }
+
+        private func dynamicColor(_ closure: @escaping (ColorStyle) -> UIColor) -> UIColor {
+            if #available(iOS 13.0, *) {
+                return UIColor { traitCollection in
+                    closure(.init(with: traitCollection))
+                }
+            }
+
+            return closure(self)
         }
     }
 }

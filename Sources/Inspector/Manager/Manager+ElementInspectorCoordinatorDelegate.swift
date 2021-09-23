@@ -21,32 +21,34 @@
 import UIKit
 
 extension Manager: ElementInspectorCoordinatorDelegate {
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didSelect reference: ViewHierarchyReference, with action: ViewHierarchyAction?, from fromReference: ViewHierarchyReference) {
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
+                                     didSelect reference: ViewHierarchyReference,
+                                     with action: ViewHierarchyAction?,
+                                     from fromReference: ViewHierarchyReference) {
         startElementInspectorCoordinator(for: reference, with: action, animated: true, from: reference.rootView)
     }
 
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
+                                     showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
         viewHierarchyCoordinator.toggleHighlightViews(visibility: true, inside: reference)
     }
 
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, hideHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
+                                     hideHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
         viewHierarchyCoordinator.toggleHighlightViews(visibility: false, inside: reference)
     }
 
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator, didFinishWith reference: ViewHierarchyReference) {
-        // viewHierarchyCoordinator.toggleHighlightViews(visibility: true, inside: reference)
-
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
+                                     didFinishWith reference: ViewHierarchyReference) {
         removeChild(coordinator)
     }
 }
 
 extension Manager {
-    func startElementInspectorCoordinator(
-        for reference: ViewHierarchyReference,
-        with action: ViewHierarchyAction?,
-        animated: Bool,
-        from sourceView: UIView?
-    ) {
+    func startElementInspectorCoordinator(for reference: ViewHierarchyReference,
+                                          with action: ViewHierarchyAction?,
+                                          animated: Bool,
+                                          from sourceView: UIView?) {
         guard let snapshot = viewHierarchySnaphost else { return }
 
         let coordinator = ElementInspectorCoordinator(

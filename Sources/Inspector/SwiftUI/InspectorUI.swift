@@ -55,7 +55,7 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost {
         self.didFinish = didFinish
     }
 
-    func insectorViewDidFinishPresentation() {
+    func insectorViewWillFinishPresentation() {
         didFinish?()
     }
 

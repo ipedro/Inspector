@@ -20,13 +20,13 @@
 
 import UIKit
 
-extension Manager: InspectorViewCoordinatorDelegate {
+extension Manager: InspectorViewCoordinatorSwiftUIDelegate {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator,
-                                  didFinishWith command: InspectorCommand?)
+                                  willFinishWith command: InspectorCommand?)
     {
-        removeChild(coordinator)
+        swiftUIhost?.insectorViewWillFinishPresentation()
 
-        swiftUIhost?.insectorViewDidFinishPresentation()
+        removeChild(coordinator)
 
         guard let command = command else { return }
 
@@ -44,40 +44,5 @@ extension Manager: InspectorViewCoordinatorDelegate {
                 )
             }
         }
-    }
-}
-
-extension Manager {
-    @discardableResult
-    func presentInspector(animated: Bool) -> UIViewController? {
-        guard let hostViewController = hostViewController else { return nil }
-
-        return presentInspector(animated: animated, in: hostViewController)
-    }
-
-    @discardableResult
-    func presentInspector(animated: Bool, in presentingViewController: UIViewController) -> UIViewController? {
-        guard let coordinator = makeInspectorViewCoordinator() else { return nil }
-
-        let viewController = coordinator.start()
-
-        presentingViewController.present(viewController, animated: animated)
-
-        return viewController
-    }
-
-    func makeInspectorViewCoordinator() -> InspectorViewCoordinator? {
-        guard let snapshot = viewHierarchySnaphost else { return nil }
-
-        let coordinator = InspectorViewCoordinator(
-            snapshot: snapshot,
-            commandGroups: { [weak self] in self?.commandGroups }
-        ).then {
-            $0.delegate = self
-        }
-
-        addChild(coordinator)
-
-        return coordinator
     }
 }

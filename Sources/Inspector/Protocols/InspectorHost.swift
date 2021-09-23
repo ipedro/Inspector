@@ -39,5 +39,5 @@ public protocol InspectorHost: AnyObject {
 // MARK: - Swift UI
 
 protocol InspectorSwiftUIHost: InspectorHost {
-    func insectorViewDidFinishPresentation()
+    func insectorViewWillFinishPresentation()
 }

@@ -18,46 +18,37 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Inspector
-import SwiftUI
+import UIKit
 
-struct ContentView: View {
-    @State var text = "Hello, world!"
-    @State var date = Date()
-    @State var isInspecting = false
-
-    var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 15) {
-                    DatePicker("Date", selection: $date)
-                        .datePickerStyle(GraphicalDatePickerStyle())
-
-                    TextField("text field", text: $text)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding()
-
-                    Button("Inspect") {
-                        isInspecting.toggle()
-                    }
-                    .padding()
-                }
-                .padding(20)
-            }
-            .navigationTitle("SwiftUI Inspector")
-        }
-        .onAppear {
-            Inspector.inspect(.allViews)
-        }
-        .onShake {
-            self.isInspecting.toggle()
-        }
-        .inspect(isPresented: $isInspecting)
+extension UIControl {
+    enum ScaleDirection {
+        case `in`, out
     }
-}
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+    func scale(_ type: ScaleDirection, for event: UIEvent?) {
+        switch event?.type {
+        case .presses, .touches:
+            break
+
+        default:
+            return
+        }
+
+        let duration = type == .in ? 0.10 : 0.15
+
+        UIView.animate(
+            withDuration: duration,
+            delay: .zero,
+            options: [.curveEaseInOut, .beginFromCurrentState],
+            animations: {
+                switch type {
+                case .in:
+                    self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+
+                case .out:
+                    self.transform = .identity
+                }
+            }
+        )
     }
 }

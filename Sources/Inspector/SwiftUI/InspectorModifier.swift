@@ -65,11 +65,12 @@ struct InspectorModifier: ViewModifier {
                     inspectorCommandGroups: inspectorCommandGroups,
                     inspectorElementLibraries: inspectorElementLibraries,
                     didFinish: {
-                        isPresented = false
+                        withAnimation(.spring()) {
+                            isPresented = false
+                        }
                     }
                 )
-                .transition(.opacity)
-                .animation(.easeInOut(duration: 0.5))
+                .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .center)))
             }
         }
     }

@@ -20,35 +20,39 @@
 
 import UIKit
 
-extension UIView {
-    enum AnimationDirection {
-        case `in`, out
+extension Manager {
+    @discardableResult
+    func presentInspector(animated: Bool) -> UIViewController? {
+        guard let hostViewController = hostViewController else { return nil }
+
+        return presentInspector(animated: animated, in: hostViewController)
     }
 
-    func scale(_ type: AnimationDirection, for event: UIEvent?) {
-        switch event?.type {
-        case .presses, .touches:
-            break
+    @discardableResult
+    func presentInspector(animated: Bool, in presentingViewController: UIViewController) -> UIViewController? {
+        guard let coordinator = makeInspectorViewCoordinator() else { return nil }
 
-        default:
-            return
+        let viewController = coordinator.start()
+
+        presentingViewController.present(viewController, animated: animated)
+
+        return viewController
+    }
+
+    func makeInspectorViewCoordinator() -> InspectorViewCoordinator? {
+        guard let snapshot = viewHierarchySnaphost else { return nil }
+
+        let coordinator = InspectorViewCoordinator(
+            snapshot: snapshot,
+            commandGroups: { [weak self] in self?.commandGroups }
+        ).then {
+            if swiftUIhost != nil {
+                $0.swiftUIDelegate = self
+            }
         }
 
-        let duration = type == .in ? 0.10 : 0.15
+        addChild(coordinator)
 
-        UIView.animate(
-            withDuration: duration,
-            delay: .zero,
-            options: [.curveEaseInOut, .beginFromCurrentState],
-            animations: {
-                switch type {
-                case .in:
-                    self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
-
-                case .out:
-                    self.transform = .identity
-                }
-            }
-        )
+        return coordinator
     }
 }

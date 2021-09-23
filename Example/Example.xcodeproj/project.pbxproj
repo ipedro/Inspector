@@ -21,7 +21,6 @@
 		EB6595ED266B45C10021CC91 /* Down in Frameworks */ = {isa = PBXBuildFile; productRef = EB6595EC266B45C10021CC91 /* Down */; };
 		EB6595F0266BE2BA0021CC91 /* UIView+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6595EF266BE2BA0021CC91 /* UIView+Animations.swift */; };
 		EB76A4FE26C7A7A40088E571 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */; };
-		EB76A50026C7A7A40088E571 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB76A4FF26C7A7A40088E571 /* ContentView.swift */; };
 		EB76A50526C7A7A50088E571 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB76A50426C7A7A50088E571 /* Preview Assets.xcassets */; };
 		EB76A50B26C7AAE10088E571 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EB76A50A26C7AAE10088E571 /* Inspector */; };
 		EBC0288226354CAB00502C90 /* ExampleElementLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC0288126354CAB00502C90 /* ExampleElementLibrary.swift */; };
@@ -45,7 +44,6 @@
 		EB6595EF266BE2BA0021CC91 /* UIView+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Animations.swift"; sourceTree = "<group>"; };
 		EB76A4FB26C7A7A40088E571 /* SwiftUI-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftUI-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
-		EB76A4FF26C7A7A40088E571 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		EB76A50426C7A7A50088E571 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EB76A50626C7A7A50088E571 /* SwiftUI-Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SwiftUI-Example-Info.plist"; sourceTree = "<group>"; };
 		EBC0288126354CAB00502C90 /* ExampleElementLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleElementLibrary.swift; sourceTree = "<group>"; };
@@ -91,12 +89,12 @@
 		EB5E1FD1261A48EB002301F5 = {
 			isa = PBXGroup;
 			children = (
+				EB5E1FDC261A48EB002301F5 /* Example-UIKit */,
+				EB76A4FC26C7A7A40088E571 /* Example-SwiftUI */,
 				EB1D6D2D26FCA2A80063EB60 /* Configuration */,
-				EB5E1FDC261A48EB002301F5 /* Example */,
 				EBEC3E20263AC75B00131D60 /* Frameworks */,
 				EB5E1FDB261A48EB002301F5 /* Products */,
 				EB090A8326C82A9C00CA938E /* Resources */,
-				EB76A4FC26C7A7A40088E571 /* SwiftUI Example */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,7 +107,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		EB5E1FDC261A48EB002301F5 /* Example */ = {
+		EB5E1FDC261A48EB002301F5 /* Example-UIKit */ = {
 			isa = PBXGroup;
 			children = (
 				EB5E1FDD261A48EB002301F5 /* AppDelegate.swift */,
@@ -122,7 +120,7 @@
 				EB5E6EFF26FC891E000D13CD /* Extensions */,
 				EB5E6EFB26FC88C8000D13CD /* Support Files */,
 			);
-			path = Example;
+			path = "Example-UIKit";
 			sourceTree = "<group>";
 		};
 		EB5E6EFA26FC88B5000D13CD /* Support Files */ = {
@@ -160,15 +158,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		EB76A4FC26C7A7A40088E571 /* SwiftUI Example */ = {
+		EB76A4FC26C7A7A40088E571 /* Example-SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
 				EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */,
-				EB76A4FF26C7A7A40088E571 /* ContentView.swift */,
 				EB5E6EFA26FC88B5000D13CD /* Support Files */,
 				EB76A50326C7A7A50088E571 /* Preview Content */,
 			);
-			path = "SwiftUI Example";
+			path = "Example-SwiftUI";
 			sourceTree = "<group>";
 		};
 		EB76A50326C7A7A50088E571 /* Preview Content */ = {
@@ -355,7 +352,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB76A50026C7A7A40088E571 /* ContentView.swift in Sources */,
 				EB76A4FE26C7A7A40088E571 /* ExampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -513,7 +509,7 @@
 					"VERBOSE=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "Example/Example-Info.plist";
+				INFOPLIST_FILE = "Example-UIKit/Example-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -535,7 +531,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9U37VDVBP4;
-				INFOPLIST_FILE = "Example/Example-Info.plist";
+				INFOPLIST_FILE = "Example-UIKit/Example-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -555,7 +551,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI Example/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Example-SwiftUI/Preview Content\"";
 				DEVELOPMENT_TEAM = 9U37VDVBP4;
 				ENABLE_PREVIEWS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -563,7 +559,7 @@
 					"VERBOSE=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "SwiftUI Example/SwiftUI-Example-Info.plist";
+				INFOPLIST_FILE = "Example-SwiftUI/SwiftUI-Example-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -582,10 +578,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"SwiftUI Example/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Example-SwiftUI/Preview Content\"";
 				DEVELOPMENT_TEAM = 9U37VDVBP4;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "SwiftUI Example/SwiftUI-Example-Info.plist";
+				INFOPLIST_FILE = "Example-SwiftUI/SwiftUI-Example-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

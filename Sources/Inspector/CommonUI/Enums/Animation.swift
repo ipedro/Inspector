@@ -21,30 +21,22 @@
 import UIKit
 
 enum Animation {
+    static let defaultDamping: CGFloat = 0.825
+    static let defaultOptions: UIView.AnimationOptions = [.allowUserInteraction, .beginFromCurrentState]
+    static let defaultVelocity: CGFloat = .zero
+
     case `in`, out
 
-    private var scale: CGAffineTransform { CGAffineTransform(scaleX: 0.9, y: 0.96) }
-
-    var damping: CGFloat { 0.82 }
+    var damping: CGFloat { 0.825 }
 
     var velocity: CGFloat { .zero }
 
     var options: UIView.AnimationOptions { [.allowUserInteraction, .beginFromCurrentState] }
 
-    var startTransform: CGAffineTransform {
+    var transform: CGAffineTransform {
         switch self {
         case .in:
-            return scale
-
-        case .out:
-            return .identity
-        }
-    }
-
-    var endTransform: CGAffineTransform {
-        switch self {
-        case .in:
-            return scale
+            return CGAffineTransform(scaleX: 0.9, y: 0.96)
 
         case .out:
             return .identity
@@ -53,6 +45,18 @@ enum Animation {
 }
 
 extension UIView {
+    func animate(
+        from fromAnimation: Animation,
+        to toAnimation: Animation,
+        duration: TimeInterval = ElementInspector.configuration.animationDuration,
+        delay: TimeInterval = .zero,
+        completion: ((Bool) -> Void)? = nil
+    ) {
+        transform = fromAnimation.transform
+
+        animate(toAnimation, duration: duration, delay: delay, completion: completion)
+    }
+
     func animate(
         _ animation: Animation,
         duration: TimeInterval = ElementInspector.configuration.animationDuration,
@@ -65,7 +69,7 @@ extension UIView {
             usingSpringWithDamping: animation.damping,
             initialSpringVelocity: animation.velocity,
             options: animation.options,
-            animations: { self.transform = animation.endTransform },
+            animations: { self.transform = animation.transform },
             completion: completion
         )
     }

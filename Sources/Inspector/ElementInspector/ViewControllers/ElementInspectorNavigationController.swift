@@ -51,9 +51,14 @@ class ElementInspectorNavigationController: UINavigationController {
 
         navigationBar.tintColor = view.tintColor
 
-        navigationBar.directionalLayoutMargins.update(leading: ElementInspector.appearance.horizontalMargins, trailing: ElementInspector.appearance.horizontalMargins)
+        navigationBar.directionalLayoutMargins.update(
+            leading: ElementInspector.appearance.horizontalMargins,
+            trailing: ElementInspector.appearance.horizontalMargins
+        )
 
-        navigationBar.largeTitleTextAttributes = [.font: ElementInspector.appearance.titleFont(forRelativeDepth: .zero)]
+        navigationBar.largeTitleTextAttributes = [
+            .font: ElementInspector.appearance.titleFont(forRelativeDepth: .zero)
+        ]
 
         addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))
 
