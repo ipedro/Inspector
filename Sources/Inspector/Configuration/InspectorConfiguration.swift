@@ -52,15 +52,13 @@ public struct InspectorConfiguration {
         "UITransitionView",
         "UIDropShadowView",
         "UILayoutContainerView",
-        "UINavigationTransitionView",
+        // Navigaiton
         "UIViewControllerWrapperView",
+        "UINavigationTransitionView",
         // Tab bar
-        "UITabBar",
         "UITabBarSwappableImageView",
         "UITabBarButton",
         "UITabBarButtonLabel",
-        // Navigation bar
-        "UINavigationBar",
         // Swift UI
         "_UIHostingView",
         "PlatformViewHost",

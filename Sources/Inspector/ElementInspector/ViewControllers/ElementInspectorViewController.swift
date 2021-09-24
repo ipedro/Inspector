@@ -94,7 +94,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                 image: nil,
                 identifier: nil,
                 children: ElementInspectorDismissAction.allCases.map { action in
-                    UIAction.init(
+                    UIAction(
                         title: action.title,
                         image: action.icon,
                         identifier: nil,
@@ -223,17 +223,10 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        reloadData()
-
-        // here the view has updated its vertical compactness and we can load the panels
-        guard viewCode.segmentedControl.numberOfSegments == .zero else { return }
-
         guard
             animated,
             let transitionCoordinator = transitionCoordinator
         else {
-            updatePanelsSegmentedControl()
-            installPanel(viewModel.currentPanel)
             return
         }
 
@@ -252,9 +245,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         transitionCoordinator.animate { transitionContext in
 
             transitionContext.containerView.installView(backgroundView, position: .behind)
-
-            self.updatePanelsSegmentedControl()
-            self.installPanel(self.viewModel.currentPanel)
 
             self.viewCode.alpha = 1
 
@@ -346,6 +336,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
     func reloadData() {
         viewCode.referenceSummaryView.reloadData()
+        updatePanelsSegmentedControl()
+        installPanel(viewModel.currentPanel)
     }
 
     // MARK: - Content Size
@@ -397,13 +389,20 @@ extension ElementInspectorViewController {
 private extension ElementInspectorViewController {
     func installPanel(_ panel: ElementInspectorPanel) {
         guard
-            let panelViewController = delegate?.elementInspectorViewController(viewControllerWith: panel, and: viewModel.reference)
+            let newPanelViewController = delegate?.elementInspectorViewController(viewControllerWith: panel, and: viewModel.reference)
         else {
             currentPanelViewController = nil
             return
         }
 
-        currentPanelViewController = panelViewController
+        if
+            let previousPanelViewController = currentPanelViewController,
+            type(of: previousPanelViewController) == type(of: newPanelViewController)
+        {
+            return
+        }
+
+        currentPanelViewController = newPanelViewController
     }
 
     @objc

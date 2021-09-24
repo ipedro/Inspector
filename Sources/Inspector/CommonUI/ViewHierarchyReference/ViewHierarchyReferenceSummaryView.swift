@@ -75,7 +75,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
         // Description
 
-        descriptionLabel.text = viewModel?.subtitle
+        elementDescriptionLabel.text = viewModel?.subtitle
 
         // Containers Insets
 
@@ -118,7 +118,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         $0.allowsDefaultTighteningForTruncation = true
     }
 
-    private(set) lazy var descriptionLabel = UILabel().then {
+    private(set) lazy var elementDescriptionLabel = UILabel().then {
         $0.numberOfLines = 3
         $0.preferredMaxLayoutWidth = 150
         $0.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
@@ -151,13 +151,13 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
     private(set) lazy var elementIconAndDescriptionLabel = BaseView().then {
         $0.installView(iconContainerView, .spacing(top: ElementInspector.appearance.verticalMargins / 2, leading: .zero))
-        $0.installView(descriptionLabel, .spacing(top: .zero, trailing: .zero))
+        $0.installView(elementDescriptionLabel, .spacing(top: .zero, trailing: .zero))
 
-        descriptionLabel.bottomAnchor.constraint(
+        elementDescriptionLabel.bottomAnchor.constraint(
             greaterThanOrEqualTo: $0.bottomAnchor
         ).isActive = true
 
-        descriptionLabel.leadingAnchor.constraint(
+        elementDescriptionLabel.leadingAnchor.constraint(
             equalTo: iconContainerView.trailingAnchor,
             constant: ElementInspector.appearance.verticalMargins
         ).isActive = true
@@ -168,17 +168,17 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         ).isActive = true
 
         $0.heightAnchor.constraint(
-            greaterThanOrEqualTo: descriptionLabel.heightAnchor
+            greaterThanOrEqualTo: elementDescriptionLabel.heightAnchor
         ).isActive = true
 
-        let descriptionHeightTighteningConstaint = descriptionLabel.heightAnchor.constraint(equalToConstant: 1).then {
+        let descriptionHeightTighteningConstaint = elementDescriptionLabel.heightAnchor.constraint(equalToConstant: 1).then {
             $0.priority = .defaultLow
         }
 
         descriptionHeightTighteningConstaint.isActive = true
     }
 
-    private(set) lazy var elementViewsContainer = UIStackView().then {
+    private(set) lazy var elementDetailsContainer = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = ElementInspector.appearance.verticalMargins / 2
         $0.addArrangedSubviews(elementNameLabel, elementIconAndDescriptionLabel)
@@ -191,7 +191,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
         guard frame.isEmpty == false else { return }
 
-        descriptionLabel.preferredMaxLayoutWidth = descriptionLabel.bounds.width
+        elementDescriptionLabel.preferredMaxLayoutWidth = elementDescriptionLabel.bounds.width
 
         let size = systemLayoutSizeFitting(
             CGSize(width: frame.width, height: .zero),
@@ -210,7 +210,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         contentView.axis = .horizontal
         contentView.spacing = ElementInspector.appearance.horizontalMargins
         contentView.alignment = .center
-        contentView.addArrangedSubviews(collapseButtonContainer, elementViewsContainer)
+        contentView.addArrangedSubviews(collapseButtonContainer, elementDetailsContainer)
 
         installView(contentViewContainer)
     }

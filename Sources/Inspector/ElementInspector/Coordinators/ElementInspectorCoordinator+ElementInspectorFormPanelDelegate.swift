@@ -23,12 +23,12 @@ import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController, didUpdateProperty: InspectorElementViewModelProperty, in item: ElementInspectorFormItem) {
-        guard let elementViewController = formPanelViewController.parent as? ElementInspectorViewController else {
+        guard let elementInspectorViewController = formPanelViewController.parent as? ElementInspectorViewController else {
             assertionFailure("whaaaat")
             return
         }
 
-        elementViewController.reloadData()
+        elementInspectorViewController.reloadData()
     }
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController, didTap colorPreviewControl: ColorPreviewControl) {
