@@ -43,6 +43,6 @@ extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate 
             return
         }
 
-        finish()
+        finish(with: .dismiss)
     }
 }

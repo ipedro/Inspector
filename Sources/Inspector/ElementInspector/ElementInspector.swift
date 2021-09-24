@@ -80,9 +80,12 @@ extension ElementInspector {
                     return .title2
 
                 case 1:
-                    return .body
+                    return .headline
 
                 case 2:
+                    return .body
+
+                case 3:
                     return .callout
 
                 default:

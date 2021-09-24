@@ -25,6 +25,10 @@ typealias Manager = Inspector.Manager
 
 typealias Coordinator = BaseCoordinator<Void> & StartProtocol
 
+protocol DismissablePresentationProtocol {
+    func dismissPresentation(animated: Bool)
+}
+
 extension Inspector {
     final class Manager: Coordinator {
         // MARK: - Properties
@@ -48,10 +52,12 @@ extension Inspector {
 
         let operationQueue = OperationQueue.main
 
-        private(set) lazy var viewHierarchyCoordinator = ViewHierarchyCoordinator(dataSource: self, delegate: self)
+        var viewHierarchyCoordinator: ViewHierarchyCoordinator? {
+            children.first(where: { $0 is ViewHierarchyCoordinator }) as? ViewHierarchyCoordinator
+        }
 
         var viewHierarchySnaphost: ViewHierarchySnapshot? {
-            viewHierarchyCoordinator.latestSnapshot()
+            viewHierarchyCoordinator?.latestSnapshot()
         }
 
         // MARK: - Init
@@ -63,21 +69,31 @@ extension Inspector {
             host = nil
         }
 
-        func restart() {
+        func reset() {
             finish()
             start()
         }
 
         func start() {
+            if children.contains(where: { $0 is ViewHierarchyCoordinator }) {
+                assertionFailure("Already started. Ignoring")
+                return
+            }
+
+            let viewHierarchyCoordinator = ViewHierarchyCoordinator(dataSource: self, delegate: self)
             viewHierarchyCoordinator.start()
+
+            addChild(viewHierarchyCoordinator)
         }
 
         func finish() {
-            viewHierarchyCoordinator.clearData()
-
-            children.forEach { removeChild($0) }
-
             operationQueue.cancelAllOperations()
+
+            children.forEach { child in
+                (child as? DismissablePresentationProtocol)?.dismissPresentation(animated: true)
+
+                removeChild(child)
+            }
         }
     }
 }

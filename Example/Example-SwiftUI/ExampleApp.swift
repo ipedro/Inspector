@@ -33,7 +33,7 @@ struct ExampleApp: App {
 struct Content: View {
     @State var text = "Hello, world!"
     @State var date = Date()
-    @State var isInspecting = false
+    @State var isInspecting = true
 
     var body: some View {
         NavigationView {
@@ -56,9 +56,6 @@ struct Content: View {
                 .padding(20)
             }
             .navigationTitle("SwiftUI Inspector")
-        }
-        .onAppear {
-            Inspector.inspect(.allViews)
         }
         .onShake {
             withAnimation(.spring()) {

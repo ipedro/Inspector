@@ -21,6 +21,7 @@
 import UIKit
 
 extension TimeInterval {
+    static let veryShort: TimeInterval = average / 3
     static let short: TimeInterval = average / 2
     static let average: TimeInterval = CATransaction.animationDuration()
     static let long: TimeInterval = average * 2

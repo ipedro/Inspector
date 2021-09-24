@@ -112,7 +112,7 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
 
     func reloadIcons() {
         children.forEach { child in
-            child.thumbnailImage = snapshot.elementLibraries.icon(for: child.reference.rootView)
+            child.iconImage = snapshot.elementLibraries.icon(for: child.reference.rootView)
         }
     }
 

@@ -21,7 +21,7 @@
 import UIKit
 
 protocol ViewHierarchyReferenceSummaryViewModelProtocol {
-    var thumbnailImage: UIImage? { get }
+    var iconImage: UIImage? { get }
 
     var title: String { get }
 
@@ -62,7 +62,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
         elementNameLabel.font = viewModel?.titleFont
 
-        thumbnailImageView.image = viewModel?.thumbnailImage
+        iconImageView.image = viewModel?.iconImage
 
         // Collapsed
 
@@ -85,15 +85,15 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(leading: indentation)
     }
 
-    private lazy var containerStackView = UIStackView().then {
+    private lazy var contentViewContainer = UIStackView().then {
         $0.isLayoutMarginsRelativeArrangement = true
         $0.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
         $0.addArrangedSubview(contentView)
     }
 
     override var directionalLayoutMargins: NSDirectionalEdgeInsets {
-        get { containerStackView.directionalLayoutMargins }
-        set { containerStackView.directionalLayoutMargins = newValue }
+        get { contentViewContainer.directionalLayoutMargins }
+        set { contentViewContainer.directionalLayoutMargins = newValue }
     }
 
     func toggleCollapse(animated: Bool) {
@@ -109,7 +109,9 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
     private(set) lazy var elementNameLabel = UILabel().then {
         $0.textColor = colorStyle.textColor
-        $0.numberOfLines = .zero
+        $0.setContentCompressionResistancePriority(.required, for: .vertical)
+        $0.setContentHuggingPriority(.required, for: .vertical)
+        $0.numberOfLines = 1
         $0.preferredMaxLayoutWidth = 150
         $0.adjustsFontSizeToFitWidth = true
         $0.minimumScaleFactor = 0.8
@@ -117,7 +119,10 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
     }
 
     private(set) lazy var descriptionLabel = UILabel().then {
+        $0.numberOfLines = 3
         $0.preferredMaxLayoutWidth = 150
+        $0.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.font = .preferredFont(forTextStyle: .caption2)
         $0.textColor = colorStyle.secondaryTextColor
         $0.numberOfLines = .zero
@@ -129,14 +134,14 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
     private(set) lazy var collapseButton = IconButton(.chevronDown)
 
-    private(set) lazy var thumbnailContainerView = BaseView().then {
+    private(set) lazy var iconContainerView = BaseView().then {
         $0.backgroundColor = colorStyle.accessoryControlBackgroundColor
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
-        $0.installView(thumbnailImageView, .spacing(all: $0.layer.cornerRadius / 2))
+        $0.installView(iconImageView, .spacing(all: $0.layer.cornerRadius / 2), priority: .required)
     }
 
-    private(set) lazy var thumbnailImageView = UIImageView().then {
+    private(set) lazy var iconImageView = UIImageView().then {
         $0.clipsToBounds = false
         $0.contentMode = .scaleAspectFit
         $0.tintColor = colorStyle.textColor
@@ -144,11 +149,39 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor).isActive = true
     }
 
-    private(set) lazy var textStackView = UIStackView().then {
+    private(set) lazy var elementIconAndDescriptionLabel = BaseView().then {
+        $0.installView(iconContainerView, .spacing(top: ElementInspector.appearance.verticalMargins / 2, leading: .zero))
+        $0.installView(descriptionLabel, .spacing(top: .zero, trailing: .zero))
+
+        descriptionLabel.bottomAnchor.constraint(
+            greaterThanOrEqualTo: $0.bottomAnchor
+        ).isActive = true
+
+        descriptionLabel.leadingAnchor.constraint(
+            equalTo: iconContainerView.trailingAnchor,
+            constant: ElementInspector.appearance.verticalMargins
+        ).isActive = true
+
+        $0.heightAnchor.constraint(
+            greaterThanOrEqualTo: iconContainerView.heightAnchor,
+            constant: ElementInspector.appearance.verticalMargins
+        ).isActive = true
+
+        $0.heightAnchor.constraint(
+            greaterThanOrEqualTo: descriptionLabel.heightAnchor
+        ).isActive = true
+
+        let descriptionHeightTighteningConstaint = descriptionLabel.heightAnchor.constraint(equalToConstant: 1).then {
+            $0.priority = .defaultLow
+        }
+
+        descriptionHeightTighteningConstaint.isActive = true
+    }
+
+    private(set) lazy var elementViewsContainer = UIStackView().then {
         $0.axis = .vertical
-        $0.addArrangedSubviews(elementNameLabel, descriptionLabel)
         $0.spacing = ElementInspector.appearance.verticalMargins / 2
-        $0.clipsToBounds = true
+        $0.addArrangedSubviews(elementNameLabel, elementIconAndDescriptionLabel)
     }
 
     private lazy var heighConstraint = heightAnchor.constraint(equalToConstant: .zero)
@@ -157,6 +190,8 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         super.layoutSubviews()
 
         guard frame.isEmpty == false else { return }
+
+        descriptionLabel.preferredMaxLayoutWidth = descriptionLabel.bounds.width
 
         let size = systemLayoutSizeFitting(
             CGSize(width: frame.width, height: .zero),
@@ -173,10 +208,10 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         super.setup()
 
         contentView.axis = .horizontal
-        contentView.spacing = ElementInspector.appearance.verticalMargins
+        contentView.spacing = ElementInspector.appearance.horizontalMargins
         contentView.alignment = .center
-        contentView.addArrangedSubviews(collapseButtonContainer, textStackView, thumbnailContainerView)
+        contentView.addArrangedSubviews(collapseButtonContainer, elementViewsContainer)
 
-        installView(containerStackView)
+        installView(contentViewContainer)
     }
 }

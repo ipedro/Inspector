@@ -57,7 +57,8 @@ class ElementInspectorNavigationController: UINavigationController {
         )
 
         navigationBar.largeTitleTextAttributes = [
-            .font: ElementInspector.appearance.titleFont(forRelativeDepth: .zero)
+            .font: ElementInspector.appearance.titleFont(forRelativeDepth: .zero),
+            .foregroundColor: colorStyle.textColor
         ]
 
         addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))

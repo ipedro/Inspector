@@ -37,7 +37,7 @@ public enum Inspector {
     }
 
     public static func restart() {
-        manager.restart()
+        manager.reset()
     }
 }
 

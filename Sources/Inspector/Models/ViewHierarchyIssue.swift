@@ -20,12 +20,42 @@
 
 import UIKit
 
-extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
-    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
-        guard popoverPresentationController.presentedViewController === navigationController else {
-            return
+enum ViewHierarchyIssue: CustomStringConvertible {
+    case emptyFrame
+    case parentHasEmptyFrame
+    case controlDisabled
+    case interactionDisabled
+
+    var description: String {
+        switch self {
+        case .emptyFrame:
+            return "Frame is empty"
+        case .parentHasEmptyFrame:
+            return "Parent has empty frame"
+        case .controlDisabled:
+            return "Control disabled"
+        case .interactionDisabled:
+            return " User interaction disabled"
+        }
+    }
+
+    static func issues(for reference: ViewHierarchyReference) -> [ViewHierarchyIssue] {
+        var array = [ViewHierarchyIssue]()
+
+        if reference.rootView?.frame.isEmpty == true {
+            array.append(.emptyFrame)
+        }
+        if reference.rootView?.isUserInteractionEnabled == false {
+            array.append(.interactionDisabled)
+        }
+        if (reference.rootView as? UIControl)?.isEnabled == false {
+            array.append(.controlDisabled)
+        }
+        if reference.allParents.contains(where: { $0.issues.contains(.emptyFrame) }) {
+            array.append(.parentHasEmptyFrame)
         }
 
-        finish(with: .dismiss)
+        return array
     }
+    
 }

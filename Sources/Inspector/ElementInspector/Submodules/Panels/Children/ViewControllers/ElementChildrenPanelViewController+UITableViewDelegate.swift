@@ -87,7 +87,7 @@ extension ElementChildrenPanelViewController {
                             $0.transform = .init(scaleX: 0.9, y: 0.9)
                         }
 
-                        tableView.animate(withDuration: .veryLong, delay: 0.1) {
+                        tableView.animate(withDuration: .veryLong, delay: .short) {
                             cells.forEach{
                                 $0.alpha = 1
                                 $0.transform = .identity

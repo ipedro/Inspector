@@ -30,7 +30,7 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelPr
 
     var automaticallyAdjustIndentation: Bool { false }
 
-    var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
+    var iconImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
 
     var title: String { reference.elementName }
 

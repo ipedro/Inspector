@@ -94,7 +94,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 extension ElementInspectorViewModel: ViewHierarchyReferenceSummaryViewModelProtocol {
     var automaticallyAdjustIndentation: Bool { false }
 
-    var thumbnailImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
+    var iconImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
 
     var title: String { reference.elementName }
 

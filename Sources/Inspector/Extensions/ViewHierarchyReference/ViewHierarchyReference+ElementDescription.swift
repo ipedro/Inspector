@@ -25,10 +25,10 @@ extension ViewHierarchyReference {
     var elementDescription: String {
         [
             classNameDescription,
-            frameDescription,
+            issuesDescription,
             subviewsDescription,
             constraintsDescription,
-            warningsDescription
+            frameDescription
         ]
         .compactMap { $0 }
         .joined(separator: "\n")
@@ -47,19 +47,28 @@ extension ViewHierarchyReference {
         }
     }
 
-    var warningsDescription: String? {
-        let warnings = [
-            emptyFrame,
-            isUserInteractionDisabled,
-            isControlDisabled
-        ]
-        .compactMap { $0 }
+    var issuesDescription: String? {
+        let issues = self.issues
 
-        if warnings.isEmpty {
-            return nil
+        guard !issues.isEmpty else { return nil }
+
+        if issues.count == 1, let issue = issues.first {
+            return "\n⚠️ \(issue.description)"
         }
 
-        return warnings.joined(separator: "\n").string(prepending: "\n")
+        var string = issues.reduce(into: "") { multipleIssuesDescription, issue in
+            if multipleIssuesDescription.isEmpty {
+                multipleIssuesDescription = "\n⚠️ \(issues.count) Issues\n"
+            }
+            else {
+                multipleIssuesDescription += "\n"
+                multipleIssuesDescription += "• \(issue.description)"
+            }
+        }
+
+        string += "\n"
+
+        return string
     }
 
     private var emptyFrame: String? {

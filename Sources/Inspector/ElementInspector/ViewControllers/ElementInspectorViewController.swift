@@ -21,6 +21,30 @@
 @_implementationOnly import UIKeyboardAnimatable
 import UIKit
 
+enum ElementInspectorDismissAction: Swift.CaseIterable {
+    case dismiss
+    case stopInspecting
+
+    var title: String {
+        switch self {
+        case .dismiss:
+            return "Dismiss"
+        case .stopInspecting:
+            return "Stop Inspecting"
+        }
+    }
+
+    @available(iOS 13.0, *)
+    var icon: UIImage? {
+        switch self {
+        case .dismiss:
+            return .closeSymbol
+        case .stopInspecting:
+            return .stopSymbol
+        }
+    }
+}
+
 protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
                                         and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
@@ -30,7 +54,8 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
                                         with action: ViewHierarchyAction?,
                                         from fromReference: ViewHierarchyReference)
 
-    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController)
+    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController,
+                                                 with dismissAction: ElementInspectorDismissAction)
 }
 
 final class ElementInspectorViewController: ElementInspectorPanelViewController, KeyboardAnimatable {
@@ -61,7 +86,26 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         $0.segmentedControl.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
 
         $0.dismissBarButtonItem.target = self
-        $0.dismissBarButtonItem.action = #selector(close)
+        $0.dismissBarButtonItem.action = #selector(dismiss(_:))
+
+        if #available(iOS 14.0, *) {
+            $0.dismissBarButtonItem.menu = UIMenu(
+                title: String(),
+                image: nil,
+                identifier: nil,
+                children: ElementInspectorDismissAction.allCases.map { action in
+                    UIAction.init(
+                        title: action.title,
+                        image: action.icon,
+                        identifier: nil,
+                        discoverabilityTitle: action.title
+                    ) { [weak self] _ in
+                        guard let self = self else { return }
+                        self.delegate?.elementInspectorViewControllerDidFinish(self, with: action)
+                    }
+                }
+            )
+        }
     }
 
     private(set) var currentPanelViewController: ElementInspectorPanelViewController? {
@@ -199,9 +243,20 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         let maskView = UIView(frame: maskViewNewFrame)// CGRect(origin: .zero, size: view.frame.size))
         maskView.backgroundColor = .white
 
+        viewCode.alpha = 0
+
+        // compensate for transition drop shadow
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .init(white: 1, alpha: 0.043)
+
         transitionCoordinator.animate { transitionContext in
+
+            transitionContext.containerView.installView(backgroundView, position: .behind)
+
             self.updatePanelsSegmentedControl()
             self.installPanel(self.viewModel.currentPanel)
+
+            self.viewCode.alpha = 1
 
             guard
                 let fromViewController = transitionContext.viewController(forKey: .from) as? ElementInspectorViewController,
@@ -214,8 +269,10 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             fromView.mask = maskView
             fromView.alpha = 0
 
-//            maskView.frame = maskViewNewFrame // (Mask to half width)
         } completion: { transitionContext in
+
+            backgroundView.removeFromSuperview()
+
             guard
                 let fromViewController = transitionContext.viewController(forKey: .from) as? ElementInspectorViewController,
                 let fromView = fromViewController.view
@@ -249,12 +306,13 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             let maskView = UIView(frame: CGRect(origin: .zero, size: halfWidthSize))
             maskView.backgroundColor = .white
             toView.mask = maskView
-
             // And calculate a new frame to make it grow back to full width during
             // the animation:
             let maskViewNewFrame = toView.bounds
 
             maskView.frame = maskViewNewFrame // (Mask back to full width: no clipping)
+
+            self.viewCode.alpha = 0
 
         } completion: { transitionContext in
             guard
@@ -267,6 +325,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             // Remove mask, otherwise funny things will happen if toView is a
             // scroll or table view and the user "rubberbands":
             toView.mask = nil
+            self.viewCode.alpha = 1
         }
     }
 
@@ -362,8 +421,8 @@ private extension ElementInspectorViewController {
     }
 
     @objc
-    func close() {
-        delegate?.elementInspectorViewControllerDidFinish(self)
+    func dismiss(_ sender: Any) {
+        delegate?.elementInspectorViewControllerDidFinish(self, with: .dismiss)
     }
 }
 

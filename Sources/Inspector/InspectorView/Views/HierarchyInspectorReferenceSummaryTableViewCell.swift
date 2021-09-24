@@ -54,7 +54,7 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
         textLabel?.font = .preferredFont(forTextStyle: .footnote).bold()
         textLabel?.numberOfLines = 2
 
-        detailTextLabel?.numberOfLines = 0
+        detailTextLabel?.numberOfLines = 4
 
         imageView?.tintColor = colorStyle.textColor
         imageView?.clipsToBounds = true

@@ -42,7 +42,7 @@ extension ElementChildrenPanelViewModel {
 
         let rootDepth: Int
 
-        var thumbnailImage: UIImage?
+        var iconImage: UIImage?
 
         // MARK: - Properties
 
@@ -58,7 +58,7 @@ extension ElementChildrenPanelViewModel {
             self.parent = parent
             self.reference = reference
             self.rootDepth = rootDepth
-            self.thumbnailImage = thumbnailImage
+            self.iconImage = thumbnailImage
             _isCollapsed = isCollapsed
         }
     }

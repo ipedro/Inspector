@@ -42,9 +42,8 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
         panelViewController(for: panel, with: reference)
     }
 
-    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController) {
-        navigationController.dismiss(animated: true) { [weak self] in
-            self?.finish()
-        }
+    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController, with dismissAction: ElementInspectorDismissAction) {
+
+        finish(with: dismissAction)
     }
 }

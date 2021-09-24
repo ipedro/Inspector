@@ -31,29 +31,58 @@ extension Manager: ViewHierarchyLayerManagerProtocol {
 
     func toggleLayer(_ layer: Inspector.ViewHierarchyLayer) {
         if viewHierarchyCoordinator.isShowingLayer(layer) {
-            viewHierarchyCoordinator.removeLayer(layer)
+            viewHierarchyCoordinator?.removeLayer(layer)
         }
         else {
-            viewHierarchyCoordinator.installLayer(layer)
+            viewHierarchyCoordinator?.installLayer(layer)
         }
     }
 
     func removeLayer(_ layer: Inspector.ViewHierarchyLayer) {
         if viewHierarchyCoordinator.isShowingLayer(layer) {
-            viewHierarchyCoordinator.removeLayer(layer)
+            viewHierarchyCoordinator?.removeLayer(layer)
         }
     }
 
     func toggleAllLayers() {
         if viewHierarchyCoordinator.isShowingAllPopulatedLayers {
-            viewHierarchyCoordinator.removeAllLayers()
+            viewHierarchyCoordinator?.removeAllLayers()
         }
         else {
-            viewHierarchyCoordinator.installAllLayers()
+            viewHierarchyCoordinator?.installAllLayers()
         }
     }
 
     func removeAllLayers() {
-        viewHierarchyCoordinator.removeAllLayers()
+        viewHierarchyCoordinator?.removeAllLayers()
+    }
+}
+
+extension Optional where Wrapped: ViewHierarchyCoordinator {
+    var isShowingLayers: Bool {
+        switch self {
+        case .none:
+            return false
+        case let .some(coordinator):
+            return coordinator.isShowingLayers
+        }
+    }
+
+    var isShowingAllPopulatedLayers: Bool {
+        switch self {
+        case .none:
+            return false
+        case let .some(coordinator):
+            return coordinator.isShowingAllPopulatedLayers
+        }
+    }
+
+    func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool {
+        switch self {
+        case .none:
+            return false
+        case let .some(coordinator):
+            return coordinator.isShowingLayer(layer)
+        }
     }
 }

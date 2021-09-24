@@ -32,7 +32,8 @@ final class ElementSizePanelViewController: ElementInspectorFormPanelViewControl
 protocol ElementInspectorCoordinatorDelegate: AnyObject {
     func elementInspectorCoordinator(
         _ coordinator: ElementInspectorCoordinator,
-        didFinishWith reference: ViewHierarchyReference
+        didFinishInspecting reference: ViewHierarchyReference,
+        with action: ElementInspectorDismissAction
     )
 
     func elementInspectorCoordinator(
@@ -111,12 +112,11 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         navigationController
     }
 
-    func finish() {
+    func finish(with action: ElementInspectorDismissAction) {
         operationQueue.cancelAllOperations()
         operationQueue.isSuspended = true
 
-        navigationController.dismiss(animated: true)
-        delegate?.elementInspectorCoordinator(self, didFinishWith: snapshot.rootReference)
+        delegate?.elementInspectorCoordinator(self, didFinishInspecting: snapshot.rootReference, with: action)
     }
 
     static func makeElementInspectorViewController(
@@ -210,6 +210,14 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         navigationController.setPopoverModalPresentationStyle(delegate: self, from: sourceView)
 
         return navigationController
+    }
+}
+
+extension ElementInspectorCoordinator: DismissablePresentationProtocol {
+    func dismissPresentation(animated: Bool) {
+        if let presentingViewController = navigationController.presentingViewController {
+            presentingViewController.dismiss(animated: animated, completion: nil)
+        }
     }
 }
 

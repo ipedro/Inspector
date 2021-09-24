@@ -22,8 +22,6 @@ import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorNavigationControllerDismissDelegate {
     func elementInspectorNavigationControllerDidFinish(_ navigationController: ElementInspectorNavigationController) {
-        navigationController.dismiss(animated: true) { [weak self] in
-            self?.finish()
-        }
+        finish(with: .dismiss)
     }
 }

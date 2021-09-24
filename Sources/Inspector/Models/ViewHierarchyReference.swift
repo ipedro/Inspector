@@ -23,41 +23,9 @@ import UIKit
 final class ViewHierarchyReference {
     weak var rootView: UIView?
 
-    let canPresentOnTop: Bool
-
-    let canHostInspectorView: Bool
-
-    let identifier: ObjectIdentifier
-
-    let isSystemView: Bool
-
-    private let _className: String
-
-    private let _classNameWithoutQualifiers: String
-
-    private let _elementName: String
-
-    let frame: CGRect
-
-    let accessibilityIdentifier: String?
-
-    private(set) lazy var actions = ViewHierarchyAction.actions(for: self)
-
     var parent: ViewHierarchyReference?
 
     var isUserInteractionEnabled: Bool
-
-    private(set) lazy var isContainer: Bool = children.isEmpty == false
-
-    private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
-
-    private(set) lazy var children: [ViewHierarchyReference] = {
-        rootView?.originalSubviews.map { .init($0, depth: depth + 1, parent: self) } ?? []
-    }()
-
-    var deepestRelativeLevel: Int {
-        deepestAbsoulteLevel - depth
-    }
 
     var depth: Int {
         didSet {
@@ -69,6 +37,61 @@ final class ViewHierarchyReference {
             children = view.originalSubviews.map { .init($0, depth: depth + 1, parent: self) }
         }
     }
+
+    // MARK: - Read only Properties
+
+    let canPresentOnTop: Bool
+
+    let canHostInspectorView: Bool
+
+    let identifier: ObjectIdentifier
+
+    let isSystemView: Bool
+
+    let frame: CGRect
+
+    let accessibilityIdentifier: String?
+
+    private(set) lazy var issues = ViewHierarchyIssue.issues(for: self)
+
+    var hasIssues: Bool { !issues.isEmpty }
+
+    private(set) lazy var actions = ViewHierarchyAction.actions(for: self)
+
+    private(set) lazy var isContainer: Bool = children.isEmpty == false
+
+    private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
+
+    private(set) lazy var children: [ViewHierarchyReference] = {
+        rootView?.originalSubviews.map { .init($0, depth: depth + 1, parent: self) } ?? []
+    }()
+
+    // MARK: - Private Properties
+
+    private let _className: String
+
+    private let _classNameWithoutQualifiers: String
+
+    private let _elementName: String
+
+    // MARK: - Computed Properties
+
+    var allParents: [ViewHierarchyReference] {
+        var array = [ViewHierarchyReference]()
+
+        if let parent = parent {
+            array.append(parent)
+            array.append(contentsOf: parent.allParents)
+        }
+
+        return array
+    }
+
+    var deepestRelativeLevel: Int {
+        deepestAbsoulteLevel - depth
+    }
+
+    // MARK: - Init
 
     convenience init(_ rootView: UIView) {
         self.init(rootView, depth: .zero, parent: nil)

@@ -40,7 +40,7 @@ protocol ViewHierarchyCoordinatorDataSource: AnyObject {
     var elementLibraries: [InspectorElementLibraryProtocol] { get }
 }
 
-final class ViewHierarchyCoordinator: Coordinator {
+final class ViewHierarchyCoordinator: Coordinator, DismissablePresentationProtocol {
     // MARK: - Properties
 
     weak var delegate: ViewHierarchyCoordinatorDelegate?
@@ -89,6 +89,10 @@ final class ViewHierarchyCoordinator: Coordinator {
     }
 
     func start() {}
+
+    func dismissPresentation(animated: Bool) {
+        clearData()
+    }
 }
 
 // MARK: - Internal Interface
