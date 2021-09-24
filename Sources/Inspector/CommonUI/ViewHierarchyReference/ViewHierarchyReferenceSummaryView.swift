@@ -120,7 +120,6 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
     private(set) lazy var elementDescriptionLabel = UILabel().then {
         $0.numberOfLines = 3
-        $0.preferredMaxLayoutWidth = 150
         $0.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.font = .preferredFont(forTextStyle: .caption2)
@@ -150,8 +149,24 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
     }
 
     private(set) lazy var elementIconAndDescriptionLabel = BaseView().then {
-        $0.installView(iconContainerView, .spacing(top: ElementInspector.appearance.verticalMargins / 2, leading: .zero))
-        $0.installView(elementDescriptionLabel, .spacing(top: .zero, trailing: .zero))
+        $0.installView(
+            iconContainerView,
+                .spacing(
+                    top: ElementInspector.appearance.verticalMargins / 2,
+                    leading: .zero
+                ),
+            priority: .required
+        )
+
+        $0.installView(
+            elementDescriptionLabel,
+                .spacing(
+                    top: .zero,
+                    bottom: .zero,
+                    trailing: .zero
+                ),
+            priority: .required
+        )
 
         elementDescriptionLabel.bottomAnchor.constraint(
             greaterThanOrEqualTo: $0.bottomAnchor
@@ -167,15 +182,6 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
             constant: ElementInspector.appearance.verticalMargins
         ).isActive = true
 
-        $0.heightAnchor.constraint(
-            greaterThanOrEqualTo: elementDescriptionLabel.heightAnchor
-        ).isActive = true
-
-        let descriptionHeightTighteningConstaint = elementDescriptionLabel.heightAnchor.constraint(equalToConstant: 1).then {
-            $0.priority = .defaultLow
-        }
-
-        descriptionHeightTighteningConstaint.isActive = true
     }
 
     private(set) lazy var elementDetailsContainer = UIStackView().then {
@@ -190,8 +196,6 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         super.layoutSubviews()
 
         guard frame.isEmpty == false else { return }
-
-        elementDescriptionLabel.preferredMaxLayoutWidth = elementDescriptionLabel.bounds.width
 
         let size = systemLayoutSizeFitting(
             CGSize(width: frame.width, height: .zero),

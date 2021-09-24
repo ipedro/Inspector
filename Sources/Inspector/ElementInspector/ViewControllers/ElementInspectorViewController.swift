@@ -250,13 +250,19 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
             guard
                 let fromViewController = transitionContext.viewController(forKey: .from) as? ElementInspectorViewController,
-                let fromView = fromViewController.view
+                let toViewController = transitionContext.viewController(forKey: .to) as? ElementInspectorViewController,
+                let fromView = fromViewController.view,
+                let toView = toViewController.view
             else {
                 return
             }
 
-            // Apply a white UIView as mask to the SOURCE view:
-            fromView.mask = maskView
+            if toView === self.view {
+                // Apply a white UIView as mask to the SOURCE view:
+                toView.mask = maskView
+                toView.mask?.frame = self.viewCode.bounds
+            }
+            
             fromView.alpha = 0
 
         } completion: { transitionContext in
@@ -274,6 +280,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             // scroll or table view and the user "rubberbands":
             fromView.mask = nil
             fromView.alpha = 1
+
+            self.viewCode.mask = nil
         }
     }
 
@@ -290,17 +298,19 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                 return
             }
 
-            // Apply a white UIView as mask to the DESTINATION view, at the begining
-            // revealing only the left-most half:
-            let halfWidthSize = CGSize(width: 0.3 * toView.frame.width, height: toView.frame.height)
-            let maskView = UIView(frame: CGRect(origin: .zero, size: halfWidthSize))
-            maskView.backgroundColor = .white
-            toView.mask = maskView
-            // And calculate a new frame to make it grow back to full width during
-            // the animation:
-            let maskViewNewFrame = toView.bounds
+            if toView === self.view {
+                // Apply a white UIView as mask to the DESTINATION view, at the begining
+                // revealing only the left-most half:
+                let halfWidthSize = CGSize(width: 0.5 * self.view.frame.width, height: toView.frame.height)
+                let maskView = UIView(frame: CGRect(origin: .init(x: -0.5 * self.view.frame.width, y: .zero), size: halfWidthSize))
+                maskView.backgroundColor = .white
+                toView.mask = maskView
+                // And calculate a new frame to make it grow back to full width during
+                // the animation:
+                let maskViewNewFrame = toView.bounds
 
-            maskView.frame = maskViewNewFrame // (Mask back to full width: no clipping)
+                maskView.frame = maskViewNewFrame // (Mask back to full width: no clipping)
+            }
 
             self.viewCode.alpha = 0
 
@@ -315,6 +325,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             // Remove mask, otherwise funny things will happen if toView is a
             // scroll or table view and the user "rubberbands":
             toView.mask = nil
+            self.viewCode.mask = nil
             self.viewCode.alpha = 1
         }
     }
