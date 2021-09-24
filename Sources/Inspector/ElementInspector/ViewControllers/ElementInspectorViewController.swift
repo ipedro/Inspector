@@ -85,9 +85,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
             let animationDuration: TimeInterval = 0.18
 
-            viewCode.activityIndicator.startAnimating()
-
             animate(delay: animationDuration) { [weak self] in
+                self?.viewCode.activityIndicator.startAnimating()
                 self?.viewCode.activityIndicator.alpha = 1
             }
 
@@ -115,7 +114,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                         panelView.alpha = 1
                         panelView.transform = .identity
                         self.viewCode.activityIndicator.alpha = 0
-                        self.viewCode.activityIndicator.transform = .init(scaleX: 0.5, y: 0.5)
                     },
                     completion: { [weak self] _ in
                         guard let self = self else { return }
@@ -123,9 +121,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                         panelViewController.didMove(toParent: self)
                         NSObject.cancelPreviousPerformRequests(withTarget: self.viewCode.activityIndicator)
                         self.viewCode.activityIndicator.stopAnimating()
-                        self.viewCode.activityIndicator.transform = .identity
-                        self.viewCode.activityIndicator.alpha = 1
-                        self.configureNavigationBarViews()
+                        self.viewCode.activityIndicator.alpha = 0
+                        self.configureNavigationItem()
                     }
                 )
             }
@@ -169,10 +166,12 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         }
 
         reloadData()
-        configureNavigationBarViews()
+        configureNavigationItem()
     }
 
-    private func configureNavigationBarViews() {
+    private func configureNavigationItem() {
+        navigationItem.backBarButtonItem?.tintColor = colorStyle.tintColor
+        navigationItem.leftBarButtonItem?.tintColor = colorStyle.tintColor
         navigationItem.rightBarButtonItem = viewCode.dismissBarButtonItem
         navigationItem.titleView = viewCode.segmentedControl
     }

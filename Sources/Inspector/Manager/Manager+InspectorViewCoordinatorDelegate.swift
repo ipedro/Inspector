@@ -20,14 +20,27 @@
 
 import UIKit
 
+extension Manager: InspectorViewCoordinatorDelegate {
+    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator,
+                                  didFinishWith command: InspectorCommand?)
+    {
+        removeChild(coordinator)
+        execute(command)
+    }
+}
+
 extension Manager: InspectorViewCoordinatorSwiftUIDelegate {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator,
                                   willFinishWith command: InspectorCommand?)
     {
         swiftUIhost?.insectorViewWillFinishPresentation()
-
         removeChild(coordinator)
+        execute(command)
+    }
+}
 
+extension Manager {
+    private func execute(_ command: InspectorCommand?) {
         guard let command = command else { return }
 
         asyncOperation { [weak self] in
@@ -44,5 +57,43 @@ extension Manager: InspectorViewCoordinatorSwiftUIDelegate {
                 )
             }
         }
+    }
+
+    @discardableResult
+    func presentInspector(animated: Bool) -> UIViewController? {
+        guard let hostViewController = hostViewController else { return nil }
+
+        return presentInspector(animated: animated, in: hostViewController)
+    }
+
+    @discardableResult
+    func presentInspector(animated: Bool, in presentingViewController: UIViewController) -> UIViewController? {
+        guard let coordinator = makeInspectorViewCoordinator() else { return nil }
+
+        let viewController = coordinator.start()
+
+        presentingViewController.present(viewController, animated: animated)
+
+        return viewController
+    }
+
+    func makeInspectorViewCoordinator() -> InspectorViewCoordinator? {
+        guard let snapshot = viewHierarchySnaphost else { return nil }
+
+        let coordinator = InspectorViewCoordinator(
+            snapshot: snapshot,
+            commandGroups: { [weak self] in self?.commandGroups }
+        ).then {
+            if swiftUIhost != nil {
+                $0.swiftUIDelegate = self
+            }
+            else {
+                $0.delegate = self
+            }
+        }
+
+        addChild(coordinator)
+
+        return coordinator
     }
 }

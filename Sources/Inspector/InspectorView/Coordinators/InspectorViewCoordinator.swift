@@ -25,10 +25,16 @@ protocol InspectorViewCoordinatorSwiftUIDelegate: AnyObject {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, willFinishWith command: InspectorCommand?)
 }
 
+protocol InspectorViewCoordinatorDelegate: AnyObject {
+    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, didFinishWith command: InspectorCommand?)
+}
+
 final class InspectorViewCoordinator: ViewCoordinator {
     typealias CommandGroupsProvider = HierarchyInspectorViewModel.CommandGroupsProvider
 
     weak var swiftUIDelegate: InspectorViewCoordinatorSwiftUIDelegate?
+
+    weak var delegate: InspectorViewCoordinatorDelegate?
 
     let hierarchySnapshot: ViewHierarchySnapshot
 
@@ -70,12 +76,17 @@ final class InspectorViewCoordinator: ViewCoordinator {
     }
 
     func finish(command: InspectorCommand?) {
-        guard let delegate = swiftUIDelegate else {
-            inspectorViewController.dismiss(animated: true)
+        if let swiftUIDelegate = swiftUIDelegate {
+            swiftUIDelegate.inspectorViewCoordinator(self, willFinishWith: command)
             return
         }
 
-        delegate.inspectorViewCoordinator(self, willFinishWith: command)
+        if let delegate = delegate {
+            inspectorViewController.dismiss(animated: true) {
+                delegate.inspectorViewCoordinator(self, didFinishWith: command)
+            }
+            return
+        }
     }
 }
 
