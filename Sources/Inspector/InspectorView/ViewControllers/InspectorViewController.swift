@@ -140,7 +140,7 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable {
 
         if animated {
             viewCode.transform = .init(scaleX: 0.8, y: 0.8)
-            viewCode.animate(.out, duration: ElementInspector.configuration.animationDuration * 1.5)
+            viewCode.animate(.out, duration: .average * 1.5)
         }
 
         if shouldToggleFirstResponderOnAppear {

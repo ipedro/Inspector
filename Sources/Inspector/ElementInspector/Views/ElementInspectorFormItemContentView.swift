@@ -158,7 +158,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
     }
 
     func headerControlDidChangeState() {
-        UIView.animate(withDuration: 0.15) {
+        animate {
             switch self.headerControl.state {
             case .highlighted:
                 self.headerControl.alpha = 0.66

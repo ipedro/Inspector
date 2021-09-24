@@ -45,7 +45,7 @@ class ElementInspectorNavigationController: UINavigationController {
 
         view.tintColor = colorStyle.textColor
 
-        view.backgroundColor = colorStyle.backgroundColor
+        view.installView(blurView, position: .behind)
 
         navigationBar.barTintColor = colorStyle.highlightBackgroundColor
 
@@ -65,6 +65,10 @@ class ElementInspectorNavigationController: UINavigationController {
         becomeFirstResponder()
     }
 
+    private(set) lazy var blurView = UIVisualEffectView(
+        effect: UIBlurEffect(style: colorStyle.blurStyle)
+    )
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 

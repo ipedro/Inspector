@@ -66,8 +66,30 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         insets.top = .zero
 
         $0.insets = insets
-        $0.backgroundColor = colorStyle.highlightBackgroundColor
+        $0.backgroundColor = colorStyle.accessoryControlBackgroundColor
         $0.contentView.addArrangedSubview(formView)
+    }
+
+    private var switchControl: UISwitch! {
+        didSet {
+            switchControl.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+            valueChanged()
+        }
+    }
+
+    @objc private func valueChanged() {
+        animate {
+            if self.switchControl.isOn {
+                self.cardView.borderColor = self.colorStyle.tintColor
+                self.header.alpha = 1
+                self.tintAdjustmentMode = .automatic
+            }
+            else {
+                self.header.alpha = 0.5
+                self.tintAdjustmentMode = .dimmed
+                self.cardView.borderColor = self.colorStyle.quaternaryTextColor
+            }
+        }
     }
 
     override func setup() {
@@ -87,10 +109,12 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
                 return
             }
 
+            switchControl = toggleControl.switchControl
+
             toggleControl.isHidden = true
 
             let switchContainerView = UIStackView().then {
-                $0.addArrangedSubviews(toggleControl.switchControl)
+                $0.addArrangedSubviews(switchControl)
                 $0.isLayoutMarginsRelativeArrangement = true
                 $0.directionalLayoutMargins = .init(trailing: ElementInspector.appearance.horizontalMargins)
             }

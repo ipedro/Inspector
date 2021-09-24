@@ -102,15 +102,9 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
             return
         }
 
-        UIView.animate(
-            withDuration: ElementInspector.configuration.animationDuration,
-            delay: 0,
-            options: [.beginFromCurrentState, .curveEaseInOut],
-            animations: { [weak self] in
-                self?.isCollapsed.toggle()
-            },
-            completion: nil
-        )
+        animate { [weak self] in
+            self?.isCollapsed.toggle()
+        }
     }
 
     private(set) lazy var elementNameLabel = UILabel().then {

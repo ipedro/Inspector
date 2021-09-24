@@ -142,7 +142,7 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
 
     @objc
     func startLiveUpdatingSnaphost() {
-        debounce(#selector(makeDisplayLink), after: ElementInspector.configuration.animationDuration)
+        debounce(#selector(makeDisplayLink), after: .average)
     }
 
     @objc

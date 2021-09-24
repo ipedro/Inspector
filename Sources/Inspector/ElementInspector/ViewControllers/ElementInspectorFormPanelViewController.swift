@@ -213,12 +213,9 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
     }
 
     func animatePanel(animations: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {
-        UIView.animate(
-            withDuration: ElementInspector.configuration.animationDuration * 2,
-            delay: 0.05,
-            usingSpringWithDamping: 0.9,
-            initialSpringVelocity: 0,
-            options: .beginFromCurrentState,
+        animate(
+            withDuration: .veryLong,
+            options: [.beginFromCurrentState, .layoutSubviews],
             animations: animations,
             completion: completion
         )

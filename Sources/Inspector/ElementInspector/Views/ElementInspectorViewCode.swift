@@ -28,10 +28,10 @@ final class ElementInspectorViewCode: BaseView {
     }
 
     enum Style {
-        case scrollView, `default`
+        case scrollView, `static`
     }
 
-    var containerStyle: Style = .default {
+    var containerStyle: Style = .static {
         didSet {
             switch containerStyle {
             case .scrollView:
@@ -39,7 +39,7 @@ final class ElementInspectorViewCode: BaseView {
                 scrollView.installView(containerStackView, priority: .required)
                 installView(scrollView, position: .behind, priority: .required)
 
-            case .default:
+            case .static:
                 scrollView.removeFromSuperview()
                 installView(containerStackView, priority: .required)
             }
@@ -130,9 +130,6 @@ final class ElementInspectorViewCode: BaseView {
 
     override func setup() {
         super.setup()
-
-        backgroundColor = colorStyle.backgroundColor
-        headerView.backgroundColor = backgroundColor
 
         scrollView.installView(containerStackView, priority: .required)
 

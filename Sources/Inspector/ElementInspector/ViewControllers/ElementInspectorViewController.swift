@@ -74,7 +74,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                 oldPanelViewController.removeFromParent()
             }
 
-            viewCode.containerStyle = .default
+            viewCode.containerStyle = .static
 
             guard let panelViewController = currentPanelViewController else {
                 viewCode.emptyLabel.isHidden = false
@@ -85,10 +85,9 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
             let animationDuration: TimeInterval = 0.18
 
-            viewCode.activityIndicator.alpha = 0
             viewCode.activityIndicator.startAnimating()
 
-            UIView.animate(withDuration: animationDuration, delay: animationDuration) { [weak self] in
+            animate(delay: animationDuration) { [weak self] in
                 self?.viewCode.activityIndicator.alpha = 1
             }
 
@@ -101,23 +100,22 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                     fatalError("Where's my view Mr. Panel?")
                 }
 
-                self.viewCode.containerStyle = panelViewController.hasScrollView ? .default : .scrollView
+                self.viewCode.containerStyle = panelViewController.hasScrollView ? .static : .scrollView
 
                 self.viewCode.contentView.addArrangedSubview(panelView)
 
                 panelView.alpha = 0
-                panelView.backgroundColor = self.viewCode.backgroundColor
-                panelView.isOpaque = true
                 panelView.transform = .init(scaleX: 0.99, y: 0.98)
                     .translatedBy(x: .zero, y: -ElementInspector.appearance.verticalMargins)
 
-                UIView.animate(
+                self.animate(
                     withDuration: animationDuration,
-                    delay: .zero,
-                    options: [.layoutSubviews, .curveEaseInOut],
+                    options: [.layoutSubviews, .beginFromCurrentState],
                     animations: {
                         panelView.alpha = 1
                         panelView.transform = .identity
+                        self.viewCode.activityIndicator.alpha = 0
+                        self.viewCode.activityIndicator.transform = .init(scaleX: 0.5, y: 0.5)
                     },
                     completion: { [weak self] _ in
                         guard let self = self else { return }
@@ -125,6 +123,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                         panelViewController.didMove(toParent: self)
                         NSObject.cancelPreviousPerformRequests(withTarget: self.viewCode.activityIndicator)
                         self.viewCode.activityIndicator.stopAnimating()
+                        self.viewCode.activityIndicator.transform = .identity
+                        self.viewCode.activityIndicator.alpha = 1
                         self.configureNavigationBarViews()
                     }
                 )
@@ -194,16 +194,83 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             return
         }
 
-        viewCode.alpha = 0
+        // The mask will shrink to half the width during the animation:
+        let maskViewNewFrame = CGRect(origin: .zero, size: CGSize(width: 0.5 * view.frame.width, height: view.frame.height))
 
-        transitionCoordinator.animate(
-            alongsideTransition: { context in
-                self.viewCode.alpha = 1
-                self.updatePanelsSegmentedControl()
-                self.installPanel(self.viewModel.currentPanel)
+        let maskView = UIView(frame: maskViewNewFrame)// CGRect(origin: .zero, size: view.frame.size))
+        maskView.backgroundColor = .white
+
+        transitionCoordinator.animate { transitionContext in
+            self.updatePanelsSegmentedControl()
+            self.installPanel(self.viewModel.currentPanel)
+
+            guard
+                let fromViewController = transitionContext.viewController(forKey: .from) as? ElementInspectorViewController,
+                let fromView = fromViewController.view
+            else {
+                return
             }
-        )
+
+            // Apply a white UIView as mask to the SOURCE view:
+            fromView.mask = maskView
+            fromView.alpha = 0
+
+//            maskView.frame = maskViewNewFrame // (Mask to half width)
+        } completion: { transitionContext in
+            guard
+                let fromViewController = transitionContext.viewController(forKey: .from) as? ElementInspectorViewController,
+                let fromView = fromViewController.view
+            else {
+                return
+            }
+
+            // Remove mask, otherwise funny things will happen if toView is a
+            // scroll or table view and the user "rubberbands":
+            fromView.mask = nil
+            fromView.alpha = 1
+        }
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        defer {
+            super.viewWillDisappear(animated)
+        }
+
+        transitionCoordinator?.animate { transitionContext in
+            guard
+                let toViewController = transitionContext.viewController(forKey: .to) as? ElementInspectorViewController,
+                let toView = toViewController.view
+            else {
+                return
+            }
+
+            // Apply a white UIView as mask to the DESTINATION view, at the begining
+            // revealing only the left-most half:
+            let halfWidthSize = CGSize(width: 0.3 * toView.frame.width, height: toView.frame.height)
+            let maskView = UIView(frame: CGRect(origin: .zero, size: halfWidthSize))
+            maskView.backgroundColor = .white
+            toView.mask = maskView
+
+            // And calculate a new frame to make it grow back to full width during
+            // the animation:
+            let maskViewNewFrame = toView.bounds
+
+            maskView.frame = maskViewNewFrame // (Mask back to full width: no clipping)
+
+        } completion: { transitionContext in
+            guard
+                let toViewController = transitionContext.viewController(forKey: .to) as? ElementInspectorViewController,
+                let toView = toViewController.view
+            else {
+                return
+            }
+
+            // Remove mask, otherwise funny things will happen if toView is a
+            // scroll or table view and the user "rubberbands":
+            toView.mask = nil
+        }
+    }
+
 
     func updatePanelsSegmentedControl() {
         viewCode.segmentedControl.removeAllSegments()

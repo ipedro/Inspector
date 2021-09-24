@@ -78,7 +78,7 @@ public extension InspectorConfiguration {
                 case .light:
                     return .white
                 }
-            }
+            }.withAlphaComponent(0.5)
         }
 
         var tintColor: UIColor {
@@ -91,7 +91,12 @@ public extension InspectorConfiguration {
 
         var blurStyle: UIBlurEffect.Style {
             if #available(iOS 13.0, *) {
-                return .systemChromeMaterial
+                switch self {
+                case .dark:
+                    return .systemMaterial
+                case .light:
+                    return .systemThinMaterial
+                }
             }
             else {
                 return .regular
@@ -107,6 +112,10 @@ public extension InspectorConfiguration {
                     return backgroundColor
                 }
             }
+        }
+
+        var cellHighlightBackgroundColor: UIColor {
+            textColor.withAlphaComponent(disabledAlpha / 6)
         }
 
         var accessoryControlBackgroundColor: UIColor {

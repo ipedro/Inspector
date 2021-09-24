@@ -70,8 +70,6 @@ extension ElementChildrenPanelViewController {
 
         let tableView = viewCode.tableView
 
-        var insertedIndexPaths = [IndexPath]()
-
         if let cell = tableView.cellForRow(at: indexPath) as? ElementChildrenPanelTableViewCodeCell {
             cell.toggleCollapse(animated: true)
         }
@@ -80,22 +78,46 @@ extension ElementChildrenPanelViewController {
             actions.forEach {
                 switch $0 {
                 case let .inserted(indexPaths):
-                    insertedIndexPaths.append(contentsOf: indexPaths)
-
                     tableView.insertRows(at: indexPaths, with: .top)
 
+                    DispatchQueue.main.async {
+                        let cells = indexPaths.compactMap { tableView.cellForRow(at: $0) }
+                        cells.forEach{
+                            $0.alpha = 0
+                            $0.transform = .init(scaleX: 0.9, y: 0.9)
+                        }
+
+                        tableView.animate(withDuration: .veryLong, delay: 0.1) {
+                            cells.forEach{
+                                $0.alpha = 1
+                                $0.transform = .identity
+                            }
+                        }
+                    }
+
                 case let .deleted(indexPaths):
+                    let cells = indexPaths.compactMap { tableView.cellForRow(at: $0) }
+
+                    tableView.animate(withDuration: 0.4) {
+                        cells.forEach{
+                            $0.contentView.alpha = 0
+                            $0.transform = .init(scaleX: 0.9, y: 0.9)
+                            $0.backgroundColor = .none
+                        }
+                    }
+
                     tableView.deleteRows(at: indexPaths, with: .top)
                 }
             }
         } completion: { [weak self] _ in
+
             self?.updateVisibleRowsBackgroundColor()
         }
     }
 
     func updateVisibleRowsBackgroundColor(_ completion: ((Bool) -> Void)? = nil) {
         UIView.animate(
-            withDuration: ElementInspector.configuration.animationDuration,
+            withDuration: .average,
             animations: { [weak self] in
 
                 self?.viewCode.tableView.indexPathsForVisibleRows?.forEach { indexPath in

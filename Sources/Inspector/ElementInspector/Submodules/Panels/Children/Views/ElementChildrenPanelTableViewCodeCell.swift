@@ -64,10 +64,10 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         didSet {
             switch isEvenRow {
             case true:
-                backgroundColor = colorStyle.highlightBackgroundColor
+                backgroundColor = colorStyle.cellHighlightBackgroundColor
 
             case false:
-                backgroundColor = colorStyle.backgroundColor
+                backgroundColor = .none
             }
         }
     }
@@ -100,6 +100,8 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         super.prepareForReuse()
 
         delegate = nil
+        contentView.alpha = 1
+        transform = .identity
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

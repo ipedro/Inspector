@@ -20,6 +20,13 @@
 
 import UIKit
 
+extension TimeInterval {
+    static let short: TimeInterval = average / 2
+    static let average: TimeInterval = CATransaction.animationDuration()
+    static let long: TimeInterval = average * 2
+    static let veryLong: TimeInterval = average * 3
+}
+
 enum Animation {
     static let defaultDamping: CGFloat = 0.825
     static let defaultOptions: UIView.AnimationOptions = [.allowUserInteraction, .beginFromCurrentState]
@@ -48,7 +55,7 @@ extension UIView {
     func animate(
         from fromAnimation: Animation,
         to toAnimation: Animation,
-        duration: TimeInterval = ElementInspector.configuration.animationDuration,
+        duration: TimeInterval = .average,
         delay: TimeInterval = .zero,
         completion: ((Bool) -> Void)? = nil
     ) {
@@ -59,17 +66,37 @@ extension UIView {
 
     func animate(
         _ animation: Animation,
-        duration: TimeInterval = ElementInspector.configuration.animationDuration,
+        duration: TimeInterval = .average,
         delay: TimeInterval = .zero,
         completion: ((Bool) -> Void)? = nil
     ) {
-        Self.animate(
+        UIView.animate(
             withDuration: duration,
             delay: delay,
             usingSpringWithDamping: animation.damping,
             initialSpringVelocity: animation.velocity,
             options: animation.options,
             animations: { self.transform = animation.transform },
+            completion: completion
+        )
+    }
+}
+
+extension NSObject {
+    func animate(
+        withDuration duration: TimeInterval = .average,
+        delay: TimeInterval = .zero,
+        options: UIView.AnimationOptions = Animation.defaultOptions,
+        animations: @escaping () -> Void,
+        completion: ((Bool) -> Void)? = nil
+    ) {
+        UIView.animate(
+            withDuration: duration,
+            delay: delay,
+            usingSpringWithDamping: Animation.defaultDamping,
+            initialSpringVelocity: Animation.defaultVelocity,
+            options: options,
+            animations: animations,
             completion: completion
         )
     }

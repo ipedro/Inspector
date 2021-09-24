@@ -21,14 +21,18 @@
 import UIKit
 
 class BaseCardView: BaseView {
-    private(set) lazy var backgroundView = UIView().then {
+    private(set) lazy var containerView = UIView().then {
+        $0.installView(roundedView, priority: .required)
+    }
+
+    private(set) lazy var roundedView = UIView().then {
+        $0.layer.borderWidth = 1
         $0.installView(contentView, priority: .required)
-        $0.clipsToBounds = true
         $0.layer.cornerRadius = cornerRadius
     }
 
     private lazy var stackView = UIStackView.vertical(
-        .arrangedSubviews(backgroundView),
+        .arrangedSubviews(containerView),
         .isLayoutMarginsRelativeArrangement(true),
         .directionalLayoutMargins(insets)
     )
@@ -41,7 +45,7 @@ class BaseCardView: BaseView {
 
     var cornerRadius: CGFloat = ElementInspector.appearance.horizontalMargins {
         didSet {
-            backgroundView.layer.cornerRadius = cornerRadius
+            roundedView.layer.cornerRadius = cornerRadius
         }
     }
 
@@ -52,23 +56,24 @@ class BaseCardView: BaseView {
     }
 
     override var backgroundColor: UIColor? {
-        get { backgroundView.backgroundColor }
-        set { backgroundView.backgroundColor = newValue }
+        get { roundedView.backgroundColor }
+        set { roundedView.backgroundColor = newValue }
     }
 
     var borderColor: UIColor? {
         didSet {
             let color = borderColor ?? .clear
-            layer.borderColor = color.cgColor
+            roundedView.layer.borderColor = color.cgColor
         }
+    }
+
+    var borderWidth: CGFloat {
+        get { roundedView.layer.borderWidth }
+        set { roundedView.layer.borderWidth = newValue }
     }
 
     override func setup() {
         super.setup()
-
-        layer.borderWidth = 1.5
-
-        borderColor = nil
 
         installView(stackView, priority: .required)
 
