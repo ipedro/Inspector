@@ -231,7 +231,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         }
 
         // The mask will shrink to half the width during the animation:
-        let maskViewNewFrame = CGRect(origin: .zero, size: CGSize(width: 0.5 * view.frame.width, height: view.frame.height))
+        let maskViewNewFrame = CGRect(origin: .zero, size: CGSize(width: 0.3 * view.frame.width, height: view.frame.height))
 
         let maskView = UIView(frame: maskViewNewFrame)// CGRect(origin: .zero, size: view.frame.size))
         maskView.backgroundColor = .white
@@ -260,7 +260,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             if toView === self.view {
                 // Apply a white UIView as mask to the SOURCE view:
                 toView.mask = maskView
-                toView.mask?.frame = self.viewCode.bounds
+                toView.mask?.frame = toView.bounds
             }
             
             fromView.alpha = 0
@@ -301,8 +301,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             if toView === self.view {
                 // Apply a white UIView as mask to the DESTINATION view, at the begining
                 // revealing only the left-most half:
-                let halfWidthSize = CGSize(width: 0.5 * self.view.frame.width, height: toView.frame.height)
-                let maskView = UIView(frame: CGRect(origin: .init(x: -0.5 * self.view.frame.width, y: .zero), size: halfWidthSize))
+                let halfWidthSize = CGSize(width: 0.3 * toView.frame.width, height: toView.frame.height)
+                let maskView = UIView(frame: CGRect(origin: .init(x: -0.5 * toView.frame.width, y: .zero), size: halfWidthSize))
                 maskView.backgroundColor = .white
                 toView.mask = maskView
                 // And calculate a new frame to make it grow back to full width during
