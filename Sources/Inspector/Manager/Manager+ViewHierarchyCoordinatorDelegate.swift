@@ -26,15 +26,7 @@ extension Manager: ViewHierarchyCoordinatorDelegate {
                                   with action: ViewHierarchyAction?,
                                   in sourceView: HighlightView) {
 
-        for coordinator in children where (coordinator as? ElementInspectorCoordinator)?.rootReference == reference {
-            return
-        }
+        startElementInspectorCoordinator(for: reference, with: action, animated: true, from: sourceView.labelContentView)
 
-        startElementInspectorCoordinator(
-            for: reference,
-               with: action,
-               animated: true,
-               from: sourceView.labelContentView
-        )
     }
 }
