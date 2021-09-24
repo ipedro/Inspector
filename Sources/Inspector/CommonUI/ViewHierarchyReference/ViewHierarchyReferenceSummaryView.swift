@@ -119,12 +119,11 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
     }
 
     private(set) lazy var elementDescriptionLabel = UILabel().then {
-        $0.numberOfLines = 3
+        $0.numberOfLines = 4
         $0.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.font = .preferredFont(forTextStyle: .caption2)
         $0.textColor = colorStyle.secondaryTextColor
-        $0.numberOfLines = .zero
     }
 
     private lazy var collapseButtonContainer = UIView().then {
@@ -143,7 +142,6 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
     private(set) lazy var iconImageView = UIImageView().then {
         $0.clipsToBounds = false
         $0.contentMode = .scaleAspectFit
-        $0.tintColor = colorStyle.textColor
         $0.widthAnchor.constraint(equalToConstant: 32).isActive = true
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor).isActive = true
     }
@@ -210,6 +208,8 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
     override func setup() {
         super.setup()
+
+        tintColor = colorStyle.textColor
 
         contentView.axis = .horizontal
         contentView.spacing = ElementInspector.appearance.horizontalMargins

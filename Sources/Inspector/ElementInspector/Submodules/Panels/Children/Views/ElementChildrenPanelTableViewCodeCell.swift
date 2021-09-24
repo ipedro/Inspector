@@ -19,6 +19,7 @@
 //  SOFTWARE.
 
 import UIKit
+@_implementationOnly import UIKitOptions
 
 protocol ElementChildrenPanelTableViewCodeCellDelegate: AnyObject {
     func elementChildrenPanelTableViewCodeCellDidToggleCollapse(_ cell: ElementChildrenPanelTableViewCodeCell)
@@ -38,20 +39,23 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView().then {
-        $0.directionalLayoutMargins.update(trailing: .zero)
-    }
+    private lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView()
 
     private lazy var disclosureIcon = Icon(.chevronDown, color: colorStyle.tertiaryTextColor).then {
         $0.transform = .init(rotationAngle: -(.pi / 2))
     }
 
-    private lazy var containerStackView = UIStackView.horizontal(
-        .arrangedSubviews(referenceSummaryView, disclosureIcon),
-        .horizontalAlignment(.center),
-        .spacing(ElementInspector.appearance.verticalMargins),
-        .directionalLayoutMargins(trailing: ElementInspector.appearance.verticalMargins)
-    )
+    private lazy var containerStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.alignment = .center
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.addArrangedSubviews(referenceSummaryView, disclosureIcon)
+        $0.directionalLayoutMargins = .init(
+            top: ElementInspector.appearance.verticalMargins / 2,
+            bottom: ElementInspector.appearance.verticalMargins / 2,
+            trailing: ElementInspector.appearance.horizontalMargins
+        )
+    }
 
     var viewModel: ElementChildrenPanelItemViewModelProtocol? {
         didSet {

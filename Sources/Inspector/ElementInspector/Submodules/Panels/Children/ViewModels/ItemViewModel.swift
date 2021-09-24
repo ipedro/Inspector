@@ -58,7 +58,7 @@ extension ElementChildrenPanelViewModel {
             self.parent = parent
             self.reference = reference
             self.rootDepth = rootDepth
-            self.iconImage = thumbnailImage
+            self.iconImage = thumbnailImage?.withRenderingMode(.alwaysTemplate)
             _isCollapsed = isCollapsed
         }
     }

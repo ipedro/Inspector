@@ -223,6 +223,11 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        if viewCode.segmentedControl.numberOfSegments == .zero {
+            updatePanelsSegmentedControl()
+            installPanel(viewModel.currentPanel)
+        }
+
         guard
             animated,
             let transitionCoordinator = transitionCoordinator
@@ -240,7 +245,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
         // compensate for transition drop shadow
         let backgroundView = UIView()
-        backgroundView.backgroundColor = .init(white: 1, alpha: 0.043)
+        backgroundView.backgroundColor = colorStyle.panelTransitionBackgorundColor
 
         transitionCoordinator.animate { transitionContext in
 
@@ -266,6 +271,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             fromView.alpha = 0
 
         } completion: { transitionContext in
+            self.viewCode.alpha = 1
+            self.viewCode.mask = nil
 
             backgroundView.removeFromSuperview()
 
@@ -280,8 +287,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             // scroll or table view and the user "rubberbands":
             fromView.mask = nil
             fromView.alpha = 1
-
-            self.viewCode.mask = nil
         }
     }
 
@@ -315,6 +320,9 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             self.viewCode.alpha = 0
 
         } completion: { transitionContext in
+            self.viewCode.mask = nil
+            self.viewCode.alpha = 1
+
             guard
                 let toViewController = transitionContext.viewController(forKey: .to) as? ElementInspectorViewController,
                 let toView = toViewController.view
@@ -325,11 +333,9 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             // Remove mask, otherwise funny things will happen if toView is a
             // scroll or table view and the user "rubberbands":
             toView.mask = nil
-            self.viewCode.mask = nil
-            self.viewCode.alpha = 1
+
         }
     }
-
 
     func updatePanelsSegmentedControl() {
         viewCode.segmentedControl.removeAllSegments()
@@ -347,8 +353,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
     func reloadData() {
         viewCode.referenceSummaryView.reloadData()
-        updatePanelsSegmentedControl()
-        installPanel(viewModel.currentPanel)
     }
 
     // MARK: - Content Size

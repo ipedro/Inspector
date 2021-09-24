@@ -31,7 +31,7 @@ public struct InspectorConfiguration {
 
     public var nonInspectableClassNames: [String] = []
 
-    var colorStyle: ColorStyle {
+    var colorStyle: InspectorColorStyle {
         guard let hostWindow = Inspector.host?.window else { return .dark }
 
         if #available(iOS 13.0, *) {
