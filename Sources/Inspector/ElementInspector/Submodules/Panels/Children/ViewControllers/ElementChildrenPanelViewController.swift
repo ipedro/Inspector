@@ -25,9 +25,6 @@ protocol ElementChildrenPanelViewControllerDelegate: OperationQueueManagerProtoc
                                             didSelect reference: ViewHierarchyReference,
                                             with action: ViewHierarchyAction?,
                                             from fromReference: ViewHierarchyReference)
-
-    func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
-                                            previewFor reference: ViewHierarchyReference) -> UIViewController?
 }
 
 final class ElementChildrenPanelViewController: ElementInspectorPanelViewController {

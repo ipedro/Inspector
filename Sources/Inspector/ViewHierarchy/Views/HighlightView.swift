@@ -199,7 +199,7 @@ class HighlightView: LayerView {
         guard newSuperview == nil else { return }
 
         // reset views
-        viewReference.rootView?.isUserInteractionEnabled = viewReference.isUserInteractionEnabled
+        reference.rootView?.isUserInteractionEnabled = reference.isUserInteractionEnabled
         if #available(iOS 13.0, *) {
             superview?.removeInteraction(menuInteraction)
         }
@@ -227,7 +227,7 @@ class HighlightView: LayerView {
     func updateElementName() {
         var superViewName: String {
             guard let superview = superview else {
-                return viewReference.elementName
+                return reference.elementName
             }
             return superview.elementName
         }
@@ -239,18 +239,10 @@ class HighlightView: LayerView {
 @available(iOS 13.0, *)
 extension HighlightView: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        UIContextMenuConfiguration(
-            identifier: nil,
-            previewProvider: nil
-        ) { [weak self] _ in
+        .contextMenuConfiguration(for: reference) { [weak self] reference, action in
+            guard let self = self else { return }
 
-            guard let self = self else { return nil }
-
-            return self.viewReference.menu { [weak self] reference, action in
-                guard let self = self else { return }
-
-                self.delegate?.highlightView(self, didSelect: reference, with: action)
-            }
+            self.delegate?.highlightView(self, didSelect: reference, with: action)
         }
     }
 }
@@ -258,7 +250,7 @@ extension HighlightView: UIContextMenuInteractionDelegate {
 private extension HighlightView {
     @objc
     func tap() {
-        delegate?.highlightView(self, didSelect: viewReference, with: .none)
+        delegate?.highlightView(self, didSelect: reference, with: .none)
     }
 
     func updateLabelWidth() {

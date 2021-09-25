@@ -76,6 +76,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         // Description
 
         elementDescriptionLabel.text = viewModel?.subtitle
+        elementDescriptionLabel.numberOfLines = viewModel?.relativeDepth == .zero ? .zero : 3
 
         // Containers Insets
 
@@ -119,7 +120,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
     }
 
     private(set) lazy var elementDescriptionLabel = UILabel().then {
-        $0.numberOfLines = 4
+        $0.clipsToBounds = true
         $0.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.font = .preferredFont(forTextStyle: .caption2)

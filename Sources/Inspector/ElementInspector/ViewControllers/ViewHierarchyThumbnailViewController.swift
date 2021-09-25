@@ -22,7 +22,6 @@ import UIKit
 
 struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelProtocol {
     let reference: ViewHierarchyReference
-    let snapshot: ViewHierarchySnapshot
 
     // MARK: - ViewHierarchyReferenceDetailViewModelProtocol
 
@@ -30,7 +29,7 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelPr
 
     var automaticallyAdjustIndentation: Bool { false }
 
-    var iconImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
+    var iconImage: UIImage? { reference.iconImage }
 
     var title: String { reference.elementName }
 
@@ -47,11 +46,11 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelPr
     var relativeDepth: Int { .zero }
 }
 
-final class ViewHierarchyThumbnailViewController: UIViewController {
-    let viewModel: ViewHierarchyThumbnailViewModel
+final class ViewHierarchyPreviewViewController: UIViewController {
+    let reference: ViewHierarchyReference
 
-    init(viewModel: ViewHierarchyThumbnailViewModel) {
-        self.viewModel = viewModel
+    init(for reference: ViewHierarchyReference) {
+        self.reference = reference
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -66,12 +65,12 @@ final class ViewHierarchyThumbnailViewController: UIViewController {
     }
 
     private(set) lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView().then {
-        $0.viewModel = viewModel
+        $0.viewModel = reference
     }
 
     private(set) lazy var thumbnailView = ViewHierarchyReferenceThumbnailView(
         frame: .zero,
-        reference: viewModel.reference
+        reference: reference
     )
 
     override func loadView() {

@@ -20,38 +20,21 @@
 
 import UIKit
 
-struct ViewHierarchySnapshot {
-    let expiryDate = Date().addingTimeInterval(Inspector.configuration.cacheExpirationTimeInterval)
-
-    var isValid: Bool { expiryDate > Date() }
-
-    let availableLayers: [ViewHierarchyLayer]
-
-    let populatedLayers: [ViewHierarchyLayer]
-
-    let rootReference: ViewHierarchyReference
-
-    let inspectableReferences: [ViewHierarchyReference]
-
-    let elementLibraries: [InspectorElementLibraryProtocol]
-
-    init(
-        availableLayers: [ViewHierarchyLayer],
-        elementLibraries: [InspectorElementLibraryProtocol],
-        in rootView: UIView
-    ) {
-        self.availableLayers = availableLayers.uniqueValues()
-
-        self.elementLibraries = elementLibraries
-
-        rootReference = ViewHierarchyReference(rootView, iconProvider: { elementLibraries.icon(for: $0) })
-
-        inspectableReferences = rootReference.inspectableViewReferences
-
-        let inspectableViews = rootReference.inspectableViewReferences.compactMap(\.rootView)
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
+@available(iOS 13.0, *)
+extension UIContextMenuConfiguration {
+    static func contextMenuConfiguration(
+        for reference: ViewHierarchyReference,
+        includeActions: Bool = true,
+        handler: @escaping ViewHierarchyActionHandler
+    ) -> UIContextMenuConfiguration? {
+        guard let menu = UIMenu(with: reference, includeActions: includeActions, handler: handler) else {
+            return nil
         }
+
+        return UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: { ViewHierarchyPreviewViewController(for: reference) },
+            actionProvider: { _ in menu }
+        )
     }
 }

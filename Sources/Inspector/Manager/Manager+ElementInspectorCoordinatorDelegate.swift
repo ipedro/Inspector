@@ -53,6 +53,17 @@ extension Manager: ElementInspectorCoordinatorDelegate {
 }
 
 extension Manager {
+    func startElementInspectorCoordinator(for view: UIView,
+                                          with action: ViewHierarchyAction?,
+                                          animated: Bool,
+                                          from sourceView: UIView?) {
+        guard let elementLibraries = viewHierarchySnaphost?.elementLibraries else { return }
+
+        let reference = ViewHierarchyReference(view, iconProvider: { elementLibraries.icon(for: $0) })
+
+        startElementInspectorCoordinator(for: reference, with: action, animated: animated, from: sourceView)
+    }
+
     func startElementInspectorCoordinator(for reference: ViewHierarchyReference,
                                           with action: ViewHierarchyAction?,
                                           animated: Bool,

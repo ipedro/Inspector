@@ -94,7 +94,7 @@ enum InspectorColorStyle {
             case .dark:
                 return .systemMaterial
             case .light:
-                return .systemThinMaterial
+                return .systemMaterial
             }
         } else {
             return .regular
@@ -116,7 +116,7 @@ enum InspectorColorStyle {
         dynamicColor { colorStyle in
             switch colorStyle {
             case .light:
-                return .white.withAlphaComponent(disabledAlpha)
+                return .white.withAlphaComponent(0.4)
             case .dark:
                 return .white.withAlphaComponent(disabledAlpha / 7)
             }

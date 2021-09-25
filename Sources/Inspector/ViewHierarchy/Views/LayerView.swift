@@ -68,12 +68,13 @@ class LayerView: UIImageView, LayerViewProtocol {
 
     private lazy var borderedView = LayerViewComponent(frame: bounds)
 
-    let viewReference: ViewHierarchyReference
+    let reference: ViewHierarchyReference
 
     // MARK: - Init
 
     init(frame: CGRect, reference: ViewHierarchyReference, color: UIColor, borderWidth: CGFloat) {
-        viewReference = reference
+        self.reference = reference
+
         self.color = color
 
         super.init(frame: frame)

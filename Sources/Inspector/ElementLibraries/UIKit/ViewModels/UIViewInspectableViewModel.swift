@@ -108,9 +108,9 @@ extension UIKitElementLibrary {
             case .isUserInteractionEnabled:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { view.hightlightView?.viewReference.isUserInteractionEnabled ?? view.isUserInteractionEnabled }
+                    isOn: { view.hightlightView?.reference.isUserInteractionEnabled ?? view.isUserInteractionEnabled }
                 ) { isUserInteractionEnabled in
-                    guard let viewReference = view.hightlightView?.viewReference else {
+                    guard let viewReference = view.hightlightView?.reference else {
                         view.isUserInteractionEnabled = isUserInteractionEnabled
                         return
                     }

@@ -38,27 +38,18 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
 
     @available(iOS 13.0, *)
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        guard let itemViewModel = viewModel.itemViewModel(at: indexPath) else { return nil }
+        guard let reference = viewModel.itemViewModel(at: indexPath)?.reference else { return nil }
 
-        return UIContextMenuConfiguration(
-            identifier: nil,
-            previewProvider: { [weak self] in
-                guard let self = self else { return nil }
-                return self.delegate?.elementChildrenPanelViewController(self, previewFor: itemViewModel.reference)
-            },
-            actionProvider: { _ in
-                itemViewModel.reference.menu { [weak self] reference, action in
-                    guard let self = self else { return }
+        return .contextMenuConfiguration(for: reference) { [weak self] reference, action in
+            guard let self = self else { return }
 
-                    self.delegate?.elementChildrenPanelViewController(
-                        self,
-                        didSelect: reference,
-                        with: action,
-                        from: self.viewModel.rootReference
-                    )
-                }
-            }
-        )
+            self.delegate?.elementChildrenPanelViewController(
+                self,
+                didSelect: reference,
+                with: action,
+                from: self.viewModel.rootReference
+            )
+        }
     }
 }
 

@@ -27,6 +27,12 @@ final class ViewHierarchyReference {
 
     var isUserInteractionEnabled: Bool
 
+    typealias IconProvider = (UIView?) -> UIImage?
+
+    private let iconProvider: IconProvider
+
+    weak private(set) var viewController: UIViewController?
+
     var depth: Int {
         didSet {
             guard let view = rootView else {
@@ -34,7 +40,7 @@ final class ViewHierarchyReference {
                 return
             }
 
-            children = view.originalSubviews.map { .init($0, depth: depth + 1, parent: self) }
+            children = view.originalSubviews.map { .init($0, depth: depth + 1, iconProvider: iconProvider, parent: self) }
         }
     }
 
@@ -63,7 +69,7 @@ final class ViewHierarchyReference {
     private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
 
     private(set) lazy var children: [ViewHierarchyReference] = {
-        rootView?.originalSubviews.map { .init($0, depth: depth + 1, parent: self) } ?? []
+        rootView?.originalSubviews.map { .init($0, depth: depth + 1, iconProvider: iconProvider, parent: self) } ?? []
     }()
 
     // MARK: - Private Properties
@@ -74,7 +80,13 @@ final class ViewHierarchyReference {
 
     private let _elementName: String
 
+    var isCollapsed: Bool
+
     // MARK: - Computed Properties
+
+    var iconImage: UIImage? {
+        iconProvider(rootView)
+    }
 
     var allParents: [ViewHierarchyReference] {
         var array = [ViewHierarchyReference]()
@@ -93,16 +105,20 @@ final class ViewHierarchyReference {
 
     // MARK: - Init
 
-    convenience init(_ rootView: UIView) {
-        self.init(rootView, depth: .zero, parent: nil)
+    convenience init(_ rootView: UIView, iconProvider: @escaping IconProvider) {
+        self.init(rootView, depth: .zero, isCollapsed: false, iconProvider: iconProvider, parent: nil)
     }
 
-    init(_ rootView: UIView, depth: Int, parent: ViewHierarchyReference?) {
+    init(_ rootView: UIView, depth: Int, isCollapsed: Bool = false, iconProvider: @escaping IconProvider, parent: ViewHierarchyReference?) {
         self.rootView = rootView
 
         self.depth = depth
 
         self.parent = parent
+
+        self.iconProvider = iconProvider
+
+        self.isCollapsed = isCollapsed
 
         identifier = ObjectIdentifier(rootView)
 
@@ -123,93 +139,6 @@ final class ViewHierarchyReference {
         accessibilityIdentifier = rootView.accessibilityIdentifier
 
         canHostInspectorView = rootView.canHostInspectorView
-    }
-}
-
-// MARK: - Menu
-
-@available(iOS 13.0, *)
-extension ViewHierarchyReference {
-    typealias MenuActionHandler = (ViewHierarchyReference, ViewHierarchyAction) -> Void
-    
-    func menu(includeActions: Bool = true, handler: @escaping MenuActionHandler) -> UIMenu? {
-        var menus: [UIMenuElement] = []
-
-        if includeActions, let actionsMenu = self.actionsMenu(options: .displayInline, handler: handler) {
-            menus.append(actionsMenu)
-        }
-
-        let copyMenu = copyMenu(options: .displayInline)
-        menus.append(copyMenu)
-
-        if !children.isEmpty {
-            if #available(iOS 14.0, *) {
-                let childrenMenu = UIDeferredMenuElement { completion in
-                    if let menu = self.childrenMenu(handler: handler) {
-                        completion([menu])
-                    }
-                    else {
-                        completion([])
-                    }
-                }
-                menus.append(childrenMenu)
-            }
-            else if let childrenMenu = self.childrenMenu(handler: handler) {
-                menus.append(childrenMenu)
-            }
-        }
-
-        return UIMenu(
-            title: elementName,
-            image: nil,
-            identifier: nil,
-            children: menus
-        )
-    }
-
-    private func childrenMenu(options: UIMenu.Options = .init(), handler: @escaping MenuActionHandler) -> UIMenu? {
-        guard !children.isEmpty else { return nil }
-
-        return UIMenu(
-            title: Texts.children.appending(" (\(children.count))"),
-            image: nil,
-            identifier: nil,
-            options: options,
-            children: children.compactMap { $0.menu(handler: handler) }
-        )
-    }
-
-    private func actionsMenu(options: UIMenu.Options = .init(), handler: @escaping MenuActionHandler) -> UIMenu? {
-        guard !actions.isEmpty else { return nil }
-
-        return UIMenu(
-            title: Texts.open,
-            options: options,
-            children: actions.map { action in
-                UIAction(title: Texts.open(action.title), image: action.image) { [weak self] _ in
-                    guard let self = self else { return }
-                    handler(self, action)
-                }
-            }
-        )
-    }
-
-    private func copyMenu(options: UIMenu.Options = .init()) -> UIMenu {
-        UIMenu(
-            title: Texts.copy,
-            image: .none,
-            options: options,
-            children: [
-                UIAction.copyAction(
-                    title: Texts.copy("Class Name"),
-                    stringProvider: { [weak self] in self?.className }
-                ),
-                UIAction.copyAction(
-                    title: Texts.copy("Description"),
-                    stringProvider: { [weak self] in self?.elementDescription }
-                )
-            ]
-        )
     }
 }
 
@@ -298,4 +227,35 @@ extension ViewHierarchyReference {
 
         return false
     }
+}
+
+extension ViewHierarchyReference: ViewHierarchyReferenceSummaryViewModelProtocol {
+    var title: String {
+        elementName
+    }
+
+    var titleFont: UIFont {
+        ElementInspector.appearance.titleFont(forRelativeDepth: .zero)
+    }
+
+    var subtitle: String {
+        elementDescription
+    }
+
+    var showCollapseButton: Bool {
+        false
+    }
+
+    var isHidden: Bool {
+        false
+    }
+
+    var relativeDepth: Int {
+        .zero
+    }
+
+    var automaticallyAdjustIndentation: Bool {
+        false
+    }
+
 }

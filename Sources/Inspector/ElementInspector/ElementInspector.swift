@@ -45,7 +45,7 @@ extension ElementInspector {
             return userInterfaceIdiom == .phone
         }
 
-        var childrenListMaximumInteractiveDepth = 3
+        var childrenListMaximumInteractiveDepth = 4
 
         var animationDuration: TimeInterval = CATransaction.animationDuration()
 
