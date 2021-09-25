@@ -31,14 +31,10 @@ extension ElementChildrenPanelItemViewModelProtocol {
 }
 
 extension ElementChildrenPanelViewModel {
-    final class ItemViewModel {
+    final class ChildViewModel {
         weak var parent: ElementChildrenPanelItemViewModelProtocol?
 
         private var _isCollapsed: Bool
-
-        var title: String { reference.elementName }
-
-        var subtitle: String { reference.elementDescription }
 
         let rootDepth: Int
 
@@ -66,12 +62,17 @@ extension ElementChildrenPanelViewModel {
 
 // MARK: - ElementViewHierarchyPanelViewModelProtocol
 
-extension ElementChildrenPanelViewModel.ItemViewModel: ElementChildrenPanelItemViewModelProtocol {
+extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelItemViewModelProtocol {
+
     var automaticallyAdjustIndentation: Bool { true }
 
-    var titleFont: UIFont {
-        ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth + 1)
-    }
+    var title: String { reference.elementName }
+
+    var subtitle: String { reference.shortElementDescription }
+
+    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth + 1) }
+
+    var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: relativeDepth + 1) }
 
     var isHidden: Bool { parent?.isCollapsed == true || parent?.isHidden == true }
 
@@ -97,8 +98,8 @@ extension ElementChildrenPanelViewModel.ItemViewModel: ElementChildrenPanelItemV
 
 // MARK: - Hashable
 
-extension ElementChildrenPanelViewModel.ItemViewModel: Hashable {
-    static func == (lhs: ElementChildrenPanelViewModel.ItemViewModel, rhs: ElementChildrenPanelViewModel.ItemViewModel) -> Bool {
+extension ElementChildrenPanelViewModel.ChildViewModel: Hashable {
+    static func == (lhs: ElementChildrenPanelViewModel.ChildViewModel, rhs: ElementChildrenPanelViewModel.ChildViewModel) -> Bool {
         lhs.reference == rhs.reference
     }
 
@@ -109,7 +110,7 @@ extension ElementChildrenPanelViewModel.ItemViewModel: Hashable {
 
 // MARK: - Images
 
-private extension ElementChildrenPanelViewModel.ItemViewModel {
+private extension ElementChildrenPanelViewModel.ChildViewModel {
     static let thumbnailImageLostConnection = IconKit.imageOfWifiExlusionMark(
         CGSize(
             width: ElementInspector.appearance.horizontalMargins * 1.5,

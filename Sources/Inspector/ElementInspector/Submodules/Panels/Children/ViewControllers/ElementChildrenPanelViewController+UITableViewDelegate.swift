@@ -26,7 +26,7 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let selectedItemViewModel = viewModel.itemViewModel(at: indexPath) else { return }
+        guard let selectedItemViewModel = viewModel.childViewModel(at: indexPath) else { return }
 
         delegate?.elementChildrenPanelViewController(
             self,
@@ -38,7 +38,7 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
 
     @available(iOS 13.0, *)
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        guard let reference = viewModel.itemViewModel(at: indexPath)?.reference else { return nil }
+        guard let reference = viewModel.childViewModel(at: indexPath)?.reference else { return nil }
 
         return .contextMenuConfiguration(for: reference) { [weak self] reference, action in
             guard let self = self else { return }

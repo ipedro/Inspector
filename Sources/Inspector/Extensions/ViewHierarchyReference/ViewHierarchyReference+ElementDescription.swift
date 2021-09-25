@@ -22,13 +22,27 @@ import Foundation
 import UIKit
 
 extension ViewHierarchyReference {
+    var shortElementDescription: String {
+        [issuesDescription,
+         subviewsDescription,
+         constraintsDescription,
+         positionDescrpition,
+         sizeDescription,
+         superclassName,
+         className
+        ]
+        .compactMap { $0 }
+        .prefix(3)
+        .joined(separator: "\n")
+    }
+
     var elementDescription: String {
-        [
-            classNameDescription,
-            issuesDescription,
-            subviewsDescription,
-            constraintsDescription,
-            frameDescription
+        [classNameDescription?.string(appending: "\n"),
+         sizeDescription,
+         positionDescrpition?.string(appending: "\n"),
+         constraintsDescription,
+         subviewsDescription,
+         issuesDescription?.string(prepending: "\n")
         ]
         .compactMap { $0 }
         .joined(separator: "\n")
@@ -53,22 +67,18 @@ extension ViewHierarchyReference {
         guard !issues.isEmpty else { return nil }
 
         if issues.count == 1, let issue = issues.first {
-            return "\n⚠️ \(issue.description)"
+            return "⚠️ \(issue.description)"
         }
 
-        var string = issues.reduce(into: "") { multipleIssuesDescription, issue in
-            if multipleIssuesDescription.isEmpty {
-                multipleIssuesDescription = "\n⚠️ \(issues.count) Issues\n"
+        return issues.reduce(into: "") { multipleIssuesDescription, issue in
+            if multipleIssuesDescription?.isEmpty == true {
+                multipleIssuesDescription = "⚠️ \(issues.count) Issues"
             }
             else {
-                multipleIssuesDescription += "\n"
-                multipleIssuesDescription += "• \(issue.description)"
+                multipleIssuesDescription?.append("\n")
+                multipleIssuesDescription?.append("• \(issue.description)")
             }
         }
-
-        string += "\n"
-
-        return string
     }
 
     private var emptyFrame: String? {
@@ -111,20 +121,25 @@ extension ViewHierarchyReference {
         return "\(child) (\(subview))"
     }
 
-    var frameDescription: String? {
+    var positionDescrpition: String? {
         guard let view = rootView else { return nil }
 
-        let origin = [
+        let position = [
             view.frame.origin.x.toString(prepending: "X:", separator: " "),
             view.frame.origin.y.toString(prepending: "Y:", separator: " ")
         ].joined(separator: " — ")
+        return "Position: \(position)"
+    }
+
+    var sizeDescription: String? {
+        guard let view = rootView else { return nil }
 
         let size = [
             view.frame.size.width.toString(prepending: "W:", separator: " "),
             view.frame.size.height.toString(prepending: "H:", separator: " ")
         ].joined(separator: " — ")
 
-        return "Position: \(origin)\nSize: \(size)"
+        return "Size: \(size)"
     }
 
     var superclassName: String? {

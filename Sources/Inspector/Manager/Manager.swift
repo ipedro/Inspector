@@ -76,7 +76,6 @@ extension Inspector {
 
         func start() {
             if children.contains(where: { $0 is ViewHierarchyCoordinator }) {
-                assertionFailure("Already started. Ignoring")
                 return
             }
 

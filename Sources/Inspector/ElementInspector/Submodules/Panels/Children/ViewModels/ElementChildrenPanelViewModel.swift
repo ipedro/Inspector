@@ -31,9 +31,7 @@ protocol ElementChildrenPanelViewModelProtocol {
 
     func reloadIcons()
 
-    func itemViewModel(at indexPath: IndexPath) -> ElementChildrenPanelItemViewModelProtocol?
-
-    func image(for reference: ViewHierarchyReference) -> UIImage?
+    func childViewModel(at indexPath: IndexPath) -> ElementChildrenPanelItemViewModelProtocol?
 
     /// Toggle if a container displays its subviews or hides them.
     /// - Parameter indexPath: index path
@@ -46,19 +44,19 @@ protocol ElementChildrenPanelViewModelProtocol {
 final class ElementChildrenPanelViewModel: NSObject {
     let rootReference: ViewHierarchyReference
 
-    private(set) var children: [ItemViewModel] {
+    private(set) var children: [ChildViewModel] {
         didSet {
             updateVisibleChildren()
         }
     }
 
-    private static func makeViewModels(
+    private static func makeChildViewModels(
         reference: ViewHierarchyReference,
-        parent: ItemViewModel?,
+        parent: ChildViewModel?,
         snapshot: ViewHierarchySnapshot,
         rootDepth: Int
-    ) -> [ItemViewModel] {
-        let viewModel = ItemViewModel(
+    ) -> [ChildViewModel] {
+        let viewModel = ChildViewModel(
             reference: reference,
             parent: parent,
             rootDepth: rootDepth,
@@ -66,8 +64,8 @@ final class ElementChildrenPanelViewModel: NSObject {
             isCollapsed: reference.depth >= rootDepth
         )
 
-        let childrenViewModels: [ItemViewModel] = reference.children.flatMap { childReference in
-            makeViewModels(
+        let childrenViewModels: [ChildViewModel] = reference.children.flatMap { childReference in
+            makeChildViewModels(
                 reference: childReference,
                 parent: viewModel,
                 snapshot: snapshot,
@@ -78,7 +76,7 @@ final class ElementChildrenPanelViewModel: NSObject {
         return [viewModel] + childrenViewModels
     }
 
-    private lazy var visibleChildren: [ItemViewModel] = []
+    private lazy var visibleChildren: [ChildViewModel] = []
 
     let snapshot: ViewHierarchySnapshot
 
@@ -86,7 +84,7 @@ final class ElementChildrenPanelViewModel: NSObject {
         rootReference = reference
         self.snapshot = snapshot
 
-        let viewModelsIncludingRoot = Self.makeViewModels(
+        let viewModelsIncludingRoot = Self.makeChildViewModels(
             reference: rootReference,
             parent: nil,
             snapshot: snapshot,
@@ -116,11 +114,7 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
         }
     }
 
-    func image(for reference: ViewHierarchyReference) -> UIImage? {
-        snapshot.elementLibraries.icon(for: reference.rootView)
-    }
-
-    func itemViewModel(at indexPath: IndexPath) -> ElementChildrenPanelItemViewModelProtocol? {
+    func childViewModel(at indexPath: IndexPath) -> ElementChildrenPanelItemViewModelProtocol? {
         guard indexPath.row < visibleChildren.count else { return nil }
 
         return visibleChildren[indexPath.row]
@@ -128,7 +122,7 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
 
     func indexPath(for item: ElementChildrenPanelItemViewModelProtocol?) -> IndexPath? {
         guard
-            let item = item as? ItemViewModel,
+            let item = item as? ChildViewModel,
             let row = visibleChildren.firstIndex(of: item)
         else {
             return nil

@@ -29,6 +29,8 @@ protocol ViewHierarchyReferenceSummaryViewModelProtocol {
 
     var subtitle: String { get }
 
+    var subtitleFont: UIFont { get }
+
     var isContainer: Bool { get }
 
     var isCollapsed: Bool { get set }
@@ -59,7 +61,6 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
         // Name
 
         elementNameLabel.text = viewModel?.title
-
         elementNameLabel.font = viewModel?.titleFont
 
         iconImageView.image = viewModel?.iconImage
@@ -70,13 +71,12 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
         let hideCollapse = viewModel?.showCollapseButton != true
         collapseButton.isHidden = hideCollapse
-
         collapseButtonContainer.isHidden = hideCollapse && viewModel?.automaticallyAdjustIndentation == false
 
         // Description
 
         elementDescriptionLabel.text = viewModel?.subtitle
-        elementDescriptionLabel.numberOfLines = viewModel?.relativeDepth == .zero ? .zero : 3
+        elementDescriptionLabel.font = viewModel?.subtitleFont
 
         // Containers Insets
 
@@ -121,10 +121,10 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
     private(set) lazy var elementDescriptionLabel = UILabel().then {
         $0.clipsToBounds = true
+        $0.numberOfLines = .zero
+        $0.textColor = colorStyle.secondaryTextColor
         $0.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        $0.font = .preferredFont(forTextStyle: .caption2)
-        $0.textColor = colorStyle.secondaryTextColor
     }
 
     private lazy var collapseButtonContainer = UIView().then {

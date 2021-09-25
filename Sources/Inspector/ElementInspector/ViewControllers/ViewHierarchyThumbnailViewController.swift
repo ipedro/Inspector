@@ -21,6 +21,7 @@
 import UIKit
 
 struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelProtocol {
+
     let reference: ViewHierarchyReference
 
     // MARK: - ViewHierarchyReferenceDetailViewModelProtocol
@@ -36,6 +37,8 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelPr
     var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
 
     var subtitle: String { reference.elementDescription }
+
+    var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: .zero) }
 
     var isContainer: Bool { false }
 

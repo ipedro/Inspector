@@ -230,32 +230,19 @@ extension ViewHierarchyReference {
 }
 
 extension ViewHierarchyReference: ViewHierarchyReferenceSummaryViewModelProtocol {
-    var title: String {
-        elementName
-    }
+    var title: String { elementName}
 
-    var titleFont: UIFont {
-        ElementInspector.appearance.titleFont(forRelativeDepth: .zero)
-    }
+    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
 
-    var subtitle: String {
-        elementDescription
-    }
+    var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: .zero) }
 
-    var showCollapseButton: Bool {
-        false
-    }
+    var subtitle: String { elementDescription }
 
-    var isHidden: Bool {
-        false
-    }
+    var showCollapseButton: Bool { false }
 
-    var relativeDepth: Int {
-        .zero
-    }
+    var isHidden: Bool { false }
 
-    var automaticallyAdjustIndentation: Bool {
-        false
-    }
+    var relativeDepth: Int { .zero }
 
+    var automaticallyAdjustIndentation: Bool { false }
 }

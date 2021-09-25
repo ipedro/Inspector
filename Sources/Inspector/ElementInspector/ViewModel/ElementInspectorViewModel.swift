@@ -102,6 +102,8 @@ extension ElementInspectorViewModel: ViewHierarchyReferenceSummaryViewModelProto
 
     var subtitle: String { reference.elementDescription }
 
+    var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: .zero) }
+
     var isContainer: Bool { false }
 
     var showCollapseButton: Bool { false }

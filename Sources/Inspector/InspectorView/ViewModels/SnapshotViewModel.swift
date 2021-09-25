@@ -96,7 +96,7 @@ extension HierarchyInspectorViewModel {
                 Details(
                     title: element.displayName,
                     isEnabled: true,
-                    subtitle: element.elementDescription,
+                    subtitle: element.shortElementDescription,
                     image: snapshot.elementLibraries.icon(for: element.rootView),
                     depth: element.depth,
                     reference: element

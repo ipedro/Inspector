@@ -52,8 +52,8 @@ final class SectionHeader: BaseView {
     private lazy var titleLabel = UILabel(
         .textColor(colorStyle.textColor)
     ).then {
+        $0.numberOfLines = 2
         $0.font = titleFont.font()
-        $0.adjustsFontSizeToFitWidth = true
         $0.isHidden = $0.text.isNilOrEmpty
     }
 
@@ -66,7 +66,6 @@ final class SectionHeader: BaseView {
         .textColor(colorStyle.secondaryTextColor)
     ).then {
         $0.font = subtitleFont.font()
-        $0.adjustsFontSizeToFitWidth = true
         $0.isHidden = $0.text.isNilOrEmpty
     }
 
@@ -140,6 +139,15 @@ final class SectionHeader: BaseView {
         contentView.axis = .vertical
         contentView.addArrangedSubviews(titleLabel, subtitleLabel)
         contentView.spacing = ElementInspector.appearance.verticalMargins / 2
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        let maxWidth = contentView.bounds.inset(by: contentView.directionalLayoutMargins.edgeInsets()).width
+
+        titleLabel.preferredMaxLayoutWidth = maxWidth
+        subtitleLabel.preferredMaxLayoutWidth = maxWidth
     }
 
     override func didMoveToSuperview() {
