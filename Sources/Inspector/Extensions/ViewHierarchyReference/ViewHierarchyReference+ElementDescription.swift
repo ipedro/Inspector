@@ -38,11 +38,11 @@ extension ViewHierarchyReference {
 
     var elementDescription: String {
         [classNameDescription?.string(appending: "\n"),
+         issuesDescription?.string(appending: "\n"),
          sizeDescription,
-         positionDescrpition?.string(appending: "\n"),
+         positionDescrpition,
          constraintsDescription,
-         subviewsDescription,
-         issuesDescription?.string(prepending: "\n")
+         subviewsDescription
         ]
         .compactMap { $0 }
         .joined(separator: "\n")
