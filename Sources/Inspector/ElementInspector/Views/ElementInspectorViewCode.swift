@@ -35,16 +35,19 @@ final class ElementInspectorViewCode: BaseView {
         didSet {
             switch containerStyle {
             case .scrollView:
+                if !containerStackView.arrangedSubviews.contains(contentView) {
+                    containerStackView.addArrangedSubview(contentView)
+                }
                 scrollView.contentOffset = CGPoint(x: .zero, y: -scrollView.adjustedContentInset.top)
                 scrollView.installView(containerStackView, priority: .required)
                 installView(scrollView, position: .behind, priority: .required)
+                containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
 
             case .static:
                 scrollView.removeFromSuperview()
-                installView(containerStackView, priority: .required)
+                installView(contentView, priority: .required)
+                contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
             }
-
-            containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         }
     }
 
@@ -125,7 +128,7 @@ final class ElementInspectorViewCode: BaseView {
 
         guard size.height != referenceSummaryHeightConstraint.constant else { return }
 
-        self.referenceSummaryHeightConstraint.constant = size.height
+        referenceSummaryHeightConstraint.constant = size.height
     }
 
     override func setup() {

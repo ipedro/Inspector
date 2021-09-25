@@ -32,7 +32,7 @@ enum ElementInspectorPanel: Swift.CaseIterable, Hashable {
         actions.compactMap { .init(rawValue: $0) }
     }
 
-    var title: String {
+    var title: String? {
         rawValue.title
     }
 

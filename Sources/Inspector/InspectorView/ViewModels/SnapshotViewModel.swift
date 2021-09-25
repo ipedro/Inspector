@@ -23,9 +23,9 @@ import UIKit
 extension HierarchyInspectorViewModel {
     final class SnapshotViewModel: HierarchyInspectorSectionViewModelProtocol {
         struct Details: HierarchyInspectorReferenceSummaryCellViewModelProtocol {
-            let title: String
+            let title: String?
             var isEnabled: Bool
-            let subtitle: String
+            let subtitle: String?
             let image: UIImage?
             let depth: Int
             let reference: ViewHierarchyReference

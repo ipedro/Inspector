@@ -21,9 +21,9 @@
 import UIKit
 
 protocol HierarchyInspectorReferenceSummaryCellViewModelProtocol {
-    var title: String { get }
+    var title: String? { get }
     var isEnabled: Bool { get }
-    var subtitle: String { get }
+    var subtitle: String? { get }
     var image: UIImage? { get }
     var depth: Int { get }
     var reference: ViewHierarchyReference { get }

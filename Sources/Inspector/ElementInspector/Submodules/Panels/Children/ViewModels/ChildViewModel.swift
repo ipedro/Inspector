@@ -64,19 +64,23 @@ extension ElementChildrenPanelViewModel {
 
 extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelItemViewModelProtocol {
 
-    var automaticallyAdjustIndentation: Bool { true }
+    var automaticallyAdjustIndentation: Bool { relativeDepth > .zero }
 
-    var title: String { reference.elementName }
+    var title: String? { reference.elementName }
 
-    var subtitle: String { reference.shortElementDescription }
+    var subtitle: String? { reference.shortElementDescription }
 
-    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth + 1) }
+    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth) }
 
-    var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: relativeDepth + 1) }
+    var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: relativeDepth) }
 
     var isHidden: Bool { parent?.isCollapsed == true || parent?.isHidden == true }
 
-    var showCollapseButton: Bool { isContainer && relativeDepth <= ElementInspector.configuration.childrenListMaximumInteractiveDepth }
+    var showCollapseButton: Bool {
+        guard relativeDepth > .zero else { return false }
+
+        return isContainer && relativeDepth <= ElementInspector.configuration.childrenListMaximumInteractiveDepth
+    }
 
     var isContainer: Bool { reference.isContainer }
 

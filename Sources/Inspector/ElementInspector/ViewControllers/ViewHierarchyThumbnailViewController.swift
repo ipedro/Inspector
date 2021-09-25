@@ -32,11 +32,11 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelPr
 
     var iconImage: UIImage? { reference.iconImage }
 
-    var title: String { reference.elementName }
+    var title: String? { reference.elementName }
 
     var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
 
-    var subtitle: String { reference.elementDescription }
+    var subtitle: String? { reference.elementDescription }
 
     var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: .zero) }
 

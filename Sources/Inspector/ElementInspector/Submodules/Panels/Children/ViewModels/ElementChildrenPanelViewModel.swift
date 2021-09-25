@@ -21,7 +21,7 @@
 import UIKit
 
 protocol ElementChildrenPanelViewModelProtocol {
-    var title: String { get }
+    var title: String? { get }
 
     var rootReference: ViewHierarchyReference { get }
 
@@ -61,7 +61,7 @@ final class ElementChildrenPanelViewModel: NSObject {
             parent: parent,
             rootDepth: rootDepth,
             thumbnailImage: snapshot.elementLibraries.icon(for: reference.rootView),
-            isCollapsed: reference.depth >= rootDepth
+            isCollapsed: reference.depth > rootDepth
         )
 
         let childrenViewModels: [ChildViewModel] = reference.children.flatMap { childReference in
@@ -84,16 +84,12 @@ final class ElementChildrenPanelViewModel: NSObject {
         rootReference = reference
         self.snapshot = snapshot
 
-        let viewModelsIncludingRoot = Self.makeChildViewModels(
+        children = Self.makeChildViewModels(
             reference: rootReference,
             parent: nil,
             snapshot: snapshot,
-            rootDepth: rootReference.depth + 1 // account for removal of root reference
+            rootDepth: rootReference.depth
         )
-
-        let children = Array(viewModelsIncludingRoot.dropFirst())
-
-        self.children = children
 
         super.init()
 
@@ -102,9 +98,9 @@ final class ElementChildrenPanelViewModel: NSObject {
 }
 
 extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
-    func shouldHighlightItem(at indexPath: IndexPath) -> Bool { true }
+    func shouldHighlightItem(at indexPath: IndexPath) -> Bool { indexPath.row + indexPath.section > 0 }
 
-    var title: String { "More info" }
+    var title: String? { "More info" }
 
     var numberOfRows: Int { visibleChildren.count }
 

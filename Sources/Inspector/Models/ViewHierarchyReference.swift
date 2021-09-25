@@ -230,13 +230,13 @@ extension ViewHierarchyReference {
 }
 
 extension ViewHierarchyReference: ViewHierarchyReferenceSummaryViewModelProtocol {
-    var title: String { elementName}
+    var title: String? { elementName}
 
     var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
 
     var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: .zero) }
 
-    var subtitle: String { elementDescription }
+    var subtitle: String? { elementDescription }
 
     var showCollapseButton: Bool { false }
 

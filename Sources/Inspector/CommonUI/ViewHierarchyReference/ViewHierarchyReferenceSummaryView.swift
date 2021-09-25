@@ -23,11 +23,11 @@ import UIKit
 protocol ViewHierarchyReferenceSummaryViewModelProtocol {
     var iconImage: UIImage? { get }
 
-    var title: String { get }
+    var title: String? { get }
 
     var titleFont: UIFont { get }
 
-    var subtitle: String { get }
+    var subtitle: String? { get }
 
     var subtitleFont: UIFont { get }
 
