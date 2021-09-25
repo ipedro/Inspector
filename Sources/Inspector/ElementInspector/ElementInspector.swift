@@ -74,35 +74,24 @@ extension ElementInspector {
         }
 
         func font(forRelativeDepth relativeDepth: Int) -> UIFont {
-            var style: UIFont.TextStyle {
-                switch relativeDepth {
-                case -5:
-                    return .title2
-
-                case -4:
-                    return .headline
-
-                case -3:
-                    return .subheadline
-
-                case -2:
-                    return .body
-
-                case -1:
-                    return .callout
-
-                case 0:
-                    return .footnote
-
-                case 1:
-                    return .caption1
-
-                default:
-                    return .caption2
-                }
-            }
-
-            return UIFont.preferredFont(forTextStyle: style)
+            UIFont.preferredFont(
+                forTextStyle: {
+                    switch relativeDepth {
+                        case let depth where depth <= -5:
+                            return .title2
+                        case -4:
+                            return .headline
+                        case -3:
+                            return .subheadline
+                        case -2:
+                            return .body
+                        case -1:
+                            return .callout
+                        default:
+                            return .footnote
+                    }
+                }()
+            )
         }
 
         func titleFont(forRelativeDepth relativeDepth: Int) -> UIFont {

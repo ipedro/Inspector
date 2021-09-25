@@ -75,21 +75,26 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         }
     }
 
-    private lazy var viewCode = ElementInspectorViewCode(
-        frame: CGRect(
-            origin: .zero,
-            size: ElementInspector.appearance.panelPreferredCompressedSize
-        )
+    private lazy var segmentedControl = UISegmentedControl.segmentedControlStyle().then {
+        $0.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
+    }
+
+    private let dismissItem: UIBarButtonItem.SystemItem = {
+        if #available(iOS 13.0, *) {
+            return .close
+        }
+        else {
+            return .done
+        }
+    }()
+
+    private(set) lazy var dismissBarButtonItem = UIBarButtonItem(
+        barButtonSystemItem: dismissItem,
+        target: self,
+        action: #selector(dismiss(_:))
     ).then {
-        $0.referenceSummaryView.viewModel = viewModel
-
-        $0.segmentedControl.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
-
-        $0.dismissBarButtonItem.target = self
-        $0.dismissBarButtonItem.action = #selector(dismiss(_:))
-
         if #available(iOS 14.0, *) {
-            $0.dismissBarButtonItem.menu = UIMenu(
+            $0.menu = UIMenu(
                 title: String(),
                 image: nil,
                 identifier: nil,
@@ -108,92 +113,50 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         }
     }
 
+    private lazy var viewCode = ElementInspectorViewCode(
+        frame: CGRect(
+            origin: .zero,
+            size: ElementInspector.appearance.panelPreferredCompressedSize
+        )
+    ).then {
+        $0.referenceSummaryView.viewModel = viewModel
+    }
+
     private(set) var currentPanelViewController: ElementInspectorPanelViewController? {
         didSet {
             oldValue?.willMove(toParent: nil)
 
-            guard let panelViewController = currentPanelViewController else {
-                viewCode.contentViewMode = .none
-                viewCode.emptyLabel.isHidden = false
-                oldValue?.removeFromParent()
-                return
-            }
+            viewCode.setContentAnimated(.loadingIndicator)
 
-            viewCode.emptyLabel.isHidden = true
-            viewCode.activityIndicator.alpha = 0
+            let operation = MainThreadAsyncOperation(name: "install panel") { [weak self] in
+                guard let self = self else {
+                    oldValue?.removeFromParent()
+                    return
+                }
 
-            animate(withDuration: .short, delay: .short) { [weak self] in
-                self?.viewCode.activityIndicator.startAnimating()
-                self?.viewCode.activityIndicator.alpha = 1
-            }
+                guard let panelViewController = self.currentPanelViewController else {
+                    self.viewCode.content = .empty(withMessage: "Lost connection to element")
+                    return
+                }
 
-            animate(withDuration: .short) {
-                oldValue?.view.alpha = 0
-            }
-
-            let operation = MainThreadAsyncOperation(name: "create \(panelViewController)") { [weak self] in
-                guard let self = self else { return }
+                let content: ElementInspectorViewCode.Content = {
+                    if let panelScrollView = panelViewController.panelScrollView {
+                        return .scrollView(panelScrollView)
+                    }
+                    return .panelView(panelViewController.view)
+                }()
 
                 self.addChild(panelViewController)
 
-                let transitionView: UIView
+                self.viewCode.setContentAnimated(content) {
+                    // must be done after view's `contentView` is updated
+                    self.configureNavigationItem()
 
-                let contentViewMode: ElementInspectorViewCode.ContentViewMode
-
-                if let panelScrollView = panelViewController.panelScrollView {
-                    contentViewMode = .scrollView(panelScrollView)
-                    transitionView = panelScrollView
+                } completion: { _ in
+                    oldValue?.didMove(toParent: nil)
+                    oldValue?.removeFromParent()
+                    panelViewController.didMove(toParent: self)
                 }
-                else if let panelView = panelViewController.view {
-                    contentViewMode = .content(panelView)
-                    transitionView = panelView
-                }
-                else {
-                    return self.animate {
-                        self.viewCode.contentViewMode = .none
-                    } completion: { _ in
-                        oldValue?.removeFromParent()
-                    }
-                }
-
-                transitionView.alpha = 0
-                transitionView.transform = .init(scaleX: 0.99, y: 0.98)
-                    .translatedBy(x: .zero, y: -ElementInspector.appearance.verticalMargins)
-
-                self.viewCode.contentViewMode = contentViewMode
-
-                self.animate(
-                    withDuration: .long,
-                    delay: .veryShort / 2,
-                    options: [.layoutSubviews, .beginFromCurrentState],
-                    animations: { [weak self] in
-                        guard let self = self else { return }
-
-                        // must be done after view's `contentView` is updated
-                        self.configureNavigationItem()
-
-                        self.viewCode.activityIndicator.alpha = 0
-
-                        transitionView.alpha = 1
-
-                        transitionView.transform = .identity
-                    },
-                    completion: { [weak self] _ in
-                        guard let self = self else { return }
-
-                        panelViewController.didMove(toParent: self)
-
-                        oldValue?.removeFromParent()
-
-                        NSObject.cancelPreviousPerformRequests(withTarget: self.viewCode.activityIndicator)
-
-                        self.viewCode.activityIndicator.stopAnimating()
-
-                        self.viewCode.activityIndicator.alpha = 0
-
-                        self.configureNavigationItem()
-                    }
-                )
             }
 
             OperationQueue.main.addOperation(operation)
@@ -241,8 +204,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     private func configureNavigationItem() {
         navigationItem.backBarButtonItem?.tintColor = colorStyle.tintColor
         navigationItem.leftBarButtonItem?.tintColor = colorStyle.tintColor
-        navigationItem.rightBarButtonItem = viewCode.dismissBarButtonItem
-        navigationItem.titleView = viewCode.segmentedControl
+        navigationItem.rightBarButtonItem = dismissBarButtonItem
+        navigationItem.titleView = segmentedControl
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
     }
@@ -250,7 +213,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if viewCode.segmentedControl.numberOfSegments == .zero {
+        if segmentedControl.numberOfSegments == .zero {
             updatePanelsSegmentedControl()
             installPanel(viewModel.currentPanel)
         }
@@ -364,17 +327,17 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     }
 
     func updatePanelsSegmentedControl() {
-        viewCode.segmentedControl.removeAllSegments()
+        segmentedControl.removeAllSegments()
 
         viewModel.availablePanels.reversed().forEach {
-            viewCode.segmentedControl.insertSegment(
+            segmentedControl.insertSegment(
                 with: $0.image.withRenderingMode(.alwaysTemplate),
                 at: .zero,
                 animated: false
             )
         }
 
-        viewCode.segmentedControl.selectedSegmentIndex = viewModel.currentPanelIndex
+        segmentedControl.selectedSegmentIndex = viewModel.currentPanelIndex
     }
 
     func reloadData() {
@@ -413,7 +376,7 @@ extension ElementInspectorViewController {
             return false
         }
 
-        viewCode.segmentedControl.selectedSegmentIndex = index
+        segmentedControl.selectedSegmentIndex = index
 
         installPanel(panel)
 
@@ -450,12 +413,12 @@ private extension ElementInspectorViewController {
     func didChangeSelectedSegmentIndex() {
         delegate?.cancelAllOperations()
 
-        guard viewCode.segmentedControl.selectedSegmentIndex != UISegmentedControl.noSegment else {
+        guard segmentedControl.selectedSegmentIndex != UISegmentedControl.noSegment else {
             removeCurrentPanel()
             return
         }
 
-        let panel = viewModel.availablePanels[viewCode.segmentedControl.selectedSegmentIndex]
+        let panel = viewModel.availablePanels[segmentedControl.selectedSegmentIndex]
 
         installPanel(panel)
     }

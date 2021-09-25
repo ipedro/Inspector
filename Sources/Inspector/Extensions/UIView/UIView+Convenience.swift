@@ -60,6 +60,13 @@ enum ViewBinding {
 }
 
 extension UIView {
+    func wrappedInside<View: UIView>(_ type: View.Type) -> View {
+        let view = type.init(frame: .zero)
+        view.installView(self, priority: .required)
+
+        return view
+    }
+
     var allSubviews: [UIView] {
         subviews.reversed().flatMap { [$0] + $0.allSubviews }
     }

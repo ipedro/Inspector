@@ -20,6 +20,9 @@
 
 import UIKit
 
+
+// MARK: - ElementInspectorViewCode
+
 final class ElementInspectorViewCode: BaseView {
     var keyboardHeight: CGFloat = .zero {
         didSet {
@@ -27,50 +30,19 @@ final class ElementInspectorViewCode: BaseView {
         }
     }
 
-    enum ContentViewMode {
-        case content(UIView)
-        case scrollView(UIScrollView)
-    }
-
-    var contentViewMode: ContentViewMode? {
-
+    var content: Content? {
         didSet {
-            switch oldValue {
-            case .none:
-                break
-
-            case let .content(view):
-                view.removeFromSuperview()
-
-            case let .scrollView(scrollView):
-                scrollView.removeFromSuperview()
-            }
-
-            switch contentViewMode {
-            case .none:
-                installView(scrollView, position: .behind, priority: .required)
-                containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-
-            case let .content(view):
-                contentView.addArrangedSubview(view)
-                installView(scrollView, position: .behind, priority: .required)
-                containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-
-            case let .scrollView(scrollView):
-                self.scrollView.removeFromSuperview()
-                installView(scrollView, position: .behind, priority: .required)
-                scrollView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-            }
+            updateContent(from: oldValue, to: content)
         }
     }
 
-    private(set) lazy var scrollView = UIScrollView().then {
-        $0.installView(containerStackView, priority: .required)
+    private lazy var scrollView = ScrollingStackView().then {
+        $0.contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(bottom: ElementInspector.appearance.horizontalMargins)
+        $0.contentView.addArrangedSubviews(headerView, separatorView, contentView)
+
         $0.keyboardDismissMode = .onDrag
         $0.alwaysBounceVertical = true
     }
-
-    private(set) lazy var segmentedControl = UISegmentedControl.segmentedControlStyle()
 
     private(set) lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView().then {
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
@@ -81,60 +53,21 @@ final class ElementInspectorViewCode: BaseView {
 
     private(set) lazy var separatorView = SeparatorView(style: .medium)
 
-    private lazy var referenceSummaryHeightConstraint = referenceSummaryView.heightAnchor.constraint(equalToConstant: .zero).then {
-        $0.isActive = true
-    }
-
-    private(set) lazy var dismissBarButtonItem: UIBarButtonItem = {
-        if #available(iOS 13.0, *) {
-            return UIBarButtonItem(barButtonSystemItem: .close, target: nil, action: nil)
-        }
-        else {
-            return UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
-        }
-    }()
-
-    private(set) lazy var emptyLabel = SectionHeader(
-        title: "No Element Inspector",
-        titleFont: .body,
-        margins: ElementInspector.appearance.directionalInsets
-    ).then {
-        contentView.installView($0, position: .behind)
-        $0.titleAlignment = .center
-        $0.alpha = 0.5
-    }
-
-    private(set) lazy var activityIndicator = UIActivityIndicatorView().then {
-        $0.color = colorStyle.secondaryTextColor
-        $0.hidesWhenStopped = true
-
-        contentView.installView($0, .centerXY, position: .behind)
-
-        if #available(iOS 13.0, *) {
-            $0.style = .large
-        }
-        else {
-            $0.style = .whiteLarge
-        }
-    }
-
     private(set) lazy var headerView = UIStackView.vertical().then {
-        $0.addArrangedSubviews(referenceSummaryView, segmentedControl)
+        $0.addArrangedSubviews(referenceSummaryView)
         $0.isLayoutMarginsRelativeArrangement = true
         $0.spacing = ElementInspector.appearance.verticalMargins
         $0.directionalLayoutMargins = ElementInspector.appearance.directionalInsets.with(top: .zero, bottom: ElementInspector.appearance.horizontalMargins, trailing: 40)
     }
 
-    private lazy var containerStackView = UIStackView.vertical().then {
-        $0.isLayoutMarginsRelativeArrangement = true
-        $0.directionalLayoutMargins = NSDirectionalEdgeInsets(bottom: ElementInspector.appearance.horizontalMargins)
-        $0.addArrangedSubviews(headerView, separatorView, contentView)
+    private lazy var referenceSummaryHeightConstraint = referenceSummaryView.heightAnchor.constraint(equalToConstant: .zero).then {
+        $0.isActive = true
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        guard case .content = contentViewMode else { return }
+        guard content?.type != .scrollView else { return }
 
         let size = referenceSummaryView.systemLayoutSizeFitting(
             frame.size,
@@ -147,11 +80,90 @@ final class ElementInspectorViewCode: BaseView {
         referenceSummaryHeightConstraint.constant = size.height
     }
 
-    override func setup() {
-        super.setup()
+    private func updateContent(from oldValue: Content?, to newContent: Content?) {
+        oldValue?.view.removeFromSuperview()
 
-        scrollView.installView(containerStackView, priority: .required)
-        installView(scrollView, position: .behind, priority: .required)
-        containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        let hostScrollView: UIScrollView
+
+        switch newContent?.type {
+        case .none:
+            hostScrollView = scrollView
+
+        case .backgroundView:
+            hostScrollView = scrollView
+
+            if let backgroundView = newContent?.view {
+                backgroundView.translatesAutoresizingMaskIntoConstraints = false
+                scrollView.addSubview(backgroundView)
+
+                [
+                    backgroundView.topAnchor.constraint(equalTo: separatorView.bottomAnchor),
+                    backgroundView.leadingAnchor.constraint(equalTo: scrollView.readableContentGuide.leadingAnchor),
+                    backgroundView.trailingAnchor.constraint(equalTo: scrollView.readableContentGuide.trailingAnchor),
+                    backgroundView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+                ].forEach {
+                    $0.isActive = true
+                }
+            }
+
+        case .panelView:
+            hostScrollView = scrollView
+
+            guard let content = newContent?.view else {
+                assertionFailure("Should never happend")
+                return
+            }
+            contentView.addArrangedSubview(content)
+
+        case .scrollView:
+            guard let contentScrollView = newContent?.view as? UIScrollView else {
+                assertionFailure("Should never happend")
+                return
+            }
+
+            hostScrollView = contentScrollView
+        }
+
+        if hostScrollView != scrollView {
+            scrollView.removeFromSuperview()
+        }
+
+        installView(hostScrollView, position: .behind, priority: .required)
+    }
+
+    func setContentAnimated(_ content: Content, animateAlongSideTransition animations: (() -> Void)? = nil, completion: ((Bool) -> Void)? = nil) {
+        switch content.type {
+        case .panelView:
+            content.view.alpha = 0
+            content.view.transform = CGAffineTransform(
+                scaleX: 0.99,
+                y: 0.98
+            ).translatedBy(
+                x: .zero,
+                y: -ElementInspector.appearance.verticalMargins
+            )
+        case .backgroundView:
+            content.view.alpha = 0
+
+        case .scrollView:
+            break
+        }
+
+        self.content = content
+
+        animate(
+            withDuration: .veryLong,
+            delay: .veryShort / 2,
+            options: [.layoutSubviews, .beginFromCurrentState],
+            animations: {
+                content.view.alpha = 1
+                content.view.transform = .identity
+
+                animations?()
+            },
+            completion: { finished in
+                completion?(finished)
+            }
+        )
     }
 }
