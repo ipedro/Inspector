@@ -185,7 +185,7 @@ final class ViewHierarchyReferenceSummaryView: BaseView {
 
     private(set) lazy var elementDetailsContainer = UIStackView().then {
         $0.axis = .vertical
-        $0.spacing = ElementInspector.appearance.verticalMargins / 2
+        $0.spacing = 8
         $0.addArrangedSubviews(elementNameLabel, elementIconAndDescriptionLabel)
     }
 

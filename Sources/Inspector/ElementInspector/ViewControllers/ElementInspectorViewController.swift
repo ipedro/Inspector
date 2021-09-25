@@ -110,62 +110,87 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
     private(set) var currentPanelViewController: ElementInspectorPanelViewController? {
         didSet {
-            if let oldPanelViewController = oldValue {
-                oldPanelViewController.willMove(toParent: nil)
-
-                oldPanelViewController.view.removeFromSuperview()
-
-                oldPanelViewController.removeFromParent()
-            }
-
-            viewCode.containerStyle = .static
+            oldValue?.willMove(toParent: nil)
 
             guard let panelViewController = currentPanelViewController else {
+                viewCode.contentViewMode = .none
                 viewCode.emptyLabel.isHidden = false
+                oldValue?.removeFromParent()
                 return
             }
 
             viewCode.emptyLabel.isHidden = true
+            viewCode.activityIndicator.alpha = 0
 
-            let animationDuration: TimeInterval = 0.18
-
-            animate(delay: animationDuration) { [weak self] in
+            animate(withDuration: .short, delay: .short) { [weak self] in
                 self?.viewCode.activityIndicator.startAnimating()
                 self?.viewCode.activityIndicator.alpha = 1
             }
 
-            let operation = MainThreadOperation(name: "create \(panelViewController)") { [weak self] in
+            animate(withDuration: .short) {
+                oldValue?.view.alpha = 0
+            }
+
+            let operation = MainThreadAsyncOperation(name: "create \(panelViewController)") { [weak self] in
                 guard let self = self else { return }
 
                 self.addChild(panelViewController)
 
-                guard let panelView = panelViewController.view else {
-                    fatalError("Where's my view Mr. Panel?")
+                let transitionView: UIView
+
+                let contentViewMode: ElementInspectorViewCode.ContentViewMode
+
+                if let panelScrollView = panelViewController.panelScrollView {
+                    contentViewMode = .scrollView(panelScrollView)
+                    transitionView = panelScrollView
+                }
+                else if let panelView = panelViewController.view {
+                    contentViewMode = .content(panelView)
+                    transitionView = panelView
+                }
+                else {
+                    return self.animate {
+                        self.viewCode.contentViewMode = .none
+                    } completion: { _ in
+                        oldValue?.removeFromParent()
+                    }
                 }
 
-                self.viewCode.containerStyle = panelViewController.hasScrollView ? .static : .scrollView
-
-                self.viewCode.contentView.addArrangedSubview(panelView)
-
-                panelView.alpha = 0
-                panelView.transform = .init(scaleX: 0.99, y: 0.98)
+                transitionView.alpha = 0
+                transitionView.transform = .init(scaleX: 0.99, y: 0.98)
                     .translatedBy(x: .zero, y: -ElementInspector.appearance.verticalMargins)
 
+                self.viewCode.contentViewMode = contentViewMode
+
                 self.animate(
-                    withDuration: animationDuration,
+                    withDuration: .long,
+                    delay: .veryShort / 2,
                     options: [.layoutSubviews, .beginFromCurrentState],
-                    animations: {
-                        panelView.alpha = 1
-                        panelView.transform = .identity
+                    animations: { [weak self] in
+                        guard let self = self else { return }
+
+                        // must be done after view's `contentView` is updated
+                        self.configureNavigationItem()
+
                         self.viewCode.activityIndicator.alpha = 0
+
+                        transitionView.alpha = 1
+
+                        transitionView.transform = .identity
                     },
                     completion: { [weak self] _ in
                         guard let self = self else { return }
 
                         panelViewController.didMove(toParent: self)
+
+                        oldValue?.removeFromParent()
+
                         NSObject.cancelPreviousPerformRequests(withTarget: self.viewCode.activityIndicator)
+
                         self.viewCode.activityIndicator.stopAnimating()
+
                         self.viewCode.activityIndicator.alpha = 0
+
                         self.configureNavigationItem()
                     }
                 )
@@ -218,6 +243,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         navigationItem.leftBarButtonItem?.tintColor = colorStyle.tintColor
         navigationItem.rightBarButtonItem = viewCode.dismissBarButtonItem
         navigationItem.titleView = viewCode.segmentedControl
+        navigationItem.largeTitleDisplayMode = .always
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -238,7 +265,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         // The mask will shrink to half the width during the animation:
         let maskViewNewFrame = CGRect(origin: .zero, size: CGSize(width: 0.3 * view.frame.width, height: view.frame.height))
 
-        let maskView = UIView(frame: maskViewNewFrame)// CGRect(origin: .zero, size: view.frame.size))
+        let maskView = UIView(frame: maskViewNewFrame) // CGRect(origin: .zero, size: view.frame.size))
         maskView.backgroundColor = .white
 
         viewCode.alpha = 0
@@ -267,7 +294,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                 toView.mask = maskView
                 toView.mask?.frame = toView.bounds
             }
-            
+
             fromView.alpha = 0
 
         } completion: { transitionContext in
@@ -333,7 +360,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             // Remove mask, otherwise funny things will happen if toView is a
             // scroll or table view and the user "rubberbands":
             toView.mask = nil
-
         }
     }
 

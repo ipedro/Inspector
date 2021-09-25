@@ -69,17 +69,6 @@ class ElementInspectorNavigationController: UINavigationController {
     private(set) lazy var blurView = UIVisualEffectView(
         effect: UIBlurEffect(style: colorStyle.blurStyle)
     )
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        transitionCoordinator?.animate(
-            alongsideTransition: { context in
-                self.navigationBar.prefersLargeTitles = true
-            },
-            completion: nil
-        )
-    }
 
     override var canBecomeFirstResponder: Bool { true }
 

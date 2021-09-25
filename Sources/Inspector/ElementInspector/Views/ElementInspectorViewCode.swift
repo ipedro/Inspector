@@ -27,33 +27,47 @@ final class ElementInspectorViewCode: BaseView {
         }
     }
 
-    enum Style {
-        case scrollView, `static`
+    enum ContentViewMode {
+        case content(UIView)
+        case scrollView(UIScrollView)
     }
 
-    var containerStyle: Style = .static {
+    var contentViewMode: ContentViewMode? {
+
         didSet {
-            switch containerStyle {
-            case .scrollView:
-                if !containerStackView.arrangedSubviews.contains(contentView) {
-                    containerStackView.addArrangedSubview(contentView)
-                }
-                scrollView.contentOffset = CGPoint(x: .zero, y: -scrollView.adjustedContentInset.top)
-                scrollView.installView(containerStackView, priority: .required)
+            switch oldValue {
+            case .none:
+                break
+
+            case let .content(view):
+                view.removeFromSuperview()
+
+            case let .scrollView(scrollView):
+                scrollView.removeFromSuperview()
+            }
+
+            switch contentViewMode {
+            case .none:
                 installView(scrollView, position: .behind, priority: .required)
                 containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
 
-            case .static:
-                scrollView.removeFromSuperview()
-                installView(contentView, priority: .required)
-                contentView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+            case let .content(view):
+                contentView.addArrangedSubview(view)
+                installView(scrollView, position: .behind, priority: .required)
+                containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+
+            case let .scrollView(scrollView):
+                self.scrollView.removeFromSuperview()
+                installView(scrollView, position: .behind, priority: .required)
+                scrollView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
             }
         }
     }
 
     private(set) lazy var scrollView = UIScrollView().then {
-        $0.alwaysBounceVertical = true
+        $0.installView(containerStackView, priority: .required)
         $0.keyboardDismissMode = .onDrag
+        $0.alwaysBounceVertical = true
     }
 
     private(set) lazy var segmentedControl = UISegmentedControl.segmentedControlStyle()
@@ -120,6 +134,8 @@ final class ElementInspectorViewCode: BaseView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
+        guard case .content = contentViewMode else { return }
+
         let size = referenceSummaryView.systemLayoutSizeFitting(
             frame.size,
             withHorizontalFittingPriority: .required,
@@ -135,9 +151,7 @@ final class ElementInspectorViewCode: BaseView {
         super.setup()
 
         scrollView.installView(containerStackView, priority: .required)
-
         installView(scrollView, position: .behind, priority: .required)
-
         containerStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
     }
 }

@@ -23,7 +23,7 @@ import UIKit
 class ElementInspectorPanelViewController: UIViewController {
     // MARK: - Layout
 
-    var hasScrollView: Bool { view.subviews.contains { $0 is UIScrollView } }
+    open var panelScrollView: UIScrollView? { nil }
 
     private var needsLayout = true
 

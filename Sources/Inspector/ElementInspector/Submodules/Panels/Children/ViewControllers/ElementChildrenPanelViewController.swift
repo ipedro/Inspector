@@ -34,6 +34,8 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
 
     private var needsSetup = true
 
+    override var panelScrollView: UIScrollView? { viewCode.tableView }
+
     private(set) lazy var viewCode = ElementChildrenPanelViewCode(
         frame: CGRect(
             origin: .zero,

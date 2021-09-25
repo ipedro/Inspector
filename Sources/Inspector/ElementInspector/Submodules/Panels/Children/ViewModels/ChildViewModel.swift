@@ -66,9 +66,9 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelItem
 
     var automaticallyAdjustIndentation: Bool { relativeDepth > .zero }
 
-    var title: String? { reference.elementName }
+    var title: String? { relativeDepth > .zero ? reference.elementName : nil }
 
-    var subtitle: String? { reference.shortElementDescription }
+    var subtitle: String? { relativeDepth > .zero ? reference.shortElementDescription : reference.elementDescription }
 
     var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth) }
 
@@ -78,7 +78,6 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelItem
 
     var showCollapseButton: Bool {
         guard relativeDepth > .zero else { return false }
-
         return isContainer && relativeDepth <= ElementInspector.configuration.childrenListMaximumInteractiveDepth
     }
 

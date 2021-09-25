@@ -30,7 +30,6 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
         setup()
     }
 
@@ -50,12 +49,14 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         $0.alignment = .center
         $0.isLayoutMarginsRelativeArrangement = true
         $0.addArrangedSubviews(referenceSummaryView, disclosureIcon)
-        $0.directionalLayoutMargins = .init(
-            top: ElementInspector.appearance.verticalMargins / 2,
-            bottom: ElementInspector.appearance.verticalMargins / 2,
-            trailing: ElementInspector.appearance.horizontalMargins
-        )
+        $0.directionalLayoutMargins = defaultContainerMargins
     }
+
+    private let defaultContainerMargins = NSDirectionalEdgeInsets(
+        top: ElementInspector.appearance.verticalMargins / 2,
+        bottom: ElementInspector.appearance.verticalMargins / 2,
+        trailing: ElementInspector.appearance.horizontalMargins
+    )
 
     var viewModel: ElementChildrenPanelItemViewModelProtocol? {
         didSet {
@@ -64,13 +65,27 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         }
     }
 
+    var isFirst: Bool = false {
+        didSet {
+            if isFirst {
+                containerStackView.directionalLayoutMargins.update(top: -8)
+                referenceSummaryView.directionalLayoutMargins.update(top: .zero)
+            }
+            else {
+                directionalLayoutMargins.update(top: .zero)
+                containerStackView.directionalLayoutMargins = defaultContainerMargins
+                referenceSummaryView.directionalLayoutMargins.update(top: ElementInspector.appearance.verticalMargins)
+            }
+        }
+    }
+
     var isEvenRow = false {
         didSet {
             switch isEvenRow {
-            case true:
+            case false:
                 backgroundColor = colorStyle.cellHighlightBackgroundColor
 
-            case false:
+            case true:
                 backgroundColor = .none
             }
         }
