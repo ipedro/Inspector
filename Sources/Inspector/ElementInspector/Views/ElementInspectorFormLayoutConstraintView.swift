@@ -58,7 +58,9 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         titleFont: .init(.footnote, .traitBold),
         subtitleFont: .footnote,
         margins: .init(vertical: ElementInspector.appearance.verticalMargins)
-    )
+    ).then {
+        $0.heightAnchor.constraint(greaterThanOrEqualToConstant: ElementInspector.appearance.horizontalMargins * 3).isActive = true
+    }
 
     private lazy var cardView = BaseCardView().then {
         var insets = ElementInspector.appearance.directionalInsets
@@ -66,7 +68,8 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         insets.top = .zero
 
         $0.insets = insets
-        $0.backgroundColor = colorStyle.accessoryControlBackgroundColor
+        $0.contentMargins = .zero
+        $0.backgroundColor = colorStyle.layoutConstraintsCardBackgroundColor
         $0.contentView.addArrangedSubview(formView)
     }
 
@@ -78,16 +81,22 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
     }
 
     @objc private func valueChanged() {
-        animate {
+        animate { [weak self] in
+            guard let self = self else { return }
+
             if self.switchControl.isOn {
-                self.cardView.borderColor = self.colorStyle.tintColor
                 self.header.alpha = 1
                 self.tintAdjustmentMode = .automatic
+
+                self.cardView.borderColor = self.colorStyle.tintColor
+                self.cardView.backgroundColor = self.colorStyle.layoutConstraintsCardBackgroundColor
             }
             else {
                 self.header.alpha = 0.5
                 self.tintAdjustmentMode = .dimmed
+
                 self.cardView.borderColor = self.colorStyle.quaternaryTextColor
+                self.cardView.backgroundColor = self.colorStyle.layoutConstraintsCardInactiveBackgroundColor
             }
         }
     }
