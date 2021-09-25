@@ -65,6 +65,7 @@ extension ElementInspectorViewCode {
 
             activityIndicator.hidesWhenStopped = true
             activityIndicator.color = activityIndicator.colorStyle.secondaryTextColor
+            activityIndicator.startAnimating()
 
             activityIndicator.alpha = 0
             activityIndicator.animate(withDuration: .long, delay: .short) {

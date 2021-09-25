@@ -88,9 +88,11 @@ final class ElementInspectorViewCode: BaseView {
         switch newContent?.type {
         case .none:
             hostScrollView = scrollView
+            separatorView.isSafelyHidden = true
 
         case .backgroundView:
             hostScrollView = scrollView
+            separatorView.isSafelyHidden = true
 
             if let backgroundView = newContent?.view {
                 backgroundView.translatesAutoresizingMaskIntoConstraints = false
@@ -108,6 +110,7 @@ final class ElementInspectorViewCode: BaseView {
 
         case .panelView:
             hostScrollView = scrollView
+            separatorView.isSafelyHidden = false
 
             guard let content = newContent?.view else {
                 assertionFailure("Should never happend")
@@ -116,6 +119,8 @@ final class ElementInspectorViewCode: BaseView {
             contentView.addArrangedSubview(content)
 
         case .scrollView:
+            separatorView.isSafelyHidden = true
+
             guard let contentScrollView = newContent?.view as? UIScrollView else {
                 assertionFailure("Should never happend")
                 return
