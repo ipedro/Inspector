@@ -28,7 +28,7 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ElementChildrenPanelTableViewCodeCell.self, for: indexPath)
-        cell.viewModel = viewModel.childViewModel(at: indexPath)
+        cell.viewModel = viewModel.cellViewModel(at: indexPath)
         cell.isEvenRow = indexPath.row % 2 == 0
         cell.delegate = self
         cell.isFirst = indexPath.row + indexPath.section == 0

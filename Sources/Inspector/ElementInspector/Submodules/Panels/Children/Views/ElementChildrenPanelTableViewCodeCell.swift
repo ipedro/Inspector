@@ -25,6 +25,10 @@ protocol ElementChildrenPanelTableViewCodeCellDelegate: AnyObject {
     func elementChildrenPanelTableViewCodeCellDidToggleCollapse(_ cell: ElementChildrenPanelTableViewCodeCell)
 }
 
+protocol ElementChildrenPanelTableViewCellRepresentable: ElementChildrenPanelItemViewModelProtocol {
+    var showDisclosureIcon: Bool { get }
+}
+
 final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
     weak var delegate: ElementChildrenPanelTableViewCodeCellDelegate?
 
@@ -58,10 +62,11 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         trailing: ElementInspector.appearance.horizontalMargins
     )
 
-    var viewModel: ElementChildrenPanelItemViewModelProtocol? {
+    var viewModel: ElementChildrenPanelTableViewCellRepresentable? {
         didSet {
             contentView.isUserInteractionEnabled = true
             referenceSummaryView.viewModel = viewModel
+            disclosureIcon.isHidden = viewModel?.showDisclosureIcon != true
         }
     }
 

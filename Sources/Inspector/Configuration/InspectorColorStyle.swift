@@ -134,6 +134,21 @@ enum InspectorColorStyle {
         }
     }
 
+    var layoutConstraintsCardBackgroundColor: UIColor {
+        dynamicColor { colorStyle in
+            switch colorStyle {
+            case .light:
+                return cellHighlightBackgroundColor
+            case .dark:
+                return softTintColor
+            }
+        }
+    }
+
+    var layoutConstraintsCardInactiveBackgroundColor: UIColor {
+        return accessoryControlBackgroundColor
+    }
+
     var accessoryControlBackgroundColor: UIColor {
         textColor.withAlphaComponent(disabledAlpha / 4)
     }

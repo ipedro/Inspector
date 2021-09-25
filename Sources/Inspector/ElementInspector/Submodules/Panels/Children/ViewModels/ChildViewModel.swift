@@ -60,9 +60,10 @@ extension ElementChildrenPanelViewModel {
     }
 }
 
-// MARK: - ElementViewHierarchyPanelViewModelProtocol
+// MARK: - ElementChildrenPanelTableViewCellRepresentable
 
-extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelItemViewModelProtocol {
+extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTableViewCellRepresentable {
+    var showDisclosureIcon: Bool { relativeDepth > .zero }
 
     var automaticallyAdjustIndentation: Bool { relativeDepth > .zero }
 
