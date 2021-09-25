@@ -32,7 +32,7 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
 
     weak var delegate: ElementChildrenPanelViewControllerDelegate?
 
-    private var needsSetup = true
+    private var reloadDataOnAppear = false
 
     override var panelScrollView: UIScrollView? { viewCode.tableView }
 
@@ -72,6 +72,10 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        guard reloadDataOnAppear else { return }
+
+        reloadDataOnAppear = false
+
         reloadData()
     }
 
@@ -79,6 +83,12 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
         super.viewDidAppear(animated)
 
         viewCode.tableView.becomeFirstResponder()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        reloadDataOnAppear = true
     }
 
     func reloadData() {

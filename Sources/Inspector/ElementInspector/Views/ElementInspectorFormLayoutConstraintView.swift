@@ -75,7 +75,6 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
 
     private var switchControl: UISwitch! {
         didSet {
-            switchControl.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
             valueChanged()
         }
     }
@@ -121,6 +120,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
             switchControl = toggleControl.switchControl
 
             toggleControl.isHidden = true
+            toggleControl.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
 
             let switchContainerView = UIStackView().then {
                 $0.addArrangedSubviews(switchControl)

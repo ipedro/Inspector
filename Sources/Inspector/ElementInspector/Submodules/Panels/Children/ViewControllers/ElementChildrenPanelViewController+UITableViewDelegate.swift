@@ -23,22 +23,24 @@ import UIKit
 extension ElementChildrenPanelViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.layer.removeAllAnimations()
-
-        if indexPath.row == .zero, indexPath.section == .zero {
-            cell.alpha = 1
-            cell.transform = .identity
-        }
+        guard
+            let cellViewModel = viewModel.cellViewModel(at: indexPath),
+            cellViewModel.animatedDisplay
         else {
-            cell.alpha = 0
-            cell.transform = ElementInspector.appearance.panelInitialTransform
+            return
+        }
 
-            cell.animate(withDuration: .veryLong, delay: .short) {
-                cell.alpha = 1
-                cell.transform = .identity
-            }
+        cell.alpha = cellViewModel.appearance.alpha
+        cell.transform = cellViewModel.appearance.transform
+
+        tableView.animate(withDuration: .veryLong, delay: .short) {
+            cellViewModel.animatedDisplay = false
+
+            cell.alpha = cellViewModel.appearance.alpha
+            cell.transform = cellViewModel.appearance.transform
         }
     }
+
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         viewModel.shouldHighlightItem(at: indexPath)
     }
@@ -104,7 +106,6 @@ extension ElementChildrenPanelViewController {
                 }
             }
         } completion: { [weak self] _ in
-
             self?.updateVisibleRowsBackgroundColor()
         }
     }

@@ -34,7 +34,13 @@ extension ElementChildrenPanelViewModel {
     final class ChildViewModel {
         weak var parent: ElementChildrenPanelItemViewModelProtocol?
 
-        private var _isCollapsed: Bool
+        private var _isCollapsed: Bool {
+            didSet {
+                if !_isCollapsed, relativeDepth > .zero {
+                    animatedDisplay = true
+                }
+            }
+        }
 
         let rootDepth: Int
 
@@ -43,6 +49,8 @@ extension ElementChildrenPanelViewModel {
         // MARK: - Properties
 
         let reference: ViewHierarchyReference
+
+        lazy var animatedDisplay: Bool = relativeDepth > .zero
 
         init(
             reference: ViewHierarchyReference,
@@ -60,9 +68,16 @@ extension ElementChildrenPanelViewModel {
     }
 }
 
-// MARK: - ElementChildrenPanelTableViewCellRepresentable
+// MARK: - ElementChildrenPanelTableViewCellViewModelProtocol
 
-extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTableViewCellRepresentable {
+extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTableViewCellViewModelProtocol {
+    var appearance: (transform: CGAffineTransform, alpha: CGFloat) {
+        if animatedDisplay {
+            return (transform: ElementInspector.appearance.panelInitialTransform, alpha: .zero)
+        }
+        return (transform: .identity, alpha: 1)
+    }
+
     var showDisclosureIcon: Bool { relativeDepth > .zero }
 
     var automaticallyAdjustIndentation: Bool { relativeDepth > .zero }

@@ -31,7 +31,7 @@ protocol ElementChildrenPanelViewModelProtocol {
 
     func reloadIcons()
 
-    func cellViewModel(at indexPath: IndexPath) -> ElementChildrenPanelTableViewCellRepresentable?
+    func cellViewModel(at indexPath: IndexPath) -> ElementChildrenPanelTableViewCellViewModelProtocol?
 
     /// Toggle if a container displays its subviews or hides them.
     /// - Parameter indexPath: index path
@@ -110,7 +110,7 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
         }
     }
 
-    func cellViewModel(at indexPath: IndexPath) -> ElementChildrenPanelTableViewCellRepresentable? {
+    func cellViewModel(at indexPath: IndexPath) -> ElementChildrenPanelTableViewCellViewModelProtocol? {
         guard indexPath.row < visibleChildren.count else { return nil }
 
         return visibleChildren[indexPath.row]
