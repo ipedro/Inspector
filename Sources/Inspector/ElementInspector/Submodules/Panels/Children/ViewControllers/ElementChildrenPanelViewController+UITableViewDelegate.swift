@@ -21,6 +21,24 @@
 import UIKit
 
 extension ElementChildrenPanelViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.layer.removeAllAnimations()
+
+        if indexPath.row == .zero, indexPath.section == .zero {
+            cell.alpha = 1
+            cell.transform = .identity
+        }
+        else {
+            cell.alpha = 0
+            cell.transform = ElementInspector.appearance.panelInitialTransform
+
+            cell.animate(withDuration: .veryLong, delay: .short) {
+                cell.alpha = 1
+                cell.transform = .identity
+            }
+        }
+    }
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         viewModel.shouldHighlightItem(at: indexPath)
     }
@@ -70,21 +88,6 @@ extension ElementChildrenPanelViewController {
                 switch $0 {
                 case let .inserted(indexPaths):
                     tableView.insertRows(at: indexPaths, with: .top)
-
-                    DispatchQueue.main.async {
-                        let cells = indexPaths.compactMap { tableView.cellForRow(at: $0) }
-                        cells.forEach{
-                            $0.alpha = 0
-                            $0.transform = .init(scaleX: 0.9, y: 0.9)
-                        }
-
-                        tableView.animate(withDuration: .veryLong, delay: .short) {
-                            cells.forEach{
-                                $0.alpha = 1
-                                $0.transform = .identity
-                            }
-                        }
-                    }
 
                 case let .deleted(indexPaths):
                     let cells = indexPaths.compactMap { tableView.cellForRow(at: $0) }

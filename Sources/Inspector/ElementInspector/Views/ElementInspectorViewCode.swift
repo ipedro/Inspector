@@ -59,27 +59,7 @@ final class ElementInspectorViewCode: BaseView {
         $0.spacing = ElementInspector.appearance.verticalMargins
         $0.directionalLayoutMargins = ElementInspector.appearance.directionalInsets.with(top: .zero, bottom: ElementInspector.appearance.horizontalMargins, trailing: 40)
     }
-
-    private lazy var referenceSummaryHeightConstraint = referenceSummaryView.heightAnchor.constraint(equalToConstant: .zero).then {
-        $0.isActive = true
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        guard content?.type != .scrollView else { return }
-
-        let size = referenceSummaryView.systemLayoutSizeFitting(
-            frame.size,
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-
-        guard size.height != referenceSummaryHeightConstraint.constant else { return }
-
-        referenceSummaryHeightConstraint.constant = size.height
-    }
-
+    
     private func updateContent(from oldValue: Content?, to newContent: Content?) {
         oldValue?.view.removeFromSuperview()
 
@@ -140,13 +120,7 @@ final class ElementInspectorViewCode: BaseView {
         switch content.type {
         case .panelView:
             content.view.alpha = 0
-            content.view.transform = CGAffineTransform(
-                scaleX: 0.99,
-                y: 0.98
-            ).translatedBy(
-                x: .zero,
-                y: -ElementInspector.appearance.verticalMargins
-            )
+            content.view.transform = ElementInspector.appearance.panelInitialTransform
         case .backgroundView:
             content.view.alpha = 0
 

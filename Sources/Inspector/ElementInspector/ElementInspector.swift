@@ -59,6 +59,16 @@ extension ElementInspector {
 
         let verticalMargins: CGFloat = 12
 
+        var panelInitialTransform: CGAffineTransform {
+            CGAffineTransform(
+                scaleX: 0.99,
+                y: 0.98
+            ).translatedBy(
+                x: .zero,
+                y: -verticalMargins
+            )
+        }
+
         var directionalInsets: NSDirectionalEdgeInsets {
             NSDirectionalEdgeInsets(
                 horizontal: horizontalMargins,

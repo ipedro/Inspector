@@ -58,9 +58,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         titleFont: .init(.footnote, .traitBold),
         subtitleFont: .footnote,
         margins: .init(vertical: ElementInspector.appearance.verticalMargins)
-    ).then {
-        $0.heightAnchor.constraint(greaterThanOrEqualToConstant: ElementInspector.appearance.horizontalMargins * 3).isActive = true
-    }
+    )
 
     private lazy var cardView = BaseCardView().then {
         var insets = ElementInspector.appearance.directionalInsets
@@ -68,9 +66,11 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         insets.top = .zero
 
         $0.insets = insets
+        $0.cornerRadius = ElementInspector.appearance.horizontalMargins
         $0.contentMargins = .zero
         $0.backgroundColor = colorStyle.layoutConstraintsCardBackgroundColor
         $0.contentView.addArrangedSubview(formView)
+        $0.heightAnchor.constraint(greaterThanOrEqualToConstant: $0.cornerRadius * 3).isActive = true
     }
 
     private var switchControl: UISwitch! {
