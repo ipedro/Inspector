@@ -37,8 +37,8 @@ extension ViewHierarchyReference {
     }
 
     var elementDescription: String {
-        [classNameDescription?.string(appending: "\n"),
-         issuesDescription?.string(appending: "\n"),
+        [issuesDescription?.string(appending: "\n"),
+         classNameDescription,
          sizeDescription,
          positionDescrpition,
          constraintsDescription,
