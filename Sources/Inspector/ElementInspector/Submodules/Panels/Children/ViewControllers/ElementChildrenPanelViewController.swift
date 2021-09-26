@@ -32,7 +32,7 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
 
     weak var delegate: ElementChildrenPanelViewControllerDelegate?
 
-    private var reloadDataOnAppear = false
+    private var hasDisappeared = false
 
     override var panelScrollView: UIScrollView? { viewCode.tableView }
 
@@ -72,11 +72,31 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        guard reloadDataOnAppear else { return }
+        guard hasDisappeared else { return }
 
-        reloadDataOnAppear = false
+        hasDisappeared = false
 
-        reloadData()
+        if let indexPathsForSelectedRows = self.viewCode.tableView.indexPathsForSelectedRows {
+            transitionCoordinator?.animate { context in
+                indexPathsForSelectedRows.forEach {
+                    self.viewCode.tableView.deselectRow(at: $0, animated: animated)
+                }
+            } completion: { context in
+                guard context.isCancelled else { return }
+
+                indexPathsForSelectedRows.forEach {
+                    self.viewCode.tableView.selectRow(at: $0, animated: false, scrollPosition: .none)
+                }
+            }
+        }
+
+        viewCode.tableView.indexPathsForVisibleRows?.forEach { IndexPath in
+            guard
+                let cell = viewCode.tableView.cellForRow(at: IndexPath) as? ElementChildrenPanelTableViewCodeCell,
+                let cellViewModel = viewModel.cellViewModel(at: IndexPath)
+            else { return }
+            cell.viewModel = cellViewModel
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -88,7 +108,7 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        reloadDataOnAppear = true
+        hasDisappeared = true
     }
 
     func reloadData() {

@@ -23,20 +23,17 @@ import UIKit
 extension ElementChildrenPanelViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard
-            let cellViewModel = viewModel.cellViewModel(at: indexPath),
-            cellViewModel.animatedDisplay
-        else {
-            return
-        }
+        guard let cellViewModel = viewModel.cellViewModel(at: indexPath) else { return }
 
         cell.alpha = cellViewModel.appearance.alpha
+        cell.contentView.alpha = cellViewModel.appearance.alpha
         cell.transform = cellViewModel.appearance.transform
 
         tableView.animate(withDuration: .veryLong, delay: .short) {
             cellViewModel.animatedDisplay = false
 
             cell.alpha = cellViewModel.appearance.alpha
+            cell.contentView.alpha = cellViewModel.appearance.alpha
             cell.transform = cellViewModel.appearance.transform
         }
     }

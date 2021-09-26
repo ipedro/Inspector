@@ -212,6 +212,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        currentPanelViewController?.viewWillAppear(animated)
 
         if segmentedControl.numberOfSegments == .zero {
             updatePanelsSegmentedControl()
@@ -280,9 +281,15 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         }
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        currentPanelViewController?.viewDidAppear(animated)
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         defer {
             super.viewWillDisappear(animated)
+            currentPanelViewController?.viewWillDisappear(animated)
         }
 
         transitionCoordinator?.animate { transitionContext in
@@ -324,6 +331,12 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             // scroll or table view and the user "rubberbands":
             toView.mask = nil
         }
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        currentPanelViewController?.viewDidDisappear(animated)
     }
 
     func updatePanelsSegmentedControl() {
