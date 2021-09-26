@@ -25,16 +25,20 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard let cellViewModel = viewModel.cellViewModel(at: indexPath) else { return }
 
-        cell.alpha = cellViewModel.appearance.alpha
+        let backgroundColor = cell.backgroundColor
+
+        cell.backgroundColor = .none
         cell.contentView.alpha = cellViewModel.appearance.alpha
         cell.transform = cellViewModel.appearance.transform
+        cell.alpha = cellViewModel.appearance.alpha
 
         tableView.animate(withDuration: .veryLong, delay: .short) {
             cellViewModel.animatedDisplay = false
 
-            cell.alpha = cellViewModel.appearance.alpha
+            cell.backgroundColor = backgroundColor
             cell.contentView.alpha = cellViewModel.appearance.alpha
             cell.transform = cellViewModel.appearance.transform
+            cell.alpha = cellViewModel.appearance.alpha
         }
     }
 
@@ -86,15 +90,18 @@ extension ElementChildrenPanelViewController {
             actions.forEach {
                 switch $0 {
                 case let .inserted(indexPaths):
+                    indexPaths.forEach {
+                        self.viewModel.cellViewModel(at: $0)?.animatedDisplay = true
+                    }
                     tableView.insertRows(at: indexPaths, with: .top)
 
                 case let .deleted(indexPaths):
                     let cells = indexPaths.compactMap { tableView.cellForRow(at: $0) }
 
-                    tableView.animate(withDuration: 0.4) {
+                    tableView.animate {
                         cells.forEach{
                             $0.contentView.alpha = 0
-                            $0.transform = .init(scaleX: 0.9, y: 0.9)
+                            $0.transform = ElementInspector.appearance.panelInitialTransform
                             $0.backgroundColor = .none
                         }
                     }
