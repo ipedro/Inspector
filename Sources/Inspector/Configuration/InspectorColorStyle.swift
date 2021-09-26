@@ -123,17 +123,6 @@ enum InspectorColorStyle {
         }
     }
 
-    var panelTransitionBackgorundColor: UIColor {
-        dynamicColor { colorStyle in
-            switch colorStyle {
-            case .light:
-                return .init(white: 1, alpha: 0.07)
-            case .dark:
-                return .init(white: 1, alpha: 0.043)
-            }
-        }
-    }
-
     var layoutConstraintsCardBackgroundColor: UIColor {
         dynamicColor { colorStyle in
             switch colorStyle {

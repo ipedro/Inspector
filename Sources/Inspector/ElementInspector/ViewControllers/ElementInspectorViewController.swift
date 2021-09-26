@@ -234,13 +234,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
         viewCode.alpha = 0
 
-        // compensate for transition drop shadow
-        let backgroundView = UIView()
-        backgroundView.backgroundColor = colorStyle.panelTransitionBackgorundColor
-
+        // FIXME: convert to proper transition coordinator
         transitionCoordinator.animate { transitionContext in
-
-            transitionContext.containerView.installView(backgroundView, position: .behind)
 
             self.viewCode.alpha = 1
 
@@ -253,6 +248,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                 return
             }
 
+            transitionContext.containerView.subviews.first(where: { $0.className.contains("DimmingView") })?.isHidden = true
+
             if toView === self.view {
                 // Apply a white UIView as mask to the SOURCE view:
                 toView.mask = maskView
@@ -264,8 +261,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         } completion: { transitionContext in
             self.viewCode.alpha = 1
             self.viewCode.mask = nil
-
-            backgroundView.removeFromSuperview()
 
             guard
                 let fromViewController = transitionContext.viewController(forKey: .from) as? ElementInspectorViewController,
