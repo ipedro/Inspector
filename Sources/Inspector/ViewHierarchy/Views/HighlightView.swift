@@ -82,41 +82,48 @@ class HighlightView: LayerView {
 
     // MARK: - Components
 
-    private lazy var label = UILabel(
-        .huggingPriority(.required, for: .horizontal),
-        .textColor(.white),
-        .textStyle(.caption1),
-        .textAlignment(.center),
-        .numberOfLines(1),
-        .adjustsFontSizeToFitWidth(true),
-        .minimumScaleFactor(0.6),
-        .layerOptions(
-            .shadowOffset(CGSize(width: 0, height: 1)),
-            .shadowColor(.black),
-            .shadowRadius(0.8),
-            .shadowOpacity(0.4)
-        )
-    )
+    private lazy var label = UILabel().then {
+        $0.font = UIFont(name: "MuktaMahee-Regular", size: 11.5)
+        $0.textColor = .white
+        $0.textAlignment = .center
+        $0.setContentHuggingPriority(.required, for: .horizontal)
+
+        $0.layer.shadowOffset = CGSize(width: 0, height: 2/3)
+        $0.layer.shadowColor = UIColor.black.cgColor
+        $0.layer.shadowRadius = 3/2
+        $0.layer.shadowOpacity = 2/3
+    }
 
     private(set) lazy var labelContentView = LayerViewComponent(
         .backgroundColor(color),
-        .cornerRadius(6),
-        .masksToBounds(true)
+        .cornerRadius(7)
     ).then {
-        $0.installView(label, .spacing(horizontal: 4, vertical: 2))
+        $0.layer.borderWidth = 1 / UIScreen.main.scale
+        $0.layer.borderColor = UIColor.init(white: 1, alpha: 1/3).cgColor
+        $0.installView(label, .spacing(horizontal: 5.5, vertical: -1))
     }
 
     private lazy var labelContainerView = LayerViewComponent(
         .layerOptions(
             .shadowOffset(CGSize(width: 0, height: 1)),
             .shadowColor(UIColor.black.cgColor),
-            .shadowRadius(2),
-            .shadowOpacity(0.6),
+            .shadowRadius(1.5),
+            .shadowOpacity(3/4),
             .shouldRasterize(true),
             .rasterizationScale(UIScreen.main.scale)
         )
     ).then {
         $0.installView(labelContentView, .autoResizingMask)
+    }
+
+    private lazy var shadowContainerView = UIView().then {
+        $0.layer.shadowOffset = CGSize(width: 0, height: 3)
+        $0.layer.shadowColor = UIColor.black.cgColor
+        $0.layer.shadowRadius = 12
+        $0.layer.shadowOpacity = 1
+        $0.layer.shouldRasterize = true
+        $0.layer.rasterizationScale = UIScreen.main.scale
+        $0.installView(labelContainerView, .autoResizingMask)
     }
 
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
@@ -128,7 +135,7 @@ class HighlightView: LayerView {
         name: String,
         colorScheme: ViewHierarchyColorScheme,
         reference: ViewHierarchyReference,
-        borderWidth: CGFloat = 1
+        borderWidth: CGFloat = Inspector.configuration.appearance.highlightLayerBorderWidth
     ) {
         self.colorScheme = colorScheme
 
@@ -149,24 +156,27 @@ class HighlightView: LayerView {
     }
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        labelContainerView.frame.contains(point)
+        labelContainerView.frame.insetBy(dx: -20, dy: -20) .contains(point)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
 
+        labelContentView.animate(.in)
         updateColors(isTouching: true)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
 
+        labelContentView.animate(.out)
         updateColors()
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
 
+        labelContentView.animate(.out)
         updateColors()
     }
 

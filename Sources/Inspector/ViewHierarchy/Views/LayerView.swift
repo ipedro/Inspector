@@ -31,7 +31,7 @@ class LayerView: UIImageView, LayerViewProtocol {
                 return
             }
 
-            layerBorderColor = color.withAlphaComponent(0.5)
+            layerBorderColor = color
         }
     }
 
@@ -83,7 +83,7 @@ class LayerView: UIImageView, LayerViewProtocol {
 
         borderedView.layer.borderWidth = borderWidth
 
-        borderedView.layer.borderColor = color.withAlphaComponent(0.5).cgColor
+        borderedView.layer.borderColor = color.cgColor
 
         installView(borderedView, .autoResizingMask)
 

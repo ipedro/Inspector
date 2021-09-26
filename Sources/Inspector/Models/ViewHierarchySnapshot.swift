@@ -48,10 +48,10 @@ struct ViewHierarchySnapshot {
 
         inspectableReferences = rootReference.inspectableViewReferences
 
-        let inspectableViews = rootReference.inspectableViewReferences.compactMap(\.rootView)
+        let inspectableViewReferences = rootReference.inspectableViewReferences
 
         populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViews).isEmpty == false
+            $0.filter(flattenedViewHierarchy: inspectableViewReferences).isEmpty == false
         }
     }
 }

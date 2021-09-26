@@ -44,14 +44,15 @@ public extension Inspector {
 
         // MARK: - Metods
 
-        func filter(snapshot: ViewHierarchySnapshot) -> [UIView] {
-            let inspectableViews = snapshot.inspectableReferences.compactMap(\.rootView)
-
-            return filter(flattenedViewHierarchy: inspectableViews)
+        func inspectableReferences(in snapshot: ViewHierarchySnapshot) -> [ViewHierarchyReference] {
+            filter(flattenedViewHierarchy: snapshot.inspectableReferences)
         }
 
-        func filter(flattenedViewHierarchy: [UIView]) -> [UIView] {
-            let filteredViews = flattenedViewHierarchy.filter(filter)
+        func filter(flattenedViewHierarchy: [ViewHierarchyReference]) -> [ViewHierarchyReference] {
+            let filteredViews = flattenedViewHierarchy.filter {
+                guard let rootView = $0.rootView else { return false }
+                return filter(rootView)
+            }
 
             switch allowsSystemViews {
             case true:

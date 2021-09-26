@@ -87,26 +87,25 @@ extension ElementChildrenPanelViewController {
         }
 
         tableView.performBatchUpdates {
-            actions.forEach {
-                switch $0 {
-                case let .inserted(indexPaths):
-                    indexPaths.forEach {
-                        self.viewModel.cellViewModel(at: $0)?.animatedDisplay = true
+            actions.forEach { action in
+                switch action {
+                case let .inserted(insertedIndexPaths):
+                    insertedIndexPaths.forEach { insertedIndexPath in
+                        self.viewModel.cellViewModel(at: insertedIndexPath)?.animatedDisplay = true
                     }
-                    tableView.insertRows(at: indexPaths, with: .top)
+                    tableView.insertRows(at: insertedIndexPaths, with: .top)
 
-                case let .deleted(indexPaths):
-                    let cells = indexPaths.compactMap { tableView.cellForRow(at: $0) }
-
+                case let .deleted(deletedIndexPaths):
                     tableView.animate {
-                        cells.forEach{
-                            $0.contentView.alpha = 0
-                            $0.transform = ElementInspector.appearance.panelInitialTransform
-                            $0.backgroundColor = .none
+                        deletedIndexPaths.forEach { deletedIndexPath in
+                            guard let cell = tableView.cellForRow(at: deletedIndexPath) else { return }
+
+                            cell.contentView.alpha = 0
+                            cell.transform = ElementInspector.appearance.panelInitialTransform
+                            cell.backgroundColor = .none
                         }
                     }
-
-                    tableView.deleteRows(at: indexPaths, with: .top)
+                    tableView.deleteRows(at: deletedIndexPaths, with: .top)
                 }
             }
         } completion: { [weak self] _ in
@@ -115,20 +114,14 @@ extension ElementChildrenPanelViewController {
     }
 
     func updateVisibleRowsBackgroundColor(_ completion: ((Bool) -> Void)? = nil) {
-        UIView.animate(
-            withDuration: .average,
-            animations: { [weak self] in
+        let tableView = viewCode.tableView
+        guard let indexPathsForVisibleRows = tableView.indexPathsForVisibleRows else { return }
 
-                self?.viewCode.tableView.indexPathsForVisibleRows?.forEach { indexPath in
-                    guard let cell = self?.viewCode.tableView.cellForRow(at: indexPath) as? ElementChildrenPanelTableViewCodeCell else {
-                        return
-                    }
-
-                    cell.isEvenRow = indexPath.row % 2 == 0
-                }
-
-            },
-            completion: completion
-        )
+        animate {
+            indexPathsForVisibleRows.forEach { indexPath in
+                guard let cell = tableView.cellForRow(at: indexPath) else { return }
+                (cell as? ElementChildrenPanelTableViewCodeCell)?.isEvenRow = indexPath.row % 2 == 0
+            }
+        } completion: { completion?($0) }
     }
 }

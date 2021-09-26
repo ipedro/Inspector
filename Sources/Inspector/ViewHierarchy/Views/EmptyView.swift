@@ -21,7 +21,7 @@
 import UIKit
 
 final class EmptyView: HighlightView {
-    static let defaultColorScheme: ViewHierarchyColorScheme = .colorScheme { _ in Inspector.configuration.appearance.emptyLayerColor }
+    static let defaultColorScheme: ViewHierarchyColorScheme = .colorScheme { _ in Inspector.configuration.colorStyle.emptyLayerColor }
 
     override init(
         frame: CGRect,

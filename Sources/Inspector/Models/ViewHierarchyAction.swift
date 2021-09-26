@@ -25,22 +25,32 @@ enum ViewHierarchyAction: Swift.CaseIterable {
     case attributes
     case size
     case children
+    case showHighlight
+    case hideHightlight
 
     var title: String {
         switch self {
         case .preview:
-            return "Preview"
+            return "Open Preview"
         case .attributes:
-            return "Attributes"
+            return "Open Attributes"
         case .children:
-            return "Children"
+            return "Open Children"
         case .size:
-            return "Size"
+            return "Open Size"
+        case .showHighlight:
+            return "Show Highlight"
+        case .hideHightlight:
+            return "Hide Highlight"
         }
     }
 
     var image: UIImage {
         switch self {
+        case .showHighlight:
+            return UIImage.moduleImage(named: "binocularsFill")!
+        case .hideHightlight:
+            return UIImage.moduleImage(named: "binoculars")!
         case .preview:
             return IconKit.imageOfInfoCircleFill()
         case .attributes:
@@ -57,6 +67,12 @@ enum ViewHierarchyAction: Swift.CaseIterable {
             switch action {
             case .children:
                 return reference.isContainer
+            case .showHighlight where reference.isHidingHighlightViews:
+                return true
+            case .hideHightlight where reference.isHidingHighlightViews == false:
+                return true
+            case .showHighlight, .hideHightlight:
+                return false
             default:
                 return true
             }

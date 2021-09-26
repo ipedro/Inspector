@@ -56,16 +56,16 @@ extension ElementInspectorPanel: RawRepresentable {
     }
 
     init?(rawValue: ViewHierarchyAction?) {
-        guard let rawValue = rawValue else { return nil }
-
-        self = Self.panel(for: rawValue)
+        guard let panel = Self.panel(for: rawValue) else { return nil }
+        self = panel
     }
 
     init?(rawValue: ViewHierarchyAction) {
-        self = Self.panel(for: rawValue)
+        guard let panel = Self.panel(for: rawValue) else { return nil }
+        self = panel
     }
 
-    private static func panel(for action: ViewHierarchyAction) -> ElementInspectorPanel {
+    private static func panel(for action: ViewHierarchyAction?) -> ElementInspectorPanel? {
         switch action {
         case .children:
             return .children
@@ -75,6 +75,8 @@ extension ElementInspectorPanel: RawRepresentable {
             return .size
         case .attributes:
             return .attributes
+        case .hideHightlight, .showHighlight, .none:
+            return nil
         }
     }
 }

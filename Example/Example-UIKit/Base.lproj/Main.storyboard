@@ -34,7 +34,7 @@
                     <tabBarItem key="tabBarItem" title="Inspector" image="tab-bar-inspector-off" selectedImage="tab-bar-inspector-on" id="2Ki-oj-dQl"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="99r-xO-ddw">
-                        <rect key="frame" x="0.0" y="44" width="414" height="119"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" systemColor="systemBackgroundColor"/>
                         <textAttributes key="titleTextAttributes">
@@ -259,6 +259,7 @@
                     </navigationItem>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="76I-g8-jHc" id="aqF-pQ-bOl"/>
                         <outlet property="contentStackView" destination="d2F-0P-dbg" id="iWD-Yc-6he"/>
                         <outlet property="datePicker" destination="eMf-HW-SoS" id="uMA-EL-j3f"/>
                         <outlet property="datePickerSegmentedControl" destination="Cp5-q0-d7b" id="1Fm-Sl-mnY"/>

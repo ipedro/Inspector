@@ -112,6 +112,10 @@ enum InspectorColorStyle {
         }
     }
 
+    public var emptyLayerColor: UIColor { wireframeLayerColor }
+
+    public var wireframeLayerColor: UIColor { quaternaryTextColor }
+
     var cellHighlightBackgroundColor: UIColor {
         dynamicColor { colorStyle in
             switch colorStyle {

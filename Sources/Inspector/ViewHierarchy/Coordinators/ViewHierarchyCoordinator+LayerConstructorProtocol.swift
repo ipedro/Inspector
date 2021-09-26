@@ -111,17 +111,9 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
             make(layer: .wireframes, for: snapshot)
         }
 
-        let filteredHirerarchy = layer.filter(snapshot: snapshot)
+        let inspectableReferences = layer.inspectableReferences(in: snapshot)
 
-        let elementLibraries = snapshot.elementLibraries
-
-        let refences = filteredHirerarchy.map { view in
-            ViewHierarchyReference(view) { element in
-                elementLibraries.icon(for: element)
-            }
-        }
-
-        visibleReferences.updateValue(refences, forKey: layer)
+        visibleReferences.updateValue(inspectableReferences, forKey: layer)
 
         return true
     }

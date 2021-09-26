@@ -24,14 +24,6 @@ public extension InspectorConfiguration {
     struct Appearance {
         // MARK: - Wireframe Style
 
-        public var wireframeLayerColor: UIColor = {
-            if #available(iOS 13.0, *) {
-                return .tertiarySystemFill
-            }
-
-            return .systemGray
-        }()
-
         public var actionIconSize = CGSize(width: 32, height: 32)
 
         public var elementIconSize = CGSize(
@@ -39,11 +31,11 @@ public extension InspectorConfiguration {
             height: ElementInspector.appearance.verticalMargins * 3
         )
 
-        public var wireframeLayerBorderWidth: CGFloat = 0.5
+        public lazy var highlightLayerBorderWidth: CGFloat = 1 / UIScreen.main.scale
+
+        public lazy var wireframeLayerBorderWidth: CGFloat = 1 / UIScreen.main.scale
 
         // MARK: - Empty Layer Style
-
-        public lazy var emptyLayerColor: UIColor = wireframeLayerColor
 
         public var emptyLayerBorderWidth: CGFloat = 0
     }

@@ -82,10 +82,10 @@ extension UIMenu {
         guard !reference.actions.isEmpty else { return nil }
 
         return UIMenu(
-            title: Texts.open,
+            title: "Actions",
             options: options,
             children: reference.actions.map { action in
-                UIAction(title: Texts.open(action.title), image: action.image) { _ in
+                UIAction(title: action.title, image: action.image) { _ in
                     handler(reference, action)
                 }
             }

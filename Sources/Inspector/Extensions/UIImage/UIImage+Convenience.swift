@@ -32,7 +32,7 @@ extension UIImage {
 @available(iOS 13.0, *)
 extension UIImage {
     static let copySymbol: UIImage? = .init(systemName: "doc.on.doc")
-    static let closeSymbol: UIImage? = .init(systemName: "xmark.circle.fill")
+    static let closeSymbol: UIImage? = .init(systemName: "xmark.circle")
     static let stopSymbol: UIImage? = .init(systemName: "hand.raised.fill")
     static let chevronDownSymbol: UIImage? = .init(systemName: "chevron.down.circle")
     static let chevronRightSymbol: UIImage? = .init(systemName: "chevron.right.circle")

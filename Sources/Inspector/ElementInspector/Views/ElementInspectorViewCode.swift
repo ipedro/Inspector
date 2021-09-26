@@ -51,7 +51,7 @@ final class ElementInspectorViewCode: BaseView {
         $0.directionalLayoutMargins = .zero
     }
 
-    private(set) lazy var separatorView = SeparatorView(style: .medium)
+    private(set) lazy var separatorView = SeparatorView(style: .hard)
 
     private(set) lazy var headerView = UIStackView.vertical().then {
         $0.addArrangedSubviews(referenceSummaryView)

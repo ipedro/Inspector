@@ -145,6 +145,13 @@ extension ViewHierarchyCoordinator {
 
 extension ViewHierarchyCoordinator: HighlightViewDelegate {
     func highlightView(_ highlightView: HighlightView, didSelect reference: ViewHierarchyReference, with action: ViewHierarchyAction?) {
-        delegate?.viewHierarchyCoordinator(self, didSelect: reference, with: action, in: highlightView)
+        switch action {
+        case .showHighlight:
+            toggleHighlightViews(visibility: true, inside: reference)
+        case .hideHightlight:
+            toggleHighlightViews(visibility: false, inside: reference)
+        default:
+            delegate?.viewHierarchyCoordinator(self, didSelect: reference, with: action, in: highlightView)
+        }
     }
 }
