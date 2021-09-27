@@ -32,20 +32,21 @@ final class OptionListControl: BaseFormControl {
 
     override var isEnabled: Bool {
         didSet {
-            icon.isHidden = isEnabled == false
+            icon.isHidden = !isEnabled
+            valueLabel.textColor = textColor
             accessoryControl.isEnabled = isEnabled
         }
     }
 
-    private lazy var icon = Icon(
-        .chevronUpDown,
-        color: colorStyle.secondaryTextColor,
-        size: CGSize(width: 14, height: 14)
-    )
+    private lazy var icon = Icon(.chevronUpDown, color: textColor, size: CGSize(width: 14, height: 14))
+
+    private var textColor: UIColor {
+        isEnabled ? colorStyle.textColor : colorStyle.secondaryTextColor
+    }
 
     private lazy var valueLabel = UILabel(
         .textStyle(.footnote),
-        .textColor(colorStyle.textColor),
+        .textColor(textColor),
         .adjustsFontSizeToFitWidth(true),
         .minimumScaleFactor(0.6)
     )
@@ -54,6 +55,7 @@ final class OptionListControl: BaseFormControl {
         $0.contentView.addArrangedSubviews(valueLabel, icon)
         $0.contentView.alignment = .center
         $0.contentView.spacing = ElementInspector.appearance.verticalMargins
+        $0.contentView.directionalLayoutMargins.update(top: ElementInspector.appearance.verticalMargins, bottom: ElementInspector.appearance.verticalMargins)
     }
 
     // MARK: - Init
@@ -94,8 +96,6 @@ final class OptionListControl: BaseFormControl {
         contentView.addArrangedSubview(accessoryControl)
 
         accessoryControl.widthAnchor.constraint(greaterThanOrEqualTo: contentContainerView.widthAnchor, multiplier: 1 / 2).isActive = true
-
-        tintColor = valueLabel.textColor
 
         updateViews()
 

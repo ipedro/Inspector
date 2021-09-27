@@ -20,55 +20,65 @@
 
 import UIKit
 
+protocol LayerViewDelegate: AnyObject {
+    func layerView(_ layerView: LayerViewProtocol, didSelect reference: ViewHierarchyReference, withAction action: ViewHierarchyAction)
+}
+
 class LayerView: UIImageView, LayerViewProtocol {
+    weak var delegate: LayerViewDelegate?
+
     var shouldPresentOnTop = false
 
-    // MARK: - Properties
+    let reference: ViewHierarchyReference
+
+    var allowsImages = false
 
     var color: UIColor {
         didSet {
-            guard color != oldValue else {
-                return
-            }
+            guard color != oldValue else { return }
 
             layerBorderColor = color
         }
     }
 
+    // MARK: - Setters
+
+    override var image: UIImage? {
+        get { allowsImages ? super.image : nil }
+        set { if allowsImages { super.image = newValue } }
+    }
+
     var layerBorderWidth: CGFloat {
-        get {
-            borderedView.layer.borderWidth
-        }
-        set {
-            borderedView.layer.borderWidth = newValue
-        }
+        get { borderedView.layer.borderWidth }
+        set { borderedView.layer.borderWidth = newValue }
     }
 
     var layerBackgroundColor: UIColor? {
-        get {
-            borderedView.backgroundColor
-        }
-        set {
-            borderedView.backgroundColor = newValue
-        }
+        get { borderedView.backgroundColor }
+        set { borderedView.backgroundColor = newValue }
     }
 
     var layerBorderColor: UIColor? {
         get {
-            guard let borderColor = borderedView.layer.borderColor else {
-                return nil
-            }
+            guard let borderColor = borderedView.layer.borderColor else { return nil }
 
             return UIColor(cgColor: borderColor)
         }
-        set {
-            borderedView.layer.borderColor = newValue?.cgColor
-        }
+        set { borderedView.layer.borderColor = newValue?.cgColor }
     }
 
-    private lazy var borderedView = LayerViewComponent(frame: bounds)
+    open var sourceView: UIView { self }
 
-    let reference: ViewHierarchyReference
+    // MARK: - Components
+
+    private lazy var borderedView = LayerViewComponent(frame: bounds).then {
+        $0.layer.borderColor = color.cgColor
+        $0.layer.allowsEdgeAntialiasing = true
+        $0.matchLayerProperties(of: self)
+    }
+
+    @available(iOS 13.0, *)
+    private lazy var menuInteraction = UIContextMenuInteraction(delegate: self)
 
     // MARK: - Init
 
@@ -79,11 +89,7 @@ class LayerView: UIImageView, LayerViewProtocol {
 
         super.init(frame: frame)
 
-        isUserInteractionEnabled = false
-
-        borderedView.layer.borderWidth = borderWidth
-
-        borderedView.layer.borderColor = color.cgColor
+        layerBorderWidth = borderWidth
 
         installView(borderedView, .autoResizingMask)
 
@@ -100,16 +106,55 @@ class LayerView: UIImageView, LayerViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        guard let superview = superview else {
-            return
-        }
+        matchLayerProperties(of: superview)
+        borderedView.matchLayerProperties(of: superview)
+    }
+
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
 
         if #available(iOS 13.0, *) {
-            borderedView.layer.cornerCurve = superview.layer.cornerCurve
+            newSuperview?.addInteraction(menuInteraction)
         }
 
-        borderedView.layer.maskedCorners = superview.layer.maskedCorners
+        guard newSuperview == nil else { return }
 
-        borderedView.layer.cornerRadius = superview.layer.cornerRadius
+        // reset views
+        reference.rootView?.isUserInteractionEnabled = reference.isUserInteractionEnabled
+        if #available(iOS 13.0, *) {
+            superview?.removeInteraction(menuInteraction)
+        }
+    }
+
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+
+        matchLayerProperties(of: superview)
+        borderedView.matchLayerProperties(of: superview)
+    }
+}
+
+private extension UIView {
+    func matchLayerProperties(of otherView: UIView?) {
+        guard let otherView = otherView else { return }
+
+        if #available(iOS 13.0, *) {
+            layer.cornerCurve = otherView.layer.cornerCurve
+        }
+
+        layer.maskedCorners = otherView.layer.maskedCorners
+
+        layer.cornerRadius = otherView.layer.cornerRadius
+    }
+}
+
+@available(iOS 13.0, *)
+extension LayerView: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        .contextMenuConfiguration(for: reference) { [weak self] reference, action in
+            guard let self = self else { return }
+
+            self.delegate?.layerView(self, didSelect: reference, withAction: action)
+        }
     }
 }

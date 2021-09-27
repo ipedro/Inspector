@@ -38,20 +38,14 @@ protocol ElementInspectorCoordinatorDelegate: AnyObject {
 
     func elementInspectorCoordinator(
         _ coordinator: ElementInspectorCoordinator,
-        showHighlightViewsVisibilityOf reference: ViewHierarchyReference
-    )
-
-    func elementInspectorCoordinator(
-        _ coordinator: ElementInspectorCoordinator,
-        hideHighlightViewsVisibilityOf reference: ViewHierarchyReference
-    )
-
-    func elementInspectorCoordinator(
-        _ coordinator: ElementInspectorCoordinator,
         didSelect reference: ViewHierarchyReference,
-        with action: ViewHierarchyAction?,
+        with action: ViewHierarchyAction,
         from fromReference: ViewHierarchyReference
     )
+
+    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
+                                     showHighlight: Bool,
+                                     for reference: ViewHierarchyReference)
 }
 
 // MARK: - ElementInspectorCoordinator
@@ -63,7 +57,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     let rootReference: ViewHierarchyReference
 
-    let initialAction: ViewHierarchyAction?
+    let initialPanel: ElementInspectorPanel?
 
     weak var sourceView: UIView?
 
@@ -79,12 +73,12 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     init(
         reference: ViewHierarchyReference,
-        with action: ViewHierarchyAction?,
+        with panel: ElementInspectorPanel?,
         in snapshot: ViewHierarchySnapshot,
         from sourceView: UIView?
     ) {
         self.rootReference = reference
-        self.initialAction = action
+        self.initialPanel = panel
         self.snapshot = snapshot
         self.sourceView = sourceView ?? reference.rootView
     }
@@ -132,7 +126,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
                 reference: reference,
                 selectedPanel: selectedPanel,
                 inspectableElements: elementLibraries,
-                availablePanels: ElementInspectorPanel.panels(for: reference.actions)
+                availablePanels: ElementInspectorPanel.panels(for: reference)
             )
         ).then {
             $0.delegate = delegate
@@ -231,7 +225,7 @@ private extension ElementInspectorCoordinator {
             let rootViewController = Self.makeElementInspectorViewController(
                 with: snapshot.rootReference,
                 elementLibraries: snapshot.elementLibraries,
-                selectedPanel: ElementInspectorPanel(rawValue: initialAction),
+                selectedPanel: initialPanel,
                 delegate: self,
                 in: snapshot
             )
@@ -254,7 +248,7 @@ private extension ElementInspectorCoordinator {
                 let viewController = Self.makeElementInspectorViewController(
                     with: currentReference,
                     elementLibraries: snapshot.elementLibraries,
-                    selectedPanel: ElementInspectorPanel(rawValue: initialAction),
+                    selectedPanel: initialPanel,
                     delegate: self,
                     in: snapshot
                 )

@@ -183,8 +183,6 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
                 self.viewCode.contentView.addArrangedSubview(itemView)
 
-                itemView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
-
                 formItemViewController.didMove(toParent: self)
 
                 self.itemsDictionary[formItemViewController] = item

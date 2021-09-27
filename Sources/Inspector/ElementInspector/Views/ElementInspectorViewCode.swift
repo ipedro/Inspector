@@ -96,7 +96,8 @@ final class ElementInspectorViewCode: BaseView {
                 assertionFailure("Should never happend")
                 return
             }
-            contentView.addArrangedSubview(content)
+
+            contentView.installView(content, priority: .required)
 
         case .scrollView:
             separatorView.isSafelyHidden = true

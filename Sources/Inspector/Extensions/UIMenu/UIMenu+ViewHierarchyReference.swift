@@ -79,12 +79,14 @@ extension UIMenu {
     }
 
     private static func actionsMenu(reference: ViewHierarchyReference, options: UIMenu.Options = .init(), handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
-        guard !reference.actions.isEmpty else { return nil }
+        let actions = ViewHierarchyAction.actions(for: reference)
+
+        guard !actions.isEmpty else { return nil }
 
         return UIMenu(
             title: "Actions",
             options: options,
-            children: reference.actions.map { action in
+            children: actions.map { action in
                 UIAction(title: action.title, image: action.image) { _ in
                     handler(reference, action)
                 }

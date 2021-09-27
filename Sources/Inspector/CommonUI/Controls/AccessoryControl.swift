@@ -23,7 +23,6 @@ import UIKit
 final class AccessoryControl: BaseControl {
     override var isEnabled: Bool {
         didSet {
-            alpha = isEnabled ? 1 : colorStyle.disabledAlpha
             backgroundColor = isEnabled ? colorStyle.accessoryControlBackgroundColor : colorStyle.accessoryControlDisabledBackgroundColor
         }
     }

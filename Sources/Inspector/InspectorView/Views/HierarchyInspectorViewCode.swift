@@ -152,9 +152,10 @@ final class HierarchyInspectorViewCode: BaseView, DataReloadingProtocol {
         contentView.addSubview(blurView)
 
         [
-            blurView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: verticalMargin),
-            blurView.leadingAnchor.constraint(equalTo: readableContentGuide.leadingAnchor, constant: horizontalMargin),
-            blurView.trailingAnchor.constraint(equalTo: readableContentGuide.trailingAnchor, constant: -horizontalMargin),
+            blurView.topAnchor.constraint(greaterThanOrEqualTo: safeAreaLayoutGuide.topAnchor, constant: verticalMargin),
+            blurView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
+            blurView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -horizontalMargin * 2),
+            blurView.widthAnchor.constraint(greaterThanOrEqualToConstant: 375),
             bottomAnchorConstraint
         ]
         .forEach {

@@ -26,12 +26,16 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
 
         let maxCount = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
 
-        let commands = snapshot.availableLayers.enumerated().map { index, layer in
-            command(for: layer, at: layerToggleInputRange.lowerBound + index, isEmpty: snapshot.populatedLayers.contains(layer) == false)
+        var commands = [Command]()
+        commands.append(command(for: .wireframes, at: layerToggleInputRange.lowerBound, isEmpty: false))
+
+        for (index, layer) in snapshot.availableLayers.enumerated() {
+            let command = command(for: layer, at: layerToggleInputRange.lowerBound + index + 1, isEmpty: snapshot.populatedLayers.contains(layer) == false)
+            commands.append(command)
         }
 
         return .group(
-            title: Texts.highlightLayers,
+            title: Texts.inspectHierarchy,
             commands: Array(commands.prefix(maxCount))
         )
     }

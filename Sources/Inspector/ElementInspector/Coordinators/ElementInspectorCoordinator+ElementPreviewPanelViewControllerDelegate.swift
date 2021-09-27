@@ -21,13 +21,7 @@
 import Foundation
 
 extension ElementInspectorCoordinator: ElementPreviewPanelViewControllerDelegate {
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
-                                           showLayerInspectorViewsInside reference: ViewHierarchyReference)
-    {
-        delegate?.elementInspectorCoordinator(self, showHighlightViewsVisibilityOf: reference)
-    }
-
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController, hideLayerInspectorViewsInside reference: ViewHierarchyReference) {
-        delegate?.elementInspectorCoordinator(self, hideHighlightViewsVisibilityOf: reference)
+    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController, showHighlight: Bool, in reference: ViewHierarchyReference) {
+        delegate?.elementInspectorCoordinator(self, showHighlight: showHighlight, for: reference)
     }
 }

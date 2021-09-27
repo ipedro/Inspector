@@ -69,9 +69,9 @@ enum Texts {
 
     static let copy = "Copy"
 
-    static let highlightLayers = "Highlight Layers"
+    static let inspectHierarchy = "Inspect Hirearchy"
 
-    static let hierarchySearch = "Hierarchy Search"
+    static let hierarchySearch = "Search views"
 
     static let presentInspector = "Open Inspector..."
 

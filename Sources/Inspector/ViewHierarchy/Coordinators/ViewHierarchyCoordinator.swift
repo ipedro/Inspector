@@ -25,8 +25,8 @@ protocol ViewHierarchyCoordinatorDelegate: AnyObject {
     func viewHierarchyCoordinator(
         _ coordinator: ViewHierarchyCoordinator,
         didSelect reference: ViewHierarchyReference,
-        with action: ViewHierarchyAction?,
-        in sourceView: HighlightView
+        with action: ViewHierarchyAction,
+        from sourceView: UIView
     )
 }
 
@@ -57,7 +57,7 @@ final class ViewHierarchyCoordinator: Coordinator, DismissablePresentationProtoc
         }
     }
 
-    var highlightViews: [ViewHierarchyReference: HighlightView] = [:] {
+    var highlightViews: [ViewHierarchyReference: LayerView] = [:] {
         didSet {
             updateLayerViews(to: highlightViews, from: oldValue)
         }
@@ -139,19 +139,45 @@ extension ViewHierarchyCoordinator {
             in: viewHierarchy
         )
     }
-}
 
-// MARK: - HighlightViewDelegate
+    func canPerform(action: ViewHierarchyAction) -> Bool {
+        switch action {
+        case .showHighlight,
+             .hideHightlight:
+            return true
+        case .preview,
+             .attributes,
+             .size,
+             .children:
+            return false
+        }
+    }
 
-extension ViewHierarchyCoordinator: HighlightViewDelegate {
-    func highlightView(_ highlightView: HighlightView, didSelect reference: ViewHierarchyReference, with action: ViewHierarchyAction?) {
+    func perform(action: ViewHierarchyAction, for reference: ViewHierarchyReference) {
         switch action {
         case .showHighlight:
-            toggleHighlightViews(visibility: true, inside: reference)
+            showHighlight(true, for: reference)
         case .hideHightlight:
-            toggleHighlightViews(visibility: false, inside: reference)
+            showHighlight(false, for: reference)
         default:
-            delegate?.viewHierarchyCoordinator(self, didSelect: reference, with: action, in: highlightView)
+            break
+        }
+    }
+
+    func showHighlight(_ show: Bool, for reference: ViewHierarchyReference) {
+        highlightViews[reference]?.isHidden = !show
+    }
+}
+
+// MARK: - LayerViewDelegate
+
+extension ViewHierarchyCoordinator: LayerViewDelegate {
+    func layerView(_ layerView: LayerViewProtocol, didSelect reference: ViewHierarchyReference, withAction action: ViewHierarchyAction) {
+        if canPerform(action: action) {
+            perform(action: action, for: reference)
+        }
+        else {
+            delegate?.viewHierarchyCoordinator(self, didSelect: reference, with: action, from: layerView.sourceView)
         }
     }
 }

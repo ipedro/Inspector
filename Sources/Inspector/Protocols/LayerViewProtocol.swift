@@ -20,4 +20,6 @@
 
 import UIKit
 
-protocol LayerViewProtocol: InternalViewProtocol {}
+protocol LayerViewProtocol: InternalViewProtocol {
+    var sourceView: UIView { get }
+}

@@ -63,18 +63,19 @@ enum ViewHierarchyAction: Swift.CaseIterable {
     }
 
     static func actions(for reference: ViewHierarchyReference) -> [ViewHierarchyAction] {
-        allCases.filter { action in
+        allCases.compactMap { action in
             switch action {
             case .children:
-                return reference.isContainer
-            case .showHighlight where reference.isHidingHighlightViews:
-                return true
-            case .hideHightlight where reference.isHidingHighlightViews == false:
-                return true
-            case .showHighlight, .hideHightlight:
-                return false
+                return reference.isContainer ? action : nil
+
+            case .showHighlight:
+                return reference.isShowingLayerHighlightView ? nil : action
+
+            case .hideHightlight:
+                return reference.isShowingLayerHighlightView ? action : nil
+
             default:
-                return true
+                return action
             }
         }
     }

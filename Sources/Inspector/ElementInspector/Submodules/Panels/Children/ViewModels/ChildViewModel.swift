@@ -27,7 +27,7 @@ protocol ElementChildrenPanelItemViewModelProtocol: ViewHierarchyReferenceSummar
 }
 
 extension ElementChildrenPanelItemViewModelProtocol {
-    var availablePanels: [ElementInspectorPanel] { ElementInspectorPanel.panels(for: reference.actions) }
+    var availablePanels: [ElementInspectorPanel] { ElementInspectorPanel.panels(for: reference) }
 }
 
 extension ElementChildrenPanelViewModel {

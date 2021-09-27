@@ -20,25 +20,7 @@
 
 import UIKit
 
-protocol HighlightViewDelegate: AnyObject {
-    func highlightView(_ highlightView: HighlightView, didSelect reference: ViewHierarchyReference, with action: ViewHierarchyAction?)
-}
-
-extension HighlightViewDelegate {
-    func toggleHighlightViews(visibility isVisible: Bool, inside reference: ViewHierarchyReference) {
-        guard let referenceRootView = reference.rootView else {
-            return
-        }
-
-        for view in referenceRootView.allSubviews where view is LayerViewProtocol {
-            view.isSafelyHidden = isVisible == false
-        }
-    }
-}
-
 class HighlightView: LayerView {
-    weak var delegate: HighlightViewDelegate?
-
     // MARK: - Properties
 
     var name: String {
@@ -78,19 +60,21 @@ class HighlightView: LayerView {
         }
     }
 
+    override var sourceView: UIView { shadowContainerView }
+
     private lazy var verticalAlignmentConstraint = labelContainerView.centerYAnchor.constraint(equalTo: centerYAnchor)
 
     // MARK: - Components
 
     private lazy var label = UILabel().then {
-        $0.font = UIFont(name: "MuktaMahee-Regular", size: 11.5)
+        $0.font = UIFont(name: "MuktaMahee-Regular", size: 12)
         $0.textColor = .white
         $0.textAlignment = .center
         $0.setContentHuggingPriority(.required, for: .horizontal)
 
-        $0.layer.shadowOffset = CGSize(width: 0, height: 2/3)
+        $0.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowRadius = 3/2
+        $0.layer.shadowRadius = 1
         $0.layer.shadowOpacity = 2/3
     }
 
@@ -99,16 +83,16 @@ class HighlightView: LayerView {
         .cornerRadius(7)
     ).then {
         $0.layer.borderWidth = 1 / UIScreen.main.scale
-        $0.layer.borderColor = UIColor.init(white: 1, alpha: 1/3).cgColor
+        $0.layer.borderColor = UIColor.init(white: 1, alpha: 0.1).cgColor
         $0.installView(label, .spacing(horizontal: 5.5, vertical: -1))
     }
 
     private lazy var labelContainerView = LayerViewComponent(
         .layerOptions(
-            .shadowOffset(CGSize(width: 0, height: 1)),
+            .shadowOffset(CGSize(width: 0, height: 0.6)),
             .shadowColor(UIColor.black.cgColor),
-            .shadowRadius(1.5),
-            .shadowOpacity(3/4),
+            .shadowRadius(1.2),
+            .shadowOpacity(0.6),
             .shouldRasterize(true),
             .rasterizationScale(UIScreen.main.scale)
         )
@@ -116,17 +100,19 @@ class HighlightView: LayerView {
         $0.installView(labelContentView, .autoResizingMask)
     }
 
+    private lazy var panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(move(with:)))
+
     private lazy var shadowContainerView = UIView().then {
-        $0.layer.shadowOffset = CGSize(width: 0, height: 3)
+        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
         $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowRadius = 12
-        $0.layer.shadowOpacity = 1
+        $0.layer.shadowRadius = 6
+        $0.layer.shadowOpacity = 0.2
         $0.layer.shouldRasterize = true
         $0.layer.rasterizationScale = UIScreen.main.scale
         $0.installView(labelContainerView, .autoResizingMask)
     }
 
-    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
+    private(set) lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapLayerView))
 
     // MARK: - Init
 
@@ -138,7 +124,6 @@ class HighlightView: LayerView {
         borderWidth: CGFloat = Inspector.configuration.appearance.highlightLayerBorderWidth
     ) {
         self.colorScheme = colorScheme
-
         self.name = name
 
         super.init(
@@ -148,15 +133,73 @@ class HighlightView: LayerView {
             borderWidth: borderWidth
         )
 
-        shouldPresentOnTop = true
-
+        preservesSuperviewLayoutMargins = true
+        
         isUserInteractionEnabled = true
 
-        addGestureRecognizer(tapGestureRecognizer)
+        shouldPresentOnTop = true
+
+        sourceView.addGestureRecognizer(tapGestureRecognizer)
+        sourceView.addGestureRecognizer(panGestureRecognizer)
+    }
+
+    @objc
+    private func move(with gesture: UIPanGestureRecognizer) {
+        let layoutFrame = readableContentGuide.layoutFrame
+
+        guard layoutFrame.width + layoutFrame.height > (sourceView.frame.size.width + sourceView.frame.size.height) * 2 else {
+            return
+        }
+
+        let location = gesture.location(in: self)
+
+        sourceView.center = location
+
+        guard gesture.state == .ended else {
+            updateColors(isTouching: true)
+            return
+        }
+
+        updateColors(isTouching: false)
+
+        let finalX: CGFloat
+        let finalY: CGFloat
+
+        let sourceHitBounds = sourceView.convert(
+            sourceView.bounds.insetBy(dx: -sourceView.bounds.width / 3, dy: -sourceView.bounds.height / 3), to: self)
+
+        if (sourceHitBounds.minX...sourceHitBounds.maxX).contains(layoutFrame.midX) {
+            finalX = layoutFrame.midX
+        }
+        else if sourceView.frame.midX >= layoutFrame.width / 2 {
+            finalX = max(0, layoutFrame.maxX - (sourceView.frame.width / 2))
+        }
+        else {
+            finalX = layoutFrame.minX + sourceView.frame.width / 2
+        }
+
+        if (sourceHitBounds.minY...sourceHitBounds.maxY).contains(layoutFrame.midY) {
+            finalY = layoutFrame.midY
+        }
+        else if sourceView.frame.midY >= layoutFrame.height / 2 {
+            finalY = max(0, layoutFrame.maxY - (sourceView.frame.height / 2))
+        }
+        else {
+            finalY = layoutFrame.minY + sourceView.frame.height / 2
+        }
+
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.beginFromCurrentState, .curveEaseIn]) {
+            self.sourceView.center = CGPoint(x: finalX, y: finalY)
+        }
+    }
+
+    @objc
+    private func tapLayerView() {
+        delegate?.layerView(self, didSelect: reference, withAction: .preview)
     }
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        labelContainerView.frame.insetBy(dx: -20, dy: -20) .contains(point)
+        sourceView.frame.insetBy(dx: -20, dy: -20).contains(point)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -199,25 +242,6 @@ class HighlightView: LayerView {
         setupViews(with: superview)
     }
 
-    override func willMove(toSuperview newSuperview: UIView?) {
-        super.willMove(toSuperview: newSuperview)
-
-        if #available(iOS 13.0, *) {
-            newSuperview?.addInteraction(menuInteraction)
-        }
-
-        guard newSuperview == nil else { return }
-
-        // reset views
-        reference.rootView?.isUserInteractionEnabled = reference.isUserInteractionEnabled
-        if #available(iOS 13.0, *) {
-            superview?.removeInteraction(menuInteraction)
-        }
-    }
-
-    @available(iOS 13.0, *)
-    private lazy var menuInteraction = UIContextMenuInteraction(delegate: self)
-
     override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -246,22 +270,8 @@ class HighlightView: LayerView {
     }
 }
 
-@available(iOS 13.0, *)
-extension HighlightView: UIContextMenuInteractionDelegate {
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        .contextMenuConfiguration(for: reference) { [weak self] reference, action in
-            guard let self = self else { return }
-
-            self.delegate?.highlightView(self, didSelect: reference, with: action)
-        }
-    }
-}
-
 private extension HighlightView {
-    @objc
-    func tap() {
-        delegate?.highlightView(self, didSelect: reference, with: .none)
-    }
+
 
     func updateLabelWidth() {
         labelWidthConstraint?.constant = frame.width * 4 / 3
@@ -270,7 +280,7 @@ private extension HighlightView {
     func setupViews(with hostView: UIView) {
         updateColors()
 
-        installView(labelContainerView, .centerX)
+        installView(shadowContainerView, .centerX)
 
         verticalAlignmentConstraint.isActive = true
 

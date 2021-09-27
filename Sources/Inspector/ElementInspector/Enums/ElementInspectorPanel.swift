@@ -28,6 +28,11 @@ enum ElementInspectorPanel: Swift.CaseIterable, Hashable {
     case size
     case children
 
+    static func panels(for reference: ViewHierarchyReference) -> [ElementInspectorPanel] {
+        let actions = ViewHierarchyAction.actions(for: reference)
+        return panels(for: actions)
+    }
+    
     static func panels(for actions: [ViewHierarchyAction]) -> [ElementInspectorPanel] {
         actions.compactMap { .init(rawValue: $0) }
     }
@@ -56,7 +61,12 @@ extension ElementInspectorPanel: RawRepresentable {
     }
 
     init?(rawValue: ViewHierarchyAction?) {
-        guard let panel = Self.panel(for: rawValue) else { return nil }
+        guard
+            let rawValue = rawValue,
+            let panel = Self.panel(for: rawValue)
+        else {
+            return nil
+        }
         self = panel
     }
 
@@ -65,7 +75,7 @@ extension ElementInspectorPanel: RawRepresentable {
         self = panel
     }
 
-    private static func panel(for action: ViewHierarchyAction?) -> ElementInspectorPanel? {
+    private static func panel(for action: ViewHierarchyAction) -> ElementInspectorPanel? {
         switch action {
         case .children:
             return .children
@@ -75,7 +85,7 @@ extension ElementInspectorPanel: RawRepresentable {
             return .size
         case .attributes:
             return .attributes
-        case .hideHightlight, .showHighlight, .none:
+        case .hideHightlight, .showHighlight:
             return nil
         }
     }

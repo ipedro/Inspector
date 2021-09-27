@@ -20,19 +20,58 @@
 
 import UIKit
 
-extension UISwitch {
-    static func toggleControlSyle() -> UISwitch {
-        let switchControl = UISwitch()
-        switchControl.onTintColor = switchControl.colorStyle.tintColor
+final class StyledSwitch: UISwitch {
 
-        switch switchControl.colorStyle {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setup() {
+        tintColor = colorStyle.accessoryControlBackgroundColor
+        onTintColor = colorStyle.tintColor
+
+        switch colorStyle {
         case .dark:
-            switchControl.thumbTintColor = UIColor.white.withAlphaComponent(switchControl.colorStyle.disabledAlpha)
+            thumbTintColor = UIColor.white.withAlphaComponent(colorStyle.disabledAlpha)
         case .light:
-            switchControl.thumbTintColor = UIColor.white.withAlphaComponent(switchControl.colorStyle.disabledAlpha * 2)
+            thumbTintColor = UIColor.white.withAlphaComponent(colorStyle.disabledAlpha * 2)
         }
 
-        return switchControl
+        addTarget(self, action: #selector(updateThumbColor), for: .valueChanged)
+
+        updateThumbColor()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        guard
+            #available(iOS 13.0, *),
+            traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection)
+        else {
+            return
+        }
+
+        updateThumbColor()
+    }
+
+    @objc func updateThumbColor() {
+        switch (colorStyle, isOn) {
+        case (.dark, true):
+            thumbTintColor = colorStyle.quaternaryTextColor
+        case (.dark, false):
+            thumbTintColor = colorStyle.tertiaryTextColor
+        case (.light, true):
+            thumbTintColor = UIColor.white.withAlphaComponent(colorStyle.disabledAlpha * 2)
+        case (.light, false):
+            thumbTintColor = UIColor.white
+        }
     }
 }
 
@@ -60,7 +99,7 @@ final class ToggleControl: BaseFormControl {
         }
     }
 
-    private(set) lazy var switchControl = UISwitch.toggleControlSyle().then {
+    private(set) lazy var switchControl = StyledSwitch().then {
         $0.addTarget(self, action: #selector(toggleOn), for: .valueChanged)
     }
 

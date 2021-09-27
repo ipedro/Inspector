@@ -20,4 +20,6 @@
 
 import UIKit
 
-class LayerViewComponent: BaseView, LayerViewProtocol {}
+class LayerViewComponent: BaseView, LayerViewProtocol {
+    var sourceView: UIView { self }
+}

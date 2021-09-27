@@ -23,10 +23,12 @@ import UIKit
 extension Manager: ViewHierarchyCoordinatorDelegate {
     func viewHierarchyCoordinator(_ coordinator: ViewHierarchyCoordinator,
                                   didSelect reference: ViewHierarchyReference,
-                                  with action: ViewHierarchyAction?,
-                                  in sourceView: HighlightView) {
+                                  with action: ViewHierarchyAction,
+                                  from sourceView: UIView) {
 
-        startElementInspectorCoordinator(for: reference, with: action, animated: true, from: sourceView.labelContentView)
+        if let panel = ElementInspectorPanel(rawValue: action) {
+            startElementInspectorCoordinator(for: reference, with: panel, animated: true, from: sourceView)
+        }
 
     }
 }

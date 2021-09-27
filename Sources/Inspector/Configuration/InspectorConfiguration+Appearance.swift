@@ -31,7 +31,7 @@ public extension InspectorConfiguration {
             height: ElementInspector.appearance.verticalMargins * 3
         )
 
-        public lazy var highlightLayerBorderWidth: CGFloat = 1 / UIScreen.main.scale
+        public lazy var highlightLayerBorderWidth: CGFloat = 2 / UIScreen.main.scale
 
         public lazy var wireframeLayerBorderWidth: CGFloat = 1 / UIScreen.main.scale
 

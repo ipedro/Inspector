@@ -27,11 +27,8 @@ final class TextFieldControl: BaseFormControl {
 
     private lazy var textField = UITextField().then {
         $0.textColor = colorStyle.textColor
-        $0.adjustsFontSizeToFitWidth = true
         $0.font = defaultFont
         $0.borderStyle = .none
-        $0.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        $0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         $0.delegate = self
         $0.addTarget(self, action: #selector(editText), for: .editingChanged)
     }
@@ -92,6 +89,8 @@ final class TextFieldControl: BaseFormControl {
 
         axis = .vertical
         contentView.addArrangedSubview(accessoryControl)
+        
+        accessoryControl.widthAnchor.constraint(lessThanOrEqualTo: contentContainerView.widthAnchor).isActive = true
     }
 
     override var canBecomeFirstResponder: Bool {

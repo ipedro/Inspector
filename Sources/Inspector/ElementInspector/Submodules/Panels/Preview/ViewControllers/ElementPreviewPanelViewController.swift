@@ -22,10 +22,8 @@ import UIKit
 
 protocol ElementPreviewPanelViewControllerDelegate: OperationQueueManagerProtocol {
     func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
-                                           showLayerInspectorViewsInside reference: ViewHierarchyReference)
-
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
-                                           hideLayerInspectorViewsInside reference: ViewHierarchyReference)
+                                           showHighlight: Bool,
+                                           in reference: ViewHierarchyReference)
 }
 
 final class ElementPreviewPanelViewController: ElementInspectorPanelViewController {
@@ -119,13 +117,11 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
 
     @objc
     func toggleHighlightViews() {
-        switch viewModel.isHighlightingViews {
-        case true:
-            delegate?.elementPreviewPanelViewController(self, hideLayerInspectorViewsInside: viewModel.reference)
-
-        case false:
-            delegate?.elementPreviewPanelViewController(self, showLayerInspectorViewsInside: viewModel.reference)
-        }
+        delegate?.elementPreviewPanelViewController(
+            self,
+            showHighlight: !viewModel.isHighlightingViews,
+            in: viewModel.reference
+        )
     }
 
     @objc

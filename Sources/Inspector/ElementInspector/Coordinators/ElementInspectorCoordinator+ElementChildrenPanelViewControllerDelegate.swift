@@ -23,9 +23,14 @@ import UIKit
 extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegate {
     func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
                                             didSelect reference: ViewHierarchyReference,
-                                            with action: ViewHierarchyAction?,
+                                            with action: ViewHierarchyAction,
                                             from fromReference: ViewHierarchyReference)
     {
+        guard let panel = ElementInspectorPanel(rawValue: action) else {
+            delegate?.elementInspectorCoordinator(self, didSelect: reference, with: action, from: fromReference)
+            return
+        }
+
         operationQueue.cancelAllOperations()
 
         let pushOperation = MainThreadOperation(name: "Push \(reference.displayName)") { [weak self] in
@@ -34,7 +39,7 @@ extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegat
             let elementInspectorViewController = Self.makeElementInspectorViewController(
                 with: reference,
                 elementLibraries: self.snapshot.elementLibraries,
-                selectedPanel: ElementInspectorPanel(rawValue: action),
+                selectedPanel: panel,
                 delegate: self,
                 in: self.snapshot
             )

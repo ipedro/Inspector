@@ -62,7 +62,7 @@ final class ViewHierarchyReference {
 
     var hasIssues: Bool { !issues.isEmpty }
 
-    private(set) lazy var actions = ViewHierarchyAction.actions(for: self)
+//    var actions: [ViewHierarchyAction] { ViewHierarchyAction.actions(for: self) }
 
     private(set) lazy var isContainer: Bool = children.isEmpty == false
 
@@ -214,18 +214,12 @@ extension ViewHierarchyReference: Hashable {
 }
 
 extension ViewHierarchyReference {
-    var isHidingHighlightViews: Bool {
-        guard let view = rootView else {
-            return false
-        }
+    var isShowingLayerWireframeView: Bool {
+        rootView?.subviews.contains { $0 is WireframeView } == true
+    }
 
-        for view in view.allSubviews where view is LayerViewProtocol {
-            if view.isHidden {
-                return true
-            }
-        }
-
-        return false
+    var isShowingLayerHighlightView: Bool {
+        rootView?.subviews.contains { $0 is HighlightView && $0.isHidden == false } == true
     }
 }
 

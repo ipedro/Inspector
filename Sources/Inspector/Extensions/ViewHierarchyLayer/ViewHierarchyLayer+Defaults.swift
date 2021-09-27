@@ -71,14 +71,10 @@ public extension ViewHierarchyLayer {
     static let webViews = ViewHierarchyLayer.layer(name: "Web views") { $0 is WKWebView || $0.superview is WKWebView }
     /// Shows all views
     static let allViews = ViewHierarchyLayer.layer(name: "All views") { _ in true }
-}
 
-// MARK: - Internal Layers
+    static let wireframes = Inspector.ViewHierarchyLayer(name: "Wireframes", showLabels: false) { _ in true }
 
-extension ViewHierarchyLayer {
-    static let wireframes = ViewHierarchyLayer(name: "Wireframes", showLabels: false) { _ in true }
+    static let systemViews = Inspector.ViewHierarchyLayer(name: "System views", showLabels: true, allowsSystemViews: true) { $0.isSystemView && !$0.isSystemContainerView }
 
-    static let systemViews = ViewHierarchyLayer(name: "System views", showLabels: true, allowsSystemViews: true) { $0.isSystemView && !$0.isSystemContainerView }
-
-    static let systemContainers = ViewHierarchyLayer(name: "System containers", showLabels: true, allowsSystemViews: true) { $0.isSystemContainerView }
+    static let systemContainers = Inspector.ViewHierarchyLayer(name: "System containers", showLabels: true, allowsSystemViews: true) { $0.isSystemContainerView }
 }

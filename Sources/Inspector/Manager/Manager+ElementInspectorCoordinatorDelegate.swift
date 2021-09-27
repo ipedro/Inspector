@@ -23,19 +23,22 @@ import UIKit
 extension Manager: ElementInspectorCoordinatorDelegate {
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
                                      didSelect reference: ViewHierarchyReference,
-                                     with action: ViewHierarchyAction?,
+                                     with action: ViewHierarchyAction,
                                      from fromReference: ViewHierarchyReference) {
-        startElementInspectorCoordinator(for: reference, with: action, animated: true, from: reference.rootView)
+
+        if let panel = ElementInspectorPanel(rawValue: action) {
+            startElementInspectorCoordinator(for: reference, with: panel, animated: true, from: reference.rootView)
+        }
+        else if viewHierarchyCoordinator?.canPerform(action: action) == true {
+            viewHierarchyCoordinator?.perform(action: action, for: reference)
+        }
     }
 
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
-                                     showHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        viewHierarchyCoordinator?.toggleHighlightViews(visibility: true, inside: reference)
-    }
-
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
-                                     hideHighlightViewsVisibilityOf reference: ViewHierarchyReference) {
-        viewHierarchyCoordinator?.toggleHighlightViews(visibility: false, inside: reference)
+                                     showHighlight: Bool,
+                                     for reference: ViewHierarchyReference)
+    {
+        viewHierarchyCoordinator?.showHighlight(showHighlight, for: reference)
     }
 
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
@@ -54,25 +57,25 @@ extension Manager: ElementInspectorCoordinatorDelegate {
 
 extension Manager {
     func startElementInspectorCoordinator(for view: UIView,
-                                          with action: ViewHierarchyAction?,
+                                          with panel: ElementInspectorPanel?,
                                           animated: Bool,
                                           from sourceView: UIView?) {
         guard let elementLibraries = viewHierarchySnaphost?.elementLibraries else { return }
 
         let reference = ViewHierarchyReference(view, iconProvider: { elementLibraries.icon(for: $0) })
 
-        startElementInspectorCoordinator(for: reference, with: action, animated: animated, from: sourceView)
+        startElementInspectorCoordinator(for: reference, with: panel, animated: animated, from: sourceView)
     }
 
     func startElementInspectorCoordinator(for reference: ViewHierarchyReference,
-                                          with action: ViewHierarchyAction?,
+                                          with panel: ElementInspectorPanel?,
                                           animated: Bool,
                                           from sourceView: UIView?) {
         guard let snapshot = viewHierarchySnaphost else { return }
 
         let coordinator = ElementInspectorCoordinator(
             reference: reference,
-            with: action,
+            with: panel,
             in: snapshot,
             from: sourceView
         ).then {

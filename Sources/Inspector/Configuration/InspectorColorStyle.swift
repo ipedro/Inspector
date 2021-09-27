@@ -94,7 +94,7 @@ enum InspectorColorStyle {
             case .dark:
                 return .systemMaterial
             case .light:
-                return .systemMaterial
+                return .systemThinMaterial
             }
         } else {
             return .regular
@@ -114,7 +114,7 @@ enum InspectorColorStyle {
 
     public var emptyLayerColor: UIColor { wireframeLayerColor }
 
-    public var wireframeLayerColor: UIColor { quaternaryTextColor }
+    public var wireframeLayerColor: UIColor { tertiaryTextColor }
 
     var cellHighlightBackgroundColor: UIColor {
         dynamicColor { colorStyle in

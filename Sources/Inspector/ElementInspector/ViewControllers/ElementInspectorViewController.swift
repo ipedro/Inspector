@@ -51,7 +51,7 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
 
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
                                         didSelect reference: ViewHierarchyReference,
-                                        with action: ViewHierarchyAction?,
+                                        with action: ViewHierarchyAction,
                                         from fromReference: ViewHierarchyReference)
 
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController,

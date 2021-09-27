@@ -107,10 +107,6 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
             return false
         }
 
-        if layer != .wireframes, visibleReferences.keys.contains(.wireframes) == false {
-            make(layer: .wireframes, for: snapshot)
-        }
-
         let inspectableReferences = layer.inspectableReferences(in: snapshot)
 
         visibleReferences.updateValue(inspectableReferences, forKey: layer)
@@ -209,32 +205,43 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
 
             switch newLayer.showLabels {
             case true:
-                references.forEach { viewReference in
+                references.forEach { reference in
                     guard
-                        highlightViews[viewReference] == nil,
-                        let element = viewReference.rootView
+                        highlightViews[reference] == nil,
+                        let element = reference.rootView
                     else {
                         return
                     }
 
-                    let inspectorView = HighlightView(frame: element.bounds, name: element.className, colorScheme: colorScheme, reference: viewReference)
-                    inspectorView.delegate = self
+                    let highlightView = HighlightView(
+                        frame: element.bounds,
+                        name: element.className,
+                        colorScheme: colorScheme,
+                        reference: reference
+                    ).then {
+                        $0.delegate = self
+                    }
 
-                    highlightViews[viewReference] = inspectorView
+                    highlightViews[reference] = highlightView
                 }
 
             case false:
-                references.forEach { viewReference in
+                references.forEach { reference in
                     guard
-                        highlightViews[viewReference] == nil,
-                        let element = viewReference.rootView
+                        highlightViews[reference] == nil,
+                        let element = reference.rootView
                     else {
                         return
                     }
 
-                    let wireframeView = WireframeView(frame: element.bounds, reference: viewReference)
+                    let wireframeView = WireframeView(
+                        frame: element.bounds,
+                        reference: reference
+                    ).then {
+                        $0.delegate = self
+                    }
 
-                    wireframeViews[viewReference] = wireframeView
+                    wireframeViews[reference] = wireframeView
                 }
             }
         }
