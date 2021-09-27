@@ -25,10 +25,6 @@ typealias Manager = Inspector.Manager
 
 typealias Coordinator = BaseCoordinator<Void> & StartProtocol
 
-protocol DismissablePresentationProtocol {
-    func dismissPresentation(animated: Bool)
-}
-
 extension Inspector {
     final class Manager: Coordinator {
         // MARK: - Properties
