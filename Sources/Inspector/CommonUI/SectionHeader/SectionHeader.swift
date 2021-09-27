@@ -66,6 +66,7 @@ final class SectionHeader: BaseView {
         .textColor(colorStyle.secondaryTextColor)
     ).then {
         $0.font = subtitleFont.font()
+        $0.numberOfLines = 2
         $0.isHidden = $0.text.isNilOrEmpty
     }
 

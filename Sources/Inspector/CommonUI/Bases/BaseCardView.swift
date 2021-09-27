@@ -21,11 +21,11 @@
 import UIKit
 
 class BaseCardView: BaseView {
-    private(set) lazy var containerView = UIView().then {
+    private(set) lazy var containerView = BaseView().then {
         $0.installView(roundedView, priority: .required)
     }
 
-    private(set) lazy var roundedView = UIView().then {
+    private(set) lazy var roundedView = BaseView().then {
         $0.layer.borderWidth = 1
         $0.installView(contentView, priority: .required)
         $0.layer.cornerRadius = cornerRadius

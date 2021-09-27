@@ -56,7 +56,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
 
     private(set) lazy var header = SectionHeader(
         titleFont: .init(.footnote, .traitBold),
-        subtitleFont: .footnote,
+        subtitleFont: .caption1,
         margins: .init(vertical: ElementInspector.appearance.verticalMargins)
     )
 
@@ -66,11 +66,10 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         insets.top = .zero
 
         $0.insets = insets
-        $0.cornerRadius = 35
+        $0.cornerRadius = 30
         $0.contentMargins = .zero
         $0.backgroundColor = colorStyle.layoutConstraintsCardBackgroundColor
         $0.contentView.addArrangedSubview(formView)
-        $0.heightAnchor.constraint(greaterThanOrEqualToConstant: $0.cornerRadius * 2.5).isActive = true
     }
 
     private var switchControl: UISwitch! {
