@@ -35,7 +35,7 @@ protocol ElementInspectorFormPanelDelegate: OperationQueueManagerProtocol {
                                    in item: ElementInspectorFormItem)
 }
 
-class ElementInspectorFormPanelViewController: ElementInspectorPanelViewController {
+class ElementInspectorFormPanelViewController: ElementInspectorPanelViewController, DataReloadingProtocol {
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
     }

@@ -27,7 +27,7 @@ protocol ElementChildrenPanelViewControllerDelegate: OperationQueueManagerProtoc
                                             from fromReference: ViewHierarchyReference)
 }
 
-final class ElementChildrenPanelViewController: ElementInspectorPanelViewController {
+final class ElementChildrenPanelViewController: ElementInspectorPanelViewController, DataReloadingProtocol {
     // MARK: - Properties
 
     weak var delegate: ElementChildrenPanelViewControllerDelegate?

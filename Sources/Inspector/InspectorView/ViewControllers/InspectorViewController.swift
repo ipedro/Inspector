@@ -32,7 +32,7 @@ protocol InspectorViewControllerDelegate: AnyObject {
     func inspectorViewControllerDidFinish(_ viewController: InspectorViewController)
 }
 
-final class InspectorViewController: UIViewController, KeyboardAnimatable {
+final class InspectorViewController: UIViewController, KeyboardAnimatable, DataReloadingProtocol {
     // MARK: - Init
 
     convenience init(viewModel: HierarchyInspectorViewModelProtocol) {

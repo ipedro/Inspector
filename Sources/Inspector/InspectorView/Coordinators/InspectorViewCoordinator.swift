@@ -29,7 +29,7 @@ protocol InspectorViewCoordinatorDelegate: AnyObject {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, didFinishWith command: InspectorCommand?)
 }
 
-final class InspectorViewCoordinator: ViewCoordinator {
+final class InspectorViewCoordinator: ViewCoordinator, DataReloadingProtocol {
     typealias CommandGroupsProvider = HierarchyInspectorViewModel.CommandGroupsProvider
 
     weak var swiftUIDelegate: InspectorViewCoordinatorSwiftUIDelegate?

@@ -58,7 +58,7 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
                                                  with dismissAction: ElementInspectorDismissAction)
 }
 
-final class ElementInspectorViewController: ElementInspectorPanelViewController, KeyboardAnimatable {
+final class ElementInspectorViewController: ElementInspectorPanelViewController, KeyboardAnimatable, DataReloadingProtocol {
     weak var delegate: ElementInspectorViewControllerDelegate?
 
     let viewModel: ElementInspectorViewModelProtocol
@@ -208,6 +208,18 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         navigationItem.titleView = segmentedControl
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        coordinator.animate { _ in
+            //
+        } completion: { _ in
+            self.reloadData()
+            (self.currentPanelViewController as? DataReloadingProtocol)?.reloadData()
+        }
+
     }
 
     override func viewWillAppear(_ animated: Bool) {

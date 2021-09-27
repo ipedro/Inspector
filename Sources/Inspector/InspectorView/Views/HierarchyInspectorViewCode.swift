@@ -25,7 +25,7 @@ protocol HierarchyInspectorViewCodeDelegate: AnyObject {
     func hierarchyInspectorViewCodeDidTapOutside(_ view: HierarchyInspectorViewCode)
 }
 
-final class HierarchyInspectorViewCode: BaseView {
+final class HierarchyInspectorViewCode: BaseView, DataReloadingProtocol {
     var verticalMargin: CGFloat { 30 }
 
     var horizontalMargin: CGFloat { verticalMargin / 2 }

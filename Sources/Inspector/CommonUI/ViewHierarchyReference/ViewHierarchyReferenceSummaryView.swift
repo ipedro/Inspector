@@ -44,7 +44,7 @@ protocol ViewHierarchyReferenceSummaryViewModelProtocol {
     var automaticallyAdjustIndentation: Bool { get }
 }
 
-final class ViewHierarchyReferenceSummaryView: BaseView {
+final class ViewHierarchyReferenceSummaryView: BaseView, DataReloadingProtocol {
     var viewModel: ViewHierarchyReferenceSummaryViewModelProtocol? {
         didSet {
             reloadData()

@@ -53,7 +53,7 @@ protocol ElementInspectorFormItemViewControllerDelegate: OperationQueueManagerPr
     )
 }
 
-final class ElementInspectorFormItemViewController: UIViewController {
+final class ElementInspectorFormItemViewController: UIViewController, DataReloadingProtocol {
     weak var delegate: ElementInspectorFormItemViewControllerDelegate?
 
     let viewCode: InspectorElementFormItemView
