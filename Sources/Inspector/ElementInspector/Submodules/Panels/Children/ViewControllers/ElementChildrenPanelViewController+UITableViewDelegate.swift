@@ -113,15 +113,20 @@ extension ElementChildrenPanelViewController {
         }
     }
 
-    func updateVisibleRowsBackgroundColor(_ completion: ((Bool) -> Void)? = nil) {
-        let tableView = viewCode.tableView
-        guard let indexPathsForVisibleRows = tableView.indexPathsForVisibleRows else { return }
+    func updateVisibleRowsBackgroundColor() {
+        UIView.animate(
+            withDuration: .average,
+            animations: { [weak self] in
 
-        animate {
-            indexPathsForVisibleRows.forEach { indexPath in
-                guard let cell = tableView.cellForRow(at: indexPath) else { return }
-                (cell as? ElementChildrenPanelTableViewCodeCell)?.isEvenRow = indexPath.row % 2 == 0
+                self?.viewCode.tableView.indexPathsForVisibleRows?.forEach { indexPath in
+                    guard let cell = self?.viewCode.tableView.cellForRow(at: indexPath) as? ElementChildrenPanelTableViewCodeCell else {
+                        return
+                    }
+
+                    cell.isEvenRow = indexPath.row % 2 == 0
+                }
+
             }
-        } completion: { completion?($0) }
+        )
     }
 }
