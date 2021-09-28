@@ -31,6 +31,11 @@ extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegat
             return
         }
 
+        guard reference != fromReference else {
+            topElementInspectorViewController?.selectPanelIfAvailable(panel)
+            return
+        }
+
         operationQueue.cancelAllOperations()
 
         let pushOperation = MainThreadOperation(name: "Push \(reference.displayName)") { [weak self] in

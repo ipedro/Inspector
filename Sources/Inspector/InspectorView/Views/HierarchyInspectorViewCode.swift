@@ -52,7 +52,6 @@ final class HierarchyInspectorViewCode: BaseView, DataReloadingProtocol {
 
     private(set) lazy var tableView = UIKeyCommandTableView(
         .keyboardDismissMode(.onDrag),
-        .indicatorStyle(.white),
         .backgroundColor(nil),
         .tableFooterView(UIView()),
         .separatorStyle(.none),
@@ -143,16 +142,16 @@ final class HierarchyInspectorViewCode: BaseView, DataReloadingProtocol {
         preservesSuperviewLayoutMargins = false
 
         layer.shadowColor = colorStyle.shadowColor.cgColor
-        layer.shadowOffset = .init(width: 0, height: 6)
+        layer.shadowOffset = .init(width: 0, height: verticalMargin / 2)
         layer.shadowOpacity = 1
-        layer.shadowRadius = verticalMargin / 2
+        layer.shadowRadius = verticalMargin
 
         blurView.contentView.installView(stackView)
 
         contentView.addSubview(blurView)
 
         [
-            blurView.topAnchor.constraint(greaterThanOrEqualTo: safeAreaLayoutGuide.topAnchor, constant: verticalMargin),
+            blurView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: verticalMargin),
             blurView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
             blurView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -horizontalMargin * 2),
             blurView.widthAnchor.constraint(greaterThanOrEqualToConstant: 375),

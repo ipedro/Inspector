@@ -26,13 +26,12 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
                                         with action: ViewHierarchyAction,
                                         from fromReference: ViewHierarchyReference) {
 
-        if reference == self.rootReference, let panel = ElementInspectorPanel(rawValue: action) {
-            topElementInspectorViewController?.selectPanelIfAvailable(panel)
+        if reference == fromReference, let panel = ElementInspectorPanel(rawValue: action) {
+            viewController.selectPanelIfAvailable(panel)
         }
         else {
             delegate?.elementInspectorCoordinator(self, didSelect: reference, with: action, from: fromReference)
         }
-
     }
 
     func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,

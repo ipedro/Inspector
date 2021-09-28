@@ -72,7 +72,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         $0.contentView.addArrangedSubview(formView)
     }
 
-    private var switchControl: UISwitch! {
+    private var switchControl: UISwitch? {
         didSet {
             valueChanged()
         }
@@ -80,9 +80,14 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
 
     @objc private func valueChanged() {
         animate { [weak self] in
-            guard let self = self else { return }
+            guard
+                let self = self,
+                let switchControl = self.switchControl
+            else {
+                return
+            }
 
-            if self.switchControl.isOn {
+            if switchControl.isOn {
                 self.header.alpha = 1
                 self.tintAdjustmentMode = .automatic
 
@@ -103,6 +108,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         super.setup()
 
         installView(contentView, priority: .required)
+
         contentView.addArrangedSubview(cardView)
     }
 
@@ -118,11 +124,11 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
 
             switchControl = toggleControl.switchControl
 
+            toggleControl.delegate = self
             toggleControl.isHidden = true
-            toggleControl.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
 
             let switchContainerView = UIStackView().then {
-                $0.addArrangedSubviews(switchControl)
+                $0.addArrangedSubviews(toggleControl.switchControl)
                 $0.isLayoutMarginsRelativeArrangement = true
                 $0.directionalLayoutMargins = .init(trailing: ElementInspector.appearance.horizontalMargins)
             }
@@ -131,5 +137,11 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         }
 
         formView.addFormViews(formViews)
+    }
+}
+
+extension ElementInspectorFormLayoutConstraintView: ToggleControlDelegate {
+    func toggleControl(_ toggleControl: ToggleControl, didChangeValueTo isOn: Bool) {
+        valueChanged()
     }
 }

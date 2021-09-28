@@ -60,7 +60,7 @@ class HighlightView: LayerView {
         }
     }
 
-    override var sourceView: UIView { shadowContainerView }
+    override var sourceView: UIView { labelContainerView }
 
     private lazy var verticalAlignmentConstraint = labelContainerView.centerYAnchor.constraint(equalTo: centerYAnchor)
 
@@ -75,7 +75,7 @@ class HighlightView: LayerView {
         $0.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.layer.shadowColor = UIColor.black.cgColor
         $0.layer.shadowRadius = 1
-        $0.layer.shadowOpacity = 2/3
+        $0.layer.shadowOpacity = 2 / 3
     }
 
     private(set) lazy var labelContentView = LayerViewComponent(
@@ -83,16 +83,16 @@ class HighlightView: LayerView {
         .cornerRadius(7)
     ).then {
         $0.layer.borderWidth = 1 / UIScreen.main.scale
-        $0.layer.borderColor = UIColor.init(white: 1, alpha: 0.1).cgColor
+        $0.layer.borderColor = UIColor(white: 1, alpha: 0.1).cgColor
         $0.installView(label, .spacing(horizontal: 5.5, vertical: -1))
     }
 
     private lazy var labelContainerView = LayerViewComponent(
         .layerOptions(
-            .shadowOffset(CGSize(width: 0, height: 0.6)),
+            .shadowOffset(CGSize(width: 0, height: 1)),
             .shadowColor(UIColor.black.cgColor),
-            .shadowRadius(1.2),
-            .shadowOpacity(0.6),
+            .shadowRadius(3),
+            .shadowOpacity(0.4),
             .shouldRasterize(true),
             .rasterizationScale(UIScreen.main.scale)
         )
@@ -101,16 +101,6 @@ class HighlightView: LayerView {
     }
 
     private lazy var panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(move(with:)))
-
-    private lazy var shadowContainerView = UIView().then {
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowRadius = 6
-        $0.layer.shadowOpacity = 0.2
-        $0.layer.shouldRasterize = true
-        $0.layer.rasterizationScale = UIScreen.main.scale
-        $0.installView(labelContainerView, .autoResizingMask)
-    }
 
     private(set) lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapLayerView))
 
@@ -134,7 +124,7 @@ class HighlightView: LayerView {
         )
 
         preservesSuperviewLayoutMargins = true
-        
+
         isUserInteractionEnabled = true
 
         shouldPresentOnTop = true
@@ -188,7 +178,13 @@ class HighlightView: LayerView {
             finalY = layoutFrame.minY + sourceView.frame.height / 2
         }
 
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.beginFromCurrentState, .curveEaseIn]) {
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0,
+            usingSpringWithDamping: 1,
+            initialSpringVelocity: 1,
+            options: [.beginFromCurrentState, .curveEaseIn]
+        ) {
             self.sourceView.center = CGPoint(x: finalX, y: finalY)
         }
     }
@@ -271,8 +267,6 @@ class HighlightView: LayerView {
 }
 
 private extension HighlightView {
-
-
     func updateLabelWidth() {
         labelWidthConstraint?.constant = frame.width * 4 / 3
     }
@@ -280,7 +274,7 @@ private extension HighlightView {
     func setupViews(with hostView: UIView) {
         updateColors()
 
-        installView(shadowContainerView, .centerX)
+        installView(labelContainerView, .centerX)
 
         verticalAlignmentConstraint.isActive = true
 

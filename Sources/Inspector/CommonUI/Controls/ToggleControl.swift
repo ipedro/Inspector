@@ -20,63 +20,14 @@
 
 import UIKit
 
-final class StyledSwitch: UISwitch {
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setup()
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setup() {
-        tintColor = colorStyle.accessoryControlBackgroundColor
-        onTintColor = colorStyle.tintColor
-
-        switch colorStyle {
-        case .dark:
-            thumbTintColor = UIColor.white.withAlphaComponent(colorStyle.disabledAlpha)
-        case .light:
-            thumbTintColor = UIColor.white.withAlphaComponent(colorStyle.disabledAlpha * 2)
-        }
-
-        addTarget(self, action: #selector(updateThumbColor), for: .valueChanged)
-
-        updateThumbColor()
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        guard
-            #available(iOS 13.0, *),
-            traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection)
-        else {
-            return
-        }
-
-        updateThumbColor()
-    }
-
-    @objc func updateThumbColor() {
-        switch (colorStyle, isOn) {
-        case (.dark, true):
-            thumbTintColor = colorStyle.quaternaryTextColor
-        case (.dark, false):
-            thumbTintColor = colorStyle.tertiaryTextColor
-        case (.light, true):
-            thumbTintColor = UIColor.white.withAlphaComponent(colorStyle.disabledAlpha * 2)
-        case (.light, false):
-            thumbTintColor = UIColor.white
-        }
-    }
+protocol ToggleControlDelegate: AnyObject {
+    func toggleControl(_ toggleControl: ToggleControl, didChangeValueTo isOn: Bool)
 }
 
 final class ToggleControl: BaseFormControl {
     // MARK: - Properties
+
+    weak var delegate: ToggleControlDelegate?
 
     var isOn: Bool {
         get {
@@ -134,17 +85,85 @@ final class ToggleControl: BaseFormControl {
 
     func setOn(_ on: Bool, animated: Bool) {
         switchControl.setOn(on, animated: animated)
-
         updateViews()
+        delegate?.toggleControl(self, didChangeValueTo: switchControl.isOn)
     }
 
     @objc
     func toggleOn() {
         updateViews()
         sendActions(for: .valueChanged)
+        delegate?.toggleControl(self, didChangeValueTo: switchControl.isOn)
     }
 
     func updateViews() {
         titleLabel.alpha = isOn ? 1 : 0.75
+    }
+}
+
+extension ToggleControl {
+    final class StyledSwitch: UISwitch {
+        override var isOn: Bool {
+            didSet {
+                updateThumbColor()
+            }
+        }
+
+        override func setOn(_ on: Bool, animated: Bool) {
+            super.setOn(on, animated: animated)
+            updateThumbColor()
+        }
+
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            setup()
+        }
+
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        private func setup() {
+            tintColor = colorStyle.accessoryControlBackgroundColor
+            onTintColor = colorStyle.tintColor
+
+            switch colorStyle {
+            case .dark:
+                thumbTintColor = UIColor.white.withAlphaComponent(colorStyle.disabledAlpha)
+            case .light:
+                thumbTintColor = UIColor.white.withAlphaComponent(colorStyle.disabledAlpha * 2)
+            }
+
+            addTarget(self, action: #selector(updateThumbColor), for: .valueChanged)
+
+            updateThumbColor()
+        }
+
+        override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+            super.traitCollectionDidChange(previousTraitCollection)
+
+            guard
+                #available(iOS 13.0, *),
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection)
+            else {
+                return
+            }
+
+            updateThumbColor()
+        }
+
+        @objc func updateThumbColor() {
+            switch (colorStyle, isOn) {
+            case (.dark, true):
+                thumbTintColor = colorStyle.quaternaryTextColor
+            case (.dark, false):
+                thumbTintColor = colorStyle.tertiaryTextColor
+            case (.light, true):
+                thumbTintColor = UIColor.white.withAlphaComponent(colorStyle.disabledAlpha * 2)
+            case (.light, false):
+                thumbTintColor = UIColor.white
+            }
+        }
     }
 }

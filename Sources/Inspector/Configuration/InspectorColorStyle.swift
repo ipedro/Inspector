@@ -53,7 +53,7 @@ enum InspectorColorStyle {
             case .dark:
                 return .black
             case .light:
-                return .init(white: 0, alpha: disabledAlpha)
+                return .init(white: 0, alpha: disabledAlpha * 2)
             }
         }
     }
