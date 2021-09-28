@@ -20,10 +20,10 @@
 
 import UIKit
 
-final class ViewHierarchyReference {
+final class ViewHierarchyElement {
     weak var rootView: UIView?
 
-    var parent: ViewHierarchyReference?
+    var parent: ViewHierarchyElement?
 
     var isUserInteractionEnabled: Bool
 
@@ -68,11 +68,11 @@ final class ViewHierarchyReference {
 
     private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
 
-    private(set) lazy var children: [ViewHierarchyReference] = rootView?.originalSubviews.map {
+    private(set) lazy var children: [ViewHierarchyElement] = rootView?.originalSubviews.map {
         .init($0, depth: depth + 1, iconProvider: iconProvider, parent: self)
     } ?? []
 
-    private(set) lazy var allChildren: [ViewHierarchyReference] = children.flatMap { [$0] + $0.children }
+    private(set) lazy var allChildren: [ViewHierarchyElement] = children.flatMap { [$0] + $0.children }
 
     // MARK: - Private Properties
 
@@ -90,8 +90,8 @@ final class ViewHierarchyReference {
         iconProvider(rootView)
     }
 
-    var allParents: [ViewHierarchyReference] {
-        var array = [ViewHierarchyReference]()
+    var allParents: [ViewHierarchyElement] {
+        var array = [ViewHierarchyElement]()
 
         if let parent = parent {
             array.append(parent)
@@ -111,7 +111,7 @@ final class ViewHierarchyReference {
         self.init(rootView, depth: .zero, isCollapsed: false, iconProvider: iconProvider, parent: nil)
     }
 
-    init(_ rootView: UIView, depth: Int, isCollapsed: Bool = false, iconProvider: @escaping IconProvider, parent: ViewHierarchyReference?) {
+    init(_ rootView: UIView, depth: Int, isCollapsed: Bool = false, iconProvider: @escaping IconProvider, parent: ViewHierarchyElement?) {
         self.rootView = rootView
 
         self.depth = depth
@@ -146,7 +146,7 @@ final class ViewHierarchyReference {
 
 // MARK: - ViewHierarchyProtocol {
 
-extension ViewHierarchyReference: ViewHierarchyProtocol {
+extension ViewHierarchyElement: ViewHierarchyProtocol {
     var classNameWithoutQualifiers: String {
         guard let rootView = rootView else {
             return _classNameWithoutQualifiers
@@ -187,13 +187,13 @@ extension ViewHierarchyReference: ViewHierarchyProtocol {
         return rootView.displayName
     }
 
-    var flattenedSubviewReferences: [ViewHierarchyReference] {
+    var flattenedSubviewReferences: [ViewHierarchyElement] {
         let array = children.flatMap { [$0] + $0.flattenedSubviewReferences }
 
         return array
     }
 
-    var inspectableViewReferences: [ViewHierarchyReference] {
+    var inspectableViewReferences: [ViewHierarchyElement] {
         let flattenedViewHierarchy = [self] + flattenedSubviewReferences
 
         let inspectableViews = flattenedViewHierarchy.filter(\.canHostInspectorView)
@@ -204,8 +204,8 @@ extension ViewHierarchyReference: ViewHierarchyProtocol {
 
 // MARK: - Hashable
 
-extension ViewHierarchyReference: Hashable {
-    static func == (lhs: ViewHierarchyReference, rhs: ViewHierarchyReference) -> Bool {
+extension ViewHierarchyElement: Hashable {
+    static func == (lhs: ViewHierarchyElement, rhs: ViewHierarchyElement) -> Bool {
         lhs.identifier == rhs.identifier
     }
 
@@ -215,7 +215,7 @@ extension ViewHierarchyReference: Hashable {
     }
 }
 
-extension ViewHierarchyReference {
+extension ViewHierarchyElement {
     var isShowingLayerWireframeView: Bool {
         rootView?.subviews.contains { $0 is WireframeView } == true
     }
@@ -225,7 +225,7 @@ extension ViewHierarchyReference {
     }
 }
 
-extension ViewHierarchyReference: ViewHierarchyReferenceSummaryViewModelProtocol {
+extension ViewHierarchyElement: ViewHierarchyReferenceSummaryViewModelProtocol {
     var title: String? { elementName}
 
     var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }

@@ -47,12 +47,12 @@ enum ElementInspectorDismissReason: Swift.CaseIterable {
 
 protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
+                                        and reference: ViewHierarchyElement) -> ElementInspectorPanelViewController
 
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
-                                        didSelect reference: ViewHierarchyReference,
+                                        didSelect reference: ViewHierarchyElement,
                                         with action: ViewHierarchyAction,
-                                        from fromReference: ViewHierarchyReference)
+                                        from fromReference: ViewHierarchyElement)
 
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController,
                                                  with reason: ElementInspectorDismissReason)

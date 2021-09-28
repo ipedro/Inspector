@@ -21,7 +21,7 @@
 import UIKit
 
 protocol LayerViewDelegate: AnyObject {
-    func layerView(_ layerView: LayerViewProtocol, didSelect reference: ViewHierarchyReference, withAction action: ViewHierarchyAction)
+    func layerView(_ layerView: LayerViewProtocol, didSelect reference: ViewHierarchyElement, withAction action: ViewHierarchyAction)
 }
 
 class LayerView: UIImageView, LayerViewProtocol {
@@ -29,7 +29,7 @@ class LayerView: UIImageView, LayerViewProtocol {
 
     var shouldPresentOnTop = false
 
-    let reference: ViewHierarchyReference
+    let reference: ViewHierarchyElement
 
     var allowsImages = false
 
@@ -82,7 +82,7 @@ class LayerView: UIImageView, LayerViewProtocol {
 
     // MARK: - Init
 
-    init(frame: CGRect, reference: ViewHierarchyReference, color: UIColor, borderWidth: CGFloat) {
+    init(frame: CGRect, reference: ViewHierarchyElement, color: UIColor, borderWidth: CGFloat) {
         self.reference = reference
 
         self.color = color

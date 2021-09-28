@@ -22,7 +22,7 @@ import UIKit
 
 extension Manager: ElementInspectorCoordinatorDelegate {
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
-                                     didFinishInspecting reference: ViewHierarchyReference,
+                                     didFinishInspecting reference: ViewHierarchyElement,
                                      with reason: ElementInspectorDismissReason) {
         switch reason {
         case .dismiss:
@@ -42,12 +42,12 @@ extension Manager {
                                           from sourceView: UIView?) {
         guard let elementLibraries = viewHierarchySnaphost?.elementLibraries else { return }
 
-        let reference = ViewHierarchyReference(view, iconProvider: { elementLibraries.icon(for: $0) })
+        let reference = ViewHierarchyElement(view, iconProvider: { elementLibraries.icon(for: $0) })
 
         startElementInspectorCoordinator(for: reference, with: panel, animated: animated, from: sourceView)
     }
 
-    func startElementInspectorCoordinator(for reference: ViewHierarchyReference,
+    func startElementInspectorCoordinator(for reference: ViewHierarchyElement,
                                           with panel: ElementInspectorPanel?,
                                           animated: Bool,
                                           from sourceView: UIView?) {

@@ -39,7 +39,7 @@ enum ViewHierarchyIssue: CustomStringConvertible {
         }
     }
 
-    static func issues(for reference: ViewHierarchyReference) -> [ViewHierarchyIssue] {
+    static func issues(for reference: ViewHierarchyElement) -> [ViewHierarchyIssue] {
         var array = [ViewHierarchyIssue]()
 
         if reference.rootView?.frame.isEmpty == true {

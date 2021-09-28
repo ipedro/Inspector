@@ -23,7 +23,7 @@ import UIKit
 enum ViewHierarchyInformation: Swift.CaseIterable, MenuContentProtocol {
     case className, description
 
-    static func allCases(for reference: ViewHierarchyReference) -> [ViewHierarchyInformation] {
+    static func allCases(for reference: ViewHierarchyElement) -> [ViewHierarchyInformation] {
         allCases
     }
 

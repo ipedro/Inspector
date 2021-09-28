@@ -136,12 +136,12 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
 
     // MARK: - LayerView Methods
 
-    func updateLayerViews(to newValue: [ViewHierarchyReference: LayerView],
-                          from oldValue: [ViewHierarchyReference: LayerView])
+    func updateLayerViews(to newValue: [ViewHierarchyElement: LayerView],
+                          from oldValue: [ViewHierarchyElement: LayerView])
     {
-        let viewReferences = Set<ViewHierarchyReference>(newValue.keys)
+        let viewReferences = Set<ViewHierarchyElement>(newValue.keys)
 
-        let oldViewReferences = Set<ViewHierarchyReference>(oldValue.keys)
+        let oldViewReferences = Set<ViewHierarchyElement>(oldValue.keys)
 
         let removedReferences = oldViewReferences.subtracting(viewReferences)
 
@@ -170,9 +170,9 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
     // MARK: - Reference Management
 
     func removeReferences(for removedLayers: Set<ViewHierarchyLayer>,
-                          in oldValue: [ViewHierarchyLayer: [ViewHierarchyReference]])
+                          in oldValue: [ViewHierarchyLayer: [ViewHierarchyElement]])
     {
-        var removedReferences = [ViewHierarchyReference]()
+        var removedReferences = [ViewHierarchyElement]()
 
         removedLayers.forEach { layer in
             oldValue[layer]?.forEach {

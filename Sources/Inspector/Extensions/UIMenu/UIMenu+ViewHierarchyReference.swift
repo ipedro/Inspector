@@ -21,12 +21,12 @@
 
 import UIKit
 
-typealias ViewHierarchyActionHandler = (ViewHierarchyReference, ViewHierarchyAction) -> Void
+typealias ViewHierarchyActionHandler = (ViewHierarchyElement, ViewHierarchyAction) -> Void
 
 @available(iOS 13.0, *)
 extension UIMenu {
     convenience init?(
-        with reference: ViewHierarchyReference,
+        with reference: ViewHierarchyElement,
         initialMenus: [UIMenuElement] = [],
         includeActions: Bool = true,
         options: UIMenu.Options = .init(),
@@ -64,7 +64,7 @@ extension UIMenu {
         )
     }
 
-    private static func childrenMenu(reference: ViewHierarchyReference, options: UIMenu.Options = .init(), handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
+    private static func childrenMenu(reference: ViewHierarchyElement, options: UIMenu.Options = .init(), handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
         guard !reference.children.isEmpty else { return nil }
 
         return UIMenu(
@@ -78,7 +78,7 @@ extension UIMenu {
         )
     }
 
-    private static func actionsMenu(reference: ViewHierarchyReference, options: UIMenu.Options = .init(), handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
+    private static func actionsMenu(reference: ViewHierarchyElement, options: UIMenu.Options = .init(), handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
         let groupedCases = ViewHierarchyAction.groupedCases(for: reference)
 
         guard !groupedCases.isEmpty else { return nil }

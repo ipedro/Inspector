@@ -26,7 +26,7 @@ protocol HierarchyInspectorReferenceSummaryCellViewModelProtocol {
     var subtitle: String? { get }
     var image: UIImage? { get }
     var depth: Int { get }
-    var reference: ViewHierarchyReference { get }
+    var reference: ViewHierarchyElement { get }
 }
 
 final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorTableViewCell {

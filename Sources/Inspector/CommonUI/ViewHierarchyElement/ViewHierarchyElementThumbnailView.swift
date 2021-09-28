@@ -21,7 +21,7 @@
 import AVFoundation
 import UIKit
 
-final class ViewHierarchyReferenceThumbnailView: BaseView {
+final class ViewHierarchyElementThumbnailView: BaseView {
     enum State {
         case snapshot(UIView)
         case frameIsEmpty(CGRect)
@@ -31,7 +31,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
 
     // MARK: - Properties
 
-    let reference: ViewHierarchyReference
+    let reference: ViewHierarchyElement
 
     var showEmptyStatusMessage: Bool = true {
         didSet {
@@ -53,7 +53,7 @@ final class ViewHierarchyReferenceThumbnailView: BaseView {
 
     // MARK: - Init
 
-    init(frame: CGRect, reference: ViewHierarchyReference) {
+    init(frame: CGRect, reference: ViewHierarchyElement) {
         self.reference = reference
 
         super.init(frame: frame)

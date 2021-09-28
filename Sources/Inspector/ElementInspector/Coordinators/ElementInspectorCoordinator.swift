@@ -32,7 +32,7 @@ final class ElementSizePanelViewController: ElementInspectorFormPanelViewControl
 protocol ElementInspectorCoordinatorDelegate: ViewHierarchyActionableProtocol & AnyObject {
     func elementInspectorCoordinator(
         _ coordinator: ElementInspectorCoordinator,
-        didFinishInspecting reference: ViewHierarchyReference,
+        didFinishInspecting reference: ViewHierarchyElement,
         with reason: ElementInspectorDismissReason
     )
 }
@@ -44,7 +44,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     let snapshot: ViewHierarchySnapshot
 
-    let rootReference: ViewHierarchyReference
+    let rootReference: ViewHierarchyElement
 
     let initialPanel: ElementInspectorPanel?
 
@@ -61,7 +61,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     private(set) lazy var operationQueue = OperationQueue.main
 
     init(
-        reference: ViewHierarchyReference,
+        reference: ViewHierarchyElement,
         with panel: ElementInspectorPanel?,
         in snapshot: ViewHierarchySnapshot,
         from sourceView: UIView?
@@ -103,7 +103,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     }
 
     static func makeElementInspectorViewController(
-        with reference: ViewHierarchyReference,
+        with reference: ViewHierarchyElement,
         elementLibraries: [InspectorElementLibraryProtocol],
         selectedPanel: ElementInspectorPanel?,
         delegate: ElementInspectorViewControllerDelegate,
@@ -122,7 +122,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         }
     }
 
-    func panelViewController(for panel: ElementInspectorPanel, with reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {
+    func panelViewController(for panel: ElementInspectorPanel, with reference: ViewHierarchyElement) -> ElementInspectorPanelViewController {
         switch panel {
         case .preview:
             return ElementPreviewPanelViewController(
@@ -208,7 +208,7 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
         }
     }
 
-    func perform(action: ViewHierarchyAction, with reference: ViewHierarchyReference, from sourceView: UIView?) {
+    func perform(action: ViewHierarchyAction, with reference: ViewHierarchyElement, from sourceView: UIView?) {
         guard canPerform(action: action) else {
             delegate?.perform(action: action, with: reference, from: .none)
             return
@@ -277,7 +277,7 @@ private extension ElementInspectorCoordinator {
         navigationController.viewControllers = {
             var array = [UIViewController]()
 
-            var reference: ViewHierarchyReference? = populatedReference
+            var reference: ViewHierarchyElement? = populatedReference
 
             while reference != nil {
                 guard let currentReference = reference else {

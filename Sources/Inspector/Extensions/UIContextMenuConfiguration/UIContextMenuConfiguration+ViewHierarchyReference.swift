@@ -24,7 +24,7 @@ import UIKit
 extension UIContextMenuConfiguration {
     static func contextMenuConfiguration(
         initialMenus: [UIMenuElement] = [],
-        with reference: ViewHierarchyReference,
+        with reference: ViewHierarchyElement,
         includeActions: Bool = true,
         handler: @escaping ViewHierarchyActionHandler
     ) -> UIContextMenuConfiguration? {

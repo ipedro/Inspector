@@ -52,7 +52,7 @@ enum ElementInspectorPanel: Swift.CaseIterable, MenuContentProtocol {
         }
     }
 
-    static func allCases(for reference: ViewHierarchyReference) -> [ElementInspectorPanel] {
+    static func allCases(for reference: ViewHierarchyElement) -> [ElementInspectorPanel] {
         allCases.filter { panel in
             switch panel {
             case .children:

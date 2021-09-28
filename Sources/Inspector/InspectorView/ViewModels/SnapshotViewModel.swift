@@ -28,7 +28,7 @@ extension HierarchyInspectorViewModel {
             let subtitle: String?
             let image: UIImage?
             let depth: Int
-            let reference: ViewHierarchyReference
+            let reference: ViewHierarchyElement
         }
 
         var searchQuery: String? {
@@ -80,7 +80,7 @@ extension HierarchyInspectorViewModel {
                 return
             }
 
-            let matchingReferences: [ViewHierarchyReference] = {
+            let matchingReferences: [ViewHierarchyElement] = {
                 let inspectableReferences = snapshot.inspectableReferences
 
                 guard searchQuery != Inspector.configuration.showAllViewSearchQuery else {

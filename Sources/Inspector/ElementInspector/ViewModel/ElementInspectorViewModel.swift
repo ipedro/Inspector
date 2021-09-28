@@ -21,7 +21,7 @@
 import UIKit
 
 protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyReferenceSummaryViewModelProtocol {
-    var reference: ViewHierarchyReference { get }
+    var reference: ViewHierarchyElement { get }
 
     var snapshot: ViewHierarchySnapshot { get }
 
@@ -37,7 +37,7 @@ protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyReferenceSu
 final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     let snapshot: ViewHierarchySnapshot
 
-    let reference: ViewHierarchyReference
+    let reference: ViewHierarchyElement
 
     let inspectableElements: [InspectorElementLibraryProtocol]
 
@@ -73,7 +73,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     init(
         snapshot: ViewHierarchySnapshot,
-        reference: ViewHierarchyReference,
+        reference: ViewHierarchyElement,
         selectedPanel: ElementInspectorPanel?,
         inspectableElements: [InspectorElementLibraryProtocol],
         availablePanels: [ElementInspectorPanel]

@@ -110,7 +110,7 @@ class HighlightView: LayerView {
         frame: CGRect,
         name: String,
         colorScheme: ViewHierarchyColorScheme,
-        reference: ViewHierarchyReference,
+        reference: ViewHierarchyElement,
         borderWidth: CGFloat = Inspector.configuration.appearance.highlightLayerBorderWidth
     ) {
         self.colorScheme = colorScheme

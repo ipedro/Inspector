@@ -22,9 +22,9 @@ import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
-                                        didSelect reference: ViewHierarchyReference,
+                                        didSelect reference: ViewHierarchyElement,
                                         with action: ViewHierarchyAction,
-                                        from fromReference: ViewHierarchyReference) {
+                                        from fromReference: ViewHierarchyElement) {
 
         if reference == fromReference, case let .inspect(preferredPanel: panel?) = action {
             viewController.selectPanelIfAvailable(panel)
@@ -40,7 +40,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
     }
 
     func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {
+                                        and reference: ViewHierarchyElement) -> ElementInspectorPanelViewController {
         panelViewController(for: panel, with: reference)
     }
 

@@ -26,7 +26,7 @@ protocol ElementPreviewPanelViewCodeDelegate: AnyObject {
 }
 
 final class ElementPreviewPanelViewCode: BaseView {
-    let reference: ViewHierarchyReference
+    let reference: ViewHierarchyElement
 
     weak var delegate: ElementPreviewPanelViewCodeDelegate?
 
@@ -70,7 +70,7 @@ final class ElementPreviewPanelViewCode: BaseView {
         $0.isShowingSeparator = false
     }
 
-    private(set) lazy var thumbnailView = ViewHierarchyReferenceThumbnailView(
+    private(set) lazy var thumbnailView = ViewHierarchyElementThumbnailView(
         frame: .zero,
         reference: reference
     ).then {
@@ -84,7 +84,7 @@ final class ElementPreviewPanelViewCode: BaseView {
         $0.isActive = true
     }
 
-    init(reference: ViewHierarchyReference, frame: CGRect) {
+    init(reference: ViewHierarchyElement, frame: CGRect) {
         self.reference = reference
 
         super.init(frame: frame)

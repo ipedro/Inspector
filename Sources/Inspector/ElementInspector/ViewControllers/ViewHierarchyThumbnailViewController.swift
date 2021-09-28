@@ -22,7 +22,7 @@ import UIKit
 
 struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelProtocol {
 
-    let reference: ViewHierarchyReference
+    let reference: ViewHierarchyElement
 
     // MARK: - ViewHierarchyReferenceDetailViewModelProtocol
 
@@ -50,9 +50,9 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelPr
 }
 
 final class ViewHierarchyPreviewController: UIViewController {
-    let reference: ViewHierarchyReference
+    let reference: ViewHierarchyElement
 
-    init(with reference: ViewHierarchyReference) {
+    init(with reference: ViewHierarchyElement) {
         self.reference = reference
         super.init(nibName: nil, bundle: nil)
     }
@@ -71,7 +71,7 @@ final class ViewHierarchyPreviewController: UIViewController {
         $0.viewModel = reference
     }
 
-    private(set) lazy var thumbnailView = ViewHierarchyReferenceThumbnailView(
+    private(set) lazy var thumbnailView = ViewHierarchyElementThumbnailView(
         frame: .zero,
         reference: reference
     )

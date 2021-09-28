@@ -21,7 +21,7 @@
 import UIKit
 
 extension Manager: ViewHierarchyActionableProtocol {
-    func perform(action: ViewHierarchyAction, with reference: ViewHierarchyReference, from sourceView: UIView?) {
+    func perform(action: ViewHierarchyAction, with reference: ViewHierarchyElement, from sourceView: UIView?) {
         guard canPerform(action: action) else {
             assertionFailure("Should not happen")
             return

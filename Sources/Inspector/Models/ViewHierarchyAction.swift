@@ -51,7 +51,7 @@ enum ViewHierarchyAction: MenuContentProtocol {
         }
     }
 
-    static func allCases(for reference: ViewHierarchyReference) -> [ViewHierarchyAction] {
+    static func allCases(for reference: ViewHierarchyElement) -> [ViewHierarchyAction] {
         var actions = [ViewHierarchyAction]()
 
         for action in ViewHierarchyLayerAction.allCases(for: reference) {
@@ -69,7 +69,7 @@ enum ViewHierarchyAction: MenuContentProtocol {
         return actions
     }
 
-    static func groupedCases(for reference: ViewHierarchyReference) -> [[ViewHierarchyAction]] {
+    static func groupedCases(for reference: ViewHierarchyElement) -> [[ViewHierarchyAction]] {
         [
             ViewHierarchyLayerAction.allCases(for: reference).map { .layer($0) },
             ElementInspectorPanel.allCases(for: reference).map { .inspect(preferredPanel: $0) },

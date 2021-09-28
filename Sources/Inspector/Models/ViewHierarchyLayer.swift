@@ -44,11 +44,11 @@ public extension Inspector {
 
         // MARK: - Metods
 
-        func inspectableReferences(in snapshot: ViewHierarchySnapshot) -> [ViewHierarchyReference] {
+        func inspectableReferences(in snapshot: ViewHierarchySnapshot) -> [ViewHierarchyElement] {
             filter(flattenedViewHierarchy: snapshot.inspectableReferences)
         }
 
-        func filter(flattenedViewHierarchy: [ViewHierarchyReference]) -> [ViewHierarchyReference] {
+        func filter(flattenedViewHierarchy: [ViewHierarchyElement]) -> [ViewHierarchyElement] {
             let filteredViews = flattenedViewHierarchy.filter {
                 guard let rootView = $0.rootView else { return false }
                 return filter(rootView)

@@ -22,7 +22,7 @@ import UIKit
 
 protocol ElementChildrenPanelItemViewModelProtocol: ViewHierarchyReferenceSummaryViewModelProtocol & AnyObject {
     var parent: ElementChildrenPanelItemViewModelProtocol? { get set }
-    var reference: ViewHierarchyReference { get }
+    var reference: ViewHierarchyElement { get }
     var isCollapsed: Bool { get set }
     var availablePanels: [ElementInspectorPanel] { get }
 }
@@ -45,12 +45,12 @@ extension ElementChildrenPanelViewModel {
 
         // MARK: - Properties
 
-        let reference: ViewHierarchyReference
+        let reference: ViewHierarchyElement
 
         lazy var animatedDisplay: Bool = relativeDepth > .zero
 
         init(
-            reference: ViewHierarchyReference,
+            reference: ViewHierarchyElement,
             parent: ElementChildrenPanelItemViewModelProtocol? = nil,
             rootDepth: Int,
             thumbnailImage: UIImage?,

@@ -46,13 +46,13 @@ protocol ViewHierarchyLayerConstructorProtocol {
 
     // MARK: - LayerView Methods
 
-    func updateLayerViews(to newValue: [ViewHierarchyReference: LayerView],
-                          from oldValue: [ViewHierarchyReference: LayerView])
+    func updateLayerViews(to newValue: [ViewHierarchyElement: LayerView],
+                          from oldValue: [ViewHierarchyElement: LayerView])
 
     // MARK: - Element Reference Methods
 
     func removeReferences(for removedLayers: Set<ViewHierarchyLayer>,
-                          in oldValue: [ViewHierarchyLayer: [ViewHierarchyReference]])
+                          in oldValue: [ViewHierarchyLayer: [ViewHierarchyElement]])
 
     func addReferences(for newLayers: Set<ViewHierarchyLayer>,
                        with colorScheme: ViewHierarchyColorScheme)

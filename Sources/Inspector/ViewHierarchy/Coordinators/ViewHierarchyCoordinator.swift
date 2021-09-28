@@ -44,19 +44,19 @@ final class ViewHierarchyCoordinator: Coordinator {
 
     private var cachedSnapshot: ViewHierarchySnapshot?
 
-    var wireframeViews: [ViewHierarchyReference: WireframeView] = [:] {
+    var wireframeViews: [ViewHierarchyElement: WireframeView] = [:] {
         didSet {
             updateLayerViews(to: wireframeViews, from: oldValue)
         }
     }
 
-    var highlightViews: [ViewHierarchyReference: LayerView] = [:] {
+    var highlightViews: [ViewHierarchyElement: LayerView] = [:] {
         didSet {
             updateLayerViews(to: highlightViews, from: oldValue)
         }
     }
 
-    var visibleReferences: [ViewHierarchyLayer: [ViewHierarchyReference]] = [:] {
+    var visibleReferences: [ViewHierarchyLayer: [ViewHierarchyElement]] = [:] {
         didSet {
             let layers = Set<ViewHierarchyLayer>(visibleReferences.keys)
             let oldLayers = Set<ViewHierarchyLayer>(oldValue.keys)
@@ -105,7 +105,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
         }
     }
 
-    func perform(action: ViewHierarchyAction, with reference: ViewHierarchyReference, from sourceView: UIView?) {
+    func perform(action: ViewHierarchyAction, with reference: ViewHierarchyElement, from sourceView: UIView?) {
         guard
             canPerform(action: action),
             case let .layer(layerAction) = action
@@ -169,7 +169,7 @@ extension ViewHierarchyCoordinator {
         )
     }
 
-    func showHighlight(_ show: Bool, for reference: ViewHierarchyReference, includeSubviews: Bool = true) {
+    func showHighlight(_ show: Bool, for reference: ViewHierarchyElement, includeSubviews: Bool = true) {
         let isHidden = !show
 
         guard includeSubviews else {
@@ -187,7 +187,7 @@ extension ViewHierarchyCoordinator {
 // MARK: - LayerViewDelegate
 
 extension ViewHierarchyCoordinator: LayerViewDelegate {
-    func layerView(_ layerView: LayerViewProtocol, didSelect reference: ViewHierarchyReference, withAction action: ViewHierarchyAction) {
+    func layerView(_ layerView: LayerViewProtocol, didSelect reference: ViewHierarchyElement, withAction action: ViewHierarchyAction) {
         guard canPerform(action: action) else {
             delegate?.perform(action: action, with: reference, from: layerView.sourceView)
             return

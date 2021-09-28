@@ -21,7 +21,7 @@
 import Foundation
 import UIKit
 
-extension ViewHierarchyReference {
+extension ViewHierarchyElement {
     var shortElementDescription: String {
         [issuesDescription,
          subviewsDescription,
@@ -49,7 +49,7 @@ extension ViewHierarchyReference {
     }
 }
 
-extension ViewHierarchyReference {
+extension ViewHierarchyElement {
     var constraintsDescription: String? {
         let totalCount = constraintReferences.count
 
