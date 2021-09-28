@@ -21,7 +21,7 @@
 @_implementationOnly import UIKeyboardAnimatable
 import UIKit
 
-enum ElementInspectorDismissAction: Swift.CaseIterable {
+enum ElementInspectorDismissReason: Swift.CaseIterable {
     case dismiss
     case stopInspecting
 
@@ -55,7 +55,7 @@ protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
                                         from fromReference: ViewHierarchyReference)
 
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController,
-                                                 with dismissAction: ElementInspectorDismissAction)
+                                                 with reason: ElementInspectorDismissReason)
 }
 
 final class ElementInspectorViewController: ElementInspectorPanelViewController, KeyboardAnimatable, DataReloadingProtocol {
@@ -98,7 +98,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                 title: String(),
                 image: nil,
                 identifier: nil,
-                children: ElementInspectorDismissAction.allCases.map { action in
+                children: ElementInspectorDismissReason.allCases.map { action in
                     UIAction(
                         title: action.title,
                         image: action.icon,
@@ -351,7 +351,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
         viewModel.availablePanels.reversed().forEach {
             segmentedControl.insertSegment(
-                with: $0.image.withRenderingMode(.alwaysTemplate),
+                with: $0.image?.withRenderingMode(.alwaysTemplate),
                 at: .zero,
                 animated: false
             )

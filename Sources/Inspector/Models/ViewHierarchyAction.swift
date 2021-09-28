@@ -21,6 +21,7 @@
 import UIKit
 
 enum ViewHierarchyAction: Swift.CaseIterable {
+    case tap
     case preview
     case attributes
     case size
@@ -30,6 +31,8 @@ enum ViewHierarchyAction: Swift.CaseIterable {
 
     var title: String {
         switch self {
+        case .tap:
+            return "Tap"
         case .preview:
             return "Open Preview"
         case .attributes:
@@ -45,8 +48,10 @@ enum ViewHierarchyAction: Swift.CaseIterable {
         }
     }
 
-    var image: UIImage {
+    var image: UIImage? {
         switch self {
+        case .tap:
+            return nil
         case .showHighlight:
             return UIImage.moduleImage(named: "binocularsFill")!
         case .hideHightlight:
@@ -63,19 +68,22 @@ enum ViewHierarchyAction: Swift.CaseIterable {
     }
 
     static func actions(for reference: ViewHierarchyReference) -> [ViewHierarchyAction] {
-        allCases.compactMap { action in
+        allCases.filter { action in
             switch action {
+            case .tap:
+                return false
+
             case .children:
-                return reference.isContainer ? action : nil
+                return reference.isContainer
 
             case .showHighlight:
-                return reference.isShowingLayerHighlightView ? nil : action
+                return !reference.isShowingLayerHighlightView
 
             case .hideHightlight:
-                return reference.isShowingLayerHighlightView ? action : nil
+                return reference.isShowingLayerHighlightView
 
             default:
-                return action
+                return true
             }
         }
     }

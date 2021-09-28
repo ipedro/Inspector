@@ -21,14 +21,7 @@
 @_implementationOnly import Coordinator
 import UIKit
 
-protocol ViewHierarchyCoordinatorDelegate: AnyObject {
-    func viewHierarchyCoordinator(
-        _ coordinator: ViewHierarchyCoordinator,
-        didSelect reference: ViewHierarchyReference,
-        with action: ViewHierarchyAction,
-        from sourceView: UIView
-    )
-}
+protocol ViewHierarchyCoordinatorDelegate: ViewHierarchyActionableProtocol & AnyObject {}
 
 protocol ViewHierarchyCoordinatorDataSource: AnyObject {
     var rootView: UIView? { get }
@@ -40,7 +33,7 @@ protocol ViewHierarchyCoordinatorDataSource: AnyObject {
     var elementLibraries: [InspectorElementLibraryProtocol] { get }
 }
 
-final class ViewHierarchyCoordinator: Coordinator, DismissablePresentationProtocol {
+final class ViewHierarchyCoordinator: Coordinator {
     // MARK: - Properties
 
     weak var delegate: ViewHierarchyCoordinatorDelegate?
@@ -89,9 +82,42 @@ final class ViewHierarchyCoordinator: Coordinator, DismissablePresentationProtoc
     }
 
     func start() {}
+}
 
+// MARK: - DismissablePresentationProtocol
+
+extension ViewHierarchyCoordinator: DismissablePresentationProtocol {
     func dismissPresentation(animated: Bool) {
         clearData()
+    }
+}
+
+// MARK: - ViewHierarchyActionableProtocol
+
+extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
+    func canPerform(action: ViewHierarchyAction) -> Bool {
+        switch action {
+        case .showHighlight,
+             .hideHightlight:
+            return true
+        case .tap,
+             .preview,
+             .attributes,
+             .size,
+             .children:
+            return false
+        }
+    }
+
+    func perform(action: ViewHierarchyAction, with reference: ViewHierarchyReference, from sourceView: UIView?) {
+        switch action {
+        case .showHighlight:
+            showHighlight(true, for: reference)
+        case .hideHightlight:
+            showHighlight(false, for: reference)
+        default:
+            break
+        }
     }
 }
 
@@ -140,30 +166,6 @@ extension ViewHierarchyCoordinator {
         )
     }
 
-    func canPerform(action: ViewHierarchyAction) -> Bool {
-        switch action {
-        case .showHighlight,
-             .hideHightlight:
-            return true
-        case .preview,
-             .attributes,
-             .size,
-             .children:
-            return false
-        }
-    }
-
-    func perform(action: ViewHierarchyAction, for reference: ViewHierarchyReference) {
-        switch action {
-        case .showHighlight:
-            showHighlight(true, for: reference)
-        case .hideHightlight:
-            showHighlight(false, for: reference)
-        default:
-            break
-        }
-    }
-
     func showHighlight(_ show: Bool, for reference: ViewHierarchyReference) {
         highlightViews[reference]?.isHidden = !show
     }
@@ -173,11 +175,11 @@ extension ViewHierarchyCoordinator {
 
 extension ViewHierarchyCoordinator: LayerViewDelegate {
     func layerView(_ layerView: LayerViewProtocol, didSelect reference: ViewHierarchyReference, withAction action: ViewHierarchyAction) {
-        if canPerform(action: action) {
-            perform(action: action, for: reference)
+        guard canPerform(action: action) else {
+            delegate?.perform(action: action, with: reference, from: layerView.sourceView)
+            return
         }
-        else {
-            delegate?.viewHierarchyCoordinator(self, didSelect: reference, with: action, from: layerView.sourceView)
-        }
+
+        perform(action: action, with: reference, from: layerView.sourceView)
     }
 }

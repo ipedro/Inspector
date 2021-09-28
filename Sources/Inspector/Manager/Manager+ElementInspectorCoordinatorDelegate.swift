@@ -22,29 +22,9 @@ import UIKit
 
 extension Manager: ElementInspectorCoordinatorDelegate {
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
-                                     didSelect reference: ViewHierarchyReference,
-                                     with action: ViewHierarchyAction,
-                                     from fromReference: ViewHierarchyReference) {
-
-        if let panel = ElementInspectorPanel(rawValue: action) {
-            startElementInspectorCoordinator(for: reference, with: panel, animated: true, from: reference.rootView)
-        }
-        else if viewHierarchyCoordinator?.canPerform(action: action) == true {
-            viewHierarchyCoordinator?.perform(action: action, for: reference)
-        }
-    }
-
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
-                                     showHighlight: Bool,
-                                     for reference: ViewHierarchyReference)
-    {
-        viewHierarchyCoordinator?.showHighlight(showHighlight, for: reference)
-    }
-
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
                                      didFinishInspecting reference: ViewHierarchyReference,
-                                     with action: ElementInspectorDismissAction) {
-        switch action {
+                                     with reason: ElementInspectorDismissReason) {
+        switch reason {
         case .dismiss:
             removeChild(coordinator)
             coordinator.dismissPresentation(animated: true)

@@ -37,11 +37,11 @@ enum ElementInspectorPanel: Swift.CaseIterable, Hashable {
         actions.compactMap { .init(rawValue: $0) }
     }
 
-    var title: String? {
+    var title: String {
         rawValue.title
     }
 
-    var image: UIImage {
+    var image: UIImage? {
         rawValue.image
     }
 }
@@ -60,16 +60,6 @@ extension ElementInspectorPanel: RawRepresentable {
         }
     }
 
-    init?(rawValue: ViewHierarchyAction?) {
-        guard
-            let rawValue = rawValue,
-            let panel = Self.panel(for: rawValue)
-        else {
-            return nil
-        }
-        self = panel
-    }
-
     init?(rawValue: ViewHierarchyAction) {
         guard let panel = Self.panel(for: rawValue) else { return nil }
         self = panel
@@ -85,7 +75,7 @@ extension ElementInspectorPanel: RawRepresentable {
             return .size
         case .attributes:
             return .attributes
-        case .hideHightlight, .showHighlight:
+        case .hideHightlight, .showHighlight, .tap:
             return nil
         }
     }

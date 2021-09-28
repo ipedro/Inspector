@@ -29,23 +29,12 @@ final class ElementSizePanelViewController: ElementInspectorFormPanelViewControl
 
 // MARK: - ElementInspectorCoordinatorDelegate
 
-protocol ElementInspectorCoordinatorDelegate: AnyObject {
+protocol ElementInspectorCoordinatorDelegate: ViewHierarchyActionableProtocol & AnyObject {
     func elementInspectorCoordinator(
         _ coordinator: ElementInspectorCoordinator,
         didFinishInspecting reference: ViewHierarchyReference,
-        with action: ElementInspectorDismissAction
+        with reason: ElementInspectorDismissReason
     )
-
-    func elementInspectorCoordinator(
-        _ coordinator: ElementInspectorCoordinator,
-        didSelect reference: ViewHierarchyReference,
-        with action: ViewHierarchyAction,
-        from fromReference: ViewHierarchyReference
-    )
-
-    func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
-                                     showHighlight: Bool,
-                                     for reference: ViewHierarchyReference)
 }
 
 // MARK: - ElementInspectorCoordinator
@@ -106,11 +95,11 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         navigationController
     }
 
-    func finish(with action: ElementInspectorDismissAction) {
+    func finish(with reason: ElementInspectorDismissReason) {
         operationQueue.cancelAllOperations()
         operationQueue.isSuspended = true
 
-        delegate?.elementInspectorCoordinator(self, didFinishInspecting: snapshot.rootReference, with: action)
+        delegate?.elementInspectorCoordinator(self, didFinishInspecting: snapshot.rootReference, with: reason)
     }
 
     static func makeElementInspectorViewController(
@@ -206,6 +195,32 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         return navigationController
     }
 }
+
+// MARK: - ViewHierarchyActionableProtocol
+
+extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
+    func canPerform(action: ViewHierarchyAction) -> Bool {
+        switch action {
+        case .tap,
+             .preview,
+             .attributes,
+             .size,
+             .children:
+            return true
+
+        case .showHighlight,
+             .hideHightlight:
+            return false
+        }
+    }
+
+    func perform(action: ViewHierarchyAction, with reference: ViewHierarchyReference, from sourceView: UIView?) {
+        #warning("voltar aqui")
+        //
+    }
+}
+
+// MARK: - DismissablePresentationProtocol
 
 extension ElementInspectorCoordinator: DismissablePresentationProtocol {
     func dismissPresentation(animated: Bool) {

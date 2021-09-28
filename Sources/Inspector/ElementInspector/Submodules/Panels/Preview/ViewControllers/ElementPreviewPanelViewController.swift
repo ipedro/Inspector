@@ -20,11 +20,7 @@
 
 import UIKit
 
-protocol ElementPreviewPanelViewControllerDelegate: OperationQueueManagerProtocol {
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
-                                           showHighlight: Bool,
-                                           in reference: ViewHierarchyReference)
-}
+protocol ElementPreviewPanelViewControllerDelegate: ViewHierarchyActionableProtocol & OperationQueueManagerProtocol {}
 
 final class ElementPreviewPanelViewController: ElementInspectorPanelViewController {
     private var needsInitialSnapshotRender = true
@@ -117,11 +113,9 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
 
     @objc
     func toggleHighlightViews() {
-        delegate?.elementPreviewPanelViewController(
-            self,
-            showHighlight: !viewModel.isHighlightingViews,
-            in: viewModel.reference
-        )
+        let action: ViewHierarchyAction = viewModel.isHighlightingViews ? .hideHightlight : .showHighlight
+
+        delegate?.perform(action: action, with: viewModel.reference, from: .none)
     }
 
     @objc
@@ -160,19 +154,19 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
 
-        startLiveUpdatingSnaphost()
+        stopLiveUpdatingSnaphost()
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
 
-        stopLiveUpdatingSnaphost()
+        startLiveUpdatingSnaphost()
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
 
-        stopLiveUpdatingSnaphost()
+        startLiveUpdatingSnaphost()
     }
 
     @objc

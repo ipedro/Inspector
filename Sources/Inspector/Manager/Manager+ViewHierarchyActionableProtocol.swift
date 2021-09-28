@@ -18,12 +18,29 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
 
-extension ElementInspectorCoordinator: ElementPreviewPanelViewControllerDelegate {
-    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController, showHighlight: Bool, in reference: ViewHierarchyReference) {
-        let action: ViewHierarchyAction = showHighlight ? .showHighlight : .hideHightlight
+import UIKit
 
-        delegate?.perform(action: action, with: reference, from: nil)
+extension Manager: ViewHierarchyActionableProtocol {
+    func perform(action: ViewHierarchyAction, with reference: ViewHierarchyReference, from sourceView: UIView?) {
+        switch action {
+        case .tap,
+             .preview,
+             .attributes,
+             .size,
+             .children:
+            let panel = ElementInspectorPanel(rawValue: action)
+            startElementInspectorCoordinator(for: reference, with: panel, animated: true, from: sourceView)
+
+        case .showHighlight:
+            viewHierarchyCoordinator?.showHighlight(true, for: reference)
+
+        case .hideHightlight:
+            viewHierarchyCoordinator?.showHighlight(false, for: reference)
+        }
+    }
+
+    func canPerform(action: ViewHierarchyAction) -> Bool {
+        true
     }
 }

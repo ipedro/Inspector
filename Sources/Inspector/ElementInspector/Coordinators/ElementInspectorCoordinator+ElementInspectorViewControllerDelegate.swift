@@ -28,20 +28,23 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
 
         if reference == fromReference, let panel = ElementInspectorPanel(rawValue: action) {
             viewController.selectPanelIfAvailable(panel)
+            return
         }
-        else {
-            delegate?.elementInspectorCoordinator(self, didSelect: reference, with: action, from: fromReference)
+
+        guard canPerform(action: action) else {
+            delegate?.perform(action: action, with: reference, from: .none)
+            return
         }
+        
+        perform(action: action, with: reference, from: .none)
     }
 
     func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController
-    {
+                                        and reference: ViewHierarchyReference) -> ElementInspectorPanelViewController {
         panelViewController(for: panel, with: reference)
     }
 
-    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController, with dismissAction: ElementInspectorDismissAction) {
-
-        finish(with: dismissAction)
+    func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController, with reason: ElementInspectorDismissReason) {
+        finish(with: reason)
     }
 }

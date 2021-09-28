@@ -26,12 +26,14 @@ extension ElementInspectorCoordinator: ElementChildrenPanelViewControllerDelegat
                                             with action: ViewHierarchyAction,
                                             from fromReference: ViewHierarchyReference)
     {
-        guard let panel = ElementInspectorPanel(rawValue: action) else {
-            delegate?.elementInspectorCoordinator(self, didSelect: reference, with: action, from: fromReference)
+        guard canPerform(action: action) else {
+            delegate?.perform(action: action, with: reference, from: .none)
             return
         }
 
-        guard reference != fromReference else {
+        guard let panel = ElementInspectorPanel(rawValue: action) else { return }
+
+        if reference == fromReference {
             topElementInspectorViewController?.selectPanelIfAvailable(panel)
             return
         }
