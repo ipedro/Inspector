@@ -20,12 +20,7 @@
 
 import UIKit
 
-protocol ElementChildrenPanelViewControllerDelegate: OperationQueueManagerProtocol {
-    func elementChildrenPanelViewController(_ viewController: ElementChildrenPanelViewController,
-                                            didSelect reference: ViewHierarchyReference,
-                                            with action: ViewHierarchyAction,
-                                            from fromReference: ViewHierarchyReference)
-}
+typealias ElementChildrenPanelViewControllerDelegate = OperationQueueManagerProtocol & ViewHierarchyActionableProtocol
 
 final class ElementChildrenPanelViewController: ElementInspectorPanelViewController, DataReloadingProtocol {
     // MARK: - Properties

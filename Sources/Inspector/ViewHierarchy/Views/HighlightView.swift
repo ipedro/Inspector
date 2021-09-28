@@ -191,7 +191,7 @@ class HighlightView: LayerView {
 
     @objc
     private func tapLayerView() {
-        delegate?.layerView(self, didSelect: reference, withAction: .tap)
+        delegate?.layerView(self, didSelect: reference, withAction: .inspect(preferredPanel: .none))
     }
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {

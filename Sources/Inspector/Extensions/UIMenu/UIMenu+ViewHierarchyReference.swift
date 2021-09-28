@@ -36,9 +36,6 @@ extension UIMenu {
             menus.append(actionsMenu)
         }
 
-        let copyMenu = UIMenu.copyMenu(reference: reference, options: .displayInline)
-        menus.append(copyMenu)
-
         if !reference.children.isEmpty {
             if #available(iOS 14.0, *) {
                 let childrenMenu = UIDeferredMenuElement { completion in
@@ -79,36 +76,18 @@ extension UIMenu {
     }
 
     private static func actionsMenu(reference: ViewHierarchyReference, options: UIMenu.Options = .init(), handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
-        let actions = ViewHierarchyAction.actions(for: reference)
+        let actions = ViewHierarchyAction.allCases(for: reference)
 
         guard !actions.isEmpty else { return nil }
 
         return UIMenu(
-            title: "Actions",
+            title: "",
             options: options,
             children: actions.map { action in
                 UIAction(title: action.title, image: action.image) { _ in
                     handler(reference, action)
                 }
             }
-        )
-    }
-
-    private static func copyMenu(reference: ViewHierarchyReference, options: UIMenu.Options = .init()) -> UIMenu {
-        UIMenu(
-            title: Texts.copy,
-            image: .none,
-            options: options,
-            children: [
-                UIAction.copyAction(
-                    title: Texts.copy("Class Name"),
-                    stringProvider: { reference.className }
-                ),
-                UIAction.copyAction(
-                    title: Texts.copy("Description"),
-                    stringProvider: { reference.elementDescription }
-                )
-            ]
         )
     }
 

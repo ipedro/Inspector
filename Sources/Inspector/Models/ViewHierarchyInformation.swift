@@ -20,15 +20,27 @@
 
 import UIKit
 
-extension Manager: ViewHierarchyCoordinatorDelegate {
-    func viewHierarchyCoordinator(_ coordinator: ViewHierarchyCoordinator,
-                                  didSelect reference: ViewHierarchyReference,
-                                  with action: ViewHierarchyAction,
-                                  from sourceView: UIView) {
+enum ViewHierarchyInformation: Swift.CaseIterable, MenuContentProtocol {
+    case className, description
 
-        if let panel = ElementInspectorPanel(rawValue: action) {
-            startElementInspectorCoordinator(for: reference, with: panel, animated: true, from: sourceView)
+    static func allCases(for reference: ViewHierarchyReference) -> [ViewHierarchyInformation] {
+        allCases
+    }
+
+    var title: String {
+        switch self {
+        case .className:
+            return Texts.copy("Class Name")
+        case .description:
+            return Texts.copy("Description")
         }
+    }
 
+    var image: UIImage? {
+        if #available(iOS 13.0, *) {
+            return .copySymbol
+        } else {
+            return nil
+        }
     }
 }

@@ -24,10 +24,7 @@ protocol ElementChildrenPanelItemViewModelProtocol: ViewHierarchyReferenceSummar
     var parent: ElementChildrenPanelItemViewModelProtocol? { get set }
     var reference: ViewHierarchyReference { get }
     var isCollapsed: Bool { get set }
-}
-
-extension ElementChildrenPanelItemViewModelProtocol {
-    var availablePanels: [ElementInspectorPanel] { ElementInspectorPanel.panels(for: reference) }
+    var availablePanels: [ElementInspectorPanel] { get }
 }
 
 extension ElementChildrenPanelViewModel {
@@ -71,6 +68,10 @@ extension ElementChildrenPanelViewModel {
 // MARK: - ElementChildrenPanelTableViewCellViewModelProtocol
 
 extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTableViewCellViewModelProtocol {
+    var availablePanels: [ElementInspectorPanel] {
+        ElementInspectorPanel.allCases(for: reference)
+    }
+
     var appearance: (transform: CGAffineTransform, alpha: CGFloat) {
         if animatedDisplay {
             return (transform: ElementInspector.appearance.panelInitialTransform, alpha: .zero)

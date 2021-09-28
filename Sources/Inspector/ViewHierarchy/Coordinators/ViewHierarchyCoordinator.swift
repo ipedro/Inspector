@@ -21,7 +21,7 @@
 @_implementationOnly import Coordinator
 import UIKit
 
-protocol ViewHierarchyCoordinatorDelegate: ViewHierarchyActionableProtocol & AnyObject {}
+typealias ViewHierarchyCoordinatorDelegate = ViewHierarchyActionableProtocol & AnyObject
 
 protocol ViewHierarchyCoordinatorDataSource: AnyObject {
     var rootView: UIView? { get }
@@ -97,26 +97,31 @@ extension ViewHierarchyCoordinator: DismissablePresentationProtocol {
 extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
     func canPerform(action: ViewHierarchyAction) -> Bool {
         switch action {
-        case .showHighlight,
-             .hideHightlight:
+        case .layer:
             return true
-        case .tap,
-             .preview,
-             .attributes,
-             .size,
-             .children:
+
+        case .inspect, .copy:
             return false
         }
     }
 
     func perform(action: ViewHierarchyAction, with reference: ViewHierarchyReference, from sourceView: UIView?) {
-        switch action {
+        guard canPerform(action: action) else {
+            delegate?.perform(action: action, with: reference, from: sourceView)
+            return
+        }
+
+        guard case let .layer(layerAction) = action else {
+            assertionFailure("Should not happen")
+            return
+        }
+
+        switch layerAction {
         case .showHighlight:
             showHighlight(true, for: reference)
-        case .hideHightlight:
+
+        case .hideHighlight:
             showHighlight(false, for: reference)
-        default:
-            break
         }
     }
 }

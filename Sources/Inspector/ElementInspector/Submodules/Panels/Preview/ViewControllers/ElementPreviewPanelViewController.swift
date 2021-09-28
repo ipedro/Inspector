@@ -20,7 +20,7 @@
 
 import UIKit
 
-protocol ElementPreviewPanelViewControllerDelegate: ViewHierarchyActionableProtocol & OperationQueueManagerProtocol {}
+typealias ElementPreviewPanelViewControllerDelegate = ViewHierarchyActionableProtocol & OperationQueueManagerProtocol
 
 final class ElementPreviewPanelViewController: ElementInspectorPanelViewController {
     private var needsInitialSnapshotRender = true
@@ -113,9 +113,9 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
 
     @objc
     func toggleHighlightViews() {
-        let action: ViewHierarchyAction = viewModel.isHighlightingViews ? .hideHightlight : .showHighlight
+        let layerAction: ViewHierarchyLayerAction = viewModel.isHighlightingViews ? .hideHighlight : .showHighlight
 
-        delegate?.perform(action: action, with: viewModel.reference, from: .none)
+        delegate?.perform(action: .layer(layerAction), with: viewModel.reference, from: .none)
     }
 
     @objc

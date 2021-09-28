@@ -20,18 +20,36 @@
 
 import UIKit
 
-@available(iOS 13.0, *)
-extension UIAction {
-    static func collapseAction(_ isCollapsed: Bool, title: String? = nil, handler: @escaping UIActionHandler) -> UIAction {
-        UIAction(
-            title: {
-                guard let string = title else {
-                    return isCollapsed ? Texts.expand : Texts.collapse
-                }
-                return string
-            }(),
-            image: isCollapsed ? .chevronDownSymbol : .chevronRightSymbol,
-            handler: handler
-        )
+enum ViewHierarchyLayerAction: Swift.CaseIterable, MenuContentProtocol {
+    case hideHighlight, showHighlight
+
+    static func allCases(for reference: ViewHierarchyReference) -> [ViewHierarchyLayerAction] {
+        allCases.filter { layerAction in
+            switch layerAction {
+            case .showHighlight:
+                return !reference.isShowingLayerHighlightView
+
+            case .hideHighlight:
+                return reference.isShowingLayerHighlightView
+            }
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .showHighlight:
+            return "Show Highlight"
+        case .hideHighlight:
+            return "Hide Highlight"
+        }
+    }
+
+    var image: UIImage? {
+        switch self {
+        case .showHighlight:
+            return UIImage.moduleImage(named: "binocularsFill")!
+        case .hideHighlight:
+            return UIImage.moduleImage(named: "binoculars")!
+        }
     }
 }

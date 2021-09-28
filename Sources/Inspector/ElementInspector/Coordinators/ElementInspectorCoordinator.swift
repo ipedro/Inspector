@@ -115,7 +115,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
                 reference: reference,
                 selectedPanel: selectedPanel,
                 inspectableElements: elementLibraries,
-                availablePanels: ElementInspectorPanel.panels(for: reference)
+                availablePanels: ElementInspectorPanel.allCases(for: reference)
             )
         ).then {
             $0.delegate = delegate
@@ -201,22 +201,46 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
     func canPerform(action: ViewHierarchyAction) -> Bool {
         switch action {
-        case .tap,
-             .preview,
-             .attributes,
-             .size,
-             .children:
+        case .inspect:
             return true
-
-        case .showHighlight,
-             .hideHightlight:
+        case .copy, .layer:
             return false
         }
     }
 
     func perform(action: ViewHierarchyAction, with reference: ViewHierarchyReference, from sourceView: UIView?) {
-        #warning("voltar aqui")
-        //
+        guard canPerform(action: action) else {
+            delegate?.perform(action: action, with: reference, from: .none)
+            return
+        }
+
+        guard case let .inspect(preferredPanel) = action else {
+            assertionFailure("should not happen")
+            return
+        }
+
+        if reference == topElementInspectorViewController?.viewModel.reference {
+            topElementInspectorViewController?.selectPanelIfAvailable(preferredPanel)
+            return
+        }
+
+        operationQueue.cancelAllOperations()
+
+        let pushOperation = MainThreadOperation(name: "Push \(reference.displayName)") { [weak self] in
+            guard let self = self else { return }
+
+            let elementInspectorViewController = Self.makeElementInspectorViewController(
+                with: reference,
+                elementLibraries: self.snapshot.elementLibraries,
+                selectedPanel: preferredPanel,
+                delegate: self,
+                in: self.snapshot
+            )
+
+            self.navigationController.pushViewController(elementInspectorViewController, animated: true)
+        }
+
+        addOperationToQueue(pushOperation)
     }
 }
 

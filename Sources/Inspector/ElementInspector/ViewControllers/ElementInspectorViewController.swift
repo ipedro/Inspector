@@ -391,8 +391,10 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
 extension ElementInspectorViewController {
     @discardableResult
-    func selectPanelIfAvailable(_ panel: ElementInspectorPanel) -> Bool {
-        guard let index = viewModel.availablePanels.firstIndex(of: panel) else {
+    func selectPanelIfAvailable(_ panel: ElementInspectorPanel?) -> Bool {
+        guard
+            let panel = panel,
+            let index = viewModel.availablePanels.firstIndex(of: panel) else {
             return false
         }
 

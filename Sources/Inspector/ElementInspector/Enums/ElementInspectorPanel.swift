@@ -20,63 +20,46 @@
 
 import UIKit
 
-enum ElementInspectorPanel: Swift.CaseIterable, Hashable {
-    typealias RawValue = ViewHierarchyAction
-
+enum ElementInspectorPanel: Swift.CaseIterable, MenuContentProtocol {
     case preview
     case attributes
     case size
     case children
 
-    static func panels(for reference: ViewHierarchyReference) -> [ElementInspectorPanel] {
-        let actions = ViewHierarchyAction.actions(for: reference)
-        return panels(for: actions)
-    }
-    
-    static func panels(for actions: [ViewHierarchyAction]) -> [ElementInspectorPanel] {
-        actions.compactMap { .init(rawValue: $0) }
-    }
-
     var title: String {
-        rawValue.title
-    }
-
-    var image: UIImage? {
-        rawValue.image
-    }
-}
-
-extension ElementInspectorPanel: RawRepresentable {
-    var rawValue: ViewHierarchyAction {
         switch self {
-        case .children:
-            return .children
         case .preview:
-            return .preview
-        case .size:
-            return .size
+            return "Open Preview"
         case .attributes:
-            return .attributes
+            return "Open Attributes"
+        case .children:
+            return "Open Children"
+        case .size:
+            return "Open Size"
         }
     }
 
-    init?(rawValue: ViewHierarchyAction) {
-        guard let panel = Self.panel(for: rawValue) else { return nil }
-        self = panel
+    var image: UIImage? {
+        switch self {
+        case .preview:
+            return IconKit.imageOfInfoCircleFill()
+        case .attributes:
+            return IconKit.imageOfSliderHorizontal()
+        case .children:
+            return IconKit.imageOfRelationshipDiagram()
+        case .size:
+            return IconKit.imageOfSetSquareFill()
+        }
     }
 
-    private static func panel(for action: ViewHierarchyAction) -> ElementInspectorPanel? {
-        switch action {
-        case .children:
-            return .children
-        case .preview:
-            return .preview
-        case .size:
-            return .size
-        case .attributes:
-            return .attributes
-        case .hideHightlight, .showHighlight, .tap:
-            return nil
+    static func allCases(for reference: ViewHierarchyReference) -> [ElementInspectorPanel] {
+        allCases.filter { panel in
+            switch panel {
+            case .children:
+                return reference.isContainer
+            case .preview, .attributes, .size:
+                return true
+            }
         }
     }
 }

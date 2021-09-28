@@ -18,25 +18,27 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
 extension Manager: ViewHierarchyActionableProtocol {
     func perform(action: ViewHierarchyAction, with reference: ViewHierarchyReference, from sourceView: UIView?) {
+        guard canPerform(action: action) else {
+            assertionFailure("Should not happen")
+            return
+        }
+
         switch action {
-        case .tap,
-             .preview,
-             .attributes,
-             .size,
-             .children:
-            let panel = ElementInspectorPanel(rawValue: action)
-            startElementInspectorCoordinator(for: reference, with: panel, animated: true, from: sourceView)
+        case .layer:
+            viewHierarchyCoordinator?.perform(action: action, with: reference, from: sourceView)
 
-        case .showHighlight:
-            viewHierarchyCoordinator?.showHighlight(true, for: reference)
+        case let .inspect(preferredPanel: preferredPanel):
+            startElementInspectorCoordinator(for: reference, with: preferredPanel, animated: true, from: sourceView)
 
-        case .hideHightlight:
-            viewHierarchyCoordinator?.showHighlight(false, for: reference)
+        case .copy(.className):
+            UIPasteboard.general.string = reference.className
+
+        case .copy(.description):
+            UIPasteboard.general.string = reference.elementDescription
         }
     }
 

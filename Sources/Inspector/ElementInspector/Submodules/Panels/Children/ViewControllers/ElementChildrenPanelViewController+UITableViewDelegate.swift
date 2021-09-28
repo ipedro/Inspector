@@ -21,7 +21,6 @@
 import UIKit
 
 extension ElementChildrenPanelViewController: UITableViewDelegate {
-
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard let cellViewModel = viewModel.cellViewModel(at: indexPath) else { return }
 
@@ -49,12 +48,7 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let selectedCellViewModel = viewModel.cellViewModel(at: indexPath) else { return }
 
-        delegate?.elementChildrenPanelViewController(
-            self,
-            didSelect: selectedCellViewModel.reference,
-            with: .children,
-            from: viewModel.rootReference
-        )
+        delegate?.perform(action: .inspect(preferredPanel: .children), with: selectedCellViewModel.reference, from: .none)
     }
 
     @available(iOS 13.0, *)
@@ -62,14 +56,7 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
         guard let reference = viewModel.cellViewModel(at: indexPath)?.reference else { return nil }
 
         return .contextMenuConfiguration(for: reference) { [weak self] reference, action in
-            guard let self = self else { return }
-
-            self.delegate?.elementChildrenPanelViewController(
-                self,
-                didSelect: reference,
-                with: action,
-                from: self.viewModel.rootReference
-            )
+            self?.delegate?.perform(action: action, with: reference, from: .none)
         }
     }
 }
@@ -125,7 +112,6 @@ extension ElementChildrenPanelViewController {
 
                     cell.isEvenRow = indexPath.row % 2 == 0
                 }
-
             }
         )
     }

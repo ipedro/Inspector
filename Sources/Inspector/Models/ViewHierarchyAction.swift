@@ -20,71 +20,52 @@
 
 import UIKit
 
-enum ViewHierarchyAction: Swift.CaseIterable {
-    case tap
-    case preview
-    case attributes
-    case size
-    case children
-    case showHighlight
-    case hideHightlight
+enum ViewHierarchyAction: MenuContentProtocol {
+    case layer(ViewHierarchyLayerAction)
+    case inspect(preferredPanel: ElementInspectorPanel?)
+    case copy(ViewHierarchyInformation)
 
     var title: String {
         switch self {
-        case .tap:
-            return "Tap"
-        case .preview:
-            return "Open Preview"
-        case .attributes:
-            return "Open Attributes"
-        case .children:
-            return "Open Children"
-        case .size:
-            return "Open Size"
-        case .showHighlight:
-            return "Show Highlight"
-        case .hideHightlight:
-            return "Hide Highlight"
+        case let .layer(action):
+            return action.title
+
+        case let .inspect(preferredPanel):
+            return preferredPanel?.title ?? "Open"
+
+        case let .copy(content):
+            return content.title
         }
     }
 
     var image: UIImage? {
         switch self {
-        case .tap:
-            return nil
-        case .showHighlight:
-            return UIImage.moduleImage(named: "binocularsFill")!
-        case .hideHightlight:
-            return UIImage.moduleImage(named: "binoculars")!
-        case .preview:
-            return IconKit.imageOfInfoCircleFill()
-        case .attributes:
-            return IconKit.imageOfSliderHorizontal()
-        case .children:
-            return IconKit.imageOfRelationshipDiagram()
-        case .size:
-            return IconKit.imageOfSetSquareFill()
+        case let .layer(action):
+            return action.image
+
+        case let .inspect(preferredPanel):
+            return preferredPanel?.image
+
+        case let .copy(content):
+            return content.image
         }
     }
 
-    static func actions(for reference: ViewHierarchyReference) -> [ViewHierarchyAction] {
-        allCases.filter { action in
-            switch action {
-            case .tap:
-                return false
+    static func allCases(for reference: ViewHierarchyReference) -> [ViewHierarchyAction] {
+        var actions = [ViewHierarchyAction]()
 
-            case .children:
-                return reference.isContainer
-
-            case .showHighlight:
-                return !reference.isShowingLayerHighlightView
-
-            case .hideHightlight:
-                return reference.isShowingLayerHighlightView
-
-            default:
-                return true
-            }
+        for action in ViewHierarchyLayerAction.allCases(for: reference) {
+            actions.append(.layer(action))
         }
+
+        for panel in ElementInspectorPanel.allCases(for: reference) {
+            actions.append(.inspect(preferredPanel: panel))
+        }
+
+        for content in ViewHierarchyInformation.allCases(for: reference) {
+            actions.append(.copy(content))
+        }
+
+        return actions
     }
 }
