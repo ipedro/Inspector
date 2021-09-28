@@ -53,11 +53,38 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
 
     @available(iOS 13.0, *)
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        guard let reference = viewModel.cellViewModel(at: indexPath)?.reference else { return nil }
-
-        return .contextMenuConfiguration(for: reference) { [weak self] reference, action in
-            self?.delegate?.perform(action: action, with: reference, from: .none)
+        guard
+            indexPath != .firstRow,
+            let cellViewModel = viewModel.cellViewModel(at: indexPath)
+        else {
+            return nil
         }
+
+        return .contextMenuConfiguration(
+            initialMenus: {
+                guard cellViewModel.isContainer else { return [] }
+
+                return [
+                    UIMenu(
+                        title: "",
+                        image: .none,
+                        identifier: .none,
+                        options: .displayInline,
+                        children: [
+                            UIAction.collapseAction(
+                                cellViewModel.isCollapsed,
+                                expandTitle: "Reveal Children",
+                                collapseTitle: "Collapse Children"
+                            ) { [weak self] _ in
+                                self?.toggleCollapse(at: indexPath)
+                            }
+                        ]
+                    )
+                ]
+            }(),
+            with: cellViewModel.reference) { [weak self] reference, action in
+                self?.delegate?.perform(action: action, with: reference, from: .none)
+            }
     }
 }
 
@@ -110,7 +137,7 @@ extension ElementChildrenPanelViewController {
                         return
                     }
 
-                    cell.isEvenRow = indexPath.row % 2 == 0
+                    cell.isEvenRow = indexPath.isEvenRow
                 }
             }
         )

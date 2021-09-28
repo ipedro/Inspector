@@ -151,7 +151,7 @@ private extension UIView {
 @available(iOS 13.0, *)
 extension LayerView: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        .contextMenuConfiguration(for: reference) { [weak self] reference, action in
+        .contextMenuConfiguration(with: reference) { [weak self] reference, action in
             guard let self = self else { return }
 
             self.delegate?.layerView(self, didSelect: reference, withAction: action)

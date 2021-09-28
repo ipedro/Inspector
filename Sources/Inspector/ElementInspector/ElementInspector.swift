@@ -31,7 +31,7 @@ extension ElementInspector {
         var isPresentingFromBottomSheet: Bool {
             #if swift(>=5.5)
             if #available(iOS 15.0, *) {
-                return Inspector.host?.window?.traitCollection.userInterfaceIdiom == .phone
+                return isPhoneIdiom
             }
             #endif
             return false
@@ -50,6 +50,8 @@ extension ElementInspector {
         var animationDuration: TimeInterval = CATransaction.animationDuration()
 
         var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
+
+        var allowsOnlyOneExpandedPanel: Bool = false
     }
 }
 

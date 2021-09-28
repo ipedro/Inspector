@@ -98,7 +98,7 @@ final class ElementChildrenPanelViewModel: NSObject {
 }
 
 extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
-    func shouldHighlightItem(at indexPath: IndexPath) -> Bool { indexPath.row + indexPath.section > 0 }
+    func shouldHighlightItem(at indexPath: IndexPath) -> Bool { !indexPath.isFirst }
 
     var title: String? { "More info" }
 
@@ -151,13 +151,13 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
         for child in deletedChildren {
             guard let row = oldVisibleChildren.firstIndex(of: child) else { continue }
 
-            deletedIndexPaths.append(IndexPath(row: row, section: 0))
+            deletedIndexPaths.append(IndexPath(row: row, section: .zero))
         }
 
         for child in addedChildren {
             guard let row = visibleChildren.firstIndex(of: child) else { continue }
 
-            insertedIndexPaths.append(IndexPath(row: row, section: 0))
+            insertedIndexPaths.append(IndexPath(row: row, section: .zero))
         }
 
         var actions = [ElementInspector.ElementChildrenPanelAction]()

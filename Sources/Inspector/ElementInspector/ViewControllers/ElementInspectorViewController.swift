@@ -456,7 +456,7 @@ private extension ElementInspectorViewController {
 @available(iOS 13.0, *)
 extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        .contextMenuConfiguration(for: viewModel.reference, includeActions: false) { [weak self] reference, action in
+        .contextMenuConfiguration(with: viewModel.reference, includeActions: false) { [weak self] reference, action in
             guard let self = self else { return }
 
             self.delegate?.elementInspectorViewController(

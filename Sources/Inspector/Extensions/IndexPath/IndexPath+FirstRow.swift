@@ -18,18 +18,14 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 
-@available(iOS 13.0, *)
-extension UIAction {
-    static func collapseAction(_ isCollapsed: Bool,
-                               expandTitle: String = Texts.expand,
-                               collapseTitle: String = Texts.collapse,
-                               handler: @escaping UIActionHandler) -> UIAction {
-        UIAction(
-            title: isCollapsed ? expandTitle : collapseTitle,
-            image: isCollapsed ? .expandSymbol : .collapseSymbol,
-            handler: handler
-        )
-    }
+import Foundation
+
+extension IndexPath {
+    static let firstRow = IndexPath(row: .zero, section: .zero)
+
+    var isFirst: Bool { self == .firstRow }
+
+    var isEvenRow: Bool { row % 2 == 0 }
+    
 }

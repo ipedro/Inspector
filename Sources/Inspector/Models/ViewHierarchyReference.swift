@@ -40,7 +40,9 @@ final class ViewHierarchyReference {
                 return
             }
 
-            children = view.originalSubviews.map { .init($0, depth: depth + 1, iconProvider: iconProvider, parent: self) }
+            children = view.originalSubviews.map {
+                .init($0, depth: depth + 1, iconProvider: iconProvider, parent: self)
+            }
         }
     }
 
@@ -62,15 +64,15 @@ final class ViewHierarchyReference {
 
     var hasIssues: Bool { !issues.isEmpty }
 
-//    var actions: [ViewHierarchyAction] { ViewHierarchyAction.actions(for: self) }
-
     private(set) lazy var isContainer: Bool = children.isEmpty == false
 
     private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
 
-    private(set) lazy var children: [ViewHierarchyReference] = {
-        rootView?.originalSubviews.map { .init($0, depth: depth + 1, iconProvider: iconProvider, parent: self) } ?? []
-    }()
+    private(set) lazy var children: [ViewHierarchyReference] = rootView?.originalSubviews.map {
+        .init($0, depth: depth + 1, iconProvider: iconProvider, parent: self)
+    } ?? []
+
+    private(set) lazy var allChildren: [ViewHierarchyReference] = children.flatMap { [$0] + $0.children }
 
     // MARK: - Private Properties
 

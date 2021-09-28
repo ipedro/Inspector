@@ -49,10 +49,10 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelPr
     var relativeDepth: Int { .zero }
 }
 
-final class ViewHierarchyPreviewViewController: UIViewController {
+final class ViewHierarchyPreviewController: UIViewController {
     let reference: ViewHierarchyReference
 
-    init(for reference: ViewHierarchyReference) {
+    init(with reference: ViewHierarchyReference) {
         self.reference = reference
         super.init(nibName: nil, bundle: nil)
     }

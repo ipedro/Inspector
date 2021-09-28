@@ -106,13 +106,11 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
     }
 
     func perform(action: ViewHierarchyAction, with reference: ViewHierarchyReference, from sourceView: UIView?) {
-        guard canPerform(action: action) else {
+        guard
+            canPerform(action: action),
+            case let .layer(layerAction) = action
+        else {
             delegate?.perform(action: action, with: reference, from: sourceView)
-            return
-        }
-
-        guard case let .layer(layerAction) = action else {
-            assertionFailure("Should not happen")
             return
         }
 
@@ -171,8 +169,18 @@ extension ViewHierarchyCoordinator {
         )
     }
 
-    func showHighlight(_ show: Bool, for reference: ViewHierarchyReference) {
-        highlightViews[reference]?.isHidden = !show
+    func showHighlight(_ show: Bool, for reference: ViewHierarchyReference, includeSubviews: Bool = true) {
+        let isHidden = !show
+
+        guard includeSubviews else {
+            highlightViews[reference]?.isHidden = isHidden
+            return
+        }
+
+        reference.rootView?.allSubviews.forEach {
+            guard let highlightView = $0 as? HighlightView else { return }
+            highlightView.isHidden = isHidden
+        }
     }
 }
 

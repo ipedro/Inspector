@@ -27,10 +27,12 @@ typealias ViewHierarchyActionHandler = (ViewHierarchyReference, ViewHierarchyAct
 extension UIMenu {
     convenience init?(
         with reference: ViewHierarchyReference,
+        initialMenus: [UIMenuElement] = [],
         includeActions: Bool = true,
+        options: UIMenu.Options = .init(),
         handler: @escaping ViewHierarchyActionHandler
     ) {
-        var menus: [UIMenuElement] = []
+        var menus: [UIMenuElement] = initialMenus
 
         if includeActions, let actionsMenu = UIMenu.actionsMenu(reference: reference, options: .displayInline, handler: handler) {
             menus.append(actionsMenu)
@@ -57,6 +59,7 @@ extension UIMenu {
             title: reference.elementName,
             image: nil,
             identifier: nil,
+            options: options,
             children: menus
         )
     }

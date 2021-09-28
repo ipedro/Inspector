@@ -48,27 +48,6 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         formDelegate?.cancelAllOperations()
     }
 
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                willChangeFrom oldState: InspectorElementFormItemState?,
-                                                to newState: InspectorElementFormItemState)
-    {
-        animatePanel { [weak self] in
-            formItemController.state = newState
-
-            guard let self = self else { return }
-
-            switch newState {
-            case .expanded:
-                for aFormItemController in self.formItemViewControllers where aFormItemController !== formItemController {
-                    aFormItemController.state = .collapsed
-                }
-
-            case .collapsed:
-                break
-            }
-        }
-    }
-
     weak var formDelegate: ElementInspectorFormPanelDelegate?
 
     var dataSource: ElementInspectorFormPanelDataSource {
@@ -255,25 +234,24 @@ extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewC
     }
 
     func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                didChangeState newState: UIControl.State,
-                                                from oldState: UIControl.State)
+                                                willChangeFrom oldState: InspectorElementFormItemState?,
+                                                to newState: InspectorElementFormItemState)
     {
-        animatePanel(
-            animations: { [weak self] in
-                guard let self = self else { return }
+        animatePanel { [weak self] in
+            formItemController.state = newState
 
-                let selectedSections: [ElementInspectorFormItemViewController] = self.children
-                    .compactMap { $0 as? ElementInspectorFormItemViewController }
-                    .filter { $0.state == .expanded }
+            guard let self = self else { return }
 
-                for section in selectedSections {
-                    section.state = .collapsed
+            switch newState {
+            case .expanded where ElementInspector.configuration.allowsOnlyOneExpandedPanel:
+                for aFormItemController in self.formItemViewControllers where aFormItemController !== formItemController {
+                    aFormItemController.state = .collapsed
                 }
 
-                formItemController.state = .expanded
-            },
-            completion: nil
-        )
+            case .expanded, .collapsed:
+                break
+            }
+        }
     }
 
     func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
@@ -295,11 +273,5 @@ extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewC
     {
         selectedOptionListControl = optionListControl
         formDelegate?.elementInspectorFormPanel(self, didTap: optionListControl)
-    }
-}
-
-private extension IndexPath {
-    var isFirst: Bool {
-        row == .zero && section == .zero
     }
 }
