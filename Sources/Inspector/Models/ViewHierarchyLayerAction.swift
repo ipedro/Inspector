@@ -27,7 +27,7 @@ enum ViewHierarchyLayerAction: Swift.CaseIterable, MenuContentProtocol {
         allCases.filter { layerAction in
             switch layerAction {
             case .showHighlight:
-                return !reference.isShowingLayerHighlightView
+                return reference.canHostInspectorView && !reference.isShowingLayerHighlightView
 
             case .hideHighlight:
                 return reference.isShowingLayerHighlightView
@@ -38,18 +38,18 @@ enum ViewHierarchyLayerAction: Swift.CaseIterable, MenuContentProtocol {
     var title: String {
         switch self {
         case .showHighlight:
-            return "Show Highlight"
+            return "Highlight view"
         case .hideHighlight:
-            return "Hide Highlight"
+            return "Hide highlight"
         }
     }
 
     var image: UIImage? {
         switch self {
         case .showHighlight:
-            return UIImage.moduleImage(named: "binocularsFill")!
+            return UIImage.moduleImage(named: "binocularsFill")
         case .hideHighlight:
-            return UIImage.moduleImage(named: "binoculars")!
+            return UIImage.moduleImage(named: "binoculars")
         }
     }
 }

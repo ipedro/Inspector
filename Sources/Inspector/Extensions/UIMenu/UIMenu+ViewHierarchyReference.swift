@@ -76,17 +76,27 @@ extension UIMenu {
     }
 
     private static func actionsMenu(reference: ViewHierarchyReference, options: UIMenu.Options = .init(), handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
-        let actions = ViewHierarchyAction.allCases(for: reference)
+        let groupedCases = ViewHierarchyAction.groupedCases(for: reference)
 
-        guard !actions.isEmpty else { return nil }
+        guard !groupedCases.isEmpty else { return nil }
 
         return UIMenu(
             title: "",
             options: options,
-            children: actions.map { action in
-                UIAction(title: action.title, image: action.image) { _ in
-                    handler(reference, action)
-                }
+            children: groupedCases.compactMap { group in
+                guard group.isEmpty == false else { return nil }
+
+                return UIMenu(
+                    title: "",
+                    image: nil,
+                    identifier: nil,
+                    options: .displayInline,
+                    children: group.map { action in
+                        UIAction(title: action.title, image: action.image) {
+                            _ in handler(reference, action)
+                        }
+                    }
+                )
             }
         )
     }
