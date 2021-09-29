@@ -111,9 +111,11 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
         case .coreAnimationLayer:
             return CALayerInspectableViewModel(view: referenceView)
 
-        case .window,
-             .navigationBar:
+        case .window:
             return nil
+
+        case .navigationBar:
+            return UINavigationBarInspectableViewModel(view: referenceView)
 
         case .activityIndicator:
             return UIActivityIndicatorViewInspectableViewModel(view: referenceView)
