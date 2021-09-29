@@ -31,11 +31,11 @@ extension KeyCommandPresentable {
         makeKeyCommands(withSelector: keyCommandAction)
     }
 
-    private var keyCommandAction: Selector {
+    public var keyCommandAction: Selector {
         #selector(UIViewController.inspectorKeyCommandHandler(_:))
     }
 
-    private func makeKeyCommands(withSelector aSelector: Selector) -> [UIKeyCommand] {
+    public func makeKeyCommands(withSelector aSelector: Selector) -> [UIKeyCommand] {
         commandGroups.flatMap { commandGroup in
             commandGroup.commands.compactMap { action -> UIKeyCommand? in
                 guard let options = action.keyCommandOptions else { return nil }
