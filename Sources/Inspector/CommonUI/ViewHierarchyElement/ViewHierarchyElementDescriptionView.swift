@@ -35,9 +35,9 @@ protocol ViewHierarchyElementDescriptionViewModelProtocol {
 
     var isCollapsed: Bool { get set }
 
-    var showCollapseButton: Bool { get }
+    var isCollapseButtonEnabled: Bool { get }
 
-    var isHidden: Bool { get }
+    var hideCollapseButton: Bool { get }
 
     var relativeDepth: Int { get }
 
@@ -53,37 +53,49 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
 
     var isCollapsed = false {
         didSet {
-            collapseButtonContainer.transform = .init(rotationAngle: isCollapsed ? -(.pi / 2) : .zero)
+            collapseButton.transform = .init(rotationAngle: isCollapsed ? -(.pi / 2) : .zero)
+        }
+    }
+
+    private var isAutomaticallyAdjustIndentation: Bool = true {
+        didSet {
+            if isAutomaticallyAdjustIndentation {
+                indendationAdjustmentStackView.directionalLayoutMargins.update(leading: ElementInspector.appearance.horizontalMargins)
+            }
+            else {
+                indendationAdjustmentStackView.directionalLayoutMargins.update(leading: .zero)
+            }
         }
     }
 
     func reloadData() {
-        // Name
-
+        // name
         elementNameLabel.text = viewModel?.title
         elementNameLabel.font = viewModel?.titleFont
 
+        // icon
         iconImageView.image = viewModel?.iconImage
 
-        // Collapsed
-
+        // collapse button
+        collapseButton.isHidden = viewModel?.hideCollapseButton != false
+        collapseButton.isUserInteractionEnabled = viewModel?.isCollapseButtonEnabled == true
         isCollapsed = viewModel?.isCollapsed == true
 
-        let hideCollapse = viewModel?.showCollapseButton != true
-        collapseButton.isHidden = hideCollapse
-        collapseButtonContainer.isHidden = hideCollapse && viewModel?.automaticallyAdjustIndentation == false
+        isAutomaticallyAdjustIndentation = viewModel?.automaticallyAdjustIndentation == true
 
-        // Description
-
+        // description
         elementDescriptionLabel.text = viewModel?.subtitle
         elementDescriptionLabel.font = viewModel?.subtitleFont
 
         // Containers Insets
-
         let relativeDepth = viewModel?.relativeDepth ?? 0
         let indentation = CGFloat(relativeDepth) * ElementInspector.appearance.horizontalMargins
-
         contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(leading: indentation)
+    }
+
+    private lazy var indendationAdjustmentStackView = UIStackView().then {
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.addArrangedSubview(contentViewContainer)
     }
 
     private lazy var contentViewContainer = UIStackView().then {
@@ -127,17 +139,15 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
     }
 
-    private lazy var collapseButtonContainer = UIView().then {
-        $0.installView(collapseButton)
+    private(set) lazy var collapseButton = IconButton(.chevronDown).then {
+        $0.translatesAutoresizingMaskIntoConstraints = false
     }
-
-    private(set) lazy var collapseButton = IconButton(.chevronDown)
 
     private(set) lazy var iconContainerView = BaseView().then {
         $0.backgroundColor = colorStyle.accessoryControlBackgroundColor
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
-        $0.installView(iconImageView, .spacing(all: $0.layer.cornerRadius / 2), priority: .required)
+        $0.installView(iconImageView, .spacing(all: 3), priority: .required)
     }
 
     private(set) lazy var iconImageView = UIImageView().then {
@@ -150,22 +160,34 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
     private(set) lazy var elementIconAndDescriptionLabel = BaseView().then {
         $0.installView(
             iconContainerView,
-                .spacing(
-                    top: ElementInspector.appearance.verticalMargins / 2,
-                    leading: .zero
-                ),
+            .spacing(top: ElementInspector.appearance.verticalMargins / 2),
             priority: .required
         )
 
         $0.installView(
             elementDescriptionLabel,
-                .spacing(
-                    top: .zero,
-                    bottom: .zero,
-                    trailing: .zero
-                ),
+            .spacing(
+                top: .zero,
+                bottom: .zero,
+                trailing: .zero
+            ),
             priority: .required
         )
+
+        $0.addSubview(collapseButton)
+
+        iconContainerView.leadingAnchor.constraint(
+            equalTo: $0.leadingAnchor
+        ).isActive = true
+
+        iconContainerView.leadingAnchor.constraint(
+            equalTo: collapseButton.trailingAnchor,
+            constant: ElementInspector.appearance.verticalMargins
+        ).isActive = true
+
+        collapseButton.centerYAnchor.constraint(
+            equalTo: iconContainerView.centerYAnchor
+        ).isActive = true
 
         elementDescriptionLabel.bottomAnchor.constraint(
             greaterThanOrEqualTo: $0.bottomAnchor
@@ -180,13 +202,6 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
             greaterThanOrEqualTo: iconContainerView.heightAnchor,
             constant: ElementInspector.appearance.verticalMargins
         ).isActive = true
-
-    }
-
-    private(set) lazy var elementDetailsContainer = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 8
-        $0.addArrangedSubviews(elementNameLabel, elementIconAndDescriptionLabel)
     }
 
     private lazy var heighConstraint = heightAnchor.constraint(equalToConstant: .zero)
@@ -204,7 +219,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
 
         guard size.height != heighConstraint.constant else { return }
 
-        self.heighConstraint.constant = size.height
+        heighConstraint.constant = size.height
     }
 
     override func setup() {
@@ -212,11 +227,10 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
 
         tintColor = colorStyle.textColor
 
-        contentView.axis = .horizontal
-        contentView.spacing = ElementInspector.appearance.horizontalMargins
-        contentView.alignment = .center
-        contentView.addArrangedSubviews(collapseButtonContainer, elementDetailsContainer)
+        contentView.axis = .vertical
+        contentView.spacing = ElementInspector.appearance.verticalMargins
+        contentView.addArrangedSubviews(elementNameLabel, elementIconAndDescriptionLabel)
 
-        installView(contentViewContainer)
+        installView(indendationAdjustmentStackView)
     }
 }

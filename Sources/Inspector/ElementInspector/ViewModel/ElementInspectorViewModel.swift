@@ -106,7 +106,9 @@ extension ElementInspectorViewModel: ViewHierarchyElementDescriptionViewModelPro
 
     var isContainer: Bool { false }
 
-    var showCollapseButton: Bool { false }
+    var isCollapseButtonEnabled: Bool { false }
+
+    var hideCollapseButton: Bool { true }
 
     var isHidden: Bool { false }
 

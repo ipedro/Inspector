@@ -59,7 +59,7 @@ extension ElementChildrenPanelViewModel {
             self.parent = parent
             self.element = element
             self.rootDepth = rootDepth
-            self.iconImage = thumbnailImage?.withRenderingMode(.alwaysTemplate)
+            self.iconImage = thumbnailImage
             _isCollapsed = isCollapsed
         }
     }
@@ -91,11 +91,22 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
 
     var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: relativeDepth) }
 
-    var isHidden: Bool { parent?.isCollapsed == true || parent?.isHidden == true }
+    var isHidden: Bool {
+        guard let parent = parent as? ElementChildrenPanelTableViewCellViewModelProtocol else {
+            return parent?.isCollapsed == true
+        }
 
-    var showCollapseButton: Bool {
-        guard relativeDepth > .zero else { return false }
-        return isContainer && relativeDepth <= ElementInspector.configuration.childrenListMaximumInteractiveDepth
+        return parent.isCollapsed == true || parent.isHidden == true
+    }
+
+    var isCollapseButtonEnabled: Bool {
+        relativeDepth < ElementInspector.configuration.childrenListMaximumInteractiveDepth
+    }
+
+    var hideCollapseButton: Bool {
+        if relativeDepth == .zero { return true }
+
+        return !isContainer
     }
 
     var isContainer: Bool { element.isContainer }

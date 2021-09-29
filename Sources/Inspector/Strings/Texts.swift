@@ -22,7 +22,7 @@ import Foundation
 
 enum Texts {
     static func inspect(_ name: Any) -> String {
-        "Inspect \(String(describing: name))..."
+        "Inspect \(String(describing: name))"
     }
 
     static func inspectableViews(_ viewCount: Int, in className: String) -> String {

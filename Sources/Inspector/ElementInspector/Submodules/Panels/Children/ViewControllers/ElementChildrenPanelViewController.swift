@@ -98,12 +98,20 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
         super.viewDidAppear(animated)
 
         viewCode.tableView.becomeFirstResponder()
+
+        viewCode.tableView.showsVerticalScrollIndicator = true
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         hasDisappeared = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        viewCode.tableView.showsVerticalScrollIndicator = false
     }
 
     func reloadData() {

@@ -168,11 +168,8 @@ extension ViewHierarchyElement: ViewHierarchyProtocol {
     }
 
     var elementName: String {
-        guard let rootView = rootView else {
-            return _elementName
-        }
-
-        return rootView.elementName
+        let elementName = rootView?.elementName ?? _elementName
+        return elementName.string(appending: issues.isEmpty ? nil : "⚠️", separator: " ")
     }
 
     var className: String {

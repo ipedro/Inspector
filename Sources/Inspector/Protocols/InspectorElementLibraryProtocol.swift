@@ -59,22 +59,17 @@ extension Sequence where Element == InspectorElementLibraryProtocol {
     }
 
     private func icon(for element: UIView?) -> UIImage? {
-        let emptyImage = UIImage.moduleImage(named: "EmptyView-32_Normal")
-
         guard let element = element else {
-            return emptyImage
+            return .missingViewSymbol
         }
 
         if element.isHidden {
-            return UIImage.moduleImage(named: "Hidden-32_Normal")
-        }
-
-        guard element is NonInspectableView == false else {
-            return UIImage.internalViewIcon?.withRenderingMode(element is UIControl ? .alwaysOriginal : .alwaysTemplate)
+            return .hiddenViewSymbol
         }
 
         let candidateIcons = targeting(element: element).compactMap { $0.icon(for: element) }
 
-        return candidateIcons.first ?? emptyImage
+        return candidateIcons.first ?? .emptyViewSymbol
     }
+
 }

@@ -29,26 +29,26 @@ enum ElementInspectorPanel: Swift.CaseIterable, MenuContentProtocol {
     var title: String {
         switch self {
         case .preview:
-            return "Open Preview"
+            return "Inspect"
         case .attributes:
-            return "Open Attributes"
+            return "Inspect Attributes"
         case .children:
-            return "Open Children"
+            return "Inspect Children"
         case .size:
-            return "Open Size"
+            return "Inspect Size"
         }
     }
 
     var image: UIImage? {
         switch self {
         case .preview:
-            return IconKit.imageOfInfoCircleFill()
+            return IconKit.imageOfInfoCircleFill().withRenderingMode(.alwaysTemplate)
         case .attributes:
-            return IconKit.imageOfSliderHorizontal()
+            return IconKit.imageOfSliderHorizontal().withRenderingMode(.alwaysTemplate)
         case .children:
-            return IconKit.imageOfRelationshipDiagram()
+            return IconKit.imageOfRelationshipDiagram().withRenderingMode(.alwaysTemplate)
         case .size:
-            return IconKit.imageOfSetSquareFill()
+            return IconKit.imageOfSetSquareFill().withRenderingMode(.alwaysTemplate)
         }
     }
 

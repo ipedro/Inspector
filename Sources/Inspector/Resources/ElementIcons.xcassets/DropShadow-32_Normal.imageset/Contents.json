@@ -1,12 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "ImageView-32_Normal.png",
+      "filename" : "shadow-32_Normal.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "ImageView-32_Normal@2x.png",
+      "filename" : "shadow-32_Normal@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

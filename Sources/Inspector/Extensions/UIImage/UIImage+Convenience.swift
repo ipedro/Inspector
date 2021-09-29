@@ -21,7 +21,6 @@
 import UIKit
 
 extension UIImage {
-    static let internalViewIcon: UIImage? = .moduleImage(named: "InternalView-32_Normal")
     static let visibleLayerAction: UIImage? = .moduleImage(named: "LayerAction-Show")
     static let hiddenLayerAction: UIImage? = .moduleImage(named: "LayerAction-Hide")
     static let emptyLayerAction: UIImage? = .moduleImage(named: "LayerAction-Empty")
@@ -31,6 +30,10 @@ extension UIImage {
     static let collapseSymbol: UIImage? = .moduleImage(named: "collapse")
     static let showHighlightsSymbol: UIImage? = .moduleImage(named: "showHighlights")
     static let hideHighlightsSymbol: UIImage? = .moduleImage(named: "hideHighlights")
+
+    static let hiddenViewSymbol = UIImage.moduleImage(named: "Hidden-32_Normal")
+    static let missingViewSymbol = UIImage.moduleImage(named: "missing-view-32_Normal")
+    static let emptyViewSymbol = UIImage.moduleImage(named: "EmptyView-32_Normal")
 }
 
 @available(iOS 13.0, *)

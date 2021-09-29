@@ -23,8 +23,7 @@ import UIKit
 
 extension ViewHierarchyElement {
     var shortElementDescription: String {
-        [issuesDescription,
-         subviewsDescription,
+        [subviewsDescription,
          constraintsDescription,
          positionDescrpition,
          sizeDescription,
@@ -37,12 +36,12 @@ extension ViewHierarchyElement {
     }
 
     var elementDescription: String {
-        [issuesDescription?.string(appending: "\n"),
-         classNameDescription,
+        [classNameDescription,
          sizeDescription,
          positionDescrpition,
          constraintsDescription,
-         subviewsDescription
+         subviewsDescription,
+         issuesDescription?.string(prepending: "\n"),
         ]
         .compactMap { $0 }
         .joined(separator: "\n")
@@ -61,9 +60,19 @@ extension ViewHierarchyElement {
         }
     }
 
-    var issuesDescription: String? {
-        let issues = self.issues
+    var issuesShortDescription: String? {
+        if issues.isEmpty {
+            return nil
+        }
+        else if issues.count == 1 {
+            return "⚠️ 1 Issue"
+        }
+        else {
+            return "⚠️ \(issues.count) Issues"
+        }
+    }
 
+    var issuesDescription: String? {
         guard !issues.isEmpty else { return nil }
 
         if issues.count == 1, let issue = issues.first {

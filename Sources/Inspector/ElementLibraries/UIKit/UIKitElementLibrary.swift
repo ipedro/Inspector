@@ -40,6 +40,7 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
     case view
     case window
     case navigationBar
+    case tabBar
     case webView
     case coreAnimationLayer
 
@@ -103,6 +104,9 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
 
         case .webView:
             return WKWebView.self
+
+        case .tabBar:
+            return UITabBar.self
         }
     }
 
@@ -162,69 +166,116 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
         case .view:
             return UIViewInspectableViewModel(view: referenceView)
 
+        case .tabBar:
+            return UITabBarInspectableViewModel(view: referenceView)
+
         case .webView:
             return nil
         }
     }
 
     func icon(for referenceView: UIView) -> UIImage? {
-        switch self {
-        case .navigationBar:
+        switch referenceView {
+        case is UINavigationBar:
             return .moduleImage(named: "NavigationBar-32_Normal")
 
-        case .window:
-            return .moduleImage(named: "UIWindow-32_Normal")
+        case is UIWindow:
+            return .moduleImage(named: "Window-32_Normal")
 
-        case .activityIndicator:
-            return .moduleImage(named: "UIActivityIndicator_32_Dark_Normal")
+        case is UIActivityIndicatorView:
+            return .moduleImage(named: "UIActivityIndicator_32_Dark_Normal")!
 
-        case .button:
-            return .moduleImage(named: "UIButton_32-Dark_Normal")
+        case is UISlider:
+            return .moduleImage(named: "Slider-32_Normal")
 
-        case .datePicker:
+        case is UIDatePicker:
             return .moduleImage(named: "UIDatePicker_32_Normal")
 
-        case .imageView:
-            guard let image = (referenceView as? UIImageView)?.image else {
-                return .moduleImage(named: "UIImageView-32_Normal")
-            }
-            return image
-
-        case .label:
-            return .moduleImage(named: "UILabel_32-Dark_Normal")
-
-        case .scrollView:
-            return .moduleImage(named: "UIScrollView_32_Normal")
-
-        case .segmentedControl:
-            return .moduleImage(named: "UISegmentedControl_32_Normal")
-
-        case .switch:
+        case is UISwitch:
             return .moduleImage(named: "Toggle-32_Normal")
 
-        case .stackView:
-            guard (referenceView as? UIStackView)?.axis == .horizontal else {
-                return .moduleImage(named: "VStack-32_Normal")
-            }
-            return .moduleImage(named: "HStack-32_Normal")
+        case is UIButton,
+            is UIControl where referenceView.className.contains("Button"):
+            return .moduleImage(named: "UIButton_32-Dark_Normal")!
 
-        case .textField:
+        case let imageView as UIImageView:
+            if imageView.isHighlighted, let highlightImage = imageView.highlightedImage {
+                if #available(iOS 13.0, *) {
+                    if highlightImage.renderingMode != .alwaysOriginal {
+                        return highlightImage.withTintColor(imageView.tintColor)
+                    }
+                }
+                return highlightImage
+            }
+            if let image = imageView.image {
+                if #available(iOS 13.0, *) {
+                    if image.renderingMode != .alwaysOriginal {
+                        return image.withTintColor(imageView.tintColor)
+                    }
+                }
+                return image
+            }
+            return .moduleImage(named: "ImageView-32_Normal")
+
+        case is UILabel:
+            return .moduleImage(named: "UILabel_32-Dark_Normal")!
+
+        case is UIScrollView:
+            return .moduleImage(named: "UIScrollView_32_Normal")
+
+        case is UISegmentedControl:
+            return .moduleImage(named: "UISegmentedControl_32_Normal")
+
+        case let stackView as UIStackView:
+            switch stackView.axis {
+            case .horizontal:
+                return .moduleImage(named: "HStack-32_Normal")
+
+            case .vertical:
+                return .moduleImage(named: "VStack-32_Normal")
+
+            @unknown default:
+                return nil
+            }
+
+        case is UITextField:
             return .moduleImage(named: "TextField-32_Normal")
 
-        case .textView:
+        case is UITextView:
             return .moduleImage(named: "TextView-32_Normal")
 
-        case .control:
-            return .moduleImage(named: "UIControl-32_Normal")
-
-        case .webView:
+        case is UIWebView:
             return .moduleImage(named: "Webview-32_Normal")
 
-        case .mapView,
-             .slider,
-             .view,
-             .coreAnimationLayer:
-            return nil
+        case is UITabBar:
+            return .moduleImage(named: "TabbedView-32_Normal")
+
+        case is UIToolbar:
+            return .moduleImage(named: "UITtoolbar-32_Normal")
+
+        case is UIControl:
+            return .moduleImage(named: "UIControl-32_Normal")
+
+        case _ where referenceView.className.contains("VisualEffect"):
+            return .moduleImage(named: "VisualEffectsView-32_Normal")
+
+        case _ where referenceView.className.contains("TransitionView"):
+            return .moduleImage(named: "UITransitionView-32_Normal")
+
+        case _ where referenceView.className.contains("DropShadow"):
+            return .moduleImage(named: "DropShadow-32_Normal")
+
+        case _ where referenceView.className.contains("Background"):
+            return .moduleImage(named: "BackgroundView-32_Normal")
+
+        case _ where referenceView.className.contains("_UI"):
+            return .moduleImage(named: "keyboardShortcut-32_Normal")
+
+        case _ where !referenceView.originalSubviews.isEmpty:
+            return .moduleImage(named: "filled-view-32_Normal")
+
+        default:
+            return .moduleImage(named: "EmptyView-32_Normal")
         }
     }
 }

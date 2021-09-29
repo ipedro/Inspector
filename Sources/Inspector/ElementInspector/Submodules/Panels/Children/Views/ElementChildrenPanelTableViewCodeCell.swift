@@ -29,6 +29,7 @@ protocol ElementChildrenPanelTableViewCellViewModelProtocol: ElementChildrenPane
     var showDisclosureIcon: Bool { get }
     var appearance: (transform: CGAffineTransform, alpha: CGFloat) { get }
     var animatedDisplay: Bool { get set }
+    var isHidden: Bool { get }
 }
 
 final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
@@ -75,7 +76,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
     var isFirst: Bool = false {
         didSet {
             if isFirst {
-                containerStackView.directionalLayoutMargins.update(top: -8)
+                containerStackView.directionalLayoutMargins.update(top: -ElementInspector.appearance.verticalMargins)
                 elementDescriptionView.directionalLayoutMargins.update(top: .zero)
             }
             else {
@@ -163,6 +164,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         guard
             event?.type == .touches,
             let touch = touches.first,
+            elementDescriptionView.collapseButton.isUserInteractionEnabled,
             elementDescriptionView.collapseButton.isHidden == false,
             isPointNearCollapseButton(touch.location(in: self))
         else {

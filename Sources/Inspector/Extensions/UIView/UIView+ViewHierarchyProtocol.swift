@@ -86,14 +86,7 @@ extension UIView: ViewHierarchyProtocol {
     }
 
     var isSystemView: Bool {
-        guard
-            isSystemContainerView == false,
-            className.first != "_"
-        else {
-            return true
-        }
-
-        return false
+        isSystemContainerView || className.starts(with: "_UI")
     }
 
     var isSystemContainerView: Bool {

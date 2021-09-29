@@ -30,9 +30,11 @@ extension ViewHierarchyElement: ViewHierarchyElementDescriptionViewModelProtocol
 
     var subtitle: String? { elementDescription }
 
-    var showCollapseButton: Bool { false }
+    var isCollapseButtonEnabled: Bool { false }
 
     var isHidden: Bool { false }
+
+    var hideCollapseButton: Bool { true }
 
     var relativeDepth: Int { .zero }
 

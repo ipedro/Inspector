@@ -21,7 +21,6 @@
 import UIKit
 
 struct ViewHierarchyThumbnailViewModel: ViewHierarchyElementDescriptionViewModelProtocol {
-
     let element: ViewHierarchyElement
 
     // MARK: - ViewHierarchyReferenceDetailViewModelProtocol
@@ -42,7 +41,9 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyElementDescriptionViewModel
 
     var isContainer: Bool { false }
 
-    var showCollapseButton: Bool { false }
+    var isCollapseButtonEnabled: Bool { false }
+
+    var hideCollapseButton: Bool { true }
 
     var isHidden: Bool { false }
 

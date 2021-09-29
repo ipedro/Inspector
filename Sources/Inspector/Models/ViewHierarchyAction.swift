@@ -31,7 +31,7 @@ enum ViewHierarchyAction: MenuContentProtocol {
             return action.title
 
         case let .inspect(preferredPanel):
-            return preferredPanel?.title ?? "Open"
+            return preferredPanel?.title ?? Texts.inspect("")
 
         case let .copy(content):
             return content.title
