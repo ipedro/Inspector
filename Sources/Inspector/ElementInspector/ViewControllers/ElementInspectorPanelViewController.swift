@@ -103,7 +103,7 @@ class ElementInspectorPanelViewController: UIViewController {
     func calculatePreferredContentSize() -> CGSize {
         if isViewLoaded {
             return view.systemLayoutSizeFitting(
-                ElementInspector.appearance.panelPreferredCompressedSize,
+                ElementInspector.configuration.panelPreferredCompressedSize,
                 withHorizontalFittingPriority: .defaultHigh,
                 verticalFittingPriority: .fittingSizeLevel
             )

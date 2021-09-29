@@ -35,7 +35,7 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
         }
 
         return .group(
-            title: Texts.inspectHierarchy,
+            title: Texts.highlightElements,
             commands: Array(commands.prefix(maxCount))
         )
     }

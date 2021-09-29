@@ -49,6 +49,13 @@ extension ElementInspector {
 
         var animationDuration: TimeInterval = CATransaction.animationDuration()
 
+        var panelPreferredCompressedSize: CGSize {
+            CGSize(
+                width: min(UIScreen.main.bounds.width, 375),
+                height: .zero
+            )
+        }
+
         var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
     }
 }
@@ -73,13 +80,6 @@ extension ElementInspector {
             NSDirectionalEdgeInsets(
                 horizontal: horizontalMargins,
                 vertical: verticalMargins
-            )
-        }
-
-        var panelPreferredCompressedSize: CGSize {
-            CGSize(
-                width: min(UIScreen.main.bounds.width, 375),
-                height: .zero
             )
         }
 

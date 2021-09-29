@@ -61,7 +61,7 @@ extension Command {
 
     static func emptyLayer(_ title: String) -> Command {
         Command(
-            title: title,
+            title: title.lowercased(),
             icon: .emptyLayerAction,
             keyCommandOptions: nil,
             closure: nil
@@ -70,7 +70,7 @@ extension Command {
 
     static func visibleLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.hide(title),
+            title: Texts.hide(title.lowercased()),
             icon: .visibleLayerAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: String(index),
@@ -82,7 +82,7 @@ extension Command {
 
     static func hiddenLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.show(title),
+            title: Texts.highlight(title.lowercased()),
             icon: .hiddenLayerAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: String(index),
@@ -94,7 +94,7 @@ extension Command {
 
     static func showAllLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.show(Texts.allLayers),
+            title: Texts.highlight(Texts.allLayers.lowercased()),
             icon: .showAllLayersAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
@@ -106,7 +106,7 @@ extension Command {
 
     static func hideVisibleLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.hide(Texts.allLayers),
+            title: Texts.hide(Texts.allLayers.lowercased()),
             icon: .hideAllLayersAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
@@ -118,7 +118,7 @@ extension Command {
 
     static func presentInspector(from host: InspectorHost, animated: Bool = true) -> Command {
         Command(
-            title: Texts.presentInspector,
+            title: Texts.presentInspector.lowercased(),
             icon: nil,
             keyCommandOptions: keyCommandSettings.presentationSettings.options
         ) {

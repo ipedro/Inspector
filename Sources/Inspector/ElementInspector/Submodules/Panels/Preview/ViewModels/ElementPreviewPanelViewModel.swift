@@ -30,7 +30,7 @@ final class ElementPreviewPanelViewModel: ElementPreviewPanelViewModelProtocol {
     let element: ViewHierarchyElement
 
     var isHighlightingViews: Bool {
-        element.isShowingLayerHighlightView
+        element.containsVisibleHighlightViews
     }
 
     var isLiveUpdating: Bool = true

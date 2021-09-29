@@ -220,7 +220,11 @@ extension ViewHierarchyElement {
         rootView?.subviews.contains { $0 is WireframeView } == true
     }
 
-    var isShowingLayerHighlightView: Bool {
-        rootView?.subviews.contains { $0 is HighlightView && $0.isHidden == false } == true
+    var isHostingAnyLayerHighlightView: Bool {
+        rootView?.allSubviews.contains { $0 is HighlightView } == true
+    }
+
+    var containsVisibleHighlightViews: Bool {
+        rootView?.allSubviews.contains { $0 is HighlightView && $0.isHidden == false } == true
     }
 }

@@ -34,7 +34,7 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
     private(set) lazy var viewCode = ElementChildrenPanelViewCode(
         frame: CGRect(
             origin: .zero,
-            size: ElementInspector.appearance.panelPreferredCompressedSize
+            size: ElementInspector.configuration.panelPreferredCompressedSize
         )
     ).then {
         $0.tableView.register(ElementChildrenPanelTableViewCodeCell.self)
@@ -116,7 +116,7 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
         let contentInset = viewCode.tableView.contentInset
 
         return CGSize(
-            width: ElementInspector.appearance.panelPreferredCompressedSize.width,
+            width: ElementInspector.configuration.panelPreferredCompressedSize.width,
             height: contentHeight + contentInset.top + contentInset.bottom
         )
     }

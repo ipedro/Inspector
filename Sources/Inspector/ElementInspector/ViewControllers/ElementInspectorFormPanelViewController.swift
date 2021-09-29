@@ -169,12 +169,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
                 let formItemViewController = ElementInspectorFormItemViewController(
                     viewModel: viewModel,
                     viewCode: itemView,
-                    state: {
-                        if isCompactVerticalPresentation == false, indexPath.isFirst {
-                            return .expanded
-                        }
-                        return .collapsed
-                    }()
+                    state: isCompactVerticalPresentation ? .collapsed : .expanded
                 ).then {
                     $0.delegate = self
                 }

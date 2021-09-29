@@ -25,6 +25,8 @@ import UIKit
 final class PlaygroundViewController: UIViewController {
     // MARK: - Stack Views
 
+    @IBOutlet var instructionsLabel: UILabel!
+
     @IBOutlet var sliderStackView: UIStackView! {
         didSet {
             sliderStackView.accessibilityIdentifier = "Slider Stack View"
@@ -96,6 +98,17 @@ final class PlaygroundViewController: UIViewController {
 
     // MARK: - Life cycle
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        if #available(iOS 13.0, *) {
+            instructionsLabel.text = "Long press any view below"
+        }
+        else {
+            instructionsLabel.text = "Tap any highlited view below"
+        }
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -114,7 +127,12 @@ final class PlaygroundViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        Inspector.toggleAllLayers()
+        if #available(iOS 13.0, *) {
+            Inspector.toggle(.wireframes)
+        }
+        else {
+            Inspector.toggleAllLayers()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -169,8 +187,11 @@ final class PlaygroundViewController: UIViewController {
 }
 
 final class PlaygroundContainerStackView: UIStackView, NonInspectableView {
-    override func willMove(toWindow newWindow: UIWindow?) {
-        super.willMove(toWindow: newWindow)
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+
+        guard superview != nil else { return }
+
         isLayoutMarginsRelativeArrangement = true
         directionalLayoutMargins = NSDirectionalEdgeInsets(
             top: 60,

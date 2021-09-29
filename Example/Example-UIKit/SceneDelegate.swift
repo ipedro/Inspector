@@ -78,16 +78,14 @@ extension SceneDelegate: InspectorHost {
 
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
         [
-            .controls,
-            .buttons,
             .staticTexts + .images,
             .layer(
-                name: "Without accessibility identifier",
+                name: "Views with identifier",
                 filter: {
                     guard let accessibilityIdentifier = $0.accessibilityIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines) else {
                         return true
                     }
-                    return accessibilityIdentifier.isEmpty
+                    return !accessibilityIdentifier.isEmpty
                 }
             )
         ]

@@ -49,8 +49,8 @@ enum Texts {
         "No \(description) found"
     }
 
-    static func show(_ something: String) -> String {
-        "Show \(something)"
+    static func highlight(_ something: String) -> String {
+        "Highlight \(something)"
     }
 
     static func hide(_ something: String) -> String {
@@ -69,13 +69,13 @@ enum Texts {
 
     static let copy = "Copy"
 
-    static let inspectHierarchy = "Inspect Hirearchy"
+    static let highlightElements = "Highlight Elements"
 
     static let hierarchySearch = "Search views"
 
     static let presentInspector = "Open Inspector..."
 
-    static let allLayers = "all layers"
+    static let allLayers = "All Layers"
 
     static let dismissView = "Dismiss View"
 

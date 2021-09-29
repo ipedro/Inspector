@@ -116,7 +116,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     private lazy var viewCode = ElementInspectorViewCode(
         frame: CGRect(
             origin: .zero,
-            size: ElementInspector.appearance.panelPreferredCompressedSize
+            size: ElementInspector.configuration.panelPreferredCompressedSize
         )
     ).then {
         $0.toggleCollapseButton.addTarget(self, action: #selector(togglePanelsCollapse), for: .touchUpInside)
