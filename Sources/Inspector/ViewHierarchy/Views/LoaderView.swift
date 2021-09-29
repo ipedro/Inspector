@@ -41,7 +41,7 @@ final class LoaderView: LayerViewComponent {
         frame: bounds,
         name: elementName,
         colorScheme: colorScheme,
-        reference: ViewHierarchyElement(self, iconProvider: { _ in nil })
+        element: ViewHierarchyElement(self, iconProvider: { _ in nil })
     ).then {
         $0.verticalAlignmentOffset = activityIndicator.frame.height * 2 / 3
     }
@@ -85,7 +85,7 @@ final class LoaderView: LayerViewComponent {
 
             let inspectorView = WireframeView(
                 frame: element.bounds,
-                reference: ViewHierarchyElement(element, iconProvider: { _ in nil }),
+                element: ViewHierarchyElement(element, iconProvider: { _ in nil }),
                 color: .white
             )
 

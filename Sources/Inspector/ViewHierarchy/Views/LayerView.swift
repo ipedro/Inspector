@@ -21,7 +21,7 @@
 import UIKit
 
 protocol LayerViewDelegate: AnyObject {
-    func layerView(_ layerView: LayerViewProtocol, didSelect reference: ViewHierarchyElement, withAction action: ViewHierarchyAction)
+    func layerView(_ layerView: LayerViewProtocol, didSelect element: ViewHierarchyElement, withAction action: ViewHierarchyAction)
 }
 
 class LayerView: UIImageView, LayerViewProtocol {
@@ -29,7 +29,7 @@ class LayerView: UIImageView, LayerViewProtocol {
 
     var shouldPresentOnTop = false
 
-    let reference: ViewHierarchyElement
+    let element: ViewHierarchyElement
 
     var allowsImages = false
 
@@ -82,8 +82,8 @@ class LayerView: UIImageView, LayerViewProtocol {
 
     // MARK: - Init
 
-    init(frame: CGRect, reference: ViewHierarchyElement, color: UIColor, borderWidth: CGFloat) {
-        self.reference = reference
+    init(frame: CGRect, element: ViewHierarchyElement, color: UIColor, borderWidth: CGFloat) {
+        self.element = element
 
         self.color = color
 
@@ -120,7 +120,7 @@ class LayerView: UIImageView, LayerViewProtocol {
         guard newSuperview == nil else { return }
 
         // reset views
-        reference.rootView?.isUserInteractionEnabled = reference.isUserInteractionEnabled
+        element.rootView?.isUserInteractionEnabled = element.isUserInteractionEnabled
         if #available(iOS 13.0, *) {
             superview?.removeInteraction(menuInteraction)
         }
@@ -151,10 +151,10 @@ private extension UIView {
 @available(iOS 13.0, *)
 extension LayerView: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        .contextMenuConfiguration(with: reference) { [weak self] reference, action in
+        .contextMenuConfiguration(with: element) { [weak self] element, action in
             guard let self = self else { return }
 
-            self.delegate?.layerView(self, didSelect: reference, withAction: action)
+            self.delegate?.layerView(self, didSelect: element, withAction: action)
         }
     }
 }

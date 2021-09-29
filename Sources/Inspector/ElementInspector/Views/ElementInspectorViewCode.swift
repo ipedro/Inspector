@@ -44,7 +44,7 @@ final class ElementInspectorViewCode: BaseView {
         $0.alwaysBounceVertical = true
     }
 
-    private(set) lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView().then {
+    private(set) lazy var elementDescriptionView = ViewHierarchyElementDescriptionView().then {
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         $0.setContentCompressionResistancePriority(.required, for: .vertical)
         $0.elementNameLabel.isSafelyHidden = true
@@ -54,7 +54,7 @@ final class ElementInspectorViewCode: BaseView {
     private(set) lazy var separatorView = SeparatorView(style: .hard)
 
     private(set) lazy var headerView = UIStackView.vertical().then {
-        $0.addArrangedSubviews(referenceSummaryView)
+        $0.addArrangedSubviews(elementDescriptionView)
         $0.isLayoutMarginsRelativeArrangement = true
         $0.spacing = ElementInspector.appearance.verticalMargins
         $0.directionalLayoutMargins = ElementInspector.appearance.directionalInsets.with(top: .zero, bottom: ElementInspector.appearance.horizontalMargins, trailing: 40)

@@ -20,16 +20,16 @@
 
 import UIKit
 
-final class LayoutConstraintReference: Hashable {
-    static func == (lhs: LayoutConstraintReference, rhs: LayoutConstraintReference) -> Bool {
-        lhs.constraint == rhs.constraint
+final class LayoutConstraintElement: Hashable {
+    static func == (lhs: LayoutConstraintElement, rhs: LayoutConstraintElement) -> Bool {
+        lhs.underlyingConstraint == rhs.underlyingConstraint
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(constraint)
+        hasher.combine(underlyingConstraint)
     }
 
-    let constraint: NSLayoutConstraint
+    let underlyingConstraint: NSLayoutConstraint
 
     let view: UIView?
 
@@ -83,7 +83,7 @@ final class LayoutConstraintReference: Hashable {
         axis = firstAxis
         self.first = first
         self.second = second
-        self.constraint = constraint
+        self.underlyingConstraint = constraint
         self.view = view
 
         let theirBindings = Self.find(.theirs, bindings: first, second, inRelationTo: view)
@@ -139,7 +139,7 @@ final class LayoutConstraintReference: Hashable {
 
 // MARK: - Computed Properties
 
-extension LayoutConstraintReference {
+extension LayoutConstraintElement {
     var mine: Binding? {
         guard let rootView = view else { return nil }
 
@@ -170,7 +170,7 @@ extension LayoutConstraintReference {
     }
 
     var displayName: String? {
-        let priority = constraint.priority != .required ? constraint.priority : nil
+        let priority = underlyingConstraint.priority != .required ? underlyingConstraint.priority : nil
 
         return [
             type.description,
@@ -187,7 +187,7 @@ extension LayoutConstraintReference {
 
 // MARK: - Binding
 
-extension LayoutConstraintReference {
+extension LayoutConstraintElement {
     struct Binding: Hashable {
         var item: Item
         var attribute: NSLayoutConstraint.Attribute
@@ -208,7 +208,7 @@ extension LayoutConstraintReference {
 
 // MARK: - Axis
 
-extension LayoutConstraintReference {
+extension LayoutConstraintElement {
     enum Axis: Int, Swift.CaseIterable, Hashable {
         case horizontal = 0
         case vertical = 1
@@ -228,7 +228,7 @@ extension LayoutConstraintReference {
 
 // MARK: - Item
 
-extension LayoutConstraintReference {
+extension LayoutConstraintElement {
     enum Item: Hashable {
         case view(UIView)
         case layoutGuide(UILayoutGuide)
@@ -296,7 +296,7 @@ extension LayoutConstraintReference {
 
 // MARK: - Type
 
-extension LayoutConstraintReference {
+extension LayoutConstraintElement {
     enum `Type`: CustomStringConvertible, Hashable {
         case aspectRatio(multiplier: CGFloat)
         case proportional(attribute: String? = nil, to: String)

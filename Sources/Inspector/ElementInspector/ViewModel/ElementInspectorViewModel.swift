@@ -20,8 +20,8 @@
 
 import UIKit
 
-protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyReferenceSummaryViewModelProtocol {
-    var reference: ViewHierarchyElement { get }
+protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyElementDescriptionViewModelProtocol {
+    var element: ViewHierarchyElement { get }
 
     var snapshot: ViewHierarchySnapshot { get }
 
@@ -37,7 +37,7 @@ protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyReferenceSu
 final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     let snapshot: ViewHierarchySnapshot
 
-    let reference: ViewHierarchyElement
+    let element: ViewHierarchyElement
 
     let inspectableElements: [InspectorElementLibraryProtocol]
 
@@ -73,13 +73,13 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     init(
         snapshot: ViewHierarchySnapshot,
-        reference: ViewHierarchyElement,
+        element: ViewHierarchyElement,
         selectedPanel: ElementInspectorPanel?,
         inspectableElements: [InspectorElementLibraryProtocol],
         availablePanels: [ElementInspectorPanel]
     ) {
         self.snapshot = snapshot
-        self.reference = reference
+        self.element = element
         self.inspectableElements = inspectableElements
         self.availablePanels = availablePanels
 
@@ -91,16 +91,16 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
 // MARK: - ViewHierarchyReferenceDetailViewModelProtocol
 
-extension ElementInspectorViewModel: ViewHierarchyReferenceSummaryViewModelProtocol {
+extension ElementInspectorViewModel: ViewHierarchyElementDescriptionViewModelProtocol {
     var automaticallyAdjustIndentation: Bool { false }
 
-    var iconImage: UIImage? { snapshot.elementLibraries.icon(for: reference.rootView) }
+    var iconImage: UIImage? { snapshot.elementLibraries.icon(for: element.rootView) }
 
-    var title: String? { reference.elementName }
+    var title: String? { element.elementName }
 
     var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
 
-    var subtitle: String? { reference.elementDescription }
+    var subtitle: String? { element.elementDescription }
 
     var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: .zero) }
 

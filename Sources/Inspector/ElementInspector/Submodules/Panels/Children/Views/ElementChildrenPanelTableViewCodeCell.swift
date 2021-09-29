@@ -44,7 +44,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView()
+    private lazy var elementDescriptionView = ViewHierarchyElementDescriptionView()
 
     private lazy var disclosureIcon = Icon(.chevronDown, color: colorStyle.tertiaryTextColor).then {
         $0.transform = .init(rotationAngle: -(.pi / 2))
@@ -54,7 +54,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         $0.axis = .horizontal
         $0.alignment = .center
         $0.isLayoutMarginsRelativeArrangement = true
-        $0.addArrangedSubviews(referenceSummaryView, disclosureIcon)
+        $0.addArrangedSubviews(elementDescriptionView, disclosureIcon)
         $0.directionalLayoutMargins = defaultContainerMargins
     }
 
@@ -67,7 +67,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
     var viewModel: ElementChildrenPanelTableViewCellViewModelProtocol? {
         didSet {
             contentView.isUserInteractionEnabled = true
-            referenceSummaryView.viewModel = viewModel
+            elementDescriptionView.viewModel = viewModel
             disclosureIcon.isHidden = viewModel?.showDisclosureIcon != true
         }
     }
@@ -76,12 +76,12 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         didSet {
             if isFirst {
                 containerStackView.directionalLayoutMargins.update(top: -8)
-                referenceSummaryView.directionalLayoutMargins.update(top: .zero)
+                elementDescriptionView.directionalLayoutMargins.update(top: .zero)
             }
             else {
                 directionalLayoutMargins.update(top: .zero)
                 containerStackView.directionalLayoutMargins = defaultContainerMargins
-                referenceSummaryView.directionalLayoutMargins.update(top: ElementInspector.appearance.verticalMargins)
+                elementDescriptionView.directionalLayoutMargins.update(top: ElementInspector.appearance.verticalMargins)
             }
         }
     }
@@ -99,7 +99,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
     }
 
     func toggleCollapse(animated: Bool) {
-        referenceSummaryView.toggleCollapse(animated: animated)
+        elementDescriptionView.toggleCollapse(animated: animated)
     }
 
     private lazy var customSelectedBackgroundView = UIView(
@@ -117,7 +117,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
 
         backgroundColor = colorStyle.backgroundColor
 
-        referenceSummaryView.collapseButton.isEnabled = false
+        elementDescriptionView.collapseButton.isEnabled = false
 
         contentView.installView(containerStackView, priority: .required)
     }
@@ -135,7 +135,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
             return super.touchesBegan(touches, with: event)
         }
 
-        referenceSummaryView.collapseButton.animate(.in)
+        elementDescriptionView.collapseButton.animate(.in)
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -143,7 +143,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
             return super.touchesCancelled(touches, with: event)
         }
 
-        referenceSummaryView.collapseButton.animate(.out)
+        elementDescriptionView.collapseButton.animate(.out)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -151,7 +151,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
             return super.touchesEnded(touches, with: event)
         }
 
-        referenceSummaryView.collapseButton.animate(.out)
+        elementDescriptionView.collapseButton.animate(.out)
         debounce(#selector(triggerCollapseButton), after: 0.15, object: nil)
     }
 
@@ -163,7 +163,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         guard
             event?.type == .touches,
             let touch = touches.first,
-            referenceSummaryView.collapseButton.isHidden == false,
+            elementDescriptionView.collapseButton.isHidden == false,
             isPointNearCollapseButton(touch.location(in: self))
         else {
             return false
@@ -173,8 +173,8 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
     }
 
     private func isPointNearCollapseButton(_ point: CGPoint) -> Bool {
-        let buttonFrame = referenceSummaryView.collapseButton.convert(referenceSummaryView.collapseButton.bounds, to: self)
+        let buttonFrame = elementDescriptionView.collapseButton.convert(elementDescriptionView.collapseButton.bounds, to: self)
 
-        return bounds.contains(point) && point.x <= buttonFrame.maxX + referenceSummaryView.contentView.spacing * 1.5
+        return bounds.contains(point) && point.x <= buttonFrame.maxX + elementDescriptionView.contentView.spacing * 1.5
     }
 }

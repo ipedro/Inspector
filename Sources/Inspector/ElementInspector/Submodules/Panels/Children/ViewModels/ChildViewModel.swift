@@ -20,9 +20,9 @@
 
 import UIKit
 
-protocol ElementChildrenPanelItemViewModelProtocol: ViewHierarchyReferenceSummaryViewModelProtocol & AnyObject {
+protocol ElementChildrenPanelItemViewModelProtocol: ViewHierarchyElementDescriptionViewModelProtocol & AnyObject {
     var parent: ElementChildrenPanelItemViewModelProtocol? { get set }
-    var reference: ViewHierarchyElement { get }
+    var element: ViewHierarchyElement { get }
     var isCollapsed: Bool { get set }
     var availablePanels: [ElementInspectorPanel] { get }
 }
@@ -45,19 +45,19 @@ extension ElementChildrenPanelViewModel {
 
         // MARK: - Properties
 
-        let reference: ViewHierarchyElement
+        let element: ViewHierarchyElement
 
         lazy var animatedDisplay: Bool = relativeDepth > .zero
 
         init(
-            reference: ViewHierarchyElement,
+            element: ViewHierarchyElement,
             parent: ElementChildrenPanelItemViewModelProtocol? = nil,
             rootDepth: Int,
             thumbnailImage: UIImage?,
             isCollapsed: Bool
         ) {
             self.parent = parent
-            self.reference = reference
+            self.element = element
             self.rootDepth = rootDepth
             self.iconImage = thumbnailImage?.withRenderingMode(.alwaysTemplate)
             _isCollapsed = isCollapsed
@@ -69,7 +69,7 @@ extension ElementChildrenPanelViewModel {
 
 extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTableViewCellViewModelProtocol {
     var availablePanels: [ElementInspectorPanel] {
-        ElementInspectorPanel.allCases(for: reference)
+        ElementInspectorPanel.allCases(for: element)
     }
 
     var appearance: (transform: CGAffineTransform, alpha: CGFloat) {
@@ -83,9 +83,9 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
 
     var automaticallyAdjustIndentation: Bool { relativeDepth > .zero }
 
-    var title: String? { relativeDepth > .zero ? reference.elementName : nil }
+    var title: String? { relativeDepth > .zero ? element.elementName : nil }
 
-    var subtitle: String? { relativeDepth > .zero ? reference.shortElementDescription : reference.elementDescription }
+    var subtitle: String? { relativeDepth > .zero ? element.shortElementDescription : element.elementDescription }
 
     var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth) }
 
@@ -98,9 +98,9 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
         return isContainer && relativeDepth <= ElementInspector.configuration.childrenListMaximumInteractiveDepth
     }
 
-    var isContainer: Bool { reference.isContainer }
+    var isContainer: Bool { element.isContainer }
 
-    var relativeDepth: Int { reference.depth - rootDepth }
+    var relativeDepth: Int { element.depth - rootDepth }
 
     var isCollapsed: Bool {
         get {
@@ -120,11 +120,11 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
 
 extension ElementChildrenPanelViewModel.ChildViewModel: Hashable {
     static func == (lhs: ElementChildrenPanelViewModel.ChildViewModel, rhs: ElementChildrenPanelViewModel.ChildViewModel) -> Bool {
-        lhs.reference == rhs.reference
+        lhs.element == rhs.element
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(reference)
+        hasher.combine(element)
     }
 }
 

@@ -48,7 +48,7 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
     private var viewModel: ElementPreviewPanelViewModelProtocol!
 
     private(set) lazy var viewCode = ElementPreviewPanelViewCode(
-        reference: viewModel.reference,
+        element: viewModel.element,
         frame: .zero
     ).then {
         $0.isHighlightingViewsControl.isOn = viewModel.isHighlightingViews
@@ -115,7 +115,7 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
     func toggleHighlightViews() {
         let layerAction: ViewHierarchyLayerAction = viewModel.isHighlightingViews ? .hideHighlight : .showHighlight
 
-        delegate?.perform(action: .layer(layerAction), with: viewModel.reference, from: .none)
+        delegate?.perform(action: .layer(layerAction), with: viewModel.element, from: .none)
     }
 
     @objc
@@ -171,7 +171,7 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
 
     @objc
     func refresh() {
-        guard viewModel.reference.rootView != nil else {
+        guard viewModel.element.rootView != nil else {
             return stopLiveUpdatingSnaphost()
         }
 

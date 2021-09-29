@@ -21,25 +21,25 @@
 import Foundation
 
 protocol ElementPreviewPanelViewModelProtocol {
-    var reference: ViewHierarchyElement { get }
+    var element: ViewHierarchyElement { get }
     var isHighlightingViews: Bool { get }
     var isLiveUpdating: Bool { get set }
 }
 
 final class ElementPreviewPanelViewModel: ElementPreviewPanelViewModelProtocol {
-    let reference: ViewHierarchyElement
+    let element: ViewHierarchyElement
 
     var isHighlightingViews: Bool {
-        reference.isShowingLayerHighlightView
+        element.isShowingLayerHighlightView
     }
 
     var isLiveUpdating: Bool = true
 
     init(
-        reference: ViewHierarchyElement,
+        element: ViewHierarchyElement,
         isLiveUpdating: Bool = true
     ) {
-        self.reference = reference
+        self.element = element
         self.isLiveUpdating = isLiveUpdating
     }
 }

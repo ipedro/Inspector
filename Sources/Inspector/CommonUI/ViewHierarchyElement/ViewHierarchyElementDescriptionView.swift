@@ -20,7 +20,7 @@
 
 import UIKit
 
-protocol ViewHierarchyReferenceSummaryViewModelProtocol {
+protocol ViewHierarchyElementDescriptionViewModelProtocol {
     var iconImage: UIImage? { get }
 
     var title: String? { get }
@@ -44,8 +44,8 @@ protocol ViewHierarchyReferenceSummaryViewModelProtocol {
     var automaticallyAdjustIndentation: Bool { get }
 }
 
-final class ViewHierarchyReferenceSummaryView: BaseView, DataReloadingProtocol {
-    var viewModel: ViewHierarchyReferenceSummaryViewModelProtocol? {
+final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol {
+    var viewModel: ViewHierarchyElementDescriptionViewModelProtocol? {
         didSet {
             reloadData()
         }

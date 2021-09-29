@@ -23,11 +23,11 @@ import UIKit
 final class WireframeView: LayerView {
     override init(
         frame: CGRect,
-        reference: ViewHierarchyElement,
+        element: ViewHierarchyElement,
         color: UIColor = Inspector.configuration.colorStyle.wireframeLayerColor,
         borderWidth: CGFloat = Inspector.configuration.appearance.wireframeLayerBorderWidth
     ) {
-        super.init(frame: frame, reference: reference, color: color, borderWidth: borderWidth)
+        super.init(frame: frame, element: element, color: color, borderWidth: borderWidth)
     }
 
     @available(*, unavailable)

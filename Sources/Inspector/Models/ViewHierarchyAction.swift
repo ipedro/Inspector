@@ -51,29 +51,29 @@ enum ViewHierarchyAction: MenuContentProtocol {
         }
     }
 
-    static func allCases(for reference: ViewHierarchyElement) -> [ViewHierarchyAction] {
+    static func allCases(for element: ViewHierarchyElement) -> [ViewHierarchyAction] {
         var actions = [ViewHierarchyAction]()
 
-        for action in ViewHierarchyLayerAction.allCases(for: reference) {
+        for action in ViewHierarchyLayerAction.allCases(for: element) {
             actions.append(.layer(action))
         }
 
-        for panel in ElementInspectorPanel.allCases(for: reference) {
+        for panel in ElementInspectorPanel.allCases(for: element) {
             actions.append(.inspect(preferredPanel: panel))
         }
 
-        for content in ViewHierarchyInformation.allCases(for: reference) {
+        for content in ViewHierarchyInformation.allCases(for: element) {
             actions.append(.copy(content))
         }
 
         return actions
     }
 
-    static func groupedCases(for reference: ViewHierarchyElement) -> [[ViewHierarchyAction]] {
+    static func groupedCases(for element: ViewHierarchyElement) -> [[ViewHierarchyAction]] {
         [
-            ViewHierarchyLayerAction.allCases(for: reference).map { .layer($0) },
-            ElementInspectorPanel.allCases(for: reference).map { .inspect(preferredPanel: $0) },
-            ViewHierarchyInformation.allCases(for: reference).map { .copy($0) }
+            ViewHierarchyLayerAction.allCases(for: element).map { .layer($0) },
+            ElementInspectorPanel.allCases(for: element).map { .inspect(preferredPanel: $0) },
+            ViewHierarchyInformation.allCases(for: element).map { .copy($0) }
         ]
     }
 }

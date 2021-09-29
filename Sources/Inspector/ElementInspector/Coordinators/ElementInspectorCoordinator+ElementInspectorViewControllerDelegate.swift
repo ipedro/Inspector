@@ -22,26 +22,26 @@ import UIKit
 
 extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
-                                        didSelect reference: ViewHierarchyElement,
+                                        didSelect element: ViewHierarchyElement,
                                         with action: ViewHierarchyAction,
-                                        from fromReference: ViewHierarchyElement) {
+                                        from fromElement: ViewHierarchyElement) {
 
-        if reference == fromReference, case let .inspect(preferredPanel: panel?) = action {
+        if element == fromElement, case let .inspect(preferredPanel: panel?) = action {
             viewController.selectPanelIfAvailable(panel)
             return
         }
 
         guard canPerform(action: action) else {
-            delegate?.perform(action: action, with: reference, from: .none)
+            delegate?.perform(action: action, with: element, from: .none)
             return
         }
         
-        perform(action: action, with: reference, from: .none)
+        perform(action: action, with: element, from: .none)
     }
 
     func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and reference: ViewHierarchyElement) -> ElementInspectorPanelViewController {
-        panelViewController(for: panel, with: reference)
+                                        and element: ViewHierarchyElement) -> ElementInspectorPanelViewController {
+        panelViewController(for: panel, with: element)
     }
 
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController, with reason: ElementInspectorDismissReason) {

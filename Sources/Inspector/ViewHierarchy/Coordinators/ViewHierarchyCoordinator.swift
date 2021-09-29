@@ -105,21 +105,21 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
         }
     }
 
-    func perform(action: ViewHierarchyAction, with reference: ViewHierarchyElement, from sourceView: UIView?) {
+    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElement, from sourceView: UIView?) {
         guard
             canPerform(action: action),
             case let .layer(layerAction) = action
         else {
-            delegate?.perform(action: action, with: reference, from: sourceView)
+            delegate?.perform(action: action, with: element, from: sourceView)
             return
         }
 
         switch layerAction {
         case .showHighlight:
-            showHighlight(true, for: reference)
+            showHighlight(true, for: element)
 
         case .hideHighlight:
-            showHighlight(false, for: reference)
+            showHighlight(false, for: element)
         }
     }
 }
@@ -169,15 +169,15 @@ extension ViewHierarchyCoordinator {
         )
     }
 
-    func showHighlight(_ show: Bool, for reference: ViewHierarchyElement, includeSubviews: Bool = true) {
+    func showHighlight(_ show: Bool, for element: ViewHierarchyElement, includeSubviews: Bool = true) {
         let isHidden = !show
 
         guard includeSubviews else {
-            highlightViews[reference]?.isHidden = isHidden
+            highlightViews[element]?.isHidden = isHidden
             return
         }
 
-        reference.rootView?.allSubviews.forEach {
+        element.rootView?.allSubviews.forEach {
             guard let highlightView = $0 as? HighlightView else { return }
             highlightView.isHidden = isHidden
         }
@@ -187,12 +187,12 @@ extension ViewHierarchyCoordinator {
 // MARK: - LayerViewDelegate
 
 extension ViewHierarchyCoordinator: LayerViewDelegate {
-    func layerView(_ layerView: LayerViewProtocol, didSelect reference: ViewHierarchyElement, withAction action: ViewHierarchyAction) {
+    func layerView(_ layerView: LayerViewProtocol, didSelect element: ViewHierarchyElement, withAction action: ViewHierarchyAction) {
         guard canPerform(action: action) else {
-            delegate?.perform(action: action, with: reference, from: layerView.sourceView)
+            delegate?.perform(action: action, with: element, from: layerView.sourceView)
             return
         }
 
-        perform(action: action, with: reference, from: layerView.sourceView)
+        perform(action: action, with: element, from: layerView.sourceView)
     }
 }

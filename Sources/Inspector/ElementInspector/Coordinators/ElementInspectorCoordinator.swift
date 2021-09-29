@@ -32,7 +32,7 @@ final class ElementSizePanelViewController: ElementInspectorFormPanelViewControl
 protocol ElementInspectorCoordinatorDelegate: ViewHierarchyActionableProtocol & AnyObject {
     func elementInspectorCoordinator(
         _ coordinator: ElementInspectorCoordinator,
-        didFinishInspecting reference: ViewHierarchyElement,
+        didFinishInspecting element: ViewHierarchyElement,
         with reason: ElementInspectorDismissReason
     )
 }
@@ -44,7 +44,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     let snapshot: ViewHierarchySnapshot
 
-    let rootReference: ViewHierarchyElement
+    let rootElement: ViewHierarchyElement
 
     let initialPanel: ElementInspectorPanel?
 
@@ -53,7 +53,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     private(set) lazy var navigationController: ElementInspectorNavigationController = {
         let navigationController = makeNavigationController(from: sourceView)
 
-        addElementInspectorsForReferences(in: navigationController)
+        injectElementInspectorsForViewHierarchy(inside: navigationController)
 
         return navigationController
     }()
@@ -61,15 +61,15 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     private(set) lazy var operationQueue = OperationQueue.main
 
     init(
-        reference: ViewHierarchyElement,
+        element: ViewHierarchyElement,
         with panel: ElementInspectorPanel?,
         in snapshot: ViewHierarchySnapshot,
         from sourceView: UIView?
     ) {
-        self.rootReference = reference
+        self.rootElement = element
         self.initialPanel = panel
         self.snapshot = snapshot
-        self.sourceView = sourceView ?? reference.rootView
+        self.sourceView = sourceView ?? element.rootView
     }
 
     var permittedPopoverArrowDirections: UIPopoverArrowDirection {
@@ -99,11 +99,11 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         operationQueue.cancelAllOperations()
         operationQueue.isSuspended = true
 
-        delegate?.elementInspectorCoordinator(self, didFinishInspecting: snapshot.rootReference, with: reason)
+        delegate?.elementInspectorCoordinator(self, didFinishInspecting: snapshot.rootElement, with: reason)
     }
 
     static func makeElementInspectorViewController(
-        with reference: ViewHierarchyElement,
+        with element: ViewHierarchyElement,
         elementLibraries: [InspectorElementLibraryProtocol],
         selectedPanel: ElementInspectorPanel?,
         delegate: ElementInspectorViewControllerDelegate,
@@ -112,22 +112,22 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         ElementInspectorViewController(
             viewModel: ElementInspectorViewModel(
                 snapshot: snapshot,
-                reference: reference,
+                element: element,
                 selectedPanel: selectedPanel,
                 inspectableElements: elementLibraries,
-                availablePanels: ElementInspectorPanel.allCases(for: reference)
+                availablePanels: ElementInspectorPanel.allCases(for: element)
             )
         ).then {
             $0.delegate = delegate
         }
     }
 
-    func panelViewController(for panel: ElementInspectorPanel, with reference: ViewHierarchyElement) -> ElementInspectorPanelViewController {
+    func panelViewController(for panel: ElementInspectorPanel, with element: ViewHierarchyElement) -> ElementInspectorPanelViewController {
         switch panel {
         case .preview:
             return ElementPreviewPanelViewController(
                 viewModel: ElementPreviewPanelViewModel(
-                    reference: reference,
+                    element: element,
                     isLiveUpdating: true
                 )
             ).then {
@@ -138,10 +138,10 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
             return ElementAttributesPanelViewController(
                 dataSource: DefaultFormPanelDataSource(
                     items: {
-                        guard let referenceView = reference.rootView else { return [] }
+                        guard let rootView = element.rootView else { return [] }
 
-                        return snapshot.elementLibraries.targeting(element: referenceView).flatMap { library in
-                            library.items(for: referenceView)
+                        return snapshot.elementLibraries.targeting(element: rootView).flatMap { library in
+                            library.items(for: rootView)
                         }
                     }()
                 )
@@ -152,7 +152,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         case .children:
             return ElementChildrenPanelViewController(
                 viewModel: ElementChildrenPanelViewModel(
-                    reference: reference,
+                    element: element,
                     snapshot: snapshot
                 )
             ).then {
@@ -161,10 +161,10 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
         case .size:
             let items: [ElementInspectorFormItem] = {
-                guard let referenceView = reference.rootView else { return [] }
+                guard let rootView = element.rootView else { return [] }
 
                 return AutoLayoutSizeLibrary.allCases
-                    .map { $0.items(for: referenceView) }
+                    .map { $0.items(for: rootView) }
                     .flatMap { $0 }
             }()
 
@@ -208,9 +208,9 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
         }
     }
 
-    func perform(action: ViewHierarchyAction, with reference: ViewHierarchyElement, from sourceView: UIView?) {
+    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElement, from sourceView: UIView?) {
         guard canPerform(action: action) else {
-            delegate?.perform(action: action, with: reference, from: .none)
+            delegate?.perform(action: action, with: element, from: .none)
             return
         }
 
@@ -219,18 +219,18 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
             return
         }
 
-        if reference == topElementInspectorViewController?.viewModel.reference {
+        if element == topElementInspectorViewController?.viewModel.element {
             topElementInspectorViewController?.selectPanelIfAvailable(preferredPanel)
             return
         }
 
         operationQueue.cancelAllOperations()
 
-        let pushOperation = MainThreadOperation(name: "Push \(reference.displayName)") { [weak self] in
+        let pushOperation = MainThreadOperation(name: "Push \(element.displayName)") { [weak self] in
             guard let self = self else { return }
 
             let elementInspectorViewController = Self.makeElementInspectorViewController(
-                with: reference,
+                with: element,
                 elementLibraries: self.snapshot.elementLibraries,
                 selectedPanel: preferredPanel,
                 delegate: self,
@@ -257,12 +257,12 @@ extension ElementInspectorCoordinator: DismissablePresentationProtocol {
 // MARK: - Private Helpers
 
 private extension ElementInspectorCoordinator {
-    func addElementInspectorsForReferences(in navigationController: ElementInspectorNavigationController) {
-        let populatedReferences = snapshot.inspectableReferences.filter { $0.rootView === rootReference.rootView }
+    func injectElementInspectorsForViewHierarchy(inside navigationController: ElementInspectorNavigationController) {
+        let populatedElements = snapshot.inspectableElements.filter { $0.rootView === rootElement.rootView }
 
-        guard let populatedReference = populatedReferences.first else {
+        guard let populatedElement = populatedElements.first else {
             let rootViewController = Self.makeElementInspectorViewController(
-                with: snapshot.rootReference,
+                with: snapshot.rootElement,
                 elementLibraries: snapshot.elementLibraries,
                 selectedPanel: initialPanel,
                 delegate: self,
@@ -277,15 +277,15 @@ private extension ElementInspectorCoordinator {
         navigationController.viewControllers = {
             var array = [UIViewController]()
 
-            var reference: ViewHierarchyElement? = populatedReference
+            var element: ViewHierarchyElement? = populatedElement
 
-            while reference != nil {
-                guard let currentReference = reference else {
+            while element != nil {
+                guard let currentElement = element else {
                     break
                 }
 
                 let viewController = Self.makeElementInspectorViewController(
-                    with: currentReference,
+                    with: currentElement,
                     elementLibraries: snapshot.elementLibraries,
                     selectedPanel: initialPanel,
                     delegate: self,
@@ -294,7 +294,7 @@ private extension ElementInspectorCoordinator {
 
                 array.append(viewController)
 
-                reference = currentReference.parent
+                element = currentElement.parent
             }
 
             return array.reversed()

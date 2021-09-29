@@ -39,19 +39,19 @@ enum ViewHierarchyIssue: CustomStringConvertible {
         }
     }
 
-    static func issues(for reference: ViewHierarchyElement) -> [ViewHierarchyIssue] {
+    static func issues(for element: ViewHierarchyElement) -> [ViewHierarchyIssue] {
         var array = [ViewHierarchyIssue]()
 
-        if reference.rootView?.frame.isEmpty == true {
+        if element.rootView?.frame.isEmpty == true {
             array.append(.emptyFrame)
         }
-        if reference.rootView?.isUserInteractionEnabled == false {
+        if element.rootView?.isUserInteractionEnabled == false {
             array.append(.interactionDisabled)
         }
-        if (reference.rootView as? UIControl)?.isEnabled == false {
+        if (element.rootView as? UIControl)?.isEnabled == false {
             array.append(.controlDisabled)
         }
-        if reference.allParents.contains(where: { $0.issues.contains(.emptyFrame) }) {
+        if element.allParents.contains(where: { $0.issues.contains(.emptyFrame) }) {
             array.append(.parentHasEmptyFrame)
         }
 

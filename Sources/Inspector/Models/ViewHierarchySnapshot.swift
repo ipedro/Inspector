@@ -29,9 +29,9 @@ struct ViewHierarchySnapshot {
 
     let populatedLayers: [ViewHierarchyLayer]
 
-    let rootReference: ViewHierarchyElement
+    let rootElement: ViewHierarchyElement
 
-    let inspectableReferences: [ViewHierarchyElement]
+    let inspectableElements: [ViewHierarchyElement]
 
     let elementLibraries: [InspectorElementLibraryProtocol]
 
@@ -44,11 +44,11 @@ struct ViewHierarchySnapshot {
 
         self.elementLibraries = elementLibraries
 
-        rootReference = ViewHierarchyElement(rootView, iconProvider: { elementLibraries.icon(for: $0) })
+        rootElement = ViewHierarchyElement(rootView, iconProvider: { elementLibraries.icon(for: $0) })
 
-        inspectableReferences = rootReference.inspectableViewReferences
+        inspectableElements = rootElement.inspectableViewReferences
 
-        let inspectableViewReferences = rootReference.inspectableViewReferences
+        let inspectableViewReferences = rootElement.inspectableViewReferences
 
         populatedLayers = availableLayers.filter {
             $0.filter(flattenedViewHierarchy: inspectableViewReferences).isEmpty == false

@@ -26,7 +26,7 @@ typealias ViewHierarchyActionHandler = (ViewHierarchyElement, ViewHierarchyActio
 @available(iOS 13.0, *)
 extension UIMenu {
     convenience init?(
-        with reference: ViewHierarchyElement,
+        with element: ViewHierarchyElement,
         initialMenus: [UIMenuElement] = [],
         includeActions: Bool = true,
         options: UIMenu.Options = .init(),
@@ -34,14 +34,14 @@ extension UIMenu {
     ) {
         var menus: [UIMenuElement] = initialMenus
 
-        if includeActions, let actionsMenu = UIMenu.actionsMenu(reference: reference, options: .displayInline, handler: handler) {
+        if includeActions, let actionsMenu = UIMenu.actionsMenu(element: element, options: .displayInline, handler: handler) {
             menus.append(actionsMenu)
         }
 
-        if !reference.children.isEmpty {
+        if !element.children.isEmpty {
             if #available(iOS 14.0, *) {
                 let childrenMenu = UIDeferredMenuElement { completion in
-                    if let menu = Self.childrenMenu(reference: reference, handler: handler) {
+                    if let menu = Self.childrenMenu(element: element, handler: handler) {
                         completion([menu])
                     }
                     else {
@@ -50,13 +50,13 @@ extension UIMenu {
                 }
                 menus.append(childrenMenu)
             }
-            else if let childrenMenu = Self.childrenMenu(reference: reference, handler: handler) {
+            else if let childrenMenu = Self.childrenMenu(element: element, handler: handler) {
                 menus.append(childrenMenu)
             }
         }
 
         self.init(
-            title: reference.elementName,
+            title: element.elementName,
             image: nil,
             identifier: nil,
             options: options,
@@ -64,22 +64,22 @@ extension UIMenu {
         )
     }
 
-    private static func childrenMenu(reference: ViewHierarchyElement, options: UIMenu.Options = .init(), handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
-        guard !reference.children.isEmpty else { return nil }
+    private static func childrenMenu(element: ViewHierarchyElement, options: UIMenu.Options = .init(), handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
+        guard !element.children.isEmpty else { return nil }
 
         return UIMenu(
-            title: Texts.children.appending(" (\(reference.children.count))"),
+            title: Texts.children.appending(" (\(element.children.count))"),
             image: nil,
             identifier: nil,
             options: options,
-            children: reference.children.compactMap {
+            children: element.children.compactMap {
                 UIMenu(with: $0, handler: handler)
             }
         )
     }
 
-    private static func actionsMenu(reference: ViewHierarchyElement, options: UIMenu.Options = .init(), handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
-        let groupedCases = ViewHierarchyAction.groupedCases(for: reference)
+    private static func actionsMenu(element: ViewHierarchyElement, options: UIMenu.Options = .init(), handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
+        let groupedCases = ViewHierarchyAction.groupedCases(for: element)
 
         guard !groupedCases.isEmpty else { return nil }
 
@@ -96,7 +96,7 @@ extension UIMenu {
                     options: .displayInline,
                     children: group.map { action in
                         UIAction(title: action.title, image: action.image) {
-                            _ in handler(reference, action)
+                            _ in handler(element, action)
                         }
                     }
                 )

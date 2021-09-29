@@ -110,7 +110,7 @@ class HighlightView: LayerView {
         frame: CGRect,
         name: String,
         colorScheme: ViewHierarchyColorScheme,
-        reference: ViewHierarchyElement,
+        element: ViewHierarchyElement,
         borderWidth: CGFloat = Inspector.configuration.appearance.highlightLayerBorderWidth
     ) {
         self.colorScheme = colorScheme
@@ -118,7 +118,7 @@ class HighlightView: LayerView {
 
         super.init(
             frame: frame,
-            reference: reference,
+            element: element,
             color: .systemGray,
             borderWidth: borderWidth
         )
@@ -191,7 +191,7 @@ class HighlightView: LayerView {
 
     @objc
     private func tapLayerView() {
-        delegate?.layerView(self, didSelect: reference, withAction: .inspect(preferredPanel: .none))
+        delegate?.layerView(self, didSelect: element, withAction: .inspect(preferredPanel: .none))
     }
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
@@ -257,7 +257,7 @@ class HighlightView: LayerView {
     func updateElementName() {
         var superViewName: String {
             guard let superview = superview else {
-                return reference.elementName
+                return element.elementName
             }
             return superview.elementName
         }

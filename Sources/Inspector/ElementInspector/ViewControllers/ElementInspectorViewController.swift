@@ -47,12 +47,12 @@ enum ElementInspectorDismissReason: Swift.CaseIterable {
 
 protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and reference: ViewHierarchyElement) -> ElementInspectorPanelViewController
+                                        and element: ViewHierarchyElement) -> ElementInspectorPanelViewController
 
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
-                                        didSelect reference: ViewHierarchyElement,
+                                        didSelect element: ViewHierarchyElement,
                                         with action: ViewHierarchyAction,
-                                        from fromReference: ViewHierarchyElement)
+                                        from fromElement: ViewHierarchyElement)
 
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController,
                                                  with reason: ElementInspectorDismissReason)
@@ -119,7 +119,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             size: ElementInspector.appearance.panelPreferredCompressedSize
         )
     ).then {
-        $0.referenceSummaryView.viewModel = viewModel
+        $0.elementDescriptionView.viewModel = viewModel
     }
 
     private(set) var currentPanelViewController: ElementInspectorPanelViewController? {
@@ -361,7 +361,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     }
 
     func reloadData() {
-        viewCode.referenceSummaryView.reloadData()
+        viewCode.elementDescriptionView.reloadData()
     }
 
     // MARK: - Content Size
@@ -415,7 +415,7 @@ extension ElementInspectorViewController {
 private extension ElementInspectorViewController {
     func installPanel(_ panel: ElementInspectorPanel) {
         guard
-            let newPanelViewController = delegate?.elementInspectorViewController(viewControllerWith: panel, and: viewModel.reference)
+            let newPanelViewController = delegate?.elementInspectorViewController(viewControllerWith: panel, and: viewModel.element)
         else {
             currentPanelViewController = nil
             return
@@ -456,14 +456,14 @@ private extension ElementInspectorViewController {
 @available(iOS 13.0, *)
 extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        .contextMenuConfiguration(with: viewModel.reference, includeActions: false) { [weak self] reference, action in
+        .contextMenuConfiguration(with: viewModel.element, includeActions: false) { [weak self] element, action in
             guard let self = self else { return }
 
             self.delegate?.elementInspectorViewController(
                 self,
-                didSelect: reference,
+                didSelect: element,
                 with: action,
-                from: self.viewModel.reference
+                from: self.viewModel.element
             )
         }
     }

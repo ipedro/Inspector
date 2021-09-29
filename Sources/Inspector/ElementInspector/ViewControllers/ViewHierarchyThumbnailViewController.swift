@@ -20,9 +20,9 @@
 
 import UIKit
 
-struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelProtocol {
+struct ViewHierarchyThumbnailViewModel: ViewHierarchyElementDescriptionViewModelProtocol {
 
-    let reference: ViewHierarchyElement
+    let element: ViewHierarchyElement
 
     // MARK: - ViewHierarchyReferenceDetailViewModelProtocol
 
@@ -30,13 +30,13 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelPr
 
     var automaticallyAdjustIndentation: Bool { false }
 
-    var iconImage: UIImage? { reference.iconImage }
+    var iconImage: UIImage? { element.iconImage }
 
-    var title: String? { reference.elementName }
+    var title: String? { element.elementName }
 
     var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
 
-    var subtitle: String? { reference.elementDescription }
+    var subtitle: String? { element.elementDescription }
 
     var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: .zero) }
 
@@ -50,10 +50,10 @@ struct ViewHierarchyThumbnailViewModel: ViewHierarchyReferenceSummaryViewModelPr
 }
 
 final class ViewHierarchyPreviewController: UIViewController {
-    let reference: ViewHierarchyElement
+    let element: ViewHierarchyElement
 
-    init(with reference: ViewHierarchyElement) {
-        self.reference = reference
+    init(with element: ViewHierarchyElement) {
+        self.element = element
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -67,13 +67,13 @@ final class ViewHierarchyPreviewController: UIViewController {
         $0.backgroundColor = $0.colorStyle.highlightBackgroundColor
     }
 
-    private(set) lazy var referenceSummaryView = ViewHierarchyReferenceSummaryView().then {
-        $0.viewModel = reference
+    private(set) lazy var elementDescriptionView = ViewHierarchyElementDescriptionView().then {
+        $0.viewModel = element
     }
 
     private(set) lazy var thumbnailView = ViewHierarchyElementThumbnailView(
         frame: .zero,
-        reference: reference
+        element: element
     )
 
     override func loadView() {
@@ -83,7 +83,7 @@ final class ViewHierarchyPreviewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        viewCode.contentView.addArrangedSubviews(referenceSummaryView, thumbnailView)
+        viewCode.contentView.addArrangedSubviews(elementDescriptionView, thumbnailView)
 
         thumbnailView.updateViews(afterScreenUpdates: false)
     }

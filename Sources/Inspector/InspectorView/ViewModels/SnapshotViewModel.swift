@@ -28,7 +28,7 @@ extension HierarchyInspectorViewModel {
             let subtitle: String?
             let image: UIImage?
             let depth: Int
-            let reference: ViewHierarchyElement
+            let element: ViewHierarchyElement
         }
 
         var searchQuery: String? {
@@ -53,9 +53,9 @@ extension HierarchyInspectorViewModel {
             guard (0 ..< searchResults.count).contains(indexPath.row) else {
                 return nil
             }
-            let reference = searchResults[indexPath.row].reference
+            let element = searchResults[indexPath.row].element
 
-            return .inspect(reference)
+            return .inspect(element)
         }
 
         func isRowEnabled(at indexPath: IndexPath) -> Bool {
@@ -67,7 +67,7 @@ extension HierarchyInspectorViewModel {
         }
 
         func titleForHeader(in section: Int) -> String? {
-            Texts.allResults(count: searchResults.count, in: snapshot.rootReference.elementName)
+            Texts.allResults(count: searchResults.count, in: snapshot.rootElement.elementName)
         }
 
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
@@ -81,7 +81,7 @@ extension HierarchyInspectorViewModel {
             }
 
             let matchingReferences: [ViewHierarchyElement] = {
-                let inspectableReferences = snapshot.inspectableReferences
+                let inspectableReferences = snapshot.inspectableElements
 
                 guard searchQuery != Inspector.configuration.showAllViewSearchQuery else {
                     return inspectableReferences
@@ -99,7 +99,7 @@ extension HierarchyInspectorViewModel {
                     subtitle: element.shortElementDescription,
                     image: snapshot.elementLibraries.icon(for: element.rootView),
                     depth: element.depth,
-                    reference: element
+                    element: element
                 )
             }
         }

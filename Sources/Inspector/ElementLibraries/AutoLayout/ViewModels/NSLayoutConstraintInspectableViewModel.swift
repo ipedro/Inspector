@@ -21,7 +21,7 @@
 import UIKit
 
 struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol, Hashable {
-    typealias Axis = LayoutConstraintReference.Axis
+    typealias Axis = LayoutConstraintElement.Axis
 
     private enum Property: String, Swift.CaseIterable {
         case isActive = "Installed"
@@ -38,17 +38,17 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
     }
 
     init?(with constraint: NSLayoutConstraint, in view: UIView) {
-        guard let constraintReference = LayoutConstraintReference(with: constraint, in: view) else { return nil }
-        self.constraintReference = constraintReference
+        guard let constraintElement = LayoutConstraintElement(with: constraint, in: view) else { return nil }
+        self.element = constraintElement
     }
 
-    let constraintReference: LayoutConstraintReference
+    private let element: LayoutConstraintElement
 
-    var axis: Axis { constraintReference.axis }
+    var axis: Axis { element.axis }
 
-    var title: String { constraintReference.type.description }
+    var title: String { element.type.description }
 
-    var subtitle: String? { constraintReference.constraint.safeIdentifier }
+    var subtitle: String? { element.underlyingConstraint.safeIdentifier }
 
     var properties: [InspectorElementViewModelProperty] {
         Property.allCases.compactMap { property in
@@ -56,10 +56,10 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
             case .constant:
                 return .cgFloatStepper(
                     title: property.rawValue,
-                    value: { self.constraintReference.constraint.constant },
+                    value: { self.element.underlyingConstraint.constant },
                     range: { -CGFloat.infinity...CGFloat.infinity },
                     stepValue: { 1 },
-                    handler: { self.constraintReference.constraint.constant = $0 }
+                    handler: { self.element.underlyingConstraint.constant = $0 }
                 )
             case .spacer0,
                  .spacer1,
@@ -69,7 +69,7 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
             case .multiplier:
                 return .cgFloatStepper(
                     title: property.rawValue,
-                    value: { self.constraintReference.constraint.multiplier },
+                    value: { self.element.underlyingConstraint.multiplier },
                     range: { -CGFloat.infinity...CGFloat.infinity },
                     stepValue: { 0.1 },
                     handler: nil
@@ -78,26 +78,26 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
             case .identifier:
                 return .textField(
                     title: property.rawValue,
-                    placeholder: constraintReference.constraint.safeIdentifier ?? property.rawValue,
+                    placeholder: element.underlyingConstraint.safeIdentifier ?? property.rawValue,
                     axis: .vertical,
-                    value: { self.constraintReference.constraint.safeIdentifier },
-                    handler: { self.constraintReference.constraint.identifier = $0 }
+                    value: { self.element.underlyingConstraint.safeIdentifier },
+                    handler: { self.element.underlyingConstraint.identifier = $0 }
                 )
 
             case .isActive:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { self.constraintReference.constraint.isActive },
-                    handler: { self.constraintReference.constraint.isActive = $0 }
+                    isOn: { self.element.underlyingConstraint.isActive },
+                    handler: { self.element.underlyingConstraint.isActive = $0 }
                 )
 
             case .priority:
                 return .floatStepper(
                     title: property.rawValue,
-                    value: { self.constraintReference.constraint.priority.rawValue },
+                    value: { self.element.underlyingConstraint.priority.rawValue },
                     range: { UILayoutPriority.fittingSizeLevel.rawValue...UILayoutPriority.required.rawValue },
                     stepValue: { 50 },
-                    handler: { self.constraintReference.constraint.priority = .init($0) }
+                    handler: { self.element.underlyingConstraint.priority = .init($0) }
                 )
 
             case .firstItem:
@@ -105,7 +105,7 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
                     title: property.rawValue,
                     emptyTitle: property.rawValue,
                     axis: .vertical,
-                    options: [constraintReference.first.displayName],
+                    options: [element.first.displayName],
                     selectedIndex: { 0 },
                     handler: nil
                 )
@@ -114,12 +114,12 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
                     title: property.rawValue,
                     emptyTitle: property.rawValue,
                     options: NSLayoutConstraint.Relation.allCases.map(\.description),
-                    selectedIndex: { NSLayoutConstraint.Relation.allCases.firstIndex(of: self.constraintReference.constraint.relation) },
+                    selectedIndex: { NSLayoutConstraint.Relation.allCases.firstIndex(of: self.element.underlyingConstraint.relation) },
                     handler: nil
                 )
 
             case .secondItem:
-                guard let second = constraintReference.second else { return nil }
+                guard let second = element.second else { return nil }
 
                 return .optionsList(
                     title: property.rawValue,

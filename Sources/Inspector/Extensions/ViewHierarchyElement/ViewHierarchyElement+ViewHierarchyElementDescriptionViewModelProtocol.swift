@@ -18,31 +18,23 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-extension Manager: ViewHierarchyActionableProtocol {
-    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElement, from sourceView: UIView?) {
-        guard canPerform(action: action) else {
-            assertionFailure("Should not happen")
-            return
-        }
+extension ViewHierarchyElement: ViewHierarchyElementDescriptionViewModelProtocol {
+    var title: String? { elementName}
 
-        switch action {
-        case .layer:
-            viewHierarchyCoordinator?.perform(action: action, with: element, from: sourceView)
+    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
 
-        case let .inspect(preferredPanel: preferredPanel):
-            startElementInspectorCoordinator(for: element, with: preferredPanel, animated: true, from: sourceView)
+    var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: .zero) }
 
-        case .copy(.className):
-            UIPasteboard.general.string = element.className
+    var subtitle: String? { elementDescription }
 
-        case .copy(.description):
-            UIPasteboard.general.string = element.elementDescription
-        }
-    }
+    var showCollapseButton: Bool { false }
 
-    func canPerform(action: ViewHierarchyAction) -> Bool {
-        true
-    }
+    var isHidden: Bool { false }
+
+    var relativeDepth: Int { .zero }
+
+    var automaticallyAdjustIndentation: Bool { false }
 }

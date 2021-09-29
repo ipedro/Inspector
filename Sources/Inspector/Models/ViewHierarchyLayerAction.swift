@@ -23,14 +23,14 @@ import UIKit
 enum ViewHierarchyLayerAction: Swift.CaseIterable, MenuContentProtocol {
     case hideHighlight, showHighlight
 
-    static func allCases(for reference: ViewHierarchyElement) -> [ViewHierarchyLayerAction] {
+    static func allCases(for element: ViewHierarchyElement) -> [ViewHierarchyLayerAction] {
         allCases.filter { layerAction in
             switch layerAction {
             case .showHighlight:
-                return reference.canHostInspectorView && !reference.isShowingLayerHighlightView
+                return element.canHostInspectorView && !element.isShowingLayerHighlightView
 
             case .hideHighlight:
-                return reference.isShowingLayerHighlightView
+                return element.isShowingLayerHighlightView
             }
         }
     }

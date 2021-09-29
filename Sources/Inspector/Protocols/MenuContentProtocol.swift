@@ -25,5 +25,5 @@ protocol MenuContentProtocol: Hashable {
     var title: String { get }
     var image: UIImage? { get }
 
-    static func allCases(for reference: ViewHierarchyElement) -> [Self]
+    static func allCases(for element: ViewHierarchyElement) -> [Self]
 }

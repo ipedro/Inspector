@@ -31,7 +31,7 @@ final class ViewHierarchyElementThumbnailView: BaseView {
 
     // MARK: - Properties
 
-    let reference: ViewHierarchyElement
+    let element: ViewHierarchyElement
 
     var showEmptyStatusMessage: Bool = true {
         didSet {
@@ -53,8 +53,8 @@ final class ViewHierarchyElementThumbnailView: BaseView {
 
     // MARK: - Init
 
-    init(frame: CGRect, reference: ViewHierarchyElement) {
-        self.reference = reference
+    init(frame: CGRect, element: ViewHierarchyElement) {
+        self.element = element
 
         super.init(frame: frame)
     }
@@ -222,7 +222,7 @@ final class ViewHierarchyElementThumbnailView: BaseView {
     }
 
     func updateViews(afterScreenUpdates: Bool = true) {
-        guard let referenceView = reference.rootView else {
+        guard let referenceView = element.rootView else {
             state = .lostConnection
             return
         }

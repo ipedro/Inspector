@@ -23,7 +23,7 @@ import UIKit
 protocol ElementChildrenPanelViewModelProtocol {
     var title: String? { get }
 
-    var rootReference: ViewHierarchyElement { get }
+    var rootElement: ViewHierarchyElement { get }
 
     var numberOfRows: Int { get }
 
@@ -42,7 +42,7 @@ protocol ElementChildrenPanelViewModelProtocol {
 }
 
 final class ElementChildrenPanelViewModel: NSObject {
-    let rootReference: ViewHierarchyElement
+    let rootElement: ViewHierarchyElement
 
     private(set) var children: [ChildViewModel] {
         didSet {
@@ -51,22 +51,22 @@ final class ElementChildrenPanelViewModel: NSObject {
     }
 
     private static func makeChildViewModels(
-        reference: ViewHierarchyElement,
+        element: ViewHierarchyElement,
         parent: ChildViewModel?,
         snapshot: ViewHierarchySnapshot,
         rootDepth: Int
     ) -> [ChildViewModel] {
         let viewModel = ChildViewModel(
-            reference: reference,
+            element: element,
             parent: parent,
             rootDepth: rootDepth,
-            thumbnailImage: snapshot.elementLibraries.icon(for: reference.rootView),
-            isCollapsed: reference.depth > rootDepth
+            thumbnailImage: snapshot.elementLibraries.icon(for: element.rootView),
+            isCollapsed: element.depth > rootDepth
         )
 
-        let childrenViewModels: [ChildViewModel] = reference.children.flatMap { childReference in
+        let childrenViewModels: [ChildViewModel] = element.children.flatMap { childElement in
             makeChildViewModels(
-                reference: childReference,
+                element: childElement,
                 parent: viewModel,
                 snapshot: snapshot,
                 rootDepth: rootDepth
@@ -80,15 +80,15 @@ final class ElementChildrenPanelViewModel: NSObject {
 
     let snapshot: ViewHierarchySnapshot
 
-    init(reference: ViewHierarchyElement, snapshot: ViewHierarchySnapshot) {
-        rootReference = reference
+    init(element: ViewHierarchyElement, snapshot: ViewHierarchySnapshot) {
+        rootElement = element
         self.snapshot = snapshot
 
         children = Self.makeChildViewModels(
-            reference: rootReference,
+            element: rootElement,
             parent: nil,
             snapshot: snapshot,
-            rootDepth: rootReference.depth
+            rootDepth: rootElement.depth
         )
 
         super.init()
@@ -106,7 +106,7 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
 
     func reloadIcons() {
         children.forEach { child in
-            child.iconImage = snapshot.elementLibraries.icon(for: child.reference.rootView)
+            child.iconImage = snapshot.elementLibraries.icon(for: child.element.rootView)
         }
     }
 

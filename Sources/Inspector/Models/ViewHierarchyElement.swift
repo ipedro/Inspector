@@ -224,21 +224,3 @@ extension ViewHierarchyElement {
         rootView?.subviews.contains { $0 is HighlightView && $0.isHidden == false } == true
     }
 }
-
-extension ViewHierarchyElement: ViewHierarchyReferenceSummaryViewModelProtocol {
-    var title: String? { elementName}
-
-    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
-
-    var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: .zero) }
-
-    var subtitle: String? { elementDescription }
-
-    var showCollapseButton: Bool { false }
-
-    var isHidden: Bool { false }
-
-    var relativeDepth: Int { .zero }
-
-    var automaticallyAdjustIndentation: Bool { false }
-}

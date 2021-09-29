@@ -24,13 +24,13 @@ import UIKit
 extension UIContextMenuConfiguration {
     static func contextMenuConfiguration(
         initialMenus: [UIMenuElement] = [],
-        with reference: ViewHierarchyElement,
+        with element: ViewHierarchyElement,
         includeActions: Bool = true,
         handler: @escaping ViewHierarchyActionHandler
     ) -> UIContextMenuConfiguration? {
         var children = initialMenus
 
-        if let menu = UIMenu(with: reference, includeActions: includeActions, options: .displayInline, handler: handler) {
+        if let menu = UIMenu(with: element, includeActions: includeActions, options: .displayInline, handler: handler) {
             children.append(menu)
         }
 
@@ -38,7 +38,7 @@ extension UIContextMenuConfiguration {
 
         return UIContextMenuConfiguration(
             identifier: nil,
-            previewProvider: { ViewHierarchyPreviewController(with: reference) },
+            previewProvider: { ViewHierarchyPreviewController(with: element) },
             actionProvider: { _ in
                 UIMenu(
                     title: "",
