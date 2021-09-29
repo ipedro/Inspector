@@ -96,4 +96,24 @@ extension UIColor {
             return String(format: "%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255))
         }
     }
+
+    // perceptived luminance
+    // https://stackoverflow.com/questions/1855884/determine-font-color-based-on-background-color
+    var contrasting: UIColor {
+
+        let ciColor = CIColor(color: self)
+
+        let compRed: CGFloat = ciColor.red * 0.299
+        let compGreen: CGFloat = ciColor.green * 0.587
+        let compBlue: CGFloat = ciColor.blue * 0.114
+
+        // Counting the perceptive luminance - human eye favors green color...
+        let luminance = (compRed + compGreen + compBlue)
+
+        // bright colors - black font
+        // dark colors - white font
+        let col: CGFloat = luminance < 0.55 ? 0 : 1
+
+        return UIColor( red: col, green: col, blue: col, alpha: ciColor.alpha)
+    }
 }

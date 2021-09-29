@@ -244,7 +244,7 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
         case is UITextView:
             return .moduleImage(named: "TextView-32_Normal")
 
-        case is UIWebView:
+        case is WKWebView:
             return .moduleImage(named: "Webview-32_Normal")
 
         case is UITabBar:

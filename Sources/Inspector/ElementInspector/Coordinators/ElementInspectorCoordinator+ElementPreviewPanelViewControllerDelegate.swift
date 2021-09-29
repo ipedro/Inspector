@@ -18,26 +18,22 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
 import UIKit
 
-@available(iOS 14.0, *)
-extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
-    func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
-        switch currentPanelViewController {
-        case let formPanelController as ElementInspectorFormPanelViewController:
-            formPanelController.selectColor(viewController.selectedColor)
+extension ElementInspectorCoordinator: ElementPreviewPanelViewControllerDelegate {
+    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController, didTap colorPreviewControl: ColorPreviewControl) {
+        if #available(iOS 14.0, *) {
+            let colorPickerViewController = UIColorPickerViewController().then {
+                $0.setPopoverModalPresentationStyle(delegate: self, from: colorPreviewControl.accessoryControl)
+                $0.delegate = self
 
-        case let previewPanelController as ElementPreviewPanelViewController:
-            ElementInspector.configuration.thumbnailBackgroundStyle = .custom(viewController.selectedColor)
-            previewPanelController.selectBackgroundStyle(ElementInspector.configuration.thumbnailBackgroundStyle)
-        default:
-            break
+                if let selectedColor = colorPreviewControl.selectedColor {
+                    $0.selectedColor = selectedColor
+                }
+            }
+
+            viewController.present(colorPickerViewController, animated: true)
         }
-    }
-
-    func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
-        guard let formPanelController = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
-
-        formPanelController.finishColorSelection()
     }
 }

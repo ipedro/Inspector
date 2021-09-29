@@ -20,8 +20,47 @@
 
 import UIKit
 
-enum ThumbnailBackgroundStyle: Int, Swift.CaseIterable {
-    case strong, medium, soft
+enum ThumbnailBackgroundStyle: CaseIterable, RawRepresentable {
+    typealias RawValue = Int
+
+    typealias AllCases = [ThumbnailBackgroundStyle]
+
+    static let allCases: [ThumbnailBackgroundStyle] = [
+        strong,
+        medium,
+        soft
+    ]
+
+    case strong
+    case medium
+    case soft
+    case custom(UIColor)
+
+    init?(rawValue: Int) {
+        switch rawValue {
+        case  0:
+            self = .strong
+        case  1:
+            self = .medium
+        case  2:
+            self = .soft
+        default:
+            return nil
+        }
+    }
+
+    var rawValue: Int {
+        switch self {
+        case .strong:
+            return 0
+        case .medium:
+            return 1
+        case .soft:
+            return 2
+        case .custom:
+            return -1
+        }
+    }
 
     var color: UIColor {
         switch (self, Inspector.configuration.colorStyle) {
@@ -38,6 +77,8 @@ enum ThumbnailBackgroundStyle: Int, Swift.CaseIterable {
             return UIColor(white: 0.80, alpha: 1)
         case (.soft, .light):
             return UIColor(white: 1, alpha: 1)
+        case let (.custom(color), _):
+            return color
         }
     }
 
@@ -56,19 +97,22 @@ enum ThumbnailBackgroundStyle: Int, Swift.CaseIterable {
             return .darkText
         case (.soft, .light):
             return .darkText
+
+        case let (.custom(color), _):
+            return color.contrasting
         }
     }
 
     var image: UIImage {
         switch self {
         case .strong:
-            return IconKit.imageOfAppearanceLight()
+            return IconKit.imageOfAppearanceLight().withRenderingMode(.alwaysTemplate)
 
-        case .medium:
-            return IconKit.imageOfAppearanceMedium()
+        case .custom, .medium:
+            return IconKit.imageOfAppearanceMedium().withRenderingMode(.alwaysTemplate)
 
         case .soft:
-            return IconKit.imageOfAppearanceDark()
+            return IconKit.imageOfAppearanceDark().withRenderingMode(.alwaysTemplate)
         }
     }
 }

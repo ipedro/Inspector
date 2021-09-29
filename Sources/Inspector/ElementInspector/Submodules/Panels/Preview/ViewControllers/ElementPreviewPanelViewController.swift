@@ -20,7 +20,10 @@
 
 import UIKit
 
-typealias ElementPreviewPanelViewControllerDelegate = ViewHierarchyActionableProtocol & OperationQueueManagerProtocol
+protocol ElementPreviewPanelViewControllerDelegate: ViewHierarchyActionableProtocol & OperationQueueManagerProtocol {
+    func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController,
+                                           didTap colorPreviewControl: ColorPreviewControl)
+}
 
 final class ElementPreviewPanelViewController: ElementInspectorPanelViewController {
     private var needsInitialSnapshotRender = true
@@ -39,6 +42,11 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
         }
     }
 
+    func selectBackgroundStyle(_ backgroundStyle: ThumbnailBackgroundStyle) {
+        viewCode.backgroundColorControl.selectedColor = backgroundStyle.color
+        viewCode.thumbnailView.backgroundStyle = backgroundStyle
+    }
+
     deinit {
         stopLiveUpdatingSnaphost()
     }
@@ -51,6 +59,7 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
         element: viewModel.element,
         frame: .zero
     ).then {
+        $0.delegate = self
         $0.isHighlightingViewsControl.isOn = viewModel.isHighlightingViews
 
         $0.isLiveUpdatingControl.isOn = viewModel.isLiveUpdating
@@ -190,6 +199,10 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
 // MARK: - AttributesInspectorViewCodeDelegate
 
 extension ElementPreviewPanelViewController: ElementPreviewPanelViewCodeDelegate {
+    func elementPreviewPanelViewCode(_ view: ElementPreviewPanelViewCode, didTap colorPreviewControl: ColorPreviewControl) {
+        delegate?.elementPreviewPanelViewController(self, didTap: colorPreviewControl)
+    }
+    
     func elementPreviewPanelViewCode(_ view: ElementPreviewPanelViewCode, isPointerInUse: Bool) {
         view.isLiveUpdatingControl.isEnabled = isPointerInUse == false
 

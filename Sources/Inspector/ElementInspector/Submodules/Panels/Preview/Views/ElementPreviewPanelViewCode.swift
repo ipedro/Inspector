@@ -22,7 +22,11 @@ import AVFoundation
 import UIKit
 
 protocol ElementPreviewPanelViewCodeDelegate: AnyObject {
-    func elementPreviewPanelViewCode(_ view: ElementPreviewPanelViewCode, isPointerInUse: Bool)
+    func elementPreviewPanelViewCode(_ view: ElementPreviewPanelViewCode,
+                                     isPointerInUse: Bool)
+
+    func elementPreviewPanelViewCode(_ view: ElementPreviewPanelViewCode,
+                                     didTap colorPreviewControl: ColorPreviewControl)
 }
 
 final class ElementPreviewPanelViewCode: BaseView {
@@ -40,22 +44,37 @@ final class ElementPreviewPanelViewCode: BaseView {
         $0.margins = ElementInspector.appearance.directionalInsets
     }
 
-    private lazy var controlsContainerView = UIStackView.vertical(
-        .directionalLayoutMargins(horizontal: ElementInspector.appearance.horizontalMargins),
-        .arrangedSubviews(
-            backgroundAppearanceControl,
+    private lazy var controlsContainerView = UIStackView.vertical().then {
+        $0.directionalLayoutMargins = .init(horizontal: ElementInspector.appearance.horizontalMargins)
+
+        if #available(iOS 14.0, *) {
+            $0.addArrangedSubview(backgroundColorControl)
+        }
+        else {
+            $0.addArrangedSubview(backgroundStyleSegmentedControl)
+        }
+
+        $0.addArrangedSubviews(
             isHighlightingViewsControl,
             isLiveUpdatingControl
         )
-    )
+    }
 
-    private lazy var backgroundAppearanceControl = SegmentedControl(
+    private lazy var backgroundStyleSegmentedControl = SegmentedControl(
         title: "Background Appearance",
         images: ThumbnailBackgroundStyle.allCases.map(\.image),
         selectedIndex: thumbnailView.backgroundStyle.rawValue
     ).then {
         $0.axis = .horizontal
-        $0.addTarget(self, action: #selector(changeBackground), for: .valueChanged)
+        $0.addTarget(self, action: #selector(changeBackgroundStyle), for: .valueChanged)
+    }
+
+    private(set) lazy var backgroundColorControl = ColorPreviewControl(
+        title: "Background Color",
+        color: ElementInspector.configuration.thumbnailBackgroundStyle.color
+    ).then {
+        $0.delegate = self
+        $0.addTarget(self, action: #selector(changeBackgroundStyle), for: .valueChanged)
     }
 
     private(set) lazy var isHighlightingViewsControl = ToggleControl(
@@ -151,16 +170,8 @@ final class ElementPreviewPanelViewCode: BaseView {
     }
 
     @objc
-    func changeBackground() {
-        guard
-            let selectedIndex = backgroundAppearanceControl.selectedIndex,
-            let backgroundStyle = ThumbnailBackgroundStyle(rawValue: selectedIndex)
-        else {
-            thumbnailView.backgroundStyle = .strong
-            return
-        }
-
-        thumbnailView.backgroundStyle = backgroundStyle
+    private func changeBackgroundStyle() {
+        thumbnailView.backgroundStyle = ElementInspector.configuration.thumbnailBackgroundStyle
     }
 
     @available(iOS 13.0, *)
@@ -203,5 +214,11 @@ final class ElementPreviewPanelViewCode: BaseView {
         default:
             break
         }
+    }
+}
+
+extension ElementPreviewPanelViewCode: ColorPreviewControlDelegate {
+    func colorPreviewControlDidTap(_ colorPreviewControl: ColorPreviewControl) {
+        delegate?.elementPreviewPanelViewCode(self, didTap: colorPreviewControl)
     }
 }
