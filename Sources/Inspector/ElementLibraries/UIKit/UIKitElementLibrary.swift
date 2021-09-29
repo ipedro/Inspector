@@ -112,7 +112,7 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
             return CALayerInspectableViewModel(view: referenceView)
 
         case .window:
-            return nil
+            return UIWindowInspectableViewModel(view: referenceView)
 
         case .navigationBar:
             return UINavigationBarInspectableViewModel(view: referenceView)
