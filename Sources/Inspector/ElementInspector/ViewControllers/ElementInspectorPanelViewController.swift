@@ -96,9 +96,7 @@ class ElementInspectorPanelViewController: UIViewController {
     }
 
     @objc
-    private func updatePreferredContentSize() {
-        guard modalPresentationStyle == .popover else { return }
-
+    func updatePreferredContentSize() {
         preferredContentSize = calculatePreferredContentSize()
     }
 

@@ -52,6 +52,38 @@ final class ElementInspectorViewCode: BaseView {
         $0.directionalLayoutMargins = .zero
     }
 
+    private func adjustedContentSize(of scrollView: UIScrollView) -> CGSize {
+        return CGSize(
+            width: scrollView.contentSize.width + scrollView.adjustedContentInset.left + scrollView.adjustedContentInset.right,
+            height: scrollView.contentSize.height + scrollView.adjustedContentInset.top + scrollView.adjustedContentInset.bottom
+        )
+    }
+
+    var contentSize: CGSize {
+        var frameWidth: CGSize {
+            CGSize(width: frame.width, height: frame.width )
+        }
+
+        switch content?.type {
+        case .none:
+            return .zero
+
+        case .panelView:
+            return adjustedContentSize(of: scrollView)
+
+        case .scrollView:
+            if let contentScrollView = content?.view as? UIScrollView {
+                return adjustedContentSize(of: contentScrollView)
+            }
+            else {
+                return frameWidth
+            }
+
+        case .backgroundView:
+            return frameWidth
+        }
+    }
+
     private(set) lazy var separatorView = SeparatorView(style: .hard)
 
     private(set) lazy var toggleCollapseButton = ToogleCollapseButton()

@@ -78,7 +78,7 @@ extension ElementInspector {
 
         var panelPreferredCompressedSize: CGSize {
             CGSize(
-                width: min(UIScreen.main.bounds.width, 428),
+                width: min(UIScreen.main.bounds.width, 375),
                 height: .zero
             )
         }

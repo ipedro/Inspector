@@ -202,7 +202,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
     }
 
-    func toggleAllSectionsCollapse(animated: Bool) {
+    func toggleAllSectionsCollapse(animated: Bool, completion: ((Bool) -> Void)? = nil) {
         let toggle: () -> Void = {
             switch self.collapseState {
 
@@ -221,7 +221,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
             return
         }
 
-        animatePanel(animations: toggle)
+        animatePanel(animations: toggle, completion: completion)
     }
 
     func selectImage(_ image: UIImage?) {

@@ -136,6 +136,16 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         currentPanelViewController as? ElementInspectorFormPanelViewController
     }
 
+    override func calculatePreferredContentSize() -> CGSize {
+        let superSize = super.calculatePreferredContentSize()
+        let contentSize = viewCode.contentSize
+
+        return CGSize(
+            width: max(superSize.width, contentSize.width),
+            height: max(superSize.height, contentSize.height)
+        )
+    }
+
     private(set) var currentPanelViewController: ElementInspectorPanelViewController? {
         didSet {
             oldValue?.willMove(toParent: nil)
@@ -180,11 +190,16 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                         self?.viewCode.toggleCollapseButton.collapseState = formPanel.collapseState
                     }
 
+                    self?.updatePreferredContentSize()
+
                 } completion: { _ in
                     oldValue?.didMove(toParent: nil)
                     oldValue?.removeFromParent()
                     panelViewController.didMove(toParent: self)
 
+                    self.animate(withDuration: .veryLong) {
+                        self.updatePreferredContentSize()
+                    }
                 }
             }
 
