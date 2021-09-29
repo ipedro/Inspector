@@ -89,8 +89,6 @@ final class TextFieldControl: BaseFormControl {
 
         axis = .vertical
         contentView.addArrangedSubview(accessoryControl)
-        
-        accessoryControl.widthAnchor.constraint(lessThanOrEqualTo: contentContainerView.widthAnchor).isActive = true
     }
 
     override var canBecomeFirstResponder: Bool {

@@ -22,7 +22,7 @@ import UIKit
 
 class BaseView: UIView, InternalViewProtocol {
     private(set) lazy var contentView = UIStackView.vertical().then {
-        installView($0)
+        installView($0, priority: .required)
     }
 
     override init(frame: CGRect = .zero) {

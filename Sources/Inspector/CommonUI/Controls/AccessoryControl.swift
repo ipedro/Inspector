@@ -38,7 +38,7 @@ final class AccessoryControl: BaseControl {
 
         contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(horizontal: 12, vertical: 9) // matches UIStepper
 
-        layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
+        layer.cornerRadius = 8
 
         backgroundColor = colorStyle.accessoryControlBackgroundColor
     }

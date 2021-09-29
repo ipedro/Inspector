@@ -283,7 +283,7 @@ extension LayoutConstraintElement {
 
             case let .layoutGuide(layoutGuide):
                 if let owningView = layoutGuide.owningView {
-                    return "\(owningView.elementName).\(layoutGuide.classForCoder)"
+                    return String(describing: layoutGuide.classForCoder).replacingOccurrences(of: "UILayoutGuide", with: "\(owningView.elementName) Margins")
                 }
                 return String(describing: layoutGuide.classForCoder)
 

@@ -53,7 +53,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
 
     var isCollapsed = false {
         didSet {
-            collapseButtonContainer.transform = .init(rotationAngle: isCollapsed ? -(.pi) : .zero)
+            collapseButtonContainer.transform = .init(rotationAngle: isCollapsed ? -(.pi / 2) : .zero)
         }
     }
 

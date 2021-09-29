@@ -118,7 +118,6 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         headerControl.contentView.directionalLayoutMargins = .formSectionContentMargins
         formStackView.directionalLayoutMargins = .formSectionContentMargins
 
-        installView(contentView, priority: .required)
         contentView.addArrangedSubviews(headerStackView, formStackView)
     }
 

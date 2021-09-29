@@ -140,6 +140,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         didSet {
             oldValue?.willMove(toParent: nil)
 
+            viewCode.toggleCollapseButton.alpha = 0
+
             if let formPanel = currentFormPanelViewController {
                 viewCode.toggleCollapseButton.isSafelyHidden = false
                 formPanel.itemStateDelegate = self
@@ -174,6 +176,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                     self?.configureNavigationItem()
 
                     if let formPanel = self?.currentFormPanelViewController {
+                        self?.viewCode.toggleCollapseButton.alpha = 1
                         self?.viewCode.toggleCollapseButton.collapseState = formPanel.collapseState
                     }
 

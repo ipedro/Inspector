@@ -46,10 +46,12 @@ final class OptionListControl: BaseFormControl {
 
     private lazy var valueLabel = UILabel(
         .textStyle(.footnote),
-        .textColor(textColor),
-        .adjustsFontSizeToFitWidth(true),
-        .minimumScaleFactor(0.6)
-    )
+        .textColor(textColor)
+    ).then {
+        $0.allowsDefaultTighteningForTruncation = true
+        $0.lineBreakMode = .byTruncatingMiddle
+        $0.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+    }
 
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.contentView.addArrangedSubviews(valueLabel, icon)
@@ -149,8 +151,6 @@ final class OptionListControl: BaseFormControl {
         guard accessoryControl.point(inside: localPoint, with: nil) else { return nil }
 
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
-            print(suggestedActions)
-
             return self.makeOptionSelectionMenu()
         }
     }

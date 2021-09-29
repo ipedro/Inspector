@@ -107,8 +107,6 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
     override func setup() {
         super.setup()
 
-        installView(contentView, priority: .required)
-
         contentView.addArrangedSubview(cardView)
     }
 
