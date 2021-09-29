@@ -105,17 +105,30 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     static func makeElementInspectorViewController(
         with element: ViewHierarchyElement,
         elementLibraries: [InspectorElementLibraryProtocol],
-        selectedPanel: ElementInspectorPanel?,
+        preferredPanel: ElementInspectorPanel?,
+        initialPanel: ElementInspectorPanel?,
         delegate: ElementInspectorViewControllerDelegate,
         in snapshot: ViewHierarchySnapshot
     ) -> ElementInspectorViewController {
-        ElementInspectorViewController(
+
+        let availablePanels = ElementInspectorPanel.allCases(for: element)
+
+        let selectedPanel: ElementInspectorPanel?
+
+        if let preferredPanel = preferredPanel, availablePanels.contains(preferredPanel) {
+            selectedPanel = preferredPanel
+        }
+        else {
+            selectedPanel = initialPanel
+        }
+
+        return ElementInspectorViewController(
             viewModel: ElementInspectorViewModel(
                 snapshot: snapshot,
                 element: element,
                 selectedPanel: selectedPanel,
                 inspectableElements: elementLibraries,
-                availablePanels: ElementInspectorPanel.allCases(for: element)
+                availablePanels: availablePanels
             )
         ).then {
             $0.delegate = delegate
@@ -232,7 +245,8 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
             let elementInspectorViewController = Self.makeElementInspectorViewController(
                 with: element,
                 elementLibraries: self.snapshot.elementLibraries,
-                selectedPanel: preferredPanel,
+                preferredPanel: preferredPanel,
+                initialPanel: self.initialPanel,
                 delegate: self,
                 in: self.snapshot
             )
@@ -264,7 +278,8 @@ private extension ElementInspectorCoordinator {
             let rootViewController = Self.makeElementInspectorViewController(
                 with: snapshot.rootElement,
                 elementLibraries: snapshot.elementLibraries,
-                selectedPanel: initialPanel,
+                preferredPanel: initialPanel,
+                initialPanel: initialPanel,
                 delegate: self,
                 in: snapshot
             )
@@ -287,7 +302,8 @@ private extension ElementInspectorCoordinator {
                 let viewController = Self.makeElementInspectorViewController(
                     with: currentElement,
                     elementLibraries: snapshot.elementLibraries,
-                    selectedPanel: initialPanel,
+                    preferredPanel: initialPanel,
+                    initialPanel: initialPanel,
                     delegate: self,
                     in: snapshot
                 )
