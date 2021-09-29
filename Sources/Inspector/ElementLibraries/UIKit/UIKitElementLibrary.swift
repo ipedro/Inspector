@@ -40,7 +40,6 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
     case view
     case window
     case navigationBar
-    case oldWebview
     case webView
     case coreAnimationLayer
 
@@ -102,9 +101,6 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
         case .view:
             return UIView.self
 
-        case .oldWebview:
-            return UIWebView.self
-
         case .webView:
             return WKWebView.self
         }
@@ -164,9 +160,6 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
         case .view:
             return UIViewInspectableViewModel(view: referenceView)
 
-        case .oldWebview:
-            return nil
-
         case .webView:
             return nil
         }
@@ -222,8 +215,7 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
         case .control:
             return .moduleImage(named: "UIControl-32_Normal")
 
-        case .oldWebview,
-             .webView:
+        case .webView:
             return .moduleImage(named: "Webview-32_Normal")
 
         case .mapView,
