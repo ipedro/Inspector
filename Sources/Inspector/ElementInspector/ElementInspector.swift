@@ -50,8 +50,6 @@ extension ElementInspector {
         var animationDuration: TimeInterval = CATransaction.animationDuration()
 
         var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
-
-        var allowsOnlyOneExpandedPanel: Bool = false
     }
 }
 

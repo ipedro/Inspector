@@ -96,16 +96,12 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         didSet {
             animatePanel(
                 animations: {
-                    let formItemViewControllers = self.formItemViewControllers
-
                     if self.isCompactVerticalPresentation {
                         self.collapseAllSections()
                         return
                     }
-
-                    if !self.containsExpandedFormItem {
-                        formItemViewControllers.first?.state = .expanded
-                        self.itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
+                    else {
+                        self.expandAllSections()
                     }
                 },
                 completion: nil
@@ -301,8 +297,10 @@ extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewC
 
             guard let self = self else { return }
 
+            let shouldCollapseOtherPanels = self.isCompactVerticalPresentation
+
             switch newState {
-            case .expanded where ElementInspector.configuration.allowsOnlyOneExpandedPanel:
+            case .expanded where shouldCollapseOtherPanels:
                 for aFormItemController in self.formItemViewControllers where aFormItemController !== formItemController {
                     aFormItemController.state = .collapsed
                 }
