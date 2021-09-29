@@ -120,7 +120,7 @@ enum InspectorColorStyle {
         dynamicColor { colorStyle in
             switch colorStyle {
             case .light:
-                return .white.withAlphaComponent(0.4)
+                return .white.withAlphaComponent(disabledAlpha)
             case .dark:
                 return .white.withAlphaComponent(disabledAlpha / 7)
             }
@@ -131,7 +131,7 @@ enum InspectorColorStyle {
         dynamicColor { colorStyle in
             switch colorStyle {
             case .light:
-                return cellHighlightBackgroundColor
+                return .white.withAlphaComponent(disabledAlpha * 3)
             case .dark:
                 return softTintColor
             }

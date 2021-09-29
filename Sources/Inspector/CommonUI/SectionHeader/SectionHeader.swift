@@ -32,13 +32,13 @@ extension SectionHeader {
     static func attributesInspectorGroup(title: String? = nil) -> SectionHeader {
         SectionHeader(
             title: title,
-            titleFont: .footnote,
+            titleFont: .body,
             margins: .init(
-                top: ElementInspector.appearance.horizontalMargins,
+                top: ElementInspector.appearance.verticalMargins * 3,
                 bottom: ElementInspector.appearance.verticalMargins
             )
         ).then {
-            $0.alpha = $0.colorStyle.disabledAlpha
+            $0.titleLabel.textColor = $0.colorStyle.tertiaryTextColor
         }
     }
 }
@@ -49,7 +49,7 @@ final class SectionHeader: BaseView {
         set { titleLabel.textAlignment = newValue }
     }
 
-    private lazy var titleLabel = UILabel(
+    private(set) lazy var titleLabel = UILabel(
         .textColor(colorStyle.textColor)
     ).then {
         $0.numberOfLines = 2
@@ -62,7 +62,7 @@ final class SectionHeader: BaseView {
         set { subtitleLabel.textAlignment = newValue }
     }
 
-    private lazy var subtitleLabel = UILabel(
+    private(set) lazy var subtitleLabel = UILabel(
         .textColor(colorStyle.secondaryTextColor)
     ).then {
         $0.font = subtitleFont.font()

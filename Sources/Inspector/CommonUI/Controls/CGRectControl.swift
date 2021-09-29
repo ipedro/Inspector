@@ -48,46 +48,27 @@ final class CGRectControl: BaseFormControl {
     }
 
     override var title: String? {
-        get { _title }
-        set { _title = newValue }
-    }
-
-    private var _title: String? {
         didSet {
-            guard let title = _title else { return }
-            xStepper.title = "\(title) X"
-            yStepper.title = "\(title) Y"
-            widthStepper.title = "\(title) Width"
-            heightStepper.title = "\(title) Height"
+            xStepper.title = "X".string(prepending: title, separator: " ")
+            yStepper.title = "Y".string(prepending: title, separator: " ")
+            widthStepper.title = "Width".string(prepending: title, separator: " ")
+            heightStepper.title = "Height".string(prepending: title, separator: " ")
         }
     }
 
-    private static func makeStepper() -> StepperControl {
-        StepperControl(
-            title: .none,
-            value: .zero,
-            range: 0...Double.infinity,
-            stepValue: 1,
-            isDecimalValue: true
-        ).then {
-            $0.containerView.directionalLayoutMargins.update(top: .zero, bottom: .zero)
-            $0.isShowingSeparator = false
-        }
-    }
-
-    private lazy var xStepper = Self.makeStepper().then {
+    private lazy var xStepper = Self.makeStepper(range: -Double.infinity...Double.infinity).then {
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
-    private lazy var yStepper = Self.makeStepper().then {
+    private lazy var yStepper = Self.makeStepper(range: -Double.infinity...Double.infinity).then {
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
-    private lazy var widthStepper = Self.makeStepper().then {
+    private lazy var widthStepper = Self.makeStepper(range: 0...Double.infinity).then {
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
-    private lazy var heightStepper = Self.makeStepper().then {
+    private lazy var heightStepper = Self.makeStepper(range: 0...Double.infinity).then {
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
@@ -101,13 +82,34 @@ final class CGRectControl: BaseFormControl {
 
         axis = .vertical
 
+        applyTitleSectionStyle()
+
         contentView.axis = .vertical
         contentView.spacing = ElementInspector.appearance.verticalMargins
-        contentView.addArrangedSubviews(xStepper, yStepper, widthStepper, heightStepper)
+        contentView.addArrangedSubviews(
+            xStepper,
+            yStepper,
+            SeparatorView(style: .soft),
+            widthStepper,
+            heightStepper
+        )
     }
 
     @objc
     private func valueChanged() {
         sendActions(for: .valueChanged)
+    }
+
+    private static func makeStepper(range: ClosedRange<Double>) -> StepperControl {
+        StepperControl(
+            title: .none,
+            value: .zero,
+            range: range,
+            stepValue: 1,
+            isDecimalValue: true
+        ).then {
+            $0.containerView.directionalLayoutMargins.update(top: .zero, bottom: .zero)
+            $0.isShowingSeparator = false
+        }
     }
 }

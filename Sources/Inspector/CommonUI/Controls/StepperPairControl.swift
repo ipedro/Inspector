@@ -27,7 +27,7 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
             secondStepper.isEnabled = isEnabled
         }
     }
-
+    
     var firstSubtitle: String? {
         get { firstStepper.title }
         set { firstStepper.title = newValue }
@@ -46,6 +46,16 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
     var secondValue: FloatingPoint {
         get { FloatingPoint(secondStepper.value) }
         set { secondStepper.value = Double(newValue) }
+    }
+
+    var firstRange: ClosedRange<FloatingPoint> {
+        get { FloatingPoint(firstStepper.range.lowerBound)...FloatingPoint(firstStepper.range.upperBound) }
+        set { firstStepper.range = Double(newValue.lowerBound)...Double(newValue.upperBound) }
+    }
+
+    var secondRange: ClosedRange<FloatingPoint> {
+        get { FloatingPoint(secondStepper.range.lowerBound)...FloatingPoint(secondStepper.range.upperBound) }
+        set { secondStepper.range = Double(newValue.lowerBound)...Double(newValue.upperBound) }
     }
 
     private lazy var firstStepper = StepperControl(
@@ -76,16 +86,20 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
         title: String? = nil,
         firstSubtitle: String? = nil,
         firstValue: FloatingPoint = .zero,
+        firstRange: ClosedRange<FloatingPoint>,
         secondSubtitle: String? = nil,
         secondValue: FloatingPoint = .zero,
+        secondRange: ClosedRange<FloatingPoint>,
         isEnabled: Bool = true,
         frame: CGRect = .zero
     ) {
         super.init(title: title, isEnabled: isEnabled, frame: frame)
 
         self.firstSubtitle = firstSubtitle
+        self.firstRange = firstRange
         self.firstValue = firstValue
         self.secondSubtitle = secondSubtitle
+        self.secondRange = secondRange
         self.secondValue = secondValue
     }
 
@@ -93,9 +107,11 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
         super.setup()
 
         axis = .vertical
-
+        
+        applyTitleSectionStyle()
+        
         contentView.axis = .vertical
-        contentView.spacing = ElementInspector.appearance.verticalMargins
+        contentView.spacing = ElementInspector.appearance.verticalMargins * 1.5
         contentView.addArrangedSubviews(firstStepper, secondStepper)
     }
 

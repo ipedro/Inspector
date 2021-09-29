@@ -144,12 +144,10 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
                 self.viewCode.contentView.addArrangedSubview(
                     SectionHeader(
                         title: title,
-                        titleFont: .init(.headline, .traitBold),
-                        margins: .init(
-                            top: ElementInspector.appearance.horizontalMargins,
-                            leading: ElementInspector.appearance.horizontalMargins + ElementInspector.appearance.verticalMargins + 24,
-                            bottom: ElementInspector.appearance.horizontalMargins,
-                            trailing: ElementInspector.appearance.horizontalMargins + ElementInspector.appearance.verticalMargins
+                        titleFont: .title3,
+                        margins: ElementInspector.appearance.directionalInsets.with(
+                            top: ElementInspector.appearance.horizontalMargins * 2,
+                            bottom: ElementInspector.appearance.horizontalMargins * 2
                         )
                     ).then {
                         $0.alpha = 0.5
@@ -163,7 +161,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
                 let ItemType = dataSource.typeForRow(at: indexPath)
 
                 let itemView = ItemType.makeItemView().then {
-                    $0.separatorStyle = indexPath.isFirst ? .none : .top
+                    $0.separatorStyle = .bottom
                 }
 
                 let formItemViewController = ElementInspectorFormItemViewController(

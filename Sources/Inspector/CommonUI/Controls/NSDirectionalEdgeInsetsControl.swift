@@ -48,30 +48,11 @@ final class NSDirectionalEdgeInsetsControl: BaseFormControl {
     }
 
     override var title: String? {
-        get { _title }
-        set { _title = newValue }
-    }
-
-    private var _title: String? {
         didSet {
-            guard let title = _title else { return }
-            topStepper.title = "\(title) Top"
-            leadingStepper.title = "\(title) Leading"
-            bottomStepper.title = "\(title) Bottom"
-            trailingStepper.title = "\(title) Trailing"
-        }
-    }
-
-    private static func makeStepper() -> StepperControl {
-        StepperControl(
-            title: .none,
-            value: .zero,
-            range: 0...Double.infinity,
-            stepValue: 1,
-            isDecimalValue: true
-        ).then {
-            $0.containerView.directionalLayoutMargins.update(top: .zero, bottom: .zero)
-            $0.isShowingSeparator = false
+            topStepper.title = "Top".string(prepending: title, separator: " ")
+            leadingStepper.title = "Leading".string(prepending: title, separator: " ")
+            bottomStepper.title = "Bottom".string(prepending: title, separator: " ")
+            trailingStepper.title = "Trailing".string(prepending: title, separator: " ")
         }
     }
 
@@ -101,13 +82,35 @@ final class NSDirectionalEdgeInsetsControl: BaseFormControl {
 
         axis = .vertical
 
+        applyTitleSectionStyle()
+
         contentView.axis = .vertical
         contentView.spacing = ElementInspector.appearance.verticalMargins
-        contentView.addArrangedSubviews(topStepper, leadingStepper, bottomStepper, trailingStepper)
+        contentView.addArrangedSubviews(
+            topStepper,
+            leadingStepper,
+            SeparatorView(style: .soft),
+            bottomStepper,
+            trailingStepper
+        )
     }
 
     @objc
     private func valueChanged() {
         sendActions(for: .valueChanged)
     }
+
+    private static func makeStepper() -> StepperControl {
+        StepperControl(
+            title: .none,
+            value: .zero,
+            range: -Double.infinity...Double.infinity,
+            stepValue: 1,
+            isDecimalValue: true
+        ).then {
+            $0.containerView.directionalLayoutMargins.update(top: .zero, bottom: .zero)
+            $0.isShowingSeparator = false
+        }
+    }
+
 }

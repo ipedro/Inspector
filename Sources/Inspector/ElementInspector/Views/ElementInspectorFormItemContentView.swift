@@ -39,14 +39,18 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
 
     weak var delegate: InspectorElementFormItemViewDelegate?
 
-    var separatorStyle: InspectorElementFormItemSeparatorStyle {
-        get { topSeparatorView.isHidden ? .none : .top }
-        set {
-            switch newValue {
+    var separatorStyle: InspectorElementFormItemSeparatorStyle = .none {
+        didSet {
+            switch separatorStyle {
             case .none:
                 topSeparatorView.isHidden = true
+                bottomSeparatorView.isHidden = true
             case .top:
                 topSeparatorView.isHidden = false
+                bottomSeparatorView.isHidden = true
+            case .bottom:
+                topSeparatorView.isHidden = true
+                bottomSeparatorView.isHidden = false
             }
         }
     }
@@ -63,7 +67,13 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         $0.clipsToBounds = true
     }
 
-    private lazy var topSeparatorView = SeparatorView(style: .hard)
+    private lazy var topSeparatorView = SeparatorView(style: .hard).then {
+        $0.isSafelyHidden = true
+    }
+
+    private lazy var bottomSeparatorView = SeparatorView(style: .hard).then {
+        $0.isSafelyHidden = true
+    }
 
     var header: SectionHeader
 
@@ -92,7 +102,8 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         $0.isUserInteractionEnabled = false
     }
 
-    init(header: SectionHeader, state: InspectorElementFormItemState = .collapsed, frame: CGRect = .zero) {
+    init(header: SectionHeader,
+         state: InspectorElementFormItemState = .collapsed, frame: CGRect = .zero) {
         self.state = state
         self.header = header
 
@@ -113,7 +124,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
 
         clipsToBounds = true
         updateViewsForState()
-        installSeparator()
+        installSeparators()
 
         headerControl.contentView.directionalLayoutMargins = .formSectionContentMargins
         formStackView.directionalLayoutMargins = .formSectionContentMargins
@@ -131,14 +142,18 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         }
     }
 
-    private func installSeparator() {
+    private func installSeparators() {
         topSeparatorView.translatesAutoresizingMaskIntoConstraints = false
-
         addSubview(topSeparatorView)
-
         topSeparatorView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         topSeparatorView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         topSeparatorView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+
+        bottomSeparatorView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(bottomSeparatorView)
+        bottomSeparatorView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        bottomSeparatorView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        bottomSeparatorView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
 
     private func hideContent(_ hide: Bool) {

@@ -45,19 +45,20 @@ final class CGSizeControl: StepperPairControl<CGFloat> {
     }
 
     override var title: String? {
-        get { _title }
-        set { _title = newValue }
-    }
-
-    private var _title: String? {
         didSet {
-            firstSubtitle = "Width".string(prepending: _title, separator: " ")
-            secondSubtitle = "Height".string(prepending: _title, separator: " ")
+            firstSubtitle = "Width".string(prepending: title, separator: " ")
+            secondSubtitle = "Height".string(prepending: title, separator: " ")
         }
     }
 
     convenience init(title: String?, size: CGSize) {
-        self.init(firstValue: size.width, secondValue: size.height)
+        self.init(
+            firstValue: size.width,
+            firstRange: 0...Double.infinity,
+            secondValue: size.height,
+            secondRange: 0...Double.infinity
+        )
+
         self.title = title
     }
 }

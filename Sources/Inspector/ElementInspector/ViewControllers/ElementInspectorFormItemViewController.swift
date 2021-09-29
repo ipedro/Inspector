@@ -106,9 +106,9 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
             let element: UIView? = {
                 switch property {
                 case .separator:
-                    return SeparatorView(style: .soft).then {
+                    return SeparatorView(style: .medium).then {
                         $0.contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(
-                            vertical: ElementInspector.appearance.verticalMargins
+                            vertical: ElementInspector.appearance.horizontalMargins
                         )
                     }
 

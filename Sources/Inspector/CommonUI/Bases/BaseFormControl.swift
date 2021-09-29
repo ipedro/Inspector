@@ -86,6 +86,12 @@ class BaseFormControl: BaseControl {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func applyTitleSectionStyle() {
+        titleLabel.font = .preferredFont(forTextStyle: .body)
+        titleLabel.textColor = colorStyle.tertiaryTextColor
+        contentContainerView.setCustomSpacing(ElementInspector.appearance.horizontalMargins, after: titleLabel)
+    }
+
     override open func setup() {
         super.setup()
 

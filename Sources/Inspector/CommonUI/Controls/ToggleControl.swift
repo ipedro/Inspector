@@ -97,7 +97,7 @@ final class ToggleControl: BaseFormControl {
     }
 
     func updateViews() {
-        titleLabel.alpha = isOn ? 1 : 0.75
+        titleLabel.alpha = isOn ? 1 : 0.5
     }
 }
 
@@ -162,7 +162,7 @@ extension ToggleControl {
             case (.light, true):
                 thumbTintColor = UIColor.white.withAlphaComponent(colorStyle.disabledAlpha * 2)
             case (.light, false):
-                thumbTintColor = UIColor.white
+                thumbTintColor = UIColor.white.withAlphaComponent(colorStyle.disabledAlpha * 4)
             }
         }
     }

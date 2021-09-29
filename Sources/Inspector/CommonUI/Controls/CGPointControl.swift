@@ -45,19 +45,19 @@ final class CGPointControl: StepperPairControl<CGFloat> {
     }
 
     override var title: String? {
-        get { _title }
-        set { _title = newValue }
-    }
-
-    private var _title: String? {
         didSet {
-            firstSubtitle = "X".string(prepending: _title, separator: " ")
-            secondSubtitle = "Y".string(prepending: _title, separator: " ")
+            firstSubtitle = "X".string(prepending: title, separator: " ")
+            secondSubtitle = "Y".string(prepending: title, separator: " ")
         }
     }
 
     convenience init(title: String?, point: CGPoint) {
-        self.init(firstValue: point.x, secondValue: point.y)
+        self.init(
+            firstValue: point.x,
+            firstRange: -Double.infinity...Double.infinity,
+            secondValue: point.y,
+            secondRange: -Double.infinity...Double.infinity
+        )
         self.title = title
     }
 }

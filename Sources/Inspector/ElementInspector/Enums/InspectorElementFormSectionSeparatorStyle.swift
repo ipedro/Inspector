@@ -22,5 +22,5 @@ import Foundation
 
 /// Constants describing the separator styles of a form section.
 public enum InspectorElementFormItemSeparatorStyle: Hashable {
-    case top, none
+    case top, bottom, none
 }
