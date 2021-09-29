@@ -30,8 +30,6 @@ extension UIControl.Event {
 class BaseControl: UIControl, InternalViewProtocol {
     // MARK: - Properties
 
-    private var lastNotification: State?
-
     private lazy var oldState: State = state
 
     open var animateOnTouch: Bool = false
@@ -140,9 +138,8 @@ class BaseControl: UIControl, InternalViewProtocol {
     open func stateDidChange(from oldState: State, to newState: State) {}
 
     private func checkState() {
-        guard state != oldState, state != lastNotification else { return }
+        guard state != oldState else { return }
 
-        lastNotification = state
         stateDidChange(from: oldState, to: state)
         sendActions(for: .stateChanged)
     }

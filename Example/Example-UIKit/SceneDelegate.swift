@@ -32,6 +32,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         Inspector.host = self
 
+        // For this example I want to keep the tab bar working even while inspecting the playground views.
+        Inspector.configuration.nonInspectableClassNames = [
+            "UITabBarSwappableImageView",
+            "UITabBarButton",
+            "UITabBarButtonLabel"
+        ]
+
         guard let _ = (scene as? UIWindowScene) else { return }
     }
 
@@ -169,7 +176,7 @@ extension UIWindow {
 
         guard motion == .motionShake else { return }
 
-        Inspector.present(animated: true)
+        Inspector.toggleAllLayers()
     }
 }
 

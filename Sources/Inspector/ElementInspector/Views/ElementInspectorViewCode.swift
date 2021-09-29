@@ -46,6 +46,7 @@ final class ElementInspectorViewCode: BaseView {
 
     private(set) lazy var elementDescriptionView = ViewHierarchyElementDescriptionView().then {
         $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        $0.setContentHuggingPriority(.defaultLow, for: .horizontal)
         $0.setContentCompressionResistancePriority(.required, for: .vertical)
         $0.elementNameLabel.isSafelyHidden = true
         $0.directionalLayoutMargins = .zero
@@ -53,11 +54,19 @@ final class ElementInspectorViewCode: BaseView {
 
     private(set) lazy var separatorView = SeparatorView(style: .hard)
 
-    private(set) lazy var headerView = UIStackView.vertical().then {
-        $0.addArrangedSubviews(elementDescriptionView)
+    private(set) lazy var toggleCollapseButton = ToogleCollapseButton()
+
+    private(set) lazy var headerView = UIStackView.horizontal().then {
+        $0.alignment = .center
+        $0.addArrangedSubviews(elementDescriptionView, toggleCollapseButton)
         $0.isLayoutMarginsRelativeArrangement = true
         $0.spacing = ElementInspector.appearance.verticalMargins
-        $0.directionalLayoutMargins = ElementInspector.appearance.directionalInsets.with(top: .zero, bottom: ElementInspector.appearance.horizontalMargins, trailing: 40)
+        $0.directionalLayoutMargins = .init(
+            top: .zero,
+            leading: ElementInspector.appearance.horizontalMargins,
+            bottom: ElementInspector.appearance.horizontalMargins,
+            trailing: ElementInspector.appearance.verticalMargins
+        )
     }
     
     private func updateContent(from oldValue: Content?, to newContent: Content?) {
@@ -78,14 +87,12 @@ final class ElementInspectorViewCode: BaseView {
                 backgroundView.translatesAutoresizingMaskIntoConstraints = false
                 scrollView.addSubview(backgroundView)
 
-                [
-                    backgroundView.topAnchor.constraint(equalTo: separatorView.bottomAnchor),
-                    backgroundView.leadingAnchor.constraint(equalTo: scrollView.readableContentGuide.leadingAnchor),
-                    backgroundView.trailingAnchor.constraint(equalTo: scrollView.readableContentGuide.trailingAnchor),
-                    backgroundView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
-                ].forEach {
-                    $0.isActive = true
-                }
+                [backgroundView.topAnchor.constraint(equalTo: separatorView.bottomAnchor),
+                 backgroundView.leadingAnchor.constraint(equalTo: scrollView.readableContentGuide.leadingAnchor),
+                 backgroundView.trailingAnchor.constraint(equalTo: scrollView.readableContentGuide.trailingAnchor),
+                 backgroundView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
+                ]
+                .forEach { $0.isActive = true}
             }
 
         case .panelView:
@@ -145,5 +152,60 @@ final class ElementInspectorViewCode: BaseView {
                 completion?(finished)
             }
         )
+    }
+
+}
+
+extension ElementInspectorViewCode {
+    final class ToogleCollapseButton: BaseControl {
+
+        private(set) lazy var icon = UIImageView(image: .expandSymbol, highlightedImage: .collapseSymbol).then {
+            $0.widthAnchor.constraint(equalToConstant: 20).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        }
+
+        var collapseState: ElementInspectorFormPanelCollapseState? {
+            didSet {
+                switch collapseState {
+                case .none, .allExpanded:
+                    isSelected = true
+                case .allCollapsed:
+                    isSelected = false
+                case .mixed:
+                    isSelected = false
+                case .firstExpanded:
+                    isSelected = false
+                }
+
+            }
+        }
+
+        override func setup() {
+            super.setup()
+
+            installView(icon, .spacing(all: ElementInspector.appearance.horizontalMargins))
+
+            updateViews()
+
+            setContentHuggingPriority(.required, for: .horizontal)
+            setContentHuggingPriority(.defaultLow, for: .vertical)
+        }
+
+        private func updateViews() {
+            if state == .selected {
+                icon.isHighlighted = true
+                icon.transform = .init(rotationAngle: .pi / 2)
+            }
+            else {
+                icon.isHighlighted = false
+                icon.transform = .identity
+            }
+        }
+
+        override func stateDidChange(from oldState: UIControl.State, to newState: UIControl.State) {
+            animate(withDuration: .long) {
+                self.updateViews()
+            }
+        }
     }
 }

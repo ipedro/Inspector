@@ -35,6 +35,14 @@ protocol ElementInspectorFormPanelDelegate: OperationQueueManagerProtocol {
                                    in item: ElementInspectorFormItem)
 }
 
+protocol ElementInspectorFormPanelItemStateDelegate: AnyObject {
+    func elementInspectorFormPanelItemDidChangeState(_ formPanelViewController: ElementInspectorFormPanelViewController)
+}
+
+enum ElementInspectorFormPanelCollapseState {
+    case allCollapsed, allExpanded, firstExpanded, mixed
+}
+
 class ElementInspectorFormPanelViewController: ElementInspectorPanelViewController, DataReloadingProtocol {
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
@@ -47,6 +55,8 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
     func cancelAllOperations() {
         formDelegate?.cancelAllOperations()
     }
+
+    weak var itemStateDelegate: ElementInspectorFormPanelItemStateDelegate?
 
     weak var formDelegate: ElementInspectorFormPanelDelegate?
 
@@ -68,6 +78,20 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         children.compactMap { $0 as? ElementInspectorFormItemViewController }
     }
 
+    var containsExpandedFormItem: Bool { collapseState != .allCollapsed }
+
+    var collapseState: ElementInspectorFormPanelCollapseState {
+        let expandedItems = formItemViewControllers.filter { $0.state == .expanded }
+
+        guard expandedItems.isEmpty == false else { return .allCollapsed }
+
+        guard expandedItems.count < formItemViewControllers.count else { return .allExpanded }
+
+        if expandedItems.first?.state == .expanded { return .firstExpanded }
+
+        return .mixed
+    }
+
     override var isCompactVerticalPresentation: Bool {
         didSet {
             animatePanel(
@@ -75,12 +99,13 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
                     let formItemViewControllers = self.formItemViewControllers
 
                     if self.isCompactVerticalPresentation {
-                        formItemViewControllers.forEach { $0.state = .collapsed }
+                        self.collapseAllSections()
                         return
                     }
 
-                    if formItemViewControllers.first(where: { $0.state == .expanded }) == nil {
+                    if !self.containsExpandedFormItem {
                         formItemViewControllers.first?.state = .expanded
+                        self.itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
                     }
                 },
                 completion: nil
@@ -112,6 +137,8 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
         reloadData()
     }
+
+    // MARK: - Internal API
 
     func reloadData() {
         viewCode.contentView.removeAllArrangedSubviews()
@@ -167,6 +194,38 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
                 self.itemsDictionary[formItemViewController] = item
             }
         }
+    }
+
+    func collapseAllSections() {
+        formItemViewControllers.forEach { $0.state = .collapsed }
+        itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
+    }
+
+    func expandAllSections() {
+        formItemViewControllers.forEach { $0.state = .expanded }
+        itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
+    }
+
+    func toggleAllSectionsCollapse(animated: Bool) {
+        let toggle: () -> Void = {
+            switch self.collapseState {
+
+            case .allExpanded:
+                self.collapseAllSections()
+
+            case .allCollapsed,
+                .firstExpanded,
+                .mixed:
+                self.expandAllSections()
+            }
+        }
+
+        guard animated else {
+            toggle()
+            return
+        }
+
+        animatePanel(animations: toggle)
     }
 
     func selectImage(_ image: UIImage?) {
@@ -251,6 +310,9 @@ extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewC
             case .expanded, .collapsed:
                 break
             }
+        } completion: { [weak self] _ in
+            guard let self = self else { return }
+            self.itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
         }
     }
 

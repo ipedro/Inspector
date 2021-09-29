@@ -119,12 +119,34 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             size: ElementInspector.appearance.panelPreferredCompressedSize
         )
     ).then {
+        $0.toggleCollapseButton.addTarget(self, action: #selector(togglePanelsCollapse), for: .touchUpInside)
         $0.elementDescriptionView.viewModel = viewModel
+    }
+
+    @objc
+    private func togglePanelsCollapse() {
+        guard let formPanel = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
+
+        formPanel.toggleAllSectionsCollapse(animated: true)
+
+        viewCode.toggleCollapseButton.collapseState = formPanel.collapseState
+    }
+
+    var currentFormPanelViewController: ElementInspectorFormPanelViewController? {
+        currentPanelViewController as? ElementInspectorFormPanelViewController
     }
 
     private(set) var currentPanelViewController: ElementInspectorPanelViewController? {
         didSet {
             oldValue?.willMove(toParent: nil)
+
+            if let formPanel = currentFormPanelViewController {
+                viewCode.toggleCollapseButton.isSafelyHidden = false
+                formPanel.itemStateDelegate = self
+            }
+            else {
+                viewCode.toggleCollapseButton.isSafelyHidden = true
+            }
 
             viewCode.setContentAnimated(.loadingIndicator)
 
@@ -148,14 +170,18 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
                 self.addChild(panelViewController)
 
-                self.viewCode.setContentAnimated(content) {
-                    // must be done after view's `contentView` is updated
-                    self.configureNavigationItem()
+                self.viewCode.setContentAnimated(content) { [weak self] in
+                    self?.configureNavigationItem()
+
+                    if let formPanel = self?.currentFormPanelViewController {
+                        self?.viewCode.toggleCollapseButton.collapseState = formPanel.collapseState
+                    }
 
                 } completion: { _ in
                     oldValue?.didMove(toParent: nil)
                     oldValue?.removeFromParent()
                     panelViewController.didMove(toParent: self)
+
                 }
             }
 
@@ -186,11 +212,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        if #available(iOS 13.0, *) {
-            let interaction = UIContextMenuInteraction(delegate: self)
-            viewCode.headerView.addInteraction(interaction)
-        }
 
         animateWhenKeyboard(.willChangeFrame) { info in
             self.viewCode.keyboardHeight = info.keyboardFrame.height
@@ -451,20 +472,8 @@ private extension ElementInspectorViewController {
     }
 }
 
-// MARK: - Context Menu Interaction
-
-@available(iOS 13.0, *)
-extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        .contextMenuConfiguration(with: viewModel.element, includeActions: false) { [weak self] element, action in
-            guard let self = self else { return }
-
-            self.delegate?.elementInspectorViewController(
-                self,
-                didSelect: element,
-                with: action,
-                from: self.viewModel.element
-            )
-        }
+extension ElementInspectorViewController: ElementInspectorFormPanelItemStateDelegate {
+    func elementInspectorFormPanelItemDidChangeState(_ formPanelViewController: ElementInspectorFormPanelViewController) {
+        viewCode.toggleCollapseButton.collapseState = formPanelViewController.collapseState
     }
 }
