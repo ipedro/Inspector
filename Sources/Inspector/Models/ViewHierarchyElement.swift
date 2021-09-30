@@ -60,7 +60,7 @@ final class ViewHierarchyElement {
 
     let accessibilityIdentifier: String?
 
-    private(set) lazy var issues = ViewHierarchyIssue.issues(for: self)
+    var issues: [ViewHierarchyIssue] { ViewHierarchyIssue.issues(for: self) }
 
     var hasIssues: Bool { !issues.isEmpty }
 

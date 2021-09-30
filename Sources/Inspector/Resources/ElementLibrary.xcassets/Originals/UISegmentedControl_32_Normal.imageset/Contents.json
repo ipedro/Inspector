@@ -1,12 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "UISlider_32_Normal.png",
+      "filename" : "UISegmentedControl_32_Normal.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "UISlider_32_Normal@2x.png",
+      "filename" : "UISegmentedControl_32_Normal@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -20,6 +20,6 @@
     "version" : 1
   },
   "properties" : {
-    "template-rendering-intent" : "template"
+    "template-rendering-intent" : "original"
   }
 }

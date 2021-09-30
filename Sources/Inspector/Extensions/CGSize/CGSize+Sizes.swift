@@ -21,6 +21,8 @@
 import UIKit
 
 extension CGSize {
+    static var regularIconSize: CGSize { Inspector.configuration.appearance.regularIconSize }
+
     static var elementIconSize: CGSize { Inspector.configuration.appearance.elementIconSize }
 
     static var actionIconSize: CGSize { Inspector.configuration.appearance.actionIconSize }

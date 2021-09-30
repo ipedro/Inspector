@@ -22,10 +22,15 @@ import UIKit
 
 public enum InspectorElementViewModelProperty {
     case colorPicker(title: String,
+                     emptyTitle: String = "No color",
                      color: ColorProvider,
                      handler: ColorHandler?)
 
-    case group(title: String)
+    case group(title: String, subtitle: String? = nil)
+
+    case infoNote(icon: InspectorElemenPropertyNoteIcon?,
+                  title: String? = nil,
+                  text: String? = nil)
 
     case separator
 
@@ -102,7 +107,7 @@ public enum InspectorElementViewModelProperty {
 extension InspectorElementViewModelProperty {
     var isControl: Bool {
         switch self {
-        case .group, .separator:
+        case .group, .separator, .infoNote:
             return false
 
         default:
@@ -113,7 +118,7 @@ extension InspectorElementViewModelProperty {
     var hasHandler: Bool {
         switch self {
         case .stepper(_, _, _, _, _, .some),
-             .colorPicker(_, _, .some),
+             .colorPicker(_, _, _, .some),
              .switch(_, _, .some),
              .textButtonGroup(_, _, _, _, .some),
              .imageButtonGroup(_, _, _, _, .some),
@@ -141,7 +146,8 @@ extension InspectorElementViewModelProperty {
              .cgRect,
              .cgSize,
              .cgPoint,
-             .directionalInsets:
+             .directionalInsets,
+             .infoNote:
             return false
         }
     }

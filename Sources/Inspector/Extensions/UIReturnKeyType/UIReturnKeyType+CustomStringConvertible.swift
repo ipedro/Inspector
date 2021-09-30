@@ -24,7 +24,7 @@ extension UIReturnKeyType: CustomStringConvertible {
     var description: String {
         switch self {
         case .default:
-            return "Default"
+            return Texts.default
 
         case .go:
             return "Go"

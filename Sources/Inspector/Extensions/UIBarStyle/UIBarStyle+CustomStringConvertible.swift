@@ -25,7 +25,7 @@ extension UIBarStyle: CustomStringConvertible {
     var description: String {
         switch self {
         case .default:
-            return "Default"
+            return Texts.default
         case .black:
             return "Black"
         case .blackTranslucent:

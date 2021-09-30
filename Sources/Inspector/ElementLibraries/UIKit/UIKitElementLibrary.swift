@@ -39,6 +39,10 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
     case textView
     case view
     case window
+    case navigationBarStandardAppearance
+    case navigationBarCompactAppearance
+    case navigationBarScrollEdgeAppearance
+    case navigationBarCompactScrollEdgeAppearance
     case navigationBar
     case tabBar
     case webView
@@ -51,7 +55,11 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
         case .coreAnimationLayer:
             return UIView.self
 
-        case .navigationBar:
+        case .navigationBar,
+             .navigationBarStandardAppearance,
+             .navigationBarCompactAppearance,
+             .navigationBarScrollEdgeAppearance,
+             .navigationBarCompactScrollEdgeAppearance:
             return UINavigationBar.self
 
         case .window:
@@ -120,6 +128,26 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
 
         case .navigationBar:
             return UINavigationBarInspectableViewModel(view: referenceView)
+
+        case .navigationBarStandardAppearance:
+            guard #available(iOS 13.0, *) else { return nil }
+            return UINavigationBarAppearanceInspectableViewModel(type: .standard, view: referenceView)
+
+        case .navigationBarCompactAppearance:
+            guard #available(iOS 13.0, *) else { return nil }
+            return UINavigationBarAppearanceInspectableViewModel(type: .compact, view: referenceView)
+
+        case .navigationBarScrollEdgeAppearance:
+            guard #available(iOS 13.0, *) else { return nil }
+            return UINavigationBarAppearanceInspectableViewModel(type: .scrollEdge, view: referenceView)
+
+        case .navigationBarCompactScrollEdgeAppearance:
+            #if swift(>=5.5)
+            guard #available(iOS 15.0, *) else { return nil }
+            return UINavigationBarAppearanceInspectableViewModel(type: .compactScrollEdge, view: referenceView)
+            #else
+            return nil
+            #endif
 
         case .activityIndicator:
             return UIActivityIndicatorViewInspectableViewModel(view: referenceView)

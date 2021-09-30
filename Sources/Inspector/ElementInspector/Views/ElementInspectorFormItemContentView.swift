@@ -96,6 +96,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         $0.contentView.spacing = ElementInspector.appearance.verticalMargins
         $0.contentView.addArrangedSubviews(collapseButton, header)
         $0.contentView.alignment = .center
+        $0.contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
     }
 
     private(set) lazy var collapseButton = IconButton(.chevronDown).then {
@@ -111,6 +112,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
     }
 
     func addFormViews(_ formViews: [UIView]) {
+        contentView.spacing = formViews.first is NoteControl ? .zero : ElementInspector.appearance.verticalMargins
         formStackView.addArrangedSubviews(formViews)
     }
 
@@ -126,8 +128,8 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         updateViewsForState()
         installSeparators()
 
-        headerControl.contentView.directionalLayoutMargins = .formSectionContentMargins
-        formStackView.directionalLayoutMargins = .formSectionContentMargins
+        headerControl.contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
+        formStackView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets.with(top: .zero)
 
         contentView.addArrangedSubviews(headerStackView, formStackView)
     }
@@ -183,10 +185,6 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
             }
         }
     }
-}
-
-extension NSDirectionalEdgeInsets {
-    static let formSectionContentMargins = ElementInspector.appearance.directionalInsets
 }
 
 // MARK: - UIContextMenuInteractionDelegate

@@ -25,6 +25,7 @@ enum ViewHierarchyIssue: CustomStringConvertible {
     case parentHasEmptyFrame
     case controlDisabled
     case interactionDisabled
+    case iOS15_emptyNavigationBarScrollEdgeAppearance
 
     var description: String {
         switch self {
@@ -36,6 +37,8 @@ enum ViewHierarchyIssue: CustomStringConvertible {
             return "Control disabled"
         case .interactionDisabled:
             return " User interaction disabled"
+        case .iOS15_emptyNavigationBarScrollEdgeAppearance:
+            return "Starting in iOS 15 the default behavior produces a transparent background when not scrolled.\n\nSet UINavigationBar.scrollEdgeAppearance to get the legacy behavior."
         }
     }
 
@@ -54,6 +57,22 @@ enum ViewHierarchyIssue: CustomStringConvertible {
         if element.allParents.contains(where: { $0.issues.contains(.emptyFrame) }) {
             array.append(.parentHasEmptyFrame)
         }
+
+        #if swift(>=5.5)
+        guard #available(iOS 15.0, *) else { return array }
+
+        let defaultAppearance = UINavigationBarAppearance()
+        defaultAppearance.configureWithDefaultBackground()
+
+        if
+            let navigationBar = element.rootView as? UINavigationBar,
+            navigationBar.scrollEdgeAppearance == nil,
+            navigationBar.standardAppearance.backgroundColor != defaultAppearance.backgroundColor,
+            navigationBar.standardAppearance.backgroundEffect?.style != defaultAppearance.backgroundEffect?.style
+        {
+            array.append(.iOS15_emptyNavigationBarScrollEdgeAppearance)
+        }
+        #endif
 
         return array
     }

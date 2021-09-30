@@ -112,8 +112,11 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
                         )
                     }
 
-                case let .group(title):
-                    return SectionHeader.attributesInspectorGroup(title: title)
+                case let .group(title: title, subtitle: subtitle):
+                    return SectionHeader.attributesInspectorGroup(title: title, subtitle: subtitle)
+
+                case let .infoNote(icon: noteIcon, title: title, text: text):
+                    return NoteControl(icon: noteIcon, title: title, text: text)
 
                 case let .imagePicker(title: title, image: imageProvider, handler: _):
                     return ImagePreviewControl(title: title, image: imageProvider()).then {
@@ -134,9 +137,10 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
                         isDecimalValue: isDecimalValue
                     )
 
-                case let .colorPicker(title: title, color: colorProvider, handler: _):
+                case let .colorPicker(title: title, emptyTitle: emptyTitle, color: colorProvider, handler: _):
                     return ColorPreviewControl(
                         title: title,
+                        emptyTitle: emptyTitle,
                         color: colorProvider()
                     ).then {
                         $0.delegate = self
@@ -232,7 +236,7 @@ extension ElementInspectorFormItemViewController {
                 case let (.stepper(_, _, _, _, _, handler), stepperControl as StepperControl):
                     handler?(stepperControl.value)
 
-                case let (.colorPicker(_, _, handler), colorPicker as ColorPreviewControl):
+                case let (.colorPicker(_, _, _, handler), colorPicker as ColorPreviewControl):
                     handler?(colorPicker.selectedColor)
 
                 case let (.switch(_, _, handler), toggleControl as ToggleControl):
@@ -282,7 +286,8 @@ extension ElementInspectorFormItemViewController {
                      (.cgRect, _),
                      (.cgSize, _),
                      (.cgPoint, _),
-                     (.directionalInsets, _):
+                     (.directionalInsets, _),
+                     (.infoNote, _):
                     assertionFailure("shouldn't happen")
                 }
             }
@@ -305,13 +310,18 @@ extension ElementInspectorFormItemViewController {
     func reloadData() {
         for (property, formView) in viewForProperties {
             switch (property, formView) {
+            case (.separator, _),
+                 (.group, _),
+                 (.infoNote, _):
+                break
+
             case let (.stepper(title: title, value: valueProvider, range: rangeProvider, stepValue: stepValueProvider, _, _), stepperControl as StepperControl):
                 stepperControl.value = valueProvider()
                 stepperControl.title = title
                 stepperControl.range = rangeProvider()
                 stepperControl.stepValue = stepValueProvider()
 
-            case let (.colorPicker(title: title, color: selectedColorProvider, _), colorPicker as ColorPreviewControl):
+            case let (.colorPicker(title: title, _, color: selectedColorProvider, _), colorPicker as ColorPreviewControl):
                 colorPicker.selectedColor = selectedColorProvider()
                 colorPicker.title = title
 
@@ -357,10 +367,6 @@ extension ElementInspectorFormItemViewController {
             case let (.directionalInsets(title: title, insets: insetsProvider, _), insetsControl as NSDirectionalEdgeInsetsControl):
                 insetsControl.title = title
                 insetsControl.insets = insetsProvider()
-
-            case (.separator, _),
-                 (.group, _):
-                break
 
             case (.stepper, _),
                  (.colorPicker, _),

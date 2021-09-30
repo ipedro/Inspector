@@ -24,7 +24,7 @@ extension UITextSmartDashesType: CustomStringConvertible {
     var description: String {
         switch self {
         case .default:
-            return "Default"
+            return Texts.default
 
         case .no:
             return "No"

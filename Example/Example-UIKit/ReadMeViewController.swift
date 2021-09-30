@@ -36,7 +36,7 @@ final class ReadMeViewController: UIViewController {
         activityIndicatorView.startAnimating()
         activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
 
-        view.insertSubview(activityIndicatorView, aboveSubview: markdownView)
+        view.addSubview(activityIndicatorView)
 
         [
             activityIndicatorView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -48,27 +48,40 @@ final class ReadMeViewController: UIViewController {
         return activityIndicatorView
     }()
 
-    private lazy var markdownView: DownView = {
-        guard let markdownView = try? DownView(frame: .zero, markdownString: "") else { fatalError() }
-        markdownView.translatesAutoresizingMaskIntoConstraints = false
-        markdownView.alpha = 0
-        markdownView.navigationDelegate = self
-        markdownView.pageZoom = 1.5
-        markdownView.backgroundColor = .clear
-        markdownView.scrollView.backgroundColor = .clear
+    private lazy var markdownView: DownView = try! DownView(
+        frame: view.bounds,
+        markdownString: markdown?.markdownString ?? "",
+        openLinksInBrowser: false,
+        templateBundle: nil,
+        writableBundle: false,
+        configuration: nil,
+        options: .smart,
+        didLoadSuccessfully: { [weak self] in
+            guard let self = self else { return }
+            self.activityIndicatorView.stopAnimating()
 
-        view.addSubview(markdownView)
+            self.markdownView.translatesAutoresizingMaskIntoConstraints = false
+            self.markdownView.alpha = 0
+            self.markdownView.pageZoom = 1.5
+            self.markdownView.navigationDelegate = self
+            self.markdownView.backgroundColor = .clear
+            self.markdownView.scrollView.backgroundColor = .clear
 
-        [markdownView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-         markdownView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-         markdownView.topAnchor.constraint(equalTo: view.topAnchor),
-         markdownView.trailingAnchor.constraint(equalTo: view.trailingAnchor)].forEach {
-            $0.priority = .defaultHigh
-            $0.isActive = true
+            self.view.insertSubview(self.markdownView, at: 0)
+
+            [self.markdownView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+             self.markdownView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+             self.markdownView.topAnchor.constraint(equalTo: self.view.topAnchor),
+             self.markdownView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
+             self.markdownView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)].forEach {
+                $0.isActive = true
+            }
+
+            UIView.animate(withDuration: 0.5) {
+                self.markdownView.alpha = 1
+            }
         }
-
-        return markdownView
-    }()
+    )
 
     private var markdown: Down? {
         didSet {
@@ -85,24 +98,10 @@ final class ReadMeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        activityIndicatorView.startAnimating()
-    }
+        navigationItem.largeTitleDisplayMode = .always
+        navigationController?.navigationBar.prefersLargeTitles = true
 
-    private var isFirstAppear = true
-
-    private func doOnFirstAppear(closure: () -> Void) {
-        guard isFirstAppear else { return }
-        isFirstAppear = false
-
-        closure()
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        doOnFirstAppear { [weak self] in
-            self?.loadData()
-        }
+        loadData()
     }
 
     override func didMove(toParent parent: UIViewController?) {
@@ -145,52 +144,6 @@ extension ReadMeViewController: WKNavigationDelegate {
             decisionHandler(.cancel)
             openInSafariViewController(url)
 
-        case ("file", .linkActivated):
-            decisionHandler(.cancel)
-            guard let anchor = url.fragment?.replacingOccurrences(of: "-", with: " ") else { return }
-
-            let javascript = """
-                var h2 = document.getElementsByTagName('h2');
-                var h3 = document.getElementsByTagName('h3');
-                var h4 = document.getElementsByTagName('h4');
-
-                var success = false
-
-                for (var idx = h2.length -1; idx >= 0; idx--) {
-                    if (typeof h2.item(idx).text === 'string', h2.item(idx).text.toLowerCase().includes('\(anchor)'.toLowerCase())) {
-                        h2.item(idx).offsetTop;
-                        success = true;
-                        break;
-                    }
-                }
-
-                if (!success) {
-                    for (var idx = h3.length -1; idx >= 0; idx--) {
-                        if (typeof h3.item(idx).text === 'string', h3.item(idx).text.toLowerCase().includes('\(anchor)'.toLowerCase())) {
-                            h3.item(idx).offsetTop;
-                            success = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!success) {
-                    for (var idx = h4.length -1; idx >= 0; idx--) {
-                        if (typeof h4.item(idx).text === 'string', h4.item(idx).text.toLowerCase().includes('\(anchor)'.toLowerCase())) {
-                            h4.item(idx).offsetTop;
-                            success = true;
-                            break;
-                        }
-                    }
-                }
-            """
-
-            webView.evaluateJavaScript(javascript) { result, _ in
-                if let offset = result as? CGFloat {
-                    webView.scrollView.scrollRectToVisible(CGRect(x: 0, y: -offset, width: webView.frame.width, height: webView.frame.height / 2), animated: true)
-                }
-            }
-
         default:
             decisionHandler(.allow)
         }
@@ -206,22 +159,5 @@ extension ReadMeViewController: WKNavigationDelegate {
         safariController.preferredControlTintColor = view.tintColor
 
         present(safariController, animated: true, completion: nil)
-    }
-
-    func updateNavigationBarSize() {
-        navigationController?.navigationBar.sizeToFit()
-    }
-
-    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        updateNavigationBarSize()
-    }
-
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        activityIndicatorView.stopAnimating()
-
-        UIView.animate(.quickly) {
-            self.updateNavigationBarSize()
-            webView.alpha = 1
-        }
     }
 }

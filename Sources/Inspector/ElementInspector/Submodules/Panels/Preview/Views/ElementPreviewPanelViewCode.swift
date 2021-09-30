@@ -71,6 +71,7 @@ final class ElementPreviewPanelViewCode: BaseView {
 
     private(set) lazy var backgroundColorControl = ColorPreviewControl(
         title: "Background Color",
+        emptyTitle: "None",
         color: ElementInspector.configuration.thumbnailBackgroundStyle.color
     ).then {
         $0.delegate = self

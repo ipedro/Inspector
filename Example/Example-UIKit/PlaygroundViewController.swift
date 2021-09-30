@@ -39,10 +39,16 @@ final class PlaygroundViewController: UIViewController {
         }
     }
 
-    @IBOutlet var contentStackView: UIStackView! {
+    @IBOutlet var contentStackView: PlaygroundContentStackView! {
         didSet {
             contentStackView.accessibilityIdentifier = "Content Stack View"
             contentStackView.isLayoutMarginsRelativeArrangement = true
+            contentStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(
+                top: 48,
+                leading: 24,
+                bottom: 48,
+                trailing: 24
+            )
         }
     }
 
@@ -86,11 +92,7 @@ final class PlaygroundViewController: UIViewController {
 
     @IBOutlet var mapView: MKMapView!
 
-    @IBOutlet var scrollView: UIScrollView! {
-        didSet {
-            scrollView.contentInset = .init(top: .zero, left: .zero, bottom: -80, right: .zero)
-        }
-    }
+    @IBOutlet var scrollView: UIScrollView!
 
     private var hasAppeared = false
 
@@ -110,9 +112,9 @@ final class PlaygroundViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
         Inspector.removeAllLayers()
+
+        super.viewWillAppear(animated)
 
         guard hasAppeared == false else { return }
 
@@ -127,12 +129,8 @@ final class PlaygroundViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if #available(iOS 13.0, *) {
-            Inspector.toggle(.wireframes)
-        }
-        else {
-            Inspector.toggleAllLayers()
-        }
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(toggleInspectorLayers), object: nil)
+        perform(#selector(toggleInspectorLayers), with: nil, afterDelay: 0.2)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -141,7 +139,16 @@ final class PlaygroundViewController: UIViewController {
         Inspector.removeAllLayers()
     }
 
-    func setupSegmentedControl() {
+    @objc private func toggleInspectorLayers() {
+        if #available(iOS 13.0, *) {
+            Inspector.toggle(.wireframes)
+        }
+        else {
+            Inspector.toggleAllLayers()
+        }
+    }
+
+    private func setupSegmentedControl() {
         datePickerSegmentedControl.removeAllSegments()
 
         UIDatePickerStyle.allCases.forEach { style in
@@ -158,7 +165,7 @@ final class PlaygroundViewController: UIViewController {
 
     // MARK: - Interface Actions
 
-    @IBAction func changeDatePickerStyle(_ sender: UISegmentedControl) {
+    @IBAction private func changeDatePickerStyle(_ sender: UISegmentedControl) {
         guard let datePickerStyle = UIDatePickerStyle(rawValue: sender.selectedSegmentIndex) else {
             return
         }
@@ -175,29 +182,15 @@ final class PlaygroundViewController: UIViewController {
         datePicker.preferredDatePickerStyle = datePickerStyle
     }
 
-    @IBAction func rotateActivityIndicator(_ sender: UISlider) {
+    @IBAction private func rotateActivityIndicator(_ sender: UISlider) {
         let angle = (sender.value - 1) * .pi
 
         activityIndicator.transform = CGAffineTransform(rotationAngle: CGFloat(angle))
     }
 
-    @IBAction func openInspector(_ sender: Any) {
+    @IBAction private func openInspector(_ sender: Any) {
         Inspector.present(animated: true)
     }
 }
 
-final class PlaygroundContainerStackView: UIStackView, NonInspectableView {
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
-
-        guard superview != nil else { return }
-
-        isLayoutMarginsRelativeArrangement = true
-        directionalLayoutMargins = NSDirectionalEdgeInsets(
-            top: 60,
-            leading: 30,
-            bottom: 30,
-            trailing: 30
-        )
-    }
-}
+final class PlaygroundContentStackView: UIStackView, NonInspectableView {}

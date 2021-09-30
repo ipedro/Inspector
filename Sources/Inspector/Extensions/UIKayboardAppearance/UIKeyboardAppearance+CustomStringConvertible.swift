@@ -24,7 +24,7 @@ extension UIKeyboardAppearance: CustomStringConvertible {
     var description: String {
         switch self {
         case .default:
-            return "Default"
+            return Texts.default
 
         case .dark:
             return "Dark"

@@ -24,6 +24,8 @@ public extension InspectorConfiguration {
     struct Appearance {
         // MARK: - Wireframe Style
 
+        public var regularIconSize = CGSize(width: 24, height: 24)
+
         public var actionIconSize = CGSize(width: 32, height: 32)
 
         public var elementIconSize = CGSize(

@@ -24,7 +24,7 @@ extension UIKeyboardType: CustomStringConvertible {
     var description: String {
         switch self {
         case .default:
-            return "Default"
+            return Texts.default
 
         case .asciiCapable:
             return "Ascii Capable"

@@ -21,18 +21,22 @@
 import UIKit
 
 extension SectionHeader {
-    static func formSectionTitle(title: String? = nil) -> SectionHeader {
+    static func formSectionTitle(title: String? = nil, subtitle: String? = nil) -> SectionHeader {
         SectionHeader(
             title: title,
             titleFont: .init(.body, .traitBold),
+            subtitle: subtitle,
+            subtitleFont: .caption1,
             margins: .init(vertical: ElementInspector.appearance.verticalMargins / 2)
         )
     }
 
-    static func attributesInspectorGroup(title: String? = nil) -> SectionHeader {
+    static func attributesInspectorGroup(title: String? = nil, subtitle: String? = nil) -> SectionHeader {
         SectionHeader(
             title: title,
             titleFont: .body,
+            subtitle: subtitle,
+            subtitleFont: .caption1,
             margins: .init(
                 top: ElementInspector.appearance.verticalMargins * 3,
                 bottom: ElementInspector.appearance.verticalMargins

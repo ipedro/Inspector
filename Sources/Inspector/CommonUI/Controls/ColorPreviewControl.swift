@@ -69,9 +69,12 @@ final class ColorPreviewControl: BaseFormControl {
         $0.contentView.addArrangedSubview(colorDisplayControl)
     }
 
+    let emptyTitle: String?
+
     // MARK: - Init
 
-    init(title: String?, color: UIColor?) {
+    init(title: String?, emptyTitle: String?, color: UIColor?) {
+        self.emptyTitle = emptyTitle
         selectedColor = color
 
         super.init(title: title)
@@ -107,7 +110,7 @@ final class ColorPreviewControl: BaseFormControl {
     private func updateViews() {
         colorDisplayControl.color = selectedColor
 
-        colorDisplayLabel.text = selectedColor?.hexDescription ?? "No color"
+        colorDisplayLabel.text = selectedColor?.hexDescription ?? emptyTitle
     }
 
     @objc private func tapColor() {

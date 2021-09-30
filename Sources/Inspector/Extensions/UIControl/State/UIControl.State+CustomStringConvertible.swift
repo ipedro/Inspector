@@ -24,7 +24,7 @@ extension UIControl.State: CustomStringConvertible {
     var description: String {
         switch self {
         case .normal:
-            return "Default"
+            return Texts.default
 
         case .highlighted:
             return "Highlighted"

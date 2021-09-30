@@ -30,6 +30,11 @@ extension UIImage {
     static let collapseSymbol: UIImage? = .moduleImage(named: "collapse")
     static let showHighlightsSymbol: UIImage? = .moduleImage(named: "showHighlights")
     static let hideHighlightsSymbol: UIImage? = .moduleImage(named: "hideHighlights")
+    static let warningSymbol: UIImage? = .moduleImage(named: "warning")
+    static let infoSymbol: UIImage? = IconKit.imageOfInfoCircleFill().withRenderingMode(.alwaysTemplate)
+    static let elementAttributesSymbol: UIImage? = IconKit.imageOfSliderHorizontal().withRenderingMode(.alwaysTemplate)
+    static let elementChildrenPanelSymbol: UIImage? = IconKit.imageOfRelationshipDiagram().withRenderingMode(.alwaysTemplate)
+    static let elementSizePanelSymbol: UIImage? = IconKit.imageOfSetSquareFill().withRenderingMode(.alwaysTemplate)
 
     static let hiddenViewSymbol = UIImage.moduleImage(named: "Hidden-32_Normal")
     static let missingViewSymbol = UIImage.moduleImage(named: "missing-view-32_Normal")

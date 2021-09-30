@@ -65,6 +65,8 @@ enum Texts {
         "Copy \(something)"
     }
 
+    static let `default` = "Default"
+
     static let open = "Open"
 
     static let copy = "Copy"
