@@ -164,17 +164,19 @@ final class HierarchyInspectorViewCode: BaseView, DataReloadingProtocol {
         }
     }
 
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        let convertedPoint = convert(point, to: blurView)
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
 
-        if blurView.point(inside: convertedPoint, with: event) {
-            return true
+        guard
+            let location = touches.first?.location(in: blurView),
+            blurView.point(inside: location, with: .none) == false
+        else {
+            return
         }
 
         DispatchQueue.main.async {
             self.delegate?.hierarchyInspectorViewCodeDidTapOutside(self)
         }
-
-        return false
     }
+
 }
