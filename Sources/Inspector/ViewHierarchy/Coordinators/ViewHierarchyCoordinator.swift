@@ -105,7 +105,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
         }
     }
 
-    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElement, from sourceView: UIView?) {
+    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElement, from sourceView: UIView) {
         guard
             canPerform(action: action),
             case let .layer(layerAction) = action

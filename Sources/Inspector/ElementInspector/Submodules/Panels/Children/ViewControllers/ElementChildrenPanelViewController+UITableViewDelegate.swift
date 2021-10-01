@@ -48,7 +48,9 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let selectedCellViewModel = viewModel.cellViewModel(at: indexPath) else { return }
 
-        delegate?.perform(action: .inspect(preferredPanel: .children), with: selectedCellViewModel.element, from: .none)
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
+
+        delegate?.perform(action: .inspect(preferredPanel: .children), with: selectedCellViewModel.element, from: cell)
     }
 
     @available(iOS 13.0, *)
@@ -83,7 +85,8 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
                 ]
             }(),
             with: cellViewModel.element) { [weak self] element, action in
-                self?.delegate?.perform(action: action, with: element, from: .none)
+                guard let cell = tableView.cellForRow(at: indexPath) else { return }
+                self?.delegate?.perform(action: action, with: element, from: cell)
             }
     }
 }

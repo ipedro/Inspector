@@ -48,7 +48,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     let initialPanel: ElementInspectorPanel?
 
-    weak var sourceView: UIView?
+    let sourceView: UIView
 
     private(set) lazy var navigationController: ElementInspectorNavigationController = {
         let navigationController = makeNavigationController(from: sourceView)
@@ -64,12 +64,12 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         element: ViewHierarchyElement,
         with panel: ElementInspectorPanel?,
         in snapshot: ViewHierarchySnapshot,
-        from sourceView: UIView?
+        from sourceView: UIView
     ) {
         self.rootElement = element
         self.initialPanel = panel
         self.snapshot = snapshot
-        self.sourceView = sourceView ?? element.rootView
+        self.sourceView = sourceView
     }
 
     var permittedPopoverArrowDirections: UIPopoverArrowDirection {
@@ -200,7 +200,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         topElementInspectorViewController?.currentPanelViewController
     }
 
-    func makeNavigationController(from sourceView: UIView?) -> ElementInspectorNavigationController {
+    func makeNavigationController(from sourceView: UIView) -> ElementInspectorNavigationController {
         let navigationController = ElementInspectorNavigationController()
         navigationController.dismissDelegate = self
         navigationController.setPopoverModalPresentationStyle(delegate: self, from: sourceView)
@@ -221,9 +221,9 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
         }
     }
 
-    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElement, from sourceView: UIView?) {
+    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElement, from sourceView: UIView) {
         guard canPerform(action: action) else {
-            delegate?.perform(action: action, with: element, from: .none)
+            delegate?.perform(action: action, with: element, from: sourceView)
             return
         }
 

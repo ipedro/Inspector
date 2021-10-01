@@ -307,7 +307,7 @@ extension InspectorViewController: HierarchyInspectorViewCodeDelegate {
     }
 }
 
-private extension String {
+extension String {
     static let contentSize = "contentSize"
 }
 

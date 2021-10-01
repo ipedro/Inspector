@@ -21,7 +21,17 @@
 import UIKit
 
 extension UIViewController {
-    func setPopoverModalPresentationStyle(delegate: Any, from sourceView: UIView?) {
+    func setPopoverModalPresentationStyle(delegate: Any, from sourceView: UIView) {
+        if
+            let self = self as? ElementInspectorNavigationController,
+            (sourceView.window?.frame.width ?? sourceView.frame.width) >= ElementInspector.configuration.panelSidePresentationMinimumContainerSize.width,
+            (sourceView.window?.frame.height ?? sourceView.frame.height) >= ElementInspector.configuration.panelSidePresentationMinimumContainerSize.height
+        {
+            modalPresentationStyle = .custom
+            transitioningDelegate = self
+            return
+        }
+
         #if swift(>=5.5)
         if #available(iOS 15.0, *) {
             modalPresentationStyle = .popover

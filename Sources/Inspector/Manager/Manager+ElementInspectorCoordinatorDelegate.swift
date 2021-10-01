@@ -39,7 +39,7 @@ extension Manager {
     func startElementInspectorCoordinator(for view: UIView,
                                           with panel: ElementInspectorPanel?,
                                           animated: Bool,
-                                          from sourceView: UIView?) {
+                                          from sourceView: UIView) {
         guard let elementLibraries = viewHierarchySnaphost?.elementLibraries else { return }
 
         let reference = ViewHierarchyElement(view, iconProvider: { elementLibraries.icon(for: $0) })
@@ -50,7 +50,7 @@ extension Manager {
     func startElementInspectorCoordinator(for element: ViewHierarchyElement,
                                           with panel: ElementInspectorPanel?,
                                           animated: Bool,
-                                          from sourceView: UIView?) {
+                                          from sourceView: UIView) {
         guard let snapshot = viewHierarchySnaphost else { return }
 
         let coordinator = ElementInspectorCoordinator(

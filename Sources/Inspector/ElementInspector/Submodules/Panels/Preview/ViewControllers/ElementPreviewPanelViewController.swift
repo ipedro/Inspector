@@ -122,9 +122,11 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
 
     @objc
     func toggleHighlightViews() {
+        guard let sourceView = viewModel.element.rootView else { return }
+
         let layerAction: ViewHierarchyLayerAction = viewModel.isHighlightingViews ? .hideHighlight : .showHighlight
 
-        delegate?.perform(action: .layer(layerAction), with: viewModel.element, from: .none)
+        delegate?.perform(action: .layer(layerAction), with: viewModel.element, from: sourceView)
     }
 
     @objc

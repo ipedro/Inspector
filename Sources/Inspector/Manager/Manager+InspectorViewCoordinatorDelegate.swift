@@ -49,11 +49,13 @@ extension Manager {
                 closure()
 
             case let .inspect(reference):
-                self?.startElementInspectorCoordinator(
+                guard let self = self, let sourceView = reference.rootView else { return }
+
+                self.startElementInspectorCoordinator(
                     for: reference,
                     with: .none,
                     animated: true,
-                    from: .none
+                   from: sourceView
                 )
             }
         }

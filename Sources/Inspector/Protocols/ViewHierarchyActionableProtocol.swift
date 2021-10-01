@@ -25,5 +25,5 @@ protocol ViewHierarchyActionableProtocol {
 
     func perform(action: ViewHierarchyAction,
                  with element: ViewHierarchyElement,
-                 from sourceView: UIView?)
+                 from sourceView: UIView)
 }

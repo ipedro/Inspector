@@ -30,13 +30,14 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
             viewController.selectPanelIfAvailable(panel)
             return
         }
+        guard let sourceView = fromElement.rootView else { return }
 
         guard canPerform(action: action) else {
-            delegate?.perform(action: action, with: element, from: .none)
+            delegate?.perform(action: action, with: element, from: sourceView)
             return
         }
         
-        perform(action: action, with: element, from: .none)
+        perform(action: action, with: element, from: sourceView)
     }
 
     func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,

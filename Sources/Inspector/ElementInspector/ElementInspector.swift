@@ -56,6 +56,13 @@ extension ElementInspector {
             )
         }
 
+        var panelSidePresentationMinimumContainerSize: CGSize {
+            CGSize(
+                width: 768,
+                height: 768
+            )
+        }
+
         var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
     }
 }
