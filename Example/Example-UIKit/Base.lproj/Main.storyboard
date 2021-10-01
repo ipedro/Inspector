@@ -84,7 +84,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" alwaysBounceHorizontal="YES" showsHorizontalScrollIndicator="NO" delaysContentTouches="NO" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="d8e-2x-EDf">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" alwaysBounceVertical="YES" delaysContentTouches="NO" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="d8e-2x-EDf">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="60" translatesAutoresizingMaskIntoConstraints="NO" id="d2F-0P-dbg" customClass="PlaygroundContentStackView" customModule="Example" customModuleProvider="target">
@@ -219,10 +219,10 @@
                         <viewLayoutGuide key="safeArea" id="3iS-UF-k48"/>
                         <color key="backgroundColor" systemColor="systemGroupedBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="d2F-0P-dbg" firstAttribute="width" secondItem="d8e-2x-EDf" secondAttribute="width" id="1C8-Mo-au5"/>
                             <constraint firstItem="d8e-2x-EDf" firstAttribute="width" secondItem="zl3-QB-Cvw" secondAttribute="width" id="BBp-0O-9eP"/>
                             <constraint firstItem="d8e-2x-EDf" firstAttribute="top" secondItem="zl3-QB-Cvw" secondAttribute="top" id="CaK-nE-Oi1"/>
                             <constraint firstItem="d8e-2x-EDf" firstAttribute="bottom" secondItem="zl3-QB-Cvw" secondAttribute="bottom" id="cYM-bG-jGW"/>
-                            <constraint firstItem="d2F-0P-dbg" firstAttribute="width" secondItem="zl3-QB-Cvw" secondAttribute="width" id="v6k-6F-mH5"/>
                             <constraint firstItem="d8e-2x-EDf" firstAttribute="centerX" secondItem="zl3-QB-Cvw" secondAttribute="centerX" id="zIS-Ix-JVA"/>
                         </constraints>
                     </view>
@@ -271,7 +271,7 @@
                     <tabBarItem key="tabBarItem" title="Playground" image="tab-bar-playground-off" selectedImage="tab-bar-playground-on" id="hZK-SV-H0t"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="RgH-s8-kZS">
-                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="119"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" systemColor="systemBackgroundColor"/>
                         <textAttributes key="titleTextAttributes">
