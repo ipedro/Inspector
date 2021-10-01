@@ -27,10 +27,6 @@ protocol ElementInspectorNavigationControllerDismissDelegate: AnyObject {
 class ElementInspectorNavigationController: UINavigationController {
     weak var dismissDelegate: ElementInspectorNavigationControllerDismissDelegate?
 
-    private lazy var animator = ElementInspectorAnimator().then {
-        $0.delegate = self
-    }
-
     var shouldAdaptModalPresentation: Bool = true {
         didSet {
             if shouldAdaptModalPresentation {
@@ -92,26 +88,4 @@ class ElementInspectorNavigationController: UINavigationController {
 
 extension ElementInspectorNavigationController: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle { .none }
-}
-
-extension ElementInspectorNavigationController: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        guard presented === self else { return nil }
-
-        animator.isPresenting = true
-        return animator
-    }
-
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        guard dismissed === self else { return nil }
-
-        animator.isPresenting = false
-        return animator
-    }
-}
-
-extension ElementInspectorNavigationController: ElementInspectorAnimatorDelegate {
-    func elementInspectorAnimatorDidTapBackground(_ animator: ElementInspectorAnimator) {
-        finish()
-    }
 }

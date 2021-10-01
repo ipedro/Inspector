@@ -25,12 +25,18 @@ extension ElementInspectorCoordinator: ElementPreviewPanelViewControllerDelegate
     func elementPreviewPanelViewController(_ viewController: ElementPreviewPanelViewController, didTap colorPreviewControl: ColorPreviewControl) {
         if #available(iOS 14.0, *) {
             let colorPickerViewController = UIColorPickerViewController().then {
-                $0.setPopoverModalPresentationStyle(delegate: self, from: colorPreviewControl.accessoryControl)
                 $0.delegate = self
 
                 if let selectedColor = colorPreviewControl.selectedColor {
                     $0.selectedColor = selectedColor
                 }
+
+                $0.setPopoverModalPresentationStyle(
+                    delegate: self,
+                    transitionDelegate: transitionDelegate(for: viewController),
+                    from: colorPreviewControl.accessoryControl
+                )
+
             }
 
             viewController.present(colorPickerViewController, animated: true)

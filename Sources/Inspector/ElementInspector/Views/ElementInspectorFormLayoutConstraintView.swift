@@ -66,7 +66,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         insets.top = .zero
 
         $0.insets = insets
-        $0.cornerRadius = 30
+        $0.cornerRadius = ElementInspector.appearance.elementInspectorCornerRadius
         $0.contentMargins = .zero
         $0.backgroundColor = colorStyle.layoutConstraintsCardBackgroundColor
         $0.contentView.addArrangedSubview(formView)

@@ -20,24 +20,28 @@
 
 import UIKit
 
+private extension ElementInspectorSlidingPanelAnimator {
+    final class BackgroundGestureView: BaseView {
 
-final class BackgroundTapGestureView: BaseControl {}
+        override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+            let result = super.hitTest(point, with: event)
 
-protocol ElementInspectorAnimatorDelegate: AnyObject {
-    func elementInspectorAnimatorDidTapBackground(_ animator: ElementInspectorAnimator)
-}
-private extension ElementInspectorAnimator {
-    final class BackgroundGestureView: BaseControl {
-        override func setup() {
-            super.setup()
-            backgroundColor = colorStyle.accessoryControlBackgroundColor
-            autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            guard result === self else { return result }
+
+            guard let rootView = window?.rootViewController?.view else { return nil }
+
+            let localPoint = convert(point, to: rootView)
+
+            let rootResult = rootView.hitTest(localPoint, with: event)
+
+            return rootResult
         }
+
     }
 
     final class DropShadowView: BaseView {
         override func setup() {
-            layer.shadowRadius = ElementInspector.appearance.horizontalMargins
+            layer.shadowRadius = ElementInspector.appearance.elementInspectorCornerRadius
             layer.shadowColor = UIColor(white: 0, alpha: 0.5).cgColor
         }
 
@@ -47,18 +51,15 @@ private extension ElementInspectorAnimator {
     }
 }
 
-final class ElementInspectorAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+final class ElementInspectorSlidingPanelAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     let duration: TimeInterval = .veryLong
 
     var isPresenting: Bool = true
-
-    weak var delegate: ElementInspectorAnimatorDelegate?
-
+    
     private var isObservingSize = false
 
     private lazy var backgroundGestureView = BackgroundGestureView().then {
         $0.addObserver(self, forKeyPath: "bounds", options: .new, context: nil)
-        $0.addTarget(self, action: #selector(Self.tapBackground), for: .touchUpInside)
     }
     
     override func observeValue(
@@ -77,10 +78,6 @@ final class ElementInspectorAnimator: NSObject, UIViewControllerAnimatedTransiti
     }
 
     private lazy var shadowView = DropShadowView()
-
-    @objc private func tapBackground() {
-        delegate?.elementInspectorAnimatorDidTapBackground(self)
-    }
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?)
         -> TimeInterval
@@ -130,7 +127,7 @@ final class ElementInspectorAnimator: NSObject, UIViewControllerAnimatedTransiti
 
         let toFinalFrame = topLeftMargins(of: containerView)
 
-        toView.layer.cornerRadius = ElementInspector.appearance.horizontalMargins
+        toView.layer.cornerRadius = ElementInspector.appearance.elementInspectorCornerRadius
         if #available(iOS 13.0, *) {
             toView.layer.cornerCurve = .continuous
         }
@@ -148,6 +145,10 @@ final class ElementInspectorAnimator: NSObject, UIViewControllerAnimatedTransiti
     }
 
     private func popTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        guard let fromView = transitionContext.view(forKey: .from) else { return }
+
+        fromView.layer.cornerRadius = .zero
+
         var fromFinalFrame = shadowView.frame
         fromFinalFrame.origin.x = transitionContext.containerView.bounds.maxX
 

@@ -50,6 +50,26 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     let sourceView: UIView
 
+    private lazy var slidingPanelAnimator = ElementInspectorSlidingPanelAnimator()
+
+    private var rootWindow: UIWindow? { rootElement.rootView?.window }
+
+    var isCapableOfSidePresentation: Bool {
+        guard let rootWindow = rootWindow else { return false }
+        let minimumSize = ElementInspector.configuration.panelSidePresentationMinimumContainerSize
+
+        return rootWindow.frame.width >= minimumSize.width && rootWindow.frame.height >= minimumSize.height
+    }
+
+    func transitionDelegate(for viewController: UIViewController) -> UIViewControllerTransitioningDelegate? {
+        switch viewController {
+        case is ElementInspectorNavigationController where isCapableOfSidePresentation:
+            return self
+        default:
+            return nil
+        }
+    }
+
     private(set) lazy var navigationController: ElementInspectorNavigationController = {
         let navigationController = makeNavigationController(from: sourceView)
 
@@ -102,6 +122,14 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         delegate?.elementInspectorCoordinator(self, didFinishInspecting: snapshot.rootElement, with: reason)
     }
 
+    func setPopoverModalPresentationStyle(for viewController: UIViewController, from sourceView: UIView) {
+        viewController.setPopoverModalPresentationStyle(
+            delegate: self,
+            transitionDelegate: transitionDelegate(for: viewController),
+            from: sourceView
+        )
+    }
+
     static func makeElementInspectorViewController(
         with element: ViewHierarchyElement,
         elementLibraries: [InspectorElementLibraryProtocol],
@@ -110,7 +138,6 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         delegate: ElementInspectorViewControllerDelegate,
         in snapshot: ViewHierarchySnapshot
     ) -> ElementInspectorViewController {
-
         let availablePanels = ElementInspectorPanel.allCases(for: element)
 
         let selectedPanel: ElementInspectorPanel?
@@ -203,7 +230,8 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     func makeNavigationController(from sourceView: UIView) -> ElementInspectorNavigationController {
         let navigationController = ElementInspectorNavigationController()
         navigationController.dismissDelegate = self
-        navigationController.setPopoverModalPresentationStyle(delegate: self, from: sourceView)
+
+        setPopoverModalPresentationStyle(for: navigationController, from: sourceView)
 
         return navigationController
     }
@@ -315,5 +343,31 @@ private extension ElementInspectorCoordinator {
 
             return array.reversed()
         }()
+    }
+}
+
+extension ElementInspectorCoordinator: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        guard transitionDelegate(for: presented) != nil else { return nil }
+
+        switch presented {
+        case is ElementInspectorNavigationController:
+            slidingPanelAnimator.isPresenting = true
+            return slidingPanelAnimator
+        default:
+            return nil
+        }
+    }
+
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        guard transitionDelegate(for: dismissed) != nil else { return nil }
+
+        switch dismissed {
+        case is ElementInspectorNavigationController:
+            slidingPanelAnimator.isPresenting = false
+            return slidingPanelAnimator
+        default:
+            return nil
+        }
     }
 }

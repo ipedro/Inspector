@@ -34,7 +34,8 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController, didTap colorPreviewControl: ColorPreviewControl) {
         if #available(iOS 14.0, *) {
             let colorPickerViewController = UIColorPickerViewController().then {
-                $0.setPopoverModalPresentationStyle(delegate: self, from: colorPreviewControl.accessoryControl)
+
+
                 $0.delegate = self
 
                 if let selectedColor = colorPreviewControl.selectedColor {
@@ -75,8 +76,8 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
             message: nil,
             preferredStyle: .actionSheet
         ).then {
-            $0.setPopoverModalPresentationStyle(delegate: self, from: imagePreviewControl.accessoryControl)
             $0.view.tintColor = $0.colorStyle.textColor
+            setPopoverModalPresentationStyle(for: $0, from: imagePreviewControl.accessoryControl)
         }
 
         alertController.addAction(
@@ -116,7 +117,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
                             .tintColor(Inspector.configuration.colorStyle.textColor)
                         )
                     ).then {
-                        $0.setPopoverModalPresentationStyle(delegate: self, from: imagePreviewControl.accessoryControl)
+                        self.setPopoverModalPresentationStyle(for: $0, from: imagePreviewControl.accessoryControl)
                     }
 
                     formPanelViewController.present(documentPicker, animated: true)

@@ -73,6 +73,8 @@ extension ElementInspector {
 
         let verticalMargins: CGFloat = 12
 
+        let elementInspectorCornerRadius: CGFloat = 30
+
         var panelInitialTransform: CGAffineTransform {
             CGAffineTransform(
                 scaleX: 0.99,
