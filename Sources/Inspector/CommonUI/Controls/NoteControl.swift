@@ -26,7 +26,7 @@ public enum InspectorElemenPropertyNoteIcon: ColorStylable {
     var image: UIImage? {
         switch self {
         case .info:
-            return IconKit.imageOfInfoCircleFill().withRenderingMode(.alwaysTemplate)
+            return .infoOutlineSymbol
 
         case .warning:
             return .warningSymbol
@@ -69,7 +69,10 @@ final class NoteControl: BaseControl {
         titleFont: .footnote,
         subtitle: text,
         subtitleFont: .caption2,
-        margins: .zero
+        margins: .init(
+            leading: ElementInspector.appearance.verticalMargins,
+            trailing: ElementInspector.appearance.horizontalMargins
+        )
     ).then {
         $0.titleLabel.numberOfLines = 0
         $0.subtitleLabel.numberOfLines = 0
@@ -82,7 +85,7 @@ final class NoteControl: BaseControl {
 
         contentView.alignment = .top
 
-        contentView.spacing = ElementInspector.appearance.verticalMargins
+        contentView.spacing = .zero
 
         contentView.directionalLayoutMargins.update(bottom: ElementInspector.appearance.horizontalMargins)
 

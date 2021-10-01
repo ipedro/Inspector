@@ -157,51 +157,10 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor).isActive = true
     }
 
-    private(set) lazy var elementIconAndDescriptionLabel = BaseView().then {
-        $0.installView(
-            iconContainerView,
-            .spacing(top: ElementInspector.appearance.verticalMargins / 2),
-            priority: .required
-        )
-
-        $0.installView(
-            elementDescriptionLabel,
-            .spacing(
-                top: .zero,
-                bottom: .zero,
-                trailing: .zero
-            ),
-            priority: .required
-        )
-
-        $0.addSubview(collapseButton)
-
-        iconContainerView.leadingAnchor.constraint(
-            equalTo: $0.leadingAnchor
-        ).isActive = true
-
-        iconContainerView.leadingAnchor.constraint(
-            equalTo: collapseButton.trailingAnchor,
-            constant: ElementInspector.appearance.verticalMargins
-        ).isActive = true
-
-        collapseButton.centerYAnchor.constraint(
-            equalTo: iconContainerView.centerYAnchor
-        ).isActive = true
-
-        elementDescriptionLabel.bottomAnchor.constraint(
-            greaterThanOrEqualTo: $0.bottomAnchor
-        ).isActive = true
-
-        elementDescriptionLabel.leadingAnchor.constraint(
-            equalTo: iconContainerView.trailingAnchor,
-            constant: ElementInspector.appearance.verticalMargins
-        ).isActive = true
-
-        $0.heightAnchor.constraint(
-            greaterThanOrEqualTo: iconContainerView.heightAnchor,
-            constant: ElementInspector.appearance.verticalMargins
-        ).isActive = true
+    private(set) lazy var elementIconAndDescriptionLabel = UIStackView.horizontal().then {
+        $0.spacing = ElementInspector.appearance.verticalMargins
+        $0.addArrangedSubviews(elementDescriptionLabel, iconContainerView)
+        $0.alignment = .top
     }
 
     private lazy var heighConstraint = heightAnchor.constraint(equalToConstant: .zero)
@@ -232,5 +191,16 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
         contentView.addArrangedSubviews(elementNameLabel, elementIconAndDescriptionLabel)
 
         installView(indendationAdjustmentStackView)
+
+        contentView.addSubview(collapseButton)
+
+        collapseButton.centerYAnchor.constraint(
+            equalTo: elementIconAndDescriptionLabel.topAnchor
+        ).isActive = true
+
+        elementIconAndDescriptionLabel.leadingAnchor.constraint(
+            equalTo: collapseButton.trailingAnchor,
+            constant: ElementInspector.appearance.verticalMargins
+        ).isActive = true
     }
 }

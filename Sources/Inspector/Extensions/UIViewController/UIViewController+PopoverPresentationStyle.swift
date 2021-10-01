@@ -44,7 +44,6 @@ extension UIViewController {
             adaptiveSheetPresentationController.largestUndimmedDetentIdentifier = .medium
             adaptiveSheetPresentationController.preferredCornerRadius = ElementInspector.appearance.horizontalMargins
             adaptiveSheetPresentationController.prefersEdgeAttachedInCompactHeight = true
-            adaptiveSheetPresentationController.prefersGrabberVisible = true
             adaptiveSheetPresentationController.delegate = delegate as? UISheetPresentationControllerDelegate
         }
         #else

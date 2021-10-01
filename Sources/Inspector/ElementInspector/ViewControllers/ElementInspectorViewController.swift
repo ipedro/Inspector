@@ -241,9 +241,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     }
 
     private func configureNavigationItem() {
-        navigationItem.backBarButtonItem?.tintColor = colorStyle.tintColor
-        navigationItem.leftBarButtonItem?.tintColor = colorStyle.tintColor
-        navigationItem.rightBarButtonItem = dismissBarButtonItem
+        navigationItem.rightBarButtonItems = [dismissBarButtonItem, .init(customView: viewCode.toggleCollapseButton)]
         navigationItem.titleView = segmentedControl
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true

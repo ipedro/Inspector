@@ -37,9 +37,8 @@ final class ElementInspectorViewCode: BaseView {
     }
 
     private lazy var scrollView = ScrollingStackView().then {
-        $0.contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(bottom: ElementInspector.appearance.horizontalMargins)
-        $0.contentView.addArrangedSubviews(headerView, separatorView, contentView)
-
+        $0.contentView.directionalLayoutMargins = .init(bottom: ElementInspector.appearance.horizontalMargins)
+        $0.contentView.addArrangedSubviews(elementDescriptionView, separatorView, contentView)
         $0.keyboardDismissMode = .onDrag
         $0.alwaysBounceVertical = true
     }
@@ -49,7 +48,12 @@ final class ElementInspectorViewCode: BaseView {
         $0.setContentHuggingPriority(.defaultLow, for: .horizontal)
         $0.setContentCompressionResistancePriority(.required, for: .vertical)
         $0.elementNameLabel.isSafelyHidden = true
-        $0.directionalLayoutMargins = .zero
+        $0.directionalLayoutMargins = .init(
+            top: .zero,
+            leading: ElementInspector.appearance.horizontalMargins,
+            bottom: ElementInspector.appearance.horizontalMargins,
+            trailing: ElementInspector.appearance.horizontalMargins * 2
+        )
     }
 
     private func adjustedContentSize(of scrollView: UIScrollView) -> CGSize {
@@ -88,18 +92,6 @@ final class ElementInspectorViewCode: BaseView {
 
     private(set) lazy var toggleCollapseButton = ToogleCollapseButton()
 
-    private(set) lazy var headerView = UIStackView.horizontal().then {
-        $0.alignment = .center
-        $0.addArrangedSubviews(elementDescriptionView, toggleCollapseButton)
-        $0.isLayoutMarginsRelativeArrangement = true
-        $0.directionalLayoutMargins = .init(
-            top: .zero,
-            leading: ElementInspector.appearance.horizontalMargins,
-            bottom: ElementInspector.appearance.horizontalMargins,
-            trailing: .zero
-        )
-    }
-    
     private func updateContent(from oldValue: Content?, to newContent: Content?) {
         oldValue?.view.removeFromSuperview()
 
@@ -191,8 +183,8 @@ extension ElementInspectorViewCode {
     final class ToogleCollapseButton: BaseControl {
 
         private(set) lazy var icon = UIImageView(image: .expandSymbol, highlightedImage: .collapseSymbol).then {
-            $0.widthAnchor.constraint(equalToConstant: 20).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: 20).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: ElementInspector.appearance.regularIconSize.width).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: ElementInspector.appearance.regularIconSize.height).isActive = true
         }
 
         var collapseState: ElementInspectorFormPanelCollapseState? {
@@ -214,7 +206,9 @@ extension ElementInspectorViewCode {
         override func setup() {
             super.setup()
 
-            installView(icon, .spacing(all: ElementInspector.appearance.horizontalMargins))
+            tintColor = colorStyle.secondaryTextColor
+
+            installView(icon)
 
             updateViews()
 
