@@ -20,7 +20,15 @@
 
 import UIKit
 
-class HighlightView: LayerView {
+class HighlightView: LayerView, DraggableViewProtocol {
+    var draggableAreaLayoutGuide: UILayoutGuide { safeAreaLayoutGuide }
+
+    var isDragging: Bool = false {
+        didSet {
+            updateColors(isDragging: isDragging)
+        }
+    }
+
     // MARK: - Properties
 
     var name: String {
@@ -60,7 +68,9 @@ class HighlightView: LayerView {
         }
     }
 
-    override var sourceView: UIView { labelContainerView }
+    var draggableView: UIView { labelContainerView }
+
+    override var sourceView: UIView { draggableView }
 
     private lazy var verticalAlignmentConstraint = labelContainerView.centerYAnchor.constraint(equalTo: centerYAnchor)
 
@@ -129,64 +139,13 @@ class HighlightView: LayerView {
 
         shouldPresentOnTop = true
 
-        sourceView.addGestureRecognizer(tapGestureRecognizer)
-        sourceView.addGestureRecognizer(panGestureRecognizer)
+        draggableView.addGestureRecognizer(tapGestureRecognizer)
+        draggableView.addGestureRecognizer(panGestureRecognizer)
     }
 
     @objc
     private func move(with gesture: UIPanGestureRecognizer) {
-        let layoutFrame = readableContentGuide.layoutFrame
-
-        guard layoutFrame.width + layoutFrame.height > (sourceView.frame.size.width + sourceView.frame.size.height) * 2 else {
-            return
-        }
-
-        let location = gesture.location(in: self)
-
-        sourceView.center = location
-
-        guard gesture.state == .ended else {
-            updateColors(isTouching: true)
-            return
-        }
-
-        updateColors(isTouching: false)
-
-        let finalX: CGFloat
-        let finalY: CGFloat
-
-        let sourceHitBounds = sourceView.convert(
-            sourceView.bounds.insetBy(dx: -sourceView.bounds.width / 3, dy: -sourceView.bounds.height / 3), to: self)
-
-        if (sourceHitBounds.minX...sourceHitBounds.maxX).contains(layoutFrame.midX) {
-            finalX = layoutFrame.midX
-        }
-        else if sourceView.frame.midX >= layoutFrame.width / 2 {
-            finalX = max(0, layoutFrame.maxX - (sourceView.frame.width / 2))
-        }
-        else {
-            finalX = layoutFrame.minX + sourceView.frame.width / 2
-        }
-
-        if (sourceHitBounds.minY...sourceHitBounds.maxY).contains(layoutFrame.midY) {
-            finalY = layoutFrame.midY
-        }
-        else if sourceView.frame.midY >= layoutFrame.height / 2 {
-            finalY = max(0, layoutFrame.maxY - (sourceView.frame.height / 2))
-        }
-        else {
-            finalY = layoutFrame.minY + sourceView.frame.height / 2
-        }
-
-        UIView.animate(
-            withDuration: 0.5,
-            delay: 0,
-            usingSpringWithDamping: 1,
-            initialSpringVelocity: 1,
-            options: [.beginFromCurrentState, .curveEaseIn]
-        ) {
-            self.sourceView.center = CGPoint(x: finalX, y: finalY)
-        }
+        dragView(with: gesture)
     }
 
     @objc
@@ -202,7 +161,7 @@ class HighlightView: LayerView {
         super.touchesBegan(touches, with: event)
 
         labelContentView.animate(.in)
-        updateColors(isTouching: true)
+        updateColors(isDragging: true)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -290,8 +249,8 @@ private extension HighlightView {
         hostView.isUserInteractionEnabled = true
     }
 
-    func updateColors(isTouching: Bool = false) {
-        switch isTouching {
+    func updateColors(isDragging: Bool = false) {
+        switch isDragging {
         case true:
             layerBackgroundColor = color.withAlphaComponent(colorStyle.disabledAlpha)
             layerBorderColor = color.withAlphaComponent(1)
