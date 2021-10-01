@@ -28,7 +28,7 @@ public enum InspectorElementViewModelProperty {
 
     case group(title: String, subtitle: String? = nil)
 
-    case infoNote(icon: InspectorElemenPropertyNoteIcon?,
+    case infoNote(icon: InspectorElemenPropertyNoteIcon? = .info,
                   title: String? = nil,
                   text: String? = nil)
 

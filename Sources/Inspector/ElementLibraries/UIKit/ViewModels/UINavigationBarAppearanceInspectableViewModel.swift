@@ -84,29 +84,36 @@ extension UIKitElementLibrary {
                 case .compact:
                     return "The appearance settings for a compact-height navigation bar."
                 case .scrollEdge:
-                    return "The appearance settings for the navigation bar when the edge of scrollable content aligns with the edge of the navigation bar."
+                    return "The appearance settings for the navigation bar when content is scrolled to the top."
                 case .compactScrollEdge:
-                    return "The appearance settings for a compact-height navigation bar when the edge of scrollable content aligns with the edge of the navigation bar."
+                    return "The appearance settings for a compact-height navigation bar when content is scrolled to the top."
                 }
             }
 
             var properties: [InspectorElementViewModelProperty] {
                 var array: [InspectorElementViewModelProperty] = []
 
-                array.append(
-                    .infoNote(
-                        icon: .info,
-                        text: message
-                    )
-                )
+                array.append(.infoNote(icon: .info, text: message))
 
-                if #available(iOS 15.0, *), self == .scrollEdge {
-                    array.append(
-                        .infoNote(
-                            icon: .warning,
-                            text: "Starting iOS 15 when this property is nil, the default behavior produces a transparent background when not scrolled to the edges of the screen."
+                if #available(iOS 15.0, *) {
+                    switch self {
+                    case .scrollEdge:
+                        array.append(
+                            .infoNote(
+                                icon: .warning,
+                                text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top."
+                            )
                         )
-                    )
+                    case .compactScrollEdge:
+                        array.append(
+                            .infoNote(
+                                icon: .warning,
+                                text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top in a vertically compact orientation."
+                            )
+                        )
+                    default:
+                        break
+                    }
                 }
 
                 return array
