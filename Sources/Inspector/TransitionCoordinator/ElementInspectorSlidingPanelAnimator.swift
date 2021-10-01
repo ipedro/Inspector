@@ -166,4 +166,5 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, UIViewControllerAnim
             transitionContext.completeTransition(finish)
         }
     }
+
 }

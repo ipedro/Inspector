@@ -92,12 +92,11 @@ final class ElementInspectorViewCode: BaseView {
         $0.alignment = .center
         $0.addArrangedSubviews(elementDescriptionView, toggleCollapseButton)
         $0.isLayoutMarginsRelativeArrangement = true
-        $0.spacing = ElementInspector.appearance.verticalMargins
         $0.directionalLayoutMargins = .init(
             top: .zero,
             leading: ElementInspector.appearance.horizontalMargins,
             bottom: ElementInspector.appearance.horizontalMargins,
-            trailing: ElementInspector.appearance.verticalMargins
+            trailing: .zero
         )
     }
     

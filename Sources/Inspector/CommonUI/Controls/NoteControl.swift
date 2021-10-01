@@ -66,9 +66,9 @@ final class NoteControl: BaseControl {
 
     private lazy var header = SectionHeader(
         title: title,
-        titleFont: .subheadline,
+        titleFont: .footnote,
         subtitle: text,
-        subtitleFont: .caption1,
+        subtitleFont: .caption2,
         margins: .zero
     ).then {
         $0.titleLabel.numberOfLines = 0
