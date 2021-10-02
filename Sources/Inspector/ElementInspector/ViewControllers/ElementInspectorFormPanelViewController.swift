@@ -94,14 +94,37 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     override var isCompactVerticalPresentation: Bool {
         didSet {
+            guard oldValue != isCompactVerticalPresentation else {
+                print("bail")
+                return
+            }
+
+            let isExpandingPresentation = oldValue && isCompactVerticalPresentation == false
+
             animatePanel(
                 animations: {
-                    if self.isCompactVerticalPresentation {
-                        self.collapseAllSections()
-                        return
+
+                    guard isExpandingPresentation else {
+                        switch self.collapseState {
+                        case .allCollapsed:
+                            return
+
+                        case .allExpanded, .firstExpanded:
+                            return self.collapseAllSections()
+
+                        case .mixed:
+                            return
+                        }
                     }
-                    else {
-                        self.expandAllSections()
+
+                    switch self.collapseState {
+                    case .allCollapsed:
+                    return self.expandFirstSection()
+
+                    case .allExpanded,
+                         .firstExpanded,
+                         .mixed:
+                        return
                     }
                 },
                 completion: nil
@@ -184,9 +207,22 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
             }
         }
     }
+    
 
     func collapseAllSections() {
         formItemViewControllers.forEach { $0.state = .collapsed }
+        itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
+    }
+
+    func expandFirstSection() {
+        guard
+            let first = formItemViewControllers.first,
+            first.state != .expanded
+        else {
+            return
+        }
+
+        first.state = .expanded
         itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
     }
 

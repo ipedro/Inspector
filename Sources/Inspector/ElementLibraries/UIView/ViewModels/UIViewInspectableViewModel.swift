@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension UIKitElementLibrary {
+extension UIViewElementLibrary {
     final class UIViewInspectableViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case contentMode = "Content Mode"
@@ -115,6 +115,7 @@ extension UIKitElementLibrary {
                         return
                     }
 
+                    // TODO: take a look again
                     // viewReference.isUserInteractionEnabled = isUserInteractionEnabled
                     view.hightlightView?.updateViews()
                 }

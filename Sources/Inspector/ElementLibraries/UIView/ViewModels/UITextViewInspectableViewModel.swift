@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension UIKitElementLibrary {
+extension UIViewElementLibrary {
     final class UITextViewInspectableViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case text = "Text"

@@ -95,32 +95,6 @@ extension UIView: ViewHierarchyElementProtocol {
         return true
     }
 
-    var isSystemView: Bool {
-        isSystemContainerView || className.starts(with: "_UI")
-    }
-
-    var isSystemContainerView: Bool {
-        let className = classNameWithoutQualifiers
-
-        for systemContainer in Inspector.configuration.knownSystemContainers where className == systemContainer {
-            return true
-        }
-
-        return false
-    }
-
-    var className: String {
-        String(describing: classForCoder)
-    }
-
-    var classNameWithoutQualifiers: String {
-        guard let nameWithoutQualifiers = className.split(separator: "<").first else {
-            return className
-        }
-
-        return String(nameWithoutQualifiers)
-    }
-
     var elementName: String {
         guard let description = accessibilityIdentifier?.split(separator: ".").last else {
             return classNameWithoutQualifiers
@@ -230,4 +204,33 @@ private extension UIView {
             return totalCount == 1 ? "1 Constraint" : "\(totalCount) Constraints"
         }
     }
+}
+
+extension NSObject {
+    var isSystemView: Bool {
+        isSystemContainer || className.starts(with: "_UI")
+    }
+
+    var isSystemContainer: Bool {
+        let className = classNameWithoutQualifiers
+
+        for systemContainer in Inspector.configuration.knownSystemContainers where className == systemContainer {
+            return true
+        }
+
+        return false
+    }
+
+    var className: String {
+        String(describing: classForCoder)
+    }
+
+    var classNameWithoutQualifiers: String {
+        guard let nameWithoutQualifiers = className.split(separator: "<").first else {
+            return className
+        }
+
+        return String(nameWithoutQualifiers)
+    }
+
 }

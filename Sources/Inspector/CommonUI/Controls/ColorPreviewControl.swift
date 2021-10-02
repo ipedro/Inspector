@@ -67,6 +67,9 @@ final class ColorPreviewControl: BaseFormControl {
         $0.addGestureRecognizer(tapGestureRecognizer)
         $0.contentView.addArrangedSubview(colorDisplayLabel)
         $0.contentView.addArrangedSubview(colorDisplayControl)
+        if #available(iOS 13.0, *) {
+            $0.addInteraction(UIContextMenuInteraction(delegate: self))
+        }
     }
 
     let emptyTitle: String?
@@ -115,6 +118,37 @@ final class ColorPreviewControl: BaseFormControl {
 
     @objc private func tapColor() {
         delegate?.colorPreviewControlDidTap(self)
+    }
+
+    @available(iOS 13.0, *)
+    override func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
+                                         configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        let localPoint = convert(location, to: colorDisplayControl)
+
+        guard colorDisplayControl.point(inside: localPoint, with: .none) else { return nil }
+
+        return .init(
+            identifier: nil,
+            previewProvider: nil
+        ) { _ in
+            UIMenu.init(
+                title: "",
+                image: nil,
+                identifier: nil,
+                children: [
+                    UIAction(
+                        title: "Copy",
+                        image: .copySymbol,
+                        identifier: nil,
+                        discoverabilityTitle: "Copy",
+                        handler: { [weak self] _ in
+                            guard let self = self else { return }
+                            UIPasteboard.general.string = self.colorDisplayLabel.text
+                        }
+                    )
+                ]
+            )
+        }
     }
 }
 

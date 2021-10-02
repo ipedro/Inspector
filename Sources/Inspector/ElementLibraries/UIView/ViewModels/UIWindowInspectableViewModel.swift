@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension UIKitElementLibrary {
+extension UIViewElementLibrary {
     final class UIWindowInspectableViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case canResizeToFitContent = "Can Resize To Fit Content"

@@ -49,11 +49,16 @@ final class TextViewControl: BaseFormControl {
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.animateOnTouch = false
         $0.contentView.addArrangedSubview(textView)
+
+        if #available(iOS 13.0, *) {
+            $0.addInteraction(UIContextMenuInteraction(delegate: self))
+        }
     }
 
     override var isEnabled: Bool {
         didSet {
             textView.isEditable = isEnabled
+            textView.isSelectable = true
         }
     }
 
@@ -129,6 +134,37 @@ final class TextViewControl: BaseFormControl {
         super.layoutSubviews()
 
         placeholderLabel.preferredMaxLayoutWidth = placeholderLabel.frame.width
+    }
+
+    @available(iOS 13.0, *)
+    override func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
+                                         configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        let localPoint = convert(location, to: accessoryControl)
+
+        guard accessoryControl.point(inside: localPoint, with: nil) else { return nil }
+
+        return .init(
+            identifier: nil,
+            previewProvider: nil
+        ) { _ in
+            UIMenu.init(
+                title: "",
+                image: nil,
+                identifier: nil,
+                children: [
+                    UIAction(
+                        title: "Copy",
+                        image: .copySymbol,
+                        identifier: nil,
+                        discoverabilityTitle: "Copy",
+                        handler: { [weak self] _ in
+                            guard let self = self else { return }
+                            UIPasteboard.general.string = self.textView.text
+                        }
+                    )
+                ]
+            )
+        }
     }
 }
 

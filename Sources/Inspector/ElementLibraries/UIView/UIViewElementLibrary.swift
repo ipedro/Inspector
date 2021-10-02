@@ -22,7 +22,7 @@ import MapKit
 import UIKit
 import WebKit
 
-enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
+enum UIViewElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
     case activityIndicator
     case button
     case control
@@ -47,11 +47,15 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
     case tabBar
     case webView
     case coreAnimationLayer
+    case runtimeAttributes
 
     // MARK: - InspectorElementLibraryProtocol
 
     var targetClass: AnyClass {
         switch self {
+        case .runtimeAttributes:
+            return NSObject.self
+
         case .coreAnimationLayer:
             return UIView.self
 
@@ -120,6 +124,9 @@ enum UIKitElementLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
 
     func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
         switch self {
+        case .runtimeAttributes:
+            return RuntimeAttributesInspectableViewModel(view: referenceView)
+
         case .coreAnimationLayer:
             return CALayerInspectableViewModel(view: referenceView)
 

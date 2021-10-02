@@ -35,6 +35,10 @@ final class TextFieldControl: BaseFormControl {
 
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.contentView.addArrangedSubview(textField)
+
+        if #available(iOS 13.0, *) {
+            $0.addInteraction(UIContextMenuInteraction(delegate: self))
+        }
     }
 
     override var isEnabled: Bool {
@@ -101,6 +105,37 @@ final class TextFieldControl: BaseFormControl {
 
     override func becomeFirstResponder() -> Bool {
         textField.becomeFirstResponder()
+    }
+
+    @available(iOS 13.0, *)
+    override func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
+                                         configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        let localPoint = convert(location, to: accessoryControl)
+
+        guard accessoryControl.point(inside: localPoint, with: .none) else { return nil }
+
+        return .init(
+            identifier: nil,
+            previewProvider: nil
+        ) { _ in
+            UIMenu.init(
+                title: "",
+                image: nil,
+                identifier: nil,
+                children: [
+                    UIAction(
+                        title: "Copy",
+                        image: .copySymbol,
+                        identifier: nil,
+                        discoverabilityTitle: "Copy",
+                        handler: { [weak self] _ in
+                            guard let self = self else { return }
+                            UIPasteboard.general.string = self.textField.text
+                        }
+                    )
+                ]
+            )
+        }
     }
 }
 

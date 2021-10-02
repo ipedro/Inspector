@@ -21,7 +21,7 @@
 import SwiftUI
 import UIKit
 
-extension UIKitElementLibrary {
+extension UIViewElementLibrary {
     @available(iOS 13.0, *)
     final class UINavigationBarAppearanceInspectableViewModel: InspectorElementViewModelProtocol {
 

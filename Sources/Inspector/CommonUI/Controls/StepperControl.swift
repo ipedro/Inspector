@@ -27,6 +27,7 @@ final class StepperControl: BaseFormControl {
     override var isEnabled: Bool {
         didSet {
             stepperControl.isEnabled = isEnabled
+            stepperControl.isHidden = !isEnabled
             updateState()
         }
     }
