@@ -53,12 +53,15 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         $0.transform = .init(rotationAngle: -(.pi / 2))
     }
 
+    private lazy var disclosureIconContainer = BaseView().then {
+        $0.installView(disclosureIcon, .spacing(leading: .zero, trailing: .zero))
+    }
+
     private lazy var containerStackView = UIStackView().then {
         $0.axis = .horizontal
-        $0.alignment = .center
-        $0.spacing = defaultContainerMargins.top
+        $0.spacing = 8
         $0.isLayoutMarginsRelativeArrangement = true
-        $0.addArrangedSubviews(elementDescriptionView, disclosureIcon)
+        $0.addArrangedSubviews(elementDescriptionView, disclosureIconContainer)
         $0.directionalLayoutMargins = defaultContainerMargins
     }
 
@@ -77,12 +80,21 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
             elementDescriptionView.elementNameLabel.isSafelyHidden = isFirst
 
             if isFirst {
-                containerStackView.directionalLayoutMargins = defaultContainerMargins.with(top: .zero, trailing: ElementInspector.appearance.horizontalMargins * 2)
-                elementDescriptionView.directionalLayoutMargins.update(top: .zero)
+                containerStackView.directionalLayoutMargins = defaultContainerMargins.with(
+                    top: .zero,
+                    trailing: ElementInspector.appearance.horizontalMargins
+                )
+                elementDescriptionView.directionalLayoutMargins = .init(
+                    bottom: ElementInspector.appearance.verticalMargins
+                )
             }
             else {
                 containerStackView.directionalLayoutMargins = defaultContainerMargins
-                elementDescriptionView.directionalLayoutMargins.update(top: ElementInspector.appearance.verticalMargins)
+
+                elementDescriptionView.directionalLayoutMargins = .init(
+                    horizontal: .zero,
+                    vertical: ElementInspector.appearance.verticalMargins
+                )
             }
         }
     }
@@ -124,11 +136,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
 
         contentView.installView(containerStackView, priority: .required)
 
-        let constraint = disclosureIcon.centerYAnchor.constraint(equalTo: elementDescriptionView.iconImageView.centerYAnchor).then {
-            $0.priority = .defaultLow
-        }
-
-        constraint.isActive = true
+        disclosureIcon.centerYAnchor.constraint(equalTo: elementDescriptionView.iconImageView.centerYAnchor).isActive = true
     }
 
     override func prepareForReuse() {
