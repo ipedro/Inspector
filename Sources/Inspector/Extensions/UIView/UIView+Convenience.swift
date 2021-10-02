@@ -75,6 +75,18 @@ extension UIView {
         subviews.filter { $0 is LayerViewProtocol == false }
     }
 
+    var allOriginalSubviews: [UIView] {
+        originalSubviews.reversed().flatMap { [$0] + $0.allOriginalSubviews }
+    }
+
+    var inspectableSubviews: [UIView] {
+        subviews.filter { $0 is NonInspectableView == false }
+    }
+    
+    var allInspectableSubviews: [UIView] {
+        inspectableSubviews.reversed().flatMap { [$0] + $0.allInspectableSubviews }
+    }
+
     func installView(
         _ view: UIView,
         _ viewBinding: ViewBinding = .spacing(all: .zero),

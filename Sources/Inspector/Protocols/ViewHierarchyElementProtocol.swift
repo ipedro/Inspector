@@ -20,7 +20,9 @@
 
 import UIKit
 
-protocol ViewHierarchyProtocol {
+protocol ViewHierarchyElementProtocol {
+    var viewIdentifier: ObjectIdentifier { get }
+
     /// Determines if a view can host an inspector view.
     var canHostInspectorView: Bool { get }
 
@@ -39,9 +41,35 @@ protocol ViewHierarchyProtocol {
 
     var canPresentOnTop: Bool { get }
 
+    var isUserInteractionEnabled: Bool { get }
+
+    var frame: CGRect { get }
+
+    var accessibilityIdentifier: String? { get }
+
+    var isContainer: Bool { get }
+
+    // MARK: - Issues
+
+    var hasIssues: Bool { get }
+
+    var issues: [ViewHierarchyIssue] { get }
+
+    // MARK: - Constraints
+
     var constraintReferences: [NSLayoutConstraintInspectableViewModel] { get }
 
     var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] { get }
 
     var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] { get }
+
+    // MARK: - Description
+
+    var shortElementDescription: String { get }
+
+    var elementDescription: String { get }
+}
+
+extension ViewHierarchyElementProtocol {
+    var hasIssues: Bool { !issues.isEmpty }
 }

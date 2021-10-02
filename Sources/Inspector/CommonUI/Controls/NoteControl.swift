@@ -90,5 +90,7 @@ final class NoteControl: BaseControl {
         contentView.directionalLayoutMargins.update(bottom: ElementInspector.appearance.horizontalMargins)
 
         contentView.addArrangedSubviews(imageView, header)
+
+        header.heightAnchor.constraint(greaterThanOrEqualTo: imageView.heightAnchor).isActive = true
     }
 }

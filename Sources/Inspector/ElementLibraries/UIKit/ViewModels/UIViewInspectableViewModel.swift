@@ -115,7 +115,7 @@ extension UIKitElementLibrary {
                         return
                     }
 
-                    viewReference.isUserInteractionEnabled = isUserInteractionEnabled
+                    // viewReference.isUserInteractionEnabled = isUserInteractionEnabled
                     view.hightlightView?.updateViews()
                 }
 

@@ -65,6 +65,8 @@ enum Texts {
         "Copy \(something)"
     }
 
+    static let lostConnectionToView = "Lost connection to view"
+
     static let `default` = "Default"
 
     static let open = "Open"

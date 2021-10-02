@@ -29,9 +29,9 @@ final class LayoutConstraintElement: Hashable {
         hasher.combine(underlyingConstraint)
     }
 
-    let underlyingConstraint: NSLayoutConstraint
+    weak var underlyingConstraint: NSLayoutConstraint?
 
-    let view: UIView?
+    weak var view: UIView?
 
     let type: `Type`
 
@@ -170,7 +170,7 @@ extension LayoutConstraintElement {
     }
 
     var displayName: String? {
-        let priority = underlyingConstraint.priority != .required ? underlyingConstraint.priority : nil
+        let priority = underlyingConstraint?.priority != .required ? underlyingConstraint?.priority : nil
 
         return [
             type.description,

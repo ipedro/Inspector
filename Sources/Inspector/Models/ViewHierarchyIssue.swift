@@ -20,15 +20,18 @@
 
 import UIKit
 
-enum ViewHierarchyIssue: CustomStringConvertible {
+enum ViewHierarchyIssue: CustomStringConvertible, Hashable {
     case emptyFrame
     case parentHasEmptyFrame
     case controlDisabled
     case interactionDisabled
+    case lostConnection
     case iOS15_emptyNavigationBarScrollEdgeAppearance
 
     var description: String {
         switch self {
+        case .lostConnection:
+            return Texts.lostConnectionToView
         case .emptyFrame:
             return "Frame is empty"
         case .parentHasEmptyFrame:
@@ -42,22 +45,19 @@ enum ViewHierarchyIssue: CustomStringConvertible {
         }
     }
 
-    static func issues(for element: ViewHierarchyElement) -> [ViewHierarchyIssue] {
+    static func issues(for view: UIView) -> [ViewHierarchyIssue] {
         var array = [ViewHierarchyIssue]()
 
-        if element.rootView?.frame.isEmpty == true {
+        if view.frame.isEmpty == true {
             array.append(.emptyFrame)
         }
-        if element.rootView?.isUserInteractionEnabled == false {
+        if view.isUserInteractionEnabled == false {
             array.append(.interactionDisabled)
         }
-        if (element.rootView as? UIControl)?.isEnabled == false {
+        if (view as? UIControl)?.isEnabled == false {
             array.append(.controlDisabled)
         }
-        if element.allParents.contains(where: { $0.issues.contains(.emptyFrame) }) {
-            array.append(.parentHasEmptyFrame)
-        }
-
+        
         #if swift(>=5.5)
         guard #available(iOS 15.0, *) else { return array }
 
@@ -65,7 +65,7 @@ enum ViewHierarchyIssue: CustomStringConvertible {
         defaultAppearance.configureWithDefaultBackground()
 
         if
-            let navigationBar = element.rootView as? UINavigationBar,
+            let navigationBar = view as? UINavigationBar,
             navigationBar.scrollEdgeAppearance == nil,
             navigationBar.standardAppearance.backgroundColor != defaultAppearance.backgroundColor,
             navigationBar.standardAppearance.backgroundEffect?.style != defaultAppearance.backgroundEffect?.style

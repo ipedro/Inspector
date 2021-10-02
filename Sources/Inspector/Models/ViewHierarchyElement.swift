@@ -20,18 +20,95 @@
 
 import UIKit
 
-final class ViewHierarchyElement {
+extension ViewHierarchyElement {
+    struct Snapshot: ViewHierarchyElementProtocol, Hashable {
+        let displayName: String
+        let classNameWithoutQualifiers: String
+        let className: String
+        let elementName: String
+        let viewIdentifier: ObjectIdentifier
+        let shortElementDescription: String
+        let elementDescription: String
+        let isUserInteractionEnabled: Bool
+        let frame: CGRect
+        let accessibilityIdentifier: String?
+        let issues: [ViewHierarchyIssue]
+        let iconImage: UIImage?
+        let canHostInspectorView: Bool
+        let isSystemView: Bool
+        let canPresentOnTop: Bool
+        let constraintReferences: [NSLayoutConstraintInspectableViewModel]
+        let horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel]
+        let verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel]
+        let depth: Int
+        let isContainer: Bool
+        let createdAt = Date()
+
+        init(view: UIView, icon: UIImage?, depth: Int) {
+            viewIdentifier = view.viewIdentifier
+            isContainer = view.isContainer
+            shortElementDescription = view.shortElementDescription
+            elementDescription = view.elementDescription
+            isUserInteractionEnabled = view.isUserInteractionEnabled
+            frame = view.frame
+            accessibilityIdentifier = view.accessibilityIdentifier
+            issues = view.issues
+            iconImage = icon
+            canHostInspectorView = view.canHostInspectorView
+            isSystemView = view.isSystemView
+            className = view.className
+            classNameWithoutQualifiers = view.classNameWithoutQualifiers
+            elementName = view.elementName
+            displayName = view.displayName
+            canPresentOnTop = view.canPresentOnTop
+            constraintReferences = view.constraintReferences
+            horizontalConstraintReferences = view.horizontalConstraintReferences
+            verticalConstraintReferences = view.verticalConstraintReferences
+            self.depth = depth
+        }
+    }
+}
+
+final class ViewHierarchyElement: CustomDebugStringConvertible {
+    var debugDescription: String {
+        String(describing: latestSnapshot)
+    }
+
+    typealias IconProvider = (UIView?) -> UIImage?
+
     weak var rootView: UIView?
 
     var parent: ViewHierarchyElement?
 
-    var isUserInteractionEnabled: Bool
-
-    typealias IconProvider = (UIView?) -> UIImage?
-
     private let iconProvider: IconProvider
 
-    weak private(set) var viewController: UIViewController?
+    let initialSnapshot: Snapshot
+
+    private(set) lazy var history: [Snapshot] = [initialSnapshot] {
+        didSet {
+            print("Updated snapshot of \(initialSnapshot.elementName)")
+            print("New total count is \(history.count)")
+            print("---")
+
+            guard history.count >= 2 else { return }
+
+            var array = history
+            let new = array.popLast()!
+            let old = array.popLast()!
+
+            let newComponents = String(describing: new).split(separator: ",")
+            let oldComponents = String(describing: old).split(separator: ",")
+
+            for (oldLine, newLine) in zip(oldComponents, newComponents) where oldLine != newLine {
+                let oldDescription = oldLine.trimmingCharacters(in: .whitespacesAndNewlines)
+                let newDescription = newLine.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                print("\(oldDescription) -> \(newDescription)")
+            }
+        }
+    }
+
+    var isCollapsed: Bool
 
     var depth: Int {
         didSet {
@@ -46,49 +123,15 @@ final class ViewHierarchyElement {
         }
     }
 
-    // MARK: - Read only Properties
-
-    let canPresentOnTop: Bool
-
-    let canHostInspectorView: Bool
-
-    let identifier: ObjectIdentifier
-
-    let isSystemView: Bool
-
-    let frame: CGRect
-
-    let accessibilityIdentifier: String?
-
-    private(set) lazy var issues = ViewHierarchyIssue.issues(for: self)
-
-    var hasIssues: Bool { !issues.isEmpty }
-
-    private(set) lazy var isContainer: Bool = children.isEmpty == false
-
     private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
 
     private(set) lazy var children: [ViewHierarchyElement] = rootView?.originalSubviews.map {
         .init($0, depth: depth + 1, iconProvider: iconProvider, parent: self)
     } ?? []
 
-    private(set) lazy var allChildren: [ViewHierarchyElement] = children.flatMap { [$0] + $0.children }
-
-    // MARK: - Private Properties
-
-    private let _className: String
-
-    private let _classNameWithoutQualifiers: String
-
-    private let _elementName: String
-
-    var isCollapsed: Bool
+    private(set) lazy var allChildren: [ViewHierarchyElement] = children.flatMap { [$0] + $0.allChildren }
 
     // MARK: - Computed Properties
-
-    var iconImage: UIImage? {
-        iconProvider(rootView)
-    }
 
     var allParents: [ViewHierarchyElement] {
         var array = [ViewHierarchyElement]()
@@ -105,6 +148,18 @@ final class ViewHierarchyElement {
         deepestAbsoulteLevel - depth
     }
 
+    var latestSnapshot: Snapshot {
+        history.last ?? initialSnapshot
+    }
+
+    var inspectableViewReferences: [ViewHierarchyElement] {
+        let selfAndChildren = [self] + allChildren
+
+        let inspectableViews = selfAndChildren.filter(\.canHostInspectorView)
+
+        return inspectableViews
+    }
+
     // MARK: - Init
 
     convenience init(_ rootView: UIView, iconProvider: @escaping IconProvider) {
@@ -113,89 +168,253 @@ final class ViewHierarchyElement {
 
     init(_ rootView: UIView, depth: Int, isCollapsed: Bool = false, iconProvider: @escaping IconProvider, parent: ViewHierarchyElement?) {
         self.rootView = rootView
-
         self.depth = depth
-
         self.parent = parent
-
         self.iconProvider = iconProvider
-
         self.isCollapsed = isCollapsed
 
-        identifier = ObjectIdentifier(rootView)
+        initialSnapshot = Snapshot(
+            view: rootView,
+            icon: iconProvider(rootView),
+            depth: depth
+        )
+    }
 
-        canPresentOnTop = rootView.canPresentOnTop
+    private func takeSnapshot() {
+        guard let rootView = rootView else { return }
 
-        isUserInteractionEnabled = rootView.isUserInteractionEnabled
+        let newSnapshot = Snapshot(view: rootView, icon: iconProvider(rootView), depth: depth)
 
-        _className = rootView.className
-
-        _classNameWithoutQualifiers = rootView.classNameWithoutQualifiers
-
-        _elementName = rootView.elementName
-
-        isSystemView = rootView.isSystemView
-
-        frame = rootView.frame
-
-        accessibilityIdentifier = rootView.accessibilityIdentifier
-
-        canHostInspectorView = rootView.canHostInspectorView
+        history.append(newSnapshot)
     }
 }
 
-// MARK: - ViewHierarchyProtocol {
+// MARK: - ViewHierarchyElementProtocol {
 
-extension ViewHierarchyElement: ViewHierarchyProtocol {
+extension ViewHierarchyElement: ViewHierarchyElementProtocol {
+    var viewIdentifier: ObjectIdentifier {
+        initialSnapshot.viewIdentifier
+    }
+
+    var iconImage: UIImage? {
+        guard let rootView = rootView else {
+            return latestSnapshot.iconImage
+        }
+
+        let currentIcon = iconProvider(rootView)
+
+        if currentIcon?.pngData() != latestSnapshot.iconImage?.pngData() {
+            takeSnapshot()
+        }
+
+        return currentIcon
+    }
+
+    var isContainer: Bool {
+        guard let rootView = rootView else {
+            return latestSnapshot.isContainer
+        }
+
+        if rootView.isContainer != latestSnapshot.isContainer {
+            takeSnapshot()
+        }
+
+        return rootView.isContainer
+    }
+
+    var shortElementDescription: String {
+        guard let rootView = rootView else {
+            return latestSnapshot.shortElementDescription
+        }
+
+        if rootView.shortElementDescription != latestSnapshot.shortElementDescription {
+            takeSnapshot()
+        }
+
+        return rootView.shortElementDescription
+    }
+
+    var elementDescription: String {
+        guard let rootView = rootView else {
+            return latestSnapshot.elementDescription
+        }
+
+        if rootView.canHostInspectorView != latestSnapshot.canHostInspectorView {
+            takeSnapshot()
+        }
+
+        return rootView.elementDescription
+    }
+
+    var canHostInspectorView: Bool {
+        guard let rootView = rootView else {
+            return latestSnapshot.canHostInspectorView
+        }
+
+        if rootView.canHostInspectorView != latestSnapshot.canHostInspectorView {
+            takeSnapshot()
+        }
+
+        return rootView.canHostInspectorView
+    }
+
+    var isSystemView: Bool {
+        guard let rootView = rootView else {
+            return latestSnapshot.isSystemView
+        }
+
+        if rootView.isSystemView != latestSnapshot.isSystemView {
+            takeSnapshot()
+        }
+
+        return rootView.isSystemView
+    }
+
+    var className: String {
+        guard let rootView = rootView else {
+            return latestSnapshot.className
+        }
+
+        if rootView.className != latestSnapshot.className {
+            takeSnapshot()
+        }
+
+        return rootView.className
+    }
+
     var classNameWithoutQualifiers: String {
         guard let rootView = rootView else {
-            return _classNameWithoutQualifiers
+            return latestSnapshot.classNameWithoutQualifiers
+        }
+
+        if rootView.classNameWithoutQualifiers != latestSnapshot.classNameWithoutQualifiers {
+            takeSnapshot()
         }
 
         return rootView.classNameWithoutQualifiers
     }
 
-    var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        rootView?.constraintReferences ?? []
-    }
-
-    var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        rootView?.horizontalConstraintReferences ?? []
-    }
-
-    var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        rootView?.verticalConstraintReferences ?? []
-    }
-
     var elementName: String {
-        let elementName = rootView?.elementName ?? _elementName
-        return elementName.string(appending: issues.isEmpty ? nil : "⚠️", separator: " ")
-    }
+        guard let rootView = rootView else {
+            return latestSnapshot.elementName
+        }
 
-    var className: String {
-        rootView?.className ?? _className
+        if rootView.elementName != latestSnapshot.elementName {
+            takeSnapshot()
+        }
+
+        return rootView.elementName
     }
 
     var displayName: String {
         guard let rootView = rootView else {
-            return _elementName
+            return latestSnapshot.displayName
+        }
+
+        if rootView.displayName != latestSnapshot.displayName {
+            takeSnapshot()
         }
 
         return rootView.displayName
     }
 
-    var flattenedSubviewReferences: [ViewHierarchyElement] {
-        let array = children.flatMap { [$0] + $0.flattenedSubviewReferences }
+    var canPresentOnTop: Bool {
+        guard let rootView = rootView else {
+            return latestSnapshot.canPresentOnTop
+        }
 
-        return array
+        if rootView.canPresentOnTop != latestSnapshot.canPresentOnTop {
+            takeSnapshot()
+        }
+
+        return rootView.canPresentOnTop
     }
 
-    var inspectableViewReferences: [ViewHierarchyElement] {
-        let flattenedViewHierarchy = [self] + flattenedSubviewReferences
+    var isUserInteractionEnabled: Bool {
+        guard let rootView = rootView else {
+            return latestSnapshot.isUserInteractionEnabled
+        }
 
-        let inspectableViews = flattenedViewHierarchy.filter(\.canHostInspectorView)
+        if rootView.isUserInteractionEnabled != latestSnapshot.isUserInteractionEnabled {
+            takeSnapshot()
+        }
 
-        return inspectableViews
+        return rootView.isUserInteractionEnabled
+    }
+
+    var frame: CGRect {
+        guard let rootView = rootView else {
+            return latestSnapshot.frame
+        }
+
+        if rootView.frame != latestSnapshot.frame {
+            takeSnapshot()
+        }
+
+        return rootView.frame
+    }
+
+    var accessibilityIdentifier: String? {
+        guard let rootView = rootView else {
+            return latestSnapshot.accessibilityIdentifier
+        }
+
+        if rootView.accessibilityIdentifier != latestSnapshot.accessibilityIdentifier {
+            takeSnapshot()
+        }
+
+        return rootView.accessibilityIdentifier
+    }
+
+    var issues: [ViewHierarchyIssue] {
+        guard let rootView = rootView else {
+            var issues = latestSnapshot.issues
+            issues.append(.lostConnection)
+
+            return issues
+        }
+
+        if rootView.issues != latestSnapshot.issues {
+            takeSnapshot()
+        }
+
+        return rootView.issues
+    }
+
+    var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        guard let rootView = rootView else {
+            return latestSnapshot.constraintReferences
+        }
+
+        if rootView.constraintReferences != latestSnapshot.constraintReferences {
+            takeSnapshot()
+        }
+
+        return rootView.constraintReferences
+    }
+
+    var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        guard let rootView = rootView else {
+            return latestSnapshot.horizontalConstraintReferences
+        }
+
+        if rootView.horizontalConstraintReferences != latestSnapshot.horizontalConstraintReferences {
+            takeSnapshot()
+        }
+
+        return rootView.horizontalConstraintReferences
+    }
+
+    var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        guard let rootView = rootView else {
+            return latestSnapshot.verticalConstraintReferences
+        }
+
+        if rootView.verticalConstraintReferences != latestSnapshot.verticalConstraintReferences {
+            takeSnapshot()
+        }
+
+        return rootView.verticalConstraintReferences
     }
 }
 
@@ -203,12 +422,11 @@ extension ViewHierarchyElement: ViewHierarchyProtocol {
 
 extension ViewHierarchyElement: Hashable {
     static func == (lhs: ViewHierarchyElement, rhs: ViewHierarchyElement) -> Bool {
-        lhs.identifier == rhs.identifier
+        lhs.viewIdentifier == rhs.viewIdentifier
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(identifier)
-        hasher.combine(rootView)
+        hasher.combine(viewIdentifier)
     }
 }
 

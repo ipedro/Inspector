@@ -48,18 +48,20 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
 
     var title: String { element.type.description }
 
-    var subtitle: String? { element.underlyingConstraint.safeIdentifier }
+    var subtitle: String? { element.underlyingConstraint?.safeIdentifier }
 
     var properties: [InspectorElementViewModelProperty] {
-        Property.allCases.compactMap { property in
+        guard let underlyingConstraint = element.underlyingConstraint else { return [] }
+
+        return Property.allCases.compactMap { property in
             switch property {
             case .constant:
                 return .cgFloatStepper(
                     title: property.rawValue,
-                    value: { self.element.underlyingConstraint.constant },
+                    value: { underlyingConstraint.constant },
                     range: { -CGFloat.infinity...CGFloat.infinity },
                     stepValue: { 1 },
-                    handler: { self.element.underlyingConstraint.constant = $0 }
+                    handler: { underlyingConstraint.constant = $0 }
                 )
             case .spacer0,
                  .spacer1,
@@ -69,7 +71,7 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
             case .multiplier:
                 return .cgFloatStepper(
                     title: property.rawValue,
-                    value: { self.element.underlyingConstraint.multiplier },
+                    value: { underlyingConstraint.multiplier },
                     range: { -CGFloat.infinity...CGFloat.infinity },
                     stepValue: { 0.1 },
                     handler: nil
@@ -78,26 +80,26 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
             case .identifier:
                 return .textField(
                     title: property.rawValue,
-                    placeholder: element.underlyingConstraint.safeIdentifier ?? property.rawValue,
+                    placeholder: element.underlyingConstraint?.safeIdentifier ?? property.rawValue,
                     axis: .vertical,
-                    value: { self.element.underlyingConstraint.safeIdentifier },
-                    handler: { self.element.underlyingConstraint.identifier = $0 }
+                    value: { underlyingConstraint.safeIdentifier },
+                    handler: { underlyingConstraint.identifier = $0 }
                 )
 
             case .isActive:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { self.element.underlyingConstraint.isActive },
-                    handler: { self.element.underlyingConstraint.isActive = $0 }
+                    isOn: { underlyingConstraint.isActive },
+                    handler: { underlyingConstraint.isActive = $0 }
                 )
 
             case .priority:
                 return .floatStepper(
                     title: property.rawValue,
-                    value: { self.element.underlyingConstraint.priority.rawValue },
+                    value: { underlyingConstraint.priority.rawValue },
                     range: { UILayoutPriority.fittingSizeLevel.rawValue...UILayoutPriority.required.rawValue },
                     stepValue: { 50 },
-                    handler: { self.element.underlyingConstraint.priority = .init($0) }
+                    handler: { underlyingConstraint.priority = .init($0) }
                 )
 
             case .firstItem:
@@ -114,7 +116,7 @@ struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol
                     title: property.rawValue,
                     emptyTitle: property.rawValue,
                     options: NSLayoutConstraint.Relation.allCases.map(\.description),
-                    selectedIndex: { NSLayoutConstraint.Relation.allCases.firstIndex(of: self.element.underlyingConstraint.relation) },
+                    selectedIndex: { NSLayoutConstraint.Relation.allCases.firstIndex(of: underlyingConstraint.relation) },
                     handler: nil
                 )
 

@@ -20,7 +20,17 @@
 
 import UIKit
 
-extension UIView: ViewHierarchyProtocol {
+extension UIView: ViewHierarchyElementProtocol {
+    var isContainer: Bool {
+        !originalSubviews.isEmpty
+    }
+
+    var viewIdentifier: ObjectIdentifier {
+        ObjectIdentifier(self)
+    }
+
+    var issues: [ViewHierarchyIssue] { ViewHierarchyIssue.issues(for: self) }
+
     var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
         constraints.compactMap { constraint in
             NSLayoutConstraintInspectableViewModel(with: constraint, in: self)
@@ -126,5 +136,98 @@ extension UIView: ViewHierarchyProtocol {
         }
 
         return elementName
+    }
+
+    var shortElementDescription: String {
+        [subviewsDescription,
+         constraintsDescription,
+         positionDescrpition,
+         sizeDescription,
+         superclassName,
+         className]
+            .compactMap { $0 }
+            .prefix(3)
+            .joined(separator: "\n")
+    }
+
+    var elementDescription: String {
+        [classNameDescription,
+         sizeDescription,
+         positionDescrpition,
+         constraintsDescription,
+         subviewsDescription,
+         issuesDescription?.string(prepending: "\n")]
+            .compactMap { $0 }
+            .joined(separator: "\n")
+    }
+}
+
+private extension UIView {
+    var positionDescrpition: String? {
+        let position = [
+            frame.origin.x.toString(prepending: "X:", separator: " "),
+            frame.origin.y.toString(prepending: "Y:", separator: " ")
+        ].joined(separator: " — ")
+        return "Position: \(position)"
+    }
+
+    var superclassName: String? {
+        guard let superclass = superclass else { return nil }
+        return String(describing: superclass)
+    }
+
+    var subviewsDescription: String? {
+        guard isContainer else { return nil }
+
+        let child = originalSubviews.count == 1 ? "1 Child" : "\(originalSubviews.count) Children"
+        let subview = allOriginalSubviews.count == 1 ? "1 Subview" : "\(allOriginalSubviews.count) Subviews"
+
+        return "\(child) (\(subview))"
+    }
+
+    var sizeDescription: String? {
+        let size = [
+            frame.size.width.toString(prepending: "W:", separator: " "),
+            frame.size.height.toString(prepending: "H:", separator: " ")
+        ].joined(separator: " — ")
+
+        return "Size: \(size)"
+    }
+
+    var classNameDescription: String? {
+        guard let superclassName = superclassName else {
+            return className
+        }
+
+        return "\(className) (\(superclassName))"
+    }
+
+    var issuesDescription: String? {
+        guard !issues.isEmpty else { return nil }
+
+        if issues.count == 1, let issue = issues.first {
+            return "⚠️ \(issue.description)"
+        }
+
+        return issues.reduce(into: "") { multipleIssuesDescription, issue in
+            if multipleIssuesDescription?.isEmpty == true {
+                multipleIssuesDescription = "⚠️ \(issues.count) Issues"
+            }
+            else {
+                multipleIssuesDescription?.append("\n")
+                multipleIssuesDescription?.append("• \(issue.description)")
+            }
+        }
+    }
+
+    var constraintsDescription: String? {
+        let totalCount = constraintReferences.count
+
+        if totalCount == .zero {
+            return nil
+        }
+        else {
+            return totalCount == 1 ? "1 Constraint" : "\(totalCount) Constraints"
+        }
     }
 }

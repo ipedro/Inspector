@@ -182,7 +182,7 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
 
     @objc
     func refresh() {
-        guard viewModel.element.rootView != nil else {
+        guard let rootView = viewModel.element.rootView else {
             return stopLiveUpdatingSnaphost()
         }
 
@@ -191,7 +191,7 @@ final class ElementPreviewPanelViewController: ElementInspectorPanelViewControll
         }
 
         let operation = MainThreadAsyncOperation(name: "udpate snapshot") { [weak self] in
-            self?.viewCode.updateSnapshot(afterScreenUpdates: false)
+            self?.viewCode.updateSnapshot(afterScreenUpdates: rootView.window == nil)
         }
 
         delegate?.addOperationToQueue(operation)

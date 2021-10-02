@@ -27,6 +27,7 @@ final class ViewHierarchyElementThumbnailView: BaseView {
         case frameIsEmpty(CGRect)
         case isHidden
         case lostConnection
+        case noWindow
     }
 
     // MARK: - Properties
@@ -169,10 +170,13 @@ final class ViewHierarchyElementThumbnailView: BaseView {
                 showStatus(icon: .eyeSlashFill, message: "View is hidden.")
 
             case .lostConnection:
-                showStatus(icon: .wifiExlusionMark, message: "Lost connection to view.")
+                showStatus(icon: .wifiExlusionMark, message: Texts.lostConnectionToView)
 
             case let .frameIsEmpty(frame):
                 showStatus(icon: .eyeSlashFill, message: "View frame is empty.\n\(frame)")
+
+            case .noWindow:
+                showStatus(icon: .wifiExlusionMark, message: "Not in the view hierarchy")
             }
         }
     }
@@ -224,6 +228,11 @@ final class ViewHierarchyElementThumbnailView: BaseView {
     func updateViews(afterScreenUpdates: Bool = true) {
         guard let referenceView = element.rootView else {
             state = .lostConnection
+            return
+        }
+
+        guard referenceView.window != nil else {
+            state = .noWindow
             return
         }
 
