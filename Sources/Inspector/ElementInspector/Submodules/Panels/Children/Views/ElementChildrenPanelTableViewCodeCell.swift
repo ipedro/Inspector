@@ -45,7 +45,9 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var elementDescriptionView = ViewHierarchyElementDescriptionView()
+    private lazy var elementDescriptionView = ViewHierarchyElementDescriptionView().then {
+        $0.directionalLayoutMargins = .zero
+    }
 
     private lazy var disclosureIcon = Icon(.chevronDown, color: colorStyle.tertiaryTextColor).then {
         $0.transform = .init(rotationAngle: -(.pi / 2))
@@ -54,16 +56,13 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
     private lazy var containerStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.alignment = .center
+        $0.spacing = defaultContainerMargins.top
         $0.isLayoutMarginsRelativeArrangement = true
         $0.addArrangedSubviews(elementDescriptionView, disclosureIcon)
         $0.directionalLayoutMargins = defaultContainerMargins
     }
 
-    private let defaultContainerMargins = NSDirectionalEdgeInsets(
-        top: ElementInspector.appearance.verticalMargins / 2,
-        bottom: ElementInspector.appearance.verticalMargins / 2,
-        trailing: ElementInspector.appearance.horizontalMargins
-    )
+    private let defaultContainerMargins = ElementInspector.appearance.directionalInsets
 
     var viewModel: ElementChildrenPanelTableViewCellViewModelProtocol? {
         didSet {
@@ -75,12 +74,13 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
 
     var isFirst: Bool = false {
         didSet {
+            elementDescriptionView.elementNameLabel.isSafelyHidden = isFirst
+
             if isFirst {
-                containerStackView.directionalLayoutMargins.update(top: -ElementInspector.appearance.verticalMargins)
+                containerStackView.directionalLayoutMargins = defaultContainerMargins.with(top: .zero, trailing: ElementInspector.appearance.horizontalMargins * 2)
                 elementDescriptionView.directionalLayoutMargins.update(top: .zero)
             }
             else {
-                directionalLayoutMargins.update(top: .zero)
                 containerStackView.directionalLayoutMargins = defaultContainerMargins
                 elementDescriptionView.directionalLayoutMargins.update(top: ElementInspector.appearance.verticalMargins)
             }
@@ -118,9 +118,17 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
 
         backgroundColor = colorStyle.backgroundColor
 
+        contentView.directionalLayoutMargins = .zero
+
         elementDescriptionView.collapseButton.isEnabled = false
 
         contentView.installView(containerStackView, priority: .required)
+
+        let constraint = disclosureIcon.centerYAnchor.constraint(equalTo: elementDescriptionView.iconImageView.centerYAnchor).then {
+            $0.priority = .defaultLow
+        }
+
+        constraint.isActive = true
     }
 
     override func prepareForReuse() {
@@ -128,6 +136,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
 
         delegate = nil
         contentView.alpha = 1
+        elementDescriptionView.elementNameLabel.isSafelyHidden = false
         transform = .identity
     }
 

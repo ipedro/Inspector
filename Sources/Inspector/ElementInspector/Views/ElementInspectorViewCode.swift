@@ -183,8 +183,8 @@ extension ElementInspectorViewCode {
     final class ToogleCollapseButton: BaseControl {
 
         private(set) lazy var icon = UIImageView(image: .expandSymbol, highlightedImage: .collapseSymbol).then {
-            $0.widthAnchor.constraint(equalToConstant: ElementInspector.appearance.regularIconSize.width).isActive = true
-            $0.heightAnchor.constraint(equalToConstant: ElementInspector.appearance.regularIconSize.height).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: CGSize.regularIconSize.width).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: CGSize.regularIconSize.height).isActive = true
         }
 
         var collapseState: ElementInspectorFormPanelCollapseState? {

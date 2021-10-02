@@ -135,8 +135,8 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
         $0.clipsToBounds = true
         $0.numberOfLines = .zero
         $0.textColor = colorStyle.secondaryTextColor
-        $0.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
-        $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        $0.setContentCompressionResistancePriority(.required, for: .vertical)
+        $0.setContentHuggingPriority(.defaultLow, for: .vertical)
     }
 
     private(set) lazy var collapseButton = IconButton(.chevronDown).then {
@@ -153,7 +153,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
     private(set) lazy var iconImageView = UIImageView().then {
         $0.clipsToBounds = false
         $0.contentMode = .scaleAspectFit
-        $0.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        $0.widthAnchor.constraint(equalToConstant: CGSize.actionIconSize.width).isActive = true
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor).isActive = true
     }
 
@@ -161,24 +161,6 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
         $0.spacing = ElementInspector.appearance.verticalMargins
         $0.addArrangedSubviews(elementDescriptionLabel, iconContainerView)
         $0.alignment = .top
-    }
-
-    private lazy var heighConstraint = heightAnchor.constraint(equalToConstant: .zero)
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        guard frame.isEmpty == false else { return }
-
-        let size = systemLayoutSizeFitting(
-            CGSize(width: frame.width, height: .zero),
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-
-        guard size.height != heighConstraint.constant else { return }
-
-        heighConstraint.constant = size.height
     }
 
     override func setup() {
@@ -190,7 +172,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
         contentView.spacing = ElementInspector.appearance.verticalMargins
         contentView.addArrangedSubviews(elementNameLabel, elementIconAndDescriptionLabel)
 
-        installView(indendationAdjustmentStackView)
+        installView(indendationAdjustmentStackView, priority: .required)
 
         contentView.addSubview(collapseButton)
 
@@ -200,7 +182,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
 
         elementIconAndDescriptionLabel.leadingAnchor.constraint(
             equalTo: collapseButton.trailingAnchor,
-            constant: ElementInspector.appearance.verticalMargins
+            constant: ElementInspector.appearance.verticalMargins * 3 / 2
         ).isActive = true
     }
 }
