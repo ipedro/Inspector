@@ -24,7 +24,6 @@ extension UITextContentType: CaseIterable {
     typealias AllCases = [UITextContentType]
 
     static let allCases: [UITextContentType] = {
-        #if swift(>=4.2)
         if #available(iOS 12.0, *) {
             return [
                 .name,
@@ -61,7 +60,6 @@ extension UITextContentType: CaseIterable {
                 .oneTimeCode
             ]
         }
-        #else
         return [
             .name,
             .namePrefix,
@@ -94,7 +92,5 @@ extension UITextContentType: CaseIterable {
             .username,
             .password
         ]
-        #endif
-        return []
     }()
 }

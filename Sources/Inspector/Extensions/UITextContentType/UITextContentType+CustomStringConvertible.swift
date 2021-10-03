@@ -22,7 +22,6 @@ import UIKit
 
 extension UITextContentType: CustomStringConvertible {
     var description: String {
-        #if swift(>=4.2)
         if #available(iOS 12.0, *) {
             switch self {
             case .name:
@@ -83,7 +82,7 @@ extension UITextContentType: CustomStringConvertible {
                 return "\(self) (unsupported)"
             }
         }
-        #else
+
         switch self {
         case .name:
             return "Name"
@@ -138,8 +137,5 @@ extension UITextContentType: CustomStringConvertible {
         default:
             return "\(self) (unsupported)"
         }
-        #endif
-
-        return String(describing: self)
     }
 }

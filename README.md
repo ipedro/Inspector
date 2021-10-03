@@ -61,8 +61,8 @@ Inspector is a debugging library written in Swift.
 ## Requirements
 
 * iOS 11.0+
-* Xcode 11+
-* Swift 5.3+
+* Xcode 12+
+* Swift 5.4+
 
 ---
 ## Installation
