@@ -28,8 +28,11 @@ final class TextViewControl: BaseFormControl {
         .isScrollEnabled(false),
         .textColor(colorStyle.textColor),
         .textStyle(.footnote),
+        .tintColor(colorStyle.tintColor),
         .delegate(self)
     ).then {
+        $0.isSelectable = true
+
         let padding = $0.textContainer.lineFragmentPadding
 
         $0.textContainerInset = UIEdgeInsets(
@@ -56,9 +59,9 @@ final class TextViewControl: BaseFormControl {
     }
 
     override var isEnabled: Bool {
-        didSet {
-            textView.isEditable = isEnabled
-            textView.isSelectable = true
+        get { true }
+        set {
+            textView.isEditable = newValue
         }
     }
 
@@ -70,22 +73,21 @@ final class TextViewControl: BaseFormControl {
                 return
             }
 
-            textView.text = value
+            updateViews()
         }
     }
 
     var placeholder: String? {
         didSet {
-            placeholderLabel.text = placeholder
+            updateViews()
         }
     }
 
     init(title: String?, value: String?, placeholder: String?) {
         self.value = value
+        self.placeholder = placeholder
 
         super.init(title: title)
-
-        self.placeholder = placeholder
     }
 
     @available(*, unavailable)
@@ -113,9 +115,30 @@ final class TextViewControl: BaseFormControl {
         updateViews()
     }
 
+    private let aspectRatio: CGFloat = 3/5
+
+    private lazy var textViewHeightConstraint = textView.heightAnchor.constraint(equalTo: textView.widthAnchor, multiplier: aspectRatio)
+
+    private var isScrollEnabled: Bool = false {
+        didSet {
+            textViewHeightConstraint.isActive = isScrollEnabled
+            textView.isScrollEnabled = isScrollEnabled
+        }
+    }
+
+    var hasLongText: Bool {
+        let trimmedString = String((value ?? "").filter { " \n\t\r".contains($0) == false })
+
+        return trimmedString.count > 320
+    }
+
     func updateViews() {
         placeholderLabel.text = placeholder
+        placeholderLabel.isHidden = placeholder.isNilOrEmpty || !value.isNilOrEmpty
         textView.text = value
+
+        isScrollEnabled = hasLongText
+        accessoryControl.directionalLayoutMargins = !hasLongText ? .zero : .init(horizontal: .zero, vertical: ElementInspector.appearance.verticalMargins)
     }
 
     override var canBecomeFirstResponder: Bool {
@@ -143,6 +166,35 @@ final class TextViewControl: BaseFormControl {
 
         guard accessoryControl.point(inside: localPoint, with: nil) else { return nil }
 
+        var actions = [UIMenuElement]()
+
+        if let range = textView.selectedTextRange {
+            let copySelectionAction = UIAction(
+                title: "Copy selection",
+                image: .copySymbol,
+                identifier: nil,
+                discoverabilityTitle: "Copy selection",
+                handler: { [weak self] _ in
+                    guard let self = self else { return }
+                    UIPasteboard.general.string = self.textView.text(in: range)
+                }
+            )
+            actions.append(copySelectionAction)
+        }
+
+        let copyAllAction = UIAction(
+            title: "Copy all content",
+            image: .copySymbol,
+            identifier: nil,
+            discoverabilityTitle: "Copy all content",
+            handler: { [weak self] _ in
+                guard let self = self else { return }
+                UIPasteboard.general.string = self.textView.text
+            }
+        )
+
+        actions.append(copyAllAction)
+
         return .init(
             identifier: nil,
             previewProvider: nil
@@ -151,18 +203,7 @@ final class TextViewControl: BaseFormControl {
                 title: "",
                 image: nil,
                 identifier: nil,
-                children: [
-                    UIAction(
-                        title: "Copy",
-                        image: .copySymbol,
-                        identifier: nil,
-                        discoverabilityTitle: "Copy",
-                        handler: { [weak self] _ in
-                            guard let self = self else { return }
-                            UIPasteboard.general.string = self.textView.text
-                        }
-                    )
-                ]
+                children: actions
             )
         }
     }

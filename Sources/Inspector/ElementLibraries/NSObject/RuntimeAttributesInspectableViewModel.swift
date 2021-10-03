@@ -136,6 +136,8 @@ final class RuntimeAttributesInspectableViewModel: InspectorElementViewModelProt
 
     let propertyNames: [String]
 
+    let hideUknownValues: Bool = true
+
     init?(view: UIView) {
         let properties = view.propertyNames()
 
@@ -151,10 +153,14 @@ final class RuntimeAttributesInspectableViewModel: InspectorElementViewModelProt
         return propertyNames.compactMap { property in
             guard
                 view.responds(to: Selector(property)),
-                let result = view.safeValue(forKey: property) else {
+                let result = view.safeValue(forKey: property)
+            else {
+                if hideUknownValues {
+                    return nil
+                }
                 return .textField(
                     title: property,
-                    placeholder: "Unknown",
+                    placeholder: "None",
                     axis: .horizontal,
                     value: { nil },
                     handler: nil
@@ -166,13 +172,6 @@ final class RuntimeAttributesInspectableViewModel: InspectorElementViewModelProt
                 return .switch(
                     title: property,
                     isOn: { boolValue },
-                    handler: nil
-                )
-            case let stringValue as String:
-                return .textView(
-                    title: property,
-                    placeholder: property,
-                    value: { stringValue },
                     handler: nil
                 )
             case let colorValue as UIColor:
@@ -217,14 +216,22 @@ final class RuntimeAttributesInspectableViewModel: InspectorElementViewModelProt
             case let view as UIView:
                 return .textView(
                     title: property,
-                    placeholder: "None",
+                    placeholder: nil,
                     value: { view.elementDescription },
+                    handler: nil
+                )
+            case let aClass as AnyClass:
+                return .textField(
+                    title: property,
+                    placeholder: nil,
+                    axis: .horizontal,
+                    value: { String(describing: aClass) },
                     handler: nil
                 )
             case let object as NSObject:
                 return .textView(
                     title: property,
-                    placeholder: "None",
+                    placeholder: nil,
                     value: {
                         [
                             object.className,
@@ -233,6 +240,13 @@ final class RuntimeAttributesInspectableViewModel: InspectorElementViewModelProt
                         ].joined(separator: "\n")
 
                     }, handler: nil
+                )
+            case let stringValue as String:
+                return .textView(
+                    title: property,
+                    placeholder: nil,
+                    value: { stringValue },
+                    handler: nil
                 )
             default:
                 return nil

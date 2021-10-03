@@ -331,15 +331,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
     }
 
     var isUserInteractionEnabled: Bool {
-        guard let rootView = rootView else {
-            return latestSnapshot.isUserInteractionEnabled
-        }
-
-        if rootView.isUserInteractionEnabled != latestSnapshot.isUserInteractionEnabled {
-            takeSnapshot()
-        }
-
-        return rootView.isUserInteractionEnabled
+        initialSnapshot.isUserInteractionEnabled
     }
 
     var frame: CGRect {
