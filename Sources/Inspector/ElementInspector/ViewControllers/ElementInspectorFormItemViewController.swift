@@ -62,16 +62,12 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
 
     init(
         viewModel: InspectorElementViewModelProtocol,
-        viewCode: InspectorElementFormItemView,
-        state: InspectorElementFormItemState = .collapsed
+        viewCode: InspectorElementFormItemView
     ) {
         self.viewModel = viewModel
         self.viewCode = viewCode
 
         super.init(nibName: nil, bundle: nil)
-
-        viewCode.delegate = self
-        viewCode.state = state
     }
 
     @available(*, unavailable)
@@ -86,6 +82,7 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        viewCode.delegate = self
         viewCode.title = viewModel.title
         viewCode.subtitle = viewModel.subtitle
 

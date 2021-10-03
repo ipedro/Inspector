@@ -36,11 +36,11 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         set {}
     }
 
-    static func makeItemView() -> InspectorElementFormItemView {
-        ElementInspectorFormLayoutConstraintView()
+    static func makeItemView(with inititalState: InspectorElementFormItemState) -> InspectorElementFormItemView {
+        ElementInspectorFormLayoutConstraintView(state: inititalState)
     }
 
-    private lazy var formView = ElementInspectorFormItemContentView(header: header).then {
+    private lazy var formView = ElementInspectorFormItemContentView(header: header, state: state).then {
         $0.separatorStyle = .none
     }
 
@@ -50,8 +50,9 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
     }
 
     var state: InspectorElementFormItemState {
-        get { formView.state }
-        set { formView.state = newValue }
+        didSet {
+            formView.state = state
+        }
     }
 
     private(set) lazy var header = SectionHeader(
@@ -76,6 +77,11 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         didSet {
             valueChanged()
         }
+    }
+
+    init(state: InspectorElementFormItemState, frame: CGRect = .zero) {
+        self.state = state
+        super.init(frame: frame)
     }
 
     @objc private func valueChanged() {

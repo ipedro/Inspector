@@ -94,10 +94,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     override var isCompactVerticalPresentation: Bool {
         didSet {
-            guard oldValue != isCompactVerticalPresentation else {
-                print("bail")
-                return
-            }
+            guard oldValue != isCompactVerticalPresentation else { return }
 
             let isExpandingPresentation = oldValue && isCompactVerticalPresentation == false
 
@@ -183,14 +180,18 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
                 let ItemType = dataSource.typeForRow(at: indexPath)
 
-                let itemView = ItemType.makeItemView().then {
+                let itemView = ItemType.makeItemView(with: {
+                    if dataSource.items.count == 1 {
+                        return .expanded
+                    }
+                    return isCompactVerticalPresentation ? .collapsed : .expanded
+                }()).then {
                     $0.separatorStyle = .bottom
                 }
 
                 let formItemViewController = ElementInspectorFormItemViewController(
                     viewModel: viewModel,
-                    viewCode: itemView,
-                    state: isCompactVerticalPresentation ? .collapsed : .expanded
+                    viewCode: itemView
                 ).then {
                     $0.delegate = self
                 }

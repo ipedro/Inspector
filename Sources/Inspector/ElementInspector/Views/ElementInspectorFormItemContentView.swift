@@ -31,8 +31,8 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         set { header.subtitle = newValue }
     }
 
-    static func makeItemView() -> InspectorElementFormItemView {
-        ElementInspectorFormItemContentView(header: SectionHeader.formSectionTitle(), frame: .zero)
+    static func makeItemView(with inititalState: InspectorElementFormItemState) -> InspectorElementFormItemView {
+        ElementInspectorFormItemContentView(header: SectionHeader.formSectionTitle(), state: inititalState, frame: .zero)
     }
 
     // MARK: - Properties
@@ -104,7 +104,9 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
     }
 
     init(header: SectionHeader,
-         state: InspectorElementFormItemState = .collapsed, frame: CGRect = .zero) {
+         state: InspectorElementFormItemState,
+         frame: CGRect = .zero
+    ) {
         self.state = state
         self.header = header
 

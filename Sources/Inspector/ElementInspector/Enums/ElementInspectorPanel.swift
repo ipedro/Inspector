@@ -22,6 +22,7 @@ import UIKit
 
 enum ElementInspectorPanel: Swift.CaseIterable, MenuContentProtocol {
     case preview
+    case identity
     case attributes
     case size
     case children
@@ -29,7 +30,9 @@ enum ElementInspectorPanel: Swift.CaseIterable, MenuContentProtocol {
     var title: String {
         switch self {
         case .preview:
-            return "Inspect"
+            return "Preview"
+        case .identity:
+            return "Inspect Identity"
         case .attributes:
             return "Inspect Attributes"
         case .children:
@@ -43,6 +46,8 @@ enum ElementInspectorPanel: Swift.CaseIterable, MenuContentProtocol {
         switch self {
         case .preview:
             return .infoSymbol
+        case .identity:
+            return .moduleImage(named: "identityPanel")
         case .attributes:
             return .elementAttributesSymbol
         case .children:
@@ -57,7 +62,7 @@ enum ElementInspectorPanel: Swift.CaseIterable, MenuContentProtocol {
             switch panel {
             case .children:
                 return element.isContainer
-            case .preview, .attributes, .size:
+            case .preview, .attributes, .size, .identity:
                 return true
             }
         }

@@ -27,6 +27,8 @@ final class ElementAttributesPanelViewController: ElementInspectorFormPanelViewC
 
 final class ElementSizePanelViewController: ElementInspectorFormPanelViewController {}
 
+final class ElementIdentityPanelViewController: ElementInspectorFormPanelViewController {}
+
 // MARK: - ElementInspectorCoordinatorDelegate
 
 protocol ElementInspectorCoordinatorDelegate: ViewHierarchyActionableProtocol & AnyObject {
@@ -212,6 +214,23 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
                 dataSource: DefaultFormPanelDataSource(items: items) { indexPath in
                     let viewModel = items[indexPath.section].rows[indexPath.row]
                     return AutoLayoutSizeLibrary.viewType(forViewModel: viewModel)
+                }
+            ).then {
+                $0.formDelegate = self
+            }
+        case .identity:
+            let items: [ElementInspectorFormItem] = {
+                guard let rootView = element.rootView else { return [] }
+
+                return NSObjectElementLibrary.allCases
+                    .map { $0.items(for: rootView) }
+                    .flatMap { $0 }
+            }()
+
+            return ElementIdentityPanelViewController(
+                dataSource: DefaultFormPanelDataSource(items: items) { indexPath in
+                    let viewModel = items[indexPath.section].rows[indexPath.row]
+                    return NSObjectElementLibrary.viewType(forViewModel: viewModel)
                 }
             ).then {
                 $0.formDelegate = self
