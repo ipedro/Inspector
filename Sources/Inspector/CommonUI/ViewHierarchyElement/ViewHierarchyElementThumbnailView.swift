@@ -231,12 +231,15 @@ class ViewHierarchyElementThumbnailView: BaseView {
             return
         }
 
-        guard referenceView.window != nil else {
+        if referenceView.isAssociatedToWindow == false {
             state = .noWindow
             return
         }
 
-        guard referenceView.frame.isEmpty == false, referenceView.frame != .zero else {
+        guard
+            referenceView.frame.isEmpty == false,
+            referenceView.frame != .zero
+        else {
             state = .frameIsEmpty(referenceView.frame)
             return
         }
@@ -337,10 +340,7 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
 
     @objc
     func refresh() {
-        guard
-            let rootView = element.rootView,
-            rootView.window != nil
-        else {
+        guard element.rootView?.isAssociatedToWindow == true else {
             return stopLiveUpdatingSnaphost()
         }
 

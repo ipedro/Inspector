@@ -41,6 +41,10 @@ extension UIView: ViewHierarchyElementProtocol {
         ObjectIdentifier(self)
     }
 
+    var isAssociatedToWindow: Bool {
+        window != nil || self is UIWindow
+    }
+
     var issues: [ViewHierarchyIssue] { ViewHierarchyIssue.issues(for: self) }
 
     var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
