@@ -57,7 +57,13 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     private var rootWindow: UIWindow? { rootElement.rootView?.window }
 
     var isCapableOfSidePresentation: Bool {
-        guard let rootWindow = rootWindow else { return false }
+        guard
+            let rootWindow = rootWindow,
+            ElementInspector.configuration.panelSidePresentationAvailable
+        else {
+            return false
+        }
+        
         let minimumSize = ElementInspector.configuration.panelSidePresentationMinimumContainerSize
 
         return rootWindow.frame.width >= minimumSize.width && rootWindow.frame.height >= minimumSize.height

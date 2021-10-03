@@ -56,6 +56,8 @@ extension ElementInspector {
             )
         }
 
+        let panelSidePresentationAvailable: Bool = false
+
         var panelSidePresentationMinimumContainerSize: CGSize {
             CGSize(
                 width: 768,
