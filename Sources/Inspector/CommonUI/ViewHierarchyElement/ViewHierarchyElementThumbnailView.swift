@@ -294,8 +294,21 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
     override func didMoveToWindow() {
         super.didMoveToWindow()
 
-        guard superview?.window != nil else {
+        guard let window = window else {
+            if #available(iOS 13.0, *) {
+                hoverGestureRecognizer.isEnabled = false
+            }
+
             return stopLiveUpdatingSnaphost()
+        }
+
+        if #available(iOS 13.0, *) {
+            window.addGestureRecognizer(hoverGestureRecognizer)
+            hoverGestureRecognizer.isEnabled = true
+        }
+
+        if #available(iOS 14.0, *) {
+            hoverGestureRecognizer.isEnabled = ProcessInfo().isiOSAppOnMac == false
         }
 
         startLiveUpdatingSnaphost()
@@ -337,6 +350,27 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
 
         if !isHidden, superview?.isHidden == false {
             updateViews(afterScreenUpdates: false)
+        }
+    }
+
+    @available(iOS 13.0, *)
+    private lazy var hoverGestureRecognizer = UIHoverGestureRecognizer(
+        target: self,
+        action: #selector(hovering(_:))
+    )
+
+    @available(iOS 13.0, *)
+    @objc
+    func hovering(_ recognizer: UIHoverGestureRecognizer) {
+        switch recognizer.state {
+        case .began, .changed:
+            stopLiveUpdatingSnaphost()
+
+        case .ended, .cancelled:
+            startLiveUpdatingSnaphost()
+
+        default:
+            break
         }
     }
 }
