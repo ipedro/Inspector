@@ -72,7 +72,9 @@ final class ViewHierarchyPreviewController: UIViewController {
         $0.viewModel = element
     }
 
-    private(set) lazy var thumbnailView = ViewHierarchyElementThumbnailView(with: element)
+    private(set) lazy var separatorView = SeparatorView(style: .hard)
+
+    private(set) lazy var thumbnailView = LiveViewHierarchyElementThumbnailView(with: element)
 
     override func loadView() {
         view = viewCode
@@ -81,15 +83,7 @@ final class ViewHierarchyPreviewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        viewCode.contentView.addArrangedSubviews(elementDescriptionView, thumbnailView)
-
-        thumbnailView.updateViews(afterScreenUpdates: false)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        thumbnailView.updateViews(afterScreenUpdates: true)
+        viewCode.contentView.addArrangedSubviews(elementDescriptionView, separatorView, thumbnailView)
     }
 
     override func viewDidLayoutSubviews() {

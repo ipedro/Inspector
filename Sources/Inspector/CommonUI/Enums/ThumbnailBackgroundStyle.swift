@@ -28,12 +28,12 @@ enum ThumbnailBackgroundStyle: CaseIterable, RawRepresentable {
     static let allCases: [ThumbnailBackgroundStyle] = [
         strong,
         medium,
-        soft
+        systemBackground
     ]
 
     case strong
     case medium
-    case soft
+    case systemBackground
     case custom(UIColor)
 
     init?(rawValue: Int) {
@@ -43,7 +43,7 @@ enum ThumbnailBackgroundStyle: CaseIterable, RawRepresentable {
         case  1:
             self = .medium
         case  2:
-            self = .soft
+            self = .systemBackground
         default:
             return nil
         }
@@ -55,7 +55,7 @@ enum ThumbnailBackgroundStyle: CaseIterable, RawRepresentable {
             return 0
         case .medium:
             return 1
-        case .soft:
+        case .systemBackground:
             return 2
         case .custom:
             return -1
@@ -65,17 +65,17 @@ enum ThumbnailBackgroundStyle: CaseIterable, RawRepresentable {
     var color: UIColor {
         switch (self, Inspector.configuration.colorStyle) {
         case (.strong, .dark):
-            return UIColor(white: 0.80, alpha: 1)
+            return UIColor(white: 0.40, alpha: 1)
         case (.medium, .dark):
-            return UIColor(white: 0.45, alpha: 1)
-        case (.soft, .dark):
-            return UIColor(white: 0.10, alpha: 1)
+            return UIColor(white: 0.80, alpha: 1)
+        case (.systemBackground, .dark):
+            return UIColor(white: 0, alpha: 1)
 
         case (.strong, .light):
             return UIColor(white: 0.40, alpha: 1)
         case (.medium, .light):
             return UIColor(white: 0.80, alpha: 1)
-        case (.soft, .light):
+        case (.systemBackground, .light):
             return UIColor(white: 1, alpha: 1)
         case let (.custom(color), _):
             return color
@@ -88,14 +88,14 @@ enum ThumbnailBackgroundStyle: CaseIterable, RawRepresentable {
             return .darkText
         case (.medium, .dark):
             return .white
-        case (.soft, .dark):
+        case (.systemBackground, .dark):
             return .lightGray
 
         case (.strong, .light):
             return .white
         case (.medium, .light):
             return .darkText
-        case (.soft, .light):
+        case (.systemBackground, .light):
             return .darkText
 
         case let (.custom(color), _):
@@ -111,7 +111,7 @@ enum ThumbnailBackgroundStyle: CaseIterable, RawRepresentable {
         case .custom, .medium:
             return IconKit.imageOfAppearanceMedium().withRenderingMode(.alwaysTemplate)
 
-        case .soft:
+        case .systemBackground:
             return IconKit.imageOfAppearanceDark().withRenderingMode(.alwaysTemplate)
         }
     }

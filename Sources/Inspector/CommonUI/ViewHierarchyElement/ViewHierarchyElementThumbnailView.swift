@@ -72,9 +72,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
 
     // MARK: - Componentns
 
-    private lazy var gridImageView = UIImageView(
-        .image(IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero))
-    )
+    private lazy var gridImageView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero))
 
     private lazy var statusContentView = UIStackView.vertical(
         .directionalLayoutMargins(contentView.directionalLayoutMargins),
@@ -82,11 +80,10 @@ class ViewHierarchyElementThumbnailView: BaseView {
         .verticalAlignment(.center)
     )
 
-    private lazy var snapshotContainerView = BaseView(
-        .layerOptions(.masksToBounds(true)),
-        .clipsToBounds(true),
-        .frame(bounds)
-    )
+    private lazy var snapshotContainerView = BaseView().then {
+        $0.layer.shadowOpacity = Float(colorStyle.disabledAlpha)
+        $0.layer.shadowRadius = Self.contentMargins.leading
+    }
 
     static let contentMargins = NSDirectionalEdgeInsets(insets: ElementInspector.appearance.horizontalMargins)
 
@@ -94,6 +91,8 @@ class ViewHierarchyElementThumbnailView: BaseView {
 
     override func setup() {
         super.setup()
+
+        tintColor = colorStyle.secondaryTextColor
 
         contentView.directionalLayoutMargins = Self.contentMargins
 

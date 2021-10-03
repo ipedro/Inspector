@@ -27,9 +27,6 @@ extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
         case let formPanelController as ElementInspectorFormPanelViewController:
             formPanelController.selectColor(viewController.selectedColor)
 
-//        case let previewPanelController as ElementPreviewPanelViewController:
-//            ElementInspector.configuration.thumbnailBackgroundStyle = .custom(viewController.selectedColor)
-//            previewPanelController.selectBackgroundStyle(ElementInspector.configuration.thumbnailBackgroundStyle)
         default:
             break
         }

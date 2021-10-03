@@ -103,7 +103,9 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
             let element: UIView? = {
                 switch property {
                 case let .preview(target: container):
-                    return LiveViewHierarchyElementThumbnailView(with: container.reference)
+                    return LiveViewHierarchyElementThumbnailView(with: container.reference).then {
+                        $0.layer.cornerRadius = ElementInspector.appearance.elementInspectorCornerRadius / 2
+                    }
 
                 case .separator:
                     return SeparatorView(style: .medium).then {

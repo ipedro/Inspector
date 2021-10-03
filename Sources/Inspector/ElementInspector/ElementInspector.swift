@@ -65,7 +65,7 @@ extension ElementInspector {
             )
         }
 
-        var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .medium
+        var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .systemBackground
     }
 }
 
