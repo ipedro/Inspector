@@ -55,9 +55,9 @@ extension ViewHierarchyElement {
             issues = view.issues
             iconImage = icon
             canHostInspectorView = view.canHostInspectorView
-            isSystemView = view.isSystemView
-            className = view.className
-            classNameWithoutQualifiers = view.classNameWithoutQualifiers
+            isSystemView = view._isSystemView
+            className = view._className
+            classNameWithoutQualifiers = view._classNameWithoutQualifiers
             elementName = view.elementName
             displayName = view.displayName
             canPresentOnTop = view.canPresentOnTop
@@ -69,8 +69,8 @@ extension ViewHierarchyElement {
     }
 }
 
-final class ViewHierarchyElement: CustomDebugStringConvertible {
-    var debugDescription: String {
+final class ViewHierarchyElement: NSObject {
+    override var debugDescription: String {
         String(describing: latestSnapshot)
     }
 
@@ -80,7 +80,7 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 
     var parent: ViewHierarchyElement?
 
-    private let iconProvider: IconProvider
+    private let iconProvider: IconProvider?
 
     let initialSnapshot: Snapshot
 
@@ -162,11 +162,11 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 
     // MARK: - Init
 
-    convenience init(_ rootView: UIView, iconProvider: @escaping IconProvider) {
+    convenience init(_ rootView: UIView, iconProvider: IconProvider?) {
         self.init(rootView, depth: .zero, isCollapsed: false, iconProvider: iconProvider, parent: nil)
     }
 
-    init(_ rootView: UIView, depth: Int, isCollapsed: Bool = false, iconProvider: @escaping IconProvider, parent: ViewHierarchyElement?) {
+    init(_ rootView: UIView, depth: Int, isCollapsed: Bool = false, iconProvider: IconProvider?, parent: ViewHierarchyElement?) {
         self.rootView = rootView
         self.depth = depth
         self.parent = parent
@@ -175,15 +175,20 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 
         initialSnapshot = Snapshot(
             view: rootView,
-            icon: iconProvider(rootView),
+            icon: iconProvider?(rootView),
             depth: depth
         )
     }
 
-    private func takeSnapshot() {
+    private func setNeedsSnapshot() {
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(makeSnapshot), object: nil)
+        perform(#selector(makeSnapshot), with: nil, afterDelay: .long)
+    }
+
+    @objc private func makeSnapshot() {
         guard let rootView = rootView else { return }
 
-        let newSnapshot = Snapshot(view: rootView, icon: iconProvider(rootView), depth: depth)
+        let newSnapshot = Snapshot(view: rootView, icon: iconProvider?(rootView), depth: depth)
 
         history.append(newSnapshot)
     }
@@ -201,10 +206,10 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
             return latestSnapshot.iconImage
         }
 
-        let currentIcon = iconProvider(rootView)
+        let currentIcon = iconProvider?(rootView)
 
         if currentIcon?.pngData() != latestSnapshot.iconImage?.pngData() {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return currentIcon
@@ -216,7 +221,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.isContainer != latestSnapshot.isContainer {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.isContainer
@@ -228,7 +233,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.shortElementDescription != latestSnapshot.shortElementDescription {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.shortElementDescription
@@ -240,7 +245,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.canHostInspectorView != latestSnapshot.canHostInspectorView {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.elementDescription
@@ -252,7 +257,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.canHostInspectorView != latestSnapshot.canHostInspectorView {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.canHostInspectorView
@@ -264,7 +269,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.isSystemView != latestSnapshot.isSystemView {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.isSystemView
@@ -276,7 +281,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.className != latestSnapshot.className {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.className
@@ -288,7 +293,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.classNameWithoutQualifiers != latestSnapshot.classNameWithoutQualifiers {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.classNameWithoutQualifiers
@@ -300,7 +305,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.elementName != latestSnapshot.elementName {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.elementName
@@ -312,7 +317,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.displayName != latestSnapshot.displayName {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.displayName
@@ -324,7 +329,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.canPresentOnTop != latestSnapshot.canPresentOnTop {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.canPresentOnTop
@@ -340,7 +345,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.frame != latestSnapshot.frame {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.frame
@@ -352,7 +357,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.accessibilityIdentifier != latestSnapshot.accessibilityIdentifier {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.accessibilityIdentifier
@@ -367,7 +372,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.issues != latestSnapshot.issues {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.issues
@@ -379,7 +384,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.constraintReferences != latestSnapshot.constraintReferences {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.constraintReferences
@@ -391,7 +396,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.horizontalConstraintReferences != latestSnapshot.horizontalConstraintReferences {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.horizontalConstraintReferences
@@ -403,22 +408,10 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         if rootView.verticalConstraintReferences != latestSnapshot.verticalConstraintReferences {
-            takeSnapshot()
+            setNeedsSnapshot()
         }
 
         return rootView.verticalConstraintReferences
-    }
-}
-
-// MARK: - Hashable
-
-extension ViewHierarchyElement: Hashable {
-    static func == (lhs: ViewHierarchyElement, rhs: ViewHierarchyElement) -> Bool {
-        lhs.viewIdentifier == rhs.viewIdentifier
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(viewIdentifier)
     }
 }
 

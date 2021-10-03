@@ -21,6 +21,16 @@
 import UIKit
 
 public enum InspectorElementViewModelProperty {
+    public struct PreviewTarget {
+        internal let reference: ViewHierarchyElement
+
+        public init(view: UIView) {
+            reference = .init(view, iconProvider: .none)
+        }
+    }
+
+    case preview(target: PreviewTarget)
+    
     case colorPicker(title: String,
                      emptyTitle: String = "No color",
                      color: ColorProvider,
@@ -147,7 +157,8 @@ extension InspectorElementViewModelProperty {
              .cgSize,
              .cgPoint,
              .directionalInsets,
-             .infoNote:
+             .infoNote,
+             .preview:
             return false
         }
     }

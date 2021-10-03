@@ -52,13 +52,13 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     var isCompactVerticalPresentation: Bool = false
 
     private var defaultPanel: ElementInspectorPanel {
-        if isCompactVerticalPresentation, let firstOtherPanel = availablePanels.filter({ $0 != .preview }).first {
+        if isCompactVerticalPresentation, let firstOtherPanel = availablePanels.filter({ $0 != .identity }).first {
             return firstOtherPanel
         }
         else if let firstPanel = availablePanels.first {
             return firstPanel
         }
-        return .preview
+        return .identity
     }
 
     var currentPanelIndex: Int {

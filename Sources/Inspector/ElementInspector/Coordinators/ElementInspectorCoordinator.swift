@@ -166,14 +166,22 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     func panelViewController(for panel: ElementInspectorPanel, with element: ViewHierarchyElement) -> ElementInspectorPanelViewController {
         switch panel {
-        case .preview:
-            return ElementPreviewPanelViewController(
-                viewModel: ElementPreviewPanelViewModel(
-                    element: element,
-                    isLiveUpdating: true
-                )
+        case .identity:
+            let items: [ElementInspectorFormItem] = {
+                guard let rootView = element.rootView else { return [] }
+
+                return ElementInspectorIdentityLibrary.allCases
+                    .map { $0.items(for: rootView) }
+                    .flatMap { $0 }
+            }()
+
+            return ElementIdentityPanelViewController(
+                dataSource: DefaultFormPanelDataSource(items: items) { indexPath in
+                    let viewModel = items[indexPath.section].rows[indexPath.row]
+                    return ElementInspectorIdentityLibrary.viewType(forViewModel: viewModel)
+                }
             ).then {
-                $0.delegate = self
+                $0.formDelegate = self
             }
 
         case .attributes:
@@ -205,7 +213,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
             let items: [ElementInspectorFormItem] = {
                 guard let rootView = element.rootView else { return [] }
 
-                return AutoLayoutSizeLibrary.allCases
+                return ElementInspectorSizeLibrary.allCases
                     .map { $0.items(for: rootView) }
                     .flatMap { $0 }
             }()
@@ -213,24 +221,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
             return ElementSizePanelViewController(
                 dataSource: DefaultFormPanelDataSource(items: items) { indexPath in
                     let viewModel = items[indexPath.section].rows[indexPath.row]
-                    return AutoLayoutSizeLibrary.viewType(forViewModel: viewModel)
-                }
-            ).then {
-                $0.formDelegate = self
-            }
-        case .identity:
-            let items: [ElementInspectorFormItem] = {
-                guard let rootView = element.rootView else { return [] }
-
-                return NSObjectElementLibrary.allCases
-                    .map { $0.items(for: rootView) }
-                    .flatMap { $0 }
-            }()
-
-            return ElementIdentityPanelViewController(
-                dataSource: DefaultFormPanelDataSource(items: items) { indexPath in
-                    let viewModel = items[indexPath.section].rows[indexPath.row]
-                    return NSObjectElementLibrary.viewType(forViewModel: viewModel)
+                    return ElementInspectorSizeLibrary.viewType(forViewModel: viewModel)
                 }
             ).then {
                 $0.formDelegate = self

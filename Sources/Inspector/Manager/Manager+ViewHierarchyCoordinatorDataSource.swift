@@ -42,7 +42,7 @@ extension Manager: ViewHierarchyCoordinatorDataSource {
 
     var elementLibraries: [InspectorElementLibraryProtocol] {
         var elements = host?.inspectorElementLibraries ?? []
-        elements.append(contentsOf: UIViewElementLibrary.allCases)
+        elements.append(contentsOf: ElementInspectorAttributesLibrary.allCases)
 
         return elements
     }

@@ -20,24 +20,26 @@
 
 import UIKit
 
-@available(iOS 14.0, *)
-extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
-    func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
-        switch currentPanelViewController {
-        case let formPanelController as ElementInspectorFormPanelViewController:
-            formPanelController.selectColor(viewController.selectedColor)
+enum ElementInspectorIdentityLibrary: Swift.CaseIterable, InspectorSizeLibraryProtocol {
+    case preview
+    case runtimeAttributes
 
-//        case let previewPanelController as ElementPreviewPanelViewController:
-//            ElementInspector.configuration.thumbnailBackgroundStyle = .custom(viewController.selectedColor)
-//            previewPanelController.selectBackgroundStyle(ElementInspector.configuration.thumbnailBackgroundStyle)
-        default:
-            break
+    // MARK: - InspectorSizeLibraryProtocol
+
+    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormItemView.Type {
+        ElementInspectorFormItemContentView.self
+    }
+
+    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
+        switch self {
+        case .preview:
+            return .single(RuntimePreviewInspectableViewModel(view: referenceView))
+        
+        case .runtimeAttributes:
+            guard let attributes = RuntimeAttributesInspectableViewModel(view: referenceView) else { return [] }
+            return .single(attributes)
         }
     }
 
-    func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
-        guard let formPanelController = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
-
-        formPanelController.finishColorSelection()
-    }
+    func icon(for viewModel: InspectorElementViewModelProtocol) -> UIImage? { nil }
 }

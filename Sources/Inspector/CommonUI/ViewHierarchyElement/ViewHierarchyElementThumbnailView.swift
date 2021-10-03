@@ -21,7 +21,7 @@
 import AVFoundation
 import UIKit
 
-final class ViewHierarchyElementThumbnailView: BaseView {
+class ViewHierarchyElementThumbnailView: BaseView {
     enum State {
         case snapshot(UIView)
         case frameIsEmpty(CGRect)
@@ -36,7 +36,7 @@ final class ViewHierarchyElementThumbnailView: BaseView {
 
     var showEmptyStatusMessage: Bool = true {
         didSet {
-            updateViews()
+            updateViews(afterScreenUpdates: true)
         }
     }
 
@@ -225,7 +225,7 @@ final class ViewHierarchyElementThumbnailView: BaseView {
         )
     }
 
-    func updateViews(afterScreenUpdates: Bool = true) {
+    func updateViews(afterScreenUpdates: Bool) {
         guard let referenceView = element.rootView else {
             state = .lostConnection
             return
@@ -254,5 +254,89 @@ final class ViewHierarchyElementThumbnailView: BaseView {
         originalSnapshotSize = snapshotView.frame.size
 
         state = .snapshot(snapshotView)
+    }
+}
+
+final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnailView {
+    override var isHidden: Bool {
+        didSet {
+            if isHidden {
+                stopLiveUpdatingSnaphost()
+            }
+            else {
+                startLiveUpdatingSnaphost()
+            }
+        }
+    }
+
+    private var displayLink: CADisplayLink? {
+        didSet {
+            if let oldLink = oldValue {
+                oldLink.invalidate()
+            }
+
+            if let newLink = displayLink {
+                newLink.add(to: .current, forMode: .default)
+            }
+        }
+    }
+
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+
+        guard superview?.window != nil else {
+            return stopLiveUpdatingSnaphost()
+        }
+
+        startLiveUpdatingSnaphost()
+    }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+
+        guard superview?.window != nil else {
+            return stopLiveUpdatingSnaphost()
+        }
+
+        startLiveUpdatingSnaphost()
+    }
+
+    @objc
+    func startLiveUpdatingSnaphost() {
+        debounce(#selector(makeDisplayLink), after: .average)
+    }
+
+    @objc
+    func makeDisplayLink() {
+        displayLink = CADisplayLink(target: self, selector: #selector(refresh))
+    }
+
+    @objc
+    func stopLiveUpdatingSnaphost() {
+        Self.cancelPreviousPerformRequests(
+            withTarget: self,
+            selector: #selector(makeDisplayLink),
+            object: nil
+        )
+
+        displayLink = nil
+    }
+
+    @objc
+    func refresh() {
+        guard
+            let rootView = element.rootView,
+            rootView.window != nil
+        else {
+            return stopLiveUpdatingSnaphost()
+        }
+
+        if backgroundStyle.color != backgroundColor {
+            backgroundColor = backgroundStyle.color
+        }
+
+        if !isHidden, superview?.isHidden == false {
+            updateViews(afterScreenUpdates: false)
+        }
     }
 }

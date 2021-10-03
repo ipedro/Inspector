@@ -74,7 +74,7 @@ public extension ViewHierarchyLayer {
 
     static let wireframes = Inspector.ViewHierarchyLayer(name: "Wireframes", showLabels: false) { _ in true }
 
-    static let systemViews = Inspector.ViewHierarchyLayer(name: "System views", showLabels: true, allowsSystemViews: true) { $0.isSystemView && !$0.isSystemContainer }
+    static let systemViews = Inspector.ViewHierarchyLayer(name: "System views", showLabels: true, allowsSystemViews: true) { $0.isSystemView && !$0._isSystemContainer }
 
-    static let systemContainers = Inspector.ViewHierarchyLayer(name: "System containers", showLabels: true, allowsSystemViews: true) { $0.isSystemContainer }
+    static let systemContainers = Inspector.ViewHierarchyLayer(name: "System containers", showLabels: true, allowsSystemViews: true) { $0._isSystemContainer }
 }

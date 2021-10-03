@@ -21,6 +21,18 @@
 import UIKit
 
 extension UIView: ViewHierarchyElementProtocol {
+    var isSystemView: Bool {
+        _isSystemView
+    }
+
+    var className: String {
+        _className
+    }
+
+    var classNameWithoutQualifiers: String {
+        _classNameWithoutQualifiers
+    }
+
     var isContainer: Bool {
         !originalSubviews.isEmpty
     }
@@ -60,8 +72,8 @@ extension UIView: ViewHierarchyElementProtocol {
     }
 
     var canHostInspectorView: Bool {
-        let className = self.className
-        let superViewClassName = superview?.className ?? ""
+        let className = self._className
+        let superViewClassName = superview?._className ?? ""
 
         guard
             // Adding subviews directly to a UIVisualEffectView throws runtime exception.
@@ -69,7 +81,7 @@ extension UIView: ViewHierarchyElementProtocol {
 
             // Adding subviews to UIPageViewController containers throws runtime exception.
             className != "_UIPageViewControllerContentView",
-            subviews.map(\.className).contains("_UIPageViewControllerContentView") == false,
+            subviews.map(\._className).contains("_UIPageViewControllerContentView") == false,
             className != "_UIQueuingScrollView",
             superViewClassName != "_UIQueuingScrollView",
 
@@ -97,7 +109,7 @@ extension UIView: ViewHierarchyElementProtocol {
 
     var elementName: String {
         guard let description = accessibilityIdentifier?.split(separator: ".").last else {
-            return classNameWithoutQualifiers
+            return _classNameWithoutQualifiers
         }
 
         return String(description)
@@ -118,7 +130,7 @@ extension UIView: ViewHierarchyElementProtocol {
          positionDescrpition,
          sizeDescription,
          superclassName,
-         className]
+         _className]
             .compactMap { $0 }
             .prefix(3)
             .joined(separator: "\n")
@@ -170,10 +182,10 @@ private extension UIView {
 
     var classNameDescription: String? {
         guard let superclassName = superclassName else {
-            return className
+            return _className
         }
 
-        return "\(className) (\(superclassName))"
+        return "\(_className) (\(superclassName))"
     }
 
     var issuesDescription: String? {
@@ -207,12 +219,12 @@ private extension UIView {
 }
 
 extension NSObject {
-    var isSystemView: Bool {
-        isSystemContainer || className.starts(with: "_UI")
+    var _isSystemView: Bool {
+        _isSystemContainer || _className.starts(with: "_UI")
     }
 
-    var isSystemContainer: Bool {
-        let className = classNameWithoutQualifiers
+    var _isSystemContainer: Bool {
+        let className = _classNameWithoutQualifiers
 
         for systemContainer in Inspector.configuration.knownSystemContainers where className == systemContainer {
             return true
@@ -221,13 +233,13 @@ extension NSObject {
         return false
     }
 
-    var className: String {
+    var _className: String {
         String(describing: classForCoder)
     }
 
-    var classNameWithoutQualifiers: String {
-        guard let nameWithoutQualifiers = className.split(separator: "<").first else {
-            return className
+    var _classNameWithoutQualifiers: String {
+        guard let nameWithoutQualifiers = _className.split(separator: "<").first else {
+            return _className
         }
 
         return String(nameWithoutQualifiers)
