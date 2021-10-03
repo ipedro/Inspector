@@ -102,8 +102,8 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
         for (index, property) in viewModel.properties.enumerated() {
             let element: UIView? = {
                 switch property {
-                case let .preview(target: target):
-                    return LiveViewHierarchyElementThumbnailView(frame: viewCode.bounds, element: target.reference)
+                case let .preview(target: container):
+                    return LiveViewHierarchyElementThumbnailView(with: container.reference)
 
                 case .separator:
                     return SeparatorView(style: .medium).then {

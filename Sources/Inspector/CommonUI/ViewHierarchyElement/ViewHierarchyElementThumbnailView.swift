@@ -40,8 +40,6 @@ class ViewHierarchyElementThumbnailView: BaseView {
         }
     }
 
-    private(set) var originalSnapshotSize: CGSize = .zero
-
     var backgroundStyle: ThumbnailBackgroundStyle {
         get {
             ElementInspector.configuration.thumbnailBackgroundStyle
@@ -52,12 +50,19 @@ class ViewHierarchyElementThumbnailView: BaseView {
         }
     }
 
+    private var heightConstraint: NSLayoutConstraint? {
+        didSet {
+            oldValue?.isActive = false
+            heightConstraint?.priority = .init(rawValue: 999)
+            heightConstraint?.isActive = true
+        }
+    }
+
     // MARK: - Init
 
-    init(frame: CGRect, element: ViewHierarchyElement) {
+    init(with element: ViewHierarchyElement) {
         self.element = element
-
-        super.init(frame: frame)
+        super.init(frame: .zero)
     }
 
     @available(*, unavailable)
@@ -66,10 +71,6 @@ class ViewHierarchyElementThumbnailView: BaseView {
     }
 
     // MARK: - Componentns
-
-    private lazy var emptyHeightConstraint = widthAnchor.constraint(equalTo: heightAnchor, multiplier: aspectRatio).then {
-        $0.priority = .defaultHigh
-    }
 
     private lazy var gridImageView = UIImageView(
         .image(IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero))
@@ -81,18 +82,20 @@ class ViewHierarchyElementThumbnailView: BaseView {
         .verticalAlignment(.center)
     )
 
-    private lazy var snapshotContainerView = UIView(
+    private lazy var snapshotContainerView = BaseView(
         .layerOptions(.masksToBounds(true)),
         .clipsToBounds(true),
         .frame(bounds)
     )
+
+    static let contentMargins = NSDirectionalEdgeInsets(insets: ElementInspector.appearance.horizontalMargins)
 
     // MARK: - View Lifecycle
 
     override func setup() {
         super.setup()
 
-        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(insets: ElementInspector.appearance.horizontalMargins)
+        contentView.directionalLayoutMargins = Self.contentMargins
 
         clipsToBounds = true
 
@@ -111,19 +114,22 @@ class ViewHierarchyElementThumbnailView: BaseView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
         backgroundColor = backgroundStyle.color
+
+        guard !frame.isEmpty, heightConstraint == nil else { return }
+
+        let proportionalFrame = calculateFrame(with: element.frame.size)
+        heightConstraint = snapshotContainerView.heightAnchor.constraint(equalToConstant: proportionalFrame.height)
     }
 
     var aspectRatio: CGFloat {
-        guard
-            snapshotContainerView.frame.isEmpty == false,
-            originalSnapshotSize != .zero
-        else {
+        switch state {
+        case let .snapshot(view):
+            return view.frame.width / view.frame.height
+
+        default:
             return 3
         }
-
-        return snapshotContainerView.frame.size.width / originalSnapshotSize.width
     }
 
     // MARK: - State
@@ -132,7 +138,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
         didSet {
             statusContentView.subviews.forEach { $0.removeFromSuperview() }
 
-            let previousSubviews = snapshotContainerView.subviews
+            let previousSubviews = snapshotContainerView.contentView.arrangedSubviews
 
             defer {
                 previousSubviews.forEach { $0.removeFromSuperview() }
@@ -148,23 +154,8 @@ class ViewHierarchyElementThumbnailView: BaseView {
                 }
 
                 newSnapshot.contentMode = contentMode
-                snapshotContainerView.installView(newSnapshot, .centerXY)
-
-                let constraints = [
-                    newSnapshot.widthAnchor.constraint(equalToConstant: proportionalFrame.width),
-                    newSnapshot.heightAnchor.constraint(equalTo: newSnapshot.widthAnchor, multiplier: proportionalFrame.height / proportionalFrame.width),
-                    newSnapshot.topAnchor.constraint(greaterThanOrEqualTo: snapshotContainerView.topAnchor),
-                    newSnapshot.leadingAnchor.constraint(greaterThanOrEqualTo: snapshotContainerView.leadingAnchor),
-                    newSnapshot.bottomAnchor.constraint(lessThanOrEqualTo: snapshotContainerView.bottomAnchor)
-                ]
-
-                constraints.forEach {
-                    $0.priority = .defaultHigh
-                    $0.isActive = true
-                }
-
-                snapshotContainerView.addSubview(newSnapshot)
-                emptyHeightConstraint.isActive = false
+                snapshotContainerView.contentView.addArrangedSubview(newSnapshot)
+                heightConstraint = snapshotContainerView.heightAnchor.constraint(equalToConstant: proportionalFrame.height)
 
             case .isHidden:
                 showStatus(icon: .eyeSlashFill, message: "View is hidden.")
@@ -182,8 +173,6 @@ class ViewHierarchyElementThumbnailView: BaseView {
     }
 
     private func showStatus(icon glyph: Icon.Glyph, message: String) {
-        emptyHeightConstraint.isActive = true
-
         statusContentView.removeAllArrangedSubviews()
 
         let color = backgroundStyle.contrastingColor
@@ -204,13 +193,22 @@ class ViewHierarchyElementThumbnailView: BaseView {
         )
 
         statusContentView.addArrangedSubview(label)
+
+        heightConstraint = makeEmptyHeightConstraint()
+    }
+
+    private func makeEmptyHeightConstraint() -> NSLayoutConstraint {
+        contentView.widthAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 3)
     }
 
     private func calculateFrame(with snapshotSize: CGSize) -> CGRect {
-        let margins = contentView.directionalLayoutMargins
-        let maxWidth = max(0, bounds.width - margins.leading - margins.trailing)
+        Self.calculateFrame(with: snapshotSize, inside: frame)
+    }
 
-        return AVMakeRect(
+    private static func calculateFrame(with snapshotSize: CGSize, inside frame: CGRect, margins: NSDirectionalEdgeInsets = contentMargins) -> CGRect {
+        let maxWidth = max(0, frame.width - margins.leading - margins.trailing)
+
+        let rect = AVMakeRect(
             aspectRatio: CGSize(
                 width: 1,
                 height: snapshotSize.height / snapshotSize.width
@@ -223,6 +221,8 @@ class ViewHierarchyElementThumbnailView: BaseView {
                 )
             )
         )
+
+        return rect
     }
 
     func updateViews(afterScreenUpdates: Bool) {
@@ -254,123 +254,6 @@ class ViewHierarchyElementThumbnailView: BaseView {
             return
         }
 
-        originalSnapshotSize = snapshotView.frame.size
-
         state = .snapshot(snapshotView)
-    }
-}
-
-final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnailView {
-    override var isHidden: Bool {
-        didSet {
-            if isHidden {
-                stopLiveUpdatingSnaphost()
-            }
-            else {
-                startLiveUpdatingSnaphost()
-            }
-        }
-    }
-
-    private var displayLink: CADisplayLink? {
-        didSet {
-            if let oldLink = oldValue {
-                oldLink.invalidate()
-            }
-
-            if let newLink = displayLink {
-                newLink.add(to: .current, forMode: .default)
-            }
-        }
-    }
-
-    override func didMoveToSuperview() {
-        super.didMoveToSuperview()
-
-        guard superview?.window != nil else {
-            return stopLiveUpdatingSnaphost()
-        }
-
-        startLiveUpdatingSnaphost()
-    }
-
-    override func didMoveToWindow() {
-        super.didMoveToWindow()
-
-        guard let window = window else {
-            if #available(iOS 13.0, *) {
-                hoverGestureRecognizer.isEnabled = false
-            }
-
-            return stopLiveUpdatingSnaphost()
-        }
-
-        if #available(iOS 13.0, *) {
-            window.addGestureRecognizer(hoverGestureRecognizer)
-            hoverGestureRecognizer.isEnabled = true
-        }
-
-        if #available(iOS 14.0, *) {
-            hoverGestureRecognizer.isEnabled = ProcessInfo().isiOSAppOnMac == false
-        }
-
-        startLiveUpdatingSnaphost()
-    }
-
-    @objc
-    func startLiveUpdatingSnaphost() {
-        debounce(#selector(makeDisplayLink), after: .average)
-    }
-
-    @objc
-    func makeDisplayLink() {
-        displayLink = CADisplayLink(target: self, selector: #selector(refresh))
-    }
-
-    @objc
-    func stopLiveUpdatingSnaphost() {
-        Self.cancelPreviousPerformRequests(
-            withTarget: self,
-            selector: #selector(makeDisplayLink),
-            object: nil
-        )
-
-        displayLink = nil
-    }
-
-    @objc
-    func refresh() {
-        guard element.rootView?.isAssociatedToWindow == true else {
-            return stopLiveUpdatingSnaphost()
-        }
-
-        if backgroundStyle.color != backgroundColor {
-            backgroundColor = backgroundStyle.color
-        }
-
-        if !isHidden, superview?.isHidden == false {
-            updateViews(afterScreenUpdates: false)
-        }
-    }
-
-    @available(iOS 13.0, *)
-    private lazy var hoverGestureRecognizer = UIHoverGestureRecognizer(
-        target: self,
-        action: #selector(hovering(_:))
-    )
-
-    @available(iOS 13.0, *)
-    @objc
-    func hovering(_ recognizer: UIHoverGestureRecognizer) {
-        switch recognizer.state {
-        case .began, .changed:
-            stopLiveUpdatingSnaphost()
-
-        case .ended, .cancelled:
-            startLiveUpdatingSnaphost()
-
-        default:
-            break
-        }
     }
 }

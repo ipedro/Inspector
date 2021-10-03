@@ -72,10 +72,7 @@ final class ViewHierarchyPreviewController: UIViewController {
         $0.viewModel = element
     }
 
-    private(set) lazy var thumbnailView = ViewHierarchyElementThumbnailView(
-        frame: .zero,
-        element: element
-    )
+    private(set) lazy var thumbnailView = ViewHierarchyElementThumbnailView(with: element)
 
     override func loadView() {
         view = viewCode
