@@ -106,10 +106,10 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
                         case .allCollapsed:
                             return
 
-                        case .allExpanded, .firstExpanded:
-                            return self.collapseAllSections()
+                        case .allExpanded:
+                            return self.expandFirstSection()
 
-                        case .mixed:
+                        case .mixed, .firstExpanded:
                             return
                         }
                     }
@@ -216,14 +216,9 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
     }
 
     func expandFirstSection() {
-        guard
-            let first = formItemViewControllers.first,
-            first.state != .expanded
-        else {
-            return
+        formItemViewControllers.enumerated().forEach { index, item in
+            item.state = index == .zero ? .expanded : .collapsed
         }
-
-        first.state = .expanded
         itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
     }
 
