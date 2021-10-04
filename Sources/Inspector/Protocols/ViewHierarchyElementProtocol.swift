@@ -26,7 +26,7 @@ protocol ViewHierarchyElementProtocol {
     /// Determines if a view can host an inspector view.
     var canHostInspectorView: Bool { get }
 
-    var isSystemView: Bool { get }
+    var isInternalView: Bool { get }
 
     /// String representation of the class name.
     var className: String { get }

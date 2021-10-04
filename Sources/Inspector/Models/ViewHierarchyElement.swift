@@ -35,7 +35,7 @@ extension ViewHierarchyElement {
         let issues: [ViewHierarchyIssue]
         let iconImage: UIImage?
         let canHostInspectorView: Bool
-        let isSystemView: Bool
+        let isInternalView: Bool
         let canPresentOnTop: Bool
         let constraintReferences: [NSLayoutConstraintInspectableViewModel]
         let horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel]
@@ -55,7 +55,7 @@ extension ViewHierarchyElement {
             issues = view.issues
             iconImage = icon
             canHostInspectorView = view.canHostInspectorView
-            isSystemView = view._isSystemView
+            isInternalView = view._isInternalView
             className = view._className
             classNameWithoutQualifiers = view._classNameWithoutQualifiers
             elementName = view.elementName
@@ -263,16 +263,16 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         return rootView.canHostInspectorView
     }
 
-    var isSystemView: Bool {
+    var isInternalView: Bool {
         guard let rootView = rootView else {
-            return latestSnapshot.isSystemView
+            return latestSnapshot.isInternalView
         }
 
-        if rootView.isSystemView != latestSnapshot.isSystemView {
+        if rootView.isInternalView != latestSnapshot.isInternalView {
             setNeedsSnapshot()
         }
 
-        return rootView.isSystemView
+        return rootView.isInternalView
     }
 
     var className: String {

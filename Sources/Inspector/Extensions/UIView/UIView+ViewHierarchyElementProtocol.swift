@@ -21,8 +21,8 @@
 import UIKit
 
 extension UIView: ViewHierarchyElementProtocol {
-    var isSystemView: Bool {
-        _isSystemView
+    var isInternalView: Bool {
+        _isInternalView
     }
 
     var className: String {
@@ -223,15 +223,17 @@ private extension UIView {
 }
 
 extension NSObject {
-    var _isSystemView: Bool {
-        _isSystemContainer || _className.starts(with: "_UI")
+    var _isInternalView: Bool {
+        _isSystemContainer || _className.starts(with: "_")
     }
 
     var _isSystemContainer: Bool {
         let className = _classNameWithoutQualifiers
 
-        for systemContainer in Inspector.configuration.knownSystemContainers where className == systemContainer {
-            return true
+        for systemContainer in Inspector.configuration.knownSystemContainers {
+            if className == systemContainer || className.starts(with: "_UI") {
+                return true
+            }
         }
 
         return false

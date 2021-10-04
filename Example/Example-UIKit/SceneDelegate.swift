@@ -79,15 +79,7 @@ extension SceneDelegate: InspectorHost {
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
         [
             .staticTexts + .images,
-            .layer(
-                name: "Views with identifier",
-                filter: {
-                    guard let accessibilityIdentifier = $0.accessibilityIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines) else {
-                        return true
-                    }
-                    return !accessibilityIdentifier.isEmpty
-                }
-            )
+            .stackViews
         ]
     }
 

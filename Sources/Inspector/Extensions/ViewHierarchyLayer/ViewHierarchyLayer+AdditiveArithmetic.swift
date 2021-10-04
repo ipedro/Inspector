@@ -25,7 +25,7 @@ extension ViewHierarchyLayer: AdditiveArithmetic {
         ViewHierarchyLayer(
             name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",-"),
             showLabels: lhs.showLabels,
-            allowsSystemViews: lhs.allowsSystemViews
+            allowsInternalViews: lhs.allowsInternalViews
         ) {
             lhs.filter($0) && rhs.filter($0) == false
         }
@@ -35,7 +35,7 @@ extension ViewHierarchyLayer: AdditiveArithmetic {
         ViewHierarchyLayer(
             name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",+"),
             showLabels: lhs.showLabels,
-            allowsSystemViews: lhs.allowsSystemViews
+            allowsInternalViews: lhs.allowsInternalViews
         ) {
             lhs.filter($0) || rhs.filter($0)
         }

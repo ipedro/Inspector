@@ -24,14 +24,15 @@ extension Manager: ViewHierarchyCoordinatorDataSource {
     var rootView: UIView? { host?.window }
 
     var viewHierarchyLayers: [Inspector.ViewHierarchyLayer] {
-        var layers = host?.inspectorViewHierarchyLayers ?? []
+        var layers: [Inspector.ViewHierarchyLayer] = [
+            .allViews,
+            .withIdentifier,
+            .internalViews,
+        ]
 
-        if layers.firstIndex(of: .allViews) == nil {
-            layers.append(.allViews)
+        if let hostLayers = host?.inspectorViewHierarchyLayers {
+            layers.append(contentsOf: hostLayers)
         }
-
-        layers.append(.systemViews)
-        layers.append(.systemContainers)
 
         return layers.uniqueValues()
     }

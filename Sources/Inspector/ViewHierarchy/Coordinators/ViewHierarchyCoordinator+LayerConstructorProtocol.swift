@@ -73,7 +73,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
         guard let snapshot = latestSnapshot() else { return }
 
         asyncOperation(name: Texts.highlight(Texts.allLayers)) {
-            for layer in self.populatedLayers where layer.allowsSystemViews == false {
+            for layer in self.populatedLayers where layer.allowsInternalViews == false {
                 self.make(layer: layer, for: snapshot)
             }
         }
