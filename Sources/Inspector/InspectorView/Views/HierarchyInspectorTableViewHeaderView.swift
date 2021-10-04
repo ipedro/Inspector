@@ -25,25 +25,20 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView {
         didSet {
             titleLabel.text = title
 
-            switch title {
-            case .none:
+            guard title?.trimmed.isNilOrEmpty == false else {
                 titleLabel.isHidden = true
-                stackView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
-
-            case .some:
-                titleLabel.isHidden = false
-                stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(
-                    leading: ElementInspector.appearance.horizontalMargins,
-                    bottom: stackView.spacing / 2,
-                    trailing: ElementInspector.appearance.horizontalMargins
-                )
+                stackView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets.with(top: .zero)
+                return
             }
+            
+            titleLabel.isHidden = false
+            stackView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
         }
     }
 
     var showSeparatorView: Bool {
-        get { separatorView.alpha == 1 }
-        set { separatorView.alpha = newValue ? 1 : 0.05 }
+        get { !separatorView.isHidden }
+        set { separatorView.isHidden = !newValue }
     }
 
     private(set) lazy var separatorView = SeparatorView(style: .hard)
@@ -74,6 +69,8 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView {
 
     func setup() {
         backgroundView = UIView()
+
+        contentView.directionalLayoutMargins = .zero
 
         contentView.installView(stackView)
     }

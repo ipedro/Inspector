@@ -56,14 +56,12 @@ final class HierarchyInspectorViewCode: BaseView, DataReloadingProtocol {
         .tableFooterView(UIView()),
         .separatorStyle(.none),
         .automaticRowHeight,
-        .estimatedRowHeight(100),
         .separatorInset(
             left: ElementInspector.appearance.horizontalMargins,
             right: ElementInspector.appearance.horizontalMargins
         ),
         .contentInset(
-            top: -searchView.separatorView.thickness,
-            bottom: ElementInspector.appearance.verticalMargins
+            bottom: ElementInspector.appearance.horizontalMargins
         )
     )
 
