@@ -92,7 +92,9 @@ extension NSObject {
         "UITextView.useAutomaticEndpointing",
         "UITextView.useInterfaceLanguageForLocalization",
         "UITextView.validTextRange",
-        "UITextField.textTrimmingSet"
+        "UITextField.textTrimmingSet",
+        "WKContentView._wk_printedDocument",
+        "WKWebView._wk_printedDocument"
     ]
 
     func propertyNames() -> [String] {
