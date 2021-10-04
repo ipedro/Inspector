@@ -150,14 +150,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         didSet {
             oldValue?.willMove(toParent: nil)
 
-            viewCode.toggleCollapseButton.alpha = 0
-
             if let formPanel = currentFormPanelViewController {
-                viewCode.toggleCollapseButton.isSafelyHidden = false
                 formPanel.itemStateDelegate = self
-            }
-            else {
-                viewCode.toggleCollapseButton.isSafelyHidden = true
             }
 
             viewCode.setContentAnimated(.loadingIndicator)
@@ -187,18 +181,26 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
                     if let formPanel = self?.currentFormPanelViewController {
                         self?.viewCode.toggleCollapseButton.alpha = 1
+                        self?.viewCode.toggleCollapseButton.isHidden = false
                         self?.viewCode.toggleCollapseButton.collapseState = formPanel.collapseState
+                    }
+                    else {
+                        self?.viewCode.toggleCollapseButton.alpha = 0
+                        self?.viewCode.toggleCollapseButton.isHidden = true
                     }
 
                     self?.updatePreferredContentSize()
 
-                } completion: { _ in
+                } completion: { [weak self] _ in
                     oldValue?.didMove(toParent: nil)
                     oldValue?.removeFromParent()
-                    panelViewController.didMove(toParent: self)
 
-                    self.animate(withDuration: .veryLong) {
-                        self.updatePreferredContentSize()
+                    if let self = self {
+                        panelViewController.didMove(toParent: self)
+                    }
+
+                    self?.animate(withDuration: .veryLong) {
+                        self?.updatePreferredContentSize()
                     }
                 }
             }
@@ -256,7 +258,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             self.reloadData()
             (self.currentPanelViewController as? DataReloadingProtocol)?.reloadData()
         }
-
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -431,7 +432,8 @@ extension ElementInspectorViewController {
     func selectPanelIfAvailable(_ panel: ElementInspectorPanel?) -> Bool {
         guard
             let panel = panel,
-            let index = viewModel.availablePanels.firstIndex(of: panel) else {
+            let index = viewModel.availablePanels.firstIndex(of: panel)
+        else {
             return false
         }
 
