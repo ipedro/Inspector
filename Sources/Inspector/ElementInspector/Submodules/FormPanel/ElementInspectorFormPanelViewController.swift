@@ -209,7 +209,6 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         }
     }
     
-
     func collapseAllSections() {
         formItemViewControllers.forEach { $0.state = .collapsed }
         itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
@@ -224,13 +223,11 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     func expandAllSections() {
         formItemViewControllers.forEach { $0.state = .expanded }
-        itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
     }
 
     func toggleAllSectionsCollapse(animated: Bool, completion: ((Bool) -> Void)? = nil) {
-        let toggle: () -> Void = {
+        guard animated else {
             switch self.collapseState {
-
             case .allExpanded:
                 self.collapseAllSections()
 
@@ -239,14 +236,28 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
                 .mixed:
                 self.expandAllSections()
             }
-        }
 
-        guard animated else {
-            toggle()
+            itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
             return
         }
 
-        animatePanel(animations: toggle, completion: completion)
+        animatePanel {
+            switch self.collapseState {
+            case .allExpanded:
+                self.collapseAllSections()
+
+            case .allCollapsed,
+                .firstExpanded,
+                .mixed:
+                self.expandAllSections()
+            }
+        } completion: { [weak self] finished in
+            completion?(finished)
+
+            if let self = self {
+                self.itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
+            }
+        }
     }
 
     func selectImage(_ image: UIImage?) {
