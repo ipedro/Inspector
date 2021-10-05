@@ -20,24 +20,42 @@
 
 import UIKit
 
-enum ElementInspectorSizeLibrary: Swift.CaseIterable, InspectorSizeLibraryProtocol {
+enum ElementInspectorSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIterable {
+    case scrollView
     case viewFrame
     case contentLayoutPriority
     case layoutConstraints
 
-    // MARK: - InspectorSizeLibraryProtocol
+    var targetClass: AnyClass {
+        switch self {
+        case .scrollView:
+            return UIScrollView.self
+            
+        case .contentLayoutPriority, .viewFrame, .layoutConstraints:
+            return UIView.self
+        }
+    }
 
-    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormItemView.Type {
+    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
+        fatalError()
+    }
+
+    func icon(for referenceView: UIView) -> UIImage? { nil }
+
+    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormItemView.Type? {
         switch viewModel {
         case is NSLayoutConstraintInspectableViewModel:
             return ElementInspectorFormLayoutConstraintView.self
         default:
-            return ElementInspectorFormItemContentView.self
+            return nil
         }
     }
 
     func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
         switch self {
+        case .scrollView:
+            return .single(ScrollViewInsetsInspectableViewModel(view: referenceView))
+            
         case .viewFrame:
             return .single(ViewFrameInspectableViewModel(view: referenceView))
 
@@ -85,6 +103,4 @@ enum ElementInspectorSizeLibrary: Swift.CaseIterable, InspectorSizeLibraryProtoc
             return items
         }
     }
-
-    func icon(for viewModel: InspectorElementViewModelProtocol) -> UIImage? { nil }
 }

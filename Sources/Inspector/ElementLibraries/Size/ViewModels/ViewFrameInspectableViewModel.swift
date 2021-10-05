@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorSizeLibrary {
-    struct ViewFrameInspectableViewModel: InspectorElementViewModelProtocol {
+    final class ViewFrameInspectableViewModel: InspectorElementViewModelProtocol {
         private enum Properties: String, Swift.CaseIterable {
             case frame = "Frame Rectangle"
             case autoresizingMask = "View Resizing"
@@ -57,9 +57,9 @@ extension ElementInspectorSizeLibrary {
                         options: UIView.AutoresizingMask.allCases.map(\.description),
                         selectedIndex: { UIView.AutoresizingMask.allCases.firstIndex(of: view.autoresizingMask) },
                         handler: {
-                            guard let index = $0 else { return }
+                            guard let newIndex = $0 else { return }
 
-                            let autoresizingMask = UIView.AutoresizingMask.allCases[index]
+                            let autoresizingMask = UIView.AutoresizingMask.allCases[newIndex]
                             view.autoresizingMask = autoresizingMask
                         }
                     )

@@ -20,33 +20,13 @@
 
 import UIKit
 
-enum ElementInspectorIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
-    case preview
-    case runtimeAttributes
+extension UIScrollView.ContentInsetAdjustmentBehavior: CaseIterable {
+    typealias AllCases = [UIScrollView.ContentInsetAdjustmentBehavior]
 
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
-        switch self {
-        case .preview:
-            return .single(RuntimePreviewInspectableViewModel(view: referenceView))
-        
-        case .runtimeAttributes:
-            guard let attributes = RuntimeAttributesInspectableViewModel(view: referenceView) else { return [] }
-            return .single(attributes)
-        }
-    }
-
-    var targetClass: AnyClass {
-        switch self {
-        case .preview:
-            return UIView.self
-        case .runtimeAttributes:
-            return NSObject.self
-        }
-    }
-
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        fatalError()
-    }
-
-    func icon(for referenceView: UIView) -> UIImage? { nil }
+    static let allCases: [UIScrollView.ContentInsetAdjustmentBehavior] = [
+        .automatic,
+        .scrollableAxes,
+        .never,
+        .always
+    ]
 }

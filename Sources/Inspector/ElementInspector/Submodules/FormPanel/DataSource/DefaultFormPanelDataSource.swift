@@ -21,21 +21,23 @@
 import UIKit
 
 struct DefaultFormPanelDataSource: ElementInspectorFormPanelDataSource {
-    typealias FormItemViewTypeProvider = ((IndexPath) -> InspectorElementFormItemView.Type?)
+    typealias FormItemViewTypeProvider = ((InspectorElementViewModelProtocol) -> InspectorElementFormItemView.Type?)
 
     let items: [ElementInspectorFormItem]
 
-    let provider: FormItemViewTypeProvider?
+    let provider: FormItemViewTypeProvider
 
     init(
         items: [ElementInspectorFormItem],
-        provider: FormItemViewTypeProvider? = nil
+        provider: @escaping FormItemViewTypeProvider
     ) {
         self.items = items
         self.provider = provider
     }
 
     func typeForRow(at indexPath: IndexPath) -> InspectorElementFormItemView.Type {
-        provider?(indexPath) ?? ElementInspectorFormItemContentView.self
+        let customType = provider(items[indexPath.section].rows[indexPath.row])
+
+        return customType ?? ElementInspectorFormItemContentView.self
     }
 }

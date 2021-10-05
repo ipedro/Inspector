@@ -200,8 +200,15 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
 
                 case let .directionalInsets(title: title, insets: insetsProvider, handler: _):
                     return NSDirectionalEdgeInsetsControl(title: title, insets: insetsProvider())
+
+                case let .edgeInsets(title: title, insets: insetsProvider, handler: _):
+                    return UIEdgeInsetsControl(title: title, insets: insetsProvider())
                 }
             }()
+
+            if index == .zero, let sectionHeader = element as? SectionHeader {
+                sectionHeader.margins.top = .zero
+            }
 
             if let control = element as? UIControl {
                 control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
@@ -272,6 +279,9 @@ extension ElementInspectorFormItemViewController {
                 case let (.directionalInsets(_, _, handler: handler), insetsControl as NSDirectionalEdgeInsetsControl):
                     handler?(insetsControl.insets)
 
+                case let (.edgeInsets(_, _, handler: handler), insetsControl as UIEdgeInsetsControl):
+                    handler?(insetsControl.insets)
+
                 case (.separator, _),
                      (.group, _):
                     break
@@ -288,6 +298,7 @@ extension ElementInspectorFormItemViewController {
                      (.cgRect, _),
                      (.cgSize, _),
                      (.cgPoint, _),
+                     (.edgeInsets, _),
                      (.directionalInsets, _),
                      (.infoNote, _),
                      (.preview, _):
@@ -367,9 +378,13 @@ extension ElementInspectorFormItemViewController {
                 cgSizeControl.title = title
                 cgSizeControl.size = sizeProvider()
 
-            case let (.directionalInsets(title: title, insets: insetsProvider, _), insetsControl as NSDirectionalEdgeInsetsControl):
-                insetsControl.title = title
-                insetsControl.insets = insetsProvider()
+            case let (.directionalInsets(title: title, insets: insetsProvider, _), directionalInsetsControl as NSDirectionalEdgeInsetsControl):
+                directionalInsetsControl.title = title
+                directionalInsetsControl.insets = insetsProvider()
+
+            case let (.edgeInsets(title: title, insets: insetsProvider, _), edgeInsetsControl as UIEdgeInsetsControl):
+                edgeInsetsControl.title = title
+                edgeInsetsControl.insets = insetsProvider()
 
             case let (.preview, thumbnailView as ViewHierarchyElementThumbnailView):
                 thumbnailView.updateViews(afterScreenUpdates: false)
@@ -386,6 +401,7 @@ extension ElementInspectorFormItemViewController {
                  (.cgRect, _),
                  (.cgSize, _),
                  (.cgPoint, _),
+                 (.edgeInsets, _),
                  (.directionalInsets, _),
                  (.preview, _):
                 assertionFailure("shouldn't happen")

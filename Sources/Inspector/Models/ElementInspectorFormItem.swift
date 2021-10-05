@@ -36,7 +36,11 @@ public struct ElementInspectorFormItem {
 // MARK: - Array Extension
 
 public extension Array where Element == ElementInspectorFormItem {
-    static func single(_ viewModel: InspectorElementViewModelProtocol) -> Self {
-        [.init(rows: [viewModel])]
+    static func single(_ viewModel: InspectorElementViewModelProtocol?) -> Self {
+        guard let viewModel = viewModel else {
+            return []
+        }
+
+        return [.init(rows: [viewModel])]
     }
 }

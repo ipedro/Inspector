@@ -105,6 +105,10 @@ public enum InspectorElementViewModelProperty {
                            insets: NSDirectionalEdgeInsetsProvider,
                            handler: NSDirectionalEdgeInsetsHandler?)
 
+    case edgeInsets(title: String,
+                    insets: UIEdgeInsetsProvider,
+                    handler: UIEdgeInsetsHandler?)
+
     @available(*, deprecated, message: "Use `switch(title:isOn:handler:)` instead, this will be removed at a later version.")
     public static func toggleControl(title: String,
                                      isOn: @escaping BoolProvider,
@@ -139,6 +143,7 @@ extension InspectorElementViewModelProperty {
              .cgRect(_, _, .some),
              .cgSize(_, _, .some),
              .cgPoint(_, _, .some),
+             .edgeInsets(_, _, .some),
              .directionalInsets(_, _, .some):
             return true
 
@@ -157,6 +162,7 @@ extension InspectorElementViewModelProperty {
              .cgSize,
              .cgPoint,
              .directionalInsets,
+             .edgeInsets,
              .infoNote,
              .preview:
             return false
@@ -169,6 +175,7 @@ extension InspectorElementViewModelProperty {
 public extension InspectorElementViewModelProperty {
     typealias Handler<Value> = ((Value) -> Void)
 
+    typealias UIEdgeInsetsHandler = Handler<UIEdgeInsets>
     typealias NSDirectionalEdgeInsetsHandler = Handler<NSDirectionalEdgeInsets>
     typealias BoolHandler = Handler<Bool>
     typealias CGColorHandler = Handler<CGColor?>
@@ -191,6 +198,7 @@ public extension InspectorElementViewModelProperty {
 public extension InspectorElementViewModelProperty {
     typealias Provider<Value> = (() -> Value)
 
+    typealias UIEdgeInsetsProvider = Provider<UIEdgeInsets>
     typealias NSDirectionalEdgeInsetsProvider = Provider<NSDirectionalEdgeInsets>
     typealias BoolProvider = Provider<Bool>
     typealias CGColorProvider = Provider<CGColor?>

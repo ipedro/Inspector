@@ -24,6 +24,8 @@ import UIKit
 public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource {
     var targetClass: AnyClass { get }
 
+    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormItemView.Type?
+
     func items(for referenceView: UIView) -> [ElementInspectorFormItem]
 
     func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol?
@@ -34,14 +36,10 @@ public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource 
 // MARK: - Default Implementations
 
 public extension InspectorElementLibraryProtocol {
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
-        guard let viewModel = viewModel(for: referenceView) else {
-            return []
-        }
+    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormItemView.Type? { nil }
 
-        return [
-            ElementInspectorFormItem(rows: [viewModel])
-        ]
+    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
+        return .single(viewModel(for: referenceView))
     }
 }
 

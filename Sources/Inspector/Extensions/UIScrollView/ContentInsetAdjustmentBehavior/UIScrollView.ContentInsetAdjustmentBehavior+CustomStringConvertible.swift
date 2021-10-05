@@ -20,9 +20,19 @@
 
 import UIKit
 
-/// AutoLayout Libraries are entities that conform to `InspectorSizeLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
-public protocol InspectorSizeLibraryProtocol: InspectorElementFormDataSource {
-    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormItemView.Type
-
-    func icon(for viewModel: InspectorElementViewModelProtocol) -> UIImage?
+extension UIScrollView.ContentInsetAdjustmentBehavior: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .automatic:
+            return "Automatic"
+        case .scrollableAxes:
+            return "Scrollable Axes"
+        case .never:
+            return "Never"
+        case .always:
+            return "Always"
+        @unknown default:
+            return "Unknown"
+        }
+    }
 }

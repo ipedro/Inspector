@@ -23,7 +23,8 @@ import UIKit
 class BaseFormControl: BaseControl {
     private(set) lazy var titleLabel = UILabel().then {
         $0.font = .preferredFont(forTextStyle: .footnote)
-        $0.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
+        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        $0.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         $0.textColor = colorStyle.textColor
         $0.isHidden = true
     }

@@ -31,6 +31,7 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
 
     let inspectableElements: [ViewHierarchyElement]
 
+    #warning("accept other panels")
     let elementLibraries: [InspectorElementLibraryProtocol]
 
     init(

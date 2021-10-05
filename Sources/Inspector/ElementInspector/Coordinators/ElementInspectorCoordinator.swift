@@ -173,19 +173,19 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     func panelViewController(for panel: ElementInspectorPanel, with element: ViewHierarchyElement) -> ElementInspectorPanelViewController {
         switch panel {
         case .identity:
-            let items: [ElementInspectorFormItem] = {
-                guard let rootView = element.rootView else { return [] }
 
-                return ElementInspectorIdentityLibrary.allCases
-                    .map { $0.items(for: rootView) }
-                    .flatMap { $0 }
-            }()
 
             return ElementIdentityPanelViewController(
-                dataSource: DefaultFormPanelDataSource(items: items) { indexPath in
-                    let viewModel = items[indexPath.section].rows[indexPath.row]
-                    return ElementInspectorIdentityLibrary.viewType(forViewModel: viewModel)
-                }
+                dataSource: DefaultFormPanelDataSource(
+                    items:{
+                        guard let rootView = element.rootView else { return [] }
+
+                        return ElementInspectorIdentityLibrary.allCases
+                            .map { $0.items(for: rootView) }
+                            .flatMap { $0 }
+                    }(),
+                    provider: { ElementInspectorSizeLibrary.viewType(forViewModel: $0) }
+                )
             ).then {
                 $0.formDelegate = self
             }
@@ -199,7 +199,8 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
                         return snapshot.elementLibraries.targeting(element: rootView).flatMap { library in
                             library.items(for: rootView)
                         }
-                    }()
+                    }(),
+                    provider: { ElementInspectorAttributesLibrary.viewType(forViewModel: $0) }
                 )
             ).then {
                 $0.formDelegate = self
@@ -225,10 +226,10 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
             }()
 
             return ElementSizePanelViewController(
-                dataSource: DefaultFormPanelDataSource(items: items) { indexPath in
-                    let viewModel = items[indexPath.section].rows[indexPath.row]
-                    return ElementInspectorSizeLibrary.viewType(forViewModel: viewModel)
-                }
+                dataSource: DefaultFormPanelDataSource(
+                    items: items,
+                    provider: { ElementInspectorSizeLibrary.viewType(forViewModel: $0) }
+                )
             ).then {
                 $0.formDelegate = self
             }
