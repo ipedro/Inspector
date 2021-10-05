@@ -20,104 +20,60 @@
 
 import UIKit
 
-struct ViewFrameInspectableViewModel: InspectorElementViewModelProtocol {
-    private enum Properties: String, Swift.CaseIterable {
-        case frame = "Frame Rectangle"
-        case autoresizingMask = "View Resizing"
-        case directionalLayoutsMargins = "Layout Margins"
-    }
+extension ElementInspectorSizeLibrary {
+    struct ViewFrameInspectableViewModel: InspectorElementViewModelProtocol {
+        private enum Properties: String, Swift.CaseIterable {
+            case frame = "Frame Rectangle"
+            case autoresizingMask = "View Resizing"
+            case directionalLayoutsMargins = "Layout Margins"
+        }
 
-    let title: String = "View"
+        let title: String = "View"
 
-    private weak var view: UIView?
+        private weak var view: UIView?
 
-    init(view: UIView) {
-        self.view = view
-    }
+        init(view: UIView) {
+            self.view = view
+        }
 
-    var properties: [InspectorElementViewModelProperty] {
-        guard let view = view else { return [] }
+        var properties: [InspectorElementViewModelProperty] {
+            guard let view = view else { return [] }
 
-        return Properties.allCases.compactMap { property in
-            switch property {
-            case .frame:
-                return .cgRect(
-                    title: property.rawValue,
-                    rect: { view.frame },
-                    handler: {
-                        guard let newFrame = $0 else { return }
-                        view.frame = newFrame
-                    }
-                )
+            return Properties.allCases.compactMap { property in
+                switch property {
+                case .frame:
+                    return .cgRect(
+                        title: property.rawValue,
+                        rect: { view.frame },
+                        handler: {
+                            guard let newFrame = $0 else { return }
+                            view.frame = newFrame
+                        }
+                    )
 
-            case .autoresizingMask:
-                return .optionsList(
-                    title: property.rawValue,
-                    options: UIView.AutoresizingMask.allCases.map(\.description),
-                    selectedIndex: { UIView.AutoresizingMask.allCases.firstIndex(of: view.autoresizingMask) },
-                    handler: {
-                        guard let index = $0 else { return }
+                case .autoresizingMask:
+                    return .optionsList(
+                        title: property.rawValue,
+                        options: UIView.AutoresizingMask.allCases.map(\.description),
+                        selectedIndex: { UIView.AutoresizingMask.allCases.firstIndex(of: view.autoresizingMask) },
+                        handler: {
+                            guard let index = $0 else { return }
 
-                        let autoresizingMask = UIView.AutoresizingMask.allCases[index]
-                        view.autoresizingMask = autoresizingMask
-                    }
-                )
+                            let autoresizingMask = UIView.AutoresizingMask.allCases[index]
+                            view.autoresizingMask = autoresizingMask
+                        }
+                    )
 
-            case .directionalLayoutsMargins:
-                return .directionalInsets(
-                    title: property.rawValue,
-                    insets: { view.directionalLayoutMargins },
-                    handler: { directionalLayoutMargins in
-                        view.directionalLayoutMargins = directionalLayoutMargins
-                    }
-                )
+                case .directionalLayoutsMargins:
+                    return .directionalInsets(
+                        title: property.rawValue,
+                        insets: { view.directionalLayoutMargins },
+                        handler: { directionalLayoutMargins in
+                            view.directionalLayoutMargins = directionalLayoutMargins
+                        }
+                    )
+                }
             }
         }
-    }
-}
-
-extension UIView.AutoresizingMask: CaseIterable {
-    typealias AllCases = [UIView.AutoresizingMask]
-
-    static let allCases: [UIView.AutoresizingMask] = [
-        .flexibleLeftMargin,
-        .flexibleWidth,
-        .flexibleRightMargin,
-        .flexibleTopMargin,
-        .flexibleHeight,
-        .flexibleBottomMargin
-    ]
-}
-
-extension UIView.AutoresizingMask: CustomStringConvertible {
-    var name: String {
-        switch self {
-        case .flexibleWidth:
-            return "Width"
-        case .flexibleLeftMargin:
-            return "Left Margin"
-        case .flexibleWidth:
-            return "Width"
-        case .flexibleRightMargin:
-            return "Right Margin"
-        case .flexibleTopMargin:
-            return "Top Margin"
-        case .flexibleHeight:
-            return "Height"
-        case .flexibleBottomMargin:
-            return "Bottom Margin"
-        default:
-            return String(describing: rawValue)
-        }
-    }
-
-    var description: String {
-        var strings = [String]()
-
-        for mask in Self.allCases where contains(mask) {
-            strings.append(mask.name)
-        }
-
-        return "Flexible \(strings.joined(separator: ", "))"
     }
 }

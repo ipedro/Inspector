@@ -20,117 +20,119 @@
 
 import UIKit
 
-struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol, Hashable {
-    typealias Axis = LayoutConstraintElement.Axis
+extension ElementInspectorSizeLibrary {
+    struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol, Hashable {
+        typealias Axis = LayoutConstraintElement.Axis
 
-    private enum Property: String, Swift.CaseIterable {
-        case isActive = "Installed"
-        case spacer0
-        case firstItem = "First Item"
-        case relation = "Relation"
-        case secondItem = "Second Item"
-        case spacer1
-        case constant = "Constant"
-        case priority = "Priority"
-        case multiplier = "Multiplier"
-        case spacer2
-        case identifier = "Identifier"
-    }
+        private enum Property: String, Swift.CaseIterable {
+            case isActive = "Installed"
+            case spacer0
+            case firstItem = "First Item"
+            case relation = "Relation"
+            case secondItem = "Second Item"
+            case spacer1
+            case constant = "Constant"
+            case priority = "Priority"
+            case multiplier = "Multiplier"
+            case spacer2
+            case identifier = "Identifier"
+        }
 
-    init?(with constraint: NSLayoutConstraint, in view: UIView) {
-        guard let constraintElement = LayoutConstraintElement(with: constraint, in: view) else { return nil }
-        self.element = constraintElement
-    }
+        init?(with constraint: NSLayoutConstraint, in view: UIView) {
+            guard let constraintElement = LayoutConstraintElement(with: constraint, in: view) else { return nil }
+            self.element = constraintElement
+        }
 
-    private let element: LayoutConstraintElement
+        private let element: LayoutConstraintElement
 
-    var axis: Axis { element.axis }
+        var axis: Axis { element.axis }
 
-    var title: String { element.type.description }
+        var title: String { element.type.description }
 
-    var subtitle: String? { element.underlyingConstraint?.safeIdentifier }
+        var subtitle: String? { element.underlyingConstraint?.safeIdentifier }
 
-    var properties: [InspectorElementViewModelProperty] {
-        guard let underlyingConstraint = element.underlyingConstraint else { return [] }
+        var properties: [InspectorElementViewModelProperty] {
+            guard let underlyingConstraint = element.underlyingConstraint else { return [] }
 
-        return Property.allCases.compactMap { property in
-            switch property {
-            case .constant:
-                return .cgFloatStepper(
-                    title: property.rawValue,
-                    value: { underlyingConstraint.constant },
-                    range: { -CGFloat.infinity...CGFloat.infinity },
-                    stepValue: { 1 },
-                    handler: { underlyingConstraint.constant = $0 }
-                )
-            case .spacer0,
-                 .spacer1,
-                 .spacer2:
-                return .separator
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .constant:
+                    return .cgFloatStepper(
+                        title: property.rawValue,
+                        value: { underlyingConstraint.constant },
+                        range: { -CGFloat.infinity...CGFloat.infinity },
+                        stepValue: { 1 },
+                        handler: { underlyingConstraint.constant = $0 }
+                    )
+                case .spacer0,
+                     .spacer1,
+                     .spacer2:
+                    return .separator
 
-            case .multiplier:
-                return .cgFloatStepper(
-                    title: property.rawValue,
-                    value: { underlyingConstraint.multiplier },
-                    range: { -CGFloat.infinity...CGFloat.infinity },
-                    stepValue: { 0.1 },
-                    handler: nil
-                )
+                case .multiplier:
+                    return .cgFloatStepper(
+                        title: property.rawValue,
+                        value: { underlyingConstraint.multiplier },
+                        range: { -CGFloat.infinity...CGFloat.infinity },
+                        stepValue: { 0.1 },
+                        handler: nil
+                    )
 
-            case .identifier:
-                return .textField(
-                    title: property.rawValue,
-                    placeholder: element.underlyingConstraint?.safeIdentifier ?? property.rawValue,
-                    axis: .vertical,
-                    value: { underlyingConstraint.safeIdentifier },
-                    handler: { underlyingConstraint.identifier = $0 }
-                )
+                case .identifier:
+                    return .textField(
+                        title: property.rawValue,
+                        placeholder: element.underlyingConstraint?.safeIdentifier ?? property.rawValue,
+                        axis: .vertical,
+                        value: { underlyingConstraint.safeIdentifier },
+                        handler: { underlyingConstraint.identifier = $0 }
+                    )
 
-            case .isActive:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { underlyingConstraint.isActive },
-                    handler: { underlyingConstraint.isActive = $0 }
-                )
+                case .isActive:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { underlyingConstraint.isActive },
+                        handler: { underlyingConstraint.isActive = $0 }
+                    )
 
-            case .priority:
-                return .floatStepper(
-                    title: property.rawValue,
-                    value: { underlyingConstraint.priority.rawValue },
-                    range: { UILayoutPriority.fittingSizeLevel.rawValue...UILayoutPriority.required.rawValue },
-                    stepValue: { 50 },
-                    handler: { underlyingConstraint.priority = .init($0) }
-                )
+                case .priority:
+                    return .floatStepper(
+                        title: property.rawValue,
+                        value: { underlyingConstraint.priority.rawValue },
+                        range: { UILayoutPriority.fittingSizeLevel.rawValue...UILayoutPriority.required.rawValue },
+                        stepValue: { 50 },
+                        handler: { underlyingConstraint.priority = .init($0) }
+                    )
 
-            case .firstItem:
-                return .optionsList(
-                    title: property.rawValue,
-                    emptyTitle: property.rawValue,
-                    axis: .vertical,
-                    options: [element.first.displayName],
-                    selectedIndex: { 0 },
-                    handler: nil
-                )
-            case .relation:
-                return .optionsList(
-                    title: property.rawValue,
-                    emptyTitle: property.rawValue,
-                    options: NSLayoutConstraint.Relation.allCases.map(\.description),
-                    selectedIndex: { NSLayoutConstraint.Relation.allCases.firstIndex(of: underlyingConstraint.relation) },
-                    handler: nil
-                )
+                case .firstItem:
+                    return .optionsList(
+                        title: property.rawValue,
+                        emptyTitle: property.rawValue,
+                        axis: .vertical,
+                        options: [element.first.displayName],
+                        selectedIndex: { 0 },
+                        handler: nil
+                    )
+                case .relation:
+                    return .optionsList(
+                        title: property.rawValue,
+                        emptyTitle: property.rawValue,
+                        options: NSLayoutConstraint.Relation.allCases.map(\.description),
+                        selectedIndex: { NSLayoutConstraint.Relation.allCases.firstIndex(of: underlyingConstraint.relation) },
+                        handler: nil
+                    )
 
-            case .secondItem:
-                guard let second = element.second else { return nil }
+                case .secondItem:
+                    guard let second = element.second else { return nil }
 
-                return .optionsList(
-                    title: property.rawValue,
-                    emptyTitle: property.rawValue,
-                    axis: .vertical,
-                    options: [second.displayName],
-                    selectedIndex: { 0 },
-                    handler: nil
-                )
+                    return .optionsList(
+                        title: property.rawValue,
+                        emptyTitle: property.rawValue,
+                        axis: .vertical,
+                        options: [second.displayName],
+                        selectedIndex: { 0 },
+                        handler: nil
+                    )
+                }
             }
         }
     }
