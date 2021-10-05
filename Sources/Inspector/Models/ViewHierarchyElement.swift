@@ -23,6 +23,9 @@ import UIKit
 extension ViewHierarchyElement {
     struct Snapshot: ViewHierarchyElementProtocol, ExpirableProtocol, Hashable {
         let expirationDate: Date = Date().addingTimeInterval(Inspector.configuration.snapshotExpirationTimeInterval)
+        let depth: Int
+
+        // MARK: - ViewHierarchyElementProtocol Properties
 
         let displayName: String
         let classNameWithoutQualifiers: String
@@ -39,13 +42,12 @@ extension ViewHierarchyElement {
         let canHostInspectorView: Bool
         let isInternalView: Bool
         let canPresentOnTop: Bool
-        let constraintReferences: [NSLayoutConstraintInspectableViewModel]
-        let horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel]
-        let verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel]
-        let depth: Int
+        let constraintElements: [LayoutConstraintElement]
         let isContainer: Bool
 
         init(view: UIView, icon: UIImage?, depth: Int) {
+            self.depth = depth
+
             viewIdentifier = view.viewIdentifier
             isContainer = view.isContainer
             shortElementDescription = view.shortElementDescription
@@ -62,10 +64,7 @@ extension ViewHierarchyElement {
             elementName = view.elementName
             displayName = view.displayName
             canPresentOnTop = view.canPresentOnTop
-            constraintReferences = view.constraintReferences
-            horizontalConstraintReferences = view.horizontalConstraintReferences
-            verticalConstraintReferences = view.verticalConstraintReferences
-            self.depth = depth
+            constraintElements = view.constraintElements
         }
     }
 }
@@ -301,40 +300,16 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         return rootView.accessibilityIdentifier
     }
 
-    var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
+    var constraintElements: [LayoutConstraintElement] {
         guard latestSnapshot.isExpired, let rootView = rootView else {
-            return latestSnapshot.constraintReferences
+            return latestSnapshot.constraintElements
         }
 
-        if rootView.constraintReferences != latestSnapshot.constraintReferences {
+        if rootView.constraintElements != latestSnapshot.constraintElements {
             setNeedsSnapshot()
         }
 
-        return rootView.constraintReferences
-    }
-
-    var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        guard latestSnapshot.isExpired, let rootView = rootView else {
-            return latestSnapshot.horizontalConstraintReferences
-        }
-
-        if rootView.horizontalConstraintReferences != latestSnapshot.horizontalConstraintReferences {
-            setNeedsSnapshot()
-        }
-
-        return rootView.horizontalConstraintReferences
-    }
-
-    var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        guard latestSnapshot.isExpired, let rootView = rootView else {
-            return latestSnapshot.verticalConstraintReferences
-        }
-
-        if rootView.verticalConstraintReferences != latestSnapshot.verticalConstraintReferences {
-            setNeedsSnapshot()
-        }
-
-        return rootView.verticalConstraintReferences
+        return rootView.constraintElements
     }
 
     // MARK: - Live Properties

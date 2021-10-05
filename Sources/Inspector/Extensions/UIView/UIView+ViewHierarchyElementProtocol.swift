@@ -47,19 +47,10 @@ extension UIView: ViewHierarchyElementProtocol {
 
     var issues: [ViewHierarchyIssue] { ViewHierarchyIssue.issues(for: self) }
 
-    var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        constraints.compactMap { constraint in
-            NSLayoutConstraintInspectableViewModel(with: constraint, in: self)
-        }
-        .uniqueValues()
-    }
-
-    var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        constraintReferences.filter { $0.axis == .horizontal }
-    }
-
-    var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        constraintReferences.filter { $0.axis == .vertical }
+    var constraintElements: [LayoutConstraintElement] {
+        constraints
+            .compactMap { LayoutConstraintElement(with: $0, in: self) }
+            .uniqueValues()
     }
 
     var canPresentOnTop: Bool {
@@ -211,7 +202,7 @@ private extension UIView {
     }
 
     var constraintsDescription: String? {
-        let totalCount = constraintReferences.count
+        let totalCount = constraintElements.count
 
         if totalCount == .zero {
             return nil

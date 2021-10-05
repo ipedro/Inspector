@@ -57,11 +57,7 @@ protocol ViewHierarchyElementProtocol {
 
     // MARK: - Constraints
 
-    var constraintReferences: [NSLayoutConstraintInspectableViewModel] { get }
-
-    var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] { get }
-
-    var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] { get }
+    var constraintElements: [LayoutConstraintElement] { get }
 
     // MARK: - Description
 
