@@ -21,87 +21,119 @@
 import UIKit
 
 extension HierarchyInspectorViewModel {
-    final class SnapshotViewModel: HierarchyInspectorSectionViewModelProtocol {
-        struct Details: HierarchyInspectorReferenceSummaryCellViewModelProtocol {
+    final class SnapshotViewModel: NSObject, HierarchyInspectorSectionViewModelProtocol {
+        let shouldAnimateKeyboard: Bool = true
+
+        private struct Details: HierarchyInspectorReferenceSummaryCellViewModelProtocol {
             let title: String?
             var isEnabled: Bool
             let subtitle: String?
             let image: UIImage?
             let depth: Int
             let element: ViewHierarchyElement
+
+            init(with element: ViewHierarchyElement, isEnabled: Bool) {
+                self.title = element.displayName
+                self.isEnabled = isEnabled
+                self.subtitle = element.shortElementDescription
+                self.image = element.iconImage
+                self.depth = element.depth
+                self.element = element
+            }
+        }
+
+        private struct SearchQueryItem: ExpirableProtocol {
+            let query: String
+            let expirationDate: Date = Date().addingTimeInterval(5)
+            let results: [Details]
         }
 
         var searchQuery: String? {
             didSet {
-                loadData()
+                if oldValue != searchQuery {
+                    debounce(#selector(loadData), delay: .short)
+                }
             }
         }
 
+        private var queryStore: [String: SearchQueryItem] = [:]
+
         let snapshot: ViewHierarchySnapshot
 
-        private var searchResults = [Details]()
+        private var currentSearchResults = [Details]()
 
         init(snapshot: ViewHierarchySnapshot) {
             self.snapshot = snapshot
         }
 
-        var isEmpty: Bool { searchResults.isEmpty }
+        var isEmpty: Bool { currentSearchResults.isEmpty }
 
         let numberOfSections = 1
 
         func selectRow(at indexPath: IndexPath) -> InspectorCommand? {
-            guard (0 ..< searchResults.count).contains(indexPath.row) else {
+            guard (0 ..< currentSearchResults.count).contains(indexPath.row) else {
                 return nil
             }
-            let element = searchResults[indexPath.row].element
+            let element = currentSearchResults[indexPath.row].element
 
             return .inspect(element)
         }
 
         func isRowEnabled(at indexPath: IndexPath) -> Bool {
-            searchResults[indexPath.row].isEnabled
+            currentSearchResults[indexPath.row].isEnabled
         }
 
         func numberOfRows(in section: Int) -> Int {
-            searchResults.count
+            currentSearchResults.count
         }
 
         func titleForHeader(in section: Int) -> String? {
-            Texts.allResults(count: searchResults.count, in: snapshot.rootElement.elementName)
+            Texts.allResults(count: currentSearchResults.count, in: snapshot.rootElement.elementName)
         }
 
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
-            .element(searchResults[indexPath.row])
+            .element(currentSearchResults[indexPath.row])
         }
 
-        func loadData() {
-            guard let searchQuery = searchQuery else {
-                searchResults = []
-                return
-            }
-
-            let matchingReferences: [ViewHierarchyElement] = {
-                let inspectableReferences = snapshot.inspectableElements
-
-                guard searchQuery != Inspector.configuration.showAllViewSearchQuery else {
-                    return inspectableReferences
+        @objc func loadData() {
+            currentSearchResults = {
+                guard let key = searchQuery else {
+                    return []
                 }
 
-                return inspectableReferences.filter {
-                    ($0.displayName + $0.className).localizedCaseInsensitiveContains(searchQuery)
+                if let searchQueryItem = queryStore[key], searchQueryItem.isValid {
+                    return searchQueryItem.results
                 }
-            }()
 
-            searchResults = matchingReferences.map { element -> Details in
-                Details(
-                    title: element.displayName,
-                    isEnabled: true,
-                    subtitle: element.shortElementDescription,
-                    image: snapshot.elementLibraries.icon(for: element.rootView),
-                    depth: element.depth,
-                    element: element
+                if key == Inspector.configuration.showAllViewSearchQuery {
+                    let results = snapshot.inspectableElements.map {
+                        Details(with: $0, isEnabled: true)
+                    }
+
+                    let queryItem = SearchQueryItem(
+                        query: key,
+                        results: results
+                    )
+
+                    queryStore[key] = queryItem
+
+                    return queryItem.results
+                }
+
+                let results: [Details] = snapshot.inspectableElements.compactMap { element in
+                    guard (element.displayName + element.className).localizedCaseInsensitiveContains(key) else { return nil }
+                    return Details(with: element, isEnabled: true)
+                }
+
+                let queryItem = SearchQueryItem(
+                    query: key,
+                    results: results
                 )
-            }
+
+                queryStore[key] = queryItem
+
+                return queryItem.results
+            }()
         }
     }
 }

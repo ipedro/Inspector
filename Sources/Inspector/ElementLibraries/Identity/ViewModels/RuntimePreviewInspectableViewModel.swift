@@ -35,7 +35,7 @@ final class RuntimePreviewInspectableViewModel: InspectorElementViewModelProtoco
 
     private enum Property: String, Swift.CaseIterable {
         case preview = "Preview"
-        case backgroundColor = "Preview Background Color"
+        case backgroundColor = "Preview Background"
         case highlightView = "Highlight views"
     }
 

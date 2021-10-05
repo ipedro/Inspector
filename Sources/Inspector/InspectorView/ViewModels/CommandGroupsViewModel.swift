@@ -22,6 +22,8 @@ import UIKit
 
 extension HierarchyInspectorViewModel {
     final class CommandGroupsViewModel: HierarchyInspectorSectionViewModelProtocol {
+        let shouldAnimateKeyboard: Bool = true
+
         struct Details: HierarchyInspectorActionTableViewCellViewModelProtocol {
             let title: String
             var icon: UIImage?
@@ -47,7 +49,7 @@ extension HierarchyInspectorViewModel {
         }
 
         func loadData() {
-            layerCommandGroups = provider() ?? []
+            layerCommandGroups = provider() ?? layerCommandGroups
         }
 
         func selectRow(at indexPath: IndexPath) -> InspectorCommand? {

@@ -21,7 +21,9 @@
 import UIKit
 
 extension ViewHierarchyElement {
-    struct Snapshot: ViewHierarchyElementProtocol, Hashable {
+    struct Snapshot: ViewHierarchyElementProtocol, ExpirableProtocol, Hashable {
+        let expirationDate: Date = Date().addingTimeInterval(Inspector.configuration.snapshotExpirationTimeInterval)
+
         let displayName: String
         let classNameWithoutQualifiers: String
         let className: String
@@ -42,7 +44,6 @@ extension ViewHierarchyElement {
         let verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel]
         let depth: Int
         let isContainer: Bool
-        let createdAt = Date()
 
         init(view: UIView, icon: UIImage?, depth: Int) {
             viewIdentifier = view.viewIdentifier
@@ -84,29 +85,7 @@ final class ViewHierarchyElement: NSObject {
 
     let initialSnapshot: Snapshot
 
-    private(set) lazy var history: [Snapshot] = [initialSnapshot] {
-        didSet {
-            print("Updated snapshot of \(initialSnapshot.elementName)")
-            print("New total count is \(history.count)")
-            print("---")
-
-            guard history.count >= 2 else { return }
-
-            var array = history
-            let new = array.popLast()!
-            let old = array.popLast()!
-
-            let newComponents = String(describing: new).split(separator: ",")
-            let oldComponents = String(describing: old).split(separator: ",")
-
-            for (oldLine, newLine) in zip(oldComponents, newComponents) where oldLine != newLine {
-                let oldDescription = oldLine.trimmingCharacters(in: .whitespacesAndNewlines)
-                let newDescription = newLine.trimmingCharacters(in: .whitespacesAndNewlines)
-
-                print("\(oldDescription) -> \(newDescription)")
-            }
-        }
-    }
+    private(set) lazy var history: [Snapshot] = [initialSnapshot]
 
     var isCollapsed: Bool
 
@@ -181,8 +160,9 @@ final class ViewHierarchyElement: NSObject {
     }
 
     private func setNeedsSnapshot() {
+        debounce(#selector(makeSnapshot), delay: Inspector.configuration.snapshotExpirationTimeInterval)
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(makeSnapshot), object: nil)
-        perform(#selector(makeSnapshot), with: nil, afterDelay: .long)
+        perform(#selector(makeSnapshot), with: nil, afterDelay: Inspector.configuration.snapshotExpirationTimeInterval)
     }
 
     @objc private func makeSnapshot() {
@@ -197,9 +177,7 @@ final class ViewHierarchyElement: NSObject {
 // MARK: - ViewHierarchyElementProtocol {
 
 extension ViewHierarchyElement: ViewHierarchyElementProtocol {
-    var viewIdentifier: ObjectIdentifier {
-        initialSnapshot.viewIdentifier
-    }
+    // MARK: - Cached properties
 
     var iconImage: UIImage? {
         guard let rootView = rootView else {
@@ -216,7 +194,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
     }
 
     var isContainer: Bool {
-        guard let rootView = rootView else {
+        guard latestSnapshot.isExpired, let rootView = rootView else {
             return latestSnapshot.isContainer
         }
 
@@ -228,7 +206,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
     }
 
     var shortElementDescription: String {
-        guard let rootView = rootView else {
+        guard latestSnapshot.isExpired, let rootView = rootView else {
             return latestSnapshot.shortElementDescription
         }
 
@@ -252,7 +230,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
     }
 
     var canHostInspectorView: Bool {
-        guard let rootView = rootView else {
+        guard latestSnapshot.isExpired, let rootView = rootView else {
             return latestSnapshot.canHostInspectorView
         }
 
@@ -264,7 +242,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
     }
 
     var isInternalView: Bool {
-        guard let rootView = rootView else {
+        guard latestSnapshot.isExpired, let rootView = rootView else {
             return latestSnapshot.isInternalView
         }
 
@@ -275,32 +253,8 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         return rootView.isInternalView
     }
 
-    var className: String {
-        guard let rootView = rootView else {
-            return latestSnapshot.className
-        }
-
-        if rootView.className != latestSnapshot.className {
-            setNeedsSnapshot()
-        }
-
-        return rootView.className
-    }
-
-    var classNameWithoutQualifiers: String {
-        guard let rootView = rootView else {
-            return latestSnapshot.classNameWithoutQualifiers
-        }
-
-        if rootView.classNameWithoutQualifiers != latestSnapshot.classNameWithoutQualifiers {
-            setNeedsSnapshot()
-        }
-
-        return rootView.classNameWithoutQualifiers
-    }
-
     var elementName: String {
-        guard let rootView = rootView else {
+        guard latestSnapshot.isExpired, let rootView = rootView else {
             return latestSnapshot.elementName
         }
 
@@ -312,7 +266,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
     }
 
     var displayName: String {
-        guard let rootView = rootView else {
+        guard latestSnapshot.isExpired, let rootView = rootView else {
             return latestSnapshot.displayName
         }
 
@@ -323,24 +277,8 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         return rootView.displayName
     }
 
-    var canPresentOnTop: Bool {
-        guard let rootView = rootView else {
-            return latestSnapshot.canPresentOnTop
-        }
-
-        if rootView.canPresentOnTop != latestSnapshot.canPresentOnTop {
-            setNeedsSnapshot()
-        }
-
-        return rootView.canPresentOnTop
-    }
-
-    var isUserInteractionEnabled: Bool {
-        initialSnapshot.isUserInteractionEnabled
-    }
-
     var frame: CGRect {
-        guard let rootView = rootView else {
+        guard latestSnapshot.isExpired, let rootView = rootView else {
             return latestSnapshot.frame
         }
 
@@ -352,7 +290,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
     }
 
     var accessibilityIdentifier: String? {
-        guard let rootView = rootView else {
+        guard latestSnapshot.isExpired, let rootView = rootView else {
             return latestSnapshot.accessibilityIdentifier
         }
 
@@ -361,6 +299,58 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         }
 
         return rootView.accessibilityIdentifier
+    }
+
+    var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        guard latestSnapshot.isExpired, let rootView = rootView else {
+            return latestSnapshot.constraintReferences
+        }
+
+        if rootView.constraintReferences != latestSnapshot.constraintReferences {
+            setNeedsSnapshot()
+        }
+
+        return rootView.constraintReferences
+    }
+
+    var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        guard latestSnapshot.isExpired, let rootView = rootView else {
+            return latestSnapshot.horizontalConstraintReferences
+        }
+
+        if rootView.horizontalConstraintReferences != latestSnapshot.horizontalConstraintReferences {
+            setNeedsSnapshot()
+        }
+
+        return rootView.horizontalConstraintReferences
+    }
+
+    var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
+        guard latestSnapshot.isExpired, let rootView = rootView else {
+            return latestSnapshot.verticalConstraintReferences
+        }
+
+        if rootView.verticalConstraintReferences != latestSnapshot.verticalConstraintReferences {
+            setNeedsSnapshot()
+        }
+
+        return rootView.verticalConstraintReferences
+    }
+
+    // MARK: - Live Properties
+    var canPresentOnTop: Bool {
+        initialSnapshot.canPresentOnTop
+    }
+
+    var className: String {
+        initialSnapshot.className
+    }
+
+    var classNameWithoutQualifiers: String {
+        initialSnapshot.classNameWithoutQualifiers
+    }
+    var isUserInteractionEnabled: Bool {
+        initialSnapshot.isUserInteractionEnabled
     }
 
     var issues: [ViewHierarchyIssue] {
@@ -378,40 +368,8 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         return rootView.issues
     }
 
-    var constraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        guard let rootView = rootView else {
-            return latestSnapshot.constraintReferences
-        }
-
-        if rootView.constraintReferences != latestSnapshot.constraintReferences {
-            setNeedsSnapshot()
-        }
-
-        return rootView.constraintReferences
-    }
-
-    var horizontalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        guard let rootView = rootView else {
-            return latestSnapshot.horizontalConstraintReferences
-        }
-
-        if rootView.horizontalConstraintReferences != latestSnapshot.horizontalConstraintReferences {
-            setNeedsSnapshot()
-        }
-
-        return rootView.horizontalConstraintReferences
-    }
-
-    var verticalConstraintReferences: [NSLayoutConstraintInspectableViewModel] {
-        guard let rootView = rootView else {
-            return latestSnapshot.verticalConstraintReferences
-        }
-
-        if rootView.verticalConstraintReferences != latestSnapshot.verticalConstraintReferences {
-            setNeedsSnapshot()
-        }
-
-        return rootView.verticalConstraintReferences
+    var viewIdentifier: ObjectIdentifier {
+        initialSnapshot.viewIdentifier
     }
 }
 

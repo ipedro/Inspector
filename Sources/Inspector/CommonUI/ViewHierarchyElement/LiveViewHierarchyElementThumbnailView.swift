@@ -80,7 +80,7 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
 
     @objc
     func startLiveUpdatingSnaphost() {
-        debounce(#selector(makeDisplayLink), after: .average)
+        debounce(#selector(makeDisplayLink), delay: .average)
     }
 
     @objc

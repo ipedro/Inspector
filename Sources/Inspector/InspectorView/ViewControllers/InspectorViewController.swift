@@ -24,46 +24,18 @@ import GameController
 import UIKit
 
 protocol InspectorViewControllerDelegate: AnyObject {
-    func inspectorViewController(
-        _ viewController: InspectorViewController,
-        didSelect command: InspectorCommand?
-    )
-
+    func inspectorViewController(_ viewController: InspectorViewController, didSelect command: InspectorCommand?)
     func inspectorViewControllerDidFinish(_ viewController: InspectorViewController)
 }
 
-final class InspectorViewController: UIViewController, KeyboardAnimatable, DataReloadingProtocol {
-    // MARK: - Init
-
-    convenience init(viewModel: HierarchyInspectorViewModelProtocol) {
-        self.init(nibName: nil, bundle: nil)
-        self.viewModel = viewModel
-    }
-
+final class InspectorViewController: UIViewController, KeyboardAnimatable {
     // MARK: - Properties
+
+    private(set) var isFinishing = false
 
     weak var delegate: InspectorViewControllerDelegate?
 
-    private(set) var viewModel: HierarchyInspectorViewModelProtocol!
-
-    private(set) lazy var viewCode = HierarchyInspectorViewCode().then {
-        $0.delegate = self
-
-        $0.searchView.textField.addTarget(self, action: #selector(search), for: .editingChanged)
-        $0.searchView.textField.delegate = self
-
-        $0.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
-
-        $0.tableView.register(HierarchyInspectorActionTableViewCell.self)
-        $0.tableView.register(HierarchyInspectorReferenceSummaryTableViewCell.self)
-        $0.tableView.registerHeaderFooter(HierarchyInspectorTableViewHeaderView.self)
-
-        $0.tableView.delegate = self
-        $0.tableView.dataSource = self
-        $0.tableView.keyCommandsDelegate = self
-    }
-
-    private var isFinishing = false
+    override var canBecomeFirstResponder: Bool { true }
 
     private var shouldToggleFirstResponderOnAppear: Bool {
         #if targetEnvironment(simulator)
@@ -78,8 +50,42 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable, DataR
         #endif
     }
 
-    override func loadView() {
-        view = viewCode
+    private lazy var searchKeyCommands: [UIKeyCommand] = {
+        var keyCommands = CharacterSet.urlQueryAllowed.allCharacters().map {
+            UIKeyCommand(.key($0), action: #selector(type))
+        }
+
+        keyCommands.append(
+            UIKeyCommand(.backspace, action: #selector(backspaceKey))
+        )
+
+        return keyCommands
+    }()
+
+    // MARK: - Components
+
+    private(set) var viewModel: HierarchyInspectorViewModelProtocol!
+
+    private(set) lazy var viewCode = HierarchyInspectorViewCode().then {
+        $0.delegate = self
+
+        $0.searchView.textField.addTarget(self, action: #selector(search), for: .editingChanged)
+        $0.searchView.textField.delegate = self
+
+        $0.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
+        $0.tableView.register(HierarchyInspectorActionTableViewCell.self)
+        $0.tableView.register(HierarchyInspectorReferenceSummaryTableViewCell.self)
+        $0.tableView.registerHeaderFooter(HierarchyInspectorTableViewHeaderView.self)
+        $0.tableView.delegate = self
+        $0.tableView.dataSource = self
+        $0.tableView.keyCommandsDelegate = self
+    }
+
+    // MARK: - Init
+
+    convenience init(viewModel: HierarchyInspectorViewModelProtocol) {
+        self.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
     }
 
     deinit {
@@ -88,6 +94,133 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable, DataR
         }
     }
 
+    // MARK: - Lifecycle
+
+    override func loadView() {
+        view = viewCode
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        reloadData()
+
+        // key commands
+        addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))
+        addKeyCommand(UIKeyCommand(.tab, action: #selector(toggleResponderAndSelectFirstRow)))
+        addKeyCommand(UIKeyCommand(.arrowDown, action: #selector(toggleResponderAndSelectFirstRow)))
+        addKeyCommand(UIKeyCommand(.arrowUp, action: #selector(toggleResponderAndSelectLastRow)))
+        addKeyCommand(
+            UIKeyCommand(
+                .discoverabilityTitle(
+                    title: Texts.dismissView,
+                    key: Inspector.configuration.keyCommands.presentationSettings.options
+                ),
+                action: #selector(finish)
+            )
+        )
+
+        guard viewModel.shouldAnimateKeyboard else { return }
+
+        // keyboard event handlers
+        animateWhenKeyboard(.willHide) { _ in
+            self.viewCode.keyboardFrame = nil
+            self.viewCode.layoutIfNeeded()
+        }
+
+        animateWhenKeyboard(.willShow) { info in
+            Console.log(info)
+            self.viewCode.keyboardFrame = info.keyboardFrame
+            self.viewCode.layoutIfNeeded()
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        viewCode.updateTableViewHeight()
+
+        if animated {
+            viewCode.transform = .init(scaleX: 0.8, y: 0.8)
+            viewCode.animate(.out, duration: .average * 1.5)
+        }
+
+        if shouldToggleFirstResponderOnAppear {
+            DispatchQueue.main.async {
+                self.toggleFirstResponder()
+            }
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if animated {
+            viewCode.animate(.in)
+        }
+    }
+
+    // MARK: - Overrides
+
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        guard
+            keyPath == .contentSize,
+            let contentSize = change?[.newKey] as? CGSize
+        else {
+            return
+        }
+
+        viewCode.tableViewContentSize = contentSize
+    }
+
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        startDismissing(animated: flag)
+        super.dismiss(animated: flag, completion: completion)
+    }
+
+    private func startDismissing(animated: Bool) {
+        isFinishing = true
+        view.endEditing(true)
+
+        if animated {
+            viewCode.animate(.out)
+        }
+    }
+}
+
+// MARK: - DataReloading
+
+extension InspectorViewController: DataReloadingProtocol {
+    func reloadData() {
+        viewModel.loadData()
+        viewCode.reloadData()
+        viewCode.updateTableViewHeight()
+
+        if viewCode.searchView.separatorView.isSafelyHidden != viewModel.isEmpty {
+            viewCode.searchView.separatorView.isSafelyHidden = viewModel.isEmpty
+        }
+
+        if viewCode.tableView.isSafelyHidden != viewModel.isEmpty {
+            viewCode.tableView.isSafelyHidden = viewModel.isEmpty
+        }
+    }
+}
+
+// MARK: - KeyCommand
+
+extension InspectorViewController {
+    func addSearchKeyCommandListeners() {
+        searchKeyCommands.forEach { addKeyCommand($0) }
+    }
+
+    func removeSearchKeyCommandListeners() {
+        searchKeyCommands.forEach { removeKeyCommand($0) }
+    }
+}
+
+// MARK: - First Responder
+
+extension InspectorViewController {
     @objc
     func toggleResponderAndSelectLastRow() {
         toggleFirstResponder()
@@ -117,131 +250,6 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable, DataR
             viewCode.tableView.resignFirstResponder()
             viewCode.searchView.becomeFirstResponder()
         }
-    }
-
-    // MARK: - Overrides
-
-    private lazy var searchKeyCommands: [UIKeyCommand] = {
-        var keyCommands = CharacterSet.urlQueryAllowed.allCharacters().map {
-            UIKeyCommand(.key($0), action: #selector(type))
-        }
-
-        keyCommands.append(
-            UIKeyCommand(.backspace, action: #selector(backspaceKey))
-        )
-
-        return keyCommands
-    }()
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        reloadData()
-
-        if animated {
-            viewCode.transform = .init(scaleX: 0.8, y: 0.8)
-            viewCode.animate(.out, duration: .average * 1.5)
-        }
-
-        if shouldToggleFirstResponderOnAppear {
-            DispatchQueue.main.async {
-                self.toggleFirstResponder()
-            }
-        }
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        if animated {
-            viewCode.animate(.in)
-        }
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // key commands
-        addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))
-        addKeyCommand(UIKeyCommand(.tab, action: #selector(toggleResponderAndSelectFirstRow)))
-        addKeyCommand(UIKeyCommand(.arrowDown, action: #selector(toggleResponderAndSelectFirstRow)))
-        addKeyCommand(UIKeyCommand(.arrowUp, action: #selector(toggleResponderAndSelectLastRow)))
-        addKeyCommand(
-            UIKeyCommand(
-                .discoverabilityTitle(
-                    title: Texts.dismissView,
-                    key: Inspector.configuration.keyCommands.presentationSettings.options
-                ),
-                action: #selector(finish)
-            )
-        )
-
-        // swift ui handles keyboard affordances on it's own
-        guard Inspector.manager.swiftUIhost == nil else { return }
-
-        // keyboard event handlers
-        animateWhenKeyboard(.willHide) { _ in
-            self.viewCode.keyboardFrame = nil
-            self.viewCode.layoutIfNeeded()
-        }
-
-        animateWhenKeyboard(.willShow) { info in
-            Console.log(info)
-            self.viewCode.keyboardFrame = info.keyboardFrame
-            self.viewCode.layoutIfNeeded()
-        }
-    }
-
-    override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey: Any]?,
-        context: UnsafeMutableRawPointer?
-    ) {
-        guard
-            keyPath == .contentSize,
-            let contentSize = change?[.newKey] as? CGSize
-        else {
-            return
-        }
-
-        viewCode.tableViewContentSize = contentSize
-    }
-
-    override var canBecomeFirstResponder: Bool { true }
-
-    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        startDismissing(animated: flag)
-        super.dismiss(animated: flag, completion: completion)
-    }
-
-    // MARK: - Private Methods
-
-    private func startDismissing(animated: Bool) {
-        isFinishing = true
-        view.endEditing(true)
-
-        if animated {
-            viewCode.animate(.out)
-        }
-    }
-
-    func reloadData() {
-        viewModel.loadData()
-
-        viewCode.searchView.separatorView.isSafelyHidden = viewModel.isEmpty
-
-        viewCode.tableView.isSafelyHidden = viewModel.isEmpty
-
-        viewCode.reloadData()
-    }
-
-    private func addSearchKeyCommandListeners() {
-        searchKeyCommands.forEach { addKeyCommand($0) }
-    }
-
-    private func removeSearchKeyCommandListeners() {
-        searchKeyCommands.forEach { removeKeyCommand($0) }
     }
 }
 
@@ -276,20 +284,20 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable, DataR
     }
 
     func search() {
-        viewCode.searchView.becomeFirstResponder()
+        if viewCode.searchView.isFirstResponder == false {
+            viewCode.searchView.becomeFirstResponder()
+        }
+
+        guard viewCode.searchView.isFirstResponder else { return }
+
         viewModel.searchQuery = viewCode.searchView.query
         reloadData()
 
-        DispatchQueue.main.async {
-            self.viewCode.tableView.scrollToRow(
-                at: IndexPath(
-                    row: NSNotFound,
-                    section: .zero
-                ),
-                at: .top,
-                animated: false
-            )
-        }
+        debounce(#selector(scrollToTopSection), delay: .short)
+    }
+
+    @objc private func scrollToTopSection() {
+        viewCode.tableView.scrollToRow(at: IndexPath(row: NSNotFound, section: .zero), at: .top, animated: false)
     }
 
     func finish() {
@@ -307,9 +315,7 @@ extension InspectorViewController: HierarchyInspectorViewCodeDelegate {
     }
 }
 
-extension String {
-    static let contentSize = "contentSize"
-}
+// MARK: - UITextFieldDelegate
 
 extension InspectorViewController: UITextFieldDelegate {
     func textField(
@@ -327,27 +333,6 @@ extension InspectorViewController: UITextFieldDelegate {
     }
 }
 
-// MARK: - UITableViewKeyCommandsDelegate
-
-extension InspectorViewController: UITableViewKeyCommandsDelegate {
-    func tableViewDidBecomeFirstResponder(_ tableView: UIKeyCommandTableView) {
-        addSearchKeyCommandListeners()
-    }
-
-    func tableViewDidResignFirstResponder(_ tableView: UIKeyCommandTableView) {
-        tableView.indexPathsForSelectedRows?.forEach { tableView.deselectRow(at: $0, animated: false) }
-        removeSearchKeyCommandListeners()
-
-        guard isFinishing == false else { return }
-
-        viewCode.searchView.becomeFirstResponder()
-    }
-
-    func tableViewKeyCommandSelectionBelowBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior {
-        .resignFirstResponder
-    }
-
-    func tableViewKeyCommandSelectionAboveBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior {
-        .resignFirstResponder
-    }
+private extension String {
+    static let contentSize = "contentSize"
 }

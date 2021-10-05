@@ -56,7 +56,6 @@ final class HierarchyInspectorSearchView: BaseView {
     @discardableResult
     override func becomeFirstResponder() -> Bool {
         super.becomeFirstResponder()
-
         return textField.becomeFirstResponder()
     }
 
@@ -65,13 +64,13 @@ final class HierarchyInspectorSearchView: BaseView {
 
         contentView.axis = .horizontal
         contentView.alignment = .center
-        contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
-        contentView.spacing = ElementInspector.appearance.horizontalMargins / 2
+        contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets.with(trailing: ElementInspector.appearance.verticalMargins)
+        contentView.spacing = ElementInspector.appearance.verticalMargins
 
         contentView.addArrangedSubview(searchIcon)
         contentView.addArrangedSubview(textField)
 
-        installView(separatorView, .spacing(leading: .zero, bottom: .zero, trailing: .zero))
+        installView(separatorView, .spacing(leading: .zero, bottom: -separatorView.thickness, trailing: .zero))
     }
 }
 

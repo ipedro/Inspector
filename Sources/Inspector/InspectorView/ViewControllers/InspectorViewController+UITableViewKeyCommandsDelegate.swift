@@ -18,38 +18,30 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+@_implementationOnly import UIKeyCommandTableView
 import UIKit
 
-struct ViewHierarchySnapshot: ExpirableProtocol {
-    let expirationDate = Date().addingTimeInterval(Inspector.configuration.snapshotExpirationTimeInterval)
+// MARK: - UITableViewKeyCommandsDelegate
 
-    let availableLayers: [ViewHierarchyLayer]
+extension InspectorViewController: UITableViewKeyCommandsDelegate {
+    func tableViewDidBecomeFirstResponder(_ tableView: UIKeyCommandTableView) {
+        addSearchKeyCommandListeners()
+    }
 
-    let populatedLayers: [ViewHierarchyLayer]
+    func tableViewDidResignFirstResponder(_ tableView: UIKeyCommandTableView) {
+        tableView.indexPathsForSelectedRows?.forEach { tableView.deselectRow(at: $0, animated: false) }
+        removeSearchKeyCommandListeners()
 
-    let rootElement: ViewHierarchyElement
+        guard isFinishing == false else { return }
 
-    let inspectableElements: [ViewHierarchyElement]
+        viewCode.searchView.becomeFirstResponder()
+    }
 
-    let elementLibraries: [InspectorElementLibraryProtocol]
+    func tableViewKeyCommandSelectionBelowBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior {
+        .resignFirstResponder
+    }
 
-    init(
-        availableLayers: [ViewHierarchyLayer],
-        elementLibraries: [InspectorElementLibraryProtocol],
-        in rootView: UIView
-    ) {
-        self.availableLayers = availableLayers.uniqueValues()
-
-        self.elementLibraries = elementLibraries
-
-        rootElement = ViewHierarchyElement(rootView, iconProvider: { elementLibraries.icon(for: $0) })
-
-        inspectableElements = rootElement.inspectableViewReferences
-
-        let inspectableViewReferences = rootElement.inspectableViewReferences
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViewReferences).isEmpty == false
-        }
+    func tableViewKeyCommandSelectionAboveBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior {
+        .resignFirstResponder
     }
 }

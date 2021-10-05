@@ -59,7 +59,7 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, UIViewControllerAnim
     private var isObservingSize = false
 
     private lazy var backgroundGestureView = BackgroundGestureView().then {
-        $0.addObserver(self, forKeyPath: "bounds", options: .new, context: nil)
+        $0.addObserver(self, forKeyPath: .bounds, options: .new, context: nil)
     }
     
     override func observeValue(
@@ -74,7 +74,7 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, UIViewControllerAnim
     }
 
     deinit {
-        backgroundGestureView.removeObserver(self, forKeyPath: "bounds", context: nil)
+        backgroundGestureView.removeObserver(self, forKeyPath: .bounds, context: nil)
     }
 
     private lazy var shadowView = DropShadowView()
@@ -167,4 +167,8 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, UIViewControllerAnim
         }
     }
 
+}
+
+private extension String {
+    static let bounds = "bounds"
 }

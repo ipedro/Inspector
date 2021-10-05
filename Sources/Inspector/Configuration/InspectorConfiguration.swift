@@ -25,7 +25,7 @@ public struct InspectorConfiguration {
 
     public var keyCommands: KeyCommandSettings = .init()
 
-    public var cacheExpirationTimeInterval: TimeInterval = 0.5
+    public var snapshotExpirationTimeInterval: TimeInterval = 0.5
 
     public var showAllViewSearchQuery: String = "*"
 

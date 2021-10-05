@@ -35,6 +35,8 @@ protocol HierarchyInspectorSectionViewModelProtocol {
 
     var isEmpty: Bool { get }
 
+    var shouldAnimateKeyboard: Bool { get }
+
     func numberOfRows(in section: Int) -> Int
 
     func titleForHeader(in section: Int) -> String?
@@ -78,6 +80,11 @@ final class HierarchyInspectorViewModel {
 // MARK: - HierarchyInspectorViewModelProtocol
 
 extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
+    var shouldAnimateKeyboard: Bool {
+        // swift ui handles keyboard affordances on it's own
+        Inspector.manager.swiftUIhost == nil
+    }
+
     func isRowEnabled(at indexPath: IndexPath) -> Bool {
         switch isSearching {
         case true:

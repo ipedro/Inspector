@@ -170,7 +170,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         }
 
         elementDescriptionView.collapseButton.animate(.out)
-        debounce(#selector(triggerCollapseButton), after: 0.15, object: nil)
+        debounce(#selector(triggerCollapseButton), delay: 0.15, object: nil)
     }
 
     @objc private func triggerCollapseButton() {

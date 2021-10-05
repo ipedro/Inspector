@@ -36,10 +36,9 @@ extension InspectorViewController: UITableViewDelegate {
 
             let headerHeight: CGFloat = headerView.frame.height
 
-            let hiddenFrameHeight = scrollView.contentOffset.y - scrollView.adjustedContentInset.top + headerHeight - cell.frame.origin.y
+            let hiddenFrameHeight = scrollView.contentOffset.y + headerHeight - cell.frame.origin.y
 
             if hiddenFrameHeight >= 0 || hiddenFrameHeight <= cell.frame.size.height {
-                print(hiddenFrameHeight)
                 cell.maskCellFromTop(margin: max(0, hiddenFrameHeight))
             }
             else {
@@ -60,11 +59,11 @@ extension InspectorViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        SeparatorView(color: .clear)
+        UIView()
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        viewModel.numberOfRows(in: section) == .zero ? .zero : ElementInspector.appearance.verticalMargins
+        .zero
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

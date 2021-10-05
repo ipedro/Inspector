@@ -25,7 +25,7 @@ protocol HierarchyInspectorViewCodeDelegate: AnyObject {
     func hierarchyInspectorViewCodeDidTapOutside(_ view: HierarchyInspectorViewCode)
 }
 
-final class HierarchyInspectorViewCode: BaseView, DataReloadingProtocol {
+final class HierarchyInspectorViewCode: BaseView {
     var verticalMargin: CGFloat { 30 }
 
     var horizontalMargin: CGFloat { verticalMargin / 2 }
@@ -47,6 +47,26 @@ final class HierarchyInspectorViewCode: BaseView, DataReloadingProtocol {
     }
 
     weak var delegate: HierarchyInspectorViewCodeDelegate?
+
+    var tableViewContentSize: CGSize = .zero {
+        didSet {
+            debounce(#selector(updateTableViewHeight), delay: .veryShort)
+        }
+    }
+
+    // MARK: - Constraints
+
+    private lazy var tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: .zero).then {
+        $0.priority = .defaultLow
+        $0.isActive = true
+    }
+
+    private lazy var bottomAnchorConstraint = blurView.bottomAnchor.constraint(
+        lessThanOrEqualTo: safeAreaLayoutGuide.bottomAnchor,
+        constant: -verticalMargin
+    )
+
+    // MARK: - Components
 
     private(set) lazy var searchView = HierarchyInspectorSearchView()
 
@@ -96,15 +116,22 @@ final class HierarchyInspectorViewCode: BaseView, DataReloadingProtocol {
         )
     )
 
-    func reloadData() {
-        tableView.reloadData()
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+
+        updateTableViewHeight()
+    }
+
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+
         updateTableViewHeight()
     }
 
     @objc func updateTableViewHeight() {
-        guard window != nil else { return }
+        guard superview?.window != nil else { return }
 
-        let height = round(tableViewContentSize.height + tableView.contentInset.verticalInsets)
+        let height: CGFloat = floor(tableViewContentSize.height + 1) + tableView.contentInset.verticalInsets
 
         guard tableViewHeightConstraint.constant != height else {
             return
@@ -115,22 +142,6 @@ final class HierarchyInspectorViewCode: BaseView, DataReloadingProtocol {
             self.layoutIfNeeded()
         }
     }
-
-    var tableViewContentSize: CGSize = .zero {
-        didSet {
-            debounce(#selector(updateTableViewHeight), after: 0.01)
-        }
-    }
-
-    private lazy var tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: .zero).then {
-        $0.priority = .defaultLow
-        $0.isActive = true
-    }
-
-    private lazy var bottomAnchorConstraint = blurView.bottomAnchor.constraint(
-        lessThanOrEqualTo: safeAreaLayoutGuide.bottomAnchor,
-        constant: -verticalMargin
-    )
 
     override func setup() {
         super.setup()
@@ -176,5 +187,11 @@ final class HierarchyInspectorViewCode: BaseView, DataReloadingProtocol {
             self.delegate?.hierarchyInspectorViewCodeDidTapOutside(self)
         }
     }
+}
 
+extension HierarchyInspectorViewCode: DataReloadingProtocol {
+    func reloadData() {
+        tableView.reloadData()
+        updateTableViewHeight()
+    }
 }
