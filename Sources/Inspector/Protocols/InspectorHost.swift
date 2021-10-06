@@ -21,7 +21,14 @@
 import UIKit
 
 public protocol InspectorHost: AnyObject {
+    /// The host window.
     var window: UIWindow? { get }
+
+    /// Return your own icons for custom classes or override exsiting ones.
+    var inspectorElementIconProvider: Inspector.ElementIconProvider? { get }
+
+    /// Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.
+    var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? { get }
 
     /// `ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with `Ctrl + Shift + 1 - 9`. Add your own custom inspector layers.
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }
@@ -31,9 +38,6 @@ public protocol InspectorHost: AnyObject {
 
     /// Return your own command groups as sections on the Inspector interface. You can have as many groups, with as many actions as you would like.
     var inspectorCommandGroups: [Inspector.CommandsGroup]? { get }
-
-    /// Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.
-    var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { get }
 }
 
 // MARK: - Swift UI

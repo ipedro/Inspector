@@ -155,6 +155,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
             viewCode.setContentAnimated(.loadingIndicator)
 
+            segmentedControl.isUserInteractionEnabled = false
+
             let operation = MainThreadAsyncOperation(name: "install panel") { [weak self] in
                 guard let self = self else {
                     oldValue?.removeFromParent()
@@ -163,6 +165,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
                 guard let panelViewController = self.currentPanelViewController else {
                     self.viewCode.content = .empty(withMessage: "Lost connection to element")
+                    self.segmentedControl.isUserInteractionEnabled = true
                     return
                 }
 
@@ -194,11 +197,12 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                     oldValue?.didMove(toParent: nil)
                     oldValue?.removeFromParent()
 
-                    if let self = self {
-                        panelViewController.didMove(toParent: self)
-                    }
+                    guard let self = self else { return }
 
-                    self?.animate(withDuration: .veryLong) {
+                    self.segmentedControl.isUserInteractionEnabled = true
+                    panelViewController.didMove(toParent: self)
+
+                    self.animate(withDuration: .veryLong) { [weak self] in
                         self?.updatePreferredContentSize()
                     }
                 }
@@ -452,17 +456,8 @@ extension ElementInspectorViewController {
 
 private extension ElementInspectorViewController {
     func installPanel(_ panel: ElementInspectorPanel) {
-        guard
-            let newPanelViewController = delegate?.elementInspectorViewController(viewControllerWith: panel, and: viewModel.element)
-        else {
+        guard let newPanelViewController = delegate?.elementInspectorViewController(viewControllerWith: panel, and: viewModel.element) else {
             currentPanelViewController = nil
-            return
-        }
-
-        if
-            let previousPanelViewController = currentPanelViewController,
-            type(of: previousPanelViewController) == type(of: newPanelViewController)
-        {
             return
         }
 

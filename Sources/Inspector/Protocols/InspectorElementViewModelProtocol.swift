@@ -24,8 +24,10 @@ public protocol InspectorElementViewModelProtocol {
     var title: String { get }
     var subtitle: String? { get }
     var properties: [InspectorElementViewModelProperty] { get }
+    var customViewType: InspectorElementFormItemView.Type? { get }
 }
 
 public extension InspectorElementViewModelProtocol {
     var subtitle: String? { nil }
+    var customViewType: InspectorElementFormItemView.Type? { nil }
 }

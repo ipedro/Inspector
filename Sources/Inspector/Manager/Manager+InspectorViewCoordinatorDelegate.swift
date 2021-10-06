@@ -53,9 +53,9 @@ extension Manager {
 
                 self.startElementInspectorCoordinator(
                     for: reference,
-                    with: .none,
-                    animated: true,
-                   from: sourceView
+                   panel: .none,
+                   from: sourceView,
+                   animated: true
                 )
             }
         }

@@ -20,26 +20,8 @@
 
 import UIKit
 
-typealias ViewHierarchyColorScheme = Inspector.ViewHierarchyColorScheme
-
-public extension Inspector {
-    struct ViewHierarchyColorScheme {
-        private let closure: (UIView) -> UIColor
-
-        public static func colorScheme(_ closure: @escaping (UIView) -> UIColor) -> ViewHierarchyColorScheme {
-            self.init(closure: closure)
-        }
-
-        public func color(for view: UIView) -> UIColor {
-            closure(view)
-        }
-    }
-}
-
-// MARK: - Convenince
-
-public extension ViewHierarchyColorScheme {
-    static let `default` = Inspector.ViewHierarchyColorScheme { view in
+extension ViewHierarchyColorScheme {
+    static let `default`: ViewHierarchyColorScheme = .init { view in
         guard view.hightlightView?.element.isUserInteractionEnabled == true else {
             return .systemGray
         }

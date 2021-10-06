@@ -98,11 +98,11 @@ import Inspector
 extension SceneDelegate: InspectorHostable {
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
     
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { nil }
+    var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { nil }
     
     var inspectorCommandGroups: [Inspector.CommandsGroup]? { nil }
 
-    var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { nil }
+    var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? { nil }
 }
 #endif
 
@@ -134,11 +134,11 @@ import Inspector
 extension AppDelegate: InspectorHostable {
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
     
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { nil }
+    var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { nil }
     
     var inspectorCommandGroups: [Inspector.CommandsGroup]? { nil }
 
-    var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { nil }
+    var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? { nil }
 }
 #endif
 
@@ -320,9 +320,9 @@ override func viewDidLoad() {
 ## InspectorHostable Protocol
 * `var window: UIWindow? { get }`
 * [`var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
-* [`var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }`](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
+* [`var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { get }`](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
 * [`var inspectorCommandGroups: [Inspector.CommandGroup]? { get }`](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
-* [`var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }`](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
+* [`var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] { get }`](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
 
 ---
 
@@ -380,14 +380,14 @@ var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
 
 ---
 
-#### `var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }`
+#### `var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { get }`
 
 Return your own color scheme for the hierarchy label colors, instead of (or to extend) the default color scheme.
 
 ```swift
 // Example
 
-var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
+var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? {
     .colorScheme { view in
         switch view {
         case is MyView:
@@ -395,7 +395,7 @@ var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
             
         default:
         // fallback to default color scheme
-            return Inspector.ViewHierarchyColorScheme.default.color(for: view)
+            return Inspector.ColorScheme.default.value(view)
         }
     }
 }
@@ -440,14 +440,14 @@ var inspectorCommandGroups: [Inspector.CommandGroup]? {
 
 ---
 
-#### `var inspectorElementLibraries: [InspectorElementLibraryProtocol] { get }`
+#### `var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] { get }`
 
 Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Use enumerations.*
 
 ```swift 
 // Example
 
-var inspectorElementLibraries: [InspectorElementLibraryProtocol] {
+var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] {
     ExampleElementLibrary.allCases
 }
 ```

@@ -42,15 +42,6 @@ enum ElementInspectorSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIte
 
     func icon(for referenceView: UIView) -> UIImage? { nil }
 
-    static func viewType(forViewModel viewModel: InspectorElementViewModelProtocol) -> InspectorElementFormItemView.Type? {
-        switch viewModel {
-        case is NSLayoutConstraintInspectableViewModel:
-            return ElementInspectorFormLayoutConstraintView.self
-        default:
-            return nil
-        }
-    }
-
     func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
         switch self {
         case .scrollView:

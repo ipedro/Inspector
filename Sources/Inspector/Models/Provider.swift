@@ -20,19 +20,47 @@
 
 import UIKit
 
-/// Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
-public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource {
-    var targetClass: AnyClass { get }
+public extension Inspector {
+    struct Provider<From, To>: Hashable {
+        private let identifier = UUID()
 
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem]
+        private let closure: (From) -> To
 
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol?
+        public init(closure: @escaping (From) -> To) {
+            self.closure = closure
+        }
+
+        public static func == (lhs: Provider<From, To>, rhs: Provider<From, To>) -> Bool {
+            lhs.identifier == rhs.identifier
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(identifier)
+        }
+    }
 }
 
-// MARK: - Backwards compatibility with v1.0
-
-public extension InspectorElementLibraryProtocol {
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
-        return .single(viewModel(for: referenceView))
+extension Inspector.Provider where To == Void {
+    func handle(_ element: From) {
+        closure(element)
     }
+}
+
+extension Inspector.Provider where From: Any, To: Any {
+    func value(for element: From) -> To {
+        closure(element)
+    }
+}
+
+extension Inspector.Provider where From == Void {
+    var value: To {
+        closure(())
+    }
+}
+
+typealias ViewHierarchyColorScheme = Inspector.Provider<UIView, UIColor>
+
+public extension Inspector {
+    typealias ElementIconProvider = Provider<UIView, UIImage?>
+    typealias ViewHierarchyColorScheme = Provider<UIView, UIColor?>
 }

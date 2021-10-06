@@ -60,7 +60,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     weak var formDelegate: ElementInspectorFormPanelDelegate?
 
-    var dataSource: ElementInspectorFormPanelDataSource {
+    var dataSource: ElementInspectorFormPanelDataSource? {
         didSet {
             reloadData()
         }
@@ -131,19 +131,6 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     private lazy var viewCode = BaseView()
 
-    // MARK: - Init
-
-    init(dataSource: ElementInspectorFormPanelDataSource) {
-        self.dataSource = dataSource
-
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     override func loadView() {
         view = viewCode
     }
@@ -158,6 +145,8 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     func reloadData() {
         viewCode.contentView.removeAllArrangedSubviews()
+
+        guard let dataSource = dataSource else { return }
 
         dataSource.items.enumerated().forEach { section, item in
             if let title = item.title {

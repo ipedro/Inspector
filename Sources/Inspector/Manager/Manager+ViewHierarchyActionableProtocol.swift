@@ -32,7 +32,7 @@ extension Manager: ViewHierarchyActionableProtocol {
             viewHierarchyCoordinator?.perform(action: action, with: element, from: sourceView)
 
         case let .inspect(preferredPanel: preferredPanel):
-            startElementInspectorCoordinator(for: element, with: preferredPanel, animated: true, from: sourceView)
+            startElementInspectorCoordinator(for: element, panel: preferredPanel, from: sourceView, animated: true)
 
         case .copy(.className):
             UIPasteboard.general.string = element.className

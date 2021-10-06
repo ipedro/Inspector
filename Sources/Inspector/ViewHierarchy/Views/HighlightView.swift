@@ -209,7 +209,7 @@ class HighlightView: LayerView, DraggableViewProtocol {
         updateLabelWidth()
 
         if let superview = superview {
-            color = colorScheme.color(for: superview)
+            color = colorScheme.value(for: superview)
         }
     }
 

@@ -18,21 +18,17 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
+import Foundation
 import UIKit
 
-/// Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
-public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource {
-    var targetClass: AnyClass { get }
+typealias ViewHierarchyElementIconProvider = Inspector.Provider<UIView?,UIImage?>
 
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem]
+struct ViewHierarchyElementCatalog {
+    let libraries: [ElementInspectorPanel: [InspectorElementLibraryProtocol]]
+    let iconProvider: ViewHierarchyElementIconProvider
 
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol?
-}
-
-// MARK: - Backwards compatibility with v1.0
-
-public extension InspectorElementLibraryProtocol {
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
-        return .single(viewModel(for: referenceView))
+    func makeElement(from rootView: UIView) -> ViewHierarchyElement {
+        ViewHierarchyElement(rootView, iconProvider: iconProvider)
     }
 }

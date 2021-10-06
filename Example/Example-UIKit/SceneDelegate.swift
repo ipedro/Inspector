@@ -74,24 +74,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 // MARK: - InspectorHostable
 
 extension SceneDelegate: InspectorHost {
-    var inspectorElementLibraries: [InspectorElementLibraryProtocol]? { ExampleElementLibrary.allCases }
+    var inspectorElementIconProvider: Inspector.ElementIconProvider? {
+        .init { view in
+            switch view {
+            case is CustomButton:
+                return #imageLiteral(resourceName: "CustomButton_32")
+            default:
+                return nil
+            }
+        }
+    }
+
+    var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? {
+        [.attributes: ExampleElementLibrary.allCases]
+    }
 
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
-        [
-            .staticTexts + .images,
-            .stackViews
-        ]
+        [.staticTexts + .images,
+         .stackViews + .spacerViews]
     }
 
     var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
-        .colorScheme { view in
-            switch view {
-            case is CustomButton:
-                return .systemPink
-
-            default:
-                return Inspector.ViewHierarchyColorScheme.default.color(for: view)
-            }
+        .init { view in
+            view is CustomButton ? .systemPink : nil
         }
     }
 

@@ -24,9 +24,6 @@ extension ViewHierarchyElement {
     struct Snapshot: ViewHierarchyElementProtocol, ExpirableProtocol, Hashable {
         let expirationDate: Date = Date().addingTimeInterval(Inspector.configuration.snapshotExpirationTimeInterval)
         let depth: Int
-
-        // MARK: - ViewHierarchyElementProtocol Properties
-
         let displayName: String
         let classNameWithoutQualifiers: String
         let className: String
@@ -74,13 +71,11 @@ final class ViewHierarchyElement: NSObject {
         String(describing: latestSnapshot)
     }
 
-    typealias IconProvider = (UIView?) -> UIImage?
-
     weak var rootView: UIView?
 
     var parent: ViewHierarchyElement?
 
-    private let iconProvider: IconProvider?
+    private let iconProvider: ViewHierarchyElementIconProvider
 
     let initialSnapshot: Snapshot
 
@@ -96,7 +91,7 @@ final class ViewHierarchyElement: NSObject {
             }
 
             children = view.originalSubviews.map {
-                .init($0, depth: depth + 1, iconProvider: iconProvider, parent: self)
+                .init($0, iconProvider: iconProvider, depth: depth + 1, parent: self)
             }
         }
     }
@@ -104,7 +99,7 @@ final class ViewHierarchyElement: NSObject {
     private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
 
     private(set) lazy var children: [ViewHierarchyElement] = rootView?.originalSubviews.map {
-        .init($0, depth: depth + 1, iconProvider: iconProvider, parent: self)
+        .init($0, iconProvider: iconProvider, depth: depth + 1, parent: self)
     } ?? []
 
     private(set) lazy var allChildren: [ViewHierarchyElement] = children.flatMap { [$0] + $0.allChildren }
@@ -130,7 +125,7 @@ final class ViewHierarchyElement: NSObject {
         history.last ?? initialSnapshot
     }
 
-    var inspectableViewReferences: [ViewHierarchyElement] {
+    var inspectableChildren: [ViewHierarchyElement] {
         let selfAndChildren = [self] + allChildren
 
         let inspectableViews = selfAndChildren.filter(\.canHostInspectorView)
@@ -140,11 +135,13 @@ final class ViewHierarchyElement: NSObject {
 
     // MARK: - Init
 
-    convenience init(_ rootView: UIView, iconProvider: IconProvider?) {
-        self.init(rootView, depth: .zero, isCollapsed: false, iconProvider: iconProvider, parent: nil)
-    }
-
-    init(_ rootView: UIView, depth: Int, isCollapsed: Bool = false, iconProvider: IconProvider?, parent: ViewHierarchyElement?) {
+    init(
+        _ rootView: UIView,
+        iconProvider: ViewHierarchyElementIconProvider,
+        depth: Int = .zero,
+        isCollapsed: Bool = false,
+        parent: ViewHierarchyElement? = nil
+    ) {
         self.rootView = rootView
         self.depth = depth
         self.parent = parent
@@ -153,7 +150,7 @@ final class ViewHierarchyElement: NSObject {
 
         initialSnapshot = Snapshot(
             view: rootView,
-            icon: iconProvider?(rootView),
+            icon: iconProvider.value(for: rootView),
             depth: depth
         )
     }
@@ -167,7 +164,7 @@ final class ViewHierarchyElement: NSObject {
     @objc private func makeSnapshot() {
         guard let rootView = rootView else { return }
 
-        let newSnapshot = Snapshot(view: rootView, icon: iconProvider?(rootView), depth: depth)
+        let newSnapshot = Snapshot(view: rootView, icon: iconProvider.value(for: rootView), depth: depth)
 
         history.append(newSnapshot)
     }
@@ -183,7 +180,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
             return latestSnapshot.iconImage
         }
 
-        let currentIcon = iconProvider?(rootView)
+        let currentIcon = iconProvider.value(for: rootView)
 
         if currentIcon?.pngData() != latestSnapshot.iconImage?.pngData() {
             setNeedsSnapshot()

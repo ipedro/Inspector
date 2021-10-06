@@ -18,21 +18,20 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
 
-/// Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
-public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource {
-    var targetClass: AnyClass { get }
+import Foundation
 
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem]
+public extension Inspector {
+    enum ElementPanelType: Swift.CaseIterable {
+        case attributes, size
 
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol?
-}
-
-// MARK: - Backwards compatibility with v1.0
-
-public extension InspectorElementLibraryProtocol {
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
-        return .single(viewModel(for: referenceView))
+        var rawValue: ElementInspectorPanel {
+            switch self {
+            case .attributes:
+                return .attributes
+            case .size:
+                return .size
+            }
+        }
     }
 }

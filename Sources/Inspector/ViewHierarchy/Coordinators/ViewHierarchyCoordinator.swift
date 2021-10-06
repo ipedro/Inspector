@@ -26,11 +26,11 @@ typealias ViewHierarchyCoordinatorDelegate = ViewHierarchyActionableProtocol & A
 protocol ViewHierarchyCoordinatorDataSource: AnyObject {
     var rootView: UIView? { get }
 
-    var viewHierarchyLayers: [Inspector.ViewHierarchyLayer] { get }
+    var layers: [ViewHierarchyLayer] { get }
 
-    var viewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme { get }
+    var colorScheme: ViewHierarchyColorScheme { get }
 
-    var elementLibraries: [InspectorElementLibraryProtocol] { get }
+    var catalog: ViewHierarchyElementCatalog { get }
 }
 
 final class ViewHierarchyCoordinator: Coordinator {
@@ -67,7 +67,7 @@ final class ViewHierarchyCoordinator: Coordinator {
 
             guard let dataSource = dataSource else { return }
 
-            addReferences(for: newLayers, with: dataSource.viewHierarchyColorScheme)
+            addReferences(for: newLayers, with: dataSource.colorScheme)
         }
     }
 
@@ -157,16 +157,14 @@ extension ViewHierarchyCoordinator {
     private func makeSnapshot() -> ViewHierarchySnapshot? {
         guard
             let dataSource = dataSource,
-            let viewHierarchy = dataSource.rootView
+            let rootView = dataSource.rootView
         else {
             return nil
         }
 
-        return ViewHierarchySnapshot(
-            availableLayers: dataSource.viewHierarchyLayers,
-            elementLibraries: dataSource.elementLibraries,
-            in: viewHierarchy
-        )
+        let root = dataSource.catalog.makeElement(from: rootView)
+
+        return ViewHierarchySnapshot(layers: dataSource.layers, rootElement: root)
     }
 
     func showHighlight(_ show: Bool, for element: ViewHierarchyElement, includeSubviews: Bool = true) {

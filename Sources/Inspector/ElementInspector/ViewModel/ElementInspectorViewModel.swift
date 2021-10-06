@@ -23,7 +23,7 @@ import UIKit
 protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyElementDescriptionViewModelProtocol {
     var element: ViewHierarchyElement { get }
 
-    var snapshot: ViewHierarchySnapshot { get }
+    var catalog: ViewHierarchyElementCatalog { get }
 
     var availablePanels: [ElementInspectorPanel] { get }
 
@@ -35,11 +35,9 @@ protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyElementDesc
 }
 
 final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
-    let snapshot: ViewHierarchySnapshot
-
     let element: ViewHierarchyElement
 
-    let inspectableElements: [InspectorElementLibraryProtocol]
+    let catalog: ViewHierarchyElementCatalog
 
     let availablePanels: [ElementInspectorPanel]
 
@@ -72,15 +70,13 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     }
 
     init(
-        snapshot: ViewHierarchySnapshot,
+        catalog: ViewHierarchyElementCatalog,
         element: ViewHierarchyElement,
         selectedPanel: ElementInspectorPanel?,
-        inspectableElements: [InspectorElementLibraryProtocol],
         availablePanels: [ElementInspectorPanel]
     ) {
-        self.snapshot = snapshot
+        self.catalog = catalog
         self.element = element
-        self.inspectableElements = inspectableElements
         self.availablePanels = availablePanels
 
         if let selectedPanel = selectedPanel {
@@ -94,7 +90,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 extension ElementInspectorViewModel: ViewHierarchyElementDescriptionViewModelProtocol {
     var automaticallyAdjustIndentation: Bool { false }
 
-    var iconImage: UIImage? { snapshot.elementLibraries.icon(for: element.rootView) }
+    var iconImage: UIImage? { element.iconImage }
 
     var title: String? { element.elementName }
 

@@ -31,7 +31,9 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost {
 
     let inspectorCommandGroups: [Inspector.CommandsGroup]?
 
-    let inspectorElementLibraries: [InspectorElementLibraryProtocol]?
+    let inspectorElementLibraries: [Inspector.ElementPanelType : [InspectorElementLibraryProtocol]]?
+
+    let inspectorElementIconProvider: Inspector.ElementIconProvider?
 
     var didFinish: (() -> Void)?
 
@@ -42,16 +44,18 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost {
     // MARK: - Initializer
 
     init(
-        inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]?,
-        inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme?,
-        inspectorCommandGroups: [Inspector.CommandsGroup]?,
-        inspectorElementLibraries: [InspectorElementLibraryProtocol]?,
+        layers: [Inspector.ViewHierarchyLayer]?,
+        colorScheme: Inspector.ViewHierarchyColorScheme?,
+        commandGroups: [Inspector.CommandsGroup]?,
+        elementLibraries: [Inspector.ElementPanelType : [InspectorElementLibraryProtocol]]?,
+        elementIconProvider: Inspector.ElementIconProvider?,
         didFinish: (() -> Void)?
     ) {
-        self.inspectorViewHierarchyLayers = inspectorViewHierarchyLayers
-        self.inspectorViewHierarchyColorScheme = inspectorViewHierarchyColorScheme
-        self.inspectorCommandGroups = inspectorCommandGroups
-        self.inspectorElementLibraries = inspectorElementLibraries
+        self.inspectorViewHierarchyLayers = layers
+        self.inspectorViewHierarchyColorScheme = colorScheme
+        self.inspectorCommandGroups = commandGroups
+        self.inspectorElementLibraries = elementLibraries
+        self.inspectorElementIconProvider = elementIconProvider
         self.didFinish = didFinish
     }
 

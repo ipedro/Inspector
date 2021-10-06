@@ -21,14 +21,6 @@
 @_implementationOnly import Coordinator
 import UIKit
 
-// MARK: - Content View Controllers
-
-final class ElementAttributesPanelViewController: ElementInspectorFormPanelViewController {}
-
-final class ElementSizePanelViewController: ElementInspectorFormPanelViewController {}
-
-final class ElementIdentityPanelViewController: ElementInspectorFormPanelViewController {}
-
 // MARK: - ElementInspectorCoordinatorDelegate
 
 protocol ElementInspectorCoordinatorDelegate: ViewHierarchyActionableProtocol & AnyObject {
@@ -43,6 +35,8 @@ protocol ElementInspectorCoordinatorDelegate: ViewHierarchyActionableProtocol & 
 
 final class ElementInspectorCoordinator: NavigationCoordinator {
     weak var delegate: ElementInspectorCoordinatorDelegate?
+
+    let catalog: ViewHierarchyElementCatalog
 
     let snapshot: ViewHierarchySnapshot
 
@@ -90,12 +84,14 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     init(
         element: ViewHierarchyElement,
-        with panel: ElementInspectorPanel?,
-        in snapshot: ViewHierarchySnapshot,
-        from sourceView: UIView
+        panel: ElementInspectorPanel?,
+        snapshot: ViewHierarchySnapshot,
+        catalog: ViewHierarchyElementCatalog,
+        sourceView: UIView
     ) {
         self.rootElement = element
         self.initialPanel = panel
+        self.catalog = catalog
         self.snapshot = snapshot
         self.sourceView = sourceView
     }
@@ -127,7 +123,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         operationQueue.cancelAllOperations()
         operationQueue.isSuspended = true
 
-        delegate?.elementInspectorCoordinator(self, didFinishInspecting: snapshot.rootElement, with: reason)
+        delegate?.elementInspectorCoordinator(self, didFinishInspecting: rootElement, with: reason)
     }
 
     func setPopoverModalPresentationStyle(for viewController: UIViewController, from sourceView: UIView) {
@@ -139,12 +135,11 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     }
 
     static func makeElementInspectorViewController(
-        with element: ViewHierarchyElement,
-        elementLibraries: [InspectorElementLibraryProtocol],
+        element: ViewHierarchyElement,
         preferredPanel: ElementInspectorPanel?,
         initialPanel: ElementInspectorPanel?,
         delegate: ElementInspectorViewControllerDelegate,
-        in snapshot: ViewHierarchySnapshot
+        catalog: ViewHierarchyElementCatalog
     ) -> ElementInspectorViewController {
         let availablePanels = ElementInspectorPanel.allCases(for: element)
 
@@ -159,10 +154,9 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
         return ElementInspectorViewController(
             viewModel: ElementInspectorViewModel(
-                snapshot: snapshot,
+                catalog: catalog,
                 element: element,
                 selectedPanel: selectedPanel,
-                inspectableElements: elementLibraries,
                 availablePanels: availablePanels
             )
         ).then {
@@ -172,37 +166,9 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     func panelViewController(for panel: ElementInspectorPanel, with element: ViewHierarchyElement) -> ElementInspectorPanelViewController {
         switch panel {
-        case .identity:
-
-
-            return ElementIdentityPanelViewController(
-                dataSource: DefaultFormPanelDataSource(
-                    items:{
-                        guard let rootView = element.rootView else { return [] }
-
-                        return ElementInspectorIdentityLibrary.allCases
-                            .map { $0.items(for: rootView) }
-                            .flatMap { $0 }
-                    }(),
-                    provider: { ElementInspectorSizeLibrary.viewType(forViewModel: $0) }
-                )
-            ).then {
-                $0.formDelegate = self
-            }
-
-        case .attributes:
-            return ElementAttributesPanelViewController(
-                dataSource: DefaultFormPanelDataSource(
-                    items: {
-                        guard let rootView = element.rootView else { return [] }
-
-                        return snapshot.elementLibraries.targeting(element: rootView).flatMap { library in
-                            library.items(for: rootView)
-                        }
-                    }(),
-                    provider: { ElementInspectorAttributesLibrary.viewType(forViewModel: $0) }
-                )
-            ).then {
+        case .identity, .attributes, .size:
+            return ElementInspectorFormPanelViewController().then {
+                $0.dataSource = DefaultFormPanelDataSource(items: catalog.libraries[panel]?.formItems(for: element.rootView) ?? [])
                 $0.formDelegate = self
             }
 
@@ -216,23 +182,6 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
                 $0.delegate = self
             }
 
-        case .size:
-            let items: [ElementInspectorFormItem] = {
-                guard let rootView = element.rootView else { return [] }
-
-                return ElementInspectorSizeLibrary.allCases
-                    .map { $0.items(for: rootView) }
-                    .flatMap { $0 }
-            }()
-
-            return ElementSizePanelViewController(
-                dataSource: DefaultFormPanelDataSource(
-                    items: items,
-                    provider: { ElementInspectorSizeLibrary.viewType(forViewModel: $0) }
-                )
-            ).then {
-                $0.formDelegate = self
-            }
         }
     }
 
@@ -288,12 +237,11 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
             guard let self = self else { return }
 
             let elementInspectorViewController = Self.makeElementInspectorViewController(
-                with: element,
-                elementLibraries: self.snapshot.elementLibraries,
+                element: element,
                 preferredPanel: preferredPanel,
                 initialPanel: self.initialPanel,
                 delegate: self,
-                in: self.snapshot
+                catalog: self.catalog
             )
 
             self.navigationController.pushViewController(elementInspectorViewController, animated: true)
@@ -321,12 +269,11 @@ private extension ElementInspectorCoordinator {
 
         guard let populatedElement = populatedElements.first else {
             let rootViewController = Self.makeElementInspectorViewController(
-                with: snapshot.rootElement,
-                elementLibraries: snapshot.elementLibraries,
+                element: snapshot.rootElement,
                 preferredPanel: initialPanel,
                 initialPanel: initialPanel,
                 delegate: self,
-                in: snapshot
+                catalog: catalog
             )
 
             navigationController.viewControllers = [rootViewController]
@@ -345,12 +292,11 @@ private extension ElementInspectorCoordinator {
                 }
 
                 let viewController = Self.makeElementInspectorViewController(
-                    with: currentElement,
-                    elementLibraries: snapshot.elementLibraries,
+                    element: currentElement,
                     preferredPanel: initialPanel,
                     initialPanel: initialPanel,
                     delegate: self,
-                    in: snapshot
+                    catalog: catalog
                 )
 
                 array.append(viewController)

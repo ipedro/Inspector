@@ -37,27 +37,27 @@ extension Manager: ElementInspectorCoordinatorDelegate {
 
 extension Manager {
     func startElementInspectorCoordinator(for view: UIView,
-                                          with panel: ElementInspectorPanel?,
-                                          animated: Bool,
-                                          from sourceView: UIView) {
-        guard let elementLibraries = viewHierarchySnaphost?.elementLibraries else { return }
+                                          panel: ElementInspectorPanel?,
+                                          from sourceView: UIView,
+                                          animated: Bool) {
 
-        let reference = ViewHierarchyElement(view, iconProvider: { elementLibraries.icon(for: $0) })
-
-        startElementInspectorCoordinator(for: reference, with: panel, animated: animated, from: sourceView)
+        let reference = catalog.makeElement(from: view)
+        startElementInspectorCoordinator(for: reference, panel: panel, from: sourceView, animated: animated)
     }
 
     func startElementInspectorCoordinator(for element: ViewHierarchyElement,
-                                          with panel: ElementInspectorPanel?,
-                                          animated: Bool,
-                                          from sourceView: UIView) {
+                                          panel: ElementInspectorPanel?,
+                                          from sourceView: UIView,
+                                          animated: Bool
+    ) {
         guard let snapshot = viewHierarchySnaphost else { return }
 
         let coordinator = ElementInspectorCoordinator(
             element: element,
-            with: panel,
-            in: snapshot,
-            from: sourceView
+            panel: panel,
+            snapshot: snapshot,
+            catalog: catalog,
+            sourceView: sourceView
         ).then {
             $0.delegate = self
         }

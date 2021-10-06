@@ -18,21 +18,20 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
+import Foundation
 import UIKit
 
-/// Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
-public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource {
-    var targetClass: AnyClass { get }
+extension Array where Element == InspectorElementLibraryProtocol {
+    func libraries(targeting object: NSObject) -> [InspectorElementLibraryProtocol] {
+        object.classesForCoder.flatMap { aElementClass in
+            filter { $0.targetClass == aElementClass }
+        }
+    }
 
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem]
+    func formItems(for view: UIView?) -> [ElementInspectorFormItem] {
+        guard let view = view else { return [] }
 
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol?
-}
-
-// MARK: - Backwards compatibility with v1.0
-
-public extension InspectorElementLibraryProtocol {
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
-        return .single(viewModel(for: referenceView))
+        return map { $0.items(for: view) }.flatMap { $0 }
     }
 }

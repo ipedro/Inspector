@@ -51,6 +51,10 @@ extension ElementInspectorSizeLibrary {
 
         var subtitle: String? { element.underlyingConstraint?.safeIdentifier }
 
+        var customViewType: InspectorElementFormItemView.Type? {
+            ElementInspectorFormLayoutConstraintView.self
+        }
+
         var properties: [InspectorElementViewModelProperty] {
             guard let underlyingConstraint = element.underlyingConstraint else { return [] }
 

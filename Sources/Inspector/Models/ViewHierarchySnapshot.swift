@@ -31,26 +31,12 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
 
     let inspectableElements: [ViewHierarchyElement]
 
-    #warning("accept other panels")
-    let elementLibraries: [InspectorElementLibraryProtocol]
-
-    init(
-        availableLayers: [ViewHierarchyLayer],
-        elementLibraries: [InspectorElementLibraryProtocol],
-        in rootView: UIView
-    ) {
-        self.availableLayers = availableLayers.uniqueValues()
-
-        self.elementLibraries = elementLibraries
-
-        rootElement = ViewHierarchyElement(rootView, iconProvider: { elementLibraries.icon(for: $0) })
-
-        inspectableElements = rootElement.inspectableViewReferences
-
-        let inspectableViewReferences = rootElement.inspectableViewReferences
-
+    init(layers: [ViewHierarchyLayer], rootElement: ViewHierarchyElement) {
+        self.rootElement = rootElement
+        inspectableElements = rootElement.inspectableChildren
+        availableLayers = layers.uniqueValues()
         populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: inspectableViewReferences).isEmpty == false
+            $0.filter(flattenedViewHierarchy: rootElement.inspectableChildren).isEmpty == false
         }
     }
 }

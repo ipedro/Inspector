@@ -18,11 +18,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
 extension ViewHierarchyElement: ViewHierarchyElementDescriptionViewModelProtocol {
-    var title: String? { elementName}
+    var title: String? { elementName }
 
     var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
 

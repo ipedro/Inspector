@@ -42,13 +42,13 @@ enum ElementInspectorPanel: Swift.CaseIterable, MenuContentProtocol {
     var image: UIImage? {
         switch self {
         case .identity:
-            return .moduleImage(named: "identityPanel")
+            return .elementIdentityPanel
         case .attributes:
-            return .elementAttributesSymbol
+            return .elementAttributesPanel
         case .children:
-            return .elementChildrenPanelSymbol
+            return .elementChildrenPanel
         case .size:
-            return .elementSizePanelSymbol
+            return .elementSizePanel
         }
     }
 

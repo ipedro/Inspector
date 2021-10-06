@@ -29,8 +29,6 @@ protocol ElementChildrenPanelViewModelProtocol {
 
     func shouldHighlightItem(at indexPath: IndexPath) -> Bool
 
-    func reloadIcons()
-
     func cellViewModel(at indexPath: IndexPath) -> ElementChildrenPanelTableViewCellViewModelProtocol?
 
     /// Toggle if a container displays its subviews or hides them.
@@ -60,7 +58,7 @@ final class ElementChildrenPanelViewModel: NSObject {
             element: element,
             parent: parent,
             rootDepth: rootDepth,
-            thumbnailImage: snapshot.elementLibraries.icon(for: element.rootView),
+            thumbnailImage: element.iconImage,
             isCollapsed: element.depth > rootDepth
         )
 
@@ -103,12 +101,6 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
     var title: String? { "More info" }
 
     var numberOfRows: Int { visibleChildren.count }
-
-    func reloadIcons() {
-        children.forEach { child in
-            child.iconImage = snapshot.elementLibraries.icon(for: child.element.rootView)
-        }
-    }
 
     func cellViewModel(at indexPath: IndexPath) -> ElementChildrenPanelTableViewCellViewModelProtocol? {
         guard indexPath.row < visibleChildren.count else { return nil }

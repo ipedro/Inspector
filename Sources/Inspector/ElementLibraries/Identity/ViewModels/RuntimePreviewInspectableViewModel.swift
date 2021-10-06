@@ -30,7 +30,7 @@ final class RuntimePreviewInspectableViewModel: InspectorElementViewModelProtoco
     }
 
     init(view: UIView) {
-        self.element = .init(view, iconProvider: .none)
+        self.element = .init(view, iconProvider: .default)
     }
 
     private enum Property: String, Swift.CaseIterable {

@@ -100,7 +100,7 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
         var dict = [InspectorElementViewModelProperty: UIView]()
 
         for (index, property) in viewModel.properties.enumerated() {
-            let element: UIView? = {
+            let itemView: UIView? = {
                 switch property {
                 case let .preview(target: container):
                     return LiveViewHierarchyElementThumbnailView(with: container.reference).then {
@@ -206,23 +206,23 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
                 }
             }()
 
-            if index == .zero, let sectionHeader = element as? SectionHeader {
+            if index == .zero, let sectionHeader = itemView as? SectionHeader {
                 sectionHeader.margins.top = .zero
             }
 
-            if let control = element as? UIControl {
+            if let control = itemView as? UIControl {
                 control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
                 control.isEnabled = property.hasHandler
             }
 
-            if let fromControl = element as? BaseFormControl {
+            if let fromControl = itemView as? BaseFormControl {
                 let isLastElement = index == viewModel.properties.count - 1
                 let isNotFollowedByControl = index + 1 < viewModel.properties.count && viewModel.properties[index + 1].isControl == false
 
                 fromControl.isShowingSeparator = (isLastElement || isNotFollowedByControl) == false
             }
 
-            dict[property] = element
+            dict[property] = itemView
         }
 
         return dict

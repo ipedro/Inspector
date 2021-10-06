@@ -28,7 +28,7 @@ extension ViewHierarchyCoordinator: AsyncOperationProtocol {
             return operationQueue.addOperation(layerTask)
         }
 
-        let loaderView = LoaderView(colorScheme: dataSource?.viewHierarchyColorScheme ?? .default).then {
+        let loaderView = LoaderView(colorScheme: dataSource?.colorScheme ?? .default).then {
             $0.accessibilityIdentifier = name
             $0.transform = .init(scaleX: 0.1, y: 0.1)
         }

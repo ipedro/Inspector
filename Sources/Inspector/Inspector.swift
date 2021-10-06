@@ -52,12 +52,12 @@ public extension Inspector {
 // MARK: - Element
 
 public extension Inspector {
-    static func isInspecting(_ element: UIView) -> Bool {
-        element.allSubviews.contains { $0 is LayerViewProtocol }
+    static func isInspecting(_ view: UIView) -> Bool {
+        view.allSubviews.contains { $0 is LayerViewProtocol }
     }
 
-    static func inspect(_ element: UIView, animated: Bool = true) {
-        manager.startElementInspectorCoordinator(for: element, with: .none, animated: animated, from: element)
+    static func inspect(_ view: UIView, animated: Bool = true) {
+        manager.startElementInspectorCoordinator(for: view, panel: .none, from: view, animated: animated)
     }
 }
 

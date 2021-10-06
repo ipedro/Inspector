@@ -115,7 +115,6 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
     }
 
     func reloadData() {
-        viewModel.reloadIcons()
         viewCode.tableView.reloadData()
     }
 

@@ -41,7 +41,7 @@ final class LoaderView: LayerViewComponent {
         frame: bounds,
         name: elementName,
         colorScheme: colorScheme,
-        element: ViewHierarchyElement(self, iconProvider: { _ in nil })
+        element: ViewHierarchyElement(self, iconProvider: .default)
     ).then {
         $0.verticalAlignmentOffset = activityIndicator.frame.height * 2 / 3
     }
@@ -85,7 +85,7 @@ final class LoaderView: LayerViewComponent {
 
             let inspectorView = WireframeView(
                 frame: element.bounds,
-                element: ViewHierarchyElement(element, iconProvider: { _ in nil }),
+                element: ViewHierarchyElement(element, iconProvider: .default),
                 color: .white
             )
 
@@ -98,7 +98,7 @@ final class LoaderView: LayerViewComponent {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        backgroundColor = colorScheme.color(for: self)
+        backgroundColor = colorScheme.value(for: self)
 
         highlightView.labelWidthConstraint = nil
 

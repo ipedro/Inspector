@@ -23,7 +23,7 @@ import UIKit
 extension Manager: ViewHierarchyCoordinatorDataSource {
     var rootView: UIView? { host?.window }
 
-    var viewHierarchyLayers: [Inspector.ViewHierarchyLayer] {
+    var layers: [Inspector.ViewHierarchyLayer] {
         var layers: [Inspector.ViewHierarchyLayer] = [
             .allViews,
             .withIdentifier,
@@ -37,14 +37,68 @@ extension Manager: ViewHierarchyCoordinatorDataSource {
         return layers.uniqueValues()
     }
 
-    var viewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme {
-        host?.inspectorViewHierarchyColorScheme ?? .default
+    var colorScheme: ViewHierarchyColorScheme {
+        guard let colorScheme = host?.inspectorViewHierarchyColorScheme else {
+            return .default
+        }
+
+        return ViewHierarchyColorScheme { view in
+            guard let color = colorScheme.value(for: view) else {
+                return ViewHierarchyColorScheme.default.value(for: view)
+            }
+
+            return color
+        }
     }
 
-    var elementLibraries: [InspectorElementLibraryProtocol] {
-        var elements = host?.inspectorElementLibraries ?? []
-        elements.append(contentsOf: ElementInspectorAttributesLibrary.allCases)
+    var catalog: ViewHierarchyElementCatalog {
+        .init(libraries: libraries, iconProvider: iconProvider)
+    }
 
-        return elements
+    var libraries: [ElementInspectorPanel: [InspectorElementLibraryProtocol]] {
+        var dictionary: [ElementInspectorPanel: [InspectorElementLibraryProtocol]] = [:]
+
+        host?.inspectorElementLibraries?.keys.forEach { hostPanel in
+            if let libraries = host?.inspectorElementLibraries?[hostPanel] {
+                dictionary[hostPanel.rawValue] = libraries
+            }
+        }
+
+        ElementInspectorPanel.allCases.forEach { panel in
+            var libraries = dictionary[panel] ?? []
+
+            switch panel {
+            case .identity:
+                libraries.append(contentsOf: ElementInspectorIdentityLibrary.allCases)
+
+            case .attributes:
+                libraries.append(contentsOf: ElementInspectorAttributesLibrary.allCases)
+
+            case .size:
+                libraries.append(contentsOf: ElementInspectorSizeLibrary.allCases)
+
+            case .children:
+                break
+            }
+
+            dictionary[panel] = libraries
+        }
+
+        return dictionary
+    }
+
+    var iconProvider: ViewHierarchyElementIconProvider {
+        let hostProvider = host?.inspectorElementIconProvider
+
+        return .init { view in
+            guard
+                let view = view,
+                view.isHidden == false,
+                let hostIcon = hostProvider?.value(for: view)
+            else {
+                return ViewHierarchyElementIconProvider.default.value(for: view) ?? .emptyViewSymbol
+            }
+            return hostIcon
+        }
     }
 }

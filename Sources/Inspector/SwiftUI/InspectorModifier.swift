@@ -25,18 +25,20 @@ import SwiftUI
 public extension View {
     func inspect(
         isPresented: Binding<Bool>,
-        inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? = nil,
-        inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? = nil,
-        inspectorCommandGroups: [Inspector.CommandsGroup]? = nil,
-        inspectorElementLibraries: [InspectorElementLibraryProtocol]? = nil
+        layers: [Inspector.ViewHierarchyLayer]? = nil,
+        colorScheme: Inspector.ViewHierarchyColorScheme? = nil,
+        commandGroups: [Inspector.CommandsGroup]? = nil,
+        elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? = nil,
+        elementIconProvider: Inspector.ElementIconProvider? = nil
     ) -> some View {
         modifier(
             InspectorModifier(
                 isPresented: isPresented,
-                inspectorViewHierarchyLayers: inspectorViewHierarchyLayers,
-                inspectorViewHierarchyColorScheme: inspectorViewHierarchyColorScheme,
-                inspectorCommandGroups: inspectorCommandGroups,
-                inspectorElementLibraries: inspectorElementLibraries
+                inspectorViewHierarchyLayers: layers,
+                inspectorViewHierarchyColorScheme: colorScheme,
+                inspectorCommandGroups: commandGroups,
+                inspectorElementLibraries: elementLibraries,
+                inspectorIconProvider: elementIconProvider
             )
         )
     }
@@ -52,7 +54,9 @@ struct InspectorModifier: ViewModifier {
 
     var inspectorCommandGroups: [Inspector.CommandsGroup]?
 
-    var inspectorElementLibraries: [InspectorElementLibraryProtocol]?
+    var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]?
+
+    var inspectorIconProvider: Inspector.ElementIconProvider?
 
     func body(content: Content) -> some View {
         ZStack {
@@ -60,10 +64,11 @@ struct InspectorModifier: ViewModifier {
 
             if isPresented {
                 InspectorUI(
-                    inspectorViewHierarchyLayers: inspectorViewHierarchyLayers,
-                    inspectorViewHierarchyColorScheme: inspectorViewHierarchyColorScheme,
-                    inspectorCommandGroups: inspectorCommandGroups,
-                    inspectorElementLibraries: inspectorElementLibraries,
+                    layers: inspectorViewHierarchyLayers,
+                    colorScheme: inspectorViewHierarchyColorScheme,
+                    commandGroups: inspectorCommandGroups,
+                    elementLibraries: inspectorElementLibraries,
+                    elementIconProvider: inspectorIconProvider,
                     didFinish: {
                         withAnimation(.spring()) {
                             isPresented = false
