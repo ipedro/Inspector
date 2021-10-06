@@ -77,6 +77,9 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
     private lazy var segmentedControl = UISegmentedControl.segmentedControlStyle().then {
         $0.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
+        if #available(iOS 13.0, *) {
+            $0.addInteraction(UIContextMenuInteraction(delegate: self))
+        }
     }
 
     private let dismissItem: UIBarButtonItem.SystemItem = {
@@ -487,5 +490,33 @@ private extension ElementInspectorViewController {
 extension ElementInspectorViewController: ElementInspectorFormPanelItemStateDelegate {
     func elementInspectorFormPanelItemDidChangeState(_ formPanelViewController: ElementInspectorFormPanelViewController) {
         viewCode.toggleCollapseButton.collapseState = formPanelViewController.collapseState
+    }
+}
+
+// MARK: - UIContextMenuInteractionDelegate
+
+@available(iOS 13.0, *)
+extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        .init { [weak self] _ in
+            guard let self = self else { return nil }
+
+            return UIMenu(
+                title: "Default Panel",
+                image: nil,
+                identifier: nil,
+                children: ElementInspectorPanel.allCases.map { panel in
+                    UIAction(
+                        title: panel.title,
+                        image: panel.image,
+                        identifier: nil,
+                        discoverabilityTitle: panel.title,
+                        state: self.viewModel.defaultPanel == panel ? .on : .off
+                    ) { [weak self] _ in
+                        self?.viewModel.defaultPanel = panel
+                    }
+                }
+            )
+        }
     }
 }

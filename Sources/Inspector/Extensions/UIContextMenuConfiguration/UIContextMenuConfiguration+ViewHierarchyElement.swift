@@ -22,6 +22,10 @@ import UIKit
 
 @available(iOS 13.0, *)
 extension UIContextMenuConfiguration {
+    convenience init(actionProvider: UIContextMenuActionProvider?) {
+        self.init(identifier: nil, previewProvider: nil, actionProvider: actionProvider)
+    }
+
     static func contextMenuConfiguration(
         initialMenus: [UIMenuElement] = [],
         with element: ViewHierarchyElement,

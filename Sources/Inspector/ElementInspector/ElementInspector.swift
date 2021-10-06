@@ -66,6 +66,8 @@ extension ElementInspector {
         }
 
         var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .systemBackground
+
+        var defaultPanel: ElementInspectorPanel = .attributes
     }
 }
 

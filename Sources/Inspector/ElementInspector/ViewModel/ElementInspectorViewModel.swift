@@ -32,6 +32,8 @@ protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyElementDesc
     var isFullHeightPresentation: Bool { get set }
 
     var currentPanelIndex: Int { get }
+
+    var defaultPanel: ElementInspectorPanel { get set }
 }
 
 final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
@@ -49,16 +51,24 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     var isFullHeightPresentation: Bool = true
 
-    private var defaultPanel: ElementInspectorPanel { .attributes }
+    static var defaultPanel: ElementInspectorPanel {
+        get { ElementInspector.configuration.defaultPanel }
+        set { ElementInspector.configuration.defaultPanel = newValue }
+    }
+
+    var defaultPanel: ElementInspectorPanel {
+        get { Self.defaultPanel }
+        set { Self.defaultPanel = newValue }
+    }
 
     var currentPanelIndex: Int {
-        let selectedPanel = selectedPanel ?? defaultPanel
-
-        if let selectedIndex = availablePanels.firstIndex(of: selectedPanel) {
-            return selectedIndex
+        guard
+            let panel = selectedPanel,
+            let index = availablePanels.firstIndex(of: panel)
+        else {
+            return UISegmentedControl.noSegment
         }
-
-        return UISegmentedControl.noSegment
+        return index
     }
 
     init(
@@ -70,6 +80,14 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         self.catalog = catalog
         self.element = element
         self.availablePanels = availablePanels
+
+        self.selectedPanel = {
+            let preferredPanel = selectedPanel ?? Self.defaultPanel
+
+            guard availablePanels.contains(preferredPanel) else { return availablePanels.first }
+
+            return preferredPanel
+        }()
 
         if let selectedPanel = selectedPanel {
             self.selectedPanel = availablePanels.contains(selectedPanel) ? selectedPanel : nil
