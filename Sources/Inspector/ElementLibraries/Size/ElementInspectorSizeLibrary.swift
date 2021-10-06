@@ -21,17 +21,27 @@
 import UIKit
 
 enum ElementInspectorSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIterable {
+    case segmentedControl
     case scrollView
+    case label
     case viewFrame
     case contentLayoutPriority
     case layoutConstraints
 
     var targetClass: AnyClass {
         switch self {
+        case .segmentedControl:
+            return UISegmentedControl.self
+
         case .scrollView:
             return UIScrollView.self
-            
-        case .contentLayoutPriority, .viewFrame, .layoutConstraints:
+
+        case .label:
+            return UILabel.self
+
+        case .contentLayoutPriority,
+             .viewFrame,
+             .layoutConstraints:
             return UIView.self
         }
     }
@@ -40,15 +50,19 @@ enum ElementInspectorSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIte
         fatalError()
     }
 
-    func icon(for referenceView: UIView) -> UIImage? { nil }
-
     func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
         switch self {
+        case .label:
+            return .single(UILabelSizeInspectableViewModel(view: referenceView))
+
+        case .segmentedControl:
+            return .single(UISegmentedControlSizeInspectableViewModel(view: referenceView))
+
         case .scrollView:
-            return .single(ScrollViewInsetsInspectableViewModel(view: referenceView))
+            return .single(UIScrollViewSizeInspectableViewModel(view: referenceView))
             
         case .viewFrame:
-            return .single(ViewFrameInspectableViewModel(view: referenceView))
+            return .single(UIViewFrameInspectableViewModel(view: referenceView))
 
         case .contentLayoutPriority:
             return .single(ContentLayoutPriorityInspectableViewModel(view: referenceView))

@@ -474,13 +474,6 @@ enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
             return MyClassInspectableViewModel(view: referenceView)
         }
     }
-    
-    func icon(for referenceView: UIView) -> UIImage? {
-        switch self {
-        case .myClass:
-            return UIImage(named: "MyClassIcon") // optional
-        }
-    }
 }
 ```
 ```swift

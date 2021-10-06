@@ -20,31 +20,36 @@
 
 import UIKit
 
-enum ElementInspectorIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
-    case preview
-    case runtimeAttributes
-
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
-        switch self {
-        case .preview:
-            return .single(RuntimePreviewInspectableViewModel(view: referenceView))
-        
-        case .runtimeAttributes:
-            guard let attributes = RuntimeAttributesInspectableViewModel(view: referenceView) else { return [] }
-            return .single(attributes)
-        }
+public extension InspectorElementViewModelProperty {
+    static func segmentPicker(for segmentedControl: UISegmentedControl, handler: SelectionHandler?) -> InspectorElementViewModelProperty {
+        return .optionsList(
+            title: "Segment",
+            emptyTitle: "No Segments",
+            options: segmentedControl.segmentsOptions,
+            selectedIndex: { segmentedControl.selectedSegmentIndex == UISegmentedControl.noSegment ? nil : segmentedControl.selectedSegmentIndex },
+            handler: handler
+        )
     }
+}
 
-    var targetClass: AnyClass {
-        switch self {
-        case .preview:
-            return UIView.self
-        case .runtimeAttributes:
-            return NSObject.self
+private extension UISegmentedControl {
+    var segmentsOptions: [String] {
+        var options = [String]()
+
+        for index in 0 ..< numberOfSegments {
+            var title: String {
+                let segmentIndex = "Segment \(index)"
+
+                guard let titleForSegment = titleForSegment(at: index) else {
+                    return segmentIndex
+                }
+
+                return segmentIndex + " – " + titleForSegment
+            }
+
+            options.append(title)
         }
-    }
 
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        fatalError()
+        return options
     }
 }

@@ -20,31 +20,36 @@
 
 import UIKit
 
-enum ElementInspectorIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
-    case preview
-    case runtimeAttributes
-
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
-        switch self {
-        case .preview:
-            return .single(RuntimePreviewInspectableViewModel(view: referenceView))
-        
-        case .runtimeAttributes:
-            guard let attributes = RuntimeAttributesInspectableViewModel(view: referenceView) else { return [] }
-            return .single(attributes)
+extension ElementInspectorSizeLibrary {
+    final class UILabelSizeInspectableViewModel: InspectorElementViewModelProtocol {
+        private enum Properties: String, Swift.CaseIterable {
+            case preferredMaxLayoutWidth = "Desired Width"
         }
-    }
 
-    var targetClass: AnyClass {
-        switch self {
-        case .preview:
-            return UIView.self
-        case .runtimeAttributes:
-            return NSObject.self
+        let title: String = "Label"
+
+        private weak var label: UILabel?
+
+        init?(view: UIView) {
+            guard let label = view as? UILabel else { return nil }
+            self.label = label
         }
-    }
 
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        fatalError()
+        var properties: [InspectorElementViewModelProperty] {
+            guard let label = label else { return [] }
+
+            return Properties.allCases.map { property in
+                switch property {
+                case .preferredMaxLayoutWidth:
+                    return .cgFloatStepper(
+                        title: property.rawValue,
+                        value: { label.preferredMaxLayoutWidth },
+                        range: { 0...Double.infinity },
+                        stepValue: { 1 },
+                        handler: { label.preferredMaxLayoutWidth = $0 }
+                    )
+                }
+            }
+        }
     }
 }

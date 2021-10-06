@@ -36,7 +36,7 @@ extension ElementInspectorAttributesLibrary {
 
         let title = "Segmented Control"
 
-        private(set) weak var segmentedControl: UISegmentedControl?
+        private weak var segmentedControl: UISegmentedControl?
 
         init?(view: UIView) {
             guard let segmentedControl = view as? UISegmentedControl else {
@@ -48,30 +48,6 @@ extension ElementInspectorAttributesLibrary {
             selectedSegment = segmentedControl.numberOfSegments == 0 ? nil : 0
         }
 
-        private var segmentsOptions: [CustomStringConvertible] {
-            guard let segmentedControl = segmentedControl else {
-                return []
-            }
-
-            var options = [String]()
-
-            for index in 0 ..< segmentedControl.numberOfSegments {
-                var title: String {
-                    let segmentIndex = "Segment \(index)"
-
-                    guard let titleForSegment = segmentedControl.titleForSegment(at: index) else {
-                        return segmentIndex
-                    }
-
-                    return segmentIndex + " – " + titleForSegment
-                }
-
-                options.append(title)
-            }
-
-            return options
-        }
-
         private var selectedSegment: Int?
 
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
@@ -81,16 +57,14 @@ extension ElementInspectorAttributesLibrary {
 
             switch property {
             case .selectedSegmentTintColor:
-                if #available(iOS 13.0, *) {
-                    return .colorPicker(
-                        title: property.rawValue,
-                        color: { segmentedControl.selectedSegmentTintColor }
-                    ) { selectedSegmentTintColor in
-                        segmentedControl.selectedSegmentTintColor = selectedSegmentTintColor
-                    }
-                }
+                guard #available(iOS 13.0, *) else { return nil }
 
-                return nil
+                return .colorPicker(
+                    title: property.rawValue,
+                    color: { segmentedControl.selectedSegmentTintColor }
+                ) { selectedSegmentTintColor in
+                    segmentedControl.selectedSegmentTintColor = selectedSegmentTintColor
+                }
 
             case .isMomentary:
                 return .switch(
@@ -112,13 +86,7 @@ extension ElementInspectorAttributesLibrary {
                 return .separator
 
             case .segmentPicker:
-                return .optionsList(
-                    title: property.rawValue,
-                    emptyTitle: "No Segments",
-                    options: segmentsOptions.map(\.description),
-                    selectedIndex: { [weak self] in self?.selectedSegment }
-                ) { [weak self] selectedSegment in
-
+                return .segmentPicker(for: segmentedControl) { [weak self] selectedSegment in
                     self?.selectedSegment = selectedSegment
                 }
 
