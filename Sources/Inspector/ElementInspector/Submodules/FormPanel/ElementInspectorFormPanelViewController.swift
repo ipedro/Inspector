@@ -43,6 +43,10 @@ enum ElementInspectorFormPanelCollapseState {
     case allCollapsed, allExpanded, firstExpanded, mixed
 }
 
+enum ElementInspectorFormPanelSelectionMode {
+    case single, multi
+}
+
 class ElementInspectorFormPanelViewController: ElementInspectorPanelViewController, DataReloadingProtocol {
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
@@ -92,40 +96,61 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         return .mixed
     }
 
-    override var isCompactVerticalPresentation: Bool {
+    var panelSelectionMode: ElementInspectorFormPanelSelectionMode {
+        if isFullHeightPresentation {
+            return .multi
+        }
+        else {
+            return .single
+        }
+    }
+
+    override var isFullHeightPresentation: Bool {
         didSet {
-            guard oldValue != isCompactVerticalPresentation else { return }
+            guard oldValue != isFullHeightPresentation else { return }
 
-            let isExpandingPresentation = oldValue && isCompactVerticalPresentation == false
+            let isExpanding = !oldValue && isFullHeightPresentation
 
-            animatePanel(
-                animations: {
+            animatePanel {
+                if isExpanding {
+                    self.didVerticallyExpandPresentation()
+                }
+                else {
+                    self.didVerticallyCompressPresentation()
+                }
+            }
+        }
+    }
 
-                    guard isExpandingPresentation else {
-                        switch self.collapseState {
-                        case .allCollapsed:
-                            return
+    private func didVerticallyCompressPresentation() {
+        switch collapseState {
+        case .firstExpanded:
+            break
 
-                        case .allExpanded:
-                            return self.expandFirstSection()
+        case .allExpanded:
+            return expandFirstSection()
 
-                        case .mixed, .firstExpanded:
-                            return
-                        }
-                    }
+        case .allCollapsed:
+            break
 
-                    switch self.collapseState {
-                    case .allCollapsed:
-                    return self.expandFirstSection()
+        case .mixed:
+            break
+        }
+    }
 
-                    case .allExpanded,
-                         .firstExpanded,
-                         .mixed:
-                        return
-                    }
-                },
-                completion: nil
-            )
+    private func didVerticallyExpandPresentation() {
+        switch collapseState {
+        case .firstExpanded:
+            return expandAllSections()
+
+        case .allExpanded:
+            break
+
+        case .allCollapsed:
+            return expandFirstSection()
+
+        case .mixed:
+            break
         }
     }
 
@@ -167,14 +192,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
             for (row, viewModel) in item.rows.enumerated() {
                 let indexPath = IndexPath(row: row, section: section)
 
-                let ItemType = dataSource.typeForRow(at: indexPath)
-
-                let itemView = ItemType.makeItemView(with: {
-                    if dataSource.items.count == 1 {
-                        return .expanded
-                    }
-                    return isCompactVerticalPresentation ? .collapsed : .expanded
-                }()).then {
+                let itemView = dataSource.viewForProperty(at: indexPath).then {
                     $0.separatorStyle = .bottom
                 }
 
@@ -197,7 +215,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
             }
         }
     }
-    
+
     func collapseAllSections() {
         formItemViewControllers.forEach { $0.state = .collapsed }
         itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
@@ -216,14 +234,14 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     func toggleAllSectionsCollapse(animated: Bool, completion: ((Bool) -> Void)? = nil) {
         guard animated else {
-            switch self.collapseState {
+            switch collapseState {
             case .allExpanded:
-                self.collapseAllSections()
+                collapseAllSections()
 
             case .allCollapsed,
-                .firstExpanded,
-                .mixed:
-                self.expandAllSections()
+                 .firstExpanded,
+                 .mixed:
+                expandAllSections()
             }
 
             itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
@@ -236,8 +254,8 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
                 self.collapseAllSections()
 
             case .allCollapsed,
-                .firstExpanded,
-                .mixed:
+                 .firstExpanded,
+                 .mixed:
                 self.expandAllSections()
             }
         } completion: { [weak self] finished in
@@ -288,7 +306,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewControllerDelegate {
     func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
                                                 willUpdate property: InspectorElementViewModelProperty)
-{
+    {
         willUpdate(property: property)
     }
 
@@ -322,10 +340,8 @@ extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewC
 
             guard let self = self else { return }
 
-            let shouldCollapseOtherPanels = self.isCompactVerticalPresentation
-
             switch newState {
-            case .expanded where shouldCollapseOtherPanels:
+            case .expanded where self.panelSelectionMode == .single:
                 for aFormItemController in self.formItemViewControllers where aFormItemController !== formItemController {
                     aFormItemController.state = .collapsed
                 }

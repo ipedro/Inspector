@@ -24,3 +24,13 @@ protocol ElementInspectorFormPanelDataSource {
     func typeForRow(at indexPath: IndexPath) -> InspectorElementFormItemView.Type
     var items: [ElementInspectorFormItem] { get }
 }
+
+extension ElementInspectorFormPanelDataSource {
+    func viewForProperty(at indexPath: IndexPath) -> InspectorElementFormItemView {
+        let FormItemView = typeForRow(at: indexPath)
+
+        let itemView = FormItemView.makeItemView(with: indexPath.isFirst ? .expanded : .collapsed)
+
+        return itemView
+    }
+}

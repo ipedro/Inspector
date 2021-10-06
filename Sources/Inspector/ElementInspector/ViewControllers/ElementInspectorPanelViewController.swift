@@ -27,7 +27,7 @@ class ElementInspectorPanelViewController: UIViewController {
 
     private var needsLayout = true
 
-    var isCompactVerticalPresentation: Bool = false
+    var isFullHeightPresentation: Bool = true
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -60,16 +60,6 @@ class ElementInspectorPanelViewController: UIViewController {
         updateVerticalPresentationState()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        updateVerticalPresentationState()
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        updateVerticalPresentationState()
-    }
-
     @objc
     private func updateVerticalPresentationState() {
         guard let parent = parent else { return }
@@ -78,21 +68,21 @@ class ElementInspectorPanelViewController: UIViewController {
             if let popover = parent.popoverPresentationController {
                 #if swift(>=5.5)
                 if #available(iOS 15.0, *) {
-                    return popover.adaptiveSheetPresentationController.selectedDetentIdentifier != .large
+                    return popover.adaptiveSheetPresentationController.selectedDetentIdentifier == .large
                 }
                 #endif
 
                 _ = popover
 
-                return true
+                return false
             }
 
-            return false
+            return true
         }()
 
-        guard newValue != isCompactVerticalPresentation else { return }
+        guard newValue != isFullHeightPresentation else { return }
 
-        isCompactVerticalPresentation = newValue
+        isFullHeightPresentation = newValue
     }
 
     @objc

@@ -69,9 +69,9 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         }
     }
 
-    override var isCompactVerticalPresentation: Bool {
+    override var isFullHeightPresentation: Bool {
         didSet {
-            viewModel.isCompactVerticalPresentation = isCompactVerticalPresentation
+            viewModel.isFullHeightPresentation = isFullHeightPresentation
         }
     }
 

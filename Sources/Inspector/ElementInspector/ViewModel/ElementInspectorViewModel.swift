@@ -29,7 +29,7 @@ protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyElementDesc
 
     var currentPanel: ElementInspectorPanel { get }
 
-    var isCompactVerticalPresentation: Bool { get set }
+    var isFullHeightPresentation: Bool { get set }
 
     var currentPanelIndex: Int { get }
 }
@@ -47,17 +47,9 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     var isCollapsed: Bool = false
 
-    var isCompactVerticalPresentation: Bool = false
+    var isFullHeightPresentation: Bool = true
 
-    private var defaultPanel: ElementInspectorPanel {
-        if isCompactVerticalPresentation, let firstOtherPanel = availablePanels.filter({ $0 != .identity }).first {
-            return firstOtherPanel
-        }
-        else if let firstPanel = availablePanels.first {
-            return firstPanel
-        }
-        return .identity
-    }
+    private var defaultPanel: ElementInspectorPanel { .attributes }
 
     var currentPanelIndex: Int {
         let selectedPanel = selectedPanel ?? defaultPanel

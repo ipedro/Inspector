@@ -26,7 +26,7 @@ extension ElementInspectorCoordinator: UISheetPresentationControllerDelegate {
     func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
         guard let formPanelController = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
 
-        formPanelController.isCompactVerticalPresentation = sheetPresentationController.selectedDetentIdentifier == .medium
+        formPanelController.isFullHeightPresentation = sheetPresentationController.selectedDetentIdentifier == .large
     }
 }
 #endif
