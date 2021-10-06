@@ -127,10 +127,6 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
     private func destroy(layer: ViewHierarchyLayer) -> Bool {
         visibleReferences.removeValue(forKey: layer)
 
-        if Array(visibleReferences.keys) == [.wireframes] {
-            visibleReferences.removeValue(forKey: .wireframes)
-        }
-
         return true
     }
 
