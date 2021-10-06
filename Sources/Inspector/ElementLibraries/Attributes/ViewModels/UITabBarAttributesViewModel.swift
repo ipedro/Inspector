@@ -22,6 +22,15 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UITabBarAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Tab Bar"
+
+        private weak var tabBar: UITabBar?
+
+        init?(view: UIView) {
+            guard let tabBar = view as? UITabBar else { return nil }
+            self.tabBar = tabBar
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case backgroundImage = "Background"
             case shadowImage = "Shadow"
@@ -32,80 +41,46 @@ extension ElementInspectorAttributesLibrary {
             case barTintColor = "Bar Tint"
         }
 
-        let title = "Tab Bar"
-
-        private(set) weak var tabBar: UITabBar?
-
-        init?(view: UIView) {
-            guard let tabBar = view as? UITabBar else { return nil }
-            self.tabBar = tabBar
-        }
-
         var properties: [InspectorElementViewModelProperty] {
-            Property.allCases.compactMap { property in
+            guard let tabBar = tabBar else { return [] }
+
+            return Property.allCases.compactMap { property in
                 switch property {
                 case .style:
                     return .optionsList(
                         title: property.rawValue,
                         options: UIBarStyle.allCases.map { $0.description },
-                        selectedIndex: { [weak self] in
-                            guard
-                                let tabBar = self?.tabBar,
-                                let index = UIBarStyle.allCases.firstIndex(of: tabBar.barStyle)
-                            else {
-                                return nil
-                            }
-                            return index
-                        },
-                        handler: { [weak self] newIndex in
-                            guard
-                                let tabBar = self?.tabBar,
-                                let index = newIndex
-                            else {
-                                return
-                            }
+                        selectedIndex: { UIBarStyle.allCases.firstIndex(of: tabBar.barStyle) },
+                        handler: { newIndex in
+                            guard let index = newIndex else { return }
 
                             let newStyle = UIBarStyle.allCases[index]
                             tabBar.barStyle = newStyle
                         }
                     )
-
                 case .translucent:
                     return .switch(
                         title: property.rawValue,
-                        isOn: { [weak self] in self?.tabBar?.isTranslucent ?? false },
-                        handler: { [weak self] isTranslucent in
-                            self?.tabBar?.isTranslucent = isTranslucent
-                        }
+                        isOn: { tabBar.isTranslucent },
+                        handler: { tabBar.isTranslucent = $0 }
                     )
-
                 case .barTintColor:
                     return .colorPicker(
                         title: property.rawValue,
-                        color: { [weak self] in self?.tabBar?.barTintColor },
-                        handler: { [weak self] barTintColor in
-                            self?.tabBar?.barTintColor = barTintColor
-                        }
+                        color: { tabBar.barTintColor },
+                        handler: { tabBar.barTintColor = $0 }
                     )
-
                 case .shadowImage:
                     return .imagePicker(
                         title: property.rawValue,
-                        image: { [weak self] in self?.tabBar?.shadowImage },
-                        handler: { [weak self] in
-                            guard let tabBar = self?.tabBar else { return }
-                            tabBar.shadowImage = $0
-                        }
+                        image: { tabBar.shadowImage },
+                        handler: { tabBar.shadowImage = $0 }
                     )
-
                 case .backgroundImage:
                     return .imagePicker(
                         title: property.rawValue,
-                        image: { [weak self] in self?.tabBar?.backgroundImage },
-                        handler: { [weak self] in
-                            guard let tabBar = self?.tabBar else { return }
-                            tabBar.backgroundImage = $0
-                        }
+                        image: { tabBar.backgroundImage },
+                        handler: { tabBar.backgroundImage = $0 }
                     )
                 case .separator:
                     return .separator
@@ -113,11 +88,8 @@ extension ElementInspectorAttributesLibrary {
                 case .selectionIndicatorImage:
                     return .imagePicker(
                         title: property.rawValue,
-                        image: { [weak self] in self?.tabBar?.selectionIndicatorImage },
-                        handler: { [weak self] in
-                            guard let tabBar = self?.tabBar else { return }
-                            tabBar.selectionIndicatorImage = $0
-                        }
+                        image: { tabBar.selectionIndicatorImage },
+                        handler: { tabBar.selectionIndicatorImage = $0 }
                     )
                 }
             }

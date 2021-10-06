@@ -22,6 +22,16 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UIWindowAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Window"
+
+        private weak var window: UIWindow?
+
+        init?(view: UIView) {
+            guard let window = view as? UIWindow else { return nil }
+
+            self.window = window
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case canResizeToFitContent = "Can Resize To Fit Content"
             case isKeyWindow = "Is Key"
@@ -33,19 +43,10 @@ extension ElementInspectorAttributesLibrary {
             case screenScale = "Screen Scale"
         }
 
-        let title = "Window"
-
-        private(set) weak var window: UIWindow?
-
-        init?(view: UIView) {
-            guard let window = view as? UIWindow else { return nil }
-            self.window = window
-        }
-
         var properties: [InspectorElementViewModelProperty] {
-            Property.allCases.compactMap { property in
-                guard let window = window else { return nil }
+            guard let window = window else { return [] }
 
+            return Property.allCases.compactMap { property in
                 switch property {
                 case .canResizeToFitContent:
                     return .switch(
@@ -88,15 +89,16 @@ extension ElementInspectorAttributesLibrary {
                     )
                 case .canBecomeKey:
                     #if swift(>=5.5)
-                    if #available(iOS 15.0, *) {
-                        return .switch(
-                            title: property.rawValue,
-                            isOn: { window.canBecomeKey },
-                            handler: nil
-                        )
-                    }
-                    #endif
+                    guard #available(iOS 15.0, *) else { return nil }
+
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { window.canBecomeKey },
+                        handler: nil
+                    )
+                    #else
                     return nil
+                    #endif
                 }
             }
         }

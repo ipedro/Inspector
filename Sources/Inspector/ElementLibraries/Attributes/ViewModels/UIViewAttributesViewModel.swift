@@ -22,6 +22,14 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UIViewAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "View"
+
+        private weak var view: UIView?
+
+        init(view: UIView) {
+            self.view = view
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case contentMode = "Content Mode"
             case semanticContentAttribute = "Semantic Content"
@@ -42,162 +50,140 @@ extension ElementInspectorAttributesLibrary {
             case autoresizesSubviews = "Autoresize Subviews"
         }
 
-        let title = "View"
+        var properties: [InspectorElementViewModelProperty] {
+            guard let view = view else { return [] }
 
-        private(set) weak var view: UIView?
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .contentMode:
+                    return .optionsList(
+                        title: property.rawValue,
+                        options: UIView.ContentMode.allCases.map(\.description),
+                        selectedIndex: { UIView.ContentMode.allCases.firstIndex(of: view.contentMode) }
+                    ) {
+                        guard let newIndex = $0 else { return }
 
-        init?(view: UIView) {
-            self.view = view
-        }
-
-        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
-            guard let view = view else {
-                return nil
-            }
-
-            switch property {
-            case .contentMode:
-                return .optionsList(
-                    title: property.rawValue,
-                    options: UIView.ContentMode.allCases.map(\.description),
-                    selectedIndex: { UIView.ContentMode.allCases.firstIndex(of: view.contentMode) }
-                ) {
-                    guard let newIndex = $0 else { return }
-
-                    let contentMode = UIView.ContentMode.allCases[newIndex]
-
-                    view.contentMode = contentMode
-                }
-
-            case .semanticContentAttribute:
-                return .optionsList(
-                    title: property.rawValue,
-                    options: UISemanticContentAttribute.allCases.map(\.description),
-                    selectedIndex: { UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute) }
-                ) {
-                    guard let newIndex = $0 else { return }
-
-                    let semanticContentAttribute = UISemanticContentAttribute.allCases[newIndex]
-
-                    view.semanticContentAttribute = semanticContentAttribute
-                }
-
-            case .tag:
-                return .integerStepper(
-                    title: property.rawValue,
-                    value: { view.tag },
-                    range: { 0...100 },
-                    stepValue: { 1 }
-                ) { newValue in
-                    view.tag = newValue
-                }
-
-            case .accessibilityIdentifier:
-                return .textField(
-                    title: property.rawValue,
-                    placeholder: view.accessibilityIdentifier?.trimmed ?? property.rawValue,
-                    value: { view.accessibilityIdentifier?.trimmed }
-                ) { accessibilityIdentifier in
-                    view.accessibilityIdentifier = accessibilityIdentifier?.trimmed
-                    view.hightlightView?.updateElementName()
-                }
-
-            case .groupInteraction:
-                return .group(title: property.rawValue)
-
-            case .isUserInteractionEnabled:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { view.hightlightView?.element.isUserInteractionEnabled ?? view.isUserInteractionEnabled }
-                ) { isUserInteractionEnabled in
-                    guard let viewReference = view.hightlightView?.element else {
-                        view.isUserInteractionEnabled = isUserInteractionEnabled
-                        return
+                        let contentMode = UIView.ContentMode.allCases[newIndex]
+                        view.contentMode = contentMode
                     }
+                case .semanticContentAttribute:
+                    return .optionsList(
+                        title: property.rawValue,
+                        options: UISemanticContentAttribute.allCases.map(\.description),
+                        selectedIndex: { UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute) }
+                    ) {
+                        guard let newIndex = $0 else { return }
 
-                    // TODO: take a look again
-                    // viewReference.isUserInteractionEnabled = isUserInteractionEnabled
-                    view.hightlightView?.updateViews()
-                }
+                        let semanticContentAttribute = UISemanticContentAttribute.allCases[newIndex]
+                        view.semanticContentAttribute = semanticContentAttribute
+                    }
+                case .tag:
+                    return .integerStepper(
+                        title: property.rawValue,
+                        value: { view.tag },
+                        range: { 0...100 },
+                        stepValue: { 1 }
+                    ) { newValue in
+                        view.tag = newValue
+                    }
+                case .accessibilityIdentifier:
+                    return .textField(
+                        title: property.rawValue,
+                        placeholder: view.accessibilityIdentifier?.trimmed ?? property.rawValue,
+                        value: { view.accessibilityIdentifier?.trimmed }
+                    ) { accessibilityIdentifier in
+                        view.accessibilityIdentifier = accessibilityIdentifier?.trimmed
+                        view.hightlightView?.updateElementName()
+                    }
+                case .groupInteraction:
+                    return .group(title: property.rawValue)
 
-            case .isMultipleTouchEnabled:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { view.isMultipleTouchEnabled }
-                ) { isMultipleTouchEnabled in
-                    view.isMultipleTouchEnabled = isMultipleTouchEnabled
-                }
+                case .isUserInteractionEnabled:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { view.hightlightView?.element.isUserInteractionEnabled ?? view.isUserInteractionEnabled }
+                    ) { isUserInteractionEnabled in
+                        view.hightlightView?.updateViews()
 
-            case .groupAlphaAndColors:
-                return .separator
+                        // TODO: take a look again
+//                        guard let viewReference = view.hightlightView?.element else {
+//                            view.isUserInteractionEnabled = isUserInteractionEnabled
+//                            return
+//                        }
+//
+                        // viewReference.isUserInteractionEnabled = isUserInteractionEnabled
+                    }
+                case .isMultipleTouchEnabled:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { view.isMultipleTouchEnabled }
+                    ) { isMultipleTouchEnabled in
+                        view.isMultipleTouchEnabled = isMultipleTouchEnabled
+                    }
+                case .groupAlphaAndColors:
+                    return .separator
 
-            case .alpha:
-                return .cgFloatStepper(
-                    title: property.rawValue,
-                    value: { view.alpha },
-                    range: { 0...1 },
-                    stepValue: { 0.05 }
-                ) { alpha in
-                    view.alpha = alpha
-                }
+                case .alpha:
+                    return .cgFloatStepper(
+                        title: property.rawValue,
+                        value: { view.alpha },
+                        range: { 0...1 },
+                        stepValue: { 0.05 }
+                    ) { alpha in
+                        view.alpha = alpha
+                    }
+                case .backgroundColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { view.backgroundColor }
+                    ) { backgroundColor in
+                        view.backgroundColor = backgroundColor
+                    }
+                case .tintColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { view.tintColor }
+                    ) { tintColor in
+                        view.tintColor = tintColor
+                    }
+                case .groupDrawing:
+                    return .group(title: property.rawValue)
 
-            case .backgroundColor:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { view.backgroundColor }
-                ) { backgroundColor in
-                    view.backgroundColor = backgroundColor
-                }
-
-            case .tintColor:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { view.tintColor }
-                ) { tintColor in
-                    view.tintColor = tintColor
-                }
-
-            case .groupDrawing:
-                return .group(title: property.rawValue)
-
-            case .isOpaque:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { view.isOpaque }
-                ) { isOpaque in
-                    view.isOpaque = isOpaque
-                }
-
-            case .isHidden:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { view.isHidden }
-                ) { isHidden in
-                    view.isHidden = isHidden
-                }
-
-            case .clearsContextBeforeDrawing:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { view.clearsContextBeforeDrawing }
-                ) { clearsContextBeforeDrawing in
-                    view.clearsContextBeforeDrawing = clearsContextBeforeDrawing
-                }
-
-            case .clipsToBounds:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { view.clipsToBounds }
-                ) { clipsToBounds in
-                    view.clipsToBounds = clipsToBounds
-                }
-
-            case .autoresizesSubviews:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { view.autoresizesSubviews }
-                ) { autoresizesSubviews in
-                    view.autoresizesSubviews = autoresizesSubviews
+                case .isOpaque:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { view.isOpaque }
+                    ) { isOpaque in
+                        view.isOpaque = isOpaque
+                    }
+                case .isHidden:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { view.isHidden }
+                    ) { isHidden in
+                        view.isHidden = isHidden
+                    }
+                case .clearsContextBeforeDrawing:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { view.clearsContextBeforeDrawing }
+                    ) { clearsContextBeforeDrawing in
+                        view.clearsContextBeforeDrawing = clearsContextBeforeDrawing
+                    }
+                case .clipsToBounds:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { view.clipsToBounds }
+                    ) { clipsToBounds in
+                        view.clipsToBounds = clipsToBounds
+                    }
+                case .autoresizesSubviews:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { view.autoresizesSubviews }
+                    ) { autoresizesSubviews in
+                        view.autoresizesSubviews = autoresizesSubviews
+                    }
                 }
             }
         }

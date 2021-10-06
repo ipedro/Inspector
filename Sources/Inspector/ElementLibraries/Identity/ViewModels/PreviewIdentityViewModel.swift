@@ -24,11 +24,9 @@ extension ElementInspectorIdentityLibrary {
     final class PreviewIdentityViewModel: InspectorElementViewModelProtocol {
         let title: String = "Preview"
 
-        let element: ViewHierarchyElement
+        private let element: ViewHierarchyElement
 
-        var isHighlightingViews: Bool {
-            element.containsVisibleHighlightViews
-        }
+        private var isHighlightingViews: Bool { element.containsVisibleHighlightViews }
 
         init(view: UIView) {
             self.element = .init(view, iconProvider: .default)

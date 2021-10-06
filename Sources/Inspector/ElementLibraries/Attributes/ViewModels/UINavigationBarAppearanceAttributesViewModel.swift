@@ -24,35 +24,6 @@ import UIKit
 extension ElementInspectorAttributesLibrary {
     @available(iOS 13.0, *)
     final class UINavigationBarAppearanceAttributesViewModel: InspectorElementViewModelProtocol {
-
-        private enum Property: String, Swift.CaseIterable {
-            case information
-            case iOS15_behaviorWarning
-            case backgroundEffect = "Blur Style"
-            case backgroundColor = "Background"
-            case backgroundImage = "Image"
-            case backgroundImageContentMode = "Content Mode"
-            case shadowColor = "Shadow Color"
-            case shadowImage = "Shadow Image"
-            case separator0
-            case titleOffset = "Title Offset"
-            case separator1
-
-            case titleGroup = "Title Attributes"
-            case titleFontName = "Title Font Name"
-            case titleFontSize = "Title Font Size"
-            case titleColor = "Title Color"
-            case titleShadow = "Title Shadow"
-            case titleShadowOffset = "Title Shadow Offset"
-
-            case largeTitleGroup = "Large Title Attributes"
-            case largeTitleFontName = "Large Title Font Name"
-            case largeTitleFontSize = "Large Title Font Size"
-            case largeTitleColor = "Large Title Color"
-            case largeTitleShadow = "Large Title Shadow"
-            case largeTitleShadowOffset = "Large Title Shadow Offset"
-        }
-
         private enum TitleAttribute: String, Swift.CaseIterable {
             case groupTitle
             case fontName = "Title Font Name"
@@ -61,6 +32,7 @@ extension ElementInspectorAttributesLibrary {
             case shadow = "Title Shadow"
             case shadowOffset = "Shadow Offset"
         }
+
         enum `Type`: CustomStringConvertible {
             case standard, compact, scrollEdge, compactScrollEdge
 
@@ -151,6 +123,34 @@ extension ElementInspectorAttributesLibrary {
 
             self.type = type
             self.navigationBar = navigationBar
+        }
+
+        private enum Property: String, Swift.CaseIterable {
+            case information
+            case iOS15_behaviorWarning
+            case backgroundEffect = "Blur Style"
+            case backgroundColor = "Background"
+            case backgroundImage = "Image"
+            case backgroundImageContentMode = "Content Mode"
+            case shadowColor = "Shadow Color"
+            case shadowImage = "Shadow Image"
+            case separator0
+            case titleOffset = "Title Offset"
+            case separator1
+
+            case titleGroup = "Title Attributes"
+            case titleFontName = "Title Font Name"
+            case titleFontSize = "Title Font Size"
+            case titleColor = "Title Color"
+            case titleShadow = "Title Shadow"
+            case titleShadowOffset = "Title Shadow Offset"
+
+            case largeTitleGroup = "Large Title Attributes"
+            case largeTitleFontName = "Large Title Font Name"
+            case largeTitleFontSize = "Large Title Font Size"
+            case largeTitleColor = "Large Title Color"
+            case largeTitleShadow = "Large Title Shadow"
+            case largeTitleShadowOffset = "Large Title Shadow Offset"
         }
 
         var properties: [InspectorElementViewModelProperty] {

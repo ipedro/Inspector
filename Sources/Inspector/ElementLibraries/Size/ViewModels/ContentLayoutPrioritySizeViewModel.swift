@@ -36,7 +36,7 @@ extension ElementInspectorSizeLibrary {
 
         let title: String = "Content Layout Priority"
 
-        weak var view: UIView?
+        private weak var view: UIView?
 
         init(view: UIView) {
             self.view = view

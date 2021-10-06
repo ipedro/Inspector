@@ -22,6 +22,16 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UISwitchAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Switch"
+
+        private weak var switchControl: UISwitch?
+
+        init?(view: UIView) {
+            guard let switchControl = view as? UISwitch else { return nil }
+
+            self.switchControl = switchControl
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case title = "Title"
             case preferredStyle = "Preferred Style"
@@ -30,26 +40,14 @@ extension ElementInspectorAttributesLibrary {
             case thumbTintColor = "Thumb Tint"
         }
 
-        let title = "Switch"
+        var properties: [InspectorElementViewModelProperty] {
+            guard let switchControl = switchControl else { return [] }
 
-        private(set) weak var switchControl: UISwitch?
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .title:
+                    guard #available(iOS 14.0, *) else { return nil }
 
-        init?(view: UIView) {
-            guard let switchControl = view as? UISwitch else {
-                return nil
-            }
-
-            self.switchControl = switchControl
-        }
-
-        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
-            guard let switchControl = switchControl else {
-                return nil
-            }
-
-            switch property {
-            case .title:
-                if #available(iOS 14.0, *) {
                     return .textField(
                         title: property.rawValue,
                         placeholder: switchControl.title.isNilOrEmpty ? property.rawValue : switchControl.title,
@@ -57,51 +55,43 @@ extension ElementInspectorAttributesLibrary {
                     ) { title in
                         switchControl.title = title
                     }
-                }
-                return nil
+                case .preferredStyle:
+                    guard #available(iOS 14.0, *) else { return nil }
 
-            case .preferredStyle:
-                if #available(iOS 14.0, *) {
                     return .textButtonGroup(
                         title: property.rawValue,
                         texts: UISwitch.Style.allCases.map(\.description),
                         selectedIndex: { UISwitch.Style.allCases.firstIndex(of: switchControl.preferredStyle) },
                         handler: {
-                            guard let newIndex = $0 else {
-                                return
-                            }
+                            guard let newIndex = $0 else { return }
 
                             let preferredStyle = UISwitch.Style.allCases[newIndex]
 
                             switchControl.preferredStyle = preferredStyle
                         }
                     )
-                }
-                return nil
-
-            case .isOn:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { switchControl.isOn }
-                ) { isOn in
-                    switchControl.setOn(isOn, animated: true)
-                    switchControl.sendActions(for: .valueChanged)
-                }
-
-            case .onTintColor:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { switchControl.onTintColor }
-                ) { onTintColor in
-                    switchControl.onTintColor = onTintColor
-                }
-
-            case .thumbTintColor:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { switchControl.thumbTintColor }
-                ) { thumbTintColor in
-                    switchControl.thumbTintColor = thumbTintColor
+                case .isOn:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { switchControl.isOn }
+                    ) { isOn in
+                        switchControl.setOn(isOn, animated: true)
+                        switchControl.sendActions(for: .valueChanged)
+                    }
+                case .onTintColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { switchControl.onTintColor }
+                    ) { onTintColor in
+                        switchControl.onTintColor = onTintColor
+                    }
+                case .thumbTintColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { switchControl.thumbTintColor }
+                    ) { thumbTintColor in
+                        switchControl.thumbTintColor = thumbTintColor
+                    }
                 }
             }
         }

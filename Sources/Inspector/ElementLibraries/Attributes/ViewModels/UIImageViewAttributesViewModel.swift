@@ -22,6 +22,16 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UIImageViewAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Image"
+
+        private weak var imageView: UIImageView?
+
+        init?(view: UIView) {
+            guard let imageView = view as? UIImageView else { return nil }
+
+            self.imageView = imageView
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case image = "Image"
             case highlightedImage = "Highlighted Image"
@@ -30,57 +40,45 @@ extension ElementInspectorAttributesLibrary {
             case adjustsImageSizeForAccessibilityContentSizeCategory = "Adjusts Image Size"
         }
 
-        let title = "Image"
+        var properties: [InspectorElementViewModelProperty] {
+            guard let imageView = imageView else { return [] }
 
-        private(set) weak var imageView: UIImageView?
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .separator:
+                    return .separator
 
-        init?(view: UIView) {
-            guard let imageView = view as? UIImageView else {
-                return nil
-            }
+                case .image:
+                    return .imagePicker(
+                        title: property.rawValue,
+                        image: { imageView.image }
+                    ) { image in
+                        imageView.image = image
+                    }
 
-            self.imageView = imageView
-        }
+                case .highlightedImage:
+                    return .imagePicker(
+                        title: property.rawValue,
+                        image: { imageView.highlightedImage }
+                    ) { highlightedImage in
+                        imageView.highlightedImage = highlightedImage
+                    }
 
-        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
-            guard let imageView = imageView else {
-                return nil
-            }
+                case .isHighlighted:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { imageView.isHighlighted }
+                    ) { isHighlighted in
+                        imageView.isHighlighted = isHighlighted
+                    }
 
-            switch property {
-            case .separator:
-                return .separator
-
-            case .image:
-                return .imagePicker(
-                    title: property.rawValue,
-                    image: { imageView.image }
-                ) { image in
-                    imageView.image = image
-                }
-
-            case .highlightedImage:
-                return .imagePicker(
-                    title: property.rawValue,
-                    image: { imageView.highlightedImage }
-                ) { highlightedImage in
-                    imageView.highlightedImage = highlightedImage
-                }
-
-            case .isHighlighted:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { imageView.isHighlighted }
-                ) { isHighlighted in
-                    imageView.isHighlighted = isHighlighted
-                }
-
-            case .adjustsImageSizeForAccessibilityContentSizeCategory:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { imageView.adjustsImageSizeForAccessibilityContentSizeCategory }
-                ) { adjustsImageSizeForAccessibilityContentSizeCategory in
-                    imageView.adjustsImageSizeForAccessibilityContentSizeCategory = adjustsImageSizeForAccessibilityContentSizeCategory
+                case .adjustsImageSizeForAccessibilityContentSizeCategory:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { imageView.adjustsImageSizeForAccessibilityContentSizeCategory }
+                    ) { adjustsImageSizeForAccessibilityContentSizeCategory in
+                        imageView.adjustsImageSizeForAccessibilityContentSizeCategory = adjustsImageSizeForAccessibilityContentSizeCategory
+                    }
                 }
             }
         }

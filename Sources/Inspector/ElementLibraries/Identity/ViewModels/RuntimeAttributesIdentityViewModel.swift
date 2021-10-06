@@ -24,23 +24,23 @@ extension ElementInspectorIdentityLibrary {
     final class RuntimeAttributesIdentityViewModel: InspectorElementViewModelProtocol {
         let title = "Runtime Attributes"
 
-        private(set) weak var view: UIView?
+        private(set) weak var object: NSObject?
 
-        let propertyNames: [String]
+        private let propertyNames: [String]
 
-        let hideUknownValues: Bool = true
+        private let hideUknownValues: Bool = true
 
-        init?(view: UIView) {
-            let properties = view.propertyNames()
+        init?(object: NSObject) {
+            let properties = object.propertyNames()
 
             if properties.isEmpty { return nil }
 
-            self.view = view
+            self.object = object
             propertyNames = properties
         }
 
         var properties: [InspectorElementViewModelProperty] {
-            guard let view = view else { return [] }
+            guard let view = object else { return [] }
 
             return propertyNames.compactMap { property in
                 guard

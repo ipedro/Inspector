@@ -22,6 +22,16 @@ import MapKit
 
 extension ElementInspectorAttributesLibrary {
     final class MKMapViewAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Map View"
+
+        private weak var mapView: MKMapView?
+
+        init?(view: UIView) {
+            guard let mapView = view as? MKMapView else { return nil }
+
+            self.mapView = mapView
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case type = "Type"
             case groupAllows = "Allows"
@@ -37,115 +47,89 @@ extension ElementInspectorAttributesLibrary {
             case showsTraffic = "Traffic"
         }
 
-        let title = "Map View"
+        var properties: [InspectorElementViewModelProperty] {
+            guard let mapView = mapView else { return [] }
 
-        private(set) weak var mapView: MKMapView?
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .type:
+                    return .optionsList(
+                        title: property.rawValue,
+                        options: MKMapType.allCases.map(\.description),
+                        selectedIndex: { MKMapType.allCases.firstIndex(of: mapView.mapType) }
+                    ) {
+                        guard let newIndex = $0 else { return }
 
-        init?(view: UIView) {
-            guard let mapView = view as? MKMapView else {
-                return nil
-            }
+                        let mapType = MKMapType.allCases[newIndex]
 
-            self.mapView = mapView
-        }
-
-        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
-            guard let mapView = mapView else {
-                return nil
-            }
-
-            switch property {
-            case .type:
-                return .optionsList(
-                    title: property.rawValue,
-                    options: MKMapType.allCases.map(\.description),
-                    selectedIndex: { MKMapType.allCases.firstIndex(of: mapView.mapType) }
-                ) {
-                    guard let newIndex = $0 else {
-                        return
+                        mapView.mapType = mapType
                     }
+                case .groupAllows, .groupShows:
+                    return .group(title: property.rawValue)
 
-                    let mapType = MKMapType.allCases[newIndex]
-
-                    mapView.mapType = mapType
-                }
-
-            case .groupAllows:
-                return .group(title: property.rawValue)
-
-            case .isZoomEnabled:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { mapView.isZoomEnabled }
-                ) { isZoomEnabled in
-                    mapView.isZoomEnabled = isZoomEnabled
-                }
-
-            case .isRotateEnabled:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { mapView.isRotateEnabled }
-                ) { isRotateEnabled in
-                    mapView.isRotateEnabled = isRotateEnabled
-                }
-
-            case .isScrollEnabled:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { mapView.isScrollEnabled }
-                ) { isScrollEnabled in
-                    mapView.isScrollEnabled = isScrollEnabled
-                }
-
-            case .isPitchEnabled:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { mapView.isPitchEnabled }
-                ) { isPitchEnabled in
-                    mapView.isPitchEnabled = isPitchEnabled
-                }
-
-            case .groupShows:
-                return .group(title: property.rawValue)
-
-            case .buildings:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { mapView.showsBuildings }
-                ) { showsBuildings in
-                    mapView.showsBuildings = showsBuildings
-                }
-
-            case .showsScale:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { mapView.showsScale }
-                ) { showsScale in
-                    mapView.showsScale = showsScale
-                }
-
-            case .showsPointsOfInterest:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { mapView.showsPointsOfInterest }
-                ) { showsPointsOfInterest in
-                    mapView.showsPointsOfInterest = showsPointsOfInterest
-                }
-
-            case .showsUserLocation:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { mapView.showsUserLocation }
-                ) { showsUserLocation in
-                    mapView.showsUserLocation = showsUserLocation
-                }
-
-            case .showsTraffic:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { mapView.showsTraffic }
-                ) { showsTraffic in
-                    mapView.showsTraffic = showsTraffic
+                case .isZoomEnabled:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { mapView.isZoomEnabled }
+                    ) { isZoomEnabled in
+                        mapView.isZoomEnabled = isZoomEnabled
+                    }
+                case .isRotateEnabled:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { mapView.isRotateEnabled }
+                    ) { isRotateEnabled in
+                        mapView.isRotateEnabled = isRotateEnabled
+                    }
+                case .isScrollEnabled:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { mapView.isScrollEnabled }
+                    ) { isScrollEnabled in
+                        mapView.isScrollEnabled = isScrollEnabled
+                    }
+                case .isPitchEnabled:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { mapView.isPitchEnabled }
+                    ) { isPitchEnabled in
+                        mapView.isPitchEnabled = isPitchEnabled
+                    }
+                case .buildings:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { mapView.showsBuildings }
+                    ) { showsBuildings in
+                        mapView.showsBuildings = showsBuildings
+                    }
+                case .showsScale:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { mapView.showsScale }
+                    ) { showsScale in
+                        mapView.showsScale = showsScale
+                    }
+                case .showsPointsOfInterest:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { mapView.showsPointsOfInterest }
+                    ) { showsPointsOfInterest in
+                        mapView.showsPointsOfInterest = showsPointsOfInterest
+                    }
+                case .showsUserLocation:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { mapView.showsUserLocation }
+                    ) { showsUserLocation in
+                        mapView.showsUserLocation = showsUserLocation
+                    }
+                case .showsTraffic:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { mapView.showsTraffic }
+                    ) { showsTraffic in
+                        mapView.showsTraffic = showsTraffic
+                    }
                 }
             }
         }

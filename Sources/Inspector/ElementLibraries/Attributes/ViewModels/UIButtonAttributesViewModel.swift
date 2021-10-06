@@ -22,6 +22,20 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UIButtonAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Button"
+
+        private weak var button: UIButton?
+
+        init?(view: UIView) {
+            guard let button = view as? UIButton else { return nil }
+
+            self.button = button
+
+            selectedControlState = button.state
+        }
+
+        private var selectedControlState: UIControl.State
+
         private enum Property: String, Swift.CaseIterable {
             case type = "Type"
             case fontName = "Font Name"
@@ -42,170 +56,136 @@ extension ElementInspectorAttributesLibrary {
             case adjustsImageWhenDisabled = "Disabled Adjusts Image"
         }
 
-        let title = "Button"
+        var properties: [InspectorElementViewModelProperty] {
+            guard let button = button else { return [] }
 
-        private(set) weak var button: UIButton?
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .type:
+                    return .optionsList(
+                        title: property.rawValue,
+                        options: UIButton.ButtonType.allCases.map(\.description),
+                        selectedIndex: { UIButton.ButtonType.allCases.firstIndex(of: button.buttonType) },
+                        handler: nil
+                    )
+                case .fontName:
+                    return .fontNamePicker(
+                        title: property.rawValue,
+                        fontProvider: {
+                            button.titleLabel?.font
+                        },
+                        handler: { font in
+                            button.titleLabel?.font = font
+                        }
+                    )
+                case .fontPointSize:
+                    return .fontSizeStepper(
+                        title: property.rawValue,
+                        fontProvider: {
+                            button.titleLabel?.font
+                        },
+                        handler: { font in
+                            button.titleLabel?.font = font
+                        }
+                    )
+                case .groupState, .groupDrawing:
+                    return .group(title: property.rawValue)
 
-        init?(view: UIView) {
-            guard let button = view as? UIButton else {
-                return nil
-            }
+                case .stateConfig:
+                    return .optionsList(
+                        title: property.rawValue,
+                        options: UIControl.State.configurableButtonStates.map(\.description),
+                        selectedIndex: { UIControl.State.configurableButtonStates.firstIndex(of: self.selectedControlState) }
+                    ) { [weak self] in
 
-            self.button = button
+                        guard let newIndex = $0 else { return }
 
-            selectedControlState = button.state
-        }
+                        let selectedStateConfig = UIControl.State.configurableButtonStates[newIndex]
 
-        private var selectedControlState: UIControl.State
-
-        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
-            guard let button = button else {
-                return nil
-            }
-
-            switch property {
-            case .type:
-                return .optionsList(
-                    title: property.rawValue,
-                    options: UIButton.ButtonType.allCases.map(\.description),
-                    selectedIndex: { UIButton.ButtonType.allCases.firstIndex(of: button.buttonType) },
-                    handler: nil
-                )
-
-            case .fontName:
-                return .fontNamePicker(
-                    title: property.rawValue,
-                    fontProvider: {
-                        button.titleLabel?.font
-                    },
-                    handler: { font in
-                        button.titleLabel?.font = font
+                        self?.selectedControlState = selectedStateConfig
                     }
-                )
-
-            case .fontPointSize:
-                return .fontSizeStepper(
-                    title: property.rawValue,
-                    fontProvider: {
-                        button.titleLabel?.font
-                    },
-                    handler: { font in
-                        button.titleLabel?.font = font
+                case .titleText:
+                    return .textField(
+                        title: property.rawValue,
+                        placeholder: button.title(for: self.selectedControlState) ?? property.rawValue,
+                        value: { button.title(for: self.selectedControlState) }
+                    ) { title in
+                        button.setTitle(title, for: self.selectedControlState)
                     }
-                )
-
-            case .groupState:
-                return .group(title: property.rawValue)
-
-            case .stateConfig:
-                return .optionsList(
-                    title: property.rawValue,
-                    options: UIControl.State.configurableButtonStates.map(\.description),
-                    selectedIndex: { UIControl.State.configurableButtonStates.firstIndex(of: self.selectedControlState) }
-                ) { [weak self] in
-
-                    guard let newIndex = $0 else {
-                        return
+                case .currentTitleColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { button.titleColor(for: self.selectedControlState) }
+                    ) { currentTitleColor in
+                        button.setTitleColor(currentTitleColor, for: self.selectedControlState)
+                    }
+                case .currentTitleShadowColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { button.titleShadowColor(for: self.selectedControlState) }
+                    ) { currentTitleShadowColor in
+                        button.setTitleShadowColor(currentTitleShadowColor, for: self.selectedControlState)
+                    }
+                case .image:
+                    return .imagePicker(
+                        title: property.rawValue,
+                        image: { button.image(for: self.selectedControlState) }
+                    ) { image in
+                        button.setImage(image, for: self.selectedControlState)
                     }
 
-                    let selectedStateConfig = UIControl.State.configurableButtonStates[newIndex]
-
-                    self?.selectedControlState = selectedStateConfig
-                }
-
-            case .titleText:
-                return .textField(
-                    title: property.rawValue,
-                    placeholder: button.title(for: self.selectedControlState) ?? property.rawValue,
-                    value: { button.title(for: self.selectedControlState) }
-                ) { title in
-                    button.setTitle(title, for: self.selectedControlState)
-                }
-
-            case .currentTitleColor:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { button.titleColor(for: self.selectedControlState) }
-                ) { currentTitleColor in
-                    button.setTitleColor(currentTitleColor, for: self.selectedControlState)
-                }
-
-            case .currentTitleShadowColor:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { button.titleShadowColor(for: self.selectedControlState) }
-                ) { currentTitleShadowColor in
-                    button.setTitleShadowColor(currentTitleShadowColor, for: self.selectedControlState)
-                }
-
-            case .image:
-                return .imagePicker(
-                    title: property.rawValue,
-                    image: { button.image(for: self.selectedControlState) }
-                ) { image in
-                    button.setImage(image, for: self.selectedControlState)
-                }
-
-            case .backgroundImage:
-                return .imagePicker(
-                    title: property.rawValue,
-                    image: { button.backgroundImage(for: self.selectedControlState) }
-                ) { backgroundImage in
-                    button.setBackgroundImage(backgroundImage, for: self.selectedControlState)
-                }
-
-            case .isPointerInteractionEnabled:
-                if #available(iOS 13.4, *) {
+                case .backgroundImage:
+                    return .imagePicker(
+                        title: property.rawValue,
+                        image: { button.backgroundImage(for: self.selectedControlState) }
+                    ) { backgroundImage in
+                        button.setBackgroundImage(backgroundImage, for: self.selectedControlState)
+                    }
+                case .isPointerInteractionEnabled:
+                    if #available(iOS 13.4, *) {
+                        return .switch(
+                            title: property.rawValue,
+                            isOn: { button.isPointerInteractionEnabled }
+                        ) { isPointerInteractionEnabled in
+                            button.isPointerInteractionEnabled = isPointerInteractionEnabled
+                        }
+                    }
+                    return nil
+                case .adjustsImageSizeForAccessibilityContentSizeCategory:
                     return .switch(
                         title: property.rawValue,
-                        isOn: { button.isPointerInteractionEnabled }
-                    ) { isPointerInteractionEnabled in
-                        button.isPointerInteractionEnabled = isPointerInteractionEnabled
+                        isOn: { button.adjustsImageSizeForAccessibilityContentSizeCategory }
+                    ) { adjustsImageSizeForAccessibilityContentSizeCategory in
+                        button.adjustsImageSizeForAccessibilityContentSizeCategory = adjustsImageSizeForAccessibilityContentSizeCategory
                     }
-                }
-                return nil
-
-            case .adjustsImageSizeForAccessibilityContentSizeCategory:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { button.adjustsImageSizeForAccessibilityContentSizeCategory }
-                ) { adjustsImageSizeForAccessibilityContentSizeCategory in
-                    button.adjustsImageSizeForAccessibilityContentSizeCategory = adjustsImageSizeForAccessibilityContentSizeCategory
-                }
-
-            case .groupDrawing:
-                return .group(title: property.rawValue)
-
-            case .reversesTitleShadowWhenHighlighted:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { button.reversesTitleShadowWhenHighlighted }
-                ) { reversesTitleShadowWhenHighlighted in
-                    button.reversesTitleShadowWhenHighlighted = reversesTitleShadowWhenHighlighted
-                }
-
-            case .showsTouchWhenHighlighted:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { button.showsTouchWhenHighlighted }
-                ) { showsTouchWhenHighlighted in
-                    button.showsTouchWhenHighlighted = showsTouchWhenHighlighted
-                }
-
-            case .adjustsImageWhenHighlighted:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { button.adjustsImageWhenHighlighted }
-                ) { adjustsImageWhenHighlighted in
-                    button.adjustsImageWhenHighlighted = adjustsImageWhenHighlighted
-                }
-
-            case .adjustsImageWhenDisabled:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { button.adjustsImageWhenDisabled }
-                ) { adjustsImageWhenDisabled in
-                    button.adjustsImageWhenDisabled = adjustsImageWhenDisabled
+                case .reversesTitleShadowWhenHighlighted:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { button.reversesTitleShadowWhenHighlighted }
+                    ) { reversesTitleShadowWhenHighlighted in
+                        button.reversesTitleShadowWhenHighlighted = reversesTitleShadowWhenHighlighted
+                    }
+                case .showsTouchWhenHighlighted:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { button.showsTouchWhenHighlighted }
+                    ) { showsTouchWhenHighlighted in
+                        button.showsTouchWhenHighlighted = showsTouchWhenHighlighted
+                    }
+                case .adjustsImageWhenHighlighted:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { button.adjustsImageWhenHighlighted }
+                    ) { adjustsImageWhenHighlighted in
+                        button.adjustsImageWhenHighlighted = adjustsImageWhenHighlighted
+                    }
+                case .adjustsImageWhenDisabled:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { button.adjustsImageWhenDisabled }
+                    ) { adjustsImageWhenDisabled in
+                        button.adjustsImageWhenDisabled = adjustsImageWhenDisabled
+                    }
                 }
             }
         }

@@ -22,6 +22,16 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UIControlAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Control"
+
+        private weak var control: UIControl?
+
+        init?(view: UIView) {
+            guard let control = view as? UIControl else { return nil }
+
+            self.control = control
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case contentHorizontalAlignment = "Horizontal Alignment"
             case contentVerticalAlignment = "Vertical Alignment"
@@ -31,83 +41,63 @@ extension ElementInspectorAttributesLibrary {
             case isHighlighted = "Highlighted"
         }
 
-        let title = "Control"
+        var properties: [InspectorElementViewModelProperty] {
+            guard let control = control else { return [] }
 
-        private(set) weak var control: UIControl?
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .contentHorizontalAlignment:
+                    let allCases = UIControl.ContentHorizontalAlignment.allCases.withImages
 
-        init?(view: UIView) {
-            guard let control = view as? UIControl else {
-                return nil
-            }
+                    return .imageButtonGroup(
+                        title: property.rawValue,
+                        images: allCases.compactMap(\.image),
+                        selectedIndex: { allCases.firstIndex(of: control.contentHorizontalAlignment) }
+                    ) {
+                        guard let newIndex = $0 else { return }
 
-            self.control = control
-        }
+                        let contentHorizontalAlignment = allCases[newIndex]
 
-        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
-            guard let control = control else {
-                return nil
-            }
-
-            switch property {
-            case .contentHorizontalAlignment:
-                let allCases = UIControl.ContentHorizontalAlignment.allCases.withImages
-
-                return .imageButtonGroup(
-                    title: property.rawValue,
-                    images: allCases.compactMap(\.image),
-                    selectedIndex: { allCases.firstIndex(of: control.contentHorizontalAlignment) }
-                ) {
-                    guard let newIndex = $0 else {
-                        return
+                        control.contentHorizontalAlignment = contentHorizontalAlignment
                     }
+                case .contentVerticalAlignment:
+                    let knownCases = UIControl.ContentVerticalAlignment.allCases.filter { $0.image?.withRenderingMode(.alwaysTemplate) != nil }
 
-                    let contentHorizontalAlignment = allCases[newIndex]
+                    return .imageButtonGroup(
+                        title: property.rawValue,
+                        images: knownCases.compactMap(\.image),
+                        selectedIndex: { knownCases.firstIndex(of: control.contentVerticalAlignment) }
+                    ) {
+                        guard let newIndex = $0 else { return }
 
-                    control.contentHorizontalAlignment = contentHorizontalAlignment
-                }
+                        let contentVerticalAlignment = UIControl.ContentVerticalAlignment.allCases[newIndex]
 
-            case .contentVerticalAlignment:
-                let knownCases = UIControl.ContentVerticalAlignment.allCases.filter { $0.image?.withRenderingMode(.alwaysTemplate) != nil }
-
-                return .imageButtonGroup(
-                    title: property.rawValue,
-                    images: knownCases.compactMap(\.image),
-                    selectedIndex: { knownCases.firstIndex(of: control.contentVerticalAlignment) }
-                ) {
-                    guard let newIndex = $0 else {
-                        return
+                        control.contentVerticalAlignment = contentVerticalAlignment
                     }
+                case .groupState:
+                    return .group(title: property.rawValue)
 
-                    let contentVerticalAlignment = UIControl.ContentVerticalAlignment.allCases[newIndex]
-
-                    control.contentVerticalAlignment = contentVerticalAlignment
-                }
-
-            case .groupState:
-                return .group(title: property.rawValue)
-
-            case .isSelected:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { control.isSelected }
-                ) { isSelected in
-                    control.isSelected = isSelected
-                }
-
-            case .isEnabled:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { control.isEnabled }
-                ) { isEnabled in
-                    control.isEnabled = isEnabled
-                }
-
-            case .isHighlighted:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { control.isHighlighted }
-                ) { isHighlighted in
-                    control.isHighlighted = isHighlighted
+                case .isSelected:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { control.isSelected }
+                    ) { isSelected in
+                        control.isSelected = isSelected
+                    }
+                case .isEnabled:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { control.isEnabled }
+                    ) { isEnabled in
+                        control.isEnabled = isEnabled
+                    }
+                case .isHighlighted:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { control.isHighlighted }
+                    ) { isHighlighted in
+                        control.isHighlighted = isHighlighted
+                    }
                 }
             }
         }

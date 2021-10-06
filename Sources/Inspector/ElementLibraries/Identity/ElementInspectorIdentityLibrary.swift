@@ -39,7 +39,7 @@ enum ElementInspectorIdentityLibrary: Swift.CaseIterable, InspectorElementLibrar
             return PreviewIdentityViewModel(view: referenceView)
 
         case .runtimeAttributes:
-            return RuntimeAttributesIdentityViewModel(view: referenceView)
+            return RuntimeAttributesIdentityViewModel(object: referenceView)
         }
     }
 }

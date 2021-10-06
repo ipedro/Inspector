@@ -23,6 +23,14 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class CALayerAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Core Animation Layer"
+
+        private weak var layer: CALayer?
+
+        init(view: UIView) {
+            layer = view.layer
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case opacity = "Opacity"
             case backgroundColor = "Background Color"
@@ -45,14 +53,6 @@ extension ElementInspectorAttributesLibrary {
             case shadowOffset = "Shadow Offset"
             case shadowColor = "Shadow Color"
             case shadowPath = "Shadow Path"
-        }
-
-        let title = "Core Animation Layer"
-
-        private(set) weak var layer: CALayer?
-
-        init?(view: UIView) {
-            layer = view.layer
         }
 
         var properties: [InspectorElementViewModelProperty] {

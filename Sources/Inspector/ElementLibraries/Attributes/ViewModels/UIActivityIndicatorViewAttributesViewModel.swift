@@ -22,6 +22,16 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UIActivityIndicatorViewAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Activity Indicator"
+
+        private weak var activityIndicatorView: UIActivityIndicatorView?
+
+        init?(view: UIView) {
+            guard let activityIndicatorView = view as? UIActivityIndicatorView else { return nil }
+
+            self.activityIndicatorView = activityIndicatorView
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case style = "Style"
             case color = "Color"
@@ -30,74 +40,60 @@ extension ElementInspectorAttributesLibrary {
             case hidesWhenStopped = "Hides When Stopped"
         }
 
-        let title = "Activity Indicator"
+        var properties: [InspectorElementViewModelProperty] {
+            guard let activityIndicatorView = activityIndicatorView else { return [] }
 
-        private(set) weak var activityIndicatorView: UIActivityIndicatorView?
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .style:
+                    return .optionsList(
+                        title: property.rawValue,
+                        options: UIActivityIndicatorView.Style.allCases.map(\.description),
+                        selectedIndex: { UIActivityIndicatorView.Style.allCases.firstIndex(of: activityIndicatorView.style) }
+                    ) {
+                        guard let newIndex = $0 else { return }
 
-        init?(view: UIView) {
-            guard let activityIndicatorView = view as? UIActivityIndicatorView else {
-                return nil
-            }
+                        let style = UIActivityIndicatorView.Style.allCases[newIndex]
 
-            self.activityIndicatorView = activityIndicatorView
-        }
+                        activityIndicatorView.style = style
+                    }
+                case .color:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { activityIndicatorView.color }
+                    ) {
+                        guard let color = $0 else {
+                            return
+                        }
 
-        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
-            guard let activityIndicatorView = activityIndicatorView else {
-                return nil
-            }
-
-            switch property {
-            case .style:
-                return .optionsList(
-                    title: property.rawValue,
-                    options: UIActivityIndicatorView.Style.allCases.map(\.description),
-                    selectedIndex: { UIActivityIndicatorView.Style.allCases.firstIndex(of: activityIndicatorView.style) }
-                ) {
-                    guard let newIndex = $0 else {
-                        return
+                        activityIndicatorView.color = color
                     }
 
-                    let style = UIActivityIndicatorView.Style.allCases[newIndex]
+                case .groupBehavior:
+                    return .group(title: property.rawValue)
 
-                    activityIndicatorView.style = style
-                }
-            case .color:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { activityIndicatorView.color }
-                ) {
-                    guard let color = $0 else {
-                        return
+                case .isAnimating:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { activityIndicatorView.isAnimating }
+                    ) { isAnimating in
+
+                        switch isAnimating {
+                        case true:
+                            activityIndicatorView.startAnimating()
+
+                        case false:
+                            activityIndicatorView.stopAnimating()
+                        }
                     }
 
-                    activityIndicatorView.color = color
-                }
-
-            case .groupBehavior:
-                return .group(title: property.rawValue)
-
-            case .isAnimating:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { activityIndicatorView.isAnimating }
-                ) { isAnimating in
-
-                    switch isAnimating {
-                    case true:
-                        activityIndicatorView.startAnimating()
-
-                    case false:
-                        activityIndicatorView.stopAnimating()
+                case .hidesWhenStopped:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { activityIndicatorView.hidesWhenStopped }
+                    ) { hidesWhenStopped in
+                        activityIndicatorView.hidesWhenStopped = hidesWhenStopped
                     }
-                }
-
-            case .hidesWhenStopped:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { activityIndicatorView.hidesWhenStopped }
-                ) { hidesWhenStopped in
-                    activityIndicatorView.hidesWhenStopped = hidesWhenStopped
                 }
             }
         }

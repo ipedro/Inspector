@@ -22,6 +22,16 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UILabelAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Label"
+
+        private weak var label: UILabel?
+
+        init?(view: UIView) {
+            guard let label = view as? UILabel else { return nil}
+
+            self.label = label
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case text = "Text"
             case textColor = "Text Color"
@@ -43,154 +53,125 @@ extension ElementInspectorAttributesLibrary {
             case shadowColor = "Shadow"
         }
 
-        let title = "Label"
+        var properties: [InspectorElementViewModelProperty] {
+            guard let label = label else { return [] }
 
-        private(set) weak var label: UILabel?
-
-        init?(view: UIView) {
-            guard let label = view as? UILabel else {
-                return nil
-            }
-
-            self.label = label
-        }
-
-        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
-            guard let label = label else {
-                return nil
-            }
-
-            switch property {
-            case .text:
-                return .textView(
-                    title: property.rawValue,
-                    placeholder: label.text ?? property.rawValue,
-                    value: { label.text }
-                ) { text in
-                    label.text = text
-                }
-
-            case .textColor:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { label.textColor }
-                ) { textColor in
-                    label.textColor = textColor
-                }
-
-            case .fontName:
-                return .fontNamePicker(
-                    title: property.rawValue,
-                    fontProvider: { label.font }
-                ) { font in
-                    guard let font = font else {
-                        return
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .text:
+                    return .textView(
+                        title: property.rawValue,
+                        placeholder: label.text ?? property.rawValue,
+                        value: { label.text }
+                    ) { text in
+                        label.text = text
                     }
-
-                    label.font = font
-                }
-
-            case .fontSize:
-                return .fontSizeStepper(
-                    title: property.rawValue,
-                    fontProvider: { label.font }
-                ) { font in
-                    guard let font = font else {
-                        return
+                case .textColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { label.textColor }
+                    ) { textColor in
+                        label.textColor = textColor
                     }
+                case .fontName:
+                    return .fontNamePicker(
+                        title: property.rawValue,
+                        fontProvider: { label.font }
+                    ) { font in
+                        guard let font = font else {
+                            return
+                        }
 
-                    label.font = font
-                }
-
-            case .adjustsFontSizeToFitWidth:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { label.adjustsFontSizeToFitWidth }
-                ) { adjustsFontSizeToFitWidth in
-                    label.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
-                }
-
-            case .textAlignment:
-                let allCases = NSTextAlignment.allCases.withImages
-
-                return .imageButtonGroup(
-                    title: property.rawValue,
-                    images: allCases.compactMap(\.image),
-                    selectedIndex: { allCases.firstIndex(of: label.textAlignment) }
-                ) {
-                    guard let newIndex = $0 else {
-                        return
+                        label.font = font
                     }
+                case .fontSize:
+                    return .fontSizeStepper(
+                        title: property.rawValue,
+                        fontProvider: { label.font }
+                    ) { font in
+                        guard let font = font else {
+                            return
+                        }
 
-                    let textAlignment = allCases[newIndex]
+                        label.font = font
+                    }
+                case .adjustsFontSizeToFitWidth:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { label.adjustsFontSizeToFitWidth }
+                    ) { adjustsFontSizeToFitWidth in
+                        label.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
+                    }
+                case .textAlignment:
+                    let allCases = NSTextAlignment.allCases.withImages
 
-                    label.textAlignment = textAlignment
-                }
+                    return .imageButtonGroup(
+                        title: property.rawValue,
+                        images: allCases.compactMap(\.image),
+                        selectedIndex: { allCases.firstIndex(of: label.textAlignment) }
+                    ) {
+                        guard let newIndex = $0 else { return }
 
-            case .numberOfLines:
-                return .integerStepper(
-                    title: property.rawValue,
-                    value: { label.numberOfLines },
-                    range: { 0...100 },
-                    stepValue: { 1 }
-                ) { numberOfLines in
-                    label.numberOfLines = numberOfLines
-                }
+                        let textAlignment = allCases[newIndex]
 
-            case .groupBehavior:
-                return .group(title: property.rawValue)
+                        label.textAlignment = textAlignment
+                    }
+                case .numberOfLines:
+                    return .integerStepper(
+                        title: property.rawValue,
+                        value: { label.numberOfLines },
+                        range: { 0 ... 100 },
+                        stepValue: { 1 }
+                    ) { numberOfLines in
+                        label.numberOfLines = numberOfLines
+                    }
+                case .groupBehavior:
+                    return .group(title: property.rawValue)
 
-            case .isEnabled:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { label.isEnabled }
-                ) { isEnabled in
-                    label.isEnabled = isEnabled
-                }
+                case .isEnabled:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { label.isEnabled }
+                    ) { isEnabled in
+                        label.isEnabled = isEnabled
+                    }
+                case .isHighlighted:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { label.isHighlighted }
+                    ) { isHighlighted in
+                        label.isHighlighted = isHighlighted
+                    }
+                case .separator0,
+                     .separator1:
+                    return .separator
 
-            case .isHighlighted:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { label.isHighlighted }
-                ) { isHighlighted in
-                    label.isHighlighted = isHighlighted
-                }
+                case .baseline,
+                     .lineBreak,
+                     .autoShrink:
+                    return nil
 
-            case .separator0,
-                 .separator1:
-                return .separator
-
-            case .baseline:
-                return nil
-
-            case .lineBreak:
-                return nil
-
-            case .autoShrink:
-                return nil
-
-            case .allowsDefaultTighteningForTruncation:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { label.allowsDefaultTighteningForTruncation }
-                ) { allowsDefaultTighteningForTruncation in
-                    label.allowsDefaultTighteningForTruncation = allowsDefaultTighteningForTruncation
-                }
-
-            case .highlightedTextColor:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { label.highlightedTextColor }
-                ) { highlightedTextColor in
-                    label.highlightedTextColor = highlightedTextColor
-                }
-
-            case .shadowColor:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { label.shadowColor }
-                ) { shadowColor in
-                    label.shadowColor = shadowColor
+                case .allowsDefaultTighteningForTruncation:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { label.allowsDefaultTighteningForTruncation }
+                    ) { allowsDefaultTighteningForTruncation in
+                        label.allowsDefaultTighteningForTruncation = allowsDefaultTighteningForTruncation
+                    }
+                case .highlightedTextColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { label.highlightedTextColor }
+                    ) { highlightedTextColor in
+                        label.highlightedTextColor = highlightedTextColor
+                    }
+                case .shadowColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { label.shadowColor }
+                    ) { shadowColor in
+                        label.shadowColor = shadowColor
+                    }
                 }
             }
         }

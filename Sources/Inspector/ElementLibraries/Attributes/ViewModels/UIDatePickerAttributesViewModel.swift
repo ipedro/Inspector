@@ -22,6 +22,20 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UIDatePickerAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Date Picker"
+
+        private weak var datePicker: UIDatePicker?
+
+        init?(view: UIView) {
+            guard let datePicker = view as? UIDatePicker else { return nil }
+
+            self.datePicker = datePicker
+        }
+
+        private let minuteIntervalRange = 1 ... 30
+
+        private lazy var validMinuteIntervals = minuteIntervalRange.filter { 60 % $0 == 0 }
+
         private enum Property: String, Swift.CaseIterable {
             case datePickerStyle = "Style"
             case datePickerMode = "Mode"
@@ -29,96 +43,75 @@ extension ElementInspectorAttributesLibrary {
             case minuteInterval = "Interval"
         }
 
-        let title = "Date Picker"
+        var properties: [InspectorElementViewModelProperty] {
+            guard let datePicker = datePicker else { return [] }
 
-        private(set) weak var datePicker: UIDatePicker?
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .datePickerStyle:
+                    if #available(iOS 13.4, *) {
+                        return .optionsList(
+                            title: property.rawValue,
+                            options: UIDatePickerStyle.allCases.map(\.description),
+                            selectedIndex: { UIDatePickerStyle.allCases.firstIndex(of: datePicker.datePickerStyle) }
+                        ) {
+                            guard let newIndex = $0 else {
+                                return
+                            }
 
-        init?(view: UIView) {
-            guard let datePicker = view as? UIDatePicker else {
-                return nil
-            }
+                            let datePickerStyle = UIDatePickerStyle.allCases[newIndex]
 
-            self.datePicker = datePicker
-        }
+                            if #available(iOS 14.0, *) {
+                                if
+                                    datePicker.datePickerMode == .countDownTimer,
+                                    datePickerStyle == .inline || datePickerStyle == .compact
+                                {
+                                    datePicker.datePickerMode = .dateAndTime
+                                }
+                            }
 
-        private let minuteIntervalRange = 1...30
+                            datePicker.preferredDatePickerStyle = datePickerStyle
+                        }
+                    }
+                    return nil
 
-        private lazy var validMinuteIntervals = minuteIntervalRange.filter { 60 % $0 == 0 }
-
-        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
-            guard let datePicker = datePicker else {
-                return nil
-            }
-
-            switch property {
-            case .datePickerStyle:
-                if #available(iOS 13.4, *) {
+                case .datePickerMode:
                     return .optionsList(
                         title: property.rawValue,
-                        options: UIDatePickerStyle.allCases.map(\.description),
-                        selectedIndex: { UIDatePickerStyle.allCases.firstIndex(of: datePicker.datePickerStyle) }
+                        options: UIDatePicker.Mode.allCases.map(\.description),
+                        selectedIndex: { UIDatePicker.Mode.allCases.firstIndex(of: datePicker.datePickerMode) }
                     ) {
-                        guard let newIndex = $0 else {
-                            return
-                        }
+                        guard let newIndex = $0 else { return }
 
-                        let datePickerStyle = UIDatePickerStyle.allCases[newIndex]
+                        let datePickerMode = UIDatePicker.Mode.allCases[newIndex]
 
                         if #available(iOS 14.0, *) {
                             if
-                                datePicker.datePickerMode == .countDownTimer,
-                                datePickerStyle == .inline || datePickerStyle == .compact
+                                datePickerMode == .countDownTimer,
+                                datePicker.datePickerStyle == .inline || datePicker.datePickerStyle == .compact
                             {
-                                datePicker.datePickerMode = .dateAndTime
+                                return
                             }
                         }
 
-                        datePicker.preferredDatePickerStyle = datePickerStyle
-                    }
-                }
-
-                return nil
-
-            case .datePickerMode:
-                return .optionsList(
-                    title: property.rawValue,
-                    options: UIDatePicker.Mode.allCases.map(\.description),
-                    selectedIndex: { UIDatePicker.Mode.allCases.firstIndex(of: datePicker.datePickerMode) }
-                ) {
-                    guard let newIndex = $0 else {
-                        return
+                        datePicker.datePickerMode = datePickerMode
                     }
 
-                    let datePickerMode = UIDatePicker.Mode.allCases[newIndex]
+                case .locale:
+                    return nil
 
-                    if #available(iOS 14.0, *) {
-                        if
-                            datePickerMode == .countDownTimer,
-                            datePicker.datePickerStyle == .inline || datePicker.datePickerStyle == .compact
-                        {
-                            return
-                        }
+                case .minuteInterval:
+                    return .optionsList(
+                        title: property.rawValue,
+                        options: validMinuteIntervals.map { "\($0) \($0 == 1 ? "minute" : "minutes")" },
+                        selectedIndex: { self.validMinuteIntervals.firstIndex(of: datePicker.minuteInterval) }
+                    ) {
+                        guard let newIndex = $0 else { return }
+
+                        let minuteInterval = self.validMinuteIntervals[newIndex]
+
+                        datePicker.minuteInterval = minuteInterval
                     }
-
-                    datePicker.datePickerMode = datePickerMode
-                }
-
-            case .locale:
-                return nil
-
-            case .minuteInterval:
-                return .optionsList(
-                    title: property.rawValue,
-                    options: validMinuteIntervals.map { "\($0) \($0 == 1 ? "minute" : "minutes")" },
-                    selectedIndex: { self.validMinuteIntervals.firstIndex(of: datePicker.minuteInterval) }
-                ) {
-                    guard let newIndex = $0 else {
-                        return
-                    }
-
-                    let minuteInterval = self.validMinuteIntervals[newIndex]
-
-                    datePicker.minuteInterval = minuteInterval
                 }
             }
         }

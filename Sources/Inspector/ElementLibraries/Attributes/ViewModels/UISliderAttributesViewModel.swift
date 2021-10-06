@@ -22,6 +22,16 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UISliderAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Slider"
+
+        private weak var slider: UISlider?
+
+        init?(view: UIView) {
+            guard let slider = view as? UISlider else { return nil }
+
+            self.slider = slider
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case value = "Value"
             case minimumValue = "Minimum"
@@ -37,112 +47,99 @@ extension ElementInspectorAttributesLibrary {
             case isContinuous = "Continuous updates"
         }
 
-        let title = "Slider"
-
-        private(set) weak var slider: UISlider?
-
-        init?(view: UIView) {
-            guard let slider = view as? UISlider else {
-                return nil
-            }
-
-            self.slider = slider
-        }
-
-        private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
-            guard let slider = slider else {
-                return nil
-            }
-
+        var properties: [InspectorElementViewModelProperty] {
+            guard let slider = slider else { return [] }
             let stepValueProvider = { max(0.01, (slider.maximumValue - slider.minimumValue) / 100) }
 
-            switch property {
-            case .value:
-                return .floatStepper(
-                    title: property.rawValue,
-                    value: { slider.value },
-                    range: { min(slider.minimumValue, slider.maximumValue)...max(slider.minimumValue, slider.maximumValue) },
-                    stepValue: stepValueProvider
-                ) { value in
-                    slider.value = value
-                    slider.sendActions(for: .valueChanged)
-                }
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .value:
+                    return .floatStepper(
+                        title: property.rawValue,
+                        value: { slider.value },
+                        range: { min(slider.minimumValue, slider.maximumValue)...max(slider.minimumValue, slider.maximumValue) },
+                        stepValue: stepValueProvider
+                    ) { value in
+                        slider.value = value
+                        slider.sendActions(for: .valueChanged)
+                    }
 
-            case .minimumValue:
-                return .floatStepper(
-                    title: property.rawValue,
-                    value: { slider.minimumValue },
-                    range: { 0...max(0, slider.maximumValue) },
-                    stepValue: stepValueProvider
-                ) { minimumValue in
-                    slider.minimumValue = minimumValue
-                }
+                case .minimumValue:
+                    return .floatStepper(
+                        title: property.rawValue,
+                        value: { slider.minimumValue },
+                        range: { 0...max(0, slider.maximumValue) },
+                        stepValue: stepValueProvider
+                    ) { minimumValue in
+                        slider.minimumValue = minimumValue
+                    }
 
-            case .maximumValue:
-                return .floatStepper(
-                    title: property.rawValue,
-                    value: { slider.maximumValue },
-                    range: { slider.minimumValue...Float.infinity },
-                    stepValue: stepValueProvider
-                ) { maximumValue in
-                    slider.maximumValue = maximumValue
-                }
+                case .maximumValue:
+                    return .floatStepper(
+                        title: property.rawValue,
+                        value: { slider.maximumValue },
+                        range: { slider.minimumValue...Float.infinity },
+                        stepValue: stepValueProvider
+                    ) { maximumValue in
+                        slider.maximumValue = maximumValue
+                    }
 
-            case .groupImages:
-                return .separator
+                case .groupImages:
+                    return .separator
 
-            case .minimumValueImage:
-                return .imagePicker(
-                    title: property.rawValue,
-                    image: { slider.minimumValueImage }
-                ) { minimumValueImage in
-                    slider.minimumValueImage = minimumValueImage
-                }
+                case .minimumValueImage:
+                    return .imagePicker(
+                        title: property.rawValue,
+                        image: { slider.minimumValueImage }
+                    ) { minimumValueImage in
+                        slider.minimumValueImage = minimumValueImage
+                    }
 
-            case .maximumValueImage:
-                return .imagePicker(
-                    title: property.rawValue,
-                    image: { slider.maximumValueImage }
-                ) { maximumValueImage in
-                    slider.maximumValueImage = maximumValueImage
-                }
+                case .maximumValueImage:
+                    return .imagePicker(
+                        title: property.rawValue,
+                        image: { slider.maximumValueImage }
+                    ) { maximumValueImage in
+                        slider.maximumValueImage = maximumValueImage
+                    }
 
-            case .groupColors:
-                return .separator
+                case .groupColors:
+                    return .separator
 
-            case .minimumTrackTintColor:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { slider.minimumTrackTintColor }
-                ) { minimumTrackTintColor in
-                    slider.minimumTrackTintColor = minimumTrackTintColor
-                }
+                case .minimumTrackTintColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { slider.minimumTrackTintColor }
+                    ) { minimumTrackTintColor in
+                        slider.minimumTrackTintColor = minimumTrackTintColor
+                    }
 
-            case .maxTrack:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { slider.maximumTrackTintColor }
-                ) { maximumTrackTintColor in
-                    slider.maximumTrackTintColor = maximumTrackTintColor
-                }
+                case .maxTrack:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { slider.maximumTrackTintColor }
+                    ) { maximumTrackTintColor in
+                        slider.maximumTrackTintColor = maximumTrackTintColor
+                    }
 
-            case .thumbTintColor:
-                return .colorPicker(
-                    title: property.rawValue,
-                    color: { slider.thumbTintColor }
-                ) { thumbTintColor in
-                    slider.thumbTintColor = thumbTintColor
-                }
+                case .thumbTintColor:
+                    return .colorPicker(
+                        title: property.rawValue,
+                        color: { slider.thumbTintColor }
+                    ) { thumbTintColor in
+                        slider.thumbTintColor = thumbTintColor
+                    }
 
-            case .groupEvent:
-                return .group(title: property.rawValue)
+                case .groupEvent:
+                    return .group(title: property.rawValue)
 
-            case .isContinuous:
-                return .switch(
-                    title: property.rawValue,
-                    isOn: { slider.isContinuous }
-                ) { isContinuous in
-                    slider.isContinuous = isContinuous
+                case .isContinuous:
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { slider.isContinuous }
+                    ) { isContinuous in
+                        slider.isContinuous = isContinuous
+                    }
                 }
             }
         }

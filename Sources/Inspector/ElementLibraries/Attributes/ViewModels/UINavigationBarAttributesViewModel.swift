@@ -22,6 +22,16 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     final class UINavigationBarAttributesViewModel: InspectorElementViewModelProtocol {
+        let title = "Navigation Bar"
+
+        private weak var navigationBar: UINavigationBar?
+
+        init?(view: UIView) {
+            guard let navigationBar = view as? UINavigationBar else { return nil }
+
+            self.navigationBar = navigationBar
+        }
+
         private enum Property: String, Swift.CaseIterable {
             case style = "Style"
             case translucent = "Translucent"
@@ -42,44 +52,23 @@ extension ElementInspectorAttributesLibrary {
             case largeTitleColor = "Large Title Color"
         }
 
-        let title = "Navigation Bar"
-
-        private(set) weak var navigationBar: UINavigationBar?
-
-        init?(view: UIView) {
-            guard let navigationBar = view as? UINavigationBar else { return nil }
-            self.navigationBar = navigationBar
-        }
-
         var properties: [InspectorElementViewModelProperty] {
-            Property.allCases.compactMap { property in
+            guard let navigationBar = navigationBar else { return [] }
+
+            return Property.allCases.compactMap { property in
                 switch property {
                 case .style:
                     return .optionsList(
                         title: property.rawValue,
                         options: UIBarStyle.allCases.map { $0.description },
-                        selectedIndex: { [weak self] in
-                            guard
-                                let navigationBar = self?.navigationBar,
-                                let index = UIBarStyle.allCases.firstIndex(of: navigationBar.barStyle)
-                            else {
-                                return nil
-                            }
-                            return index
-                        },
-                        handler: { [weak self] newIndex in
-                            guard
-                                let navigationBar = self?.navigationBar,
-                                let index = newIndex
-                            else {
-                                return
-                            }
+                        selectedIndex: { UIBarStyle.allCases.firstIndex(of: navigationBar.barStyle) },
+                        handler: { newIndex in
+                            guard let index = newIndex else { return }
 
                             let newStyle = UIBarStyle.allCases[index]
                             navigationBar.barStyle = newStyle
                         }
                     )
-
                 case .translucent:
                     return .switch(
                         title: property.rawValue,
@@ -97,7 +86,6 @@ extension ElementInspectorAttributesLibrary {
                             self?.navigationBar?.prefersLargeTitles = prefersLargeTitles
                         }
                     )
-
                 case .barTintColor:
                     return .colorPicker(
                         title: property.rawValue,
@@ -106,7 +94,6 @@ extension ElementInspectorAttributesLibrary {
                             self?.navigationBar?.barTintColor = barTintColor
                         }
                     )
-
                 case .shadowImage:
                     return .imagePicker(
                         title: property.rawValue,
@@ -116,7 +103,6 @@ extension ElementInspectorAttributesLibrary {
                             navigationBar.shadowImage = $0
                         }
                     )
-
                 case .backIndicatorImage:
                     return .imagePicker(
                         title: property.rawValue,
@@ -126,7 +112,6 @@ extension ElementInspectorAttributesLibrary {
                             navigationBar.backIndicatorImage = $0
                         }
                     )
-
                 case .backIndicatorTransitionMaskImage:
                     return .imagePicker(
                         title: property.rawValue,
@@ -136,7 +121,6 @@ extension ElementInspectorAttributesLibrary {
                             navigationBar.backIndicatorTransitionMaskImage = $0
                         }
                     )
-
                 case .titleFontName:
                     return .fontNamePicker(
                         title: property.rawValue,
@@ -145,7 +129,6 @@ extension ElementInspectorAttributesLibrary {
                             self?.navigationBar?.titleTextAttributes?[.font] = newValue
                         }
                     )
-
                 case .titleFontSize:
                     return .fontSizeStepper(
                         title: property.rawValue,
@@ -154,7 +137,6 @@ extension ElementInspectorAttributesLibrary {
                             self?.navigationBar?.titleTextAttributes?[.font] = font
                         }
                     )
-
                 case .titleColor:
                     return .colorPicker(
                         title: property.rawValue,
