@@ -31,12 +31,12 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         set { header.subtitle = newValue }
     }
 
-    var separatorStyle: InspectorElementFormItemSeparatorStyle {
+    var separatorStyle: InspectorElementItemSeparatorStyle {
         get { .none }
         set {}
     }
 
-    static func makeItemView(with inititalState: InspectorElementFormItemState) -> InspectorElementFormItemView {
+    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementFormItemView {
         ElementInspectorFormLayoutConstraintView(state: inititalState)
     }
 
@@ -49,7 +49,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         set { formView.delegate = newValue }
     }
 
-    var state: InspectorElementFormItemState {
+    var state: InspectorElementItemState {
         didSet {
             formView.state = state
         }
@@ -79,7 +79,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         }
     }
 
-    init(state: InspectorElementFormItemState, frame: CGRect = .zero) {
+    init(state: InspectorElementItemState, frame: CGRect = .zero) {
         self.state = state
         super.init(frame: frame)
     }

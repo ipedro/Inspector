@@ -44,7 +44,7 @@ final class ToogleCollapseButton: BaseControl {
         activityIndicatorView.stopAnimating()
     }
 
-    var collapseState: ElementInspectorFormPanelCollapseState? {
+    var collapseState: ElementInspectorPanelListState? {
         didSet {
             switch collapseState {
             case .none:

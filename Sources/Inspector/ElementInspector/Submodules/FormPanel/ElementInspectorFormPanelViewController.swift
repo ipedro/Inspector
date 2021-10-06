@@ -39,68 +39,6 @@ protocol ElementInspectorFormPanelItemStateDelegate: AnyObject {
     func elementInspectorFormPanelItemDidChangeState(_ formPanelViewController: ElementInspectorFormPanelViewController)
 }
 
-enum ElementInspectorFormPanelCollapseState: Swift.CaseIterable, MenuContentProtocol {
-    case allCollapsed, firstExpanded, mixed, allExpanded
-
-    func next() -> Self? {
-        switch self {
-        case .allCollapsed:
-            return .firstExpanded
-        case .mixed, .firstExpanded:
-            return .allExpanded
-        case .allExpanded:
-            return .none
-        }
-    }
-
-    func previous() -> Self? {
-        switch self {
-        case .allCollapsed:
-            return .none
-        case .firstExpanded:
-            return .allCollapsed
-        case .mixed:
-            return .allCollapsed
-        case .allExpanded:
-            return .firstExpanded
-        }
-    }
-
-    // MARK: - MenuContentProtocol
-
-    static func allCases(for element: ViewHierarchyElement) -> [ElementInspectorFormPanelCollapseState] { [] }
-
-    var title: String {
-        switch self {
-        case .allCollapsed:
-            return "Collapse All"
-        case .firstExpanded:
-            return "Expand First"
-        case .mixed:
-            return "Mixed selection"
-        case .allExpanded:
-            return "Expand All"
-        }
-    }
-
-    var image: UIImage? {
-        switch self {
-        case .allCollapsed:
-            return .collapseMirroredSymbol
-        case .firstExpanded:
-            return .expandSymbol
-        case .mixed:
-            return nil
-        case .allExpanded:
-            return .expandSymbol
-        }
-    }
-}
-
-enum ElementInspectorFormPanelSelectionMode: Swift.CaseIterable {
-    case single, multi
-}
-
 class ElementInspectorFormPanelViewController: ElementInspectorPanelViewController, DataReloadingProtocol {
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
@@ -126,21 +64,21 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         }
     }
 
-    private var selectedColorPreviewControl: ColorPreviewControl?
+    var selectedColorPreviewControl: ColorPreviewControl?
 
-    private var selectedImagePreviewControl: ImagePreviewControl?
+    var selectedImagePreviewControl: ImagePreviewControl?
 
-    private var selectedOptionListControl: OptionListControl?
+    var selectedOptionListControl: OptionListControl?
 
-    private var itemsDictionary: [ElementInspectorFormItemViewController: ElementInspectorFormItem] = [:]
+    private(set) var itemsDictionary: [ElementInspectorFormItemViewController: ElementInspectorFormItem] = [:]
 
-    private var formPanels: [ElementInspectorFormItemViewController] {
+    var formPanels: [ElementInspectorFormItemViewController] {
         children.compactMap { $0 as? ElementInspectorFormItemViewController }
     }
 
     var containsExpandedFormItem: Bool { collapseState != .allCollapsed }
 
-    var collapseState: ElementInspectorFormPanelCollapseState {
+    var collapseState: ElementInspectorPanelListState {
         let expandedItems = formPanels.filter { $0.state == .expanded }
 
         guard expandedItems.isEmpty == false else { return .allCollapsed }
@@ -152,9 +90,9 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         return .mixed
     }
 
-    var panelSelectionMode: ElementInspectorFormPanelSelectionMode {
+    var panelSelectionMode: ElementInspectorPanelSelectionMode {
         if isFullHeightPresentation {
-            return .multi
+            return .multiple
         }
         else {
             return .single
@@ -248,7 +186,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 }
 
 extension ElementInspectorFormPanelViewController {
-    func togglePanels(to newState: ElementInspectorFormPanelCollapseState, animated: Bool, completion: ((Bool) -> Void)? = nil) {
+    func togglePanels(to newState: ElementInspectorPanelListState, animated: Bool, completion: ((Bool) -> Void)? = nil) {
         guard animated else {
             apply(state: newState)
             itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
@@ -268,7 +206,7 @@ extension ElementInspectorFormPanelViewController {
     }
 
     @discardableResult
-    private func apply(state: ElementInspectorFormPanelCollapseState?) -> Bool {
+    private func apply(state: ElementInspectorPanelListState?) -> Bool {
         switch state {
         case .none:
             return false
@@ -340,80 +278,4 @@ extension ElementInspectorFormPanelViewController {
     func willUpdate(property: InspectorElementViewModelProperty) {}
 
     func didUpdate(property: InspectorElementViewModelProperty) {}
-}
-
-// MARK: - ElementInspectorFormItemViewControllerDelegate
-
-extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewControllerDelegate {
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                willUpdate property: InspectorElementViewModelProperty)
-    {
-        willUpdate(property: property)
-    }
-
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                didUpdate property: InspectorElementViewModelProperty)
-    {
-        let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
-            guard
-                let self = self,
-                let item = self.itemsDictionary[formItemController]
-            else {
-                return
-            }
-
-            self.formPanels.forEach { $0.reloadData() }
-
-            self.didUpdate(property: property)
-
-            self.formDelegate?.elementInspectorFormPanel(self, didUpdateProperty: property, in: item)
-        }
-
-        formDelegate?.addOperationToQueue(updateOperation)
-    }
-
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                willChangeFrom oldState: InspectorElementFormItemState?,
-                                                to newState: InspectorElementFormItemState)
-    {
-        animatePanel { [weak self] in
-            formItemController.state = newState
-
-            guard let self = self else { return }
-
-            switch newState {
-            case .expanded where self.panelSelectionMode == .single:
-                for aFormItemController in self.formPanels where aFormItemController !== formItemController {
-                    aFormItemController.state = .collapsed
-                }
-
-            case .expanded, .collapsed:
-                break
-            }
-        } completion: { [weak self] _ in
-            guard let self = self else { return }
-            self.itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
-        }
-    }
-
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                didTap imagePreviewControl: ImagePreviewControl)
-    {
-        selectedImagePreviewControl = imagePreviewControl
-        formDelegate?.elementInspectorFormPanel(self, didTap: imagePreviewControl)
-    }
-
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                didTap colorPreviewControl: ColorPreviewControl)
-    {
-        selectedColorPreviewControl = colorPreviewControl
-        formDelegate?.elementInspectorFormPanel(self, didTap: colorPreviewControl)
-    }
-
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                didTap optionListControl: OptionListControl)
-    {
-        selectedOptionListControl = optionListControl
-        formDelegate?.elementInspectorFormPanel(self, didTap: optionListControl)
-    }
 }

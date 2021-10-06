@@ -20,16 +20,6 @@
 
 import Foundation
 
-/// Constants describing the states of a form section.
-public enum InspectorElementFormItemState: Hashable {
-    case expanded, collapsed
-
-    mutating func toggle() {
-        switch self {
-        case .collapsed:
-            self = .expanded
-        case .expanded:
-            self = .collapsed
-        }
-    }
+enum ElementInspectorPanelSelectionMode: Swift.CaseIterable {
+    case single, multiple
 }

@@ -48,8 +48,8 @@ protocol ElementInspectorFormItemViewControllerDelegate: OperationQueueManagerPr
 
     func elementInspectorFormItemViewController(
         _ formItemController: ElementInspectorFormItemViewController,
-        willChangeFrom oldState: InspectorElementFormItemState?,
-        to newState: InspectorElementFormItemState
+        willChangeFrom oldState: InspectorElementItemState?,
+        to newState: InspectorElementItemState
     )
 }
 
@@ -93,7 +93,7 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
         viewCode.addFormViews(subviews)
     }
 
-    var state: InspectorElementFormItemState {
+    var state: InspectorElementItemState {
         get { viewCode.state }
         set {
             print(newValue, viewModel.title)
@@ -448,8 +448,8 @@ extension ElementInspectorFormItemViewController: ImagePreviewControlDelegate {
 extension ElementInspectorFormItemViewController: InspectorElementFormItemViewDelegate {
     func inspectorElementFormItemView(
         _ item: InspectorElementFormItemView,
-        willChangeFrom oldState: InspectorElementFormItemState?,
-        to newState: InspectorElementFormItemState
+        willChangeFrom oldState: InspectorElementItemState?,
+        to newState: InspectorElementItemState
     ) {
         delegate?.elementInspectorFormItemViewController(self, willChangeFrom: oldState, to: newState)
     }

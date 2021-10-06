@@ -22,8 +22,8 @@ import UIKit
 
 public protocol InspectorElementFormItemViewDelegate: AnyObject {
     func inspectorElementFormItemView(_ item: InspectorElementFormItemView,
-                                      willChangeFrom oldState: InspectorElementFormItemState?,
-                                      to newState: InspectorElementFormItemState)
+                                      willChangeFrom oldState: InspectorElementItemState?,
+                                      to newState: InspectorElementItemState)
 }
 
 public protocol InspectorElementFormItemView: UIView {
@@ -36,14 +36,14 @@ public protocol InspectorElementFormItemView: UIView {
     var subtitle: String? { get set }
 
     /// Defines the section separator appearance.
-    var separatorStyle: InspectorElementFormItemSeparatorStyle { get set }
+    var separatorStyle: InspectorElementItemSeparatorStyle { get set }
 
     /// The current state of the section.
-    var state: InspectorElementFormItemState { get set }
+    var state: InspectorElementItemState { get set }
 
     /// When this method is called is your view's responsibility to add the given form views to it's hiearchy.
     func addFormViews(_ formViews: [UIView])
 
     /// Create and return a container view that conforms to the `InspectorElementFormItemView` protocol.
-    static func makeItemView(with inititalState: InspectorElementFormItemState) -> InspectorElementFormItemView
+    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementFormItemView
 }

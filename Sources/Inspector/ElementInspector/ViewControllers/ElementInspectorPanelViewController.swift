@@ -41,11 +41,13 @@ class ElementInspectorPanelViewController: UIViewController {
 
     override func willMove(toParent parent: UIViewController?) {
         super.willMove(toParent: parent)
+
         updateVerticalPresentationState()
     }
 
     override func didMove(toParent parent: UIViewController?) {
         super.didMove(toParent: parent)
+        
         updateVerticalPresentationState()
     }
 
@@ -57,6 +59,7 @@ class ElementInspectorPanelViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
         updateVerticalPresentationState()
     }
 

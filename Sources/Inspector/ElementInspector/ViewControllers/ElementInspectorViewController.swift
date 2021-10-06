@@ -534,9 +534,9 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
         }
     }
 
-    private func nextActions(for currentState: ElementInspectorFormPanelCollapseState?) -> [UIMenuElement] {
+    private func nextActions(for currentState: ElementInspectorPanelListState?) -> [UIMenuElement] {
         guard let firstState = currentState?.next() else {
-            let state =  ElementInspectorFormPanelCollapseState.allCollapsed
+            let state =  ElementInspectorPanelListState.allCollapsed
 
             return [
                     UIAction(
@@ -553,7 +553,7 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
 
         var actions = [UIMenuElement]()
 
-        var state: ElementInspectorFormPanelCollapseState? = firstState
+        var state: ElementInspectorPanelListState? = firstState
 
         while state != nil {
             guard let nextState = state else { return actions }

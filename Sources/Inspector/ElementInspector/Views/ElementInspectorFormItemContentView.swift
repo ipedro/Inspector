@@ -31,7 +31,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         set { header.subtitle = newValue }
     }
 
-    static func makeItemView(with inititalState: InspectorElementFormItemState) -> InspectorElementFormItemView {
+    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementFormItemView {
         ElementInspectorFormItemContentView(header: SectionHeader.formSectionTitle(), state: inititalState, frame: .zero)
     }
 
@@ -39,7 +39,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
 
     weak var delegate: InspectorElementFormItemViewDelegate?
 
-    var separatorStyle: InspectorElementFormItemSeparatorStyle = .none {
+    var separatorStyle: InspectorElementItemSeparatorStyle = .none {
         didSet {
             switch separatorStyle {
             case .none:
@@ -55,7 +55,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         }
     }
 
-    var state: InspectorElementFormItemState {
+    var state: InspectorElementItemState {
         didSet {
             updateViewsForState()
         }
@@ -104,7 +104,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
     }
 
     init(header: SectionHeader,
-         state: InspectorElementFormItemState,
+         state: InspectorElementItemState,
          frame: CGRect = .zero
     ) {
         self.state = state

@@ -1,0 +1,95 @@
+//  Copyright (c) 2021 Pedro Almeida
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
+
+import UIKit
+
+extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewControllerDelegate {
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                willUpdate property: InspectorElementViewModelProperty)
+    {
+        willUpdate(property: property)
+    }
+
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                didUpdate property: InspectorElementViewModelProperty)
+    {
+        let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
+            guard
+                let self = self,
+                let item = self.itemsDictionary[formItemController]
+            else {
+                return
+            }
+
+            self.formPanels.forEach { $0.reloadData() }
+
+            self.didUpdate(property: property)
+
+            self.formDelegate?.elementInspectorFormPanel(self, didUpdateProperty: property, in: item)
+        }
+
+        formDelegate?.addOperationToQueue(updateOperation)
+    }
+
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                willChangeFrom oldState: InspectorElementItemState?,
+                                                to newState: InspectorElementItemState)
+    {
+        animatePanel { [weak self] in
+            formItemController.state = newState
+
+            guard let self = self else { return }
+
+            switch newState {
+            case .expanded where self.panelSelectionMode == .single:
+                for aFormItemController in self.formPanels where aFormItemController !== formItemController {
+                    aFormItemController.state = .collapsed
+                }
+
+            case .expanded, .collapsed:
+                break
+            }
+        } completion: { [weak self] _ in
+            guard let self = self else { return }
+            self.itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
+        }
+    }
+
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                didTap imagePreviewControl: ImagePreviewControl)
+    {
+        selectedImagePreviewControl = imagePreviewControl
+        formDelegate?.elementInspectorFormPanel(self, didTap: imagePreviewControl)
+    }
+
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                didTap colorPreviewControl: ColorPreviewControl)
+    {
+        selectedColorPreviewControl = colorPreviewControl
+        formDelegate?.elementInspectorFormPanel(self, didTap: colorPreviewControl)
+    }
+
+    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
+                                                didTap optionListControl: OptionListControl)
+    {
+        selectedOptionListControl = optionListControl
+        formDelegate?.elementInspectorFormPanel(self, didTap: optionListControl)
+    }
+}
