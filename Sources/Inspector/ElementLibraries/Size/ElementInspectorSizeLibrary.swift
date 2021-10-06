@@ -68,39 +68,30 @@ enum ElementInspectorSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIte
             return .single(ContentLayoutPriorityInspectableViewModel(view: referenceView))
 
         case .layoutConstraints:
-            var horizontalConstraints: [InspectorElementViewModelProtocol] = []
-            var verticalConstraints: [InspectorElementViewModelProtocol] = []
+            let element = ViewHierarchyElement(referenceView, iconProvider: .default)
 
-            referenceView.constraints.forEach {
-                guard
-                    let rowViewModel = NSLayoutConstraintInspectableViewModel(with: $0, in: referenceView)
-                else {
-                    return
-                }
-
-                switch rowViewModel.axis {
-                case .vertical:
-                    verticalConstraints.append(rowViewModel)
-                case .horizontal:
-                    horizontalConstraints.append(rowViewModel)
-                }
+            let viewModels = element.constraintElements.map {
+                NSLayoutConstraintInspectableViewModel(with: $0)
             }
+
+            let horizontal = viewModels.filter { $0.axis == .horizontal }
+            let vertical = viewModels.filter { $0.axis == .vertical }
 
             var items: [ElementInspectorFormItem] = []
 
-            if horizontalConstraints.isEmpty == false {
+            if horizontal.isEmpty == false {
                 items.append(
                     ElementInspectorFormItem(
                         title: "Horizontal Constraints",
-                        rows: horizontalConstraints
+                        rows: horizontal
                     )
                 )
             }
-            if verticalConstraints.isEmpty == false {
+            if vertical.isEmpty == false {
                 items.append(
                     ElementInspectorFormItem(
                         title: "Vertical Constraints",
-                        rows: verticalConstraints
+                        rows: vertical
                     )
                 )
             }

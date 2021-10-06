@@ -38,11 +38,6 @@ extension ElementInspectorSizeLibrary {
             case identifier = "Identifier"
         }
 
-        init?(with constraint: NSLayoutConstraint, in view: UIView) {
-            guard let constraintElement = LayoutConstraintElement(with: constraint, in: view) else { return nil }
-            self.element = constraintElement
-        }
-
         private let element: LayoutConstraintElement
 
         var axis: Axis { element.axis }
@@ -53,6 +48,10 @@ extension ElementInspectorSizeLibrary {
 
         var customViewType: InspectorElementFormItemView.Type? {
             ElementInspectorFormLayoutConstraintView.self
+        }
+
+        init(with element: LayoutConstraintElement) {
+            self.element = element
         }
 
         var properties: [InspectorElementViewModelProperty] {
