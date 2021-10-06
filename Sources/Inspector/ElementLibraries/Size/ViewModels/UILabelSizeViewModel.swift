@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorSizeLibrary {
-    final class UILabelSizeAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UILabelSizeViewModel: InspectorElementViewModelProtocol {
         private enum Properties: String, Swift.CaseIterable {
             case preferredMaxLayoutWidth = "Desired Width"
         }

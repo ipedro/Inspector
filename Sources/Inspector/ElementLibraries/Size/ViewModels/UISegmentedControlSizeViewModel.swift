@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorSizeLibrary {
-    final class UISegmentedControlSizeAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UISegmentedControlSizeViewModel: InspectorElementViewModelProtocol {
         private enum Properties: String, Swift.CaseIterable {
             case segmentPicker = "Segment"
             case segmentWidth = "Width"

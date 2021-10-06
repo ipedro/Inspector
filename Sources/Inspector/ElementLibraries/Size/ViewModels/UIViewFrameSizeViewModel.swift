@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorSizeLibrary {
-    final class UIViewFrameAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UIViewFrameSizeViewModel: InspectorElementViewModelProtocol {
         private enum Properties: String, Swift.CaseIterable {
             case frame = "Frame Rectangle"
             case autoresizingMask = "View Resizing"
