@@ -20,44 +20,45 @@
 
 import UIKit
 
-final class CGPointControl: StepperPairControl<CGFloat> {
-    private var x: CGFloat {
+final class SizeControl: StepperPairControl<CGFloat> {
+    private var width: CGFloat {
         get { firstValue }
         set { firstValue = newValue }
     }
 
-    private var y: CGFloat {
+    private var height: CGFloat {
         get { secondValue }
         set { secondValue = newValue }
     }
 
-    var point: CGPoint {
+    var size: CGSize {
         get {
-            CGPoint(
-                x: x,
-                y: y
+            CGSize(
+                width: width,
+                height: height
             )
         }
         set {
-            x = newValue.x
-            y = newValue.y
+            width = newValue.width
+            height = newValue.height
         }
     }
 
     override var title: String? {
         didSet {
-            firstSubtitle = "X".string(prepending: title, separator: " ")
-            secondSubtitle = "Y".string(prepending: title, separator: " ")
+            firstSubtitle = "Width".string(prepending: title, separator: " ")
+            secondSubtitle = "Height".string(prepending: title, separator: " ")
         }
     }
 
-    convenience init(title: String?, point: CGPoint) {
+    convenience init(title: String?, size: CGSize) {
         self.init(
-            firstValue: point.x,
-            firstRange: -Double.infinity...Double.infinity,
-            secondValue: point.y,
-            secondRange: -Double.infinity...Double.infinity
+            firstValue: size.width,
+            firstRange: 0...Double.infinity,
+            secondValue: size.height,
+            secondRange: 0...Double.infinity
         )
+
         self.title = title
     }
 }

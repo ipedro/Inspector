@@ -20,61 +20,61 @@
 
 import UIKit
 
-final class UIEdgeInsetsControl: BaseFormControl {
-    var insets: UIEdgeInsets {
+final class RectControl: BaseFormControl {
+    var rect: CGRect {
         get {
             .init(
-                top: CGFloat(topStepper.value),
-                left: CGFloat(leftStepper.value),
-                bottom: CGFloat(bottomStepper.value),
-                right: CGFloat(rightStepper.value)
+                x: CGFloat(xStepper.value),
+                y: CGFloat(yStepper.value),
+                width: CGFloat(widthStepper.value),
+                height: CGFloat(heightStepper.value)
             )
         }
         set {
-            topStepper.value = Double(newValue.top)
-            leftStepper.value = Double(newValue.left)
-            bottomStepper.value = Double(newValue.bottom)
-            rightStepper.value = Double(newValue.right)
+            xStepper.value = Double(newValue.origin.x)
+            yStepper.value = Double(newValue.origin.y)
+            widthStepper.value = Double(newValue.size.width)
+            heightStepper.value = Double(newValue.size.height)
         }
     }
 
     override var isEnabled: Bool {
         didSet {
-            topStepper.isEnabled = isEnabled
-            leftStepper.isEnabled = isEnabled
-            bottomStepper.isEnabled = isEnabled
-            rightStepper.isEnabled = isEnabled
+            xStepper.isEnabled = isEnabled
+            yStepper.isEnabled = isEnabled
+            widthStepper.isEnabled = isEnabled
+            heightStepper.isEnabled = isEnabled
         }
     }
 
     override var title: String? {
         didSet {
-            topStepper.title = "Top".string(prepending: title, separator: " ")
-            leftStepper.title = "Leading".string(prepending: title, separator: " ")
-            bottomStepper.title = "Bottom".string(prepending: title, separator: " ")
-            rightStepper.title = "Trailing".string(prepending: title, separator: " ")
+            xStepper.title = "X".string(prepending: title, separator: " ")
+            yStepper.title = "Y".string(prepending: title, separator: " ")
+            widthStepper.title = "Width".string(prepending: title, separator: " ")
+            heightStepper.title = "Height".string(prepending: title, separator: " ")
         }
     }
 
-    private lazy var topStepper = Self.makeStepper().then {
+    private lazy var xStepper = Self.makeStepper(range: -Double.infinity...Double.infinity).then {
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
-    private lazy var leftStepper = Self.makeStepper().then {
+    private lazy var yStepper = Self.makeStepper(range: -Double.infinity...Double.infinity).then {
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
-    private lazy var bottomStepper = Self.makeStepper().then {
+    private lazy var widthStepper = Self.makeStepper(range: 0...Double.infinity).then {
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
-    private lazy var rightStepper = Self.makeStepper().then {
+    private lazy var heightStepper = Self.makeStepper(range: 0...Double.infinity).then {
         $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     }
 
-    convenience init(title: String?, insets: UIEdgeInsets) {
+    convenience init(title: String?, rect: CGRect) {
         self.init(title: title, frame: .zero)
-        self.insets = insets
+        self.rect = rect
     }
 
     override func setup() {
@@ -87,11 +87,11 @@ final class UIEdgeInsetsControl: BaseFormControl {
         contentView.axis = .vertical
         contentView.spacing = ElementInspector.appearance.verticalMargins
         contentView.addArrangedSubviews(
-            topStepper,
-            leftStepper,
+            xStepper,
+            yStepper,
             SeparatorView(style: .soft),
-            bottomStepper,
-            rightStepper
+            widthStepper,
+            heightStepper
         )
     }
 
@@ -100,11 +100,11 @@ final class UIEdgeInsetsControl: BaseFormControl {
         sendActions(for: .valueChanged)
     }
 
-    private static func makeStepper() -> StepperControl {
+    private static func makeStepper(range: ClosedRange<Double>) -> StepperControl {
         StepperControl(
             title: .none,
             value: .zero,
-            range: -Double.infinity...Double.infinity,
+            range: range,
             stepValue: 1,
             isDecimalValue: true
         ).then {
@@ -112,5 +112,4 @@ final class UIEdgeInsetsControl: BaseFormControl {
             $0.isShowingSeparator = false
         }
     }
-
 }

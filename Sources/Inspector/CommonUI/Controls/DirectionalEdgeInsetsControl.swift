@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class NSDirectionalEdgeInsetsControl: BaseFormControl {
+final class DirectionalEdgeInsetsControl: BaseFormControl {
     var insets: NSDirectionalEdgeInsets {
         get {
             .init(

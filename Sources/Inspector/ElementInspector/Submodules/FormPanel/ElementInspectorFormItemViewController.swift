@@ -190,19 +190,19 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
                         placeholder: placeholder
                     )
                 case let .cgRect(title: title, rect: rectProvider, handler: _):
-                    return CGRectControl(title: title, rect: rectProvider())
+                    return RectControl(title: title, rect: rectProvider())
 
                 case let .cgPoint(title: title, point: pointProvider, handler: _):
-                    return CGPointControl(title: title, point: pointProvider())
+                    return PointControl(title: title, point: pointProvider())
 
                 case let .cgSize(title: title, size: sizeProvider, handler: _):
-                    return CGSizeControl(title: title, size: sizeProvider())
+                    return SizeControl(title: title, size: sizeProvider())
 
                 case let .directionalInsets(title: title, insets: insetsProvider, handler: _):
-                    return NSDirectionalEdgeInsetsControl(title: title, insets: insetsProvider())
+                    return DirectionalEdgeInsetsControl(title: title, insets: insetsProvider())
 
                 case let .edgeInsets(title: title, insets: insetsProvider, handler: _):
-                    return UIEdgeInsetsControl(title: title, insets: insetsProvider())
+                    return EdgeInsetsControl(title: title, insets: insetsProvider())
                 }
             }()
 
@@ -267,19 +267,19 @@ extension ElementInspectorFormItemViewController {
                 case let (.imagePicker(_, _, handler), imagePicker as ImagePreviewControl):
                     handler?(imagePicker.image)
 
-                case let (.cgRect(_, _, handler: handler), cgRectControl as CGRectControl):
+                case let (.cgRect(_, _, handler: handler), cgRectControl as RectControl):
                     handler?(cgRectControl.rect)
 
-                case let (.cgPoint(_, _, handler: handler), cgPointControl as CGPointControl):
+                case let (.cgPoint(_, _, handler: handler), cgPointControl as PointControl):
                     handler?(cgPointControl.point)
 
-                case let (.cgSize(_, _, handler: handler), cgSizeControl as CGSizeControl):
+                case let (.cgSize(_, _, handler: handler), cgSizeControl as SizeControl):
                     handler?(cgSizeControl.size)
 
-                case let (.directionalInsets(_, _, handler: handler), insetsControl as NSDirectionalEdgeInsetsControl):
+                case let (.directionalInsets(_, _, handler: handler), insetsControl as DirectionalEdgeInsetsControl):
                     handler?(insetsControl.insets)
 
-                case let (.edgeInsets(_, _, handler: handler), insetsControl as UIEdgeInsetsControl):
+                case let (.edgeInsets(_, _, handler: handler), insetsControl as EdgeInsetsControl):
                     handler?(insetsControl.insets)
 
                 case (.separator, _),
@@ -366,23 +366,23 @@ extension ElementInspectorFormItemViewController {
                 textViewControl.placeholder = placeholder
                 textViewControl.title = title
 
-            case let (.cgRect(title: title, rect: rectProvider, _), cgRectControl as CGRectControl):
+            case let (.cgRect(title: title, rect: rectProvider, _), cgRectControl as RectControl):
                 cgRectControl.title = title
                 cgRectControl.rect = rectProvider()
 
-            case let (.cgPoint(title: title, point: pointProvider, _), cgPointControl as CGPointControl):
+            case let (.cgPoint(title: title, point: pointProvider, _), cgPointControl as PointControl):
                 cgPointControl.title = title
                 cgPointControl.point = pointProvider()
 
-            case let (.cgSize(title: title, size: sizeProvider, _), cgSizeControl as CGSizeControl):
+            case let (.cgSize(title: title, size: sizeProvider, _), cgSizeControl as SizeControl):
                 cgSizeControl.title = title
                 cgSizeControl.size = sizeProvider()
 
-            case let (.directionalInsets(title: title, insets: insetsProvider, _), directionalInsetsControl as NSDirectionalEdgeInsetsControl):
+            case let (.directionalInsets(title: title, insets: insetsProvider, _), directionalInsetsControl as DirectionalEdgeInsetsControl):
                 directionalInsetsControl.title = title
                 directionalInsetsControl.insets = insetsProvider()
 
-            case let (.edgeInsets(title: title, insets: insetsProvider, _), edgeInsetsControl as UIEdgeInsetsControl):
+            case let (.edgeInsets(title: title, insets: insetsProvider, _), edgeInsetsControl as EdgeInsetsControl):
                 edgeInsetsControl.title = title
                 edgeInsetsControl.insets = insetsProvider()
 
