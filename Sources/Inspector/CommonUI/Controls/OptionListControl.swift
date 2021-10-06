@@ -50,7 +50,8 @@ final class OptionListControl: BaseFormControl {
     ).then {
         $0.allowsDefaultTighteningForTruncation = true
         $0.lineBreakMode = .byTruncatingMiddle
-        $0.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        $0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
 
     private(set) lazy var accessoryControl = AccessoryControl().then {
@@ -58,6 +59,7 @@ final class OptionListControl: BaseFormControl {
         $0.contentView.alignment = .center
         $0.contentView.spacing = ElementInspector.appearance.verticalMargins
         $0.contentView.directionalLayoutMargins.update(top: ElementInspector.appearance.verticalMargins, bottom: ElementInspector.appearance.verticalMargins)
+
     }
 
     // MARK: - Init
