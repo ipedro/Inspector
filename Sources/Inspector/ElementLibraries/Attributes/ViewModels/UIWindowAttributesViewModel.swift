@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIWindowInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIWindowAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case canResizeToFitContent = "Can Resize To Fit Content"
             case isKeyWindow = "Is Key"

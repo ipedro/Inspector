@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UINavigationBarInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UINavigationBarAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case style = "Style"
             case translucent = "Translucent"

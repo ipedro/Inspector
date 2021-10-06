@@ -86,7 +86,7 @@ extension SceneDelegate: InspectorHost {
     }
 
     var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? {
-        [.attributes: ExampleElementLibrary.allCases]
+        [.attributes: ExampleAttributesLibrary.allCases]
     }
 
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {

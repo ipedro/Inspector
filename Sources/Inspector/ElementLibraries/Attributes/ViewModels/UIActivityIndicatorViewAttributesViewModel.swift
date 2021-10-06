@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIActivityIndicatorViewInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIActivityIndicatorViewAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case style = "Style"
             case color = "Color"

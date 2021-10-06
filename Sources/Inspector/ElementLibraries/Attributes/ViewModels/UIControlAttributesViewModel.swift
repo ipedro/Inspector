@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIControlInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIControlAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case contentHorizontalAlignment = "Horizontal Alignment"
             case contentVerticalAlignment = "Vertical Alignment"

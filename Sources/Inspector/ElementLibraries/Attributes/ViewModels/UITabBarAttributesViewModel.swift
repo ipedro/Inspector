@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UITabBarInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UITabBarAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case backgroundImage = "Background"
             case shadowImage = "Shadow"

@@ -53,25 +53,25 @@ enum ElementInspectorSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIte
     func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
         switch self {
         case .label:
-            return .single(UILabelSizeInspectableViewModel(view: referenceView))
+            return .single(UILabelSizeAttributesViewModel(view: referenceView))
 
         case .segmentedControl:
-            return .single(UISegmentedControlSizeInspectableViewModel(view: referenceView))
+            return .single(UISegmentedControlSizeAttributesViewModel(view: referenceView))
 
         case .scrollView:
-            return .single(UIScrollViewSizeInspectableViewModel(view: referenceView))
+            return .single(UIScrollViewSizeAttributesViewModel(view: referenceView))
             
         case .viewFrame:
-            return .single(UIViewFrameInspectableViewModel(view: referenceView))
+            return .single(UIViewFrameAttributesViewModel(view: referenceView))
 
         case .contentLayoutPriority:
-            return .single(ContentLayoutPriorityInspectableViewModel(view: referenceView))
+            return .single(ContentLayoutPriorityAttributesViewModel(view: referenceView))
 
         case .layoutConstraints:
             let element = ViewHierarchyElement(referenceView, iconProvider: .default)
 
             let viewModels = element.constraintElements.map {
-                NSLayoutConstraintInspectableViewModel(with: $0)
+                NSLayoutConstraintAttributesViewModel(with: $0)
             }
 
             let horizontal = viewModels.filter { $0.axis == .horizontal }

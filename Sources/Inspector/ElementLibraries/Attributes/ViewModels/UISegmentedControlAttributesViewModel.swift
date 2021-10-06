@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UISegmentedControlInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UISegmentedControlAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case selectedSegmentTintColor = "Selected Tint"
             case isMomentary = "Momentary"

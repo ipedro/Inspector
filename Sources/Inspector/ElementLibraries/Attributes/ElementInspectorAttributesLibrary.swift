@@ -121,81 +121,81 @@ enum ElementInspectorAttributesLibrary: Swift.CaseIterable, InspectorElementLibr
     func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
         switch self {
         case .coreAnimationLayer:
-            return CALayerInspectableViewModel(view: referenceView)
+            return CALayerAttributesViewModel(view: referenceView)
 
         case .window:
-            return UIWindowInspectableViewModel(view: referenceView)
+            return UIWindowAttributesViewModel(view: referenceView)
 
         case .navigationBar:
-            return UINavigationBarInspectableViewModel(view: referenceView)
+            return UINavigationBarAttributesViewModel(view: referenceView)
 
         case .navigationBarStandardAppearance:
             guard #available(iOS 13.0, *) else { return nil }
-            return UINavigationBarAppearanceInspectableViewModel(type: .standard, view: referenceView)
+            return UINavigationBarAppearanceAttributesViewModel(type: .standard, view: referenceView)
 
         case .navigationBarCompactAppearance:
             guard #available(iOS 13.0, *) else { return nil }
-            return UINavigationBarAppearanceInspectableViewModel(type: .compact, view: referenceView)
+            return UINavigationBarAppearanceAttributesViewModel(type: .compact, view: referenceView)
 
         case .navigationBarScrollEdgeAppearance:
             guard #available(iOS 13.0, *) else { return nil }
-            return UINavigationBarAppearanceInspectableViewModel(type: .scrollEdge, view: referenceView)
+            return UINavigationBarAppearanceAttributesViewModel(type: .scrollEdge, view: referenceView)
 
         case .navigationBarCompactScrollEdgeAppearance:
             #if swift(>=5.5)
             guard #available(iOS 15.0, *) else { return nil }
-            return UINavigationBarAppearanceInspectableViewModel(type: .compactScrollEdge, view: referenceView)
+            return UINavigationBarAppearanceAttributesViewModel(type: .compactScrollEdge, view: referenceView)
             #else
             return nil
             #endif
 
         case .activityIndicator:
-            return UIActivityIndicatorViewInspectableViewModel(view: referenceView)
+            return UIActivityIndicatorViewAttributesViewModel(view: referenceView)
 
         case .button:
-            return UIButtonInspectableViewModel(view: referenceView)
+            return UIButtonAttributesViewModel(view: referenceView)
 
         case .control:
-            return UIControlInspectableViewModel(view: referenceView)
+            return UIControlAttributesViewModel(view: referenceView)
 
         case .datePicker:
-            return UIDatePickerInspectableViewModel(view: referenceView)
+            return UIDatePickerAttributesViewModel(view: referenceView)
 
         case .imageView:
-            return UIImageViewInspectableViewModel(view: referenceView)
+            return UIImageViewAttributesViewModel(view: referenceView)
 
         case .label:
-            return UILabelInspectableViewModel(view: referenceView)
+            return UILabelAttributesViewModel(view: referenceView)
 
         case .mapView:
-            return MKMapViewInspectableViewModel(view: referenceView)
+            return MKMapViewAttributesViewModel(view: referenceView)
 
         case .scrollView:
-            return UIScrollViewInspectableViewModel(view: referenceView)
+            return UIScrollViewAttributesViewModel(view: referenceView)
 
         case .segmentedControl:
-            return UISegmentedControlInspectableViewModel(view: referenceView)
+            return UISegmentedControlAttributesViewModel(view: referenceView)
 
         case .slider:
-            return UISliderInspectableViewModel(view: referenceView)
+            return UISliderAttributesViewModel(view: referenceView)
 
         case .switch:
-            return UISwitchInspectableViewModel(view: referenceView)
+            return UISwitchAttributesViewModel(view: referenceView)
 
         case .stackView:
-            return UIStackViewInspectableViewModel(view: referenceView)
+            return UIStackViewAttributesViewModel(view: referenceView)
 
         case .textField:
-            return UITextFieldInspectableViewModel(view: referenceView)
+            return UITextFieldAttributesViewModel(view: referenceView)
 
         case .textView:
-            return UITextViewInspectableViewModel(view: referenceView)
+            return UITextViewAttributesViewModel(view: referenceView)
 
         case .view:
-            return UIViewInspectableViewModel(view: referenceView)
+            return UIViewAttributesViewModel(view: referenceView)
 
         case .tabBar:
-            return UITabBarInspectableViewModel(view: referenceView)
+            return UITabBarAttributesViewModel(view: referenceView)
 
         case .webView:
             return nil

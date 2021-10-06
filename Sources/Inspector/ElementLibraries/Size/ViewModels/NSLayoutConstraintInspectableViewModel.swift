@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorSizeLibrary {
-    struct NSLayoutConstraintInspectableViewModel: InspectorElementViewModelProtocol, Hashable {
+    struct NSLayoutConstraintAttributesViewModel: InspectorElementViewModelProtocol, Hashable {
         typealias Axis = LayoutConstraintElement.Axis
 
         private enum Property: String, Swift.CaseIterable {

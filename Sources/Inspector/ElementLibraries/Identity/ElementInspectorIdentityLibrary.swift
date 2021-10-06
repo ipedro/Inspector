@@ -27,10 +27,10 @@ enum ElementInspectorIdentityLibrary: Swift.CaseIterable, InspectorElementLibrar
     func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
         switch self {
         case .preview:
-            return .single(RuntimePreviewInspectableViewModel(view: referenceView))
+            return .single(RuntimePreviewAttributesViewModel(view: referenceView))
         
         case .runtimeAttributes:
-            guard let attributes = RuntimeAttributesInspectableViewModel(view: referenceView) else { return [] }
+            guard let attributes = RuntimeAttributesAttributesViewModel(view: referenceView) else { return [] }
             return .single(attributes)
         }
     }

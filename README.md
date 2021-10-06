@@ -471,7 +471,7 @@ enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
     func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
         switch self {
         case .myClass:
-            return MyClassInspectableViewModel(view: referenceView)
+            return MyClassAttributesViewModel(view: referenceView)
         }
     }
 }
@@ -482,7 +482,7 @@ enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
 import UIKit
 import Inspector
 
-final class MyClassInspectableViewModel: InspectorElementViewModelProtocol {
+final class MyClassAttributesViewModel: InspectorElementViewModelProtocol {
     var title: String = "My View"
     
     let myObject: MyView

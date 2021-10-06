@@ -131,7 +131,7 @@ extension NSObject {
     }
 }
 
-final class RuntimeAttributesInspectableViewModel: InspectorElementViewModelProtocol {
+final class RuntimeAttributesAttributesViewModel: InspectorElementViewModelProtocol {
     let title = "Runtime Attributes"
 
     private(set) weak var view: UIView?

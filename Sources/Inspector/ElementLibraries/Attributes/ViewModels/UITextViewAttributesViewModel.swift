@@ -21,25 +21,25 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UITextFieldInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UITextViewAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case text = "Text"
             case textColor = "Color"
             case fontName = "Font Name"
             case fontSize = "Font Size"
-            case adjustsFontSizeToFitWidth = "Automatically Adjusts Font"
+            case adjustsFontForContentSizeCategory = "Automatically Adjusts Font"
             case textAlignment = "Alignment"
-            case placeholder = "Placeholder"
-            case groupImages = "Images"
-            case background = "Background Image"
-            case disabledBackground = "Disabled Background Image"
-            case groupBorder = "Border"
-            case borderStyle = "Border Style"
-            case groupClearButton = "Buttons"
-            case clearButton = "Clear Button"
-            case clearWhenEditingBegins = "Clear When Editing Begins"
-            case groupAdditionalFontOptions = "Additional Font Options"
-            case minFontSize = "Min Font Size"
+            case groupBehavior = "Behavior"
+            case isEditable = "Editable"
+            case isSelectable = "Selectable"
+            case groupDataDetectors = "Data Detectors"
+            case dataDetectorPhoneNumber = "Phone Number"
+            case dataDetectorLink = "Link"
+            case dataDetectorAddress = "Address"
+            case dataDetectorCalendarEvent = "Calendar Event"
+            case dataDetectorShipmentTrackingNumber = "Shipment Tracking Number"
+            case dataDetectorFlightNumber = "Flight Number"
+            case dataDetectorLookupSuggestion = "Lookup Suggestion"
             case groupTextInputTraits = "Text Input Traits"
             case textContentType = "Content Type"
             case autocapitalizationType = "Capitalization"
@@ -54,63 +54,71 @@ extension ElementInspectorAttributesLibrary {
             case isSecureTextEntry = "Secure Text Entry"
         }
 
-        let title = "Text Field"
+        let title = "Text View"
 
-        private(set) weak var textField: UITextField?
+        private(set) weak var textView: UITextView?
 
         init?(view: UIView) {
-            guard let textField = view as? UITextField else {
+            guard let textView = view as? UITextView else {
                 return nil
             }
 
-            self.textField = textField
+            self.textView = textView
         }
 
         private(set) lazy var properties: [InspectorElementViewModelProperty] = Property.allCases.compactMap { property in
-            guard let textField = textField else {
+            guard let textView = textView else {
                 return nil
             }
 
             switch property {
             case .text:
-                return .textField(
+                return .textView(
                     title: property.rawValue,
-                    placeholder: textField.text.isNilOrEmpty ? property.rawValue : textField.text,
-                    value: { textField.text }
+                    placeholder: textView.text,
+                    value: { textView.text }
                 ) { text in
-                    textField.text = text
+                    textView.text = text
                 }
 
             case .textColor:
                 return .colorPicker(
                     title: property.rawValue,
-                    color: { textField.textColor }
+                    color: { textView.textColor }
                 ) { textColor in
-                    textField.textColor = textColor
+                    textView.textColor = textColor
                 }
 
             case .fontName:
                 return .fontNamePicker(
                     title: property.rawValue,
-                    fontProvider: { textField.font }
+                    fontProvider: { textView.font }
                 ) { font in
                     guard let font = font else {
                         return
                     }
 
-                    textField.font = font
+                    textView.font = font
                 }
 
             case .fontSize:
                 return .fontSizeStepper(
                     title: property.rawValue,
-                    fontProvider: { textField.font }
+                    fontProvider: { textView.font }
                 ) { font in
                     guard let font = font else {
                         return
                     }
 
-                    textField.font = font
+                    textView.font = font
+                }
+
+            case .adjustsFontForContentSizeCategory:
+                return .switch(
+                    title: property.rawValue,
+                    isOn: { textView.adjustsFontForContentSizeCategory }
+                ) { adjustsFontForContentSizeCategory in
+                    textView.adjustsFontForContentSizeCategory = adjustsFontForContentSizeCategory
                 }
 
             case .textAlignment:
@@ -119,7 +127,7 @@ extension ElementInspectorAttributesLibrary {
                 return .imageButtonGroup(
                     title: property.rawValue,
                     images: allCases.compactMap(\.image),
-                    selectedIndex: { allCases.firstIndex(of: textField.textAlignment) }
+                    selectedIndex: { allCases.firstIndex(of: textView.textAlignment) }
                 ) {
                     guard let newIndex = $0 else {
                         return
@@ -127,104 +135,51 @@ extension ElementInspectorAttributesLibrary {
 
                     let textAlignment = allCases[newIndex]
 
-                    textField.textAlignment = textAlignment
+                    textView.textAlignment = textAlignment
                 }
 
-            case .placeholder:
-                return .textField(
-                    title: property.rawValue,
-                    placeholder: textField.placeholder.isNilOrEmpty ? property.rawValue : textField.placeholder,
-                    value: { textField.placeholder }
-                ) { placeholder in
-                    textField.placeholder = placeholder
-                }
-
-            case .groupImages:
+            case .groupBehavior:
                 return .group(title: property.rawValue)
 
-            case .background:
-                return .imagePicker(
-                    title: property.rawValue,
-                    image: { textField.background }
-                ) { background in
-                    textField.background = background
-                }
-
-            case .disabledBackground:
-                return .imagePicker(
-                    title: property.rawValue,
-                    image: { textField.disabledBackground }
-                ) { disabledBackground in
-                    textField.disabledBackground = disabledBackground
-                }
-
-            case .groupBorder:
-                return .separator
-
-            case .borderStyle:
-                let allCases = UITextField.BorderStyle.allCases.withImages
-
-                return .imageButtonGroup(
-                    title: property.rawValue,
-                    axis: .vertical,
-                    images: allCases.compactMap(\.image),
-                    selectedIndex: { allCases.firstIndex(of: textField.borderStyle) }
-                ) {
-                    guard let newIndex = $0 else {
-                        return
-                    }
-
-                    let borderStyle = allCases[newIndex]
-
-                    textField.borderStyle = borderStyle
-                }
-
-            case .groupClearButton:
-                return .separator
-
-            case .clearButton:
-                return .optionsList(
-                    title: property.rawValue,
-                    options: UITextField.ViewMode.allCases.map(\.description),
-                    selectedIndex: { UITextField.ViewMode.allCases.firstIndex(of: textField.clearButtonMode) }
-                ) {
-                    guard let newIndex = $0 else {
-                        return
-                    }
-
-                    let clearButtonMode = UITextField.ViewMode.allCases[newIndex]
-
-                    textField.clearButtonMode = clearButtonMode
-                }
-
-            case .clearWhenEditingBegins:
+            case .isEditable:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { textField.clearsOnBeginEditing }
-                ) { clearsOnBeginEditing in
-                    textField.clearsOnBeginEditing = clearsOnBeginEditing
+                    isOn: { textView.isEditable }
+                ) { isEditable in
+                    textView.isEditable = isEditable
                 }
 
-            case .groupAdditionalFontOptions:
-                return .separator
-
-            case .minFontSize:
-                return .cgFloatStepper(
-                    title: property.rawValue,
-                    value: { textField.minimumFontSize },
-                    range: { 0...256 },
-                    stepValue: { 1 }
-                ) { minimumFontSize in
-                    textField.minimumFontSize = minimumFontSize
-                }
-
-            case .adjustsFontSizeToFitWidth:
+            case .isSelectable:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { textField.adjustsFontSizeToFitWidth }
-                ) { adjustsFontSizeToFitWidth in
-                    textField.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
+                    isOn: { textView.isSelectable }
+                ) { isSelectable in
+                    textView.isSelectable = isSelectable
                 }
+
+            case .groupDataDetectors:
+                return .group(title: property.rawValue)
+
+            case .dataDetectorPhoneNumber:
+                return .dataDetectorType(textView: textView, dataDetectorType: .phoneNumber)
+
+            case .dataDetectorLink:
+                return .dataDetectorType(textView: textView, dataDetectorType: .link)
+
+            case .dataDetectorAddress:
+                return .dataDetectorType(textView: textView, dataDetectorType: .address)
+
+            case .dataDetectorCalendarEvent:
+                return .dataDetectorType(textView: textView, dataDetectorType: .calendarEvent)
+
+            case .dataDetectorShipmentTrackingNumber:
+                return .dataDetectorType(textView: textView, dataDetectorType: .shipmentTrackingNumber)
+
+            case .dataDetectorFlightNumber:
+                return .dataDetectorType(textView: textView, dataDetectorType: .flightNumber)
+
+            case .dataDetectorLookupSuggestion:
+                return .dataDetectorType(textView: textView, dataDetectorType: .lookupSuggestion)
 
             case .groupTextInputTraits:
                 return .group(title: property.rawValue)
@@ -234,7 +189,7 @@ extension ElementInspectorAttributesLibrary {
                     title: property.rawValue,
                     options: UITextContentType.allCases.map(\.description),
                     selectedIndex: {
-                        guard let textContentType = textField.textContentType else {
+                        guard let textContentType = textView.textContentType else {
                             return nil
                         }
 
@@ -247,14 +202,14 @@ extension ElementInspectorAttributesLibrary {
 
                     let textContentType = UITextContentType.allCases[newIndex]
 
-                    textField.textContentType = textContentType
+                    textView.textContentType = textContentType
                 }
 
             case .autocapitalizationType:
                 return .optionsList(
                     title: property.rawValue,
                     options: UITextAutocapitalizationType.allCases.map(\.description),
-                    selectedIndex: { UITextAutocapitalizationType.allCases.firstIndex(of: textField.autocapitalizationType) }
+                    selectedIndex: { UITextAutocapitalizationType.allCases.firstIndex(of: textView.autocapitalizationType) }
                 ) {
                     guard let newIndex = $0 else {
                         return
@@ -262,14 +217,14 @@ extension ElementInspectorAttributesLibrary {
 
                     let autocapitalizationType = UITextAutocapitalizationType.allCases[newIndex]
 
-                    textField.autocapitalizationType = autocapitalizationType
+                    textView.autocapitalizationType = autocapitalizationType
                 }
 
             case .autocorrectionType:
                 return .optionsList(
                     title: property.rawValue,
                     options: UITextAutocorrectionType.allCases.map(\.description),
-                    selectedIndex: { UITextAutocorrectionType.allCases.firstIndex(of: textField.autocorrectionType) }
+                    selectedIndex: { UITextAutocorrectionType.allCases.firstIndex(of: textView.autocorrectionType) }
                 ) {
                     guard let newIndex = $0 else {
                         return
@@ -277,14 +232,14 @@ extension ElementInspectorAttributesLibrary {
 
                     let autocorrectionType = UITextAutocorrectionType.allCases[newIndex]
 
-                    textField.autocorrectionType = autocorrectionType
+                    textView.autocorrectionType = autocorrectionType
                 }
 
             case .smartDashesType:
                 return .optionsList(
                     title: property.rawValue,
                     options: UITextSmartDashesType.allCases.map(\.description),
-                    selectedIndex: { UITextSmartDashesType.allCases.firstIndex(of: textField.smartDashesType) }
+                    selectedIndex: { UITextSmartDashesType.allCases.firstIndex(of: textView.smartDashesType) }
                 ) {
                     guard let newIndex = $0 else {
                         return
@@ -292,14 +247,14 @@ extension ElementInspectorAttributesLibrary {
 
                     let smartDashesType = UITextSmartDashesType.allCases[newIndex]
 
-                    textField.smartDashesType = smartDashesType
+                    textView.smartDashesType = smartDashesType
                 }
 
             case .smartQuotesType:
                 return .optionsList(
                     title: property.rawValue,
                     options: UITextSmartQuotesType.allCases.map(\.description),
-                    selectedIndex: { UITextSmartQuotesType.allCases.firstIndex(of: textField.smartQuotesType) }
+                    selectedIndex: { UITextSmartQuotesType.allCases.firstIndex(of: textView.smartQuotesType) }
                 ) {
                     guard let newIndex = $0 else {
                         return
@@ -307,14 +262,14 @@ extension ElementInspectorAttributesLibrary {
 
                     let smartQuotesType = UITextSmartQuotesType.allCases[newIndex]
 
-                    textField.smartQuotesType = smartQuotesType
+                    textView.smartQuotesType = smartQuotesType
                 }
 
             case .spellCheckingType:
                 return .optionsList(
                     title: property.rawValue,
                     options: UITextSpellCheckingType.allCases.map(\.description),
-                    selectedIndex: { UITextSpellCheckingType.allCases.firstIndex(of: textField.spellCheckingType) }
+                    selectedIndex: { UITextSpellCheckingType.allCases.firstIndex(of: textView.spellCheckingType) }
                 ) {
                     guard let newIndex = $0 else {
                         return
@@ -322,14 +277,14 @@ extension ElementInspectorAttributesLibrary {
 
                     let spellCheckingType = UITextSpellCheckingType.allCases[newIndex]
 
-                    textField.spellCheckingType = spellCheckingType
+                    textView.spellCheckingType = spellCheckingType
                 }
 
             case .keyboardType:
                 return .optionsList(
                     title: property.rawValue,
                     options: UIKeyboardType.allCases.map(\.description),
-                    selectedIndex: { UIKeyboardType.allCases.firstIndex(of: textField.keyboardType) }
+                    selectedIndex: { UIKeyboardType.allCases.firstIndex(of: textView.keyboardType) }
                 ) {
                     guard let newIndex = $0 else {
                         return
@@ -337,14 +292,14 @@ extension ElementInspectorAttributesLibrary {
 
                     let keyboardType = UIKeyboardType.allCases[newIndex]
 
-                    textField.keyboardType = keyboardType
+                    textView.keyboardType = keyboardType
                 }
 
             case .keyboardAppearance:
                 return .optionsList(
                     title: property.rawValue,
                     options: UIKeyboardAppearance.allCases.map(\.description),
-                    selectedIndex: { UIKeyboardAppearance.allCases.firstIndex(of: textField.keyboardAppearance) }
+                    selectedIndex: { UIKeyboardAppearance.allCases.firstIndex(of: textView.keyboardAppearance) }
                 ) {
                     guard let newIndex = $0 else {
                         return
@@ -352,14 +307,14 @@ extension ElementInspectorAttributesLibrary {
 
                     let keyboardAppearance = UIKeyboardAppearance.allCases[newIndex]
 
-                    textField.keyboardAppearance = keyboardAppearance
+                    textView.keyboardAppearance = keyboardAppearance
                 }
 
             case .returnKey:
                 return .optionsList(
                     title: property.rawValue,
                     options: UIReturnKeyType.allCases.map(\.description),
-                    selectedIndex: { UIReturnKeyType.allCases.firstIndex(of: textField.returnKeyType) }
+                    selectedIndex: { UIReturnKeyType.allCases.firstIndex(of: textView.returnKeyType) }
                 ) {
                     guard let newIndex = $0 else {
                         return
@@ -367,23 +322,23 @@ extension ElementInspectorAttributesLibrary {
 
                     let returnKeyType = UIReturnKeyType.allCases[newIndex]
 
-                    textField.returnKeyType = returnKeyType
+                    textView.returnKeyType = returnKeyType
                 }
 
             case .enablesReturnKeyAutomatically:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { textField.enablesReturnKeyAutomatically }
+                    isOn: { textView.enablesReturnKeyAutomatically }
                 ) { enablesReturnKeyAutomatically in
-                    textField.enablesReturnKeyAutomatically = enablesReturnKeyAutomatically
+                    textView.enablesReturnKeyAutomatically = enablesReturnKeyAutomatically
                 }
 
             case .isSecureTextEntry:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { textField.isSecureTextEntry }
+                    isOn: { textView.isSecureTextEntry }
                 ) { isSecureTextEntry in
-                    textField.isSecureTextEntry = isSecureTextEntry
+                    textView.isSecureTextEntry = isSecureTextEntry
                 }
             }
         }

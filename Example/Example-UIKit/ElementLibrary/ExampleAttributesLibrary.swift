@@ -21,7 +21,7 @@
 import Inspector
 import UIKit
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
+enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
     case customButton
 
     var targetClass: AnyClass {
@@ -34,7 +34,7 @@ enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
     func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
         switch self {
         case .customButton:
-            return CustomButtonInspectableViewModel(view: referenceView)
+            return CustomButtonAttributesViewModel(view: referenceView)
         }
     }
 }

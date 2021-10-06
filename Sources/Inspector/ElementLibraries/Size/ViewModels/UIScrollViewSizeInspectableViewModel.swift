@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorSizeLibrary {
-    final class UIScrollViewSizeInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIScrollViewSizeAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Properties: String, Swift.CaseIterable {
             case scrollIndicatorInsets = "Indicator Insets"
             case contentInsetsAdjustmentBehavior = "Content Insets Adjustment"

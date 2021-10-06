@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIImageViewInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UIImageViewAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case image = "Image"
             case highlightedImage = "Highlighted Image"

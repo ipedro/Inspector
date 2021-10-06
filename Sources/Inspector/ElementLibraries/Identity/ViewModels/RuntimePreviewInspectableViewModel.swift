@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class RuntimePreviewInspectableViewModel: InspectorElementViewModelProtocol {
+final class RuntimePreviewAttributesViewModel: InspectorElementViewModelProtocol {
     let title: String = "Preview"
 
     let element: ViewHierarchyElement

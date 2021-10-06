@@ -23,7 +23,7 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     @available(iOS 13.0, *)
-    final class UINavigationBarAppearanceInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UINavigationBarAppearanceAttributesViewModel: InspectorElementViewModelProtocol {
 
         private enum Property: String, Swift.CaseIterable {
             case information

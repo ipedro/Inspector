@@ -21,7 +21,7 @@
 import MapKit
 
 extension ElementInspectorAttributesLibrary {
-    final class MKMapViewInspectableViewModel: InspectorElementViewModelProtocol {
+    final class MKMapViewAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case type = "Type"
             case groupAllows = "Allows"

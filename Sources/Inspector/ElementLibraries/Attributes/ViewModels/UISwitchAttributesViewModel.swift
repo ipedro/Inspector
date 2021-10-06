@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UISwitchInspectableViewModel: InspectorElementViewModelProtocol {
+    final class UISwitchAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case title = "Title"
             case preferredStyle = "Preferred Style"

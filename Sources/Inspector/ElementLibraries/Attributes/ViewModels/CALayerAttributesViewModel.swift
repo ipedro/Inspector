@@ -22,7 +22,7 @@ import QuartzCore
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class CALayerInspectableViewModel: InspectorElementViewModelProtocol {
+    final class CALayerAttributesViewModel: InspectorElementViewModelProtocol {
         private enum Property: String, Swift.CaseIterable {
             case opacity = "Opacity"
             case backgroundColor = "Background Color"
