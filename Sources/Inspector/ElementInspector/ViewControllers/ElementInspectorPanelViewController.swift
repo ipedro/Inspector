@@ -27,7 +27,7 @@ class ElementInspectorPanelViewController: UIViewController {
 
     private var needsLayout = true
 
-    var isFullHeightPresentation: Bool = true
+    var isFullHeightPresentation: Bool = false
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()

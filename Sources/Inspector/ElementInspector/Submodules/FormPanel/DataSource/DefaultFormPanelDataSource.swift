@@ -32,4 +32,12 @@ struct DefaultFormPanelDataSource: ElementInspectorFormPanelDataSource {
 
         return customViewType ?? ElementInspectorFormItemContentView.self
     }
+
+    func viewForProperty(at indexPath: IndexPath) -> InspectorElementFormItemView {
+        let FormItemView = typeForRow(at: indexPath)
+
+        let itemView = FormItemView.makeItemView(with: indexPath.isFirst ? .expanded : .collapsed)
+
+        return itemView
+    }
 }

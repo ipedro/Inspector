@@ -139,7 +139,10 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         guard let formPanel = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
 
         toggleCollapseButton.collapseState = .none
-        formPanel.toggleAllSectionsCollapse(animated: true)
+
+        DispatchQueue.main.async {
+            formPanel.togglePanelsCollapse(animated: true)
+        }
     }
 
     var currentFormPanelViewController: ElementInspectorFormPanelViewController? {

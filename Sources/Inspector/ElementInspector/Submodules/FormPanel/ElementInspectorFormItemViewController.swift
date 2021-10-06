@@ -68,6 +68,8 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
         self.viewCode = viewCode
 
         super.init(nibName: nil, bundle: nil)
+
+        title = viewModel.title
     }
 
     @available(*, unavailable)
@@ -93,7 +95,10 @@ final class ElementInspectorFormItemViewController: UIViewController, DataReload
 
     var state: InspectorElementFormItemState {
         get { viewCode.state }
-        set { viewCode.state = newValue }
+        set {
+            print(newValue, viewModel.title)
+            viewCode.state = newValue
+        }
     }
 
     private lazy var viewForProperties: [InspectorElementViewModelProperty: UIView] = {
