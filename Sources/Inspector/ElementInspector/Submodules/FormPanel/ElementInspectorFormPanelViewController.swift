@@ -86,7 +86,7 @@ enum ElementInspectorFormPanelCollapseState: Swift.CaseIterable, MenuContentProt
     var image: UIImage? {
         switch self {
         case .allCollapsed:
-            return .collapseSymbol
+            return .collapseMirroredSymbol
         case .firstExpanded:
             return .expandSymbol
         case .mixed:
@@ -248,9 +248,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 }
 
 extension ElementInspectorFormPanelViewController {
-    func togglePanelsCollapse(animated: Bool, completion: ((Bool) -> Void)? = nil) {
-        let newState: ElementInspectorFormPanelCollapseState = collapseState.next() ?? .allCollapsed
-
+    func togglePanels(to newState: ElementInspectorFormPanelCollapseState, animated: Bool, completion: ((Bool) -> Void)? = nil) {
         guard animated else {
             apply(state: newState)
             itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)

@@ -84,7 +84,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     }
 
     private lazy var toggleCollapseButton = ToogleCollapseButton().then {
-        $0.addTarget(self, action: #selector(togglePanelsCollapse), for: .touchUpInside)
+        $0.addTarget(self, action: #selector(didTapToggleCollapseButton), for: .touchUpInside)
 
         if #available(iOS 13.0, *) {
             $0.addInteraction(UIContextMenuInteraction(delegate: self))
@@ -135,13 +135,13 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     }
 
     @objc
-    private func togglePanelsCollapse() {
-        guard let formPanel = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
-
+    private func didTapToggleCollapseButton() {
         toggleCollapseButton.collapseState = .none
 
+        guard let formPanel = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
+
         DispatchQueue.main.async {
-            formPanel.togglePanelsCollapse(animated: true)
+            formPanel.togglePanels(to: formPanel.collapseState.next() ?? .allCollapsed, animated: true)
         }
     }
 
@@ -517,31 +517,65 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
             return .init { _ in .defaultElementInspectorPanelMenu() }
 
         case toggleCollapseButton:
-            guard let nextState = toggleCollapseButton.collapseState?.next() else { return nil }
+            return .init { [weak self] _ in
+                guard let self = self else { return nil }
 
-            return .init { _ in
-                UIMenu(
+                return UIMenu(
                     title: "",
                     image: nil,
                     identifier: nil,
                     options: .displayInline,
-                    children: [
-                        UIAction(
-                            title: nextState.title,
-                            image: nextState.image,
-                            identifier: nil,
-                            discoverabilityTitle: nextState.title,
-                            handler: { [weak self] _ in
-                                self?.togglePanelsCollapse()
-                            }
-                        )
-                    ]
+                    children: self.nextActions(for: self.toggleCollapseButton.collapseState)
                 )
             }
 
         default:
             return nil
         }
+    }
+
+    private func nextActions(for currentState: ElementInspectorFormPanelCollapseState?) -> [UIMenuElement] {
+        guard let firstState = currentState?.next() else {
+            let state =  ElementInspectorFormPanelCollapseState.allCollapsed
+
+            return [
+                    UIAction(
+                        title: state.title,
+                        image: state.image,
+                        identifier: nil,
+                        discoverabilityTitle: state.title,
+                        handler: { [weak self] _ in
+                            self?.currentFormPanelViewController?.togglePanels(to: state, animated: true)
+                    }
+                )
+            ]
+        }
+
+        var actions = [UIMenuElement]()
+
+        var state: ElementInspectorFormPanelCollapseState? = firstState
+
+        while state != nil {
+            guard let nextState = state else { return actions }
+
+            if nextState != currentState {
+                actions.append(
+                    UIAction(
+                        title: nextState.title,
+                        image: nextState.image,
+                        identifier: nil,
+                        discoverabilityTitle: nextState.title,
+                        handler: { [weak self] _ in
+                            self?.currentFormPanelViewController?.togglePanels(to: nextState, animated: true)
+                        }
+                    )
+                )
+            }
+
+            state = nextState.next()
+        }
+
+        return actions
     }
 }
 

@@ -36,6 +36,7 @@ extension UIImage {
     static let showAllLayersAction: UIImage = .moduleImage(named: "LayerAction-ShowAll")!
     static let expandSymbol: UIImage = .moduleImage(named: "expand")!
     static let collapseSymbol: UIImage = .moduleImage(named: "collapse")!
+    static let collapseMirroredSymbol: UIImage = .moduleImage(named: "collapse-mirrored")!
     static let showHighlightsSymbol: UIImage = .moduleImage(named: "showHighlights")!
     static let hideHighlightsSymbol: UIImage = .moduleImage(named: "hideHighlights")!
     static let warningSymbol: UIImage = .moduleImage(named: "exclamationmark.triangle")!
