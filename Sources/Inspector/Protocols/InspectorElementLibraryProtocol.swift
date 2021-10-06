@@ -29,7 +29,7 @@ public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource 
     func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol?
 }
 
-// MARK: - Backwards compatibility with v1.0
+// MARK: Convenience Extension
 
 public extension InspectorElementLibraryProtocol {
     func items(for referenceView: UIView) -> [ElementInspectorFormItem] {

@@ -24,17 +24,6 @@ enum ElementInspectorIdentityLibrary: Swift.CaseIterable, InspectorElementLibrar
     case preview
     case runtimeAttributes
 
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
-        switch self {
-        case .preview:
-            return .single(RuntimePreviewAttributesViewModel(view: referenceView))
-        
-        case .runtimeAttributes:
-            guard let attributes = RuntimeAttributesAttributesViewModel(view: referenceView) else { return [] }
-            return .single(attributes)
-        }
-    }
-
     var targetClass: AnyClass {
         switch self {
         case .preview:
@@ -45,6 +34,12 @@ enum ElementInspectorIdentityLibrary: Swift.CaseIterable, InspectorElementLibrar
     }
 
     func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        fatalError()
+        switch self {
+        case .preview:
+            return PreviewIdentityViewModel(view: referenceView)
+
+        case .runtimeAttributes:
+            return RuntimeAttributesIdentityViewModel(view: referenceView)
+        }
     }
 }

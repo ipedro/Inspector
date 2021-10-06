@@ -458,7 +458,7 @@ var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLib
 import UIKit
 import Inspector
 
-enum ExampleElementLibrary: InspectorElementLibraryProtocol, CaseIterable {
+enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
     case myClass
     
     var targetClass: AnyClass {
