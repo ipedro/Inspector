@@ -90,8 +90,6 @@ final class ElementInspectorViewCode: BaseView {
 
     private(set) lazy var separatorView = SeparatorView(style: .hard)
 
-    private(set) lazy var toggleCollapseButton = ToogleCollapseButton()
-
     private func updateContent(from oldValue: Content?, to newContent: Content?) {
         oldValue?.view.removeFromSuperview()
 

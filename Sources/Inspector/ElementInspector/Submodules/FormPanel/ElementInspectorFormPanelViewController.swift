@@ -39,11 +39,54 @@ protocol ElementInspectorFormPanelItemStateDelegate: AnyObject {
     func elementInspectorFormPanelItemDidChangeState(_ formPanelViewController: ElementInspectorFormPanelViewController)
 }
 
-enum ElementInspectorFormPanelCollapseState {
-    case allCollapsed, allExpanded, firstExpanded, mixed
+enum ElementInspectorFormPanelCollapseState: Swift.CaseIterable, MenuContentProtocol {
+    case allCollapsed, firstExpanded, mixed, allExpanded
+
+    func next() -> Self {
+        switch self {
+        case .allCollapsed:
+            return .firstExpanded
+        case .firstExpanded:
+            return .allExpanded
+        case .mixed:
+            return .allExpanded
+        case .allExpanded:
+            return .allCollapsed
+        }
+    }
+
+    // MARK: - MenuContentProtocol
+
+    static func allCases(for element: ViewHierarchyElement) -> [ElementInspectorFormPanelCollapseState] { [] }
+
+    var title: String {
+        switch self {
+        case .allCollapsed:
+            return "Collapse All"
+        case .firstExpanded:
+            return "Expand First"
+        case .mixed:
+            return "Mixed selection"
+        case .allExpanded:
+            return "Expand All"
+        }
+    }
+
+    var image: UIImage? {
+        switch self {
+        case .allCollapsed:
+            return .collapseSymbol
+        case .firstExpanded:
+            return .expandSymbol
+        case .mixed:
+            return nil
+        case .allExpanded:
+            return .expandSymbol
+        }
+    }
 }
 
-enum ElementInspectorFormPanelSelectionMode {
+enum ElementInspectorFormPanelSelectionMode: Swift.CaseIterable {
     case single, multi
 }
 
@@ -215,49 +258,19 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
             }
         }
     }
+}
 
-    func collapseAllSections() {
-        formItemViewControllers.forEach { $0.state = .collapsed }
-        itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
-    }
-
-    func expandFirstSection() {
-        formItemViewControllers.enumerated().forEach { index, item in
-            item.state = index == .zero ? .expanded : .collapsed
-        }
-        itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
-    }
-
-    func expandAllSections() {
-        formItemViewControllers.forEach { $0.state = .expanded }
-    }
-
+extension ElementInspectorFormPanelViewController {
     func toggleAllSectionsCollapse(animated: Bool, completion: ((Bool) -> Void)? = nil) {
         guard animated else {
-            switch collapseState {
-            case .allExpanded:
-                collapseAllSections()
-
-            case .allCollapsed,
-                 .firstExpanded,
-                 .mixed:
-                expandAllSections()
-            }
-
+            advanceCollapseState()
             itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
             return
         }
 
         animatePanel {
-            switch self.collapseState {
-            case .allExpanded:
-                self.collapseAllSections()
+            self.advanceCollapseState()
 
-            case .allCollapsed,
-                 .firstExpanded,
-                 .mixed:
-                self.expandAllSections()
-            }
         } completion: { [weak self] finished in
             completion?(finished)
 
@@ -267,6 +280,40 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         }
     }
 
+    private func advanceCollapseState() {
+        switch collapseState.next() {
+        case .allCollapsed:
+            collapseAllSections()
+        case .firstExpanded:
+            expandFirstSection()
+        case .mixed:
+            break
+        case .allExpanded:
+            expandAllSections()
+        }
+    }
+
+    private func collapseAllSections() {
+        formItemViewControllers.forEach { $0.state = .collapsed }
+    }
+
+    private func expandFirstSection() {
+        fatalError("not working for some reason")
+
+        (wip)
+
+        collapseAllSections()
+        formItemViewControllers.first?.state = .expanded
+    }
+
+    private func expandAllSections() {
+        formItemViewControllers.forEach { $0.state = .expanded }
+    }
+}
+
+// MARK: - Selection
+
+extension ElementInspectorFormPanelViewController {
     func selectImage(_ image: UIImage?) {
         selectedImagePreviewControl?.updateSelectedImage(image)
     }

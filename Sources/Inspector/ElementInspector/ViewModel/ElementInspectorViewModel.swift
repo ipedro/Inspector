@@ -21,19 +21,17 @@
 import UIKit
 
 protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyElementDescriptionViewModelProtocol {
+    var isFullHeightPresentation: Bool { get set }
+
     var element: ViewHierarchyElement { get }
 
     var catalog: ViewHierarchyElementCatalog { get }
 
     var availablePanels: [ElementInspectorPanel] { get }
 
-    var currentPanel: ElementInspectorPanel { get }
-
-    var isFullHeightPresentation: Bool { get set }
+    var currentPanel: ElementInspectorPanel? { get }
 
     var currentPanelIndex: Int { get }
-
-    var defaultPanel: ElementInspectorPanel { get set }
 }
 
 final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
@@ -43,27 +41,17 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     let availablePanels: [ElementInspectorPanel]
 
-    var selectedPanel: ElementInspectorPanel?
-
-    var currentPanel: ElementInspectorPanel { selectedPanel ?? defaultPanel }
+    var currentPanel: ElementInspectorPanel?
 
     var isCollapsed: Bool = false
 
     var isFullHeightPresentation: Bool = true
 
-    static var defaultPanel: ElementInspectorPanel {
-        get { ElementInspector.configuration.defaultPanel }
-        set { ElementInspector.configuration.defaultPanel = newValue }
-    }
-
-    var defaultPanel: ElementInspectorPanel {
-        get { Self.defaultPanel }
-        set { Self.defaultPanel = newValue }
-    }
+    private static var defaultPanel: ElementInspectorPanel { ElementInspector.configuration.defaultPanel }
 
     var currentPanelIndex: Int {
         guard
-            let panel = selectedPanel,
+            let panel = currentPanel,
             let index = availablePanels.firstIndex(of: panel)
         else {
             return UISegmentedControl.noSegment
@@ -81,7 +69,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         self.element = element
         self.availablePanels = availablePanels
 
-        self.selectedPanel = {
+        self.currentPanel = {
             let preferredPanel = selectedPanel ?? Self.defaultPanel
 
             guard availablePanels.contains(preferredPanel) else { return availablePanels.first }
@@ -90,7 +78,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         }()
 
         if let selectedPanel = selectedPanel {
-            self.selectedPanel = availablePanels.contains(selectedPanel) ? selectedPanel : nil
+            self.currentPanel = availablePanels.contains(selectedPanel) ? selectedPanel : nil
         }
     }
 }

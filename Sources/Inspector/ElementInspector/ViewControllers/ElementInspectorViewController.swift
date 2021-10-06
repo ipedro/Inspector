@@ -77,6 +77,15 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
     private lazy var segmentedControl = UISegmentedControl.segmentedControlStyle().then {
         $0.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
+
+        if #available(iOS 13.0, *) {
+            $0.addInteraction(UIContextMenuInteraction(delegate: self))
+        }
+    }
+
+    private lazy var toggleCollapseButton = ToogleCollapseButton().then {
+        $0.addTarget(self, action: #selector(togglePanelsCollapse), for: .touchUpInside)
+
         if #available(iOS 13.0, *) {
             $0.addInteraction(UIContextMenuInteraction(delegate: self))
         }
@@ -122,7 +131,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             size: ElementInspector.configuration.panelPreferredCompressedSize
         )
     ).then {
-        $0.toggleCollapseButton.addTarget(self, action: #selector(togglePanelsCollapse), for: .touchUpInside)
         $0.elementDescriptionView.viewModel = viewModel
     }
 
@@ -130,7 +138,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     private func togglePanelsCollapse() {
         guard let formPanel = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
 
-        viewCode.toggleCollapseButton.collapseState = .none
+        toggleCollapseButton.collapseState = .none
         formPanel.toggleAllSectionsCollapse(animated: true)
     }
 
@@ -185,13 +193,13 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                     self?.configureNavigationItem()
 
                     if let formPanel = self?.currentFormPanelViewController {
-                        self?.viewCode.toggleCollapseButton.alpha = 1
-                        self?.viewCode.toggleCollapseButton.isHidden = false
-                        self?.viewCode.toggleCollapseButton.collapseState = formPanel.collapseState
+                        self?.toggleCollapseButton.alpha = 1
+                        self?.toggleCollapseButton.isHidden = false
+                        self?.toggleCollapseButton.collapseState = formPanel.collapseState
                     }
                     else {
-                        self?.viewCode.toggleCollapseButton.alpha = 0
-                        self?.viewCode.toggleCollapseButton.isHidden = true
+                        self?.toggleCollapseButton.alpha = 0
+                        self?.toggleCollapseButton.isHidden = true
                     }
 
                     self?.updatePreferredContentSize()
@@ -249,7 +257,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     }
 
     private func configureNavigationItem() {
-        navigationItem.rightBarButtonItems = [dismissBarButtonItem, .init(customView: viewCode.toggleCollapseButton)]
+        navigationItem.rightBarButtonItems = [dismissBarButtonItem, .init(customView: toggleCollapseButton)]
         navigationItem.titleView = segmentedControl
         navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -272,7 +280,10 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
         if segmentedControl.numberOfSegments == .zero {
             updatePanelsSegmentedControl()
-            installPanel(viewModel.currentPanel)
+
+            if let panel = viewModel.currentPanel {
+                installPanel(panel)
+            }
         }
 
         guard
@@ -489,7 +500,7 @@ private extension ElementInspectorViewController {
 
 extension ElementInspectorViewController: ElementInspectorFormPanelItemStateDelegate {
     func elementInspectorFormPanelItemDidChangeState(_ formPanelViewController: ElementInspectorFormPanelViewController) {
-        viewCode.toggleCollapseButton.collapseState = formPanelViewController.collapseState
+        toggleCollapseButton.collapseState = formPanelViewController.collapseState
     }
 }
 
@@ -498,25 +509,57 @@ extension ElementInspectorViewController: ElementInspectorFormPanelItemStateDele
 @available(iOS 13.0, *)
 extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        .init { [weak self] _ in
-            guard let self = self else { return nil }
+        switch interaction.view {
+        case segmentedControl:
+            return .init { _ in .defaultElementInspectorPanelMenu() }
 
-            return UIMenu(
-                title: "Default Panel",
-                image: nil,
-                identifier: nil,
-                children: ElementInspectorPanel.allCases.map { panel in
-                    UIAction(
-                        title: panel.title,
-                        image: panel.image,
-                        identifier: nil,
-                        discoverabilityTitle: panel.title,
-                        state: self.viewModel.defaultPanel == panel ? .on : .off
-                    ) { [weak self] _ in
-                        self?.viewModel.defaultPanel = panel
-                    }
-                }
-            )
+        case toggleCollapseButton:
+            guard let nextState = toggleCollapseButton.collapseState?.next() else { return nil }
+
+            return .init { _ in
+                UIMenu(
+                    title: "",
+                    image: nil,
+                    identifier: nil,
+                    options: .displayInline,
+                    children: [
+                        UIAction(
+                            title: nextState.title,
+                            image: nextState.image,
+                            identifier: nil,
+                            discoverabilityTitle: nextState.title,
+                            handler: { [weak self] _ in
+                                self?.togglePanelsCollapse()
+                            }
+                        )
+                    ]
+                )
+            }
+
+        default:
+            return nil
         }
+    }
+}
+
+@available(iOS 13.0, *)
+private extension UIMenu {
+    static func defaultElementInspectorPanelMenu() -> UIMenu {
+        UIMenu(
+            title: "Default Panel",
+            image: nil,
+            identifier: nil,
+            children: ElementInspectorPanel.allCases.map { panel in
+                UIAction(
+                    title: panel.title,
+                    image: panel.image,
+                    identifier: nil,
+                    discoverabilityTitle: panel.title,
+                    state: ElementInspector.configuration.defaultPanel == panel ? .on : .off
+                ) { _ in
+                    ElementInspector.configuration.defaultPanel = panel
+                }
+            }
+        )
     }
 }
