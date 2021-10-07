@@ -42,7 +42,9 @@ final class ViewHierarchyCoordinator: Coordinator {
 
     let operationQueue = OperationQueue.main
 
-    private var cachedSnapshot: ViewHierarchySnapshot?
+    private var cachedSnapshot: ViewHierarchySnapshot? { history.last }
+
+    private lazy var history: [ViewHierarchySnapshot] = []
 
     var wireframeViews: [ViewHierarchyElement: WireframeView] = [:] {
         didSet {
@@ -128,7 +130,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
 
 extension ViewHierarchyCoordinator {
     func clearData() {
-        cachedSnapshot = nil
+        history.removeAll()
         visibleReferences.removeAll()
         wireframeViews.removeAll()
         highlightViews.removeAll()
@@ -137,9 +139,9 @@ extension ViewHierarchyCoordinator {
     func latestSnapshot() -> ViewHierarchySnapshot? {
         if cachedSnapshot?.isValid == true { return cachedSnapshot }
 
-        let snapshot = makeSnapshot()
+        guard let snapshot = makeSnapshot() else { return nil }
 
-        cachedSnapshot = snapshot
+        history.append(snapshot)
 
         return snapshot
     }
