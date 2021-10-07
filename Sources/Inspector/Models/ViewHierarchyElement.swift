@@ -157,8 +157,6 @@ final class ViewHierarchyElement: NSObject {
 
     private func setNeedsSnapshot() {
         debounce(#selector(makeSnapshot), delay: Inspector.configuration.snapshotExpirationTimeInterval)
-        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(makeSnapshot), object: nil)
-        perform(#selector(makeSnapshot), with: nil, afterDelay: Inspector.configuration.snapshotExpirationTimeInterval)
     }
 
     @objc private func makeSnapshot() {
@@ -321,6 +319,7 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
     var classNameWithoutQualifiers: String {
         initialSnapshot.classNameWithoutQualifiers
     }
+
     var isUserInteractionEnabled: Bool {
         initialSnapshot.isUserInteractionEnabled
     }
