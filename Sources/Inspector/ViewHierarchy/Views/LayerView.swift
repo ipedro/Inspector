@@ -21,7 +21,9 @@
 import UIKit
 
 protocol LayerViewDelegate: AnyObject {
-    func layerView(_ layerView: LayerViewProtocol, didSelect element: ViewHierarchyElement, withAction action: ViewHierarchyAction)
+    func layerView(_ layerView: LayerViewProtocol,
+                   didSelect element: ViewHierarchyElement,
+                   withAction action: ViewHierarchyAction)
 }
 
 class LayerView: UIImageView, LayerViewProtocol {
@@ -33,14 +35,6 @@ class LayerView: UIImageView, LayerViewProtocol {
 
     var allowsImages = false
 
-    var color: UIColor {
-        didSet {
-            guard color != oldValue else { return }
-
-            layerBorderColor = color
-        }
-    }
-
     // MARK: - Setters
 
     override var image: UIImage? {
@@ -48,52 +42,41 @@ class LayerView: UIImageView, LayerViewProtocol {
         set { if allowsImages { super.image = newValue } }
     }
 
-    var layerBorderWidth: CGFloat {
-        get { borderedView.layer.borderWidth }
-        set { borderedView.layer.borderWidth = newValue }
-    }
-
-    var layerBackgroundColor: UIColor? {
-        get { borderedView.backgroundColor }
-        set { borderedView.backgroundColor = newValue }
-    }
-
-    var layerBorderColor: UIColor? {
-        get {
-            guard let borderColor = borderedView.layer.borderColor else { return nil }
-
-            return UIColor(cgColor: borderColor)
+    var borderWidth: CGFloat {
+        didSet {
+            updateBorder()
         }
-        set { borderedView.layer.borderColor = newValue?.cgColor }
+    }
+
+    var borderColor: UIColor? {
+        didSet {
+            updateBorder()
+        }
     }
 
     open var sourceView: UIView { self }
-
-    // MARK: - Components
-
-    private lazy var borderedView = LayerViewComponent(frame: bounds).then {
-        $0.layer.borderColor = color.cgColor
-        $0.layer.allowsEdgeAntialiasing = true
-        $0.matchLayerProperties(of: self)
-    }
 
     @available(iOS 13.0, *)
     private lazy var menuInteraction = UIContextMenuInteraction(delegate: self)
 
     // MARK: - Init
 
-    init(frame: CGRect, element: ViewHierarchyElement, color: UIColor, borderWidth: CGFloat) {
+    init(frame: CGRect,
+         element: ViewHierarchyElement,
+         color borderColor: UIColor,
+         border borderWidth: CGFloat) {
         self.element = element
-
-        self.color = color
+        self.borderColor = borderColor
+        self.borderWidth = borderWidth
 
         super.init(frame: frame)
 
-        layerBorderWidth = borderWidth
-
-        installView(borderedView, .autoResizingMask)
-
         autoresizingMask = [.flexibleHeight, .flexibleWidth]
+    }
+
+    private func updateBorder() {
+        layer.borderColor = borderColor?.cgColor
+        layer.borderWidth = borderWidth
     }
 
     @available(*, unavailable)
@@ -107,30 +90,28 @@ class LayerView: UIImageView, LayerViewProtocol {
         super.layoutSubviews()
 
         matchLayerProperties(of: superview)
-        borderedView.matchLayerProperties(of: superview)
+
+        updateBorder()
     }
 
     override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
 
         if #available(iOS 13.0, *) {
+            superview?.removeInteraction(menuInteraction)
             newSuperview?.addInteraction(menuInteraction)
         }
 
+        // reset views
         guard newSuperview == nil else { return }
 
-        // reset views
-        element.rootView?.isUserInteractionEnabled = element.isUserInteractionEnabled
-        if #available(iOS 13.0, *) {
-            superview?.removeInteraction(menuInteraction)
-        }
+        element.underlyingView?.isUserInteractionEnabled = element.isUserInteractionEnabled
     }
 
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
 
         matchLayerProperties(of: superview)
-        borderedView.matchLayerProperties(of: superview)
     }
 }
 
@@ -150,7 +131,8 @@ private extension UIView {
 
 @available(iOS 13.0, *)
 extension LayerView: UIContextMenuInteractionDelegate {
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
+                                configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         .contextMenuConfiguration(with: element) { [weak self] element, action in
             guard let self = self else { return }
 

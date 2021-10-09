@@ -28,9 +28,9 @@ final class EmptyView: HighlightView {
         name: String,
         colorScheme: ViewHierarchyColorScheme = defaultColorScheme,
         element: ViewHierarchyElement,
-        borderWidth: CGFloat = Inspector.configuration.appearance.emptyLayerBorderWidth
+        border borderWidth: CGFloat = Inspector.configuration.appearance.emptyLayerBorderWidth
     ) {
-        super.init(frame: frame, name: name, colorScheme: colorScheme, element: element, borderWidth: borderWidth)
+        super.init(frame: frame, name: name, colorScheme: colorScheme, element: element, border: borderWidth)
     }
 
     @available(*, unavailable)

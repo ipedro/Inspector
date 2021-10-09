@@ -24,10 +24,10 @@ final class WireframeView: LayerView {
     override init(
         frame: CGRect,
         element: ViewHierarchyElement,
-        color: UIColor = Inspector.configuration.colorStyle.wireframeLayerColor,
-        borderWidth: CGFloat = Inspector.configuration.appearance.wireframeLayerBorderWidth
+        color borderColor: UIColor = Inspector.configuration.colorStyle.wireframeLayerColor,
+        border borderWidth: CGFloat = Inspector.configuration.appearance.wireframeLayerBorderWidth
     ) {
-        super.init(frame: frame, element: element, color: color, borderWidth: borderWidth)
+        super.init(frame: frame, element: element, color: borderColor, border: borderWidth)
     }
 
     @available(*, unavailable)

@@ -39,13 +39,13 @@ class HighlightView: LayerView, DraggableViewProtocol {
 
     let colorScheme: ViewHierarchyColorScheme
 
-    override var color: UIColor {
+    override var borderColor: UIColor? {
         didSet {
-            guard color != oldValue else {
+            guard borderColor != oldValue else {
                 return
             }
 
-            labelContentView.backgroundColor = color
+            labelContentView.backgroundColor = borderColor
         }
     }
 
@@ -88,12 +88,11 @@ class HighlightView: LayerView, DraggableViewProtocol {
         $0.layer.shadowOpacity = 2 / 3
     }
 
-    private(set) lazy var labelContentView = LayerViewComponent(
-        .backgroundColor(color),
-        .cornerRadius(7)
-    ).then {
+    private(set) lazy var labelContentView = LayerViewComponent().then {
+        $0.backgroundColor = borderColor
         $0.layer.borderWidth = 1 / UIScreen.main.scale
         $0.layer.borderColor = UIColor(white: 1, alpha: 0.1).cgColor
+        $0.layer.cornerRadius = 7
         $0.installView(label, .spacing(horizontal: 5.5, vertical: -1))
     }
 
@@ -121,7 +120,7 @@ class HighlightView: LayerView, DraggableViewProtocol {
         name: String,
         colorScheme: ViewHierarchyColorScheme,
         element: ViewHierarchyElement,
-        borderWidth: CGFloat = Inspector.configuration.appearance.highlightLayerBorderWidth
+        border borderWidth: CGFloat = Inspector.configuration.appearance.highlightLayerBorderWidth
     ) {
         self.colorScheme = colorScheme
         self.name = name
@@ -130,7 +129,7 @@ class HighlightView: LayerView, DraggableViewProtocol {
             frame: frame,
             element: element,
             color: .systemGray,
-            borderWidth: borderWidth
+            border: borderWidth
         )
 
         preservesSuperviewLayoutMargins = true
@@ -209,19 +208,12 @@ class HighlightView: LayerView, DraggableViewProtocol {
         updateLabelWidth()
 
         if let superview = superview {
-            color = colorScheme.value(for: superview)
+            borderColor = colorScheme.value(for: superview)
         }
     }
 
     func updateElementName() {
-        var superViewName: String {
-            guard let superview = superview else {
-                return element.elementName
-            }
-            return superview.elementName
-        }
-
-        name = superViewName
+        name = element.viewController?.classNameWithoutQualifiers ?? element.elementName
     }
 }
 
@@ -252,12 +244,12 @@ private extension HighlightView {
     func updateColors(isDragging: Bool = false) {
         switch isDragging {
         case true:
-            layerBackgroundColor = color.withAlphaComponent(colorStyle.disabledAlpha)
-            layerBorderColor = color.withAlphaComponent(1)
+            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha)
+            borderColor = borderColor?.withAlphaComponent(1)
 
         case false:
-            layerBackgroundColor = color.withAlphaComponent(colorStyle.disabledAlpha / 10)
-            layerBorderColor = color.withAlphaComponent(colorStyle.disabledAlpha * 2)
+            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha / 10)
+            borderColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha * 2)
         }
     }
 }
