@@ -23,7 +23,7 @@ import UIKit
 
 extension ElementInspectorAttributesLibrary {
     @available(iOS 13.0, *)
-    final class UINavigationBarAppearanceAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UINavigationBarAppearanceAttributesViewModel: InspectorElementSectionItemProtocol {
         private enum TitleAttribute: String, Swift.CaseIterable {
             case groupTitle
             case fontName = "Title Font Name"

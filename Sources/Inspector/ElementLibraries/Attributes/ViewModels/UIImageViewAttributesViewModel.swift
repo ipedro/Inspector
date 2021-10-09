@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIImageViewAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UIImageViewAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Image"
 
         private weak var imageView: UIImageView?

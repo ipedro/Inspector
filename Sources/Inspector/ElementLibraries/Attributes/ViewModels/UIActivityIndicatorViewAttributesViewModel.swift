@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIActivityIndicatorViewAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UIActivityIndicatorViewAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Activity Indicator"
 
         private weak var activityIndicatorView: UIActivityIndicatorView?

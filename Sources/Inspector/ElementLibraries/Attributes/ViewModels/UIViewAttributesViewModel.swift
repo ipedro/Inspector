@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIViewAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UIViewAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "View"
 
         private weak var view: UIView?

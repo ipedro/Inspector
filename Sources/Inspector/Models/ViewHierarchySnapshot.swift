@@ -29,10 +29,13 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
 
     let rootElement: ViewHierarchyElement
 
+    let rootViewController: ViewHierarchyController
+
     let inspectableElements: [ViewHierarchyElement]
 
-    init(layers: [ViewHierarchyLayer], rootElement: ViewHierarchyElement) {
+    init(layers: [ViewHierarchyLayer], rootElement: ViewHierarchyElement, rootViewController: ViewHierarchyController) {
         self.rootElement = rootElement
+        self.rootViewController = rootViewController
         inspectableElements = rootElement.inspectableChildren
         availableLayers = layers.uniqueValues()
         populatedLayers = availableLayers.filter {

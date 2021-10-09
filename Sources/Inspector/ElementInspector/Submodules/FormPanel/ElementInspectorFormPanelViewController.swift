@@ -32,7 +32,7 @@ protocol ElementInspectorFormPanelDelegate: OperationQueueManagerProtocol {
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
                                    didUpdateProperty: InspectorElementViewModelProperty,
-                                   in item: ElementInspectorFormItem)
+                                   in section: InspectorElementSection)
 }
 
 protocol ElementInspectorFormPanelItemStateDelegate: AnyObject {
@@ -70,10 +70,10 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     var selectedOptionListControl: OptionListControl?
 
-    private(set) var itemsDictionary: [ElementInspectorFormItemViewController: ElementInspectorFormItem] = [:]
+    private(set) var sections: [InspectorElementSectionViewController: InspectorElementSection] = [:]
 
-    var formPanels: [ElementInspectorFormItemViewController] {
-        children.compactMap { $0 as? ElementInspectorFormItemViewController }
+    var formPanels: [InspectorElementSectionViewController] {
+        children.compactMap { $0 as? InspectorElementSectionViewController }
     }
 
     var containsExpandedFormItem: Bool { collapseState != .allCollapsed }
@@ -92,10 +92,10 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     var panelSelectionMode: ElementInspectorPanelSelectionMode {
         if isFullHeightPresentation {
-            return .multiple
+            return .multipleSelection
         }
         else {
-            return .single
+            return .singleSelection
         }
     }
 
@@ -141,7 +141,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
         guard let dataSource = dataSource else { return }
 
-        dataSource.items.enumerated().forEach { section, item in
+        dataSource.sections.enumerated().forEach { section, item in
             if let title = item.title {
                 self.viewCode.contentView.addArrangedSubview(
                     SectionHeader(
@@ -164,7 +164,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
                     $0.separatorStyle = .bottom
                 }
 
-                let formItemViewController = ElementInspectorFormItemViewController(
+                let formItemViewController = InspectorElementSectionViewController(
                     viewModel: viewModel,
                     viewCode: itemView
                 ).then {
@@ -179,7 +179,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
                 formItemViewController.didMove(toParent: self)
 
-                self.itemsDictionary[formItemViewController] = item
+                self.sections[formItemViewController] = item
             }
         }
     }

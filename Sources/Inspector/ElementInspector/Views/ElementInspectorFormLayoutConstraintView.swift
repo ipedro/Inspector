@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElementFormItemView {
+final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElementFormSectionView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -36,11 +36,11 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         set {}
     }
 
-    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementFormItemView {
+    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementFormSectionView {
         ElementInspectorFormLayoutConstraintView(state: inititalState)
     }
 
-    private lazy var formView = ElementInspectorFormItemContentView(header: header, state: state).then {
+    private lazy var formView = InspectorElementSectionContentView(header: header, state: state).then {
         $0.separatorStyle = .none
     }
 

@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UITextFieldAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UITextFieldAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Text Field"
 
         private(set) weak var textField: UITextField?

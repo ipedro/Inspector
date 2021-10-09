@@ -21,9 +21,9 @@
 import Foundation
 
 protocol ElementInspectorFormPanelDataSource {
-    var items: [ElementInspectorFormItem] { get }
+    var sections: InspectorElementSections { get }
 
-    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormItemView.Type
+    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type
 
-    func viewForProperty(at indexPath: IndexPath) -> InspectorElementFormItemView
+    func viewForProperty(at indexPath: IndexPath) -> InspectorElementFormSectionView
 }

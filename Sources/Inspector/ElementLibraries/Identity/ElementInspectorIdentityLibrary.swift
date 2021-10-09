@@ -33,13 +33,13 @@ enum ElementInspectorIdentityLibrary: Swift.CaseIterable, InspectorElementLibrar
         }
     }
 
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
+    func sections(for referenceView: UIView) -> InspectorElementSections {
         switch self {
         case .preview:
-            return PreviewIdentityViewModel(view: referenceView)
+            return .init(with: PreviewIdentityViewModel(view: referenceView))
 
         case .runtimeAttributes:
-            return RuntimeAttributesIdentityViewModel(object: referenceView)
+            return .init(with: RuntimeAttributesIdentityViewModel(object: referenceView))
         }
     }
 }

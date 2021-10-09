@@ -21,12 +21,12 @@
 import UIKit
 
 public protocol InspectorElementFormItemViewDelegate: AnyObject {
-    func inspectorElementFormItemView(_ item: InspectorElementFormItemView,
+    func inspectorElementFormItemView(_ item: InspectorElementFormSectionView,
                                       willChangeFrom oldState: InspectorElementItemState?,
                                       to newState: InspectorElementItemState)
 }
 
-public protocol InspectorElementFormItemView: UIView {
+public protocol InspectorElementFormSectionView: UIView {
     var delegate: InspectorElementFormItemViewDelegate? { get set }
 
     /// Optional section title.
@@ -44,6 +44,6 @@ public protocol InspectorElementFormItemView: UIView {
     /// When this method is called is your view's responsibility to add the given form views to it's hiearchy.
     func addFormViews(_ formViews: [UIView])
 
-    /// Create and return a container view that conforms to the `InspectorElementFormItemView` protocol.
-    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementFormItemView
+    /// Create and return a container view that conforms to the `InspectorElementFormSectionView` protocol.
+    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementFormSectionView
 }

@@ -25,7 +25,7 @@ public enum InspectorElementViewModelProperty {
         internal let reference: ViewHierarchyElement
 
         public init(view: UIView) {
-            reference = ViewHierarchyElement(view, iconProvider: .default)
+            reference = ViewHierarchyElement(with: view, iconProvider: .default)
         }
     }
 

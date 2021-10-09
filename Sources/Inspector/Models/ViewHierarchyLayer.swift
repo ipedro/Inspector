@@ -52,7 +52,7 @@ public extension Inspector {
 
         func filter(flattenedViewHierarchy: [ViewHierarchyElement]) -> [ViewHierarchyElement] {
             let filteredViews = flattenedViewHierarchy.filter {
-                guard let rootView = $0.rootView else { return false }
+                guard let rootView = $0.underlyingView else { return false }
                 return filter(rootView)
             }
 
@@ -125,7 +125,9 @@ public extension ViewHierarchyLayer {
     /// Highlights views without an accessbility identifier
     static let withoutIdentifier = ViewHierarchyLayer.layer(name: "Without identifier") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == true }
     /// Shows frames of all views
-    static let wireframes = Inspector.ViewHierarchyLayer(name: "Wireframes", showLabels: false) { _ in true }
+    static let wireframes = Inspector.ViewHierarchyLayer(name: "Wireframes", showLabels: false, allowsInternalViews: true) { _ in true }
     /// Highlights all
     static let internalViews = Inspector.ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsInternalViews: true) { $0._isInternalView && !$0._isSystemContainer }
+
+    static let viewControllers = Inspector.ViewHierarchyLayer(name: "View Controllers", showLabels: true, allowsInternalViews: true) { $0.layerView?.element.viewController != nil }
 }

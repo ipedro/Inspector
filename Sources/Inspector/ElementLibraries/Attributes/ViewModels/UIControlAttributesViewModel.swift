@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIControlAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UIControlAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Control"
 
         private weak var control: UIControl?

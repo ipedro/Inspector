@@ -468,10 +468,10 @@ enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
         }
     }
     
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
+    func sections(for referenceView: UIView) -> InspectorElementSections { {
         switch self {
         case .myClass:
-            return MyClassAttributesViewModel(view: referenceView)
+            return .init(with: MyClassAttributes(view: referenceView))
         }
     }
 }
@@ -482,7 +482,7 @@ enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
 import UIKit
 import Inspector
 
-final class MyClassAttributesViewModel: InspectorElementViewModelProtocol {
+final class MyClassAttributes: InspectorElementLibraryItemProtocol {
     var title: String = "My View"
     
     let myObject: MyView

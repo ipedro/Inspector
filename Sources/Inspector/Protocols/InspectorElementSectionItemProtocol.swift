@@ -20,14 +20,22 @@
 
 import UIKit
 
-public protocol InspectorElementViewModelProtocol {
+@available(*, deprecated, renamed: "InspectorElementLibraryItemProtocol")
+public typealias InspectorElementViewModelProtocol = InspectorElementSectionItemProtocol
+
+/// An object that provides the information necessary to represent an Element Inspector section.
+public protocol InspectorElementSectionItemProtocol {
+    /// An optional subtitle that can be shown below the title.
     var title: String { get }
+    /// An optional subtitle that can be shown below the title.
     var subtitle: String? { get }
+    /// A list of properties to be displayed.
     var properties: [InspectorElementViewModelProperty] { get }
-    var customViewType: InspectorElementFormItemView.Type? { get }
+    /// To customize how your sections look provide a type that conforms to `InspectorElementFormSectionView`.
+    var customView: InspectorElementFormSectionView.Type? { get }
 }
 
-public extension InspectorElementViewModelProtocol {
+public extension InspectorElementSectionItemProtocol {
     var subtitle: String? { nil }
-    var customViewType: InspectorElementFormItemView.Type? { nil }
+    var customView: InspectorElementFormSectionView.Type? { nil }
 }

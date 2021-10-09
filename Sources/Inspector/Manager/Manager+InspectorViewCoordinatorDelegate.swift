@@ -49,7 +49,7 @@ extension Manager {
                 closure()
 
             case let .inspect(reference):
-                guard let self = self, let sourceView = reference.rootView else { return }
+                guard let self = self, let sourceView = reference.underlyingView else { return }
 
                 self.startElementInspectorCoordinator(
                     for: reference,

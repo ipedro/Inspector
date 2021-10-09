@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorSizeLibrary {
-    final class UIButtonSizeViewModel: InspectorElementViewModelProtocol {
+    final class UIButtonSizeViewModel: InspectorElementSectionItemProtocol {
         private enum Properties: String, Swift.CaseIterable {
             case contentEdgeInsets = "Content Insets"
             case titleEdgeInsets = "Title Insets"

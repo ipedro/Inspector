@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIWindowAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UIWindowAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Window"
 
         private weak var window: UIWindow?

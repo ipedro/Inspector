@@ -20,21 +20,24 @@
 
 import UIKit
 
-extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewControllerDelegate {
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                willUpdate property: InspectorElementViewModelProperty)
+extension ElementInspectorFormPanelViewController: InspectorElementSectionViewControllerDelegate
+{
+    func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
+                                               willUpdate property: InspectorElementViewModelProperty)
     {
         willUpdate(property: property)
     }
 
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                didUpdate property: InspectorElementViewModelProperty)
+    func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
+                                               didUpdate property: InspectorElementViewModelProperty)
     {
-        let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
+        let updateOperation = MainThreadOperation(name: "update sections")
+        { [weak self] in
             guard
                 let self = self,
-                let item = self.itemsDictionary[formItemController]
-            else {
+                let item = self.sections[sectionViewController]
+            else
+            {
                 return
             }
 
@@ -48,18 +51,21 @@ extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewC
         formDelegate?.addOperationToQueue(updateOperation)
     }
 
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                willChangeFrom oldState: InspectorElementItemState?,
-                                                to newState: InspectorElementItemState)
+    func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
+                                               willChangeFrom oldState: InspectorElementItemState?,
+                                               to newState: InspectorElementItemState)
     {
-        animatePanel { [weak self] in
-            formItemController.state = newState
+        animatePanel
+        { [weak self] in
+            sectionViewController.state = newState
 
             guard let self = self else { return }
 
-            switch newState {
-            case .expanded where self.panelSelectionMode == .single:
-                for aFormItemController in self.formPanels where aFormItemController !== formItemController {
+            switch newState
+            {
+            case .expanded where self.panelSelectionMode == .singleSelection:
+                for aFormItemController in self.formPanels where aFormItemController !== sectionViewController
+                {
                     aFormItemController.state = .collapsed
                 }
 
@@ -72,22 +78,22 @@ extension ElementInspectorFormPanelViewController: ElementInspectorFormItemViewC
         }
     }
 
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                didTap imagePreviewControl: ImagePreviewControl)
+    func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
+                                               didTap imagePreviewControl: ImagePreviewControl)
     {
         selectedImagePreviewControl = imagePreviewControl
         formDelegate?.elementInspectorFormPanel(self, didTap: imagePreviewControl)
     }
 
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                didTap colorPreviewControl: ColorPreviewControl)
+    func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
+                                               didTap colorPreviewControl: ColorPreviewControl)
     {
         selectedColorPreviewControl = colorPreviewControl
         formDelegate?.elementInspectorFormPanel(self, didTap: colorPreviewControl)
     }
 
-    func elementInspectorFormItemViewController(_ formItemController: ElementInspectorFormItemViewController,
-                                                didTap optionListControl: OptionListControl)
+    func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
+                                               didTap optionListControl: OptionListControl)
     {
         selectedOptionListControl = optionListControl
         formDelegate?.elementInspectorFormPanel(self, didTap: optionListControl)

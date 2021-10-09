@@ -18,23 +18,39 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Inspector
 import UIKit
 
-enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+enum ViewHierarchyInterfaceStyle {
+    case unspecified
+    case light
+    case dark
+}
 
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
+@available(iOS 12.0, *)
+extension ViewHierarchyInterfaceStyle: RawRepresentable {
+    typealias RawValue = UIUserInterfaceStyle
+
+    init?(rawValue: UIUserInterfaceStyle) {
+        switch rawValue {
+        case .unspecified:
+            self = .unspecified
+        case .light:
+            self = .light
+        case .dark:
+            self = .dark
+        @unknown default:
+            return nil
         }
     }
 
-    func sections(for referenceView: UIView) -> InspectorElementSections {
+    var rawValue: UIUserInterfaceStyle {
         switch self {
-        case .customButton:
-            return .init(with: CustomButtonAttributesViewModel(view: referenceView))
+        case .unspecified:
+            return .unspecified
+        case .light:
+            return .light
+        case .dark:
+            return .dark
         }
     }
 }

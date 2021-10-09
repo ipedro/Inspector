@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIDatePickerAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UIDatePickerAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Date Picker"
 
         private weak var datePicker: UIDatePicker?

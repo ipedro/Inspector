@@ -21,5 +21,5 @@
 import Foundation
 
 enum ElementInspectorPanelSelectionMode: Swift.CaseIterable {
-    case single, multiple
+    case singleSelection, multipleSelection
 }

@@ -20,7 +20,7 @@
 
 import UIKit
 
-class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemView {
+class InspectorElementSectionContentView: BaseView, InspectorElementFormSectionView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -31,8 +31,8 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
         set { header.subtitle = newValue }
     }
 
-    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementFormItemView {
-        ElementInspectorFormItemContentView(header: SectionHeader.formSectionTitle(), state: inititalState, frame: .zero)
+    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementFormSectionView {
+        InspectorElementSectionContentView(header: SectionHeader.formSectionTitle(), state: inititalState, frame: .zero)
     }
 
     // MARK: - Properties
@@ -167,7 +167,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
     }
 }
 
-@objc private extension ElementInspectorFormItemContentView {
+@objc private extension InspectorElementSectionContentView {
     func changeState() {
         var newState = state
         newState.toggle()
@@ -192,7 +192,7 @@ class ElementInspectorFormItemContentView: BaseView, InspectorElementFormItemVie
 // MARK: - UIContextMenuInteractionDelegate
 
 @available(iOS 13.0, *)
-extension ElementInspectorFormItemContentView: UIContextMenuInteractionDelegate {
+extension InspectorElementSectionContentView: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         UIContextMenuConfiguration(
             identifier: nil,

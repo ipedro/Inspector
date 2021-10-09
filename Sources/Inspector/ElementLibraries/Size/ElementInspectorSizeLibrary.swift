@@ -50,32 +50,28 @@ enum ElementInspectorSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIte
         }
     }
 
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
-        fatalError()
-    }
-
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
+    func sections(for referenceView: UIView) -> InspectorElementSections {
         switch self {
         case .button:
-            return .single(UIButtonSizeViewModel(view: referenceView))
+            return .init(with: UIButtonSizeViewModel(view: referenceView))
 
         case .label:
-            return .single(UILabelSizeViewModel(view: referenceView))
+            return .init(with: UILabelSizeViewModel(view: referenceView))
 
         case .segmentedControl:
-            return .single(UISegmentedControlSizeViewModel(view: referenceView))
+            return .init(with: UISegmentedControlSizeViewModel(view: referenceView))
 
         case .scrollView:
-            return .single(UIScrollViewSizeViewModel(view: referenceView))
+            return .init(with: UIScrollViewSizeViewModel(view: referenceView))
             
         case .viewFrame:
-            return .single(UIViewFrameSizeViewModel(view: referenceView))
+            return .init(with: UIViewFrameSizeViewModel(view: referenceView))
 
         case .contentLayoutPriority:
-            return .single(ContentLayoutPrioritySizeViewModel(view: referenceView))
+            return .init(with: ContentLayoutPrioritySizeViewModel(view: referenceView))
 
         case .layoutConstraints:
-            let element = ViewHierarchyElement(referenceView, iconProvider: .default)
+            let element = ViewHierarchyElement(with: referenceView, iconProvider: .default)
 
             let viewModels = element.constraintElements.map {
                 NSLayoutConstraintSizeViewModel(with: $0)
@@ -84,26 +80,26 @@ enum ElementInspectorSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIte
             let horizontal = viewModels.filter { $0.axis == .horizontal }
             let vertical = viewModels.filter { $0.axis == .vertical }
 
-            var items: [ElementInspectorFormItem] = []
+            var sections: InspectorElementSections = []
 
             if horizontal.isEmpty == false {
-                items.append(
-                    ElementInspectorFormItem(
+                sections.append(
+                    InspectorElementSection(
                         title: "Horizontal Constraints",
                         rows: horizontal
                     )
                 )
             }
             if vertical.isEmpty == false {
-                items.append(
-                    ElementInspectorFormItem(
+                sections.append(
+                    InspectorElementSection(
                         title: "Vertical Constraints",
                         rows: vertical
                     )
                 )
             }
 
-            return items
+            return sections
         }
     }
 }

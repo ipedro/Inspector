@@ -22,13 +22,14 @@
 import Foundation
 import UIKit
 
+typealias ViewHierarchyControllerIconProvider = Inspector.Provider<UIViewController,UIImage?>
 typealias ViewHierarchyElementIconProvider = Inspector.Provider<UIView?,UIImage?>
 
 struct ViewHierarchyElementCatalog {
     let libraries: [ElementInspectorPanel: [InspectorElementLibraryProtocol]]
     let iconProvider: ViewHierarchyElementIconProvider
 
-    func makeElement(from rootView: UIView) -> ViewHierarchyElement {
-        ViewHierarchyElement(rootView, iconProvider: iconProvider)
+    func makeElement(from view: UIView) -> ViewHierarchyElement {
+        ViewHierarchyElement(with: view, iconProvider: iconProvider)
     }
 }

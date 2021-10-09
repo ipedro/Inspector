@@ -20,6 +20,7 @@
 
 import UIKit
 
+/// A protocol that maps the public properties of a UIView.
 protocol ViewHierarchyElementProtocol {
     var viewIdentifier: ObjectIdentifier { get }
 
@@ -64,6 +65,10 @@ protocol ViewHierarchyElementProtocol {
     var shortElementDescription: String { get }
 
     var elementDescription: String { get }
+
+    var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle { get }
+
+    var traitCollection: UITraitCollection { get }
 }
 
 extension ViewHierarchyElementProtocol {

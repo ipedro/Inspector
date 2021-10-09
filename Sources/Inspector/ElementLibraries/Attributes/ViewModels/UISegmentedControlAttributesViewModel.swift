@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UISegmentedControlAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UISegmentedControlAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Segmented Control"
 
         private weak var segmentedControl: UISegmentedControl?

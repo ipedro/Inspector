@@ -21,7 +21,7 @@
 import MapKit
 
 extension ElementInspectorAttributesLibrary {
-    final class MKMapViewAttributesViewModel: InspectorElementViewModelProtocol {
+    final class MKMapViewAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Map View"
 
         private weak var mapView: MKMapView?

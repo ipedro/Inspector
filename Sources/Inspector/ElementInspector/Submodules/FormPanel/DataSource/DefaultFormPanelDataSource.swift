@@ -21,19 +21,19 @@
 import UIKit
 
 struct DefaultFormPanelDataSource: ElementInspectorFormPanelDataSource {
-    let items: [ElementInspectorFormItem]
+    let sections: InspectorElementSections
 
-    init(items: [ElementInspectorFormItem]) {
-        self.items = items
+    init(sections: InspectorElementSections) {
+        self.sections = sections
     }
 
-    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormItemView.Type {
-        let customViewType = items[indexPath.section].rows[indexPath.row].customViewType
+    func typeForRow(at indexPath: IndexPath) -> InspectorElementFormSectionView.Type {
+        let customViewType = sections[indexPath.section].rows[indexPath.row].customView
 
-        return customViewType ?? ElementInspectorFormItemContentView.self
+        return customViewType ?? InspectorElementSectionContentView.self
     }
 
-    func viewForProperty(at indexPath: IndexPath) -> InspectorElementFormItemView {
+    func viewForProperty(at indexPath: IndexPath) -> InspectorElementFormSectionView {
         let FormItemView = typeForRow(at: indexPath)
 
         let itemView = FormItemView.makeItemView(with: indexPath.isFirst ? .expanded : .collapsed)

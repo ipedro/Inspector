@@ -29,9 +29,9 @@ extension Array where Element == InspectorElementLibraryProtocol {
         }
     }
 
-    func formItems(for view: UIView?) -> [ElementInspectorFormItem] {
+    func formItems(for view: UIView?) -> InspectorElementSections {
         guard let view = view else { return [] }
 
-        return map { $0.items(for: view) }.flatMap { $0 }
+        return map { $0.sections(for: view) }.flatMap { $0 }
     }
 }

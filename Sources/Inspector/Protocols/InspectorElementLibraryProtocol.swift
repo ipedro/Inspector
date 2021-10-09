@@ -24,15 +24,5 @@ import UIKit
 public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource {
     var targetClass: AnyClass { get }
 
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem]
-
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol?
-}
-
-// MARK: Convenience Extension
-
-public extension InspectorElementLibraryProtocol {
-    func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
-        return .single(viewModel(for: referenceView))
-    }
+    func sections(for referenceView: UIView) -> InspectorElementSections
 }

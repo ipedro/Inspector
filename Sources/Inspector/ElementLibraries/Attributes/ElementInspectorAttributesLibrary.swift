@@ -30,22 +30,19 @@ enum ElementInspectorAttributesLibrary: Swift.CaseIterable, InspectorElementLibr
     case imageView
     case label
     case mapView
+    case navigationBar
     case scrollView
     case segmentedControl
     case slider
-    case `switch`
     case stackView
+    case `switch`
+    case tabBar
     case textField
     case textView
     case view
-    case window
-    case navigationBarStandardAppearance
-    case navigationBarCompactAppearance
-    case navigationBarScrollEdgeAppearance
-    case navigationBarCompactScrollEdgeAppearance
-    case navigationBar
-    case tabBar
     case webView
+    case window
+
     case coreAnimationLayer
 
     // MARK: - InspectorElementLibraryProtocol
@@ -55,11 +52,7 @@ enum ElementInspectorAttributesLibrary: Swift.CaseIterable, InspectorElementLibr
         case .coreAnimationLayer:
             return UIView.self
 
-        case .navigationBar,
-             .navigationBarStandardAppearance,
-             .navigationBarCompactAppearance,
-             .navigationBarScrollEdgeAppearance,
-             .navigationBarCompactScrollEdgeAppearance:
+        case .navigationBar:
             return UINavigationBar.self
 
         case .window:
@@ -118,87 +111,81 @@ enum ElementInspectorAttributesLibrary: Swift.CaseIterable, InspectorElementLibr
         }
     }
 
-    func viewModel(for referenceView: UIView) -> InspectorElementViewModelProtocol? {
+    func sections(for referenceView: UIView) -> InspectorElementSections {
         switch self {
         case .coreAnimationLayer:
-            return CALayerAttributesViewModel(view: referenceView)
+            return .init(with: CALayerAttributesViewModel(view: referenceView))
 
         case .window:
-            return UIWindowAttributesViewModel(view: referenceView)
+            return .init(with: UIWindowAttributesViewModel(view: referenceView))
 
         case .navigationBar:
-            return UINavigationBarAttributesViewModel(view: referenceView)
+            var section = InspectorElementSection()
 
-        case .navigationBarStandardAppearance:
-            guard #available(iOS 13.0, *) else { return nil }
-            return UINavigationBarAppearanceAttributesViewModel(type: .standard, view: referenceView)
+            if #available(iOS 13.0, *) {
+                section.rows.append(UINavigationBarAppearanceAttributesViewModel(type: .standard, view: referenceView))
+                section.rows.append(UINavigationBarAppearanceAttributesViewModel(type: .compact, view: referenceView))
+                section.rows.append(UINavigationBarAppearanceAttributesViewModel(type: .scrollEdge, view: referenceView))
+            }
 
-        case .navigationBarCompactAppearance:
-            guard #available(iOS 13.0, *) else { return nil }
-            return UINavigationBarAppearanceAttributesViewModel(type: .compact, view: referenceView)
+            if #available(iOS 15.0, *) {
+                section.rows.append(UINavigationBarAppearanceAttributesViewModel(type: .compactScrollEdge, view: referenceView))
+            }
 
-        case .navigationBarScrollEdgeAppearance:
-            guard #available(iOS 13.0, *) else { return nil }
-            return UINavigationBarAppearanceAttributesViewModel(type: .scrollEdge, view: referenceView)
+            section.rows.append(UINavigationBarAttributesViewModel(view: referenceView))
 
-        case .navigationBarCompactScrollEdgeAppearance:
-            #if swift(>=5.5)
-            guard #available(iOS 15.0, *) else { return nil }
-            return UINavigationBarAppearanceAttributesViewModel(type: .compactScrollEdge, view: referenceView)
-            #else
-            return nil
-            #endif
+            return [section]
 
         case .activityIndicator:
-            return UIActivityIndicatorViewAttributesViewModel(view: referenceView)
+            return .init(with: UIActivityIndicatorViewAttributesViewModel(view: referenceView))
 
         case .button:
-            return UIButtonAttributesViewModel(view: referenceView)
+            return .init(with: UIButtonAttributesViewModel(view: referenceView))
 
         case .control:
-            return UIControlAttributesViewModel(view: referenceView)
+            return .init(with: UIControlAttributesViewModel(view: referenceView))
 
         case .datePicker:
-            return UIDatePickerAttributesViewModel(view: referenceView)
+            return .init(with: UIDatePickerAttributesViewModel(view: referenceView))
 
         case .imageView:
-            return UIImageViewAttributesViewModel(view: referenceView)
+            return .init(with: UIImageViewAttributesViewModel(view: referenceView))
 
         case .label:
-            return UILabelAttributesViewModel(view: referenceView)
+            return .init(with: UILabelAttributesViewModel(view: referenceView))
 
         case .mapView:
-            return MKMapViewAttributesViewModel(view: referenceView)
+            return .init(with: MKMapViewAttributesViewModel(view: referenceView))
 
         case .scrollView:
-            return UIScrollViewAttributesViewModel(view: referenceView)
+            return .init(with: UIScrollViewAttributesViewModel(view: referenceView))
 
         case .segmentedControl:
-            return UISegmentedControlAttributesViewModel(view: referenceView)
+            return .init(with: UISegmentedControlAttributesViewModel(view: referenceView))
 
         case .slider:
-            return UISliderAttributesViewModel(view: referenceView)
+            return .init(with: UISliderAttributesViewModel(view: referenceView))
 
         case .switch:
-            return UISwitchAttributesViewModel(view: referenceView)
+            return .init(with: UISwitchAttributesViewModel(view: referenceView))
 
         case .stackView:
-            return UIStackViewAttributesViewModel(view: referenceView)
+            return .init(with: UIStackViewAttributesViewModel(view: referenceView))
 
         case .textField:
-            return UITextFieldAttributesViewModel(view: referenceView)
+            return .init(with: UITextFieldAttributesViewModel(view: referenceView))
 
         case .textView:
-            return UITextViewAttributesViewModel(view: referenceView)
+            return .init(with: UITextViewAttributesViewModel(view: referenceView))
 
         case .view:
-            return UIViewAttributesViewModel(view: referenceView)
+            return .init(with: UIViewAttributesViewModel(view: referenceView))
 
         case .tabBar:
-            return UITabBarAttributesViewModel(view: referenceView)
+            return .init(with: UITabBarAttributesViewModel(view: referenceView))
 
         case .webView:
-            return nil
+            return []
         }
     }
 }

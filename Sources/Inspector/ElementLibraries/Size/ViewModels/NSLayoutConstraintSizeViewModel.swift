@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorSizeLibrary {
-    struct NSLayoutConstraintSizeViewModel: InspectorElementViewModelProtocol, Hashable {
+    final class NSLayoutConstraintSizeViewModel: InspectorElementSectionItemProtocol {
         typealias Axis = LayoutConstraintElement.Axis
 
         private enum Property: String, Swift.CaseIterable {
@@ -46,7 +46,7 @@ extension ElementInspectorSizeLibrary {
 
         var subtitle: String? { element.underlyingConstraint?.safeIdentifier }
 
-        var customViewType: InspectorElementFormItemView.Type? {
+        var customView: InspectorElementFormSectionView.Type? {
             ElementInspectorFormLayoutConstraintView.self
         }
 

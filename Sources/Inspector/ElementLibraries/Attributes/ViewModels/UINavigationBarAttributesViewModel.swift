@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UINavigationBarAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UINavigationBarAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Navigation Bar"
 
         private weak var navigationBar: UINavigationBar?

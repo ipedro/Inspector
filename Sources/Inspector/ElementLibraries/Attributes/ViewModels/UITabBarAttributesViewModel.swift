@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UITabBarAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UITabBarAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Tab Bar"
 
         private weak var tabBar: UITabBar?

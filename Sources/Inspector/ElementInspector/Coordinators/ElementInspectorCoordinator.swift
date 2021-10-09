@@ -48,7 +48,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     private lazy var slidingPanelAnimator = ElementInspectorSlidingPanelAnimator()
 
-    private var rootWindow: UIWindow? { rootElement.rootView?.window }
+    private var rootWindow: UIWindow? { rootElement.underlyingView?.window }
 
     var isCapableOfSidePresentation: Bool {
         guard
@@ -57,7 +57,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         else {
             return false
         }
-        
+
         let minimumSize = ElementInspector.configuration.panelSidePresentationMinimumContainerSize
 
         return rootWindow.frame.width >= minimumSize.width && rootWindow.frame.height >= minimumSize.height
@@ -167,8 +167,16 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     func panelViewController(for panel: ElementInspectorPanel, with element: ViewHierarchyElement) -> ElementInspectorPanelViewController {
         switch panel {
         case .identity, .attributes, .size:
+            let dataSource = DefaultFormPanelDataSource(
+                sections: {
+                    guard let libraries = catalog.libraries[panel] else { return [] }
+
+                    return libraries.formItems(for: element.underlyingView)
+                }()
+            )
+
             return ElementInspectorFormPanelViewController().then {
-                $0.dataSource = DefaultFormPanelDataSource(items: catalog.libraries[panel]?.formItems(for: element.rootView) ?? [])
+                $0.dataSource = dataSource
                 $0.formDelegate = self
             }
 
@@ -181,7 +189,6 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
             ).then {
                 $0.delegate = self
             }
-
         }
     }
 
@@ -265,7 +272,7 @@ extension ElementInspectorCoordinator: DismissablePresentationProtocol {
 
 private extension ElementInspectorCoordinator {
     func injectElementInspectorsForViewHierarchy(inside navigationController: ElementInspectorNavigationController) {
-        let populatedElements = snapshot.inspectableElements.filter { $0.rootView === rootElement.rootView }
+        let populatedElements = snapshot.inspectableElements.filter { $0.underlyingView === rootElement.underlyingView }
 
         guard let populatedElement = populatedElements.first else {
             let rootViewController = Self.makeElementInspectorViewController(

@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIStackViewAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UIStackViewAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Stack View"
 
         private weak var stackView: UIStackView?

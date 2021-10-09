@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UISliderAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UISliderAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Slider"
 
         private weak var slider: UISlider?

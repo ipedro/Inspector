@@ -22,7 +22,7 @@ import QuartzCore
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class CALayerAttributesViewModel: InspectorElementViewModelProtocol {
+    final class CALayerAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Core Animation Layer"
 
         private weak var layer: CALayer?

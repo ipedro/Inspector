@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UILabelAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UILabelAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Label"
 
         private weak var label: UILabel?

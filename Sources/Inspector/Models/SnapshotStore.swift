@@ -20,27 +20,35 @@
 
 import Foundation
 
-public struct ElementInspectorFormItem {
-    public var title: String?
-    public var rows: [InspectorElementViewModelProtocol]
+final class SnapshotStore<Snapshot>: NSObject {
+    typealias Provider = Inspector.Provider<Void, Snapshot?>
 
-    public init(
-        title: String? = nil,
-        rows: [InspectorElementViewModelProtocol]
-    ) {
-        self.title = title
-        self.rows = rows
-    }
-}
+    var delay: TimeInterval
 
-// MARK: - Array Extension
+    let first: Snapshot
 
-public extension Array where Element == ElementInspectorFormItem {
-    static func single(_ viewModel: InspectorElementViewModelProtocol?) -> Self {
-        guard let viewModel = viewModel else {
-            return []
+    var latest: Snapshot { history.last ?? first }
+
+    private lazy var history: [Snapshot] = [first]
+
+    private var snapshotProvider: Provider? {
+        didSet {
+            debounce(#selector(makeSnapshot), delay: delay)
         }
+    }
 
-        return [.init(rows: [viewModel])]
+    init(_ initial: Snapshot, delay: TimeInterval = Inspector.configuration.snapshotExpirationTimeInterval) {
+        self.first = initial
+        self.delay = delay
+    }
+
+    func scheduleSnapshot(_ provider: Provider) {
+        snapshotProvider = provider
+    }
+
+    @objc private func makeSnapshot() {
+        guard let newSnapshot = snapshotProvider?.value else { return }
+
+        history.append(newSnapshot)
     }
 }

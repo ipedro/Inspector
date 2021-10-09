@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UIButtonAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UIButtonAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Button"
 
         private weak var button: UIButton?

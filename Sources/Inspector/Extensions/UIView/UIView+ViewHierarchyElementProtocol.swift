@@ -21,6 +21,14 @@
 import UIKit
 
 extension UIView: ViewHierarchyElementProtocol {
+    var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle {
+        if #available(iOS 13.0, *) {
+            return .init(rawValue: overrideUserInterfaceStyle) ?? .unspecified
+        } else {
+            return .unspecified
+        }
+    }
+
     var isInternalView: Bool {
         _isInternalView
     }

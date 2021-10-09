@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UITextViewAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UITextViewAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Text View"
 
         private weak var textView: UITextView?

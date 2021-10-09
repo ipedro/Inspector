@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorIdentityLibrary {
-    final class PreviewIdentityViewModel: InspectorElementViewModelProtocol {
+    final class PreviewIdentityViewModel: InspectorElementSectionItemProtocol {
         let title: String = "Preview"
 
         private let element: ViewHierarchyElement
@@ -29,7 +29,7 @@ extension ElementInspectorIdentityLibrary {
         private var isHighlightingViews: Bool { element.containsVisibleHighlightViews }
 
         init(view: UIView) {
-            self.element = .init(view, iconProvider: .default)
+            self.element = .init(with: view, iconProvider: .default)
         }
 
         private enum Property: String, Swift.CaseIterable {
@@ -42,7 +42,7 @@ extension ElementInspectorIdentityLibrary {
             Property.allCases.compactMap { property in
                 switch property {
                 case .preview:
-                    guard let view = element.rootView else { return nil }
+                    guard let view = element.underlyingView else { return nil }
                     return .preview(target: .init(view: view))
 
                 case .backgroundColor:
@@ -55,12 +55,12 @@ extension ElementInspectorIdentityLibrary {
                         }
                     )
                 case .highlightView:
-                    guard self.element.rootView?.hightlightView != nil else { return nil }
+                    guard self.element.underlyingView?.hightlightView != nil else { return nil }
                     return .switch(
                         title: property.rawValue,
                         isOn: { self.element.containsVisibleHighlightViews },
                         handler: { isOn in
-                            self.element.rootView?.allSubviews.forEach {
+                            self.element.underlyingView?.allSubviews.forEach {
                                 guard let hightlightView = $0.hightlightView else { return }
 
                                 hightlightView.isHidden = !isOn

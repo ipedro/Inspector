@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorAttributesLibrary {
-    final class UISwitchAttributesViewModel: InspectorElementViewModelProtocol {
+    final class UISwitchAttributesViewModel: InspectorElementSectionItemProtocol {
         let title = "Switch"
 
         private weak var switchControl: UISwitch?

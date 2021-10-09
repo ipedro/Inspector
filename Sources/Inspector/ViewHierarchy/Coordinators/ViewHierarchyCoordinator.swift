@@ -26,6 +26,8 @@ typealias ViewHierarchyCoordinatorDelegate = ViewHierarchyActionableProtocol & A
 protocol ViewHierarchyCoordinatorDataSource: AnyObject {
     var rootView: UIView? { get }
 
+    var rootViewController: UIViewController? { get }
+
     var layers: [ViewHierarchyLayer] { get }
 
     var colorScheme: ViewHierarchyColorScheme { get }
@@ -159,14 +161,28 @@ extension ViewHierarchyCoordinator {
     private func makeSnapshot() -> ViewHierarchySnapshot? {
         guard
             let dataSource = dataSource,
-            let rootView = dataSource.rootView
+            let view = dataSource.rootView,
+            let viewController = dataSource.rootViewController
         else {
             return nil
         }
 
-        let root = dataSource.catalog.makeElement(from: rootView)
+        let rootElement = dataSource.catalog.makeElement(from: view)
 
-        return ViewHierarchySnapshot(layers: dataSource.layers, rootElement: root)
+        let rootViewController = ViewHierarchyController(
+            with: viewController,
+            depth: rootElement.depth,
+            isCollapsed: rootElement.isCollapsed,
+            parent: .none
+        )
+
+        rootElement.viewController = rootViewController
+
+        return ViewHierarchySnapshot(
+            layers: dataSource.layers,
+            rootElement: rootElement,
+            rootViewController: rootViewController
+        )
     }
 
     func showHighlight(_ show: Bool, for element: ViewHierarchyElement, includeSubviews: Bool = true) {
@@ -177,7 +193,7 @@ extension ViewHierarchyCoordinator {
             return
         }
 
-        element.rootView?.allSubviews.forEach {
+        element.underlyingView?.allSubviews.forEach {
             guard let highlightView = $0 as? HighlightView else { return }
             highlightView.isHidden = isHidden
         }

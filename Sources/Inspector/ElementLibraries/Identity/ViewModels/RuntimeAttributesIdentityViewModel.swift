@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorIdentityLibrary {
-    final class RuntimeAttributesIdentityViewModel: InspectorElementViewModelProtocol {
+    final class RuntimeAttributesIdentityViewModel: InspectorElementSectionItemProtocol {
         let title = "Runtime Attributes"
 
         private(set) weak var object: NSObject?

@@ -21,7 +21,7 @@
 import UIKit
 
 extension ElementInspectorSizeLibrary {
-    final class ContentLayoutPrioritySizeViewModel: InspectorElementViewModelProtocol {
+    final class ContentLayoutPrioritySizeViewModel: InspectorElementSectionItemProtocol {
         private enum Properties: String, Swift.CaseIterable {
             case groupHuggingPriority = "Content Hugging Priority"
             case horizontalHugging = "Horizontal Hugging"

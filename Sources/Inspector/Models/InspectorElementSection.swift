@@ -18,23 +18,46 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Inspector
-import UIKit
+import Foundation
 
-enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+/// An array of element inspector sections.
+public typealias InspectorElementSections = [InspectorElementSection]
 
-    var targetClass: AnyClass {
-        switch self {
-        case .customButton:
-            return CustomButton.self
-        }
+/// An object that represents an inspector section.
+public struct InspectorElementSection {
+    public var title: String?
+    public var rows: [InspectorElementSectionItemProtocol]
+
+    public init(title: String? = nil, rows: [InspectorElementSectionItemProtocol] = []) {
+        self.title = title
+        self.rows = rows
     }
 
-    func sections(for referenceView: UIView) -> InspectorElementSections {
-        switch self {
-        case .customButton:
-            return .init(with: CustomButtonAttributesViewModel(view: referenceView))
+    public init(title: String? = nil, rows: InspectorElementSectionItemProtocol...) {
+        self.title = title
+        self.rows = rows
+    }
+}
+
+// MARK: - Array Extensions
+
+public extension InspectorElementSections {
+    init(with item: InspectorElementSectionItemProtocol?) {
+        if let item = item {
+            self = [InspectorElementSection(rows: item)]
         }
+        else {
+            self = InspectorElementSections()
+        }
+    }
+}
+
+public extension Array where Element == InspectorElementSectionItemProtocol {
+    mutating func append(_ newElement: Element?) {
+        guard let newElement = newElement else {
+            return
+        }
+
+        append(newElement)
     }
 }
