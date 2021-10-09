@@ -21,6 +21,7 @@
 import UIKit
 
 enum ElementInspectorSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIterable {
+    case button
     case segmentedControl
     case scrollView
     case label
@@ -30,6 +31,9 @@ enum ElementInspectorSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIte
 
     var targetClass: AnyClass {
         switch self {
+        case .button:
+            return UIButton.self
+
         case .segmentedControl:
             return UISegmentedControl.self
 
@@ -52,6 +56,9 @@ enum ElementInspectorSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIte
 
     func items(for referenceView: UIView) -> [ElementInspectorFormItem] {
         switch self {
+        case .button:
+            return .single(UIButtonSizeViewModel(view: referenceView))
+
         case .label:
             return .single(UILabelSizeViewModel(view: referenceView))
 
