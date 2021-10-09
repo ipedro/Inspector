@@ -20,8 +20,8 @@
 
 import UIKit
 
-public extension InspectorElementViewModelProperty {
-    static func cgColorPicker(title: String, color: @escaping CGColorProvider, handler: @escaping CGColorHandler) -> InspectorElementViewModelProperty {
+public extension InspectorElementProperty {
+    static func cgColorPicker(title: String, color: @escaping CGColorProvider, handler: @escaping CGColorHandler) -> InspectorElementProperty {
         .colorPicker(
             title: title,
             color: { UIColor(cgColor: color()) },

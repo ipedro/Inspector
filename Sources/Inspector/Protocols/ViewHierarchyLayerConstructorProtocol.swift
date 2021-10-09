@@ -21,7 +21,6 @@
 import UIKit
 
 protocol ViewHierarchyLayerConstructorProtocol {
-
     var isShowingLayers: Bool { get }
 
     var isShowingAllPopulatedLayers: Bool { get }

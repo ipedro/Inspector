@@ -20,14 +20,14 @@
 
 import Foundation
 
-extension InspectorElementViewModelProperty: Hashable {
+extension InspectorElementProperty: Hashable {
     private var idenfitifer: String {
         String(describing: self)
     }
 
     public static func == (
-        lhs: InspectorElementViewModelProperty,
-        rhs: InspectorElementViewModelProperty
+        lhs: InspectorElementProperty,
+        rhs: InspectorElementProperty
     ) -> Bool {
         lhs.idenfitifer == rhs.idenfitifer
     }

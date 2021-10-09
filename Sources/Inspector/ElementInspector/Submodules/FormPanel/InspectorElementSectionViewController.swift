@@ -38,12 +38,12 @@ protocol InspectorElementSectionViewControllerDelegate: OperationQueueManagerPro
 
     func inspectorElementSectionViewController(
         _ sectionViewController: InspectorElementSectionViewController,
-        didUpdate property: InspectorElementViewModelProperty
+        didUpdate property: InspectorElementProperty
     )
 
     func inspectorElementSectionViewController(
         _ sectionViewController: InspectorElementSectionViewController,
-        willUpdate property: InspectorElementViewModelProperty
+        willUpdate property: InspectorElementProperty
     )
 
     func inspectorElementSectionViewController(
@@ -56,13 +56,13 @@ protocol InspectorElementSectionViewControllerDelegate: OperationQueueManagerPro
 final class InspectorElementSectionViewController: UIViewController, DataReloadingProtocol {
     weak var delegate: InspectorElementSectionViewControllerDelegate?
 
-    let viewCode: InspectorElementFormSectionView
+    let viewCode: InspectorElementSectionView
 
-    private var viewModel: InspectorElementSectionItemProtocol
+    private var viewModel: InspectorElementSectionDataSource
 
     init(
-        viewModel: InspectorElementSectionItemProtocol,
-        viewCode: InspectorElementFormSectionView
+        viewModel: InspectorElementSectionDataSource,
+        viewCode: InspectorElementSectionView
     ) {
         self.viewModel = viewModel
         self.viewCode = viewCode
@@ -101,8 +101,8 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
         }
     }
 
-    private lazy var viewForProperties: [InspectorElementViewModelProperty: UIView] = {
-        var dict = [InspectorElementViewModelProperty: UIView]()
+    private lazy var viewForProperties: [InspectorElementProperty: UIView] = {
+        var dict = [InspectorElementProperty: UIView]()
 
         for (index, property) in viewModel.properties.enumerated() {
             let itemView: UIView? = {
@@ -447,7 +447,7 @@ extension InspectorElementSectionViewController: ImagePreviewControlDelegate {
 
 extension InspectorElementSectionViewController: InspectorElementFormItemViewDelegate {
     func inspectorElementFormItemView(
-        _ item: InspectorElementFormSectionView,
+        _ item: InspectorElementSectionView,
         willChangeFrom oldState: InspectorElementItemState?,
         to newState: InspectorElementItemState
     ) {

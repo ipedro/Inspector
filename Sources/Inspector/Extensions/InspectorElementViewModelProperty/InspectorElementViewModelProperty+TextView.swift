@@ -20,11 +20,11 @@
 
 import UIKit
 
-public extension InspectorElementViewModelProperty {
+public extension InspectorElementProperty {
     static func dataDetectorType(
         textView: UITextView,
         dataDetectorType: UIDataDetectorTypes
-    ) -> InspectorElementViewModelProperty {
+    ) -> InspectorElementProperty {
         .switch(
             title: dataDetectorType.description,
             isOn: { textView.dataDetectorTypes.contains(dataDetectorType) }

@@ -20,7 +20,7 @@
 
 import UIKit
 
-class InspectorElementSectionContentView: BaseView, InspectorElementFormSectionView {
+class InspectorElementSectionContentView: BaseView, InspectorElementSectionView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -31,7 +31,7 @@ class InspectorElementSectionContentView: BaseView, InspectorElementFormSectionV
         set { header.subtitle = newValue }
     }
 
-    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementFormSectionView {
+    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementSectionView {
         InspectorElementSectionContentView(header: SectionHeader.formSectionTitle(), state: inititalState, frame: .zero)
     }
 

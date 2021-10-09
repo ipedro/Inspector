@@ -20,13 +20,13 @@
 
 import UIKit
 
-public extension InspectorElementViewModelProperty {
+public extension InspectorElementProperty {
     static func fontNamePicker(
         title: String,
         emptyTitle: String = .systemFontFamilyName,
         fontProvider: @escaping FontProvider,
         handler: @escaping FontHandler
-    ) -> InspectorElementViewModelProperty {
+    ) -> InspectorElementProperty {
         .optionsList(
             title: title,
             emptyTitle: emptyTitle,
@@ -54,7 +54,7 @@ public extension InspectorElementViewModelProperty {
         title: String,
         fontProvider: @escaping FontProvider,
         handler: @escaping FontHandler
-    ) -> InspectorElementViewModelProperty {
+    ) -> InspectorElementProperty {
         .cgFloatStepper(
             title: title,
             value: { fontProvider()?.pointSize ?? 0 },

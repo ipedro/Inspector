@@ -23,13 +23,13 @@ import UIKit
 extension ElementInspectorFormPanelViewController: InspectorElementSectionViewControllerDelegate
 {
     func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
-                                               willUpdate property: InspectorElementViewModelProperty)
+                                               willUpdate property: InspectorElementProperty)
     {
         willUpdate(property: property)
     }
 
     func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
-                                               didUpdate property: InspectorElementViewModelProperty)
+                                               didUpdate property: InspectorElementProperty)
     {
         let updateOperation = MainThreadOperation(name: "update sections")
         { [weak self] in

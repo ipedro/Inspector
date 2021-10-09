@@ -499,7 +499,7 @@ final class MyClassAttributes: InspectorElementLibraryItemProtocol {
         case backgroundColor = "Background Color"
     }
     
-    var properties: [InspectorElementViewModelProperty] {
+    var properties: [InspectorElementProperty] {
         Properties.allCases.map { property in
             switch property {
             case .cornerRadius:

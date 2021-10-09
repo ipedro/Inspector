@@ -31,7 +31,7 @@ protocol ElementInspectorFormPanelDelegate: OperationQueueManagerProtocol {
                                    didTap optionListControl: OptionListControl)
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
-                                   didUpdateProperty: InspectorElementViewModelProperty,
+                                   didUpdateProperty property: InspectorElementProperty,
                                    in section: InspectorElementSection)
 }
 
@@ -275,7 +275,7 @@ extension ElementInspectorFormPanelViewController {
         )
     }
 
-    func willUpdate(property: InspectorElementViewModelProperty) {}
+    func willUpdate(property: InspectorElementProperty) {}
 
-    func didUpdate(property: InspectorElementViewModelProperty) {}
+    func didUpdate(property: InspectorElementProperty) {}
 }

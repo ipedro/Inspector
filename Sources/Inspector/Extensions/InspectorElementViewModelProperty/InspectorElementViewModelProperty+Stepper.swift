@@ -20,14 +20,14 @@
 
 import UIKit
 
-public extension InspectorElementViewModelProperty {
+public extension InspectorElementProperty {
     static func integerStepper(
         title: String,
         value: @escaping IntProvider,
         range: @escaping IntClosedRangeProvider,
         stepValue: @escaping IntProvider,
         handler: IntHandler?
-    ) -> InspectorElementViewModelProperty {
+    ) -> InspectorElementProperty {
         .stepper(
             title: title,
             value: { Double(value()) },
@@ -44,7 +44,7 @@ public extension InspectorElementViewModelProperty {
         range: @escaping CGFloatClosedRangeProvider,
         stepValue: @escaping CGFloatProvider,
         handler: CGFloatHandler?
-    ) -> InspectorElementViewModelProperty {
+    ) -> InspectorElementProperty {
         .stepper(
             title: title,
             value: { Double(value()) },
@@ -61,7 +61,7 @@ public extension InspectorElementViewModelProperty {
         range: @escaping (() -> ClosedRange<Float>),
         stepValue: @escaping (() -> Float),
         handler: ((Float) -> Void)?
-    ) -> InspectorElementViewModelProperty {
+    ) -> InspectorElementProperty {
         .stepper(
             title: title,
             value: { Double(value()) },

@@ -34,7 +34,7 @@ enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
     func sections(for referenceView: UIView) -> InspectorElementSections {
         switch self {
         case .customButton:
-            return .init(with: CustomButtonAttributesViewModel(view: referenceView))
+            return .init(with: CustomButtonAttributesSectionDataSource(view: referenceView))
         }
     }
 }

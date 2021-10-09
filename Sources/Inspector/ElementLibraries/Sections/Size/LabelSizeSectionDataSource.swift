@@ -18,44 +18,38 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
+import UIKit
 
-/// An array of element inspector sections.
-public typealias InspectorElementSections = [InspectorElementSection]
-
-/// An object that represents an inspector section.
-public struct InspectorElementSection {
-    public var title: String?
-    public private(set) var rows: [InspectorElementSectionDataSource]
-
-    public init(title: String? = nil, rows: [InspectorElementSectionDataSource] = []) {
-        self.title = title
-        self.rows = rows
-    }
-
-    public init(title: String? = nil, rows: InspectorElementSectionDataSource...) {
-        self.title = title
-        self.rows = rows
-    }
-
-    public mutating func append(_ dataSource: InspectorElementSectionDataSource?) {
-        guard let dataSource = dataSource else {
-            return
+extension ElementSizeLibrary {
+    final class LabelSizeSectionDataSource: InspectorElementSectionDataSource {
+        private enum Properties: String, Swift.CaseIterable {
+            case preferredMaxLayoutWidth = "Desired Width"
         }
 
-        rows.append(dataSource)
-    }
-}
+        let title: String = "Label"
 
-// MARK: - Array Extensions
+        private weak var label: UILabel?
 
-public extension InspectorElementSections {
-    init(with dataSource: InspectorElementSectionDataSource?) {
-        if let dataSource = dataSource {
-            self = [InspectorElementSection(rows: dataSource)]
+        init?(view: UIView) {
+            guard let label = view as? UILabel else { return nil }
+            self.label = label
         }
-        else {
-            self = InspectorElementSections()
+
+        var properties: [InspectorElementProperty] {
+            guard let label = label else { return [] }
+
+            return Properties.allCases.map { property in
+                switch property {
+                case .preferredMaxLayoutWidth:
+                    return .cgFloatStepper(
+                        title: property.rawValue,
+                        value: { label.preferredMaxLayoutWidth },
+                        range: { 0...Double.infinity },
+                        stepValue: { 1 },
+                        handler: { label.preferredMaxLayoutWidth = $0 }
+                    )
+                }
+            }
         }
     }
 }

@@ -21,8 +21,7 @@
 import UIKit
 
 /// Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.*
-public protocol InspectorElementLibraryProtocol: InspectorElementFormDataSource {
+public protocol InspectorElementLibraryProtocol {
     var targetClass: AnyClass { get }
-
     func sections(for referenceView: UIView) -> InspectorElementSections
 }

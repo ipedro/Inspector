@@ -18,44 +18,28 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
+import UIKit
 
-/// An array of element inspector sections.
-public typealias InspectorElementSections = [InspectorElementSection]
+enum ElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
+    case preview
+    case runtimeAttributes
 
-/// An object that represents an inspector section.
-public struct InspectorElementSection {
-    public var title: String?
-    public private(set) var rows: [InspectorElementSectionDataSource]
-
-    public init(title: String? = nil, rows: [InspectorElementSectionDataSource] = []) {
-        self.title = title
-        self.rows = rows
-    }
-
-    public init(title: String? = nil, rows: InspectorElementSectionDataSource...) {
-        self.title = title
-        self.rows = rows
-    }
-
-    public mutating func append(_ dataSource: InspectorElementSectionDataSource?) {
-        guard let dataSource = dataSource else {
-            return
+    var targetClass: AnyClass {
+        switch self {
+        case .preview:
+            return UIView.self
+        case .runtimeAttributes:
+            return NSObject.self
         }
-
-        rows.append(dataSource)
     }
-}
 
-// MARK: - Array Extensions
+    func sections(for referenceView: UIView) -> InspectorElementSections {
+        switch self {
+        case .preview:
+            return .init(with: PreviewIdentitySectionDataSource(view: referenceView))
 
-public extension InspectorElementSections {
-    init(with dataSource: InspectorElementSectionDataSource?) {
-        if let dataSource = dataSource {
-            self = [InspectorElementSection(rows: dataSource)]
-        }
-        else {
-            self = InspectorElementSections()
+        case .runtimeAttributes:
+            return .init(with: RuntimeAttributesIdentitySectionDataSource(object: referenceView))
         }
     }
 }

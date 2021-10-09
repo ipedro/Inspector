@@ -20,24 +20,22 @@
 
 import UIKit
 
-struct DefaultFormPanelDataSource: ElementInspectorFormPanelDataSource {
-    let sections: InspectorElementSections
+@available(*, deprecated, renamed: "InspectorElementLibraryItemProtocol")
+public typealias InspectorElementViewModelProtocol = InspectorElementSectionDataSource
 
-    init(sections: InspectorElementSections) {
-        self.sections = sections
-    }
+/// An object that provides the information necessary to represent an Element Inspector section.
+public protocol InspectorElementSectionDataSource {
+    /// An optional subtitle that can be shown below the title.
+    var title: String { get }
+    /// An optional subtitle that can be shown below the title.
+    var subtitle: String? { get }
+    /// A list of properties to be displayed.
+    var properties: [InspectorElementProperty] { get }
+    /// To customize how your sections look provide a type that conforms to `InspectorElementFormSectionView`.
+    var customClass: InspectorElementSectionView.Type? { get }
+}
 
-    func typeForRow(at indexPath: IndexPath) -> InspectorElementSectionView.Type {
-        let customViewType = sections[indexPath.section].rows[indexPath.row].customClass
-
-        return customViewType ?? InspectorElementSectionContentView.self
-    }
-
-    func viewForProperty(at indexPath: IndexPath) -> InspectorElementSectionView {
-        let FormItemView = typeForRow(at: indexPath)
-
-        let itemView = FormItemView.makeItemView(with: indexPath.isFirst ? .expanded : .collapsed)
-
-        return itemView
-    }
+public extension InspectorElementSectionDataSource {
+    var subtitle: String? { nil }
+    var customClass: InspectorElementSectionView.Type? { nil }
 }

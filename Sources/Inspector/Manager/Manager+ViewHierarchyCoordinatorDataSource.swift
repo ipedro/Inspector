@@ -71,13 +71,13 @@ extension Manager: ViewHierarchyCoordinatorDataSource {
 
             switch panel {
             case .identity:
-                libraries.append(contentsOf: ElementInspectorIdentityLibrary.allCases)
+                libraries.append(contentsOf: ElementIdentityLibrary.allCases)
 
             case .attributes:
-                libraries.append(contentsOf: ElementInspectorAttributesLibrary.allCases)
+                libraries.append(contentsOf: ElementAttributesLibrary.allCases)
 
             case .size:
-                libraries.append(contentsOf: ElementInspectorSizeLibrary.allCases)
+                libraries.append(contentsOf: ElementSizeLibrary.allCases)
 
             case .children:
                 break

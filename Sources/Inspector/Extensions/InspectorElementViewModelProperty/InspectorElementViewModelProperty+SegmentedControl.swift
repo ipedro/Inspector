@@ -20,8 +20,8 @@
 
 import UIKit
 
-public extension InspectorElementViewModelProperty {
-    static func segmentPicker(for segmentedControl: UISegmentedControl, handler: SelectionHandler?) -> InspectorElementViewModelProperty {
+public extension InspectorElementProperty {
+    static func segmentPicker(for segmentedControl: UISegmentedControl, handler: SelectionHandler?) -> InspectorElementProperty {
         return .optionsList(
             title: "Segment",
             emptyTitle: "No Segments",
