@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class ButtonAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Button"
 
         private weak var button: UIButton?

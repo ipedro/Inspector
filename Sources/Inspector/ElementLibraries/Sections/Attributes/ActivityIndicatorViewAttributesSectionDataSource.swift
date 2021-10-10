@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class ActivityIndicatorViewAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Activity Indicator"
 
         private weak var activityIndicatorView: UIActivityIndicatorView?

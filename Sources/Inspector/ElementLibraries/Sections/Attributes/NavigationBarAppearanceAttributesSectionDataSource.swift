@@ -24,73 +24,7 @@ import UIKit
 extension ElementAttributesLibrary {
     @available(iOS 13.0, *)
     final class NavigationBarAppearanceAttributesSectionDataSource: InspectorElementSectionDataSource {
-        private enum TitleAttribute: String, Swift.CaseIterable {
-            case groupTitle
-            case fontName = "Title Font Name"
-            case fontSize = "Title Font Size"
-            case color = "Title Color"
-            case shadow = "Title Shadow"
-            case shadowOffset = "Shadow Offset"
-        }
-
-        enum `Type`: CustomStringConvertible {
-            case standard, compact, scrollEdge, compactScrollEdge
-
-            var description: String {
-                switch self {
-                case .standard:
-                    return "Standard"
-                case .compact:
-                    return "Compact"
-                case .scrollEdge:
-                    return "Scroll Edge"
-                case .compactScrollEdge:
-                    return "Compact Scroll Edge"
-                }
-            }
-
-            var message: String {
-                switch self {
-                case .standard:
-                    return "The appearance settings for a standard-height navigation bar."
-                case .compact:
-                    return "The appearance settings for a compact-height navigation bar."
-                case .scrollEdge:
-                    return "The appearance settings for the navigation bar when content is scrolled to the top."
-                case .compactScrollEdge:
-                    return "The appearance settings for a compact-height navigation bar when content is scrolled to the top."
-                }
-            }
-
-            var properties: [InspectorElementProperty] {
-                var array: [InspectorElementProperty] = []
-
-                array.append(.infoNote(icon: .info, text: message))
-
-                if #available(iOS 15.0, *) {
-                    switch self {
-                    case .scrollEdge:
-                        array.append(
-                            .infoNote(
-                                icon: .warning,
-                                text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top."
-                            )
-                        )
-                    case .compactScrollEdge:
-                        array.append(
-                            .infoNote(
-                                icon: .warning,
-                                text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top in a vertically compact orientation."
-                            )
-                        )
-                    default:
-                        break
-                    }
-                }
-
-                return array
-            }
-        }
+        var state: InspectorElementSectionState = .collapsed
 
         var title: String {
             type.description.string(appending: "Appearance", separator: " ")
@@ -169,7 +103,7 @@ extension ElementAttributesLibrary {
 
                 case .iOS15_behaviorWarning:
                     return type.properties.last
-                    
+
                 case .backgroundEffect:
                     return .optionsList(
                         title: property.rawValue,
@@ -317,152 +251,80 @@ extension ElementAttributesLibrary {
     }
 }
 
-@available(iOS 13.0, *)
-extension UIBlurEffect.Style: CaseIterable {
-    typealias AllCases = [UIBlurEffect.Style]
-
-    static let allCases: [UIBlurEffect.Style] = [
-        .regular,
-        .prominent,
-
-        .systemUltraThinMaterial,
-        .systemThinMaterial,
-        .systemMaterial,
-        .systemThickMaterial,
-        .systemChromeMaterial,
-
-        .systemUltraThinMaterialLight,
-        .systemThinMaterialLight,
-        .systemMaterialLight,
-        .systemThickMaterialLight,
-        .systemChromeMaterialLight,
-
-        .systemUltraThinMaterialDark,
-        .systemThinMaterialDark,
-        .systemMaterialDark,
-        .systemThickMaterialDark,
-        .systemChromeMaterialDark
-    ]
-}
+// MARK: - TitleAttribute
 
 @available(iOS 13.0, *)
-extension UIBlurEffect.Style: CustomStringConvertible {
-    var description: String {
-        switch self {
-        case .extraLight:
-            return "Extra Light"
-        case .light:
-            return "Light"
-        case .dark:
-            return "Dark"
-        case .regular:
-            return "Regular"
-        case .prominent:
-            return "Prominent"
-        case .systemUltraThinMaterial:
-            return "Ultra Thin Material"
-        case .systemThinMaterial:
-            return "Thin Material"
-        case .systemMaterial:
-            return "Material"
-        case .systemThickMaterial:
-            return "Thick Material"
-        case .systemChromeMaterial:
-            return "Chrome Material"
-        case .systemUltraThinMaterialLight:
-            return "Ultra Thin Material Light"
-        case .systemThinMaterialLight:
-            return "Thin Material Light"
-        case .systemMaterialLight:
-            return "Material Light"
-        case .systemThickMaterialLight:
-            return "Thick Material Light"
-        case .systemChromeMaterialLight:
-            return "Chrome Material Light"
-        case .systemUltraThinMaterialDark:
-            return "Ultra Thin Material Dark"
-        case .systemThinMaterialDark:
-            return "Thin Material Dark"
-        case .systemMaterialDark:
-            return "Material Dark"
-        case .systemThickMaterialDark:
-            return "Thick Material Dark"
-        case .systemChromeMaterialDark:
-            return "Chrome Material Dark"
-        @unknown default:
-            return "Unkown"
-        }
+extension ElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataSource {
+    private enum TitleAttribute: String, Swift.CaseIterable {
+        case groupTitle
+        case fontName = "Title Font Name"
+        case fontSize = "Title Font Size"
+        case color = "Title Color"
+        case shadow = "Title Shadow"
+        case shadowOffset = "Shadow Offset"
     }
 }
 
-extension UIBlurEffect {
-    var style: Style? {
-        let description = self.description
+// MARK: - `Type`
 
-        if description.contains("UIBlurEffectStyleExtraLight") {
-            return .extraLight
-        }
-        if description.contains("UIBlurEffectStyleLight") {
-            return .light
-        }
-        if description.contains("UIBlurEffectStyleDark") {
-            return .dark
-        }
-        if description.contains("UIBlurEffectStyleRegular") {
-            return .regular
-        }
-        if description.contains("UIBlurEffectStyleProminent") {
-            return .prominent
-        }
+@available(iOS 13.0, *)
+extension ElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataSource {
+    enum `Type`: CustomStringConvertible {
+        case standard, compact, scrollEdge, compactScrollEdge
 
-        guard #available(iOS 13.0, *) else { return nil }
-
-        if description.contains("UIBlurEffectStyleSystemUltraThinMaterialLight") {
-            return .systemUltraThinMaterialLight
-        }
-        if description.contains("UIBlurEffectStyleSystemThinMaterialLight") {
-            return .systemThinMaterialLight
-        }
-        if description.contains("UIBlurEffectStyleSystemMaterialLight") {
-            return .systemMaterialLight
-        }
-        if description.contains("UIBlurEffectStyleSystemThickMaterialLight") {
-            return .systemThickMaterialLight
-        }
-        if description.contains("UIBlurEffectStyleSystemChromeMaterialLight") {
-            return .systemChromeMaterialLight
-        }
-        if description.contains("UIBlurEffectStyleSystemUltraThinMaterialDark") {
-            return .systemUltraThinMaterialDark
-        }
-        if description.contains("UIBlurEffectStyleSystemThinMaterialDark") {
-            return .systemThinMaterialDark
-        }
-        if description.contains("UIBlurEffectStyleSystemMaterialDark") {
-            return .systemMaterialDark
-        }
-        if description.contains("UIBlurEffectStyleSystemThickMaterialDark") {
-            return .systemThickMaterialDark
-        }
-        if description.contains("UIBlurEffectStyleSystemChromeMaterialDark") {
-            return .systemChromeMaterialDark
-        }
-        if description.contains("UIBlurEffectStyleSystemUltraThinMaterial") {
-            return .systemUltraThinMaterial
-        }
-        if description.contains("UIBlurEffectStyleSystemThinMaterial") {
-            return .systemThinMaterial
-        }
-        if description.contains("UIBlurEffectStyleSystemMaterial") {
-            return .systemMaterial
-        }
-        if description.contains("UIBlurEffectStyleSystemThickMaterial") {
-            return .systemThickMaterial
-        }
-        if description.contains("UIBlurEffectStyleSystemChromeMaterial") {
-            return .systemChromeMaterial
+        var description: String {
+            switch self {
+            case .standard:
+                return "Standard"
+            case .compact:
+                return "Compact"
+            case .scrollEdge:
+                return "Scroll Edge"
+            case .compactScrollEdge:
+                return "Compact Scroll Edge"
+            }
         }
 
-        return nil
+        var message: String {
+            switch self {
+            case .standard:
+                return "The appearance settings for a standard-height navigation bar."
+            case .compact:
+                return "The appearance settings for a compact-height navigation bar."
+            case .scrollEdge:
+                return "The appearance settings for the navigation bar when content is scrolled to the top."
+            case .compactScrollEdge:
+                return "The appearance settings for a compact-height navigation bar when content is scrolled to the top."
+            }
+        }
+
+        var properties: [InspectorElementProperty] {
+            var array: [InspectorElementProperty] = []
+
+            array.append(.infoNote(icon: .info, text: message))
+
+            if #available(iOS 15.0, *) {
+                switch self {
+                case .scrollEdge:
+                    array.append(
+                        .infoNote(
+                            icon: .warning,
+                            text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top."
+                        )
+                    )
+                case .compactScrollEdge:
+                    array.append(
+                        .infoNote(
+                            icon: .warning,
+                            text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top in a vertically compact orientation."
+                        )
+                    )
+                default:
+                    break
+                }
+            }
+
+            return array
+        }
     }
 }

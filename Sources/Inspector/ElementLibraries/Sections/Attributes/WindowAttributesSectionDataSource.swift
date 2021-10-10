@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class WindowAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Window"
 
         private weak var window: UIWindow?

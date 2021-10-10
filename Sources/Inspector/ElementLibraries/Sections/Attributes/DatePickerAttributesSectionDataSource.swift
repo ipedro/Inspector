@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class DatePickerAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Date Picker"
 
         private weak var datePicker: UIDatePicker?

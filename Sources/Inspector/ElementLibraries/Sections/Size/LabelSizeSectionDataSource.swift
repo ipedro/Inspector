@@ -22,9 +22,7 @@ import UIKit
 
 extension ElementSizeLibrary {
     final class LabelSizeSectionDataSource: InspectorElementSectionDataSource {
-        private enum Properties: String, Swift.CaseIterable {
-            case preferredMaxLayoutWidth = "Desired Width"
-        }
+        var state: InspectorElementSectionState = .collapsed
 
         let title: String = "Label"
 
@@ -35,6 +33,10 @@ extension ElementSizeLibrary {
             self.label = label
         }
 
+        private enum Properties: String, Swift.CaseIterable {
+            case preferredMaxLayoutWidth = "Desired Width"
+        }
+        
         var properties: [InspectorElementProperty] {
             guard let label = label else { return [] }
 

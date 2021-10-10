@@ -21,9 +21,11 @@
 import Foundation
 
 protocol ElementInspectorFormPanelDataSource {
-    var sections: InspectorElementSections { get }
+    var numberOfSections: Int { get }
 
-    func typeForRow(at indexPath: IndexPath) -> InspectorElementSectionView.Type
+    func numberOfItems(in section: Int) -> Int
 
-    func viewForProperty(at indexPath: IndexPath) -> InspectorElementSectionView
+    func section(at section: Int) -> InspectorElementSection
+
+    func item(at indexPath: IndexPath) -> InspectorElementSectionDataSource
 }

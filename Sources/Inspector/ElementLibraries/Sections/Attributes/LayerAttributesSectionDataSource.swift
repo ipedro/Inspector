@@ -23,6 +23,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class LayerAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Core Animation Layer"
 
         private weak var layer: CALayer?

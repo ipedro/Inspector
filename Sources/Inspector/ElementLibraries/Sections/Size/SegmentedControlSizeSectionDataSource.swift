@@ -22,14 +22,11 @@ import UIKit
 
 extension ElementSizeLibrary {
     final class SegmentedControlSizeSectionDataSource: InspectorElementSectionDataSource {
-        private enum Properties: String, Swift.CaseIterable {
-            case segmentPicker = "Segment"
-            case segmentWidth = "Width"
-            case separator
-            case apportionsSegmentWidthsByContent = "Size Mode"
-        }
+        var state: InspectorElementSectionState = .collapsed
 
         let title: String = "Segmented Control"
+
+        private var selectedSegment: Int?
 
         private weak var segmentedControl: UISegmentedControl?
 
@@ -42,8 +39,13 @@ extension ElementSizeLibrary {
 
             selectedSegment = segmentedControl.numberOfSegments == 0 ? nil : 0
         }
-        
-        private var selectedSegment: Int?
+
+        private enum Properties: String, Swift.CaseIterable {
+            case segmentPicker = "Segment"
+            case segmentWidth = "Width"
+            case separator
+            case apportionsSegmentWidthsByContent = "Size Mode"
+        }
 
         var properties: [InspectorElementProperty] {
             guard let segmentedControl = segmentedControl else { return [] }

@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class SegmentedControlAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Segmented Control"
 
         private weak var segmentedControl: UISegmentedControl?

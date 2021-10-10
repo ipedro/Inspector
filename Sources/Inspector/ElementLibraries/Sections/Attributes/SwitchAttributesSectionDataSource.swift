@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class SwitchAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Switch"
 
         private weak var switchControl: UISwitch?

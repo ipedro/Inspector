@@ -52,8 +52,8 @@ extension ElementInspectorFormPanelViewController: InspectorElementSectionViewCo
     }
 
     func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
-                                               willChangeFrom oldState: InspectorElementItemState?,
-                                               to newState: InspectorElementItemState)
+                                               willChangeFrom oldState: InspectorElementSectionState?,
+                                               to newState: InspectorElementSectionState)
     {
         animatePanel
         { [weak self] in

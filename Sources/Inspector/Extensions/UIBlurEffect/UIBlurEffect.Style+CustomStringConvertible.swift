@@ -20,26 +20,30 @@
 
 import UIKit
 
-struct DefaultFormPanelDataSource: ElementInspectorFormPanelDataSource {
-    private let sections: InspectorElementSections
+@available(iOS 13.0, *)
+extension UIBlurEffect.Style: CaseIterable {
+    typealias AllCases = [UIBlurEffect.Style]
 
-    init(sections: InspectorElementSections) {
-        self.sections = sections
-    }
+    static let allCases: [UIBlurEffect.Style] = [
+        .regular,
+        .prominent,
 
-    var numberOfSections: Int {
-        sections.count
-    }
+        .systemUltraThinMaterial,
+        .systemThinMaterial,
+        .systemMaterial,
+        .systemThickMaterial,
+        .systemChromeMaterial,
 
-    func numberOfItems(in section: Int) -> Int {
-        self.section(at: section).rows.count
-    }
+        .systemUltraThinMaterialLight,
+        .systemThinMaterialLight,
+        .systemMaterialLight,
+        .systemThickMaterialLight,
+        .systemChromeMaterialLight,
 
-    func section(at section: Int) -> InspectorElementSection {
-        sections[section]
-    }
-
-    func item(at indexPath: IndexPath) -> InspectorElementSectionDataSource {
-        section(at: indexPath.section).rows[indexPath.row]
-    }
+        .systemUltraThinMaterialDark,
+        .systemThinMaterialDark,
+        .systemMaterialDark,
+        .systemThickMaterialDark,
+        .systemChromeMaterialDark
+    ]
 }

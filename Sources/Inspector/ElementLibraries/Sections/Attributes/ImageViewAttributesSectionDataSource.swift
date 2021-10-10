@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class ImageViewAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Image"
 
         private weak var imageView: UIImageView?

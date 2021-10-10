@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class NavigationBarAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Navigation Bar"
 
         private weak var navigationBar: UINavigationBar?

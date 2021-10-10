@@ -21,22 +21,10 @@
 import UIKit
 
 extension ElementSizeLibrary {
-    final class LayoutConstraintSizeSectionDataSource: InspectorElementSectionDataSource {
-        typealias Axis = LayoutConstraintElement.Axis
+    final class LayoutConstraintSizeSectionDataSource: NSObject, InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
 
-        private enum Property: String, Swift.CaseIterable {
-            case isActive = "Installed"
-            case spacer0
-            case firstItem = "First Item"
-            case relation = "Relation"
-            case secondItem = "Second Item"
-            case spacer1
-            case constant = "Constant"
-            case priority = "Priority"
-            case multiplier = "Multiplier"
-            case spacer2
-            case identifier = "Identifier"
-        }
+        typealias Axis = LayoutConstraintElement.Axis
 
         private let element: LayoutConstraintElement
 
@@ -50,8 +38,32 @@ extension ElementSizeLibrary {
             ElementInspectorFormLayoutConstraintView.self
         }
 
+        var titleAccessoryProperty: InspectorElementProperty? {
+            guard let underlyingConstraint = element.underlyingConstraint else { return nil }
+
+            return .switch(
+                title: "Installed",
+                isOn: { underlyingConstraint.isActive },
+                handler: { underlyingConstraint.isActive = $0 }
+            )
+        }
+
         init(with element: LayoutConstraintElement) {
             self.element = element
+        }
+
+        private enum Property: String, Swift.CaseIterable {
+            case firstItem = "First Item"
+            case relation = "Relation"
+            case secondItem = "Second Item"
+            case spacer0
+            case constant = "Constant"
+            case priority = "Priority"
+            case multiplier = "Multiplier"
+            case spacer1
+            case identifier = "Identifier"
+//            case spacer2
+//            case isActive = "Installed"
         }
 
         var properties: [InspectorElementProperty] {
@@ -68,8 +80,8 @@ extension ElementSizeLibrary {
                         handler: { underlyingConstraint.constant = $0 }
                     )
                 case .spacer0,
-                     .spacer1,
-                     .spacer2:
+                     .spacer1:
+//                     .spacer2:
                     return .separator
 
                 case .multiplier:
@@ -80,7 +92,6 @@ extension ElementSizeLibrary {
                         stepValue: { 0.1 },
                         handler: nil
                     )
-
                 case .identifier:
                     return .textField(
                         title: property.rawValue,
@@ -89,14 +100,12 @@ extension ElementSizeLibrary {
                         value: { underlyingConstraint.safeIdentifier },
                         handler: { underlyingConstraint.identifier = $0 }
                     )
-
-                case .isActive:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { underlyingConstraint.isActive },
-                        handler: { underlyingConstraint.isActive = $0 }
-                    )
-
+//                case .isActive:
+//                    return .switch(
+//                        title: property.rawValue,
+//                        isOn: { underlyingConstraint.isActive },
+//                        handler: { underlyingConstraint.isActive = $0 }
+//                    )
                 case .priority:
                     return .floatStepper(
                         title: property.rawValue,
@@ -105,7 +114,6 @@ extension ElementSizeLibrary {
                         stepValue: { 50 },
                         handler: { underlyingConstraint.priority = .init($0) }
                     )
-
                 case .firstItem:
                     return .optionsList(
                         title: property.rawValue,
@@ -123,7 +131,6 @@ extension ElementSizeLibrary {
                         selectedIndex: { NSLayoutConstraint.Relation.allCases.firstIndex(of: underlyingConstraint.relation) },
                         handler: nil
                     )
-
                 case .secondItem:
                     guard let second = element.second else { return nil }
 

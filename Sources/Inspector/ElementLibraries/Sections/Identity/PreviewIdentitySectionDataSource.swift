@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementIdentityLibrary {
     final class PreviewIdentitySectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title: String = "Preview"
 
         private let element: ViewHierarchyElement

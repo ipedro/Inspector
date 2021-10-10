@@ -20,8 +20,8 @@
 
 import Foundation
 
-/// Constants describing the states of a form section.
-public enum InspectorElementItemState: Hashable {
+/// Constants describing the possible states of an element inspector section.
+public enum InspectorElementSectionState: Hashable {
     case expanded, collapsed
 
     mutating func toggle() {

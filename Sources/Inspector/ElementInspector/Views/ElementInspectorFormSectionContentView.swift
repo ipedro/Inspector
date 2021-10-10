@@ -20,7 +20,7 @@
 
 import UIKit
 
-class InspectorElementSectionContentView: BaseView, InspectorElementSectionView {
+class InspectorElementSectionFormView: BaseView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -31,8 +31,8 @@ class InspectorElementSectionContentView: BaseView, InspectorElementSectionView 
         set { header.subtitle = newValue }
     }
 
-    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementSectionView {
-        InspectorElementSectionContentView(header: SectionHeader.formSectionTitle(), state: inititalState, frame: .zero)
+    static func makeItemView(with inititalState: InspectorElementSectionState) -> InspectorElementSectionView {
+        InspectorElementSectionFormView(header: SectionHeader.formSectionTitle(), state: inititalState, frame: .zero)
     }
 
     // MARK: - Properties
@@ -55,7 +55,7 @@ class InspectorElementSectionContentView: BaseView, InspectorElementSectionView 
         }
     }
 
-    var state: InspectorElementItemState {
+    var state: InspectorElementSectionState {
         didSet {
             updateViewsForState()
         }
@@ -84,10 +84,6 @@ class InspectorElementSectionContentView: BaseView, InspectorElementSectionView 
         $0.clipsToBounds = true
     }
 
-    func addHeaderArrangedSubviews(_ views: UIView...) {
-        headerStackView.addArrangedSubviews(views)
-    }
-
     private lazy var headerControl = BaseControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
         $0.addTarget(self, action: #selector(changeState), for: .touchUpInside)
         $0.addTarget(self, action: #selector(headerControlDidChangeState), for: .stateChanged)
@@ -104,18 +100,13 @@ class InspectorElementSectionContentView: BaseView, InspectorElementSectionView 
     }
 
     init(header: SectionHeader,
-         state: InspectorElementItemState,
+         state: InspectorElementSectionState,
          frame: CGRect = .zero
     ) {
         self.state = state
         self.header = header
 
         super.init(frame: frame)
-    }
-
-    func addFormViews(_ formViews: [UIView]) {
-        contentView.spacing = formViews.first is NoteControl ? .zero : ElementInspector.appearance.verticalMargins
-        formStackView.addArrangedSubviews(formViews)
     }
 
     override func setup() {
@@ -167,7 +158,28 @@ class InspectorElementSectionContentView: BaseView, InspectorElementSectionView 
     }
 }
 
-@objc private extension InspectorElementSectionContentView {
+extension InspectorElementSectionFormView: InspectorElementSectionView {
+    func addTitleAccessoryView(_ titleAccessoryView: UIView?) {
+        var headerSubviews: [UIView] = [headerControl]
+
+        if let titleAccessoryView = titleAccessoryView {
+            headerSubviews.append(titleAccessoryView)
+            headerStackView.directionalLayoutMargins.update(trailing: ElementInspector.appearance.horizontalMargins)
+        }
+        else {
+            headerStackView.directionalLayoutMargins.update(trailing: .zero)
+        }
+
+        headerStackView.replaceArrangedSubviews(with: headerSubviews)
+    }
+
+    func addFormViews(_ formViews: [UIView]) {
+        contentView.spacing = formViews.first is NoteControl ? .zero : ElementInspector.appearance.verticalMargins
+        formStackView.addArrangedSubviews(formViews)
+    }
+}
+
+@objc private extension InspectorElementSectionFormView {
     func changeState() {
         var newState = state
         newState.toggle()
@@ -192,7 +204,7 @@ class InspectorElementSectionContentView: BaseView, InspectorElementSectionView 
 // MARK: - UIContextMenuInteractionDelegate
 
 @available(iOS 13.0, *)
-extension InspectorElementSectionContentView: UIContextMenuInteractionDelegate {
+extension InspectorElementSectionFormView: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         UIContextMenuConfiguration(
             identifier: nil,

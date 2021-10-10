@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class SliderAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Slider"
 
         private weak var slider: UISlider?

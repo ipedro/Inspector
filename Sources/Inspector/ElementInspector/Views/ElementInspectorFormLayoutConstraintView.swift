@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElementSectionView {
+final class ElementInspectorFormLayoutConstraintView: BaseView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -36,11 +36,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         set {}
     }
 
-    static func makeItemView(with inititalState: InspectorElementItemState) -> InspectorElementSectionView {
-        ElementInspectorFormLayoutConstraintView(state: inititalState)
-    }
-
-    private lazy var formView = InspectorElementSectionContentView(header: header, state: state).then {
+    private lazy var formView = InspectorElementSectionFormView(header: header, state: state).then {
         $0.separatorStyle = .none
     }
 
@@ -49,7 +45,7 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         set { formView.delegate = newValue }
     }
 
-    var state: InspectorElementItemState {
+    var state: InspectorElementSectionState {
         didSet {
             formView.state = state
         }
@@ -73,27 +69,9 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         $0.contentView.addArrangedSubview(formView)
     }
 
-    private var switchControl: UISwitch? {
+    private var isConstraintActive = true {
         didSet {
-            valueChanged()
-        }
-    }
-
-    init(state: InspectorElementItemState, frame: CGRect = .zero) {
-        self.state = state
-        super.init(frame: frame)
-    }
-
-    @objc private func valueChanged() {
-        animate { [weak self] in
-            guard
-                let self = self,
-                let switchControl = self.switchControl
-            else {
-                return
-            }
-
-            if switchControl.isOn {
+            if isConstraintActive {
                 self.header.alpha = 1
                 self.tintAdjustmentMode = .automatic
 
@@ -110,42 +88,47 @@ final class ElementInspectorFormLayoutConstraintView: BaseView, InspectorElement
         }
     }
 
+    init(state: InspectorElementSectionState, frame: CGRect = .zero) {
+        self.state = state
+        super.init(frame: frame)
+    }
+
     override func setup() {
         super.setup()
 
         contentView.addArrangedSubview(cardView)
     }
+}
 
-    func addFormViews(_ formViews: [UIView]) {
-        // very hacky but nice ui benefit of moving the constraint active control to the header. shrug.
-        formViews.forEach { view in
-            guard
-                let toggleControl = view as? ToggleControl,
-                toggleControl.title == "Installed"
-            else {
-                return
-            }
+// MARK: - InspectorElementSectionView
 
-            switchControl = toggleControl.switchControl
+extension ElementInspectorFormLayoutConstraintView: InspectorElementSectionView {
+    static func makeItemView(with inititalState: InspectorElementSectionState) -> InspectorElementSectionView {
+        ElementInspectorFormLayoutConstraintView(state: inititalState)
+    }
 
-            toggleControl.delegate = self
-            toggleControl.isHidden = true
+    func addTitleAccessoryView(_ titleAccessoryView: UIView?) {
+        formView.addTitleAccessoryView(titleAccessoryView)
 
-            let switchContainerView = UIStackView().then {
-                $0.addArrangedSubviews(toggleControl.switchControl)
-                $0.isLayoutMarginsRelativeArrangement = true
-                $0.directionalLayoutMargins = .init(trailing: ElementInspector.appearance.horizontalMargins)
-            }
-
-            formView.addHeaderArrangedSubviews(switchContainerView)
+        guard let toggleControl = titleAccessoryView as? ToggleControl else {
+            return
         }
 
+        toggleControl.delegate = self
+        isConstraintActive = toggleControl.isOn
+    }
+
+    func addFormViews(_ formViews: [UIView]) {
         formView.addFormViews(formViews)
     }
 }
 
+// MARK: - ToggleControlDelegate
+
 extension ElementInspectorFormLayoutConstraintView: ToggleControlDelegate {
     func toggleControl(_ toggleControl: ToggleControl, didChangeValueTo isOn: Bool) {
-        valueChanged()
+        animate {
+            self.isConstraintActive = toggleControl.isOn
+        }
     }
 }

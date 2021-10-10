@@ -22,6 +22,18 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class ScrollViewAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
+        let title = "Scroll View"
+
+        private weak var scrollView: UIScrollView?
+
+        init?(view: UIView) {
+            guard let scrollView = view as? UIScrollView else { return nil }
+
+            self.scrollView = scrollView
+        }
+        
         private enum Property: String, Swift.CaseIterable {
             case groupIndicators = "Indicators"
             case indicatorStyle = "Indicator Style"
@@ -44,16 +56,6 @@ extension ElementAttributesLibrary {
             case delaysContentTouches = "Delay Touch Down"
             case canCancelContentTouches = "Can Cancel On Scroll"
             case keyboardDismissMode = "Keyboard"
-        }
-
-        let title = "Scroll View"
-
-        private weak var scrollView: UIScrollView?
-
-        init?(view: UIView) {
-            guard let scrollView = view as? UIScrollView else { return nil }
-
-            self.scrollView = scrollView
         }
 
         var properties: [InspectorElementProperty] {

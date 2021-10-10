@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class LabelAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Label"
 
         private weak var label: UILabel?

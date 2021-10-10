@@ -48,8 +48,8 @@ protocol InspectorElementSectionViewControllerDelegate: OperationQueueManagerPro
 
     func inspectorElementSectionViewController(
         _ sectionViewController: InspectorElementSectionViewController,
-        willChangeFrom oldState: InspectorElementItemState?,
-        to newState: InspectorElementItemState
+        willChangeFrom oldState: InspectorElementSectionState?,
+        to newState: InspectorElementSectionState
     )
 }
 
@@ -58,18 +58,20 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
 
     let viewCode: InspectorElementSectionView
 
-    private var viewModel: InspectorElementSectionDataSource
+    weak var dataSource: InspectorElementSectionDataSource? {
+        didSet {
+            title = dataSource?.title
+            viewCode.title = dataSource?.title
+            viewCode.subtitle = dataSource?.subtitle
+        }
+    }
 
-    init(
-        viewModel: InspectorElementSectionDataSource,
-        viewCode: InspectorElementSectionView
-    ) {
-        self.viewModel = viewModel
-        self.viewCode = viewCode
+    private var hasAddedFormViews = false
+
+    init(view: InspectorElementSectionView) {
+        self.viewCode = view
 
         super.init(nibName: nil, bundle: nil)
-
-        title = viewModel.title
     }
 
     @available(*, unavailable)
@@ -85,153 +87,183 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
         super.viewDidLoad()
 
         viewCode.delegate = self
-        viewCode.title = viewModel.title
-        viewCode.subtitle = viewModel.subtitle
 
-        let subviews = viewModel.properties.compactMap { viewForProperties[$0] }
+        guard let dataSource = dataSource else { return }
 
-        viewCode.addFormViews(subviews)
-    }
+        if
+            let titleAccessoryProperty = dataSource.titleAccessoryProperty,
+            let titleAccessoryView = makeView(for: titleAccessoryProperty)
+        {
+            if let baseForm = titleAccessoryView as? BaseFormControl {
+                baseForm.titleLabel.removeFromSuperview()
+            }
 
-    var state: InspectorElementItemState {
-        get { viewCode.state }
-        set {
-            print(newValue, viewModel.title)
-            viewCode.state = newValue
+            if let control = titleAccessoryView as? UIControl {
+                control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
+                control.isEnabled = titleAccessoryProperty.hasHandler
+            }
+
+            formViews[titleAccessoryProperty] = titleAccessoryView
+            viewCode.addTitleAccessoryView(titleAccessoryView)
+        }
+
+        if state == .expanded, !hasAddedFormViews {
+            addFormViews()
         }
     }
 
-    private lazy var viewForProperties: [InspectorElementProperty: UIView] = {
-        var dict = [InspectorElementProperty: UIView]()
+    private func addFormViews() {
+        guard let dataSource = dataSource, !hasAddedFormViews else { return }
 
-        for (index, property) in viewModel.properties.enumerated() {
-            let itemView: UIView? = {
-                switch property {
-                case let .preview(target: container):
-                    return LiveViewHierarchyElementThumbnailView(with: container.reference).then {
-                        $0.layer.cornerRadius = ElementInspector.appearance.elementInspectorCornerRadius / 2
-                    }
+        hasAddedFormViews = true
 
-                case .separator:
-                    return SeparatorView(style: .medium).then {
-                        $0.contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(
-                            vertical: ElementInspector.appearance.horizontalMargins
-                        )
-                    }
+        var views = [UIView]()
 
-                case let .group(title: title, subtitle: subtitle):
-                    return SectionHeader.attributesInspectorGroup(title: title, subtitle: subtitle)
+        for (index, property) in dataSource.properties.enumerated() {
+            guard let view = makeView(for: property) else { continue }
 
-                case let .infoNote(icon: noteIcon, title: title, text: text):
-                    return NoteControl(icon: noteIcon, title: title, text: text)
-
-                case let .imagePicker(title: title, image: imageProvider, handler: _):
-                    return ImagePreviewControl(title: title, image: imageProvider()).then {
-                        $0.delegate = self
-                    }
-
-                case let .textField(title: title, placeholder: placeholder, axis: axis, value: value, handler: _):
-                    return TextFieldControl(title: title, value: value(), placeholder: placeholder).then {
-                        $0.axis = axis
-                    }
-
-                case let .stepper(title: title, value: valueProvider, range: rangeProvider, stepValue: stepValueProvider, isDecimalValue: isDecimalValue, handler: _):
-                    return StepperControl(
-                        title: title,
-                        value: valueProvider(),
-                        range: rangeProvider(),
-                        stepValue: stepValueProvider(),
-                        isDecimalValue: isDecimalValue
-                    )
-
-                case let .colorPicker(title: title, emptyTitle: emptyTitle, color: colorProvider, handler: _):
-                    return ColorPreviewControl(
-                        title: title,
-                        emptyTitle: emptyTitle,
-                        color: colorProvider()
-                    ).then {
-                        $0.delegate = self
-                    }
-
-                case let .switch(title: title, isOn: isOnProvider, handler: _):
-                    return ToggleControl(
-                        title: title,
-                        isOn: isOnProvider()
-                    )
-
-                case let .imageButtonGroup(title: title, axis: axis, images: images, selectedIndex: selectedIndexProvider, _):
-                    return SegmentedControl(
-                        title: title,
-                        images: images,
-                        selectedIndex: selectedIndexProvider()
-                    ).then {
-                        $0.axis = axis
-                    }
-
-                case let .textButtonGroup(title: title, axis: axis, texts: texts, selectedIndex: selectedIndexProvider, _):
-                    return SegmentedControl(
-                        title: title,
-                        texts: texts,
-                        selectedIndex: selectedIndexProvider()
-                    ).then {
-                        $0.axis = axis
-                    }
-
-                case let .optionsList(title: title, emptyTitle: emptyTitle, axis: axis, options: options, selectedIndex: selectedIndexProvider, _):
-                    return OptionListControl(
-                        title: title,
-                        options: options,
-                        emptyTitle: emptyTitle,
-                        selectedIndex: selectedIndexProvider()
-                    ).then {
-                        $0.axis = axis
-                        $0.delegate = self
-                    }
-
-                case let .textView(title: title, placeholder: placeholder, value: stringProvider, handler: _):
-                    return TextViewControl(
-                        title: title,
-                        value: stringProvider(),
-                        placeholder: placeholder
-                    )
-                case let .cgRect(title: title, rect: rectProvider, handler: _):
-                    return RectControl(title: title, rect: rectProvider())
-
-                case let .cgPoint(title: title, point: pointProvider, handler: _):
-                    return PointControl(title: title, point: pointProvider())
-
-                case let .cgSize(title: title, size: sizeProvider, handler: _):
-                    return SizeControl(title: title, size: sizeProvider())
-
-                case let .directionalInsets(title: title, insets: insetsProvider, handler: _):
-                    return DirectionalEdgeInsetsControl(title: title, insets: insetsProvider())
-
-                case let .edgeInsets(title: title, insets: insetsProvider, handler: _):
-                    return EdgeInsetsControl(title: title, insets: insetsProvider())
-                }
-            }()
-
-            if index == .zero, let sectionHeader = itemView as? SectionHeader {
+            if index == .zero, let sectionHeader = view as? SectionHeader {
                 sectionHeader.margins.top = .zero
             }
 
-            if let control = itemView as? UIControl {
+            if let control = view as? UIControl {
                 control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
                 control.isEnabled = property.hasHandler
             }
 
-            if let fromControl = itemView as? BaseFormControl {
-                let isLastElement = index == viewModel.properties.count - 1
-                let isNotFollowedByControl = index + 1 < viewModel.properties.count && viewModel.properties[index + 1].isControl == false
+            if let fromControl = view as? BaseFormControl {
+                let isLastElement = index == dataSource.properties.count - 1
+                let isNotFollowedByControl = index + 1 < dataSource.properties.count && dataSource.properties[index + 1].isControl == false
 
                 fromControl.isShowingSeparator = (isLastElement || isNotFollowedByControl) == false
             }
 
-            dict[property] = itemView
-        }
+            formViews[property] = view
 
-        return dict
-    }()
+            views.append(view)
+        }
+        
+        viewCode.addFormViews(views)
+    }
+
+    var state: InspectorElementSectionState {
+        get { viewCode.state }
+        set {
+            if newValue == .expanded, !hasAddedFormViews {
+                addFormViews()
+            }
+
+            viewCode.state = newValue
+        }
+    }
+
+    private var formViews: [InspectorElementProperty: UIView] = [:]
+
+    private func makeView(for property: InspectorElementProperty) -> UIView? {
+        switch property {
+        case let .preview(target: container):
+            return LiveViewHierarchyElementThumbnailView(with: container.reference).then {
+                $0.layer.cornerRadius = ElementInspector.appearance.elementInspectorCornerRadius / 2
+            }
+
+        case .separator:
+            return SeparatorView(style: .medium).then {
+                $0.contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(
+                    vertical: ElementInspector.appearance.horizontalMargins
+                )
+            }
+
+        case let .group(title: title, subtitle: subtitle):
+            return SectionHeader.attributesInspectorGroup(title: title, subtitle: subtitle)
+
+        case let .infoNote(icon: noteIcon, title: title, text: text):
+            return NoteControl(icon: noteIcon, title: title, text: text)
+
+        case let .imagePicker(title: title, image: imageProvider, handler: _):
+            return ImagePreviewControl(title: title, image: imageProvider()).then {
+                $0.delegate = self
+            }
+
+        case let .textField(title: title, placeholder: placeholder, axis: axis, value: value, handler: _):
+            return TextFieldControl(title: title, value: value(), placeholder: placeholder).then {
+                $0.axis = axis
+            }
+
+        case let .stepper(title: title, value: valueProvider, range: rangeProvider, stepValue: stepValueProvider, isDecimalValue: isDecimalValue, handler: _):
+            return StepperControl(
+                title: title,
+                value: valueProvider(),
+                range: rangeProvider(),
+                stepValue: stepValueProvider(),
+                isDecimalValue: isDecimalValue
+            )
+
+        case let .colorPicker(title: title, emptyTitle: emptyTitle, color: colorProvider, handler: _):
+            return ColorPreviewControl(
+                title: title,
+                emptyTitle: emptyTitle,
+                color: colorProvider()
+            ).then {
+                $0.delegate = self
+            }
+
+        case let .switch(title: title, isOn: isOnProvider, handler: _):
+            return ToggleControl(
+                title: title,
+                isOn: isOnProvider()
+            )
+
+        case let .imageButtonGroup(title: title, axis: axis, images: images, selectedIndex: selectedIndexProvider, _):
+            return SegmentedControl(
+                title: title,
+                images: images,
+                selectedIndex: selectedIndexProvider()
+            ).then {
+                $0.axis = axis
+            }
+
+        case let .textButtonGroup(title: title, axis: axis, texts: texts, selectedIndex: selectedIndexProvider, _):
+            return SegmentedControl(
+                title: title,
+                texts: texts,
+                selectedIndex: selectedIndexProvider()
+            ).then {
+                $0.axis = axis
+            }
+
+        case let .optionsList(title: title, emptyTitle: emptyTitle, axis: axis, options: options, selectedIndex: selectedIndexProvider, _):
+            return OptionListControl(
+                title: title,
+                options: options,
+                emptyTitle: emptyTitle,
+                selectedIndex: selectedIndexProvider()
+            ).then {
+                $0.axis = axis
+                $0.delegate = self
+            }
+
+        case let .textView(title: title, placeholder: placeholder, value: stringProvider, handler: _):
+            return TextViewControl(
+                title: title,
+                value: stringProvider(),
+                placeholder: placeholder
+            )
+        case let .cgRect(title: title, rect: rectProvider, handler: _):
+            return RectControl(title: title, rect: rectProvider())
+
+        case let .cgPoint(title: title, point: pointProvider, handler: _):
+            return PointControl(title: title, point: pointProvider())
+
+        case let .cgSize(title: title, size: sizeProvider, handler: _):
+            return SizeControl(title: title, size: sizeProvider())
+
+        case let .directionalInsets(title: title, insets: insetsProvider, handler: _):
+            return DirectionalEdgeInsetsControl(title: title, insets: insetsProvider())
+
+        case let .edgeInsets(title: title, insets: insetsProvider, handler: _):
+            return EdgeInsetsControl(title: title, insets: insetsProvider())
+        }
+    }
 }
 
 // MARK: - Actions
@@ -242,7 +274,7 @@ extension InspectorElementSectionViewController {
     }
 
     @objc private func valueChanged(_ sender: AnyObject) {
-        for (property, formView) in viewForProperties where formView === sender {
+        for (property, formView) in formViews where formView === sender {
             delegate?.inspectorElementSectionViewController(self, willUpdate: property)
 
             let updateValueOperation = MainThreadOperation(name: "update property value") {
@@ -327,7 +359,7 @@ extension InspectorElementSectionViewController {
     }
 
     func reloadData() {
-        for (property, formView) in viewForProperties {
+        for (property, formView) in formViews {
             switch (property, formView) {
             case (.separator, _),
                  (.group, _),
@@ -448,8 +480,8 @@ extension InspectorElementSectionViewController: ImagePreviewControlDelegate {
 extension InspectorElementSectionViewController: InspectorElementFormItemViewDelegate {
     func inspectorElementFormItemView(
         _ item: InspectorElementSectionView,
-        willChangeFrom oldState: InspectorElementItemState?,
-        to newState: InspectorElementItemState
+        willChangeFrom oldState: InspectorElementSectionState?,
+        to newState: InspectorElementSectionState
     ) {
         delegate?.inspectorElementSectionViewController(self, willChangeFrom: oldState, to: newState)
     }

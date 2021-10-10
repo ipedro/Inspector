@@ -22,11 +22,7 @@ import UIKit
 
 extension ElementSizeLibrary {
     final class ButtonSizeSectionDataSource: InspectorElementSectionDataSource {
-        private enum Properties: String, Swift.CaseIterable {
-            case contentEdgeInsets = "Content Insets"
-            case titleEdgeInsets = "Title Insets"
-            case imageEdgeInsets = "Image Insets"
-        }
+        var state: InspectorElementSectionState = .collapsed
 
         let title: String = "Button"
 
@@ -35,6 +31,12 @@ extension ElementSizeLibrary {
         init?(view: UIView) {
             guard let button = view as? UIButton else { return nil }
             self.button = button
+        }
+
+        private enum Properties: String, Swift.CaseIterable {
+            case contentEdgeInsets = "Content Insets"
+            case titleEdgeInsets = "Title Insets"
+            case imageEdgeInsets = "Image Insets"
         }
 
         var properties: [InspectorElementProperty] {

@@ -22,13 +22,7 @@ import UIKit
 
 extension ElementSizeLibrary {
     final class ScrollViewSizeSectionDataSource: InspectorElementSectionDataSource {
-        private enum Properties: String, Swift.CaseIterable {
-            case scrollIndicatorInsets = "Indicator Insets"
-            case contentInsetsAdjustmentBehavior = "Content Insets Adjustment"
-            case contentInset = "Content Inset"
-            case separator
-            case adjustedContentInset = "Adjusted Content Inset"
-        }
+        var state: InspectorElementSectionState = .collapsed
 
         let title: String = "Scroll View"
 
@@ -37,6 +31,14 @@ extension ElementSizeLibrary {
         init?(view: UIView) {
             guard let scrollView = view as? UIScrollView else { return nil }
             self.scrollView = scrollView
+        }
+        
+        private enum Properties: String, Swift.CaseIterable {
+            case scrollIndicatorInsets = "Indicator Insets"
+            case contentInsetsAdjustmentBehavior = "Content Insets Adjustment"
+            case contentInset = "Content Inset"
+            case separator
+            case adjustedContentInset = "Adjusted Content Inset"
         }
 
         var properties: [InspectorElementProperty] {

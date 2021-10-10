@@ -22,11 +22,7 @@ import UIKit
 
 extension ElementSizeLibrary {
     final class ViewFrameSizeSectionDataSource: InspectorElementSectionDataSource {
-        private enum Properties: String, Swift.CaseIterable {
-            case frame = "Frame Rectangle"
-            case autoresizingMask = "View Resizing"
-            case directionalLayoutsMargins = "Layout Margins"
-        }
+        var state: InspectorElementSectionState = .collapsed
 
         let title: String = "View"
 
@@ -34,6 +30,12 @@ extension ElementSizeLibrary {
 
         init(view: UIView) {
             self.view = view
+        }
+
+        private enum Properties: String, Swift.CaseIterable {
+            case frame = "Frame Rectangle"
+            case autoresizingMask = "View Resizing"
+            case directionalLayoutsMargins = "Layout Margins"
         }
 
         var properties: [InspectorElementProperty] {

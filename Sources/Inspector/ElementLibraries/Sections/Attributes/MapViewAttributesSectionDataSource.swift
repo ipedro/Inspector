@@ -22,6 +22,8 @@ import MapKit
 
 extension ElementAttributesLibrary {
     final class MapViewAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Map View"
 
         private weak var mapView: MKMapView?

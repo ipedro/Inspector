@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementIdentityLibrary {
     final class RuntimeAttributesIdentitySectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Runtime Attributes"
 
         private(set) weak var object: NSObject?

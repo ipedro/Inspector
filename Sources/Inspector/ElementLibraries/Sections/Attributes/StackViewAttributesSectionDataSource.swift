@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class StackViewAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Stack View"
 
         private weak var stackView: UIStackView?

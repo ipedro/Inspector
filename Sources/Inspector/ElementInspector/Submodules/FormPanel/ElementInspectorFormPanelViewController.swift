@@ -39,7 +39,7 @@ protocol ElementInspectorFormPanelItemStateDelegate: AnyObject {
     func elementInspectorFormPanelItemDidChangeState(_ formPanelViewController: ElementInspectorFormPanelViewController)
 }
 
-class ElementInspectorFormPanelViewController: ElementInspectorPanelViewController, DataReloadingProtocol {
+class ElementInspectorFormPanelViewController: ElementInspectorPanelViewController {
     func addOperationToQueue(_ operation: MainThreadOperation) {
         formDelegate?.addOperationToQueue(operation)
     }
@@ -127,9 +127,11 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
         reloadData()
     }
+}
 
-    // MARK: - Internal API
+// MARK: - DataReloadingProtocol
 
+extension ElementInspectorFormPanelViewController: DataReloadingProtocol {
     func reloadData() {
         viewCode.contentView.removeAllArrangedSubviews()
 
@@ -141,46 +143,50 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
         guard let dataSource = dataSource else { return }
 
-        dataSource.sections.enumerated().forEach { section, item in
-            if let title = item.title {
-                self.viewCode.contentView.addArrangedSubview(
-                    SectionHeader(
-                        title: title,
-                        titleFont: .title3,
-                        margins: ElementInspector.appearance.directionalInsets.with(
-                            top: ElementInspector.appearance.horizontalMargins * 2,
-                            bottom: ElementInspector.appearance.horizontalMargins * 2
-                        )
-                    ).then {
-                        $0.alpha = 0.5
-                    }
+        for sectionIndex in 0 ..< dataSource.numberOfSections {
+            let section = dataSource.section(at: sectionIndex)
+
+            if let title = section.title {
+                viewCode.contentView.addArrangedSubview(
+                    sectionHeader(title: title)
                 )
             }
 
-            for (row, viewModel) in item.rows.enumerated() {
-                let indexPath = IndexPath(row: row, section: section)
+            for (row, item) in section.rows.enumerated() {
+                item.state = row + sectionIndex == .zero ? .expanded : .collapsed
 
-                let itemView = dataSource.viewForProperty(at: indexPath).then {
+                let view = item.makeView().then {
                     $0.separatorStyle = .bottom
                 }
 
-                let formItemViewController = InspectorElementSectionViewController(
-                    viewModel: viewModel,
-                    viewCode: itemView
-                ).then {
+                let sectionViewController = InspectorElementSectionViewController(view: view).then {
+                    $0.dataSource = item
                     $0.delegate = self
                 }
 
-                addChild(formItemViewController)
+                addChild(sectionViewController)
 
-                formItemViewController.viewWillAppear(false)
+                sectionViewController.viewWillAppear(false)
 
-                self.viewCode.contentView.addArrangedSubview(itemView)
+                viewCode.contentView.addArrangedSubview(view)
 
-                formItemViewController.didMove(toParent: self)
+                sectionViewController.didMove(toParent: self)
 
-                self.sections[formItemViewController] = item
+                sections[sectionViewController] = section
             }
+        }
+    }
+
+    private func sectionHeader(title: String) -> SectionHeader {
+        SectionHeader(
+            title: title,
+            titleFont: .title3,
+            margins: ElementInspector.appearance.directionalInsets.with(
+                top: ElementInspector.appearance.horizontalMargins * 2,
+                bottom: ElementInspector.appearance.horizontalMargins * 2
+            )
+        ).then {
+            $0.alpha = 0.5
         }
     }
 }

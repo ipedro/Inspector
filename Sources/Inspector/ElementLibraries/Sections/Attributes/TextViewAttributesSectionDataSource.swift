@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class TextViewAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Text View"
 
         private weak var textView: UITextView?

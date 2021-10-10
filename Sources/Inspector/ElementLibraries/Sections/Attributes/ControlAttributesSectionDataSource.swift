@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class ControlAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Control"
 
         private weak var control: UIControl?

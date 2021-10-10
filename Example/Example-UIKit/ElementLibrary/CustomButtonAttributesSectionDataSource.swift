@@ -22,6 +22,8 @@ import Inspector
 import UIKit
 
 final class CustomButtonAttributesSectionDataSource: InspectorElementSectionDataSource {
+    var state: InspectorElementSectionState = .collapsed
+
     var title: String = "Custom Button"
 
     let customButton: CustomButton

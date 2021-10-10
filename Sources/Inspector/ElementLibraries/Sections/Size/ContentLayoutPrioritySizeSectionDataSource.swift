@@ -22,6 +22,16 @@ import UIKit
 
 extension ElementSizeLibrary {
     final class ContentLayoutPrioritySizeSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
+        let title: String = "Content Layout Priority"
+
+        private weak var view: UIView?
+
+        init(view: UIView) {
+            self.view = view
+        }
+
         private enum Properties: String, Swift.CaseIterable {
             case groupHuggingPriority = "Content Hugging Priority"
             case horizontalHugging = "Horizontal Hugging"
@@ -32,14 +42,6 @@ extension ElementSizeLibrary {
             case verticalCompressionResistance = "Vertical Resistance"
             case separator1
             case instrinsicContentSize = "Intrinsic Size"
-        }
-
-        let title: String = "Content Layout Priority"
-
-        private weak var view: UIView?
-
-        init(view: UIView) {
-            self.view = view
         }
 
         var properties: [InspectorElementProperty] {

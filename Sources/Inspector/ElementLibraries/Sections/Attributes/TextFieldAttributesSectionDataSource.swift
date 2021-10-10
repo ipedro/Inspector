@@ -22,6 +22,8 @@ import UIKit
 
 extension ElementAttributesLibrary {
     final class TextFieldAttributesSectionDataSource: InspectorElementSectionDataSource {
+        var state: InspectorElementSectionState = .collapsed
+
         let title = "Text Field"
 
         private(set) weak var textField: UITextField?
