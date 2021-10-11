@@ -21,6 +21,16 @@
 import UIKit
 
 final class WireframeView: LayerView {
+
+    private lazy var leadingAnchorConstraint = layoutGuideView.leadingAnchor.constraint(equalTo: leadingAnchor).then { $0.isActive = true }
+
+    private lazy var topAnchorConstraint = layoutGuideView.topAnchor.constraint(equalTo: topAnchor).then { $0.isActive = true }
+
+    private lazy var bottomAnchorConstraint = layoutGuideView.bottomAnchor.constraint(equalTo: bottomAnchor).then { $0.isActive = true }
+
+    private lazy var trailingAnchorConstraint = layoutGuideView.trailingAnchor.constraint(equalTo: trailingAnchor).then { $0.isActive = true }
+
+
     override init(
         frame: CGRect,
         element: ViewHierarchyElement,
@@ -33,5 +43,37 @@ final class WireframeView: LayerView {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    private lazy var layoutGuideView = UIView().then {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.layer.borderColor = borderColor?.cgColor
+        $0.layer.borderWidth = borderWidth
+        $0.alpha = 1/3
+    }
+
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+
+        guard superview != nil else {
+            layoutGuideView.removeFromSuperview()
+            return
+        }
+
+        installView(layoutGuideView)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard let superview = superview else {
+            layoutGuideView.removeFromSuperview()
+            return
+        }
+
+        leadingAnchorConstraint.constant = superview.layoutMarginsGuide.layoutFrame.minX
+        topAnchorConstraint.constant = superview.layoutMarginsGuide.layoutFrame.minY
+        bottomAnchorConstraint.constant = superview.layoutMarginsGuide.layoutFrame.maxY - superview.bounds.maxY
+        trailingAnchorConstraint.constant = superview.layoutMarginsGuide.layoutFrame.maxX - superview.bounds.maxX
     }
 }

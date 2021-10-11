@@ -109,6 +109,16 @@ class HighlightView: LayerView, DraggableViewProtocol {
         $0.installView(labelContentView, .autoResizingMask)
     }
 
+    private lazy var layoutMarginsShadeLayer = CAShapeLayer().then {
+        $0.fillRule = .evenOdd
+        $0.fillColor = borderColor?.withAlphaComponent(0.15).cgColor
+        layoutMarginsGuideView.layer.addSublayer($0)
+    }
+
+    private lazy var layoutMarginsGuideView = UIView().then {
+        installView($0, .spacing(top: .zero, leading: .zero, bottom: .zero))
+    }
+
     private lazy var panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(move(with:)))
 
     private(set) lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapLayerView))
@@ -207,9 +217,17 @@ class HighlightView: LayerView, DraggableViewProtocol {
 
         updateLabelWidth()
 
-        if let superview = superview {
-            borderColor = colorScheme.value(for: superview)
-        }
+        guard let superview = superview else { return }
+
+        borderColor = colorScheme.value(for: superview)
+
+        let pathBigRect = UIBezierPath(rect: superview.bounds)
+        let pathSmallRect = UIBezierPath(rect: superview.layoutMarginsGuide.layoutFrame)
+
+        pathBigRect.append(pathSmallRect)
+        pathBigRect.usesEvenOddFillRule = true
+
+        layoutMarginsShadeLayer.path = pathBigRect.cgPath
     }
 
     func updateElementName() {
