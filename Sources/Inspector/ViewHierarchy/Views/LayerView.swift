@@ -71,6 +71,8 @@ class LayerView: UIImageView, LayerViewProtocol {
 
         super.init(frame: frame)
 
+        clipsToBounds = true
+
         autoresizingMask = [.flexibleHeight, .flexibleWidth]
     }
 
