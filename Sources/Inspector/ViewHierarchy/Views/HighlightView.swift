@@ -111,7 +111,7 @@ class HighlightView: LayerView, DraggableViewProtocol {
 
     private lazy var layoutMarginsShadeLayer = CAShapeLayer().then {
         $0.fillRule = .evenOdd
-        $0.fillColor = borderColor?.withAlphaComponent(0.15).cgColor
+        $0.fillColor = borderColor?.withAlphaComponent(0.1).cgColor
         layoutMarginsGuideView.layer.addSublayer($0)
     }
 
