@@ -33,7 +33,9 @@ extension ElementIdentityLibrary {
         private let hideUknownValues: Bool = true
 
         init?(object: NSObject) {
-            let properties = object.propertyNames()
+            let properties = object.propertyNames().sorted {
+                $0.lowercased().filter({ $0 != "_"}) < $1.lowercased().filter({ $0 != "_"})
+            }
 
             if properties.isEmpty { return nil }
 
@@ -101,8 +103,20 @@ extension ElementIdentityLibrary {
                         point: { point },
                         handler: nil
                     )
+                case let rect as CGRect:
+                    return .cgRect(
+                        title: property,
+                        rect: { rect },
+                        handler: nil
+                    )
                 case let insets as NSDirectionalEdgeInsets:
                     return .directionalInsets(
+                        title: property,
+                        insets: { insets },
+                        handler: nil
+                    )
+                case let insets as UIEdgeInsets:
+                    return .edgeInsets(
                         title: property,
                         insets: { insets },
                         handler: nil
@@ -126,14 +140,8 @@ extension ElementIdentityLibrary {
                     return .textView(
                         title: property,
                         placeholder: nil,
-                        value: {
-                            [
-                                object._className,
-                                "", // spacer
-                                object.debugDescription
-                            ].joined(separator: "\n")
-
-                        }, handler: nil
+                        value: { object.debugDescription },
+                        handler: nil
                     )
                 case let stringValue as String:
                     return .textView(
