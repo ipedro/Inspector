@@ -107,55 +107,90 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
             viewCode.addTitleAccessoryView(titleAccessoryView)
         }
 
-        if state == .expanded, !hasAddedFormViews {
-            addFormViews()
-        }
+        addFormViewsIfNeeded()
     }
 
-    private func addFormViews() {
-        guard let dataSource = dataSource, !hasAddedFormViews else { return }
+    private func addFormViewsIfNeeded() {
+        guard
+            state == .expanded,
+            hasAddedFormViews == false,
+            let delegate = delegate,
+            let dataSource = dataSource
+        else {
+            return
+        }
 
         hasAddedFormViews = true
 
-        var views = [UIView]()
-
         for (index, property) in dataSource.properties.enumerated() {
-            guard let view = makeView(for: property) else { continue }
+            guard let propertyView = makeView(for: property) else { continue }
 
-            if index == .zero, let sectionHeader = view as? SectionHeader {
-                sectionHeader.margins.top = .zero
+            let operation = MainThreadAsyncOperation(name: String(index)) { [weak self] in
+                guard let self = self else { return }
+
+                if index == .zero, let sectionHeader = propertyView as? SectionHeader {
+                    sectionHeader.margins.top = .zero
+                }
+
+                if let control = propertyView as? UIControl {
+                    control.addTarget(self, action: #selector(InspectorElementSectionViewController.valueChanged(_:)), for: .valueChanged)
+                    control.isEnabled = property.hasHandler
+                }
+
+                if let fromControl = propertyView as? BaseFormControl {
+                    let isLastElement = index == dataSource.properties.count - 1
+                    let isNotFollowedByControl = index + 1 < dataSource.properties.count && dataSource.properties[index + 1].isControl == false
+
+                    fromControl.isShowingSeparator = (isLastElement || isNotFollowedByControl) == false
+                }
+
+                self.formViews[property] = propertyView
+
+                propertyView.alpha = 0
+                self.viewCode.addFormViews([propertyView])
+
+                self.animate(withDuration: .veryLong) { propertyView.alpha = 1 }
             }
 
-            if let control = view as? UIControl {
-                control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
-                control.isEnabled = property.hasHandler
-            }
-
-            if let fromControl = view as? BaseFormControl {
-                let isLastElement = index == dataSource.properties.count - 1
-                let isNotFollowedByControl = index + 1 < dataSource.properties.count && dataSource.properties[index + 1].isControl == false
-
-                fromControl.isShowingSeparator = (isLastElement || isNotFollowedByControl) == false
-            }
-
-            formViews[property] = view
-
-            views.append(view)
+            delegate.addOperationToQueue(operation)
         }
-        
-        viewCode.addFormViews(views)
+
     }
 
-    var state: InspectorElementSectionState {
-        get { viewCode.state }
-        set {
-            if newValue == .expanded, !hasAddedFormViews {
-                addFormViews()
-            }
+    func setState(_ state: InspectorElementSectionState, animated: Bool) {
+        guard state != viewCode.state else { return }
 
-            viewCode.state = newValue
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(30)) {
+            self.addFormViewsIfNeeded()
         }
+
+        guard animated else {
+            viewCode.state = state
+            return
+        }
+
+        let isLargeList = (dataSource?.properties.count ?? .zero) > 20
+
+        if isLargeList, let formView = viewCode as? InspectorElementSectionFormView {
+            formView.collapseIcon.showLoading()
+        }
+
+        animate(
+            withDuration: .veryLong,
+            delay: .veryShort,
+            damping: isLargeList ? 0.93 : Animation.defaultDamping
+        ) { [weak self] in
+            self?.viewCode.state = state
+
+        } completion: { [weak self] finished in
+            if let formView = self?.viewCode as? InspectorElementSectionFormView {
+                formView.collapseIcon.hideLoading()
+            }
+        }
+
     }
+
+    var state: InspectorElementSectionState { viewCode.state }
 
     private var formViews: [InspectorElementProperty: UIView] = [:]
 

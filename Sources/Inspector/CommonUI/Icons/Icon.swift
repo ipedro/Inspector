@@ -34,7 +34,7 @@ final class Icon: BaseView {
 
     private lazy var heightConstraint = heightAnchor.constraint(equalToConstant: size.height)
 
-    init(_ glpyh: Glyph, color: UIColor, size: CGSize = CGSize(width: 16, height: 16)) {
+    init(_ glpyh: Glyph, color: UIColor = Inspector.configuration.colorStyle.textColor, size: CGSize = CGSize(width: 16, height: 16)) {
         self.glpyh = glpyh
         self.size = size
 

@@ -35,9 +35,9 @@ enum Animation {
 
     case `in`, out
 
-    var damping: CGFloat { 0.825 }
+    var damping: CGFloat { Self.defaultDamping }
 
-    var velocity: CGFloat { .zero }
+    var velocity: CGFloat { Self.defaultVelocity }
 
     var options: UIView.AnimationOptions { [.allowUserInteraction, .beginFromCurrentState] }
 
@@ -87,6 +87,7 @@ extension NSObject {
     func animate(
         withDuration duration: TimeInterval = .average,
         delay: TimeInterval = .zero,
+        damping: CGFloat = Animation.defaultDamping,
         options: UIView.AnimationOptions = Animation.defaultOptions,
         animations: @escaping () -> Void,
         completion: ((Bool) -> Void)? = nil
@@ -94,7 +95,7 @@ extension NSObject {
         UIView.animate(
             withDuration: duration,
             delay: delay,
-            usingSpringWithDamping: Animation.defaultDamping,
+            usingSpringWithDamping: damping,
             initialSpringVelocity: Animation.defaultVelocity,
             options: options,
             animations: animations,

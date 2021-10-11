@@ -57,6 +57,8 @@ class InspectorElementSectionFormView: BaseView {
 
     var state: InspectorElementSectionState {
         didSet {
+            guard oldValue != state else { return }
+
             updateViewsForState()
         }
     }
@@ -90,14 +92,12 @@ class InspectorElementSectionFormView: BaseView {
 
         $0.contentView.isUserInteractionEnabled = false
         $0.contentView.spacing = ElementInspector.appearance.verticalMargins
-        $0.contentView.addArrangedSubviews(collapseButton, header)
+        $0.contentView.addArrangedSubviews(collapseIcon, header)
         $0.contentView.alignment = .center
         $0.contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
     }
 
-    private(set) lazy var collapseButton = IconButton(.chevronDown).then {
-        $0.isUserInteractionEnabled = false
-    }
+    private(set) lazy var collapseIcon = CollapseIcon()
 
     init(header: SectionHeader,
          state: InspectorElementSectionState,
@@ -154,7 +154,7 @@ class InspectorElementSectionFormView: BaseView {
     private func hideContent(_ hide: Bool) {
         formStackView.alpha = hide ? 0 : 1
         formStackView.isSafelyHidden = hide
-        collapseButton.transform = hide ? CGAffineTransform(rotationAngle: -(.pi / 2)) : .identity
+        collapseIcon.transform = hide ? CGAffineTransform(rotationAngle: -(.pi / 2)) : .identity
     }
 }
 
@@ -197,6 +197,37 @@ extension InspectorElementSectionFormView: InspectorElementSectionView {
                 self.headerControl.alpha = 1
                 self.headerControl.transform = .identity
             }
+        }
+    }
+}
+
+extension InspectorElementSectionFormView {
+    final class CollapseIcon: BaseView {
+
+        private lazy var icon = IconButton(.chevronDown).then {
+            $0.isUserInteractionEnabled = false
+        }
+
+        private lazy var activityIndicatorView = UIActivityIndicatorView().then {
+            $0.hidesWhenStopped = true
+            $0.color = colorStyle.tertiaryTextColor
+            contentView.installView($0, .centerXY)
+        }
+
+        override func setup() {
+            super.setup()
+
+            contentView.installView(icon)
+        }
+
+        func showLoading() {
+            activityIndicatorView.startAnimating()
+            icon.isSafelyHidden = true
+        }
+
+        func hideLoading() {
+            activityIndicatorView.stopAnimating()
+            icon.isSafelyHidden = false
         }
     }
 }

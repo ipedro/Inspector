@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ElementInspectorFormLayoutConstraintView: BaseView {
+final class InspectorElementLayoutConstraintSectionView: BaseView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -102,9 +102,9 @@ final class ElementInspectorFormLayoutConstraintView: BaseView {
 
 // MARK: - InspectorElementSectionView
 
-extension ElementInspectorFormLayoutConstraintView: InspectorElementSectionView {
+extension InspectorElementLayoutConstraintSectionView: InspectorElementSectionView {
     static func makeItemView(with inititalState: InspectorElementSectionState) -> InspectorElementSectionView {
-        ElementInspectorFormLayoutConstraintView(state: inititalState)
+        InspectorElementLayoutConstraintSectionView(state: inititalState)
     }
 
     func addTitleAccessoryView(_ titleAccessoryView: UIView?) {
@@ -125,7 +125,7 @@ extension ElementInspectorFormLayoutConstraintView: InspectorElementSectionView 
 
 // MARK: - ToggleControlDelegate
 
-extension ElementInspectorFormLayoutConstraintView: ToggleControlDelegate {
+extension InspectorElementLayoutConstraintSectionView: ToggleControlDelegate {
     func toggleControl(_ toggleControl: ToggleControl, didChangeValueTo isOn: Bool) {
         animate {
             self.isConstraintActive = toggleControl.isOn

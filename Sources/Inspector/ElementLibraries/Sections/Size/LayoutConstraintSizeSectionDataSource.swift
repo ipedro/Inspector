@@ -35,7 +35,7 @@ extension ElementSizeLibrary {
         var subtitle: String? { element.underlyingConstraint?.safeIdentifier }
 
         var customClass: InspectorElementSectionView.Type? {
-            ElementInspectorFormLayoutConstraintView.self
+            InspectorElementLayoutConstraintSectionView.self
         }
 
         var titleAccessoryProperty: InspectorElementProperty? {

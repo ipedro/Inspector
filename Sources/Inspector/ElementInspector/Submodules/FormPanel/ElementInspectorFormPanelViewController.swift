@@ -105,13 +105,11 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
             let isExpanding = !oldValue && isFullHeightPresentation
 
-            animatePanel {
-                if isExpanding {
-                    self.apply(state: self.collapseState.next())
-                }
-                else {
-                    self.apply(state: self.collapseState.previous())
-                }
+            if isExpanding {
+                self.apply(state: self.collapseState.next(), animated: true)
+            }
+            else {
+                self.apply(state: self.collapseState.previous(), animated: true)
             }
         }
     }
@@ -194,13 +192,16 @@ extension ElementInspectorFormPanelViewController: DataReloadingProtocol {
 extension ElementInspectorFormPanelViewController {
     func togglePanels(to newState: ElementInspectorPanelListState, animated: Bool, completion: ((Bool) -> Void)? = nil) {
         guard animated else {
-            apply(state: newState)
+            apply(state: newState, animated: false)
             itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
             return
         }
 
-        animatePanel {
-            self.apply(state: newState)
+        animate(
+            withDuration: .veryLong,
+            options: [.beginFromCurrentState, .layoutSubviews]
+        ) {
+            self.apply(state: newState, animated: false)
 
         } completion: { [weak self] finished in
             completion?(finished)
@@ -212,7 +213,7 @@ extension ElementInspectorFormPanelViewController {
     }
 
     @discardableResult
-    private func apply(state: ElementInspectorPanelListState?) -> Bool {
+    private func apply(state: ElementInspectorPanelListState?, animated: Bool) -> Bool {
         switch state {
         case .none:
             return false
@@ -222,30 +223,30 @@ extension ElementInspectorFormPanelViewController {
             return false
 
         case .allCollapsed:
-            collapseAllSections()
+            collapseAllSections(animated: animated)
 
         case .firstExpanded:
-            expandFirstSection()
+            expandFirstSection(animated: animated)
 
         case .allExpanded:
-            expandAllSections()
+            expandAllSections(animated: animated)
         }
 
         return true
     }
 
-    private func collapseAllSections() {
-        formPanels.forEach { $0.state = .collapsed }
+    private func collapseAllSections(animated: Bool) {
+        formPanels.forEach { $0.setState(.collapsed, animated: animated) }
     }
 
-    private func expandFirstSection() {
+    private func expandFirstSection(animated: Bool) {
         formPanels.enumerated().forEach { index, form in
-            form.state = index == .zero ? .expanded : .collapsed
+            form.setState(index == .zero ? .expanded : .collapsed, animated: animated)
         }
     }
 
-    private func expandAllSections() {
-        formPanels.forEach { $0.state = .expanded }
+    private func expandAllSections(animated: Bool) {
+        formPanels.forEach { $0.setState(.expanded, animated: animated) }
     }
 }
 
@@ -270,15 +271,6 @@ extension ElementInspectorFormPanelViewController {
 
     func finishOptionSelction() {
         selectedOptionListControl = nil
-    }
-
-    func animatePanel(animations: @escaping () -> Void, completion: ((Bool) -> Void)? = nil) {
-        animate(
-            withDuration: .veryLong,
-            options: [.beginFromCurrentState, .layoutSubviews],
-            animations: animations,
-            completion: completion
-        )
     }
 
     func willUpdate(property: InspectorElementProperty) {}

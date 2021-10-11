@@ -53,29 +53,21 @@ extension ElementInspectorFormPanelViewController: InspectorElementSectionViewCo
 
     func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
                                                willChangeFrom oldState: InspectorElementSectionState?,
-                                               to newState: InspectorElementSectionState)
-    {
-        animatePanel
-        { [weak self] in
-            sectionViewController.state = newState
+                                               to newState: InspectorElementSectionState) {
 
-            guard let self = self else { return }
+        sectionViewController.setState(newState, animated: true)
 
-            switch newState
-            {
-            case .expanded where self.panelSelectionMode == .singleSelection:
-                for aFormItemController in self.formPanels where aFormItemController !== sectionViewController
-                {
-                    aFormItemController.state = .collapsed
-                }
-
-            case .expanded, .collapsed:
-                break
+        switch newState {
+        case .expanded where self.panelSelectionMode == .singleSelection:
+            for aFormItemController in self.formPanels where aFormItemController !== sectionViewController {
+                aFormItemController.setState(.collapsed, animated: true)
             }
-        } completion: { [weak self] _ in
-            guard let self = self else { return }
-            self.itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
+
+        case .expanded, .collapsed:
+            break
         }
+
+        self.itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
     }
 
     func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
