@@ -39,7 +39,7 @@ final class PlaygroundViewController: UIViewController {
         }
     }
 
-    @IBOutlet var contentStackView: PlaygroundContentStackView! {
+    @IBOutlet var contentStackView: UIStackView! {
         didSet {
             contentStackView.accessibilityIdentifier = "Content Stack View"
             contentStackView.isLayoutMarginsRelativeArrangement = true
@@ -192,5 +192,3 @@ final class PlaygroundViewController: UIViewController {
         Inspector.present(animated: true)
     }
 }
-
-final class PlaygroundContentStackView: UIStackView, NonInspectableView {}

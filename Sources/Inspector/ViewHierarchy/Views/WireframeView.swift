@@ -49,7 +49,7 @@ final class WireframeView: LayerView {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.layer.borderColor = borderColor?.cgColor
         $0.layer.borderWidth = borderWidth
-        $0.alpha = 1/3
+        $0.alpha = 1/4
     }
 
     override func didMoveToSuperview() {
