@@ -118,7 +118,7 @@ extension NSObject {
         }
 
         free(propertyListPointer)
-        return propertyNames
+        return propertyNames.uniqueValues()
     }
 
     func safeValue(forKey key: String) -> Any? {
