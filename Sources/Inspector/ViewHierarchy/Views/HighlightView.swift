@@ -21,7 +21,7 @@
 import UIKit
 
 class HighlightView: LayerView, DraggableViewProtocol {
-    var draggableAreaLayoutGuide: UILayoutGuide { safeAreaLayoutGuide }
+    var draggableAreaLayoutGuide: UILayoutGuide { layoutMarginsGuide }
 
     var isDragging: Bool = false {
         didSet {
