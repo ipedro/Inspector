@@ -43,6 +43,7 @@ final class LoaderView: LayerViewComponent {
         colorScheme: colorScheme,
         element: ViewHierarchyElement(with: self, iconProvider: .default)
     ).then {
+        $0.displayMode = .text
         $0.verticalAlignmentOffset = activityIndicator.frame.height * 2 / 3
     }
 
@@ -99,8 +100,6 @@ final class LoaderView: LayerViewComponent {
         super.layoutSubviews()
 
         backgroundColor = colorScheme.value(for: self)
-
-        highlightView.labelWidthConstraint = nil
 
         layer.cornerRadius = frame.height / .pi
     }

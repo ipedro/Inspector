@@ -173,17 +173,28 @@ final class ElementNameView: LayerViewComponent {
         isFirstLayoutSubviews = false
 
         alpha = 0
-        transform = .init(scaleX: .zero, y: .zero)
+
+        let randomLower: CGFloat = .random(in: 0...0.5)
+        let randomUpper: CGFloat = .random(in: 1...1.5)
+
+        let scale = Bool.random() ? randomLower : randomUpper
+
+        let oldTransfrom = self.transform
+
+        transform = .init(
+            scaleX: scale,
+            y: scale
+        )
 
         updateViews()
 
         animate(
-            withDuration: .random(in: .veryShort ... .average),
-            delay: .random(in: .average ... .veryLong),
+            withDuration: .random(in: .short ... .long),
+            delay: .random(in: .veryShort ... .veryLong),
             damping: 0.7
         ) {
             self.alpha = 1
-            self.transform = .identity
+            self.transform = oldTransfrom
         }
     }
 }

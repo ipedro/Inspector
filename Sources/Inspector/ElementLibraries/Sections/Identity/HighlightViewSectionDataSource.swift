@@ -21,38 +21,53 @@
 import UIKit
 
 extension ElementIdentityLibrary {
-    final class PreviewIdentitySectionDataSource: InspectorElementSectionDataSource {
+    final class HighlightViewSectionDataSource: InspectorElementSectionDataSource {
+
         var state: InspectorElementSectionState = .collapsed
 
-        let title: String = "Preview"
+        let title: String = "Highlight View"
 
-        private let element: ViewHierarchyElement
+        weak var highlightView: HighlightView?
 
-        private var isHighlightingViews: Bool { element.containsVisibleHighlightViews }
+        init?(view: UIView) {
+            guard let highlightView = view._highlightView else {
+                return nil
+            }
 
-        init(view: UIView) {
-            self.element = .init(with: view, iconProvider: .default)
+            self.highlightView = highlightView
         }
 
         private enum Property: String, Swift.CaseIterable {
-            case preview = "Preview"
-            case backgroundColor = "Preview Background"
+            case nameDisplayMode = "Name Display"
+            case highlightView = "Show Highlight"
         }
 
         var properties: [InspectorElementProperty] {
-            Property.allCases.compactMap { property in
-                switch property {
-                case .preview:
-                    guard let view = element.underlyingView else { return nil }
-                    return .preview(target: .init(view: view))
+            guard let highlightView = highlightView else {
+                return []
+            }
 
-                case .backgroundColor:
-                    return .colorPicker(
+            return Property.allCases.compactMap { property in
+                switch property {
+                case .highlightView:
+                    return .switch(
                         title: property.rawValue,
-                        color: { ElementInspector.configuration.thumbnailBackgroundStyle.color },
+                        isOn: { !highlightView.isHidden },
+                        handler: { isOn in
+                            highlightView.isHidden = !isOn
+                        }
+                    )
+                case .nameDisplayMode:
+                    return .optionsList(
+                        title: property.rawValue,
+                        options: ElementNameView.DisplayMode.allCases.map { $0.title },
+                        selectedIndex: { ElementNameView.DisplayMode.allCases.firstIndex(of: highlightView.displayMode) },
                         handler: {
-                            guard let color = $0 else { return }
-                            ElementInspector.configuration.thumbnailBackgroundStyle = .custom(color)
+                            guard let newIndex = $0 else { return }
+
+                            let displayMode = ElementNameView.DisplayMode.allCases[newIndex]
+
+                            highlightView.displayMode = displayMode
                         }
                     )
                 }

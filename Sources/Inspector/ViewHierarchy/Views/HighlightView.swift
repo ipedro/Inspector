@@ -32,6 +32,7 @@ final class HighlightView: LayerView, DraggableViewProtocol {
             elementNameView.displayMode
         }
         set {
+            elementNameView.displayMode = newValue
             reloadData()
         }
     }
@@ -62,16 +63,6 @@ final class HighlightView: LayerView, DraggableViewProtocol {
             }
 
             updateColors()
-        }
-    }
-
-    var labelWidthConstraint: NSLayoutConstraint? {
-        didSet {
-            guard let oldConstraint = oldValue else {
-                return
-            }
-
-            oldConstraint.isActive = false
         }
     }
 
