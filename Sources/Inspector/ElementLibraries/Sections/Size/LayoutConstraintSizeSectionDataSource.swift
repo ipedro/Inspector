@@ -26,20 +26,20 @@ extension ElementSizeLibrary {
 
         typealias Axis = LayoutConstraintElement.Axis
 
-        private let element: LayoutConstraintElement
+        private let constraint: LayoutConstraintElement
 
-        var axis: Axis { element.axis }
+        var axis: Axis { constraint.axis }
 
-        var title: String { element.type.description }
+        var title: String { constraint.type.description }
 
-        var subtitle: String? { element.underlyingConstraint?.safeIdentifier }
+        var subtitle: String? { constraint.underlyingConstraint?.safeIdentifier }
 
         var customClass: InspectorElementSectionView.Type? {
             InspectorElementLayoutConstraintSectionView.self
         }
 
         var titleAccessoryProperty: InspectorElementProperty? {
-            guard let underlyingConstraint = element.underlyingConstraint else { return nil }
+            guard let underlyingConstraint = constraint.underlyingConstraint else { return nil }
 
             return .switch(
                 title: "Installed",
@@ -48,8 +48,8 @@ extension ElementSizeLibrary {
             )
         }
 
-        init(with element: LayoutConstraintElement) {
-            self.element = element
+        init(constraint: LayoutConstraintElement) {
+            self.constraint = constraint
         }
 
         private enum Property: String, Swift.CaseIterable {
@@ -67,7 +67,7 @@ extension ElementSizeLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let underlyingConstraint = element.underlyingConstraint else { return [] }
+            guard let underlyingConstraint = constraint.underlyingConstraint else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
@@ -95,7 +95,7 @@ extension ElementSizeLibrary {
                 case .identifier:
                     return .textField(
                         title: property.rawValue,
-                        placeholder: element.underlyingConstraint?.safeIdentifier ?? property.rawValue,
+                        placeholder: constraint.underlyingConstraint?.safeIdentifier ?? property.rawValue,
                         axis: .vertical,
                         value: { underlyingConstraint.safeIdentifier },
                         handler: { underlyingConstraint.identifier = $0 }
@@ -119,7 +119,7 @@ extension ElementSizeLibrary {
                         title: property.rawValue,
                         emptyTitle: property.rawValue,
                         axis: .vertical,
-                        options: [element.first.displayName],
+                        options: [constraint.first.displayName],
                         selectedIndex: { 0 },
                         handler: nil
                     )
@@ -132,7 +132,7 @@ extension ElementSizeLibrary {
                         handler: nil
                     )
                 case .secondItem:
-                    guard let second = element.second else { return nil }
+                    guard let second = constraint.second else { return nil }
 
                     return .optionsList(
                         title: property.rawValue,

@@ -20,12 +20,21 @@
 
 import UIKit
 
-extension UIView {
-    var _highlightView: HighlightView? {
-        subviews.compactMap { $0 as? HighlightView }.first
-    }
-    
-    var _layerView: LayerView? {
-        subviews.compactMap { $0 as? LayerView }.first
+extension CACornerMask {
+    var rectCorner: UIRectCorner {
+        var corner = UIRectCorner()
+        if contains(.layerMaxXMaxYCorner) {
+            corner.insert(.bottomRight)
+        }
+        if contains(.layerMaxXMinYCorner) {
+            corner.insert(.topRight)
+        }
+        if contains(.layerMinXMaxYCorner) {
+            corner.insert(.bottomLeft)
+        }
+        if contains(.layerMinXMinYCorner) {
+            corner.insert(.topLeft)
+        }
+        return corner
     }
 }

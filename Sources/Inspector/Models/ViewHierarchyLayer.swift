@@ -129,5 +129,5 @@ public extension ViewHierarchyLayer {
     /// Highlights all
     static let internalViews = Inspector.ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsInternalViews: true) { $0._isInternalView && !$0._isSystemContainer }
 
-    static let viewControllers = Inspector.ViewHierarchyLayer(name: "View Controllers", showLabels: true, allowsInternalViews: true) { $0.layerView?.element.viewController != nil }
+    static let viewControllers = Inspector.ViewHierarchyLayer(name: "View Controllers", showLabels: true, allowsInternalViews: true) { $0._layerView?.element.viewController != nil }
 }

@@ -105,7 +105,7 @@ class LayerView: UIImageView, LayerViewProtocol {
         // reset views
         guard newSuperview == nil else { return }
 
-        element.underlyingView?.isUserInteractionEnabled = element.isUserInteractionEnabled
+        element.underlyingView?.isUserInteractionEnabled = element.isUnderlyingViewUserInteractionEnabled
     }
 
     override func didMoveToSuperview() {

@@ -74,7 +74,7 @@ enum ElementSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIterable {
             let element = ViewHierarchyElement(with: referenceView, iconProvider: .default)
 
             let dataSources = element.constraintElements.map {
-                LayoutConstraintSizeSectionDataSource(with: $0)
+                LayoutConstraintSizeSectionDataSource(constraint: $0)
             }
 
             let horizontal = dataSources.filter { $0.axis == .horizontal }

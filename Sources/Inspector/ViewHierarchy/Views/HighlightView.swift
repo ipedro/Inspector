@@ -20,56 +20,22 @@
 
 import UIKit
 
-extension HighlightView {
-    final class ElementNameView: LayerViewComponent {
-        private(set) lazy var label = UILabel().then {
-            $0.font = UIFont(name: "MuktaMahee-Regular", size: 12)
-            $0.textColor = .white
-            $0.textAlignment = .center
-            $0.setContentHuggingPriority(.required, for: .horizontal)
-        }
-
-        private(set) lazy var imageView = UIImageView().then {
-            $0.tintColor = .white
-            $0.clipsToBounds = true
-        }
-
-        override var tintColor: UIColor! {
-            didSet {
-                roundedPillView.backgroundColor = tintColor
-                layer.shadowColor = tintColor.darker(amount: 0.99).cgColor
-            }
-        }
-
-        private(set) lazy var roundedPillView = LayerViewComponent().then {
-            $0.backgroundColor = tintColor
-            $0.contentView.addArrangedSubviews(imageView, label)
-            $0.contentView.spacing = 2
-            $0.contentView.alignment = .center
-            $0.contentView.axis = .horizontal
-            $0.contentView.directionalLayoutMargins = .init(horizontal: 2, vertical: 1)
-            $0.contentView.layer.shadowOffset = CGSize(width: 0, height: 1)
-            $0.contentView.layer.shadowColor = UIColor.black.cgColor
-            $0.contentView.layer.shadowRadius = 3
-            $0.contentView.layer.shadowOpacity = 0.75
-            $0.layer.cornerRadius = 6
-        }
-
-        override func setup() {
-            super.setup()
-
-            layer.shadowOffset = CGSize(width: 0, height: 1.5)
-            layer.shadowRadius = 3
-            layer.shadowOpacity = 0.4
-            layer.shouldRasterize = true
-            layer.rasterizationScale = UIScreen.main.scale
-
-            installView(roundedPillView, .autoResizingMask)
-        }
+extension HighlightView: ElementNameViewDisplayerProtocol {
+    var elementFrame: CGRect {
+        superview?.frame ?? frame
     }
 }
 
 final class HighlightView: LayerView, DraggableViewProtocol {
+    var displayMode: ElementNameView.DisplayMode {
+        get {
+            elementNameView.displayMode
+        }
+        set {
+            reloadData()
+        }
+    }
+
     // MARK: - Properties
 
     var draggableAreaLayoutGuide: UILayoutGuide { layoutMarginsGuide }
@@ -83,7 +49,7 @@ final class HighlightView: LayerView, DraggableViewProtocol {
     var name: String {
         didSet {
             elementNameView.label.isHidden = false
-            elementNameView.label.text = name + "  "
+            elementNameView.label.text = name
         }
     }
 
@@ -219,25 +185,13 @@ final class HighlightView: LayerView, DraggableViewProtocol {
 
     private var latestElementSnapshot: UUID?
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
+    func updateViewsIfNeeded() {
         guard latestElementSnapshot != element.latestSnapshot.identifier else {
             return
         }
 
-        elementNameView.label.isSafelyHidden = false
-
-        updateViews()
-
         latestElementSnapshot = element.latestSnapshot.identifier
 
-        let size = elementNameView.systemLayoutSizeFitting(frame.size)
-
-        elementNameView.label.isHidden = size.width > frame.width * 1.6
-    }
-
-    func updateViews() {
         updateElementName()
 
         guard let superview = superview else { return }
@@ -281,7 +235,7 @@ final class HighlightView: LayerView, DraggableViewProtocol {
     func updateElementName() {
         name = element.viewController?.classNameWithoutQualifiers ?? element.elementName
 
-        if let image = element.iconImage?.resized(CGSize(16)) {
+        if let image = element.iconImage?.resized(CGSize(18)) {
             if image != elementNameView.imageView.image {
                 elementNameView.imageView.image = image
                 elementNameView.imageView.isSafelyHidden = false
@@ -294,24 +248,16 @@ final class HighlightView: LayerView, DraggableViewProtocol {
     }
 }
 
-extension CACornerMask {
-    var rectCorner: UIRectCorner {
-        var corner = UIRectCorner()
-        if contains(.layerMaxXMaxYCorner) {
-            corner.insert(.bottomRight)
-        }
-        if contains(.layerMaxXMinYCorner) {
-            corner.insert(.topRight)
-        }
-        if contains(.layerMinXMaxYCorner) {
-            corner.insert(.bottomLeft)
-        }
-        if contains(.layerMinXMinYCorner) {
-            corner.insert(.topLeft)
-        }
-        return corner
+// MARK: - DataReloadingProtocol
+
+extension HighlightView: DataReloadingProtocol {
+    func reloadData() {
+        latestElementSnapshot = nil
+        updateViewsIfNeeded()
     }
 }
+
+// MARK: - Private Helpers
 
 private extension HighlightView {
     func setupViews(with hostView: UIView) {
@@ -321,7 +267,7 @@ private extension HighlightView {
 
         verticalAlignmentConstraint.isActive = true
 
-        updateViews()
+        updateViewsIfNeeded()
 
         isSafelyHidden = false
 
@@ -333,12 +279,12 @@ private extension HighlightView {
         case true:
             elementNameView.tintColor = borderColor
             backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha)
-            borderWidth = 3 / UIScreen.main.scale
+            borderWidth = 4 / UIScreen.main.scale
 
         case false:
-            elementNameView.tintColor = borderColor?.withAlphaComponent(0.85)
+            elementNameView.tintColor = borderColor?.withAlphaComponent(0.8)
             backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha * 0.1)
-            borderWidth = 1 / UIScreen.main.scale
+            borderWidth = 2 / UIScreen.main.scale
         }
     }
 }

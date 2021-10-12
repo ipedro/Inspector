@@ -22,12 +22,15 @@ import UIKit
 
 enum ElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
     case preview
+    case highlightView
     case runtimeAttributes
 
     var targetClass: AnyClass {
         switch self {
-        case .preview:
+        case .preview,
+             .highlightView:
             return UIView.self
+
         case .runtimeAttributes:
             return NSObject.self
         }
@@ -37,6 +40,9 @@ enum ElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol
         switch self {
         case .preview:
             return .init(with: PreviewIdentitySectionDataSource(view: referenceView))
+
+        case .highlightView:
+            return .init(with: HighlightViewSectionDataSource(view: referenceView))
 
         case .runtimeAttributes:
             return .init(with: RuntimeAttributesIdentitySectionDataSource(object: referenceView))

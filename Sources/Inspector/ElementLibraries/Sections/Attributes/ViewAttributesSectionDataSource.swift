@@ -95,7 +95,7 @@ extension ElementAttributesLibrary {
                         value: { view.accessibilityIdentifier?.trimmed }
                     ) { accessibilityIdentifier in
                         view.accessibilityIdentifier = accessibilityIdentifier?.trimmed
-                        view.hightlightView?.updateElementName()
+                        view._highlightView?.updateElementName()
                     }
                 case .groupInteraction:
                     return .group(title: property.rawValue)
@@ -103,17 +103,13 @@ extension ElementAttributesLibrary {
                 case .isUserInteractionEnabled:
                     return .switch(
                         title: property.rawValue,
-                        isOn: { view.hightlightView?.element.isUserInteractionEnabled ?? view.isUserInteractionEnabled }
+                        isOn: { view._highlightView?.element.isUnderlyingViewUserInteractionEnabled ?? view.isUserInteractionEnabled }
                     ) { isUserInteractionEnabled in
-                        view.hightlightView?.updateViews()
-
-                        // TODO: take a look again
-//                        guard let viewReference = view.hightlightView?.element else {
-//                            view.isUserInteractionEnabled = isUserInteractionEnabled
-//                            return
-//                        }
-//
-                        // viewReference.isUserInteractionEnabled = isUserInteractionEnabled
+                        guard let highlightView = view._highlightView else {
+                            view.isUserInteractionEnabled = isUserInteractionEnabled
+                            return
+                        }
+                        highlightView.element.isUnderlyingViewUserInteractionEnabled = isUserInteractionEnabled
                     }
                 case .isMultipleTouchEnabled:
                     return .switch(

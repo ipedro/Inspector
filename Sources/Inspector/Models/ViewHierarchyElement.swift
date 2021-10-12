@@ -24,27 +24,27 @@ import UniformTypeIdentifiers
 extension ViewHierarchyElement {
     struct Snapshot: ViewHierarchyElementProtocol, ExpirableProtocol, Hashable {
         let identifier = UUID()
-        let accessibilityIdentifier: String?
-        let canHostInspectorView: Bool
-        let canPresentOnTop: Bool
-        let className: String
-        let classNameWithoutQualifiers: String
-        let constraintElements: [LayoutConstraintElement]
-        let depth: Int
-        let displayName: String
-        let elementDescription: String
-        let elementName: String
-        let expirationDate: Date = Date().addingTimeInterval(Inspector.configuration.snapshotExpirationTimeInterval)
-        let frame: CGRect
-        let iconImage: UIImage?
-        let isContainer: Bool
-        let isInternalView: Bool
-        let isUserInteractionEnabled: Bool
-        let issues: [ViewHierarchyIssue]
-        let overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle
-        let shortElementDescription: String
-        let traitCollection: UITraitCollection
         let viewIdentifier: ObjectIdentifier
+        var accessibilityIdentifier: String?
+        var canHostInspectorView: Bool
+        var canPresentOnTop: Bool
+        var className: String
+        var classNameWithoutQualifiers: String
+        var constraintElements: [LayoutConstraintElement]
+        var depth: Int
+        var displayName: String
+        var elementDescription: String
+        var elementName: String
+        var expirationDate: Date = Date().addingTimeInterval(Inspector.configuration.snapshotExpirationTimeInterval)
+        var frame: CGRect
+        var iconImage: UIImage?
+        var isContainer: Bool
+        var isInternalView: Bool
+        var isUserInteractionEnabled: Bool
+        var issues: [ViewHierarchyIssue]
+        var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle
+        var shortElementDescription: String
+        var traitCollection: UITraitCollection
 
         init(view: UIView, icon: UIImage?, depth: Int) {
             self.depth = depth
@@ -104,6 +104,8 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
     let iconProvider: ViewHierarchyElementIconProvider
 
     private var store: SnapshotStore<Snapshot>
+
+    var highlightView: HighlightView? { underlyingView?._highlightView }
 
     var isCollapsed: Bool
 
@@ -167,6 +169,7 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
         self.parent = parent
         self.iconProvider = iconProvider
         self.isCollapsed = isCollapsed
+        self.isUnderlyingViewUserInteractionEnabled = view.isUserInteractionEnabled
 
         let initialSnapshot = Snapshot(
             view: view,
@@ -178,11 +181,17 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
     }
 
     var latestSnapshot: Snapshot { store.latest }
+
+    var isUnderlyingViewUserInteractionEnabled: Bool
 }
 
 // MARK: - ViewHierarchyElementProtocol {
 
 extension ViewHierarchyElement: ViewHierarchyElementProtocol {
+    var isUserInteractionEnabled: Bool {
+        isUnderlyingViewUserInteractionEnabled
+    }
+
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle {
         guard store.latest.isExpired, let rootView = underlyingView else {
             return store.latest.overrideViewHierarchyInterfaceStyle
@@ -343,17 +352,28 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         return rootView.constraintElements
     }
 
-    private func scheduleSnapshot() {
+    enum SnapshotSchedulingError: Error {
+        case dealocatedSelf, lostConnectionToView
+    }
+
+    private func scheduleSnapshot(_ handler: ((Result<Snapshot, SnapshotSchedulingError>) -> Void)? = nil) {
         store.scheduleSnapshot(
             .init(closure: { [weak self] in
-                guard
-                    let self = self,
-                    let rootView = self.underlyingView
-                else {
+                guard let self = self else {
+                    handler?(.failure(.dealocatedSelf))
                     return nil
                 }
 
-                return Snapshot(view: rootView, icon: self.iconProvider.value(for: rootView), depth: self.depth)
+                guard let rootView = self.underlyingView else {
+                    handler?(.failure(.lostConnectionToView))
+                    return nil
+                }
+
+                let snapshot = Snapshot(view: rootView, icon: self.iconProvider.value(for: rootView), depth: self.depth)
+
+                handler?(.success(snapshot))
+
+                return snapshot
              }
           )
        )
@@ -370,10 +390,6 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
 
     var classNameWithoutQualifiers: String {
         store.first.classNameWithoutQualifiers
-    }
-
-    var isUserInteractionEnabled: Bool {
-        store.first.isUserInteractionEnabled
     }
 
     var issues: [ViewHierarchyIssue] {

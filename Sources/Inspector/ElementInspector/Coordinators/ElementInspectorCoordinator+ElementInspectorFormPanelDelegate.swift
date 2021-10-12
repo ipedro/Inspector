@@ -31,6 +31,8 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
         }
 
         elementInspectorViewController.reloadData()
+
+        elementInspectorViewController.viewModel.element.highlightView?.reloadData()
     }
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController, didTap colorPreviewControl: ColorPreviewControl) {

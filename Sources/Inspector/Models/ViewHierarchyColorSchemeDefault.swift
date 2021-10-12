@@ -22,7 +22,7 @@ import UIKit
 
 extension ViewHierarchyColorScheme {
     static let `default`: ViewHierarchyColorScheme = .init { view in
-        guard view.hightlightView?.element.isUserInteractionEnabled == true else {
+        guard view._highlightView?.element.isUserInteractionEnabled == true else {
             return .systemGray
         }
 
