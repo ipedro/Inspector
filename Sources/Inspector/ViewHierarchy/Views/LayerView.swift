@@ -71,8 +71,6 @@ class LayerView: UIImageView, LayerViewProtocol {
 
         super.init(frame: frame)
 
-        clipsToBounds = true
-
         autoresizingMask = [.flexibleHeight, .flexibleWidth]
     }
 
@@ -91,7 +89,7 @@ class LayerView: UIImageView, LayerViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        matchLayerProperties(of: superview)
+        matchCornerRadius(of: superview)
 
         updateBorder()
     }
@@ -113,12 +111,12 @@ class LayerView: UIImageView, LayerViewProtocol {
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
 
-        matchLayerProperties(of: superview)
+        matchCornerRadius(of: superview)
     }
 }
 
-private extension UIView {
-    func matchLayerProperties(of otherView: UIView?) {
+extension UIView {
+    func matchCornerRadius(of otherView: UIView?) {
         guard let otherView = otherView else { return }
 
         if #available(iOS 13.0, *) {

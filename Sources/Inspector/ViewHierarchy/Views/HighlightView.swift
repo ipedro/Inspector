@@ -20,7 +20,58 @@
 
 import UIKit
 
-class HighlightView: LayerView, DraggableViewProtocol {
+extension HighlightView {
+    final class ElementNameView: LayerViewComponent {
+        private(set) lazy var label = UILabel().then {
+            $0.font = UIFont(name: "MuktaMahee-Regular", size: 12)
+            $0.textColor = .white
+            $0.textAlignment = .center
+            $0.setContentHuggingPriority(.required, for: .horizontal)
+        }
+
+        private(set) lazy var imageView = UIImageView().then {
+            $0.tintColor = .white
+            $0.clipsToBounds = true
+        }
+
+        override var tintColor: UIColor! {
+            didSet {
+                roundedPillView.backgroundColor = tintColor
+                layer.shadowColor = tintColor.darker(amount: 0.99).cgColor
+            }
+        }
+
+        private(set) lazy var roundedPillView = LayerViewComponent().then {
+            $0.backgroundColor = tintColor
+            $0.contentView.addArrangedSubviews(imageView, label)
+            $0.contentView.spacing = 2
+            $0.contentView.alignment = .center
+            $0.contentView.axis = .horizontal
+            $0.contentView.directionalLayoutMargins = .init(horizontal: 2, vertical: 1)
+            $0.contentView.layer.shadowOffset = CGSize(width: 0, height: 1)
+            $0.contentView.layer.shadowColor = UIColor.black.cgColor
+            $0.contentView.layer.shadowRadius = 3
+            $0.contentView.layer.shadowOpacity = 0.75
+            $0.layer.cornerRadius = 6
+        }
+
+        override func setup() {
+            super.setup()
+
+            layer.shadowOffset = CGSize(width: 0, height: 1.5)
+            layer.shadowRadius = 3
+            layer.shadowOpacity = 0.4
+            layer.shouldRasterize = true
+            layer.rasterizationScale = UIScreen.main.scale
+
+            installView(roundedPillView, .autoResizingMask)
+        }
+    }
+}
+
+final class HighlightView: LayerView, DraggableViewProtocol {
+    // MARK: - Properties
+
     var draggableAreaLayoutGuide: UILayoutGuide { layoutMarginsGuide }
 
     var isDragging: Bool = false {
@@ -29,11 +80,10 @@ class HighlightView: LayerView, DraggableViewProtocol {
         }
     }
 
-    // MARK: - Properties
-
     var name: String {
         didSet {
-            label.text = name
+            elementNameView.label.isHidden = false
+            elementNameView.label.text = name + "  "
         }
     }
 
@@ -45,7 +95,7 @@ class HighlightView: LayerView, DraggableViewProtocol {
                 return
             }
 
-            labelContentView.backgroundColor = borderColor
+            updateColors()
         }
     }
 
@@ -68,50 +118,18 @@ class HighlightView: LayerView, DraggableViewProtocol {
         }
     }
 
-    var draggableView: UIView { labelContainerView }
+    var draggableView: UIView { elementNameView }
 
     override var sourceView: UIView { draggableView }
 
-    private lazy var verticalAlignmentConstraint = labelContainerView.centerYAnchor.constraint(equalTo: centerYAnchor)
+    private lazy var verticalAlignmentConstraint = elementNameView.centerYAnchor.constraint(equalTo: centerYAnchor)
 
     // MARK: - Components
 
-    private lazy var label = UILabel().then {
-        $0.font = UIFont(name: "MuktaMahee-Regular", size: 12)
-        $0.textColor = .white
-        $0.textAlignment = .center
-        $0.setContentHuggingPriority(.required, for: .horizontal)
-
-        $0.layer.shadowOffset = CGSize(width: 0, height: 1)
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowRadius = 1
-        $0.layer.shadowOpacity = 2 / 3
-    }
-
-    private(set) lazy var labelContentView = LayerViewComponent().then {
-        $0.backgroundColor = borderColor
-        $0.layer.borderWidth = 1 / UIScreen.main.scale
-        $0.layer.borderColor = UIColor(white: 1, alpha: 0.1).cgColor
-        $0.layer.cornerRadius = 7
-        $0.installView(label, .spacing(horizontal: 5.5, vertical: -1))
-    }
-
-    private lazy var labelContainerView = LayerViewComponent(
-        .layerOptions(
-            .shadowOffset(CGSize(width: 0, height: 1)),
-            .shadowColor(UIColor.black.cgColor),
-            .shadowRadius(3),
-            .shadowOpacity(0.4),
-            .shouldRasterize(true),
-            .rasterizationScale(UIScreen.main.scale)
-        )
-    ).then {
-        $0.installView(labelContentView, .autoResizingMask)
-    }
+    private lazy var elementNameView = ElementNameView()
 
     private lazy var layoutMarginsShadeLayer = CAShapeLayer().then {
         $0.fillRule = .evenOdd
-        $0.fillColor = borderColor?.withAlphaComponent(0.1).cgColor
         layoutMarginsGuideView.layer.addSublayer($0)
     }
 
@@ -168,22 +186,16 @@ class HighlightView: LayerView, DraggableViewProtocol {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-
-        labelContentView.animate(.in)
         updateColors(isDragging: true)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-
-        labelContentView.animate(.out)
         updateColors()
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-
-        labelContentView.animate(.out)
         updateColors()
     }
 
@@ -198,61 +210,118 @@ class HighlightView: LayerView, DraggableViewProtocol {
         super.didMoveToSuperview()
 
         guard let superview = superview else {
-            labelContainerView.removeFromSuperview()
-            label.text = nil
+            elementNameView.removeFromSuperview()
             return
         }
 
         setupViews(with: superview)
     }
 
+    private var latestElementSnapshot: UUID?
+
     override func layoutSubviews() {
         super.layoutSubviews()
 
+        guard latestElementSnapshot != element.latestSnapshot.identifier else {
+            return
+        }
+
+        elementNameView.label.isSafelyHidden = false
+
         updateViews()
+
+        latestElementSnapshot = element.latestSnapshot.identifier
+
+        let size = elementNameView.systemLayoutSizeFitting(frame.size)
+
+        elementNameView.label.isHidden = size.width > frame.width * 1.6
     }
 
     func updateViews() {
         updateElementName()
 
-        updateLabelWidth()
-
         guard let superview = superview else { return }
 
-        borderColor = colorScheme.value(for: superview)
+        let color = colorScheme.value(for: superview)
 
-        let pathBigRect = UIBezierPath(rect: superview.bounds)
-        let pathSmallRect = UIBezierPath(rect: superview.layoutMarginsGuide.layoutFrame)
+        layoutMarginsShadeLayer.fillColor = color.cgColor
 
-        pathBigRect.append(pathSmallRect)
-        pathBigRect.usesEvenOddFillRule = true
+        borderColor = color
 
-        layoutMarginsShadeLayer.path = pathBigRect.cgPath
+        maskLayoutMarginsGuideView(with: superview)
+    }
+
+    private func maskLayoutMarginsGuideView(with view: UIView) {
+        let path: UIBezierPath = {
+            let pathBigRect = UIBezierPath(
+                roundedRect: view.bounds,
+                byRoundingCorners: view.layer.maskedCorners.rectCorner,
+                cornerRadii: CGSize(view.layer.cornerRadius)
+            )
+
+            let pathSmallRect = UIBezierPath(rect: view.layoutMarginsGuide.layoutFrame)
+
+            pathBigRect.append(pathSmallRect)
+
+            pathBigRect.usesEvenOddFillRule = true
+
+            return pathBigRect
+        }()
+
+        layoutMarginsShadeLayer.path = path.cgPath
+
+        switch colorStyle {
+        case .light:
+            layoutMarginsGuideView.alpha = 0.14
+        case .dark:
+            layoutMarginsGuideView.alpha = 0.1
+        }
     }
 
     func updateElementName() {
         name = element.viewController?.classNameWithoutQualifiers ?? element.elementName
+
+        if let image = element.iconImage?.resized(CGSize(16)) {
+            if image != elementNameView.imageView.image {
+                elementNameView.imageView.image = image
+                elementNameView.imageView.isSafelyHidden = false
+            }
+        }
+        else {
+            elementNameView.imageView.image = nil
+            elementNameView.imageView.isSafelyHidden = true
+        }
+    }
+}
+
+extension CACornerMask {
+    var rectCorner: UIRectCorner {
+        var corner = UIRectCorner()
+        if contains(.layerMaxXMaxYCorner) {
+            corner.insert(.bottomRight)
+        }
+        if contains(.layerMaxXMinYCorner) {
+            corner.insert(.topRight)
+        }
+        if contains(.layerMinXMaxYCorner) {
+            corner.insert(.bottomLeft)
+        }
+        if contains(.layerMinXMinYCorner) {
+            corner.insert(.topLeft)
+        }
+        return corner
     }
 }
 
 private extension HighlightView {
-    func updateLabelWidth() {
-        labelWidthConstraint?.constant = frame.width * 4 / 3
-    }
-
     func setupViews(with hostView: UIView) {
         updateColors()
 
-        installView(labelContainerView, .centerX)
+        installView(elementNameView, .centerX)
 
         verticalAlignmentConstraint.isActive = true
 
-        label.text = name
-
-        labelWidthConstraint = label.widthAnchor.constraint(equalToConstant: frame.width).then {
-            $0.priority = .defaultHigh
-            $0.isActive = true
-        }
+        updateViews()
 
         isSafelyHidden = false
 
@@ -262,12 +331,14 @@ private extension HighlightView {
     func updateColors(isDragging: Bool = false) {
         switch isDragging {
         case true:
+            elementNameView.tintColor = borderColor
             backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha)
-            borderColor = borderColor?.withAlphaComponent(1)
+            borderWidth = 3 / UIScreen.main.scale
 
         case false:
-            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha / 10)
-            borderColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha * 2)
+            elementNameView.tintColor = borderColor?.withAlphaComponent(0.85)
+            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha * 0.1)
+            borderWidth = 1 / UIScreen.main.scale
         }
     }
 }

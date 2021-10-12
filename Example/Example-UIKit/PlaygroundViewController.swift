@@ -141,7 +141,7 @@ final class PlaygroundViewController: UIViewController {
 
     @objc private func toggleInspectorLayers() {
         if #available(iOS 13.0, *) {
-            Inspector.toggle(.wireframes)
+            Inspector.toggle(.allViews)
         }
         else {
             Inspector.toggleAllLayers()

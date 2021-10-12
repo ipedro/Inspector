@@ -23,6 +23,7 @@ import UniformTypeIdentifiers
 
 extension ViewHierarchyElement {
     struct Snapshot: ViewHierarchyElementProtocol, ExpirableProtocol, Hashable {
+        let identifier = UUID()
         let accessibilityIdentifier: String?
         let canHostInspectorView: Bool
         let canPresentOnTop: Bool
@@ -175,6 +176,8 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 
         self.store = SnapshotStore(initialSnapshot)
     }
+
+    var latestSnapshot: Snapshot { store.latest }
 }
 
 // MARK: - ViewHierarchyElementProtocol {
