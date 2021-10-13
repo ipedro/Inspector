@@ -81,18 +81,6 @@ final class LoaderView: LayerViewComponent {
     }
 
     func addInspectorViews() {
-        for element in subviews where element.canHostInspectorView {
-            element.layer.cornerRadius = layer.cornerRadius / 2
-
-            let inspectorView = WireframeView(
-                frame: element.bounds,
-                element: ViewHierarchyElement(with: element, iconProvider: .default),
-                color: .white
-            )
-
-            element.installView(inspectorView, .autoResizingMask, position: .inFront)
-        }
-
         installView(highlightView, .autoResizingMask)
     }
 

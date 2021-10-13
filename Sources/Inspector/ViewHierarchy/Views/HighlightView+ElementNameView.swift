@@ -122,13 +122,17 @@ final class ElementNameView: LayerViewComponent {
     override func setup() {
         super.setup()
 
+        resetShadow()
+        
+        installView(roundedPillView, .autoResizingMask)
+    }
+
+    func resetShadow() {
         layer.shadowOffset = CGSize(width: 0, height: 1.5)
         layer.shadowRadius = 3
         layer.shadowOpacity = 0.5
         layer.shouldRasterize = true
         layer.rasterizationScale = UIScreen.main.scale
-
-        installView(roundedPillView, .autoResizingMask)
     }
 
     private var isFirstLayoutSubviews = true
@@ -166,6 +170,8 @@ final class ElementNameView: LayerViewComponent {
     override func layoutSubviews() {
         super.layoutSubviews()
 
+        roundedPillView.layer.cornerRadius = roundedPillView.frame.height / .pi
+
         guard isFirstLayoutSubviews else {
             return debounce(#selector(updateViews), delay: .veryShort, object: nil)
         }
@@ -175,7 +181,7 @@ final class ElementNameView: LayerViewComponent {
         alpha = 0
 
         let randomLower: CGFloat = .random(in: 0...0.5)
-        let randomUpper: CGFloat = .random(in: 1...1.5)
+        let randomUpper: CGFloat = .random(in: 1.2...1.5)
 
         let scale = Bool.random() ? randomLower : randomUpper
 
@@ -190,7 +196,7 @@ final class ElementNameView: LayerViewComponent {
 
         animate(
             withDuration: .random(in: .short ... .long),
-            delay: .random(in: .veryShort ... .veryLong),
+            delay: .random(in: .veryShort ... .long),
             damping: 0.7
         ) {
             self.alpha = 1

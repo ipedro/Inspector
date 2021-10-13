@@ -18,59 +18,74 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
 protocol DraggableViewProtocol: UIView {
     var draggableAreaLayoutGuide: UILayoutGuide { get }
     var draggableView: UIView { get }
+    var draggableViewCenterOffset: CGPoint { get }
     var isDragging: Bool { get set }
 }
 
 extension DraggableViewProtocol {
-    func dragView(with gesture: UIPanGestureRecognizer) {
-        let layoutFrame = draggableAreaLayoutGuide.layoutFrame
+    private var draggableFrame: CGRect { draggableAreaLayoutGuide.layoutFrame }
 
-        guard layoutFrame.width + layoutFrame.height > (draggableView.frame.size.width + draggableView.frame.size.height) * 2 else {
+    func dragView(with gesture: UIPanGestureRecognizer) {
+        guard draggableFrame.width + draggableFrame.height > (draggableView.frame.size.width + draggableView.frame.size.height) * 2 else {
+            isDragging = false
             return
         }
 
         let location = gesture.location(in: self)
-
         draggableView.center = location
 
-        guard gesture.state == .ended else {
+        switch gesture.state {
+        case .possible, .began, .changed:
             isDragging = true
+
+        case .cancelled, .failed:
+            isDragging = false
+
+        case .ended:
+            isDragging = false
+            finalizeDrag()
+
+        @unknown default:
             return
         }
+    }
 
-        isDragging = false
-
-        let finalX: CGFloat
-        let finalY: CGFloat
-
+    func finalizeDrag() {
         let sourceHitBounds = draggableView.convert(
-            draggableView.bounds.insetBy(dx: -draggableView.bounds.width / 3, dy: -draggableView.bounds.height / 3), to: self)
+            draggableView.bounds.insetBy(
+                dx: -draggableView.bounds.width / 5,
+                dy: -draggableView.bounds.height / 5
+            ), to: self
+        )
 
-        if (sourceHitBounds.minX...sourceHitBounds.maxX).contains(layoutFrame.midX) {
-            finalX = layoutFrame.midX
-        }
-        else if draggableView.frame.midX >= layoutFrame.width / 2 {
-            finalX = max(0, layoutFrame.maxX - (draggableView.frame.width / 2))
-        }
-        else {
-            finalX = layoutFrame.minX + draggableView.frame.width / 2
-        }
+        let finalX: CGFloat = {
+            if (sourceHitBounds.minX...sourceHitBounds.maxX).contains(draggableFrame.midX) {
+                return draggableFrame.midX
+            }
+            else if draggableView.frame.midX >= draggableFrame.width / 2 {
+                return max(0, draggableFrame.maxX - (draggableView.frame.width / 2))
+            }
+            else {
+                return draggableFrame.minX + draggableView.frame.width / 2
+            }
+        }()
 
-        if (sourceHitBounds.minY...sourceHitBounds.maxY).contains(layoutFrame.midY) {
-            finalY = layoutFrame.midY
-        }
-        else if draggableView.frame.midY >= layoutFrame.height / 2 {
-            finalY = max(0, layoutFrame.maxY - (draggableView.frame.height / 2))
-        }
-        else {
-            finalY = layoutFrame.minY + draggableView.frame.height / 2
-        }
+        let finalY: CGFloat = {
+            if (sourceHitBounds.minY...sourceHitBounds.maxY).contains(draggableFrame.midY) {
+                return draggableFrame.midY
+            }
+            else if draggableView.frame.midY >= draggableFrame.height / 2 {
+                return max(0, draggableFrame.maxY - (draggableView.frame.height / 2))
+            }
+            else {
+                return draggableFrame.minY + draggableView.frame.height / 2
+            }
+        }()
 
         UIView.animate(
             withDuration: 0.5,

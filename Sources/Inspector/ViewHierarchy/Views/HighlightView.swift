@@ -26,7 +26,17 @@ extension HighlightView: ElementNameViewDisplayerProtocol {
     }
 }
 
-final class HighlightView: LayerView, DraggableViewProtocol {
+extension HighlightView: DraggableViewProtocol {
+    var draggableViewCenterOffset: CGPoint { CGPoint(x: .zero, y: -30) }
+
+    var draggableAreaLayoutGuide: UILayoutGuide { layoutMarginsGuide }
+
+    var draggableView: UIView { elementNameView }
+
+}
+
+final class HighlightView: LayerView {
+
     var displayMode: ElementNameView.DisplayMode {
         get {
             elementNameView.displayMode
@@ -39,11 +49,30 @@ final class HighlightView: LayerView, DraggableViewProtocol {
 
     // MARK: - Properties
 
-    var draggableAreaLayoutGuide: UILayoutGuide { layoutMarginsGuide }
-
     var isDragging: Bool = false {
         didSet {
-            updateColors(isDragging: isDragging)
+            guard isDragging != oldValue else { return }
+            
+            animate(withDuration: .veryLong) {
+                switch self.isDragging {
+                case true:
+                    self.elementNameView.layer.shadowRadius = 15
+                    self.elementNameView.layer.shadowOffset = .init(
+                        width: self.draggableViewCenterOffset.x,
+                        height: -self.draggableViewCenterOffset.y
+                    )
+                    self.elementNameView.transform = .init(scaleX: 1.5, y: 1.5)
+                        .translatedBy(
+                            x: self.draggableViewCenterOffset.x,
+                            y: self.draggableViewCenterOffset.y
+                        )
+                case false:
+                    self.elementNameView.resetShadow()
+                    self.elementNameView.transform = .identity
+                }
+
+                self.updateViews()
+            }
         }
     }
 
@@ -62,7 +91,7 @@ final class HighlightView: LayerView, DraggableViewProtocol {
                 return
             }
 
-            updateColors()
+            updateViews()
         }
     }
 
@@ -74,8 +103,6 @@ final class HighlightView: LayerView, DraggableViewProtocol {
             verticalAlignmentConstraint.constant = newValue
         }
     }
-
-    var draggableView: UIView { elementNameView }
 
     override var sourceView: UIView { draggableView }
 
@@ -143,17 +170,22 @@ final class HighlightView: LayerView, DraggableViewProtocol {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        updateColors(isDragging: true)
+
+        updateViews(isHighlighted: true)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        updateColors()
+
+        isDragging = false
+        updateViews()
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-        updateColors()
+
+        isDragging = false
+        updateViews()
     }
 
     @available(*, unavailable)
@@ -252,7 +284,7 @@ extension HighlightView: DataReloadingProtocol {
 
 private extension HighlightView {
     func setupViews(with hostView: UIView) {
-        updateColors()
+        updateViews()
 
         installView(elementNameView, .centerX)
 
@@ -265,8 +297,8 @@ private extension HighlightView {
         hostView.isUserInteractionEnabled = true
     }
 
-    func updateColors(isDragging: Bool = false) {
-        switch isDragging {
+    func updateViews(isHighlighted: Bool? = nil) {
+        switch isHighlighted ?? isDragging {
         case true:
             elementNameView.tintColor = borderColor
             backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha)
