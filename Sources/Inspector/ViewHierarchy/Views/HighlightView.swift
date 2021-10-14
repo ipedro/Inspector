@@ -27,12 +27,15 @@ extension HighlightView: ElementNameViewDisplayerProtocol {
 }
 
 extension HighlightView: DraggableViewProtocol {
+    var draggableAreaAdjustedContentInset: UIEdgeInsets {
+        (superview as? UIScrollView)?.adjustedContentInset ?? .zero
+    }
+
     var draggableViewCenterOffset: CGPoint { CGPoint(x: .zero, y: -30) }
 
     var draggableAreaLayoutGuide: UILayoutGuide { layoutMarginsGuide }
 
     var draggableView: UIView { elementNameView }
-
 }
 
 final class HighlightView: LayerView {

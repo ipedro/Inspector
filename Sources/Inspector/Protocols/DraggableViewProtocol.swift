@@ -22,21 +22,20 @@ import UIKit
 
 protocol DraggableViewProtocol: UIView {
     var draggableAreaLayoutGuide: UILayoutGuide { get }
+    var draggableAreaAdjustedContentInset: UIEdgeInsets { get }
     var draggableView: UIView { get }
-    var draggableViewCenterOffset: CGPoint { get }
     var isDragging: Bool { get set }
 }
 
 extension DraggableViewProtocol {
-    private var draggableFrame: CGRect { draggableAreaLayoutGuide.layoutFrame }
-
     func dragView(with gesture: UIPanGestureRecognizer) {
-        guard draggableFrame.width + draggableFrame.height > (draggableView.frame.size.width + draggableView.frame.size.height) * 2 else {
+        guard adjustedDraggableAreaFrame().isEmpty == false else {
             isDragging = false
             return
         }
 
         let location = gesture.location(in: self)
+
         draggableView.center = location
 
         switch gesture.state {
@@ -54,47 +53,49 @@ extension DraggableViewProtocol {
             return
         }
     }
+}
+
+private extension DraggableViewProtocol {
+    var draggableAreaFrame: CGRect {
+        CGRect(
+            x: draggableAreaLayoutGuide.layoutFrame.minX + draggableAreaAdjustedContentInset.left,
+            y: draggableAreaLayoutGuide.layoutFrame.minY + draggableAreaAdjustedContentInset.top,
+            width: draggableAreaLayoutGuide.layoutFrame.width - draggableAreaAdjustedContentInset.horizontalInsets,
+            height: draggableAreaLayoutGuide.layoutFrame.height - draggableAreaAdjustedContentInset.verticalInsets
+        )
+    }
+
+    var draggableViewFrame: CGRect {
+        draggableView.convert(draggableView.bounds, to: self)
+    }
+
+    func adjustedDraggableAreaFrame() -> CGRect {
+        let halfWidth = draggableView.frame.width / 2
+        let halfHeight = draggableView.frame.height / 2
+        let frame = draggableAreaFrame.insetBy(dx: halfWidth, dy: halfHeight)
+
+        return frame
+    }
+
+    func centerInsideDraggableArea(from location: CGPoint) -> CGPoint {
+        let containerFrame = adjustedDraggableAreaFrame()
+
+        let ratioX = min(1, location.x / containerFrame.maxX)
+        let ratioY = min(1, location.y / containerFrame.maxY)
+
+        let finalX = max(containerFrame.minX, containerFrame.maxX * ratioX)
+        let finalY = max(containerFrame.minY, containerFrame.maxY * ratioY)
+
+        let point = CGPoint(x: finalX, y: finalY)
+
+        return point
+    }
 
     func finalizeDrag() {
-        let sourceHitBounds = draggableView.convert(
-            draggableView.bounds.insetBy(
-                dx: -draggableView.bounds.width / 5,
-                dy: -draggableView.bounds.height / 5
-            ), to: self
-        )
+        let center = centerInsideDraggableArea(from: draggableView.center)
 
-        let finalX: CGFloat = {
-            if (sourceHitBounds.minX...sourceHitBounds.maxX).contains(draggableFrame.midX) {
-                return draggableFrame.midX
-            }
-            else if draggableView.frame.midX >= draggableFrame.width / 2 {
-                return max(0, draggableFrame.maxX - (draggableView.frame.width / 2))
-            }
-            else {
-                return draggableFrame.minX + draggableView.frame.width / 2
-            }
-        }()
-
-        let finalY: CGFloat = {
-            if (sourceHitBounds.minY...sourceHitBounds.maxY).contains(draggableFrame.midY) {
-                return draggableFrame.midY
-            }
-            else if draggableView.frame.midY >= draggableFrame.height / 2 {
-                return max(0, draggableFrame.maxY - (draggableView.frame.height / 2))
-            }
-            else {
-                return draggableFrame.minY + draggableView.frame.height / 2
-            }
-        }()
-
-        UIView.animate(
-            withDuration: 0.5,
-            delay: 0,
-            usingSpringWithDamping: 1,
-            initialSpringVelocity: 1,
-            options: [.beginFromCurrentState, .curveEaseIn]
-        ) {
-            self.draggableView.center = CGPoint(x: finalX, y: finalY)
+        animate(withDuration: .long, options: [.beginFromCurrentState, .curveEaseIn]) {
+            self.draggableView.center = center
         }
     }
 }
