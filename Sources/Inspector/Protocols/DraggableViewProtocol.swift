@@ -29,11 +29,6 @@ protocol DraggableViewProtocol: UIView {
 
 extension DraggableViewProtocol {
     func dragView(with gesture: UIPanGestureRecognizer) {
-        guard adjustedDraggableAreaFrame().isEmpty == false else {
-            isDragging = false
-            return
-        }
-
         let location = gesture.location(in: self)
 
         draggableView.center = location
@@ -70,21 +65,36 @@ private extension DraggableViewProtocol {
     }
 
     func adjustedDraggableAreaFrame() -> CGRect {
-        let halfWidth = draggableView.frame.width / 2
-        let halfHeight = draggableView.frame.height / 2
-        let frame = draggableAreaFrame.insetBy(dx: halfWidth, dy: halfHeight)
+        let width = draggableView.frame.width
+        let height = draggableView.frame.height
 
-        return frame
+        let halfWidth = width / 2
+        let halfHeight = height / 2
+
+        return CGRect(
+            x: min(draggableAreaFrame.maxX, draggableAreaFrame.origin.x + halfWidth),
+            y: min(draggableAreaFrame.maxY, draggableAreaFrame.origin.y + halfHeight),
+            width: max(0, draggableAreaFrame.width - width),
+            height: max(0, draggableAreaFrame.height - height)
+        )
     }
 
     func centerInsideDraggableArea(from location: CGPoint) -> CGPoint {
-        let containerFrame = adjustedDraggableAreaFrame()
+        let adjustedDraggableAreaFrame = adjustedDraggableAreaFrame()
 
-        let ratioX = min(1, location.x / containerFrame.maxX)
-        let ratioY = min(1, location.y / containerFrame.maxY)
+        let ratioX = min(1, location.x / adjustedDraggableAreaFrame.maxX)
+        let ratioY = min(1, location.y / adjustedDraggableAreaFrame.maxY)
 
-        let finalX = max(containerFrame.minX, containerFrame.maxX * ratioX)
-        let finalY = max(containerFrame.minY, containerFrame.maxY * ratioY)
+        var finalX = max(adjustedDraggableAreaFrame.minX, adjustedDraggableAreaFrame.maxX * ratioX)
+        var finalY = max(adjustedDraggableAreaFrame.minY, adjustedDraggableAreaFrame.maxY * ratioY)
+
+        if draggableView.frame.width > adjustedDraggableAreaFrame.width {
+            finalX = draggableAreaFrame.midX
+        }
+
+        if draggableView.frame.height > adjustedDraggableAreaFrame.height {
+            finalY = draggableAreaFrame.midY
+        }
 
         let point = CGPoint(x: finalX, y: finalY)
 
