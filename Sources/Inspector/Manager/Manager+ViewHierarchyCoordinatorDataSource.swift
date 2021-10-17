@@ -28,7 +28,7 @@ extension Manager: ViewHierarchyCoordinatorDataSource {
     var layers: [Inspector.ViewHierarchyLayer] {
         var layers: [Inspector.ViewHierarchyLayer] = [
             .allViews,
-            .viewControllers,
+            //.viewControllers,
             .internalViews,
         ]
 
