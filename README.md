@@ -466,7 +466,7 @@ Element Libraries are entities that conform to `InspectorElementLibraryProtocol`
 // Example
 
 var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] {
-    ExampleElementLibrary.allCases
+    [.attributes: ExampleElementLibrary.allCases]
 }
 ```
 
