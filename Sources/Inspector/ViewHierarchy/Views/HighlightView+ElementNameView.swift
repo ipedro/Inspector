@@ -61,7 +61,6 @@ final class ElementNameView: LayerViewComponent {
         case auto, iconAndText, text, icon
     }
 
-
     weak var displayer: ElementNameViewDisplayerProtocol?
 
     override func willMove(toSuperview newSuperview: UIView?) {
@@ -89,10 +88,12 @@ final class ElementNameView: LayerViewComponent {
         }
     }
 
+    private let cornerRadius: CGFloat = 7
+    
     // MARK: - Components
 
     private(set) lazy var label = UILabel().then {
-        $0.font = UIFont(name: "MuktaMahee-Regular", size: 12)
+        $0.font = UIFont(name: "MuktaMahee-Regular", size: 11)
         $0.textColor = .white
         $0.textAlignment = .center
         $0.setContentHuggingPriority(.required, for: .horizontal)
@@ -105,31 +106,28 @@ final class ElementNameView: LayerViewComponent {
 
     private(set) lazy var roundedPillView = LayerViewComponent().then {
         $0.backgroundColor = tintColor
-        $0.contentView.addArrangedSubviews(imageView, label, UIView())
-        $0.contentView.spacing = 2
-        $0.contentView.alignment = .center
+        $0.contentView.addArrangedSubviews(imageView, label)
+        $0.contentView.spacing = cornerRadius / 2
         $0.contentView.axis = .horizontal
-        $0.contentView.directionalLayoutMargins = .init(horizontal: 2, vertical: 1)
+        $0.contentView.alignment = .center
         $0.contentView.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.contentView.layer.shadowColor = layer.shadowColor
-        $0.contentView.layer.shadowRadius = 3
+        $0.contentView.layer.shadowRadius = cornerRadius / 2
         $0.contentView.layer.shadowOpacity = 1
-        $0.layer.cornerRadius = 7
-
-        $0.contentView.setCustomSpacing(4, after: label)
+        $0.layer.cornerRadius = cornerRadius
     }
 
     override func setup() {
         super.setup()
 
         resetShadow()
-        
+
         installView(roundedPillView, .autoResizingMask)
     }
 
     func resetShadow() {
-        layer.shadowOffset = CGSize(width: 0, height: 1.5)
-        layer.shadowRadius = 3
+        layer.shadowOffset = CGSize(width: 0, height: cornerRadius / 4)
+        layer.shadowRadius = cornerRadius / 2
         layer.shadowOpacity = 0.5
         layer.shouldRasterize = true
         layer.rasterizationScale = UIScreen.main.scale
@@ -144,7 +142,7 @@ final class ElementNameView: LayerViewComponent {
             // ⚠️ important to unhide subviews before calculating layout size below
             label.isHidden = false
             imageView.isHidden = imageView.image == nil
-
+            roundedPillView.layoutIfNeeded()
             let frame = displayer?.frame ?? bounds
             let size = systemLayoutSizeFitting(frame.size)
 
@@ -165,12 +163,11 @@ final class ElementNameView: LayerViewComponent {
 
         label.alpha = label.isHidden ? 0 : 1
         imageView.alpha = imageView.isHidden ? 0 : 1
+        roundedPillView.contentView.directionalLayoutMargins = label.isHidden ? .zero : .init(trailing: cornerRadius)
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
-        roundedPillView.layer.cornerRadius = roundedPillView.frame.height / .pi
 
         guard isFirstLayoutSubviews else {
             return debounce(#selector(updateViews), delay: .veryShort, object: nil)
@@ -180,12 +177,12 @@ final class ElementNameView: LayerViewComponent {
 
         alpha = 0
 
-        let randomLower: CGFloat = .random(in: 0...0.5)
-        let randomUpper: CGFloat = .random(in: 1.2...1.5)
+        let randomLower: CGFloat = .random(in: 0 ... 0.5)
+        let randomUpper: CGFloat = .random(in: 1.2 ... 1.5)
 
         let scale = Bool.random() ? randomLower : randomUpper
 
-        let oldTransfrom = self.transform
+        let oldTransfrom = transform
 
         transform = .init(
             scaleX: scale,

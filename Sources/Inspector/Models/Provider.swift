@@ -21,6 +21,10 @@
 import UIKit
 
 public extension Inspector {
+    /// Evaluates objects of a given type.
+    typealias Handler<Type> = Provider<Type, Void>
+
+    /// Transforms objects from a given type to another object from a different type.
     struct Provider<From, To>: Hashable {
         private let identifier = UUID()
 
@@ -41,22 +45,27 @@ public extension Inspector {
 }
 
 extension Inspector.Provider where To == Void {
-    func handle(_ element: From) {
-        closure(element)
+    /// Call when you need the handler to evaluate the object.
+    func handle(_ sender: From) {
+        closure(sender)
     }
 }
 
 extension Inspector.Provider where From: Any, To: Any {
-    func value(for element: From) -> To {
-        closure(element)
+    /// Call when you need to resolve the current value for the given object.
+    func value(for sender: From) -> To {
+        closure(sender)
     }
 }
 
 extension Inspector.Provider where From == Void {
+    /// Call when you need to resolve the current value.
     var value: To {
         closure(())
     }
 }
+
+// MARK: - Typealiases
 
 typealias ViewHierarchyColorScheme = Inspector.Provider<UIView, UIColor>
 

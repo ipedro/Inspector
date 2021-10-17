@@ -50,6 +50,8 @@ public struct InspectorElementSection {
 // MARK: - Array Extensions
 
 public extension InspectorElementSections {
+    static let empty = InspectorElementSections()
+    
     init(with dataSource: InspectorElementSectionDataSource?) {
         if let dataSource = dataSource {
             self = [InspectorElementSection(rows: dataSource)]

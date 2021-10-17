@@ -20,7 +20,7 @@
 
 import UIKit
 
-@available(*, deprecated, renamed: "InspectorElementSectionItemProperty")
+@available(*, deprecated, renamed: "InspectorElementProperty")
 public typealias InspectorElementViewModelProperty = InspectorElementProperty
 
 public enum InspectorElementProperty {
