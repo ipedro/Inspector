@@ -26,15 +26,15 @@ Inspector is a debugging library written in Swift.
     * [Remove framework files from release builds *(Optional)*](#remove-framework-files-from-release-builds-optional)
 * [Presenting the Inspector](#presenting-the-inspector)
     * [Using built-in Key Commands (Simulator and iPads)](#using-built-in-key-commands-available-on-simulator-and-ipads)
-    * [Using built-in BarButtonItem](#using-built-in-barbuttonitem)
     * [With motion gestures](#with-motion-gestures)
     * [Adding custom UI](#adding-custom-ui)
 * [Customization](#Customization)
-    * [InspectorHostable Protocol](#inspectorhostable-protocol)
+    * [InspectorHost Protocol](#inspectorhost-protocol)
+        * [Custom element libraries](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
+        * [Custom Element icons](#var-inspectorElementIconProvider-inspectorelementiconprovider--get-)
         * [View hierarchy layers](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
         * [View hierarchy color scheme](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
         * [Custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
-        * [Custom element libraries](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
 * [Donate](#donate)
 * [Credits](#credits)
 * [License](#license)
@@ -83,7 +83,7 @@ dependencies: [
 ---
 ## Setup
 
-After a [successful installation](#installation), you need to add conformance to the [`InspectorHostable`](#inspectorhostable-protocol) protocol in [`SceneDelegate.swift`](#scene-delegate-example) or [`AppDelegate.swift`](#app-delegate-example) assign itself as `Inspector` host.
+After a [successful installation](#installation), you need to add conformance to the [`InspectorHost`](#inspectorhost-protocol) protocol in [`SceneDelegate.swift`](#scene-delegate-example) or [`AppDelegate.swift`](#app-delegate-example) assign itself as `Inspector` host.
 
 ### SceneDelegate.swift
 
@@ -95,7 +95,7 @@ import UIKit
 #if DEBUG
 import Inspector
 
-extension SceneDelegate: InspectorHostable {
+extension SceneDelegate: InspectorHost {
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
     
     var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { nil }
@@ -131,7 +131,7 @@ import UIKit
 #if DEBUG
 import Inspector
 
-extension AppDelegate: InspectorHostable {
+extension AppDelegate: InspectorHost {
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
     
     var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { nil }
@@ -220,7 +220,7 @@ override var keyCommands: [UIKeyCommand]? {
 #endif
 ```
     
-### Remove framework files from release builds *(Optional)* 
+### Remove framework files from release builds *(Recommended)* 
 In your app target: 
 - Add a `New Run Script Phase` as the last phase.
 - Then paste the script below  to remove all `Inspector` related files from your release builds.
@@ -235,6 +235,7 @@ if [ $CONFIGURATION == "Release" ]; then
     find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "UIKeyCommandTableView*" | grep . | xargs rm -rf
     find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "UIKeyboardAnimatable*" | grep . | xargs rm -rf
     find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "UIKitOptions*" | grep . | xargs rm -rf
+    find $TARGET_BUILD_DIR/$FULL_PRODUCT_NAME -name "Coordinator*" | grep . | xargs rm -rf
 fi
 
 ```
@@ -258,20 +259,6 @@ After [enabling Key Commands support](#enable-key-commands-recommended), using t
 
 - Trigger [custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-) with any key command you want.
 
-### Using built-in BarButtonItem
-
-As a convenience, there is the `var inspectorBarButtonItem: UIBarButtonItem { get }` availabe on every `UIViewController` instance. It handles the presentation for you, and just needs to be set as a tool bar (or navigation) items, like this:
-```swift
-// Add to any view controller
-
-override func viewDidLoad() {
-    super.viewDidLoad()
-
-    #if DEBUG
-    navigationItem.rightBarButtonItem = self.inspectorBarButtonItem
-    #endif
-}
-```
 
 ### With motion gestures
 
@@ -293,9 +280,7 @@ open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEve
 
 ### Adding custom UI
 
-After creating a custom interface on your app, such as a floating button, or any other control of your choosing, you can call `presentInspector(animated:_:)` yourself.
-
-If you are using a `UIControl` you can use the convenenice selector `UIViewController.inspectorManagerPresentation()` when adding event targets.
+After creating a custom interface on your app, such as a floating button, or any other control of your choosing, you can call `Inspector.present(animated:)` yourself.
 
 ```swift 
 // Add to any view controller if your view inherits from `UIControl`
@@ -305,9 +290,12 @@ var myControl: MyControl
 override func viewDidLoad() {
     super.viewDidLoad()
 
-    #if DEBUG
-    myControl.addTarget(self, action: #selector(UIViewController.inspectorManagerPresentation), for: UIControl.Event)
-    #endif
+    myControl.addTarget(self, action: #selector(tap), for: .touchUpInside)
+}
+
+@objc 
+private func tap(_ sender: Any) {
+    Inspector.present(animated: true)
 }
 ```
 
@@ -315,10 +303,11 @@ override func viewDidLoad() {
 
 ## Customization
 
-`Inspector` allows you to customize and introduce new behavior on views specific to your codebase, through the `InspectorHostable` Protocol.
+`Inspector` allows you to customize and introduce new behavior on views specific to your codebase, through the `InspectorHost` Protocol.
 
-## InspectorHostable Protocol
+## InspectorHost Protocol
 * `var window: UIWindow? { get }`
+* [`var inspectorElementIconProvider: Inspector.ElementIconProvider? { get }`](#var-inspectorElementIconProvider-inspectorelementiconprovider--get-)
 * [`var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
 * [`var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { get }`](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
 * [`var inspectorCommandGroups: [Inspector.CommandGroup]? { get }`](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
@@ -355,6 +344,13 @@ override func viewDidLoad() {
 - `textViews`: *Shows all text views.*
 - `textInputs`: *Shows all text inputs.*
 - `webViews`: *Shows all web views.*
+- `allViews`: *Highlights all views.*
+- `systemContainers`: *Highlights all system containers.*
+- `withIdentifier`: *Highlights views with an accessbility identifier.*
+- `withoutIdentifier`: *Highlights views without an accessbility identifier.*
+- `wireframes`: *Shows frames of all views.*
+- `internalViews`: *Highlights all.*
+
 
 ```swift
 // Example
@@ -380,6 +376,28 @@ var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
 
 ---
 
+#### `var inspectorElementIconProvider: Inspector.ElementIconProvider? { get }`
+
+    Return your own icons for custom classes or override exsiting ones. Preferred size is 32 x 32
+
+```swift
+// Example
+
+var inspectorElementIconProvider: Inspector.ElementIconProvider? {
+    .init { view in
+        switch view {
+        case is MyView:
+            return UIImage(named: "my-view-icon-32")
+            
+        default:
+            // you can alwayws fallback to default icons
+            return nil
+        }
+    }
+}
+```
+---
+
 #### `var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { get }`
 
 Return your own color scheme for the hierarchy label colors, instead of (or to extend) the default color scheme.
@@ -388,14 +406,14 @@ Return your own color scheme for the hierarchy label colors, instead of (or to e
 // Example
 
 var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? {
-    .colorScheme { view in
+    .init { view in
         switch view {
         case is MyView:
             return .systemPink
             
         default:
-        // fallback to default color scheme
-            return Inspector.ColorScheme.default.value(view)
+            // you can alwayws fallback to default color scheme if needed
+            return nil
         }
     }
 }
@@ -429,7 +447,7 @@ var inspectorCommandGroups: [Inspector.CommandGroup]? {
                         window.rootViewController = vc
                         
                         // restart inspector
-                        Insopector.restart()
+                        Inspector.restart()
                     }
                 )
             ]
@@ -459,11 +477,11 @@ import UIKit
 import Inspector
 
 enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case myClass
+    case myView
     
     var targetClass: AnyClass {
         switch self {
-        case .myClass:
+        case .myView:
             return MyView.self
         }
     }
@@ -485,13 +503,15 @@ import Inspector
 final class MyClassAttributes: InspectorElementLibraryItemProtocol {
     var title: String = "My View"
     
-    let myObject: MyView
+    private weak var myView: MyView?
+    
+    var state: InspectorElementSectionState = .collapsed
     
     init?(view: UIView) {
-        guard let myObject = view as? MyView else {
+        guard let myView = view as? MyView else {
             return nil
         }
-        self.myObject = myObject
+        self.myView = myView
     }
     
     enum Properties: String, CaseIterable {
@@ -500,26 +520,28 @@ final class MyClassAttributes: InspectorElementLibraryItemProtocol {
     }
     
     var properties: [InspectorElementProperty] {
-        Properties.allCases.map { property in
+        guard let myView = myView else { return [] }
+        
+        return Properties.allCases.map { property in
             switch property {
             case .cornerRadius:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { self.myObject.roundCorners }
+                    isOn: { self.myView.roundCorners }
                 ) { [weak self] roundCorners in
                     guard let self = self else { return }
 
-                    self.myObject.roundCorners = roundCorners
+                    self.myView.roundCorners = roundCorners
                 }
                 
             case .backgroundColor:
                 return .colorPicker(
                     title: property.rawValue,
-                    color: { self.myObject.backgroundColor }
+                    color: { self.myView.backgroundColor }
                 ) { [weak self] newBackgroundColor in
                     guard let self = self else { return }
 
-                    self.myObject.backgroundColor = newBackgroundColor
+                    self.myView.backgroundColor = newBackgroundColor
                 }
             }
             

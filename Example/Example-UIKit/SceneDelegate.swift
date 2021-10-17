@@ -71,7 +71,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 }
 
-// MARK: - InspectorHostable
+// MARK: - InspectorHost
 
 extension SceneDelegate: InspectorHost {
     var inspectorElementIconProvider: Inspector.ElementIconProvider? {
