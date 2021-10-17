@@ -173,7 +173,7 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 
         let initialSnapshot = Snapshot(
             view: view,
-            icon: iconProvider.value(for: view),
+            icon: iconProvider.resizedIcon(for: view),
             depth: depth
         )
 
@@ -219,11 +219,11 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
     // MARK: - Cached properties
 
     var iconImage: UIImage? {
-        guard let rootView = underlyingView else {
+        guard store.latest.isExpired, let rootView = underlyingView else {
             return store.latest.iconImage
         }
 
-        let currentIcon = iconProvider.value(for: rootView)
+        let currentIcon = iconProvider.resizedIcon(for: rootView)
 
         if currentIcon?.pngData() != store.latest.iconImage?.pngData() {
             scheduleSnapshot()
@@ -369,7 +369,11 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
                     return nil
                 }
 
-                let snapshot = Snapshot(view: rootView, icon: self.iconProvider.value(for: rootView), depth: self.depth)
+                let snapshot = Snapshot(
+                    view: rootView,
+                    icon: self.iconProvider.resizedIcon(for: rootView),
+                    depth: self.depth
+                )
 
                 handler?(.success(snapshot))
 
@@ -435,5 +439,11 @@ extension ViewHierarchyElement {
 
     var containsVisibleHighlightViews: Bool {
         underlyingView?.allSubviews.contains { $0 is HighlightView && $0.isHidden == false } == true
+    }
+}
+
+private extension ViewHierarchyElementIconProvider {
+    func resizedIcon(for view: UIView?) -> UIImage? {
+        value(for: view)?.resized(.elementIconSize)
     }
 }

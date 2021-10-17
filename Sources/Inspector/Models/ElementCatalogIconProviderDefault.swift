@@ -30,9 +30,6 @@ extension ViewHierarchyElementIconProvider {
         guard view.isHidden == false else { return .hiddenViewSymbol }
 
         switch view {
-        case is UINavigationBar:
-            return .moduleImage(named: "NavigationBar-32_Normal")
-
         case is UIWindow:
             return .moduleImage(named: "Window-32_Normal")
 
@@ -53,29 +50,18 @@ extension ViewHierarchyElementIconProvider {
             return .moduleImage(named: "UIButton_32-Dark_Normal")!
 
         case let imageView as UIImageView:
-            if imageView.isHighlighted, let highlightImage = imageView.highlightedImage {
-                if #available(iOS 13.0, *) {
-                    if highlightImage.renderingMode != .alwaysOriginal {
-                        return highlightImage.withTintColor(imageView.tintColor)
-                    }
-                }
-                return highlightImage
+            guard let image = imageView.isHighlighted ? imageView.highlightedImage : imageView.image else {
+                return .moduleImage(named: "ImageView-32_Normal")
             }
-            if let image = imageView.image {
-                if #available(iOS 13.0, *) {
-                    if image.renderingMode != .alwaysOriginal {
-                        return image.withTintColor(imageView.tintColor)
-                    }
-                }
-                return image
+
+            if #available(iOS 13.0, *), image.renderingMode == .alwaysTemplate {
+                return image.withTintColor(imageView.tintColor)
             }
-            return .moduleImage(named: "ImageView-32_Normal")
+
+            return image
 
         case is UILabel:
             return .moduleImage(named: "UILabel_32-Dark_Normal")!
-
-        case is UIScrollView:
-            return .moduleImage(named: "UIScrollView_32_Normal")
 
         case is UISegmentedControl:
             return .moduleImage(named: "UISegmentedControl_32_Normal")
@@ -89,7 +75,7 @@ extension ViewHierarchyElementIconProvider {
                 return .moduleImage(named: "VStack-32_Normal")
 
             @unknown default:
-                return nil
+                return .missingViewSymbol
             }
 
         case is UITextField:
@@ -101,31 +87,37 @@ extension ViewHierarchyElementIconProvider {
         case is WKWebView:
             return .moduleImage(named: "Webview-32_Normal")
 
+        case is UIScrollView:
+            return .moduleImage(named: "UIScrollView_32_Normal")
+
+        case is UINavigationBar:
+            return .moduleImage(named: "NavigationBar-32_Normal")
+
         case is UITabBar:
             return .moduleImage(named: "TabbedView-32_Normal")
 
         case is UIToolbar:
-            return .moduleImage(named: "UITtoolbar-32_Normal")
+            return .moduleImage(named: "UIToolbar-32_Normal")
 
         case is UIControl:
             return .moduleImage(named: "UIControl-32_Normal")
 
-        case _ where view.className.contains("VisualEffect"):
+        case let view where view.className.contains("VisualEffect"):
             return .moduleImage(named: "VisualEffectsView-32_Normal")
 
-        case _ where view.className.contains("TransitionView"):
+        case let view where view.className.contains("TransitionView"):
             return .moduleImage(named: "UITransitionView-32_Normal")
 
-        case _ where view.className.contains("DropShadow"):
+        case let view where view.className.contains("DropShadow"):
             return .moduleImage(named: "DropShadow-32_Normal")
 
-        case _ where view.className.contains("Background"):
+        case let view where view.className.contains("Background"):
             return .moduleImage(named: "BackgroundView-32_Normal")
 
-        case _ where view.className.contains("_UI"):
+        case let view where view.className.contains("_UI"):
             return .moduleImage(named: "keyboardShortcut-32_Normal")
 
-        case _ where !view.originalSubviews.isEmpty:
+        case let view where !view.originalSubviews.isEmpty:
             return .moduleImage(named: "filled-view-32_Normal")
 
         default:
