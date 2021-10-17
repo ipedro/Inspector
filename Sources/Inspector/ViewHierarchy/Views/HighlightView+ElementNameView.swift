@@ -170,7 +170,7 @@ final class ElementNameView: LayerViewComponent {
         super.layoutSubviews()
 
         guard isFirstLayoutSubviews else {
-            return debounce(#selector(updateViews), delay: .veryShort, object: nil)
+            return
         }
 
         isFirstLayoutSubviews = false
