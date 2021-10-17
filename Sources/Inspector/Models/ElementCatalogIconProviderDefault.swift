@@ -34,7 +34,7 @@ extension ViewHierarchyElementIconProvider {
             return .moduleImage(named: "Window-32_Normal")
 
         case is UIActivityIndicatorView:
-            return .moduleImage(named: "UIActivityIndicator_32_Dark_Normal")!
+            return .moduleImage(named: "UIActivityIndicator_32_Dark_Normal")
 
         case is UISlider:
             return .moduleImage(named: "Slider-32_Normal")
@@ -47,7 +47,7 @@ extension ViewHierarchyElementIconProvider {
 
         case is UIButton,
              is UIControl where view.className.contains("Button"):
-            return .moduleImage(named: "UIButton_32-Dark_Normal")!
+            return .moduleImage(named: "UIButton_32-Dark_Normal")
 
         case let imageView as UIImageView:
             guard let image = imageView.isHighlighted ? imageView.highlightedImage : imageView.image else {
@@ -61,7 +61,7 @@ extension ViewHierarchyElementIconProvider {
             return image
 
         case is UILabel:
-            return .moduleImage(named: "UILabel_32-Dark_Normal")!
+            return .moduleImage(named: "UILabel_32-Dark_Normal")
 
         case is UISegmentedControl:
             return .moduleImage(named: "UISegmentedControl_32_Normal")
