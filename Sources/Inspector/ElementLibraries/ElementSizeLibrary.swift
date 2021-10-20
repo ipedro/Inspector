@@ -23,14 +23,18 @@ import UIKit
 enum ElementSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIterable {
     case button
     case segmentedControl
-    case scrollView
     case label
+    case tableView
+    case scrollView
     case viewFrame
     case contentLayoutPriority
     case layoutConstraints
 
     var targetClass: AnyClass {
         switch self {
+        case .tableView:
+            return UITableView.self
+
         case .button:
             return UIButton.self
 
@@ -52,6 +56,9 @@ enum ElementSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIterable {
 
     func sections(for referenceView: UIView) -> InspectorElementSections {
         switch self {
+        case .tableView:
+            return .init(with: TableViewSizeSectionDataSource(view: referenceView))
+            
         case .button:
             return .init(with: ButtonSizeSectionDataSource(view: referenceView))
 

@@ -25,13 +25,11 @@ import WebKit
 enum ElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
     case activityIndicator
     case button
-    case control
     case datePicker
     case imageView
     case label
     case mapView
     case navigationBar
-    case scrollView
     case segmentedControl
     case slider
     case stackView
@@ -39,17 +37,23 @@ enum ElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtoc
     case tabBar
     case textField
     case textView
-    case view
+    case tableView
     case webView
+    
     case window
-
-    case coreAnimationLayer
+    case scrollView
+    case control
+    case view
+    case layer
 
     // MARK: - InspectorElementLibraryProtocol
 
     var targetClass: AnyClass {
         switch self {
-        case .coreAnimationLayer:
+        case .tableView:
+            return UITableView.self
+
+        case .layer:
             return UIView.self
 
         case .navigationBar:
@@ -113,7 +117,10 @@ enum ElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtoc
 
     func sections(for referenceView: UIView) -> InspectorElementSections {
         switch self {
-        case .coreAnimationLayer:
+        case .tableView:
+            return .init(with: TableViewAttributesSectionDataSource(view: referenceView))
+
+        case .layer:
             return .init(with: LayerAttributesSectionDataSource(view: referenceView))
 
         case .window:
