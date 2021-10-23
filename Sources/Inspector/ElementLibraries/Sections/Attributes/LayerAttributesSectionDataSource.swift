@@ -25,12 +25,13 @@ extension ElementAttributesLibrary {
     final class LayerAttributesSectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 
-        let title = "Core Animation Layer"
+        let title: String
 
         private weak var layer: CALayer?
 
         init(view: UIView) {
             layer = view.layer
+            title = view.layer._className
         }
 
         private enum Property: String, Swift.CaseIterable {
