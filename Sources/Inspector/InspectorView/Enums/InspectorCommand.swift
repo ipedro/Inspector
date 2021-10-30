@@ -22,5 +22,5 @@ import Foundation
 
 enum InspectorCommand {
     case execute(Closure)
-    case inspect(ViewHierarchyElement)
+    case inspect(ViewHierarchyElementReference)
 }

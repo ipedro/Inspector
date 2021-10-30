@@ -26,7 +26,7 @@ import UIKit
 protocol ElementInspectorCoordinatorDelegate: ViewHierarchyActionableProtocol & AnyObject {
     func elementInspectorCoordinator(
         _ coordinator: ElementInspectorCoordinator,
-        didFinishInspecting element: ViewHierarchyElement,
+        didFinishInspecting element: ViewHierarchyElementReference,
         with reason: ElementInspectorDismissReason
     )
 }
@@ -40,7 +40,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 
     let snapshot: ViewHierarchySnapshot
 
-    let rootElement: ViewHierarchyElement
+    let rootElement: ViewHierarchyElementReference
 
     let initialPanel: ElementInspectorPanel?
 
@@ -83,7 +83,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     private(set) lazy var operationQueue = OperationQueue.main
 
     init(
-        element: ViewHierarchyElement,
+        element: ViewHierarchyElementReference,
         panel: ElementInspectorPanel?,
         snapshot: ViewHierarchySnapshot,
         catalog: ViewHierarchyElementCatalog,
@@ -135,7 +135,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
     }
 
     static func makeElementInspectorViewController(
-        element: ViewHierarchyElement,
+        element: ViewHierarchyElementReference,
         preferredPanel: ElementInspectorPanel?,
         initialPanel: ElementInspectorPanel?,
         delegate: ElementInspectorViewControllerDelegate,
@@ -164,7 +164,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         }
     }
 
-    func panelViewController(for panel: ElementInspectorPanel, with element: ViewHierarchyElement) -> ElementInspectorPanelViewController {
+    func panelViewController(for panel: ElementInspectorPanel, with element: ViewHierarchyElementReference) -> ElementInspectorPanelViewController {
         switch panel {
         case .identity, .attributes, .size:
             let dataSource = DefaultFormPanelDataSource(
@@ -222,7 +222,7 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
         }
     }
 
-    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElement, from sourceView: UIView) {
+    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElementReference, from sourceView: UIView) {
         guard canPerform(action: action) else {
             delegate?.perform(action: action, with: element, from: sourceView)
             return
@@ -233,7 +233,7 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
             return
         }
 
-        if element == topElementInspectorViewController?.viewModel.element {
+        if element.objectIdentifier == topElementInspectorViewController?.viewModel.element.objectIdentifier {
             topElementInspectorViewController?.selectPanelIfAvailable(preferredPanel)
             return
         }
@@ -291,7 +291,7 @@ private extension ElementInspectorCoordinator {
         navigationController.viewControllers = {
             var array = [UIViewController]()
 
-            var element: ViewHierarchyElement? = populatedElement
+            var element: ViewHierarchyElementReference? = populatedElement
 
             while element != nil {
                 guard let currentElement = element else {

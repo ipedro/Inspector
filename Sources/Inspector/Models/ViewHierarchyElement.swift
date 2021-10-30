@@ -22,9 +22,14 @@ import UIKit
 import UniformTypeIdentifiers
 
 extension ViewHierarchyElement {
-    struct Snapshot: ViewHierarchyElementProtocol, ExpirableProtocol, Hashable {
+    struct Snapshot: ViewHierarchyElementRepresentable, ExpirableProtocol, Equatable {
+        static func == (lhs: ViewHierarchyElement.Snapshot, rhs: ViewHierarchyElement.Snapshot) -> Bool {
+            lhs.identifier == rhs.identifier
+        }
+
         let identifier = UUID()
-        let viewIdentifier: ObjectIdentifier
+        let objectIdentifier: ObjectIdentifier
+        let parent: ViewHierarchyElementReference? = nil
         var accessibilityIdentifier: String?
         var canHostInspectorView: Bool
         var canPresentOnTop: Bool
@@ -35,10 +40,11 @@ extension ViewHierarchyElement {
         var displayName: String
         var elementDescription: String
         var elementName: String
-        var expirationDate: Date = Date().addingTimeInterval(Inspector.configuration.snapshotExpirationTimeInterval)
+        var expirationDate: Date = makeExpirationDate()
         var frame: CGRect
         var iconImage: UIImage?
         var isContainer: Bool
+        var isHidden: Bool
         var isInternalView: Bool
         var isUserInteractionEnabled: Bool
         var issues: [ViewHierarchyIssue]
@@ -60,14 +66,22 @@ extension ViewHierarchyElement {
             elementName = view.elementName
             frame = view.frame
             iconImage = icon
-            isContainer = view.isContainer
+            isContainer = !view.children.isEmpty
+            isHidden = view.isHidden
             isInternalView = view._isInternalView
             isUserInteractionEnabled = view.isUserInteractionEnabled
             issues = view.issues
+            objectIdentifier = view.objectIdentifier
             overrideViewHierarchyInterfaceStyle = view.overrideViewHierarchyInterfaceStyle
             shortElementDescription = view.shortElementDescription
             traitCollection = view.traitCollection
-            viewIdentifier = view.viewIdentifier
+        }
+
+        private static func makeExpirationDate() -> Date {
+            let expiration = Inspector.configuration.snapshotExpirationTimeInterval
+            let expirationDate = Date().addingTimeInterval(expiration)
+
+            return expirationDate
         }
     }
 }
@@ -80,32 +94,11 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 
     weak var underlyingView: UIView?
 
-    var viewController: ViewHierarchyController? {
-        didSet {
-            guard let viewController = viewController else { return }
-
-            for childViewController in viewController.children {
-                guard let underlyingViewController = childViewController.underlyingViewController, let view = underlyingViewController.viewIfLoaded else { continue }
-
-                for childElement in allChildren where childElement.viewIdentifier == ObjectIdentifier(view) {
-                    childElement.viewController = ViewHierarchyController(
-                        with: underlyingViewController,
-                        depth: depth + 1,
-                        isCollapsed: childElement.isCollapsed,
-                        parent: viewController
-                    )
-                }
-            }
-        }
-    }
-
-    weak var parent: ViewHierarchyElement?
+    var parent: ViewHierarchyElementReference?
 
     let iconProvider: ViewHierarchyElementIconProvider
 
     private var store: SnapshotStore<Snapshot>
-
-    var highlightView: HighlightView? { underlyingView?._highlightView }
 
     var isCollapsed: Bool
 
@@ -116,38 +109,27 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
                 return
             }
 
-            children = view.originalSubviews.map {
-                .init(with: $0, iconProvider: iconProvider, depth: depth + 1, parent: self)
+            children = view.children.compactMap {
+                ViewHierarchyElement(with: $0, iconProvider: iconProvider, depth: depth + 1, parent: self)
             }
         }
     }
 
     private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
 
-    private(set) lazy var children: [ViewHierarchyElement] = underlyingView?.originalSubviews.map {
-        .init(with: $0, iconProvider: iconProvider, depth: depth + 1, parent: self)
+    private(set) lazy var children: [ViewHierarchyElementReference] = underlyingView?.children.compactMap {
+        ViewHierarchyElement(with: $0, iconProvider: iconProvider, depth: depth + 1, parent: self)
     } ?? []
 
-    private(set) lazy var allChildren: [ViewHierarchyElement] = children.flatMap { [$0] + $0.allChildren }
+    private(set) lazy var allChildren: [ViewHierarchyElementReference] = children.flatMap { [$0] + $0.allChildren }
 
     // MARK: - Computed Properties
-
-    var allParents: [ViewHierarchyElement] {
-        var array = [ViewHierarchyElement]()
-
-        if let parent = parent {
-            array.append(parent)
-            array.append(contentsOf: parent.allParents)
-        }
-
-        return array
-    }
 
     var deepestRelativeLevel: Int {
         deepestAbsoulteLevel - depth
     }
 
-    var inspectableChildren: [ViewHierarchyElement] {
+    var inspectableChildren: [ViewHierarchyElementReference] {
         let selfAndChildren = [self] + allChildren
 
         let inspectableViews = selfAndChildren.filter(\.canHostInspectorView)
@@ -185,9 +167,27 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
     var isUnderlyingViewUserInteractionEnabled: Bool
 }
 
-// MARK: - ViewHierarchyElementProtocol {
+// MARK: - ManagedViewHierarchyElementProtocol {
 
-extension ViewHierarchyElement: ViewHierarchyElementProtocol {
+extension ViewHierarchyElement: ViewHierarchyElementReference {
+
+    var isHidden: Bool {
+        get {
+            underlyingView?.isHidden ?? false
+        }
+        set {
+            underlyingView?.isHidden = newValue
+        }
+    }
+
+    func hasChanges(inRelationTo identifier: UUID) -> Bool {
+        latestSnapshotIdentifier != identifier
+    }
+
+    var latestSnapshotIdentifier: UUID {
+        latestSnapshot.identifier
+    }
+
     var isUserInteractionEnabled: Bool {
         isUnderlyingViewUserInteractionEnabled
     }
@@ -411,8 +411,8 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
         return rootView.issues
     }
 
-    var viewIdentifier: ObjectIdentifier {
-        store.first.viewIdentifier
+    var objectIdentifier: ObjectIdentifier {
+        store.first.objectIdentifier
     }
 }
 
@@ -420,25 +420,11 @@ extension ViewHierarchyElement: ViewHierarchyElementProtocol {
 
 extension ViewHierarchyElement: Hashable {
     static func == (lhs: ViewHierarchyElement, rhs: ViewHierarchyElement) -> Bool {
-        lhs.viewIdentifier == rhs.viewIdentifier
+        lhs.objectIdentifier == rhs.objectIdentifier
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(viewIdentifier)
-    }
-}
-
-extension ViewHierarchyElement {
-    var isShowingLayerWireframeView: Bool {
-        underlyingView?.subviews.contains { $0 is WireframeView } == true
-    }
-
-    var isHostingAnyLayerHighlightView: Bool {
-        underlyingView?.allSubviews.contains { $0 is HighlightView } == true
-    }
-
-    var containsVisibleHighlightViews: Bool {
-        underlyingView?.allSubviews.contains { $0 is HighlightView && $0.isHidden == false } == true
+        hasher.combine(objectIdentifier)
     }
 }
 

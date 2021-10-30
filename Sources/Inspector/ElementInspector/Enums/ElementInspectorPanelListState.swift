@@ -49,7 +49,7 @@ enum ElementInspectorPanelListState: Swift.CaseIterable, MenuContentProtocol {
 
     // MARK: - MenuContentProtocol
 
-    static func allCases(for element: ViewHierarchyElement) -> [ElementInspectorPanelListState] { [] }
+    static func allCases(for element: ViewHierarchyElementReference) -> [ElementInspectorPanelListState] { [] }
 
     var title: String {
         switch self {

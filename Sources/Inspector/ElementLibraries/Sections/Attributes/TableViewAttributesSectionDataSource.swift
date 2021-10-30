@@ -158,7 +158,7 @@ extension UITableViewCell.SeparatorStyle: CaseIterable {
     typealias AllCases = [UITableViewCell.SeparatorStyle]
 
     static var allCases: [UITableViewCell.SeparatorStyle] {
-        [.none, .singleLine, .singleLineEtched]
+        [.none, .singleLine]
     }
 }
 

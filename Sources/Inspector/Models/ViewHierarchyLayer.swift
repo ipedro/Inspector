@@ -46,11 +46,11 @@ public extension Inspector {
 
         // MARK: - Metods
 
-        func inspectableReferences(in snapshot: ViewHierarchySnapshot) -> [ViewHierarchyElement] {
-            filter(flattenedViewHierarchy: snapshot.inspectableElements)
+        func makeKeysForInspectableElements(in snapshot: ViewHierarchySnapshot) -> [ViewHierarchyElementKey] {
+            filter(flattenedViewHierarchy: snapshot.inspectableElements).map { ViewHierarchyElementKey(reference: $0) }
         }
 
-        func filter(flattenedViewHierarchy: [ViewHierarchyElement]) -> [ViewHierarchyElement] {
+        func filter(flattenedViewHierarchy: [ViewHierarchyElementReference]) -> [ViewHierarchyElementReference] {
             let filteredViews = flattenedViewHierarchy.filter {
                 guard let rootView = $0.underlyingView else { return false }
                 return filter(rootView)
@@ -77,7 +77,7 @@ public extension ViewHierarchyLayer {
     /// Highlights collection views
     static let collectionViews = ViewHierarchyLayer.layer(name: "Collection views") { $0 is UICollectionView }
     /// Highlights all container views
-    static let containerViews = ViewHierarchyLayer.layer(name: "Containers") { $0.className == "UIView" && $0.originalSubviews.isEmpty == false }
+    static let containerViews = ViewHierarchyLayer.layer(name: "Containers") { $0.className == "UIView" && $0.children.isEmpty == false }
     /// Highlights all controls
     static let controls = ViewHierarchyLayer.layer(name: "Controls") { $0 is UIControl || $0.superview is UIControl }
     /// Highlights all image views
@@ -93,7 +93,7 @@ public extension ViewHierarchyLayer {
     /// Highlights all segmented controls
     static let segmentedControls = ViewHierarchyLayer.layer(name: "Segmented controls") { $0 is UISegmentedControl || $0.superview is UISegmentedControl }
     /// Highlights all spacer views
-    static let spacerViews = ViewHierarchyLayer.layer(name: "Spacers") { $0.className == "UIView" && $0.originalSubviews.isEmpty }
+    static let spacerViews = ViewHierarchyLayer.layer(name: "Spacers") { $0.className == "UIView" && $0.children.isEmpty }
     /// Highlights all stack views
     static let stackViews = ViewHierarchyLayer.layer(name: "Stacks") { $0 is UIStackView }
     /// Highlights all table view cells
@@ -129,5 +129,5 @@ public extension ViewHierarchyLayer {
     /// Highlights all
     static let internalViews = Inspector.ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsInternalViews: true) { $0._isInternalView && !$0._isSystemContainer }
 
-    // static let viewControllers = Inspector.ViewHierarchyLayer(name: "View Controllers", showLabels: true, allowsInternalViews: true) { $0._layerView?.element.viewController != nil }
+     static let viewControllers = Inspector.ViewHierarchyLayer(name: "View Controllers", showLabels: true, allowsInternalViews: true) { $0._layerView?.element as? ViewHierarchyController != nil }
 }

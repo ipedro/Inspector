@@ -21,6 +21,7 @@
 import UIKit
 
 extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
+
     var isShowingLayers: Bool {
         visibleReferences.keys.isEmpty == false
     }
@@ -107,9 +108,9 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
             return false
         }
 
-        let inspectableReferences = layer.inspectableReferences(in: snapshot)
+        let elementKeys = layer.makeKeysForInspectableElements(in: snapshot)
 
-        visibleReferences.updateValue(inspectableReferences, forKey: layer)
+        visibleReferences.updateValue(elementKeys, forKey: layer)
 
         return true
     }
@@ -132,12 +133,12 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
 
     // MARK: - LayerView Methods
 
-    func updateLayerViews(to newValue: [ViewHierarchyElement: LayerView],
-                          from oldValue: [ViewHierarchyElement: LayerView])
+    func updateLayerViews(to newValue: [ViewHierarchyElementKey: LayerView],
+                          from oldValue: [ViewHierarchyElementKey: LayerView])
     {
-        let viewReferences = Set<ViewHierarchyElement>(newValue.keys)
+        let viewReferences = Set(newValue.keys)
 
-        let oldViewReferences = Set<ViewHierarchyElement>(oldValue.keys)
+        let oldViewReferences = Set(oldValue.keys)
 
         let removedReferences = oldViewReferences.subtracting(viewReferences)
 
@@ -153,7 +154,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
 
         newReferences.forEach {
             guard
-                let referenceView = $0.underlyingView,
+                let referenceView = $0.reference.underlyingView,
                 let inspectorView = newValue[$0]
             else {
                 return
@@ -166,9 +167,9 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
     // MARK: - Reference Management
 
     func removeReferences(for removedLayers: Set<ViewHierarchyLayer>,
-                          in oldValue: [ViewHierarchyLayer: [ViewHierarchyElement]])
+                          in oldValue: [ViewHierarchyLayer: [ViewHierarchyElementKey]])
     {
-        var removedReferences = [ViewHierarchyElement]()
+        var removedReferences = [ViewHierarchyElementKey]()
 
         removedLayers.forEach { layer in
             oldValue[layer]?.forEach {
@@ -201,10 +202,10 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
 
             switch newLayer.showLabels {
             case true:
-                elements.forEach { element in
+                elements.forEach { key in
                     guard
-                        highlightViews[element] == nil,
-                        let rootView = element.underlyingView
+                        highlightViews[key] == nil,
+                        let rootView = key.reference.underlyingView
                     else {
                         return
                     }
@@ -213,31 +214,31 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
                         frame: rootView.bounds,
                         name: rootView.elementName,
                         colorScheme: colorScheme,
-                        element: element
+                        element: key.reference
                     ).then {
                         $0.delegate = self
                     }
 
-                    highlightViews[element] = highlightView
+                    highlightViews[key] = highlightView
                 }
 
             case false:
-                elements.forEach { element in
+                elements.forEach { key in
                     guard
-                        highlightViews[element] == nil,
-                        let rootView = element.underlyingView
+                        highlightViews[key] == nil,
+                        let rootView = key.reference.underlyingView
                     else {
                         return
                     }
 
                     let wireframeView = WireframeView(
                         frame: rootView.bounds,
-                        element: element
+                        element: key.reference
                     ).then {
                         $0.delegate = self
                     }
 
-                    wireframeViews[element] = wireframeView
+                    wireframeViews[key] = wireframeView
                 }
             }
         }

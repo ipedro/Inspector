@@ -20,9 +20,9 @@
 
 import UIKit
 
-protocol ElementChildrenPanelItemViewModelProtocol: ViewHierarchyElementDescriptionViewModelProtocol & AnyObject {
+protocol ElementChildrenPanelItemViewModelProtocol: AnyObject {
     var parent: ElementChildrenPanelItemViewModelProtocol? { get set }
-    var element: ViewHierarchyElement { get }
+    var element: ViewHierarchyElementReference { get }
     var isCollapsed: Bool { get set }
     var availablePanels: [ElementInspectorPanel] { get }
 }
@@ -45,12 +45,12 @@ extension ElementChildrenPanelViewModel {
 
         // MARK: - Properties
 
-        let element: ViewHierarchyElement
+        let element: ViewHierarchyElementReference
 
         lazy var animatedDisplay: Bool = relativeDepth > .zero
 
         init(
-            element: ViewHierarchyElement,
+            element: ViewHierarchyElementReference,
             parent: ElementChildrenPanelItemViewModelProtocol? = nil,
             rootDepth: Int,
             thumbnailImage: UIImage?,
@@ -68,9 +68,28 @@ extension ElementChildrenPanelViewModel {
 // MARK: - ElementChildrenPanelTableViewCellViewModelProtocol
 
 extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTableViewCellViewModelProtocol {
+    var summaryInfo: ViewHierarchyElementSummary {
+        ViewHierarchyElementSummary(
+            automaticallyAdjustIndentation: automaticallyAdjustIndentation,
+            hideCollapseButton: hideCollapseButton,
+            iconImage: iconImage,
+            isCollapseButtonEnabled: isCollapseButtonEnabled,
+            isCollapsed: isCollapsed,
+            isContainer: isContainer,
+            isHidden: isHidden,
+            relativeDepth: relativeDepth,
+            subtitle: subtitle,
+            subtitleFont: subtitleFont,
+            title: title,
+            titleFont: titleFont
+        )
+    }
+
     var availablePanels: [ElementInspectorPanel] {
         ElementInspectorPanel.allCases(for: element)
     }
+
+    var showDisclosureIcon: Bool { relativeDepth > .zero }
 
     var appearance: (transform: CGAffineTransform, alpha: CGFloat) {
         if animatedDisplay {
@@ -79,18 +98,6 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
         return (transform: .identity, alpha: 1)
     }
 
-    var showDisclosureIcon: Bool { relativeDepth > .zero }
-
-    var automaticallyAdjustIndentation: Bool { relativeDepth > .zero }
-
-    var title: String? { relativeDepth > .zero ? element.elementName : nil }
-
-    var subtitle: String? { relativeDepth > .zero ? element.shortElementDescription : element.elementDescription }
-
-    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth) }
-
-    var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: relativeDepth) }
-
     var isHidden: Bool {
         guard let parent = parent as? ElementChildrenPanelTableViewCellViewModelProtocol else {
             return parent?.isCollapsed == true
@@ -98,20 +105,6 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
 
         return parent.isCollapsed == true || parent.isHidden == true
     }
-
-    var isCollapseButtonEnabled: Bool {
-        relativeDepth < ElementInspector.configuration.childrenListMaximumInteractiveDepth
-    }
-
-    var hideCollapseButton: Bool {
-        if relativeDepth == .zero { return true }
-
-        return !isContainer
-    }
-
-    var isContainer: Bool { element.isContainer }
-
-    var relativeDepth: Int { element.depth - rootDepth }
 
     var isCollapsed: Bool {
         get {
@@ -125,17 +118,41 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
             _isCollapsed = newValue
         }
     }
+
+    private var automaticallyAdjustIndentation: Bool { relativeDepth > .zero }
+
+    private var title: String? { relativeDepth > .zero ? element.elementName : nil }
+
+    private var subtitle: String? { relativeDepth > .zero ? element.shortElementDescription : element.elementDescription }
+
+    private var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth) }
+
+    private var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: relativeDepth) }
+
+    private var isCollapseButtonEnabled: Bool {
+        relativeDepth < ElementInspector.configuration.childrenListMaximumInteractiveDepth
+    }
+
+    private var hideCollapseButton: Bool {
+        if relativeDepth == .zero { return true }
+
+        return !isContainer
+    }
+
+    var isContainer: Bool { element.isContainer }
+
+    private var relativeDepth: Int { element.depth - rootDepth }
 }
 
 // MARK: - Hashable
 
 extension ElementChildrenPanelViewModel.ChildViewModel: Hashable {
     static func == (lhs: ElementChildrenPanelViewModel.ChildViewModel, rhs: ElementChildrenPanelViewModel.ChildViewModel) -> Bool {
-        lhs.element == rhs.element
+        lhs.element.objectIdentifier == rhs.element.objectIdentifier
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(element)
+        hasher.combine(element.objectIdentifier)
     }
 }
 

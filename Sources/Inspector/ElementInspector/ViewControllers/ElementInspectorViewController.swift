@@ -47,12 +47,12 @@ enum ElementInspectorDismissReason: Swift.CaseIterable {
 
 protocol ElementInspectorViewControllerDelegate: OperationQueueManagerProtocol {
     func elementInspectorViewController(viewControllerWith panel: ElementInspectorPanel,
-                                        and element: ViewHierarchyElement) -> ElementInspectorPanelViewController
+                                        and element: ViewHierarchyElementReference) -> ElementInspectorPanelViewController
 
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
-                                        didSelect element: ViewHierarchyElement,
+                                        didSelect element: ViewHierarchyElementReference,
                                         with action: ViewHierarchyAction,
-                                        from fromElement: ViewHierarchyElement)
+                                        from fromElement: ViewHierarchyElementReference)
 
     func elementInspectorViewControllerDidFinish(_ viewController: ElementInspectorViewController,
                                                  with reason: ElementInspectorDismissReason)
@@ -131,7 +131,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             size: ElementInspector.configuration.panelPreferredCompressedSize
         )
     ).then {
-        $0.elementDescriptionView.viewModel = viewModel
+        $0.elementDescriptionView.summaryInfo = viewModel.element.summaryInfo
     }
 
     @objc

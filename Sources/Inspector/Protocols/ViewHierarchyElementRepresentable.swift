@@ -20,9 +20,10 @@
 
 import UIKit
 
-/// A protocol that maps the public properties of a UIView.
-protocol ViewHierarchyElementProtocol {
-    var viewIdentifier: ObjectIdentifier { get }
+/// A protocol that represents the public interface of a UIView.
+protocol ViewHierarchyElementRepresentable {
+
+    var objectIdentifier: ObjectIdentifier { get }
 
     /// Determines if a view can host an inspector view.
     var canHostInspectorView: Bool { get }
@@ -48,11 +49,7 @@ protocol ViewHierarchyElementProtocol {
 
     var accessibilityIdentifier: String? { get }
 
-    var isContainer: Bool { get }
-
     // MARK: - Issues
-
-    var hasIssues: Bool { get }
 
     var issues: [ViewHierarchyIssue] { get }
 
@@ -69,8 +66,10 @@ protocol ViewHierarchyElementProtocol {
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle { get }
 
     var traitCollection: UITraitCollection { get }
+
+    var isHidden: Bool { get set }
 }
 
-extension ViewHierarchyElementProtocol {
+extension ViewHierarchyElementRepresentable {
     var hasIssues: Bool { !issues.isEmpty }
 }

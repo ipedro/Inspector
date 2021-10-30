@@ -20,32 +20,23 @@
 
 import UIKit
 
-protocol ViewHierarchyElementDescriptionViewModelProtocol {
-    var iconImage: UIImage? { get }
-
-    var title: String? { get }
-
-    var titleFont: UIFont { get }
-
-    var subtitle: String? { get }
-
-    var subtitleFont: UIFont { get }
-
-    var isContainer: Bool { get }
-
-    var isCollapsed: Bool { get set }
-
-    var isCollapseButtonEnabled: Bool { get }
-
-    var hideCollapseButton: Bool { get }
-
-    var relativeDepth: Int { get }
-
-    var automaticallyAdjustIndentation: Bool { get }
+struct ViewHierarchyElementSummary {
+    var automaticallyAdjustIndentation: Bool = false
+    var hideCollapseButton: Bool = true
+    var iconImage: UIImage?
+    var isCollapseButtonEnabled: Bool = false
+    var isCollapsed: Bool = false
+    var isContainer: Bool
+    var isHidden: Bool = false
+    var relativeDepth: Int = .zero
+    var subtitle: String?
+    var subtitleFont: UIFont = ElementInspector.appearance.font(forRelativeDepth: .zero)
+    var title: String?
+    var titleFont: UIFont = ElementInspector.appearance.titleFont(forRelativeDepth: .zero)
 }
 
 final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol {
-    var viewModel: ViewHierarchyElementDescriptionViewModelProtocol? {
+    var summaryInfo: ViewHierarchyElementSummary? {
         didSet {
             reloadData()
         }
@@ -70,25 +61,25 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
 
     func reloadData() {
         // name
-        elementNameLabel.text = viewModel?.title
-        elementNameLabel.font = viewModel?.titleFont
+        elementNameLabel.text = summaryInfo?.title
+        elementNameLabel.font = summaryInfo?.titleFont
 
         // icon
-        iconImageView.image = viewModel?.iconImage
+        iconImageView.image = summaryInfo?.iconImage
 
         // collapse button
-        collapseButton.isHidden = viewModel?.hideCollapseButton != false
-        collapseButton.isUserInteractionEnabled = viewModel?.isCollapseButtonEnabled == true
-        isCollapsed = viewModel?.isCollapsed == true
+        collapseButton.isHidden = summaryInfo?.hideCollapseButton != false
+        collapseButton.isUserInteractionEnabled = summaryInfo?.isCollapseButtonEnabled == true
+        isCollapsed = summaryInfo?.isCollapsed == true
 
-        isAutomaticallyAdjustIndentation = viewModel?.automaticallyAdjustIndentation == true
+        isAutomaticallyAdjustIndentation = summaryInfo?.automaticallyAdjustIndentation == true
 
         // description
-        elementDescriptionLabel.text = viewModel?.subtitle
-        elementDescriptionLabel.font = viewModel?.subtitleFont
+        summaryInfoLabel.text = summaryInfo?.subtitle
+        summaryInfoLabel.font = summaryInfo?.subtitleFont
 
         // Containers Insets
-        let relativeDepth = viewModel?.relativeDepth ?? 0
+        let relativeDepth = summaryInfo?.relativeDepth ?? 0
         let indentation = CGFloat(relativeDepth) * ElementInspector.appearance.horizontalMargins
         contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(leading: indentation)
     }
@@ -131,7 +122,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
         $0.allowsDefaultTighteningForTruncation = true
     }
 
-    private(set) lazy var elementDescriptionLabel = UILabel().then {
+    private(set) lazy var summaryInfoLabel = UILabel().then {
         $0.clipsToBounds = true
         $0.numberOfLines = .zero
         $0.textColor = colorStyle.secondaryTextColor
@@ -159,7 +150,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
 
     private(set) lazy var elementIconAndDescriptionLabel = UIStackView.horizontal().then {
         $0.spacing = ElementInspector.appearance.verticalMargins
-        $0.addArrangedSubviews(elementDescriptionLabel, iconContainerView)
+        $0.addArrangedSubviews(summaryInfoLabel, iconContainerView)
         $0.alignment = .top
     }
 

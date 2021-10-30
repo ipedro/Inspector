@@ -48,19 +48,19 @@ final class ViewHierarchyCoordinator: Coordinator {
 
     private lazy var history: [ViewHierarchySnapshot] = []
 
-    var wireframeViews: [ViewHierarchyElement: WireframeView] = [:] {
+    var wireframeViews: [ViewHierarchyElementKey: WireframeView] = [:] {
         didSet {
             updateLayerViews(to: wireframeViews, from: oldValue)
         }
     }
 
-    var highlightViews: [ViewHierarchyElement: LayerView] = [:] {
+    var highlightViews: [ViewHierarchyElementKey: LayerView] = [:] {
         didSet {
             updateLayerViews(to: highlightViews, from: oldValue)
         }
     }
 
-    var visibleReferences: [ViewHierarchyLayer: [ViewHierarchyElement]] = [:] {
+    var visibleReferences: [ViewHierarchyLayer: [ViewHierarchyElementKey]] = [:] {
         didSet {
             let layers = Set<ViewHierarchyLayer>(visibleReferences.keys)
             let oldLayers = Set<ViewHierarchyLayer>(oldValue.keys)
@@ -109,7 +109,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
         }
     }
 
-    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElement, from sourceView: UIView) {
+    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElementReference, from sourceView: UIView) {
         guard
             canPerform(action: action),
             case let .layer(layerAction) = action
@@ -176,20 +176,21 @@ extension ViewHierarchyCoordinator {
             parent: .none
         )
 
-        rootElement.viewController = rootViewController
-
-        return ViewHierarchySnapshot(
+        let snapshot = ViewHierarchySnapshot(
             layers: dataSource.layers,
             rootElement: rootElement,
             rootViewController: rootViewController
         )
+        
+        return snapshot
     }
 
-    func showHighlight(_ show: Bool, for element: ViewHierarchyElement, includeSubviews: Bool = true) {
+    func showHighlight(_ show: Bool, for element: ViewHierarchyElementReference, includeSubviews: Bool = true) {
         let isHidden = !show
+        let key = ViewHierarchyElementKey(reference: element)
 
         guard includeSubviews else {
-            highlightViews[element]?.isHidden = isHidden
+            highlightViews[key]?.element.isHidden = isHidden
             return
         }
 
@@ -203,7 +204,7 @@ extension ViewHierarchyCoordinator {
 // MARK: - LayerViewDelegate
 
 extension ViewHierarchyCoordinator: LayerViewDelegate {
-    func layerView(_ layerView: LayerViewProtocol, didSelect element: ViewHierarchyElement, withAction action: ViewHierarchyAction) {
+    func layerView(_ layerView: LayerViewProtocol, didSelect element: ViewHierarchyElementReference, withAction action: ViewHierarchyAction) {
         guard canPerform(action: action) else {
             delegate?.perform(action: action, with: element, from: layerView.sourceView)
             return

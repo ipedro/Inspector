@@ -134,7 +134,7 @@ final class HighlightView: LayerView {
         frame: CGRect,
         name: String,
         colorScheme: ViewHierarchyColorScheme,
-        element: ViewHierarchyElement,
+        element: ViewHierarchyElementReference,
         border borderWidth: CGFloat = Inspector.configuration.appearance.highlightLayerBorderWidth
     ) {
         self.colorScheme = colorScheme
@@ -212,11 +212,14 @@ final class HighlightView: LayerView {
     private var latestElementSnapshot: UUID?
 
     func updateViewsIfNeeded() {
-        guard latestElementSnapshot != element.latestSnapshot.identifier else {
+        if
+            let latestElementSnapshot = latestElementSnapshot,
+            element.hasChanges(inRelationTo: latestElementSnapshot) == false
+        {
             return
         }
 
-        latestElementSnapshot = element.latestSnapshot.identifier
+        latestElementSnapshot = element.latestSnapshotIdentifier
 
         updateElementName()
 
@@ -259,7 +262,7 @@ final class HighlightView: LayerView {
     }
 
     func updateElementName() {
-        name = element.viewController?.classNameWithoutQualifiers ?? element.elementName
+        name = element.elementName
 
         if let image = element.iconImage?.resized(CGSize(18)) {
             if image != elementNameView.imageView.image {

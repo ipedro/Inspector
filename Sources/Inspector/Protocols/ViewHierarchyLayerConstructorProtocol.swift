@@ -45,14 +45,30 @@ protocol ViewHierarchyLayerConstructorProtocol {
 
     // MARK: - LayerView Methods
 
-    func updateLayerViews(to newValue: [ViewHierarchyElement: LayerView],
-                          from oldValue: [ViewHierarchyElement: LayerView])
+    func updateLayerViews(to newValue: [ViewHierarchyElementKey: LayerView],
+                          from oldValue: [ViewHierarchyElementKey: LayerView])
 
     // MARK: - Element Reference Methods
 
     func removeReferences(for removedLayers: Set<ViewHierarchyLayer>,
-                          in oldValue: [ViewHierarchyLayer: [ViewHierarchyElement]])
+                          in oldValue: [ViewHierarchyLayer: [ViewHierarchyElementKey]])
 
     func addReferences(for newLayers: Set<ViewHierarchyLayer>,
                        with colorScheme: ViewHierarchyColorScheme)
+}
+
+class ViewHierarchyElementKey: Hashable {
+    let reference: ViewHierarchyElementReference
+
+    init(reference: ViewHierarchyElementReference) {
+        self.reference = reference
+    }
+
+    static func == (lhs: ViewHierarchyElementKey, rhs: ViewHierarchyElementKey) -> Bool {
+        lhs.reference.objectIdentifier == rhs.reference.objectIdentifier
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(reference.objectIdentifier)
+    }
 }

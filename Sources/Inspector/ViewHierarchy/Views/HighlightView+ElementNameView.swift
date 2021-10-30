@@ -54,7 +54,7 @@ final class ElementNameView: LayerViewComponent {
             }
         }
 
-        static func allCases(for element: ViewHierarchyElement) -> [DisplayMode] {
+        static func allCases(for element: ViewHierarchyElementReference) -> [DisplayMode] {
             allCases
         }
 

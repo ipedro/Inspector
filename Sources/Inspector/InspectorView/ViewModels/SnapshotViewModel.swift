@@ -30,9 +30,9 @@ extension HierarchyInspectorViewModel {
             let subtitle: String?
             let image: UIImage?
             let depth: Int
-            let element: ViewHierarchyElement
+            let element: ViewHierarchyElementReference
 
-            init(with element: ViewHierarchyElement, isEnabled: Bool) {
+            init(with element: ViewHierarchyElementReference, isEnabled: Bool) {
                 self.title = element.displayName
                 self.isEnabled = isEnabled
                 self.subtitle = element.shortElementDescription

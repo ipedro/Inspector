@@ -90,8 +90,11 @@ extension SceneDelegate: InspectorHost {
     }
 
     var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
-        [.staticTexts + .images,
-         .stackViews + .spacerViews]
+        [
+            .staticTexts,
+            .stackViews,
+            .viewControllers
+        ]
     }
 
     var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {

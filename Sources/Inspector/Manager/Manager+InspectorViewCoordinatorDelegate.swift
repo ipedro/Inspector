@@ -52,7 +52,7 @@ extension Manager {
                 guard let self = self, let sourceView = reference.underlyingView else { return }
 
                 self.startElementInspectorCoordinator(
-                    for: reference,
+                   for: reference,
                    panel: .none,
                    from: sourceView,
                    animated: true

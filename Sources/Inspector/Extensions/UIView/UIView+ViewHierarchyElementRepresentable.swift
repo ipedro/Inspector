@@ -20,7 +20,36 @@
 
 import UIKit
 
-extension UIView: ViewHierarchyElementProtocol {
+extension UIView: ViewHierarchyElementRepresentable {
+    var depth: Int {
+        allParents.count
+    }
+
+    var parent: UIView? {
+        superview
+    }
+
+    var isContainer: Bool { !children.isEmpty }
+
+    var allParents: [UIView] {
+        var array = [UIView]()
+
+        if let parent = parent {
+            array.append(parent)
+            array.append(contentsOf: parent.allParents)
+        }
+
+        return array
+    }
+
+    var children: [UIView] {
+        subviews.filter { !($0 is LayerViewProtocol) }
+    }
+
+    var allChildren: [UIView] {
+        children.reversed().flatMap { [$0] + $0.allChildren }
+    }
+
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle {
         if #available(iOS 13.0, *) {
             return .init(rawValue: overrideUserInterfaceStyle) ?? .unspecified
@@ -41,11 +70,7 @@ extension UIView: ViewHierarchyElementProtocol {
         _classNameWithoutQualifiers
     }
 
-    var isContainer: Bool {
-        !originalSubviews.isEmpty
-    }
-
-    var viewIdentifier: ObjectIdentifier {
+    var objectIdentifier: ObjectIdentifier {
         ObjectIdentifier(self)
     }
 
@@ -168,10 +193,10 @@ private extension UIView {
     var subviewsDescription: String? {
         guard isContainer else { return nil }
 
-        let child = originalSubviews.count == 1 ? "1 Child" : "\(originalSubviews.count) Children"
-        let subview = allOriginalSubviews.count == 1 ? "1 Subview" : "\(allOriginalSubviews.count) Subviews"
+        let children = children.count == 1 ? "1 Child" : "\(children.count) Children"
+        let subviews = allChildren.count == 1 ? "1 Subview" : "\(allChildren.count) Subviews"
 
-        return "\(child) (\(subview))"
+        return "\(children) (\(subviews))"
     }
 
     var sizeDescription: String? {

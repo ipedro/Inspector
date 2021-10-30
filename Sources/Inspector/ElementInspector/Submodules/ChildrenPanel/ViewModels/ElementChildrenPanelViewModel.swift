@@ -23,7 +23,7 @@ import UIKit
 protocol ElementChildrenPanelViewModelProtocol {
     var title: String? { get }
 
-    var rootElement: ViewHierarchyElement { get }
+    var rootElement: ViewHierarchyElementReference { get }
 
     var numberOfRows: Int { get }
 
@@ -40,7 +40,7 @@ protocol ElementChildrenPanelViewModelProtocol {
 }
 
 final class ElementChildrenPanelViewModel: NSObject {
-    let rootElement: ViewHierarchyElement
+    let rootElement: ViewHierarchyElementReference
 
     private(set) var children: [ChildViewModel] {
         didSet {
@@ -49,7 +49,7 @@ final class ElementChildrenPanelViewModel: NSObject {
     }
 
     private static func makeChildViewModels(
-        element: ViewHierarchyElement,
+        element: ViewHierarchyElementReference,
         parent: ChildViewModel?,
         snapshot: ViewHierarchySnapshot,
         rootDepth: Int
@@ -78,7 +78,7 @@ final class ElementChildrenPanelViewModel: NSObject {
 
     let snapshot: ViewHierarchySnapshot
 
-    init(element: ViewHierarchyElement, snapshot: ViewHierarchySnapshot) {
+    init(element: ViewHierarchyElementReference, snapshot: ViewHierarchySnapshot) {
         rootElement = element
         self.snapshot = snapshot
 

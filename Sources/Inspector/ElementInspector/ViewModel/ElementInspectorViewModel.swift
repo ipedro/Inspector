@@ -20,10 +20,10 @@
 
 import UIKit
 
-protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyElementDescriptionViewModelProtocol {
+protocol ElementInspectorViewModelProtocol: AnyObject {
     var isFullHeightPresentation: Bool { get set }
 
-    var element: ViewHierarchyElement { get }
+    var element: ViewHierarchyElementReference { get }
 
     var catalog: ViewHierarchyElementCatalog { get }
 
@@ -32,10 +32,12 @@ protocol ElementInspectorViewModelProtocol: AnyObject & ViewHierarchyElementDesc
     var currentPanel: ElementInspectorPanel? { get }
 
     var currentPanelIndex: Int { get }
+
+    var title: String {get }
 }
 
 final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
-    let element: ViewHierarchyElement
+    let element: ViewHierarchyElementReference
 
     let catalog: ViewHierarchyElementCatalog
 
@@ -49,6 +51,8 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     private static var defaultPanel: ElementInspectorPanel { ElementInspector.configuration.defaultPanel }
 
+    var title: String { element.elementName }
+
     var currentPanelIndex: Int {
         guard
             let panel = currentPanel,
@@ -61,7 +65,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     init(
         catalog: ViewHierarchyElementCatalog,
-        element: ViewHierarchyElement,
+        element: ViewHierarchyElementReference,
         selectedPanel: ElementInspectorPanel?,
         availablePanels: [ElementInspectorPanel]
     ) {
@@ -81,30 +85,13 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
             self.currentPanel = availablePanels.contains(selectedPanel) ? selectedPanel : nil
         }
     }
-}
 
-// MARK: - ViewHierarchyReferenceDetailViewModelProtocol
-
-extension ElementInspectorViewModel: ViewHierarchyElementDescriptionViewModelProtocol {
-    var automaticallyAdjustIndentation: Bool { false }
-
-    var iconImage: UIImage? { element.iconImage }
-
-    var title: String? { element.elementName }
-
-    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
-
-    var subtitle: String? { element.elementDescription }
-
-    var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: .zero) }
-
-    var isContainer: Bool { false }
-
-    var isCollapseButtonEnabled: Bool { false }
-
-    var hideCollapseButton: Bool { true }
-
-    var isHidden: Bool { false }
-
-    var relativeDepth: Int { .zero }
+    var summaryInfo: ViewHierarchyElementSummary {
+        ViewHierarchyElementSummary(
+            iconImage: element.iconImage,
+            isContainer: false,
+            subtitle: element.elementDescription,
+            title: element.elementName
+        )
+    }
 }

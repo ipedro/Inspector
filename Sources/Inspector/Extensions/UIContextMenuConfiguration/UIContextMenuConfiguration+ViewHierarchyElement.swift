@@ -28,7 +28,7 @@ extension UIContextMenuConfiguration {
 
     static func contextMenuConfiguration(
         initialMenus: [UIMenuElement] = [],
-        with element: ViewHierarchyElement,
+        with element: ViewHierarchyElementReference,
         includeActions: Bool = true,
         handler: @escaping ViewHierarchyActionHandler
     ) -> UIContextMenuConfiguration? {
@@ -42,7 +42,9 @@ extension UIContextMenuConfiguration {
 
         return UIContextMenuConfiguration(
             identifier: nil,
-            previewProvider: { ViewHierarchyPreviewController(with: element) },
+            previewProvider: {
+                ViewHierarchyPreviewController(with: element)
+            },
             actionProvider: { _ in
                 UIMenu(
                     title: "",

@@ -117,7 +117,7 @@ extension ViewHierarchyElementIconProvider {
         case let view where view.className.contains("_UI"):
             return .moduleImage(named: "keyboardShortcut-32_Normal")
 
-        case let view where !view.originalSubviews.isEmpty:
+        case let view where !view.children.isEmpty:
             return .moduleImage(named: "filled-view-32_Normal")
 
         default:

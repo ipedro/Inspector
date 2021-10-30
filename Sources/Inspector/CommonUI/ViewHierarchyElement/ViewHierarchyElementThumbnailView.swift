@@ -32,7 +32,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
 
     // MARK: - Properties
 
-    let element: ViewHierarchyElement
+    let element: ViewHierarchyElementReference
 
     var showEmptyStatusMessage: Bool = true {
         didSet {
@@ -60,7 +60,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
 
     // MARK: - Init
 
-    init(with element: ViewHierarchyElement) {
+    init(with element: ViewHierarchyElementReference) {
         self.element = element
         super.init(frame: .zero)
     }

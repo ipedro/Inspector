@@ -103,13 +103,18 @@ extension ElementAttributesLibrary {
                 case .isUserInteractionEnabled:
                     return .switch(
                         title: property.rawValue,
-                        isOn: { view._highlightView?.element.isUnderlyingViewUserInteractionEnabled ?? view.isUserInteractionEnabled }
+                        isOn: {
+                            guard let element = view._highlightView?.element as? ViewHierarchyElement else {
+                                return view.isUserInteractionEnabled
+                            }
+                            return element.isUnderlyingViewUserInteractionEnabled
+                        }
                     ) { isUserInteractionEnabled in
-                        guard let highlightView = view._highlightView else {
+                        guard let element = view._highlightView?.element as? ViewHierarchyElement else {
                             view.isUserInteractionEnabled = isUserInteractionEnabled
                             return
                         }
-                        highlightView.element.isUnderlyingViewUserInteractionEnabled = isUserInteractionEnabled
+                        element.isUnderlyingViewUserInteractionEnabled = isUserInteractionEnabled
                     }
                 case .isMultipleTouchEnabled:
                     return .switch(

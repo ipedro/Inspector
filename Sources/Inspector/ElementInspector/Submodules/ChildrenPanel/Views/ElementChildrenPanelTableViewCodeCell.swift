@@ -26,6 +26,7 @@ protocol ElementChildrenPanelTableViewCodeCellDelegate: AnyObject {
 }
 
 protocol ElementChildrenPanelTableViewCellViewModelProtocol: ElementChildrenPanelItemViewModelProtocol {
+    var summaryInfo: ViewHierarchyElementSummary { get }
     var showDisclosureIcon: Bool { get }
     var appearance: (transform: CGAffineTransform, alpha: CGFloat) { get }
     var animatedDisplay: Bool { get set }
@@ -70,7 +71,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
     var viewModel: ElementChildrenPanelTableViewCellViewModelProtocol? {
         didSet {
             contentView.isUserInteractionEnabled = true
-            elementDescriptionView.viewModel = viewModel
+            elementDescriptionView.summaryInfo = viewModel?.summaryInfo
             disclosureIcon.isHidden = viewModel?.showDisclosureIcon != true
         }
     }

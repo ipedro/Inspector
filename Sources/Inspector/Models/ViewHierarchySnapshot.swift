@@ -31,7 +31,7 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
 
     let rootViewController: ViewHierarchyController
 
-    let inspectableElements: [ViewHierarchyElement]
+    let inspectableElements: [ViewHierarchyElementReference]
 
     init(layers: [ViewHierarchyLayer], rootElement: ViewHierarchyElement, rootViewController: ViewHierarchyController) {
         self.rootElement = rootElement

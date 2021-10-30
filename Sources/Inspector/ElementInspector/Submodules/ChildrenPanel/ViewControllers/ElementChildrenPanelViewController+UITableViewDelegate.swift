@@ -64,7 +64,7 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
 
         return .contextMenuConfiguration(
             initialMenus: {
-                guard cellViewModel.isContainer else { return [] }
+                guard cellViewModel.element.isContainer else { return [] }
 
                 return [
                     UIMenu(

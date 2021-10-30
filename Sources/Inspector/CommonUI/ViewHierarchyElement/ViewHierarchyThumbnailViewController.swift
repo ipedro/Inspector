@@ -20,40 +20,10 @@
 
 import UIKit
 
-struct ViewHierarchyThumbnailViewModel: ViewHierarchyElementDescriptionViewModelProtocol {
-    let element: ViewHierarchyElement
-
-    // MARK: - ViewHierarchyReferenceDetailViewModelProtocol
-
-    var isCollapsed: Bool = false
-
-    var automaticallyAdjustIndentation: Bool { false }
-
-    var iconImage: UIImage? { element.iconImage }
-
-    var title: String? { element.elementName }
-
-    var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: .zero) }
-
-    var subtitle: String? { element.elementDescription }
-
-    var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: .zero) }
-
-    var isContainer: Bool { false }
-
-    var isCollapseButtonEnabled: Bool { false }
-
-    var hideCollapseButton: Bool { true }
-
-    var isHidden: Bool { false }
-
-    var relativeDepth: Int { .zero }
-}
-
 final class ViewHierarchyPreviewController: UIViewController {
-    let element: ViewHierarchyElement
+    let element: ViewHierarchyElementReference
 
-    init(with element: ViewHierarchyElement) {
+    init(with element: ViewHierarchyElementReference) {
         self.element = element
         super.init(nibName: nil, bundle: nil)
     }
@@ -69,7 +39,7 @@ final class ViewHierarchyPreviewController: UIViewController {
     }
 
     private(set) lazy var elementDescriptionView = ViewHierarchyElementDescriptionView().then {
-        $0.viewModel = element
+        $0.summaryInfo = element.summaryInfo
     }
 
     private(set) lazy var separatorView = SeparatorView(style: .hard)

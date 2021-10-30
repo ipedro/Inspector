@@ -22,7 +22,7 @@ import UIKit
 
 protocol LayerViewDelegate: AnyObject {
     func layerView(_ layerView: LayerViewProtocol,
-                   didSelect element: ViewHierarchyElement,
+                   didSelect element: ViewHierarchyElementReference,
                    withAction action: ViewHierarchyAction)
 }
 
@@ -31,7 +31,7 @@ class LayerView: UIImageView, LayerViewProtocol {
 
     var shouldPresentOnTop = false
 
-    let element: ViewHierarchyElement
+    var element: ViewHierarchyElementReference
 
     var allowsImages = false
 
@@ -62,7 +62,7 @@ class LayerView: UIImageView, LayerViewProtocol {
     // MARK: - Init
 
     init(frame: CGRect,
-         element: ViewHierarchyElement,
+         element: ViewHierarchyElementReference,
          color borderColor: UIColor,
          border borderWidth: CGFloat) {
         self.element = element
@@ -105,7 +105,11 @@ class LayerView: UIImageView, LayerViewProtocol {
         // reset views
         guard newSuperview == nil else { return }
 
-        element.underlyingView?.isUserInteractionEnabled = element.isUnderlyingViewUserInteractionEnabled
+        guard let viewElement = element as? ViewHierarchyElement else {
+            return
+        }
+
+        viewElement.underlyingView?.isUserInteractionEnabled = viewElement.isUnderlyingViewUserInteractionEnabled
     }
 
     override func didMoveToSuperview() {
