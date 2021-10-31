@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var mapView: MKMapView?
 
-        init?(view: UIView) {
-            guard let mapView = view as? MKMapView else { return nil }
+        init?(with object: NSObject) {
+            guard let mapView = object as? MKMapView else { return nil }
 
             self.mapView = mapView
         }

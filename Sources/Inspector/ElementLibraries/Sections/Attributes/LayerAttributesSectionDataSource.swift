@@ -29,7 +29,9 @@ extension ElementAttributesLibrary {
 
         private weak var layer: CALayer?
 
-        init(view: UIView) {
+        init?(with object: NSObject) {
+            guard let view = object as? UIView else { return nil }
+
             layer = view.layer
             title = view.layer._className
         }

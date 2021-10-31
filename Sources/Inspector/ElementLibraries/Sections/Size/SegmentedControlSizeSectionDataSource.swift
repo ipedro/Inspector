@@ -30,8 +30,8 @@ extension ElementSizeLibrary {
 
         private weak var segmentedControl: UISegmentedControl?
 
-        init?(view: UIView) {
-            guard let segmentedControl = view as? UISegmentedControl else {
+        init?(with object: NSObject) {
+            guard let segmentedControl = object as? UISegmentedControl else {
                 return nil
             }
 

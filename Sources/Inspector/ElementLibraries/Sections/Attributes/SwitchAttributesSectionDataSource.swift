@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var switchControl: UISwitch?
 
-        init?(view: UIView) {
-            guard let switchControl = view as? UISwitch else { return nil }
+        init?(with object: NSObject) {
+            guard let switchControl = object as? UISwitch else { return nil }
 
             self.switchControl = switchControl
         }

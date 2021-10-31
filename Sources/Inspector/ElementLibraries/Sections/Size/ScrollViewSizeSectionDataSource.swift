@@ -28,8 +28,8 @@ extension ElementSizeLibrary {
 
         private weak var scrollView: UIScrollView?
 
-        init?(view: UIView) {
-            guard let scrollView = view as? UIScrollView else { return nil }
+        init?(with object: NSObject) {
+            guard let scrollView = object as? UIScrollView else { return nil }
             self.scrollView = scrollView
         }
         

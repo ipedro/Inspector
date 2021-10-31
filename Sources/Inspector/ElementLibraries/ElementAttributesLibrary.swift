@@ -39,7 +39,9 @@ enum ElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtoc
     case textView
     case tableView
     case webView
-    
+
+    // base classes
+    case viewController
     case window
     case scrollView
     case control
@@ -50,6 +52,9 @@ enum ElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtoc
 
     var targetClass: AnyClass {
         switch self {
+        case .viewController:
+            return UIViewController.self
+
         case .tableView:
             return UITableView.self
 
@@ -115,81 +120,84 @@ enum ElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtoc
         }
     }
 
-    func sections(for referenceView: UIView) -> InspectorElementSections {
+    func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
+        case .viewController:
+            return .empty
+
         case .tableView:
-            return .init(with: TableViewAttributesSectionDataSource(view: referenceView))
+            return .init(with: TableViewAttributesSectionDataSource(with: object))
 
         case .layer:
-            return .init(with: LayerAttributesSectionDataSource(view: referenceView))
+            return .init(with: LayerAttributesSectionDataSource(with: object))
 
         case .window:
-            return .init(with: WindowAttributesSectionDataSource(view: referenceView))
+            return .init(with: WindowAttributesSectionDataSource(with: object))
 
         case .navigationBar:
             var section = InspectorElementSection()
 
             if #available(iOS 13.0, *) {
-                section.append(NavigationBarAppearanceAttributesSectionDataSource(type: .standard, view: referenceView))
-                section.append(NavigationBarAppearanceAttributesSectionDataSource(type: .compact, view: referenceView))
-                section.append(NavigationBarAppearanceAttributesSectionDataSource(type: .scrollEdge, view: referenceView))
+                section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, type: .standard))
+                section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, type: .compact))
+                section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, type: .scrollEdge))
             }
 
             if #available(iOS 15.0, *) {
-                section.append(NavigationBarAppearanceAttributesSectionDataSource(type: .compactScrollEdge, view: referenceView))
+                section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, type: .compactScrollEdge))
             }
 
-            section.append(NavigationBarAttributesSectionDataSource(view: referenceView))
+            section.append(NavigationBarAttributesSectionDataSource(with: object))
 
             return [section]
 
         case .activityIndicator:
-            return .init(with: ActivityIndicatorViewAttributesSectionDataSource(view: referenceView))
+            return .init(with: ActivityIndicatorViewAttributesSectionDataSource(with: object))
 
         case .button:
-            return .init(with: ButtonAttributesSectionDataSource(view: referenceView))
+            return .init(with: ButtonAttributesSectionDataSource(with: object))
 
         case .control:
-            return .init(with: ControlAttributesSectionDataSource(view: referenceView))
+            return .init(with: ControlAttributesSectionDataSource(with: object))
 
         case .datePicker:
-            return .init(with: DatePickerAttributesSectionDataSource(view: referenceView))
+            return .init(with: DatePickerAttributesSectionDataSource(with: object))
 
         case .imageView:
-            return .init(with: ImageViewAttributesSectionDataSource(view: referenceView))
+            return .init(with: ImageViewAttributesSectionDataSource(with: object))
 
         case .label:
-            return .init(with: LabelAttributesSectionDataSource(view: referenceView))
+            return .init(with: LabelAttributesSectionDataSource(with: object))
 
         case .mapView:
-            return .init(with: MapViewAttributesSectionDataSource(view: referenceView))
+            return .init(with: MapViewAttributesSectionDataSource(with: object))
 
         case .scrollView:
-            return .init(with: ScrollViewAttributesSectionDataSource(view: referenceView))
+            return .init(with: ScrollViewAttributesSectionDataSource(with: object))
 
         case .segmentedControl:
-            return .init(with: SegmentedControlAttributesSectionDataSource(view: referenceView))
+            return .init(with: SegmentedControlAttributesSectionDataSource(with: object))
 
         case .slider:
-            return .init(with: SliderAttributesSectionDataSource(view: referenceView))
+            return .init(with: SliderAttributesSectionDataSource(with: object))
 
         case .switch:
-            return .init(with: SwitchAttributesSectionDataSource(view: referenceView))
+            return .init(with: SwitchAttributesSectionDataSource(with: object))
 
         case .stackView:
-            return .init(with: StackViewAttributesSectionDataSource(view: referenceView))
+            return .init(with: StackViewAttributesSectionDataSource(with: object))
 
         case .textField:
-            return .init(with: TextFieldAttributesSectionDataSource(view: referenceView))
+            return .init(with: TextFieldAttributesSectionDataSource(with: object))
 
         case .textView:
-            return .init(with: TextViewAttributesSectionDataSource(view: referenceView))
+            return .init(with: TextViewAttributesSectionDataSource(with: object))
 
         case .view:
-            return .init(with: ViewAttributesSectionDataSource(view: referenceView))
+            return .init(with: ViewAttributesSectionDataSource(with: object))
 
         case .tabBar:
-            return .init(with: TabBarAttributesSectionDataSource(view: referenceView))
+            return .init(with: TabBarAttributesSectionDataSource(with: object))
 
         case .webView:
             return []

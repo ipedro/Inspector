@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var navigationBar: UINavigationBar?
 
-        init?(view: UIView) {
-            guard let navigationBar = view as? UINavigationBar else { return nil }
+        init?(with object: NSObject) {
+            guard let navigationBar = object as? UINavigationBar else { return nil }
 
             self.navigationBar = navigationBar
         }

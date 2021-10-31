@@ -52,8 +52,8 @@ extension ElementAttributesLibrary {
             }
         }
 
-        init?(type: Type, view: UIView) {
-            guard let navigationBar = view as? UINavigationBar else { return nil }
+        init?(with object: NSObject, type: Type) {
+            guard let navigationBar = object as? UINavigationBar else { return nil }
 
             self.type = type
             self.navigationBar = navigationBar

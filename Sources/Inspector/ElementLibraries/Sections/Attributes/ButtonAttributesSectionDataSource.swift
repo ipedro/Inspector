@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var button: UIButton?
 
-        init?(view: UIView) {
-            guard let button = view as? UIButton else { return nil }
+        init?(with object: NSObject) {
+            guard let button = object as? UIButton else { return nil }
 
             self.button = button
 

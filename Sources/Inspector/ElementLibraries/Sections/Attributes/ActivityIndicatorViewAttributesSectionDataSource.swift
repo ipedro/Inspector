@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var activityIndicatorView: UIActivityIndicatorView?
 
-        init?(view: UIView) {
-            guard let activityIndicatorView = view as? UIActivityIndicatorView else { return nil }
+        init?(with object: NSObject) {
+            guard let activityIndicatorView = object as? UIActivityIndicatorView else { return nil }
 
             self.activityIndicatorView = activityIndicatorView
         }

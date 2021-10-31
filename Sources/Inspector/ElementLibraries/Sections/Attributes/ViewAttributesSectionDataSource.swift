@@ -28,7 +28,9 @@ extension ElementAttributesLibrary {
 
         private weak var view: UIView?
 
-        init(view: UIView) {
+        init?(with object: NSObject) {
+            guard let view = object as? UIView else { return nil }
+
             self.view = view
         }
 

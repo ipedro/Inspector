@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var control: UIControl?
 
-        init?(view: UIView) {
-            guard let control = view as? UIControl else { return nil }
+        init?(with object: NSObject) {
+            guard let control = object as? UIControl else { return nil }
 
             self.control = control
         }

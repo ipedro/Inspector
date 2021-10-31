@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var stackView: UIStackView?
 
-        init?(view: UIView) {
-            guard let stackView = view as? UIStackView else { return nil }
+        init?(with object: NSObject) {
+            guard let stackView = object as? UIStackView else { return nil }
 
             self.stackView = stackView
         }

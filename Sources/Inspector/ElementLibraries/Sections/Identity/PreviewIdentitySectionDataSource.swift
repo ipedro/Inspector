@@ -30,7 +30,9 @@ extension ElementIdentityLibrary {
 
         private var isHighlightingViews: Bool { element.containsVisibleHighlightViews }
 
-        init(view: UIView) {
+        init?(with object: NSObject) {
+            guard let view = object as? UIView else { return nil }
+
             self.element = .init(with: view, iconProvider: .default)
         }
 

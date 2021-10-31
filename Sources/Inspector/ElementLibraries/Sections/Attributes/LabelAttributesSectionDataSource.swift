@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var label: UILabel?
 
-        init?(view: UIView) {
-            guard let label = view as? UILabel else { return nil}
+        init?(with object: NSObject) {
+            guard let label = object as? UILabel else { return nil}
 
             self.label = label
         }

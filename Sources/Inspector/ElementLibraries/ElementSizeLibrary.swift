@@ -54,30 +54,32 @@ enum ElementSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIterable {
         }
     }
 
-    func sections(for referenceView: UIView) -> InspectorElementSections {
+    func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
         case .tableView:
-            return .init(with: TableViewSizeSectionDataSource(view: referenceView))
+            return .init(with: TableViewSizeSectionDataSource(with: object))
             
         case .button:
-            return .init(with: ButtonSizeSectionDataSource(view: referenceView))
+            return .init(with: ButtonSizeSectionDataSource(with: object))
 
         case .label:
-            return .init(with: LabelSizeSectionDataSource(view: referenceView))
+            return .init(with: LabelSizeSectionDataSource(with: object))
 
         case .segmentedControl:
-            return .init(with: SegmentedControlSizeSectionDataSource(view: referenceView))
+            return .init(with: SegmentedControlSizeSectionDataSource(with: object))
 
         case .scrollView:
-            return .init(with: ScrollViewSizeSectionDataSource(view: referenceView))
+            return .init(with: ScrollViewSizeSectionDataSource(with: object))
             
         case .viewFrame:
-            return .init(with: ViewFrameSizeSectionDataSource(view: referenceView))
+            return .init(with: ViewFrameSizeSectionDataSource(with: object))
 
         case .contentLayoutPriority:
-            return .init(with: ContentLayoutPrioritySizeSectionDataSource(view: referenceView))
+            return .init(with: ContentLayoutPrioritySizeSectionDataSource(with: object))
 
         case .layoutConstraints:
+            guard let referenceView = object as? UIView else { return .empty }
+
             let element = ViewHierarchyElement(with: referenceView, iconProvider: .default)
 
             let dataSources = element.constraintElements.map {

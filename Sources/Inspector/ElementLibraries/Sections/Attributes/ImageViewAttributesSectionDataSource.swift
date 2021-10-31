@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var imageView: UIImageView?
 
-        init?(view: UIView) {
-            guard let imageView = view as? UIImageView else { return nil }
+        init?(with object: NSObject) {
+            guard let imageView = object as? UIImageView else { return nil }
 
             self.imageView = imageView
         }

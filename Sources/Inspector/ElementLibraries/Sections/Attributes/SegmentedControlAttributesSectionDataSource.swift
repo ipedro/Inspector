@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var segmentedControl: UISegmentedControl?
 
-        init?(view: UIView) {
-            guard let segmentedControl = view as? UISegmentedControl else { return nil }
+        init?(with object: NSObject) {
+            guard let segmentedControl = object as? UISegmentedControl else { return nil }
 
             self.segmentedControl = segmentedControl
 

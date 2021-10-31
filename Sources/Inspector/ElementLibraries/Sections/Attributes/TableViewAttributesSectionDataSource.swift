@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var tableView: UITableView?
 
-        init?(view: UIView) {
-            guard let tableView = view as? UITableView else { return nil }
+        init?(with object: NSObject) {
+            guard let tableView = object as? UITableView else { return nil }
             self.tableView = tableView
         }
 

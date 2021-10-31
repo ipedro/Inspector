@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var window: UIWindow?
 
-        init?(view: UIView) {
-            guard let window = view as? UIWindow else { return nil }
+        init?(with object: NSObject) {
+            guard let window = object as? UIWindow else { return nil }
 
             self.window = window
         }

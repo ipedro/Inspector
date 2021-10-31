@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var tabBar: UITabBar?
 
-        init?(view: UIView) {
-            guard let tabBar = view as? UITabBar else { return nil }
+        init?(with object: NSObject) {
+            guard let tabBar = object as? UITabBar else { return nil }
             self.tabBar = tabBar
         }
 

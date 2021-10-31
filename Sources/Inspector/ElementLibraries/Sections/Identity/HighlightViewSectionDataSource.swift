@@ -29,8 +29,11 @@ extension ElementIdentityLibrary {
 
         weak var highlightView: HighlightView?
 
-        init?(view: UIView) {
-            guard let highlightView = view._highlightView else {
+        init?(with object: NSObject) {
+            guard
+                let view = object as? UIView,
+                let highlightView = view._highlightView
+            else {
                 return nil
             }
 

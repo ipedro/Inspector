@@ -32,7 +32,7 @@ extension ElementIdentityLibrary {
 
         private let hideUknownValues: Bool = true
 
-        init?(object: NSObject) {
+        init?(with object: NSObject) {
             let properties = object.propertyNames().sorted {
                 $0.lowercased().filter({ $0 != "_"}) < $1.lowercased().filter({ $0 != "_"})
             }

@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var textView: UITextView?
 
-        init?(view: UIView) {
-            guard let textView = view as? UITextView else { return nil }
+        init?(with object: NSObject) {
+            guard let textView = object as? UITextView else { return nil }
 
             self.textView = textView
         }

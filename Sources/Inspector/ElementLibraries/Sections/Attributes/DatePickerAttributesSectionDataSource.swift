@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var datePicker: UIDatePicker?
 
-        init?(view: UIView) {
-            guard let datePicker = view as? UIDatePicker else { return nil }
+        init?(with object: NSObject) {
+            guard let datePicker = object as? UIDatePicker else { return nil }
 
             self.datePicker = datePicker
         }

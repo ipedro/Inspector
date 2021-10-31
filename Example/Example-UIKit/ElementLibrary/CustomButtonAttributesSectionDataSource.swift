@@ -28,8 +28,8 @@ final class CustomButtonAttributesSectionDataSource: InspectorElementSectionData
 
     let customButton: CustomButton
 
-    init?(view: UIView) {
-        guard let customButton = view as? CustomButton else {
+    init?(with object: NSObject) {
+        guard let customButton = object as? CustomButton else {
             return nil
         }
         self.customButton = customButton

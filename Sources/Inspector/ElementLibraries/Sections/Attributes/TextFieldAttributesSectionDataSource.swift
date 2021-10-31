@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private(set) weak var textField: UITextField?
 
-        init?(view: UIView) {
-            guard let textField = view as? UITextField else { return nil }
+        init?(with object: NSObject) {
+            guard let textField = object as? UITextField else { return nil }
 
             self.textField = textField
         }

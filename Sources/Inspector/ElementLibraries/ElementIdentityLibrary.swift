@@ -36,16 +36,16 @@ enum ElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol
         }
     }
 
-    func sections(for referenceView: UIView) -> InspectorElementSections {
+    func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
         case .preview:
-            return .init(with: PreviewIdentitySectionDataSource(view: referenceView))
+            return .init(with: PreviewIdentitySectionDataSource(with: object))
 
         case .highlightView:
-            return .init(with: HighlightViewSectionDataSource(view: referenceView))
+            return .init(with: HighlightViewSectionDataSource(with: object))
 
         case .runtimeAttributes:
-            return .init(with: RuntimeAttributesIdentitySectionDataSource(object: referenceView))
+            return .init(with: RuntimeAttributesIdentitySectionDataSource(with: object))
         }
     }
 }

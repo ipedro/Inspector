@@ -28,8 +28,8 @@ extension ElementAttributesLibrary {
 
         private weak var slider: UISlider?
 
-        init?(view: UIView) {
-            guard let slider = view as? UISlider else { return nil }
+        init?(with object: NSObject) {
+            guard let slider = object as? UISlider else { return nil }
 
             self.slider = slider
         }

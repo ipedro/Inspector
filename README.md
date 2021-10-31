@@ -486,7 +486,7 @@ enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
         }
     }
     
-    func sections(for referenceView: UIView) -> InspectorElementSections { {
+    func sections(for object: NSObject) -> InspectorElementSections { {
         switch self {
         case .myClass:
             return .init(with: MyClassAttributes(view: referenceView))
@@ -507,8 +507,8 @@ final class MyClassAttributes: InspectorElementLibraryItemProtocol {
     
     var state: InspectorElementSectionState = .collapsed
     
-    init?(view: UIView) {
-        guard let myView = view as? MyView else {
+    init?(with object: NSObject) {
+        guard let myView = object as? MyView else {
             return nil
         }
         self.myView = myView
