@@ -43,7 +43,7 @@ extension UIImage {
     static let infoSymbol: UIImage = IconKit.imageOfInfoCircleFill().withRenderingMode(.alwaysTemplate)
     static let infoOutlineSymbol: UIImage = .moduleImage(named: "info.circle")!
     static let hiddenViewSymbol: UIImage = .moduleImage(named: "Hidden-32_Normal")!
-    static let missingViewSymbol: UIImage = .moduleImage(named: "missing-view-32_Normal")!
+    static let missingSymbol: UIImage = .moduleImage(named: "missing-view-32_Normal")!
     static let emptyViewSymbol: UIImage = .moduleImage(named: "EmptyView-32_Normal")!
 }
 

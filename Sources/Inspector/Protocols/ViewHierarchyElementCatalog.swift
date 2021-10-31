@@ -22,7 +22,7 @@ import Foundation
 import UIKit
 
 typealias ViewHierarchyControllerIconProvider = Inspector.Provider<UIViewController,UIImage?>
-typealias ViewHierarchyElementIconProvider = Inspector.Provider<UIView?,UIImage?>
+typealias ViewHierarchyElementIconProvider = Inspector.Provider<NSObject?,UIImage?>
 
 struct ViewHierarchyElementCatalog {
     let libraries: [ElementInspectorPanel: [InspectorElementLibraryProtocol]]

@@ -23,9 +23,28 @@ import UIKit
 import WebKit
 
 extension ViewHierarchyElementIconProvider {
-    static let `default` = ViewHierarchyElementIconProvider { view in
+    static let `default` = ViewHierarchyElementIconProvider { object in
 
-        guard let view = view else { return .missingViewSymbol }
+        guard let object = object else { return .missingSymbol }
+
+        guard let view = object as? UIView else {
+            switch object {
+            case is UISearchController:
+                return .moduleImage(named: "UISearchController")
+            case is UIPageViewController:
+                return .moduleImage(named: "UIPageViewController")
+            case is UINavigationController:
+                return .moduleImage(named: "UINavigationController")
+            case is UICollectionViewController:
+                return .moduleImage(named: "UICollectionViewController")
+            case is UITableViewController:
+                return .moduleImage(named: "UITableViewController")
+            case is UITabBarController:
+                return .moduleImage(named: "UITabBarController")
+            default:
+                return .moduleImage(named: "NSObject")
+            }
+        }
 
         guard view.isHidden == false else { return .hiddenViewSymbol }
 
@@ -75,7 +94,7 @@ extension ViewHierarchyElementIconProvider {
                 return .moduleImage(named: "VStack-32_Normal")
 
             @unknown default:
-                return .missingViewSymbol
+                return .missingSymbol
             }
 
         case is UITextField:

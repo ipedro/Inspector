@@ -62,7 +62,6 @@ extension ViewHierarchyController {
         let editButtonItem: UIBarButtonItem
         let extendedLayoutIncludesOpaqueBars: Bool
         let focusGroupIdentifier: String?
-        let icon: UIImage?
         let isBeingPresented: Bool
         let isEditing: Bool
         let isModalInPresentation: Bool
@@ -89,7 +88,7 @@ extension ViewHierarchyController {
         let traitCollection: UITraitCollection
         let viewRespectsSystemMinimumLayoutMargins: Bool
 
-        init(viewController: UIViewController, icon: UIImage?, depth: Int) {
+        init(viewController: UIViewController, depth: Int) {
             if #available(iOS 13.0, *) {
                 self.isModalInPresentation = viewController.isModalInPresentation
                 self.performsActionsWhilePresentingModally = viewController.performsActionsWhilePresentingModally
@@ -126,7 +125,6 @@ extension ViewHierarchyController {
             self.edgesForExtendedLayout = viewController.edgesForExtendedLayout
             self.editButtonItem = viewController.editButtonItem
             self.extendedLayoutIncludesOpaqueBars = viewController.extendedLayoutIncludesOpaqueBars
-            self.icon = icon
             self.isBeingPresented = viewController.isBeingPresented
             self.isEditing = viewController.isEditing
             self.isViewLoaded = viewController.isViewLoaded
@@ -157,6 +155,8 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
     var debugDescription: String {
         String(describing: store.latest)
     }
+
+    private(set) lazy var iconImage = iconProvider.value(for: underlyingViewController)
 
     let iconProvider: ViewHierarchyElementIconProvider
 
@@ -226,7 +226,6 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
 
         let initialSnapshot = Snapshot(
             viewController: viewController,
-            icon: nil,
             depth: depth
         )
 
@@ -259,7 +258,6 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
 
                 return Snapshot(
                     viewController: rootViewController,
-                    icon: .none,
                     depth: self.depth
                 )
             })
@@ -282,10 +280,6 @@ extension ViewHierarchyController: ViewHierarchyElementReference {
 
     var latestSnapshotIdentifier: UUID {
         store.latest.identifier
-    }
-
-    var iconImage: UIImage? {
-        rootElement.iconImage
     }
 
     var canHostInspectorView: Bool {

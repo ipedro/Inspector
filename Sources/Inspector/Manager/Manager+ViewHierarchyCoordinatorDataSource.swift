@@ -90,17 +90,6 @@ extension Manager: ViewHierarchyCoordinatorDataSource {
     }
 
     var iconProvider: ViewHierarchyElementIconProvider {
-        let hostProvider = host?.inspectorElementIconProvider
-
-        return .init { view in
-            guard
-                let view = view,
-                view.isHidden == false,
-                let hostIcon = hostProvider?.value(for: view)
-            else {
-                return ViewHierarchyElementIconProvider.default.value(for: view) ?? .emptyViewSymbol
-            }
-            return hostIcon
-        }
+        .default
     }
 }

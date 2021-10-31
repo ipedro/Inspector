@@ -46,7 +46,7 @@ extension ElementAttributesLibrary {
             }
 
             self.title = (keyCommand.symbols ?? keyCommand.action?.description) ?? "Key Command"
-            
+
             self.keyCommand = keyCommand
         }
 
