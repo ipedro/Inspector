@@ -87,6 +87,11 @@ extension UIView: ViewHierarchyElementRepresentable {
     }
 
     var canPresentOnTop: Bool {
+        // Avoid breaking UINavigationController large title.
+        if let superViewClassName = superview?._className, superViewClassName == "UIViewControllerWrapperView" {
+            return true
+        }
+
         switch self {
         case is UITextView:
             return true
@@ -118,9 +123,6 @@ extension UIView: ViewHierarchyElementRepresentable {
 
             // Avoid breaking UITableView self sizing cells.
             className != "UITableViewCellContentView",
-
-            // Avoid breaking UINavigationController large title.
-            superViewClassName != "UIViewControllerWrapperView",
 
             // Skip non inspectable views
             self is NonInspectableView == false,
@@ -157,7 +159,7 @@ extension UIView: ViewHierarchyElementRepresentable {
          constraintsDescription,
          positionDescrpition,
          sizeDescription,
-         superclassName,
+         _superclassName,
          _className]
             .compactMap { $0 }
             .prefix(3)
@@ -185,11 +187,6 @@ private extension UIView {
         return "Position: \(position)"
     }
 
-    var superclassName: String? {
-        guard let superclass = superclass else { return nil }
-        return String(describing: superclass)
-    }
-
     var subviewsDescription: String? {
         guard isContainer else { return nil }
 
@@ -209,7 +206,7 @@ private extension UIView {
     }
 
     var classNameDescription: String? {
-        guard let superclassName = superclassName else {
+        guard let superclassName = _superclassName else {
             return _className
         }
 
@@ -265,6 +262,11 @@ extension NSObject {
 
     var _className: String {
         String(describing: classForCoder)
+    }
+
+    var _superclassName: String? {
+        guard let superclass = superclass else { return nil }
+        return String(describing: superclass)
     }
 
     var _classNameWithoutQualifiers: String {

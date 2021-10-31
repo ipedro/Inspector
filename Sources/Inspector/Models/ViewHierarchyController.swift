@@ -47,9 +47,11 @@ extension NSDirectionalEdgeInsets: Hashable {
 
 extension ViewHierarchyController {
     struct Snapshot: ViewHierarchyControllerProtocol, ExpirableProtocol, Hashable {
+        let identifier = UUID()
         let depth: Int
         let title: String?
         var className: String
+        var superclassName: String?
         var classNameWithoutQualifiers: String
         let expirationDate = Date().addingTimeInterval(Inspector.configuration.snapshotExpirationTimeInterval)
 
@@ -114,6 +116,7 @@ extension ViewHierarchyController {
                 self.restorationClassName = nil
             }
 
+            self.superclassName = viewController._superclassName
             self.className = viewController._className
             self.classNameWithoutQualifiers = viewController._classNameWithoutQualifiers
             self.additionalSafeAreaInsets = viewController.additionalSafeAreaInsets
@@ -155,41 +158,34 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
         String(describing: store.latest)
     }
 
+    let iconProvider: ViewHierarchyElementIconProvider
+
     weak var underlyingViewController: UIViewController?
 
-    weak var parent: ViewHierarchyController?
+    weak var parent: ViewHierarchyElementReference?
 
     private var store: SnapshotStore<Snapshot>
 
     var isCollapsed: Bool
-
+    
     var depth: Int {
         didSet {
-            children = makeChildren()
+            children.forEach { $0.depth = depth + 1 }
         }
     }
 
+    var rootElement: ViewHierarchyElementReference
+
     private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
 
-    private(set) lazy var children: [ViewHierarchyController] = makeChildren()
+    lazy var children: [ViewHierarchyElementReference] = makeChildren()
 
-    private func makeChildren() -> [ViewHierarchyController] {
-        underlyingViewController?.children.compactMap { viewController in
-            ViewHierarchyController(
-                with: viewController,
-                depth: depth + 1,
-                isCollapsed: isCollapsed,
-                parent: self
-            )
-        } ?? []
-    }
-
-    private(set) lazy var allChildren: [ViewHierarchyController] = children.flatMap { [$0] + $0.allChildren }
+    private(set) lazy var allChildren: [ViewHierarchyElementReference] = children.flatMap { [$0] + $0.allChildren }
 
     // MARK: - Computed Properties
 
-    var allParents: [ViewHierarchyController] {
-        var array = [ViewHierarchyController]()
+    var allParents: [ViewHierarchyElementReference] {
+        var array = [ViewHierarchyElementReference]()
 
         if let parent = parent {
             array.append(parent)
@@ -203,18 +199,30 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
         deepestAbsoulteLevel - depth
     }
 
+    let objectIdentifier: ObjectIdentifier
+
     // MARK: - Init
 
     init(
         with viewController: UIViewController,
-        depth: Int = .zero,
-        isCollapsed: Bool = false,
+        iconProvider: ViewHierarchyElementIconProvider,
+        depth: Int,
+        isCollapsed: Bool,
         parent: ViewHierarchyController? = nil
     ) {
+        self.objectIdentifier = ObjectIdentifier(viewController)
+        self.isCollapsed = isCollapsed
         self.underlyingViewController = viewController
         self.depth = depth
         self.parent = parent
-        self.isCollapsed = isCollapsed
+        self.iconProvider = iconProvider
+        self.rootElement = ViewHierarchyElement(
+            with: viewController.view,
+            iconProvider: iconProvider,
+            depth: depth,
+            isCollapsed: isCollapsed,
+            parent: parent?.rootElement
+       )
 
         let initialSnapshot = Snapshot(
             viewController: viewController,
@@ -223,6 +231,20 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
         )
 
         self.store = SnapshotStore(initialSnapshot)
+    }
+
+    private func makeChildren() -> [ViewHierarchyElementReference] {
+        guard let underlyingViewController = underlyingViewController else { return [] }
+
+        return underlyingViewController.children.compactMap { viewController in
+            ViewHierarchyController(
+                with: viewController,
+                iconProvider: iconProvider,
+                depth: depth + 1,
+                isCollapsed: isCollapsed,
+                parent: self
+            )
+        }
     }
 
     private func scheduleSnapshot() {
@@ -246,9 +268,90 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
     }
 }
 
+extension ViewHierarchyController: ViewHierarchyElementReference {
+    var underlyingView: UIView? {
+        rootElement.underlyingView
+    }
+
+    func hasChanges(inRelationTo identifier: UUID) -> Bool {
+        latestSnapshotIdentifier != identifier
+    }
+
+    var latestSnapshotIdentifier: UUID {
+        store.latest.identifier
+    }
+
+    var iconImage: UIImage? {
+        rootElement.iconImage
+    }
+
+    var canHostInspectorView: Bool {
+        rootElement.canHostInspectorView
+    }
+
+    var isInternalView: Bool {
+        rootElement.isInternalView
+    }
+
+    var elementName: String {
+        className
+    }
+
+    var displayName: String {
+        title ?? classNameWithoutQualifiers
+    }
+
+    var canPresentOnTop: Bool {
+        rootElement.canPresentOnTop
+    }
+
+    var isUserInteractionEnabled: Bool {
+        rootElement.isUserInteractionEnabled
+    }
+
+    var frame: CGRect {
+        rootElement.frame
+    }
+
+    var accessibilityIdentifier: String? { nil }
+
+    var issues: [ViewHierarchyIssue] {
+        rootElement.issues
+    }
+
+    var constraintElements: [LayoutConstraintElement] {
+        rootElement.constraintElements
+    }
+
+
+    var shortElementDescription: String {
+        [superclassName,
+         className]
+            .compactMap { $0 }
+            .prefix(3)
+            .joined(separator: "\n")
+    }
+
+    var elementDescription: String {
+        [superclassName,
+         className]
+            .compactMap { $0 }
+            .joined(separator: "\n")
+    }
+
+    var isHidden: Bool {
+        get { rootElement.isHidden }
+        set { rootElement.isHidden = newValue }
+    }
+}
+
 extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     var className: String {
         return store.first.className
+    }
+
+    var superclassName: String? {
+        return store.first.superclassName
     }
 
     var classNameWithoutQualifiers: String {

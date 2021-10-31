@@ -27,19 +27,59 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
 
     let populatedLayers: [ViewHierarchyLayer]
 
-    let rootElement: ViewHierarchyElement
+    let viewHierarchy: [ViewHierarchyElementReference]
 
-    let rootViewController: ViewHierarchyController
-
-    let inspectableElements: [ViewHierarchyElementReference]
-
-    init(layers: [ViewHierarchyLayer], rootElement: ViewHierarchyElement, rootViewController: ViewHierarchyController) {
-        self.rootElement = rootElement
-        self.rootViewController = rootViewController
-        inspectableElements = rootElement.inspectableChildren
+    init(layers: [ViewHierarchyLayer], window: ViewHierarchyElement, rootViewController: ViewHierarchyController) {
         availableLayers = layers.uniqueValues()
+
+        let allViewControllers = [rootViewController] + rootViewController.allChildren
+
+        var dict = [ViewHierarchyElementKey: ViewHierarchyController]()
+
+        for child in allViewControllers {
+            if let viewController = child as? ViewHierarchyController {
+                let key = ViewHierarchyElementKey(reference: viewController.rootElement)
+                dict[key] = viewController
+            }
+        }
+
+        var viewHierarchy = [ViewHierarchyElementReference]()
+
+        window.inspectableChildren.reversed().enumerated().forEach { index, element in
+            let key = ViewHierarchyElementKey(reference: element)
+
+            viewHierarchy.insert(element, at: .zero)
+
+            guard
+                let viewController = dict[key],
+                let element = element as? ViewHierarchyElement
+            else {
+                return
+            }
+
+            let depth = element.depth
+            let parent = element.parent
+
+            element.parent = viewController
+
+            viewController.parent = parent
+            viewController.rootElement = element
+            viewController.children = [element]
+
+            // must set depth as last step
+            viewController.depth = depth
+
+            if let index = parent?.children.firstIndex(where: { $0 === element }) {
+                parent?.children[index] = viewController
+            }
+
+            viewHierarchy.insert(viewController, at: .zero)
+        }
+
+        self.viewHierarchy = viewHierarchy
+
         populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: rootElement.inspectableChildren).isEmpty == false
+            $0.filter(flattenedViewHierarchy: window.inspectableChildren).isEmpty == false
         }
     }
 }

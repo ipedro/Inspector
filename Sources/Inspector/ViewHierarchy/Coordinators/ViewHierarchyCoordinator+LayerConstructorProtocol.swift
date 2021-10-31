@@ -160,7 +160,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
                 return
             }
 
-            referenceView.installView(inspectorView, .autoResizingMask)
+            referenceView.installView(inspectorView, .autoResizingMask, position: referenceView.canPresentOnTop && inspectorView.canPresentOnTop ? .inFront : .behind)
         }
     }
 

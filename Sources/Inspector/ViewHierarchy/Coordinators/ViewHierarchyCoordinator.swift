@@ -167,18 +167,18 @@ extension ViewHierarchyCoordinator {
             return nil
         }
 
-        let rootElement = dataSource.catalog.makeElement(from: view)
+        let window = dataSource.catalog.makeElement(from: view)
 
         let rootViewController = ViewHierarchyController(
             with: viewController,
-            depth: rootElement.depth,
-            isCollapsed: rootElement.isCollapsed,
-            parent: .none
+            iconProvider: dataSource.catalog.iconProvider,
+            depth: viewController.view.depth,
+            isCollapsed: false
         )
 
         let snapshot = ViewHierarchySnapshot(
             layers: dataSource.layers,
-            rootElement: rootElement,
+            window: window,
             rootViewController: rootViewController
         )
         

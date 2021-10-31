@@ -272,11 +272,11 @@ extension ElementInspectorCoordinator: DismissablePresentationProtocol {
 
 private extension ElementInspectorCoordinator {
     func injectElementInspectorsForViewHierarchy(inside navigationController: ElementInspectorNavigationController) {
-        let populatedElements = snapshot.inspectableElements.filter { $0.underlyingView === rootElement.underlyingView }
+        let populatedElements = snapshot.viewHierarchy.filter { $0.underlyingView === rootElement.underlyingView }
 
         guard let populatedElement = populatedElements.first else {
             let rootViewController = Self.makeElementInspectorViewController(
-                element: snapshot.rootElement,
+                element: snapshot.viewHierarchy.first!,
                 preferredPanel: initialPanel,
                 initialPanel: initialPanel,
                 delegate: self,

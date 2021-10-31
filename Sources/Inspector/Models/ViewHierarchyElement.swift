@@ -94,7 +94,7 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 
     weak var underlyingView: UIView?
 
-    var parent: ViewHierarchyElementReference?
+    weak var parent: ViewHierarchyElementReference?
 
     let iconProvider: ViewHierarchyElementIconProvider
 
@@ -104,26 +104,19 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 
     var depth: Int {
         didSet {
-            guard let view = underlyingView else {
-                children = []
-                return
-            }
-
-            children = view.children.compactMap {
-                ViewHierarchyElement(with: $0, iconProvider: iconProvider, depth: depth + 1, parent: self)
-            }
+            children.forEach { $0.depth = depth + 1 }
         }
     }
 
-    private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
-
-    private(set) lazy var children: [ViewHierarchyElementReference] = underlyingView?.children.compactMap {
-        ViewHierarchyElement(with: $0, iconProvider: iconProvider, depth: depth + 1, parent: self)
-    } ?? []
+    lazy var children: [ViewHierarchyElementReference] = makeChildren()
 
     private(set) lazy var allChildren: [ViewHierarchyElementReference] = children.flatMap { [$0] + $0.allChildren }
 
     // MARK: - Computed Properties
+
+    var deepestAbsoulteLevel: Int {
+        children.map(\.depth).max() ?? depth
+    }
 
     var deepestRelativeLevel: Int {
         deepestAbsoulteLevel - depth
@@ -144,7 +137,7 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
         iconProvider: ViewHierarchyElementIconProvider,
         depth: Int = .zero,
         isCollapsed: Bool = false,
-        parent: ViewHierarchyElement? = nil
+        parent: ViewHierarchyElementReference? = nil
     ) {
         self.underlyingView = view
         self.depth = depth
@@ -165,9 +158,15 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
     var latestSnapshot: Snapshot { store.latest }
 
     var isUnderlyingViewUserInteractionEnabled: Bool
+
+    private func makeChildren() -> [ViewHierarchyElementReference] {
+        underlyingView?.children.compactMap {
+            ViewHierarchyElement(with: $0, iconProvider: iconProvider, depth: depth + 1, parent: self)
+        } ?? []
+    }
 }
 
-// MARK: - ManagedViewHierarchyElementProtocol {
+// MARK: - ViewHierarchyElementReference {
 
 extension ViewHierarchyElement: ViewHierarchyElementReference {
 

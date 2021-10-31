@@ -21,7 +21,7 @@
 
 import UIKit
 
-protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable {
+protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyObject {
     var underlyingView: UIView? { get }
 
     func hasChanges(inRelationTo identifier: UUID) -> Bool
@@ -30,11 +30,11 @@ protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable {
 
     var iconImage: UIImage? { get }
 
-    var parent: ViewHierarchyElementReference? { get }
+    var parent: ViewHierarchyElementReference? { get set }
 
-    var depth: Int { get }
+    var depth: Int { get set }
 
-    var children: [ViewHierarchyElementReference] { get }
+    var children: [ViewHierarchyElementReference] { get set }
 }
 
 extension ViewHierarchyElementReference {
