@@ -86,7 +86,12 @@ class InspectorElementSectionFormView: BaseView {
         $0.clipsToBounds = true
     }
 
-    private lazy var headerControl = BaseControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
+    var headerLayoutMargins: NSDirectionalEdgeInsets {
+        get { headerControl.contentView.directionalLayoutMargins }
+        set { headerControl.contentView.directionalLayoutMargins = newValue }
+    }
+
+    private(set) lazy var headerControl = BaseControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
         $0.addTarget(self, action: #selector(changeState), for: .touchUpInside)
         $0.addTarget(self, action: #selector(headerControlDidChangeState), for: .stateChanged)
 

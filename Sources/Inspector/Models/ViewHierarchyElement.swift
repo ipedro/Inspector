@@ -169,6 +169,11 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 // MARK: - ViewHierarchyElementReference {
 
 extension ViewHierarchyElement: ViewHierarchyElementReference {
+    var underlyingObject: NSObject? {
+        underlyingView
+    }
+
+    var underlyingViewController: UIViewController? { nil }
 
     var isHidden: Bool {
         get {

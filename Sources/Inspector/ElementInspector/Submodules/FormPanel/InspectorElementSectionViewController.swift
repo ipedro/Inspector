@@ -297,6 +297,9 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
 
         case let .edgeInsets(title: title, insets: insetsProvider, handler: _):
             return EdgeInsetsControl(title: title, insets: insetsProvider())
+
+        case let .uiOffset(title: title, offset: offsetProvider, handler: _):
+            return OffsetControl(title: title, offset: offsetProvider())
         }
     }
 }
@@ -348,6 +351,9 @@ extension InspectorElementSectionViewController {
                 case let (.cgSize(_, _, handler: handler), cgSizeControl as SizeControl):
                     handler?(cgSizeControl.size)
 
+                case let (.uiOffset(_, _, handler: handler), uiOffsetControl as OffsetControl):
+                    handler?(uiOffsetControl.offset)
+
                 case let (.directionalInsets(_, _, handler: handler), insetsControl as DirectionalEdgeInsetsControl):
                     handler?(insetsControl.insets)
 
@@ -370,6 +376,7 @@ extension InspectorElementSectionViewController {
                      (.cgRect, _),
                      (.cgSize, _),
                      (.cgPoint, _),
+                     (.uiOffset, _),
                      (.edgeInsets, _),
                      (.directionalInsets, _),
                      (.infoNote, _),
@@ -450,6 +457,10 @@ extension InspectorElementSectionViewController {
                 cgSizeControl.title = title
                 cgSizeControl.size = sizeProvider()
 
+            case let (.uiOffset(title: title, offset: offsetProvider, _), uiOffsetControl as OffsetControl):
+                uiOffsetControl.title = title
+                uiOffsetControl.offset = offsetProvider()
+
             case let (.directionalInsets(title: title, insets: insetsProvider, _), directionalInsetsControl as DirectionalEdgeInsetsControl):
                 directionalInsetsControl.title = title
                 directionalInsetsControl.insets = insetsProvider()
@@ -473,6 +484,7 @@ extension InspectorElementSectionViewController {
                  (.cgRect, _),
                  (.cgSize, _),
                  (.cgPoint, _),
+                 (.uiOffset, _),
                  (.edgeInsets, _),
                  (.directionalInsets, _),
                  (.preview, _):

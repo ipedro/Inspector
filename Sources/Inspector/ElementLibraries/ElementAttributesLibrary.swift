@@ -123,7 +123,21 @@ enum ElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtoc
     func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
         case .viewController:
-            return .empty
+            guard let viewController = object as? UIViewController else { return .empty }
+
+            return [
+                InspectorElementSection(
+                    rows:
+                        TabBarItemAttributesSectionDataSource(with: viewController),
+                        ViewControllerAttributesSectionDataSource(with: viewController)
+                ),
+                InspectorElementSection(
+                    title: "Key Commands",
+                    rows: (viewController.keyCommands ?? []).map {
+                        KeyCommandsSectionDataSource(with: $0)
+                    }
+                )
+            ]
 
         case .tableView:
             return .init(with: TableViewAttributesSectionDataSource(with: object))

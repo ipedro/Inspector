@@ -22,7 +22,11 @@
 import UIKit
 
 protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyObject {
+    var underlyingObject: NSObject? { get }
+
     var underlyingView: UIView? { get }
+
+    var underlyingViewController: UIViewController? { get }
 
     func hasChanges(inRelationTo identifier: UUID) -> Bool
 

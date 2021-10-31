@@ -262,15 +262,18 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
                     icon: .none,
                     depth: self.depth
                 )
-            }
-            )
+            })
         )
     }
 }
 
 extension ViewHierarchyController: ViewHierarchyElementReference {
     var underlyingView: UIView? {
-        rootElement.underlyingView
+        underlyingViewController?.view
+    }
+
+    var underlyingObject: NSObject? {
+        underlyingViewController
     }
 
     func hasChanges(inRelationTo identifier: UUID) -> Bool {

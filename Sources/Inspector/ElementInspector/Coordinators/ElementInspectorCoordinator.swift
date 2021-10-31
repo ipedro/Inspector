@@ -171,7 +171,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
                 sections: {
                     guard let libraries = catalog.libraries[panel] else { return [] }
 
-                    return libraries.formItems(for: element.underlyingView)
+                    return libraries.formItems(for: element.underlyingObject)
                 }()
             )
 

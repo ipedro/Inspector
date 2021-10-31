@@ -57,7 +57,11 @@ enum ElementInspectorPanel: Swift.CaseIterable, MenuContentProtocol {
             switch panel {
             case .children:
                 return element.isContainer
-            case .identity, .attributes, .size:
+
+            case .size:
+                return element.underlyingObject is UIView
+
+            case .identity, .attributes:
                 return true
             }
         }

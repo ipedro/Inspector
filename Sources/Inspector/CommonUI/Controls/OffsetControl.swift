@@ -18,20 +18,47 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
-import Foundation
 import UIKit
 
-extension Array where Element == InspectorElementLibraryProtocol {
-    func libraries(targeting object: NSObject) -> [InspectorElementLibraryProtocol] {
-        object.classesForCoder.flatMap { aElementClass in
-            filter { $0.targetClass == aElementClass }
+final class OffsetControl: StepperPairControl<CGFloat> {
+    private var horizontal: CGFloat {
+        get { firstValue }
+        set { firstValue = newValue }
+    }
+
+    private var vertical: CGFloat {
+        get { secondValue }
+        set { secondValue = newValue }
+    }
+
+    var offset: UIOffset {
+        get {
+            UIOffset(
+                horizontal: horizontal,
+                vertical: vertical
+            )
+        }
+        set {
+            horizontal = newValue.horizontal
+            vertical = newValue.vertical
         }
     }
 
-    func formItems(for object: NSObject?) -> InspectorElementSections {
-        guard let object = object else { return [] }
+    override var title: String? {
+        didSet {
+            firstSubtitle = "Horizontal".string(prepending: title, separator: " ")
+            secondSubtitle = "Vertical".string(prepending: title, separator: " ")
+        }
+    }
 
-        return map { $0.sections(for: object) }.flatMap { $0 }
+    convenience init(title: String?, offset: UIOffset) {
+        self.init(
+            firstValue: offset.horizontal,
+            firstRange: -Double.infinity...Double.infinity,
+            secondValue: offset.vertical,
+            secondRange: -Double.infinity...Double.infinity
+        )
+
+        self.title = title
     }
 }

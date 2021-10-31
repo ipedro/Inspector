@@ -104,6 +104,10 @@ public enum InspectorElementProperty {
                 size: CGSizeProvider,
                 handler: CGSizeHandler?)
 
+    case uiOffset(title: String,
+                offset: UIOffsetProvider,
+                handler: UIOffsetHandler?)
+
     case directionalInsets(title: String,
                            insets: NSDirectionalEdgeInsetsProvider,
                            handler: NSDirectionalEdgeInsetsHandler?)
@@ -145,6 +149,7 @@ extension InspectorElementProperty {
              .imagePicker(_, _, .some),
              .cgRect(_, _, .some),
              .cgSize(_, _, .some),
+             .uiOffset(_, _, .some),
              .cgPoint(_, _, .some),
              .edgeInsets(_, _, .some),
              .directionalInsets(_, _, .some):
@@ -163,6 +168,7 @@ extension InspectorElementProperty {
              .imagePicker,
              .cgRect,
              .cgSize,
+             .uiOffset,
              .cgPoint,
              .directionalInsets,
              .edgeInsets,
@@ -178,8 +184,6 @@ extension InspectorElementProperty {
 public extension InspectorElementProperty {
     typealias Handler<Value> = ((Value) -> Void)
 
-    typealias UIEdgeInsetsHandler = Handler<UIEdgeInsets>
-    typealias NSDirectionalEdgeInsetsHandler = Handler<NSDirectionalEdgeInsets>
     typealias BoolHandler = Handler<Bool>
     typealias CGColorHandler = Handler<CGColor?>
     typealias CGFloatHandler = Handler<CGFloat>
@@ -192,8 +196,11 @@ public extension InspectorElementProperty {
     typealias FontHandler = Handler<UIFont?>
     typealias ImageHandler = Handler<UIImage?>
     typealias IntHandler = Handler<Int>
+    typealias NSDirectionalEdgeInsetsHandler = Handler<NSDirectionalEdgeInsets>
     typealias SelectionHandler = Handler<Int?>
     typealias StringHandler = Handler<String?>
+    typealias UIEdgeInsetsHandler = Handler<UIEdgeInsets>
+    typealias UIOffsetHandler = Handler<UIOffset>
 }
 
 // MARK: - Value Providers
@@ -201,8 +208,6 @@ public extension InspectorElementProperty {
 public extension InspectorElementProperty {
     typealias Provider<Value> = (() -> Value)
 
-    typealias UIEdgeInsetsProvider = Provider<UIEdgeInsets>
-    typealias NSDirectionalEdgeInsetsProvider = Provider<NSDirectionalEdgeInsets>
     typealias BoolProvider = Provider<Bool>
     typealias CGColorProvider = Provider<CGColor?>
     typealias CGFloatClosedRangeProvider = Provider<ClosedRange<CGFloat>>
@@ -219,6 +224,9 @@ public extension InspectorElementProperty {
     typealias ImageProvider = Provider<UIImage?>
     typealias IntClosedRangeProvider = Provider<ClosedRange<Int>>
     typealias IntProvider = Provider<Int>
+    typealias NSDirectionalEdgeInsetsProvider = Provider<NSDirectionalEdgeInsets>
     typealias SelectionProvider = Provider<Int?>
     typealias StringProvider = Provider<String?>
+    typealias UIEdgeInsetsProvider = Provider<UIEdgeInsets>
+    typealias UIOffsetProvider = Provider<UIOffset>
 }

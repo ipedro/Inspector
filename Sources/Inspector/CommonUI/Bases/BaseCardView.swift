@@ -26,7 +26,8 @@ class BaseCardView: BaseView {
     }
 
     private(set) lazy var roundedView = BaseView().then {
-        $0.layer.borderWidth = 1
+        $0.layer.borderColor = borderColor?.cgColor
+        $0.layer.borderWidth = 0
         $0.installView(contentView, priority: .required)
         $0.layer.cornerRadius = cornerRadius
     }
@@ -34,12 +35,12 @@ class BaseCardView: BaseView {
     private lazy var stackView = UIStackView.vertical(
         .arrangedSubviews(containerView),
         .isLayoutMarginsRelativeArrangement(true),
-        .directionalLayoutMargins(insets)
+        .directionalLayoutMargins(margins)
     )
 
-    var insets: NSDirectionalEdgeInsets = .zero {
+    var margins: NSDirectionalEdgeInsets = .zero {
         didSet {
-            stackView.directionalLayoutMargins = insets
+            stackView.directionalLayoutMargins = margins
         }
     }
 
@@ -62,8 +63,7 @@ class BaseCardView: BaseView {
 
     var borderColor: UIColor? {
         didSet {
-            let color = borderColor ?? .clear
-            roundedView.layer.borderColor = color.cgColor
+            updateViews()
         }
     }
 
@@ -78,5 +78,12 @@ class BaseCardView: BaseView {
         installView(stackView, priority: .required)
 
         contentView.directionalLayoutMargins = contentMargins
+
+        updateViews()
+    }
+
+    private func updateViews() {
+        roundedView.layer.borderColor = borderColor?.cgColor
+        roundedView.layer.borderWidth = borderWidth
     }
 }

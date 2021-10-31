@@ -38,6 +38,16 @@ public struct InspectorElementSection {
         self.rows = rows
     }
 
+    public init(title: String? = nil, rows: [InspectorElementSectionDataSource?]) {
+        self.title = title
+        self.rows = rows.compactMap { $0 }
+    }
+
+    public init(title: String? = nil, rows: InspectorElementSectionDataSource?...) {
+        self.title = title
+        self.rows = rows.compactMap { $0 }
+    }
+
     public mutating func append(_ dataSource: InspectorElementSectionDataSource?) {
         guard let dataSource = dataSource else {
             return
@@ -52,12 +62,9 @@ public struct InspectorElementSection {
 public extension InspectorElementSections {
     static let empty = InspectorElementSections()
     
-    init(with dataSource: InspectorElementSectionDataSource?) {
-        if let dataSource = dataSource {
-            self = [InspectorElementSection(rows: dataSource)]
-        }
-        else {
-            self = InspectorElementSections()
-        }
+    init(with dataSources: InspectorElementSectionDataSource?...) {
+        let rows = dataSources.compactMap({ $0 })
+
+        self = [InspectorElementSection(rows: rows)]
     }
 }

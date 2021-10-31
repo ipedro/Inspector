@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class InspectorElementLayoutConstraintSectionView: BaseView {
+final class InspectorElementKeyCommandSectionView: BaseView {
     var title: String? {
         get { header.title }
         set { header.title = newValue }
@@ -33,12 +33,12 @@ final class InspectorElementLayoutConstraintSectionView: BaseView {
 
     var separatorStyle: InspectorElementItemSeparatorStyle {
         get { .none }
-        set {}
+        set {  }
     }
 
     private lazy var formView = InspectorElementSectionFormView(header: header, state: state).then {
         $0.separatorStyle = .none
-
+        $0.headerLayoutMargins.update(top: 4, bottom: 4)
     }
 
     var delegate: InspectorElementFormItemViewDelegate? {
@@ -63,34 +63,15 @@ final class InspectorElementLayoutConstraintSectionView: BaseView {
         insets.bottom = insets.leading
         insets.top = .zero
 
-        $0.margins = insets
-        $0.borderWidth = 1
-        $0.cornerRadius = ElementInspector.appearance.elementInspectorCornerRadius
+        $0.margins = .init(
+            horizontal: ElementInspector.appearance.horizontalMargins,
+            vertical: ElementInspector.appearance.verticalMargins / 2
+        )
         $0.contentMargins = .zero
-        $0.backgroundColor = colorStyle.layoutConstraintsCardBackgroundColor
+        $0.backgroundColor = colorStyle.highlightBackgroundColor
+        $0.contentView.addArrangedSubview(formView)
 
         formView.headerControl.layer.cornerRadius = $0.cornerRadius
-
-        $0.contentView.addArrangedSubview(formView)
-    }
-
-    private var isConstraintActive = true {
-        didSet {
-            if isConstraintActive {
-                self.header.alpha = 1
-                self.tintAdjustmentMode = .automatic
-
-                self.cardView.borderColor = self.colorStyle.tintColor
-                self.cardView.backgroundColor = self.colorStyle.layoutConstraintsCardBackgroundColor
-            }
-            else {
-                self.header.alpha = 0.5
-                self.tintAdjustmentMode = .dimmed
-
-                self.cardView.borderColor = self.colorStyle.quaternaryTextColor
-                self.cardView.backgroundColor = self.colorStyle.layoutConstraintsCardInactiveBackgroundColor
-            }
-        }
     }
 
     init(state: InspectorElementSectionState, frame: CGRect = .zero) {
@@ -107,34 +88,16 @@ final class InspectorElementLayoutConstraintSectionView: BaseView {
 
 // MARK: - InspectorElementSectionView
 
-extension InspectorElementLayoutConstraintSectionView: InspectorElementSectionView {
+extension InspectorElementKeyCommandSectionView: InspectorElementSectionView {
     static func makeItemView(with inititalState: InspectorElementSectionState) -> InspectorElementSectionView {
-        InspectorElementLayoutConstraintSectionView(state: inititalState)
+        InspectorElementKeyCommandSectionView(state: inititalState)
     }
 
     func addTitleAccessoryView(_ titleAccessoryView: UIView?) {
         formView.addTitleAccessoryView(titleAccessoryView)
-
-        guard let toggleControl = titleAccessoryView as? ToggleControl else {
-            return
-        }
-
-        toggleControl.delegate = self
-        toggleControl.isShowingSeparator = false
-        isConstraintActive = toggleControl.isOn
     }
 
     func addFormViews(_ formViews: [UIView]) {
         formView.addFormViews(formViews)
-    }
-}
-
-// MARK: - ToggleControlDelegate
-
-extension InspectorElementLayoutConstraintSectionView: ToggleControlDelegate {
-    func toggleControl(_ toggleControl: ToggleControl, didChangeValueTo isOn: Bool) {
-        animate {
-            self.isConstraintActive = toggleControl.isOn
-        }
     }
 }
