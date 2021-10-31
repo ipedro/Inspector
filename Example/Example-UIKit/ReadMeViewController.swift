@@ -118,12 +118,19 @@ final class ReadMeViewController: UIViewController {
         let url = URL(string: "https://raw.githubusercontent.com/ipedro/Inspector/develop/README.md")!
 
         let task = session.dataTask(with: url) { [weak self] data, _, _ in
-            guard
-                let markdownString = String(data: data!, encoding: String.Encoding.utf8)?.replacingOccurrences(of: "# 🕵🏽‍♂️ Inspector\n", with: "")
-            else { return }
+            guard let self = self else { return }
 
-            DispatchQueue.main.async {
+            guard
+                let data = data,
+                let markdownString = String(data: data, encoding: String.Encoding.utf8)?.replacingOccurrences(of: "# 🕵🏽‍♂️ Inspector\n", with: "")
+            else {
+                self.activityIndicatorView.stopAnimating()
+                return
+            }
+
+            DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
+
                 self.markdown = Down(markdownString: markdownString)
             }
         }
