@@ -39,8 +39,14 @@ extension ElementAttributesLibrary {
                 return nil
             }
 
-            self.title = keyCommand.symbols ?? "Key Command"
-            self.subtitle = keyCommand.action?.description
+            if #available(iOS 13.0, *) {
+                self.subtitle = keyCommand.title
+            } else {
+                self.subtitle = keyCommand.discoverabilityTitle
+            }
+
+            self.title = (keyCommand.symbols ?? keyCommand.action?.description) ?? "Key Command"
+            
             self.keyCommand = keyCommand
         }
 

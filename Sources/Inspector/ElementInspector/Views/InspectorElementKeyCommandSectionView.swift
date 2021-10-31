@@ -53,8 +53,8 @@ final class InspectorElementKeyCommandSectionView: BaseView {
     }
 
     private(set) lazy var header = SectionHeader(
-        titleFont: .init(.footnote, .traitBold),
-        subtitleFont: .caption1,
+        titleFont: .init(.callout, .traitBold),
+        subtitleFont: .init(.footnote, .traitBold),
         margins: .init(vertical: ElementInspector.appearance.verticalMargins)
     )
 

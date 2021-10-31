@@ -304,14 +304,14 @@ private extension HighlightView {
     }
 
     func updateViews(isHighlighted: Bool? = nil) {
+        elementNameView.tintColor = borderColor
+
         switch isHighlighted ?? isDragging {
         case true:
-            elementNameView.tintColor = borderColor
             backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha)
             borderWidth = 4 / UIScreen.main.scale
 
         case false:
-            elementNameView.tintColor = borderColor?.withAlphaComponent(0.8)
             backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha * 0.1)
             borderWidth = 2 / UIScreen.main.scale
         }
