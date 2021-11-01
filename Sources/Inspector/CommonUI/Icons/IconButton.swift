@@ -86,8 +86,7 @@ final class IconButton: BaseControl {
     override func setup() {
         super.setup()
 
-        layer.shouldRasterize = true
-        layer.rasterizationScale = window?.screen.scale ?? 2
+        enableRasterization()
 
         contentView.axis = .vertical
         contentView.addArrangedSubview(icon)

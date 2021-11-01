@@ -30,46 +30,40 @@ extension ViewHierarchyCoordinator: AsyncOperationProtocol {
 
         let loaderView = LoaderView(colorScheme: dataSource?.colorScheme ?? .default).then {
             $0.accessibilityIdentifier = name
-            $0.transform = .init(scaleX: 0.1, y: 0.1)
+            $0.transform = .init(scaleX: .zero, y: .zero)
         }
 
-        let showLoader = MainThreadOperation(name: "\(name): show loader") {
-            rootView.addSubview(loaderView)
+        rootView.addSubview(loaderView)
 
-            rootView.installView(loaderView, .centerXY)
+        rootView.installView(loaderView, .centerXY)
 
-            UIView.animate(
-                withDuration: .average,
-                delay: 0,
-                usingSpringWithDamping: 0.85,
-                initialSpringVelocity: 30,
-                options: .curveEaseInOut,
-                animations: {
-                    loaderView.transform = .identity
-                }
-            )
+        UIView.animate(
+            withDuration: .short,
+            animations: {
+                loaderView.transform = .identity
+            }
+        ) { _ in
+
+            let hideLoader = MainThreadOperation(name: "\(name): hide loader") {
+                loaderView.done()
+
+                UIView.animate(
+                    withDuration: .average,
+                    delay: .veryLong,
+                    options: [.curveEaseInOut, .beginFromCurrentState],
+                    animations: {
+                        loaderView.alpha = .zero
+                    },
+                    completion: { _ in
+                        loaderView.removeFromSuperview()
+                    }
+                )
+            }
+
+            layerTask.addDependency(hideLoader)
+
+            self.operationQueue.addOperations([layerTask, hideLoader], waitUntilFinished: false)
         }
-
-        layerTask.addDependency(showLoader)
-
-        let hideLoader = MainThreadOperation(name: "\(name): hide loader") {
-            loaderView.done()
-
-            UIView.animate(
-                withDuration: .average,
-                delay: 1,
-                options: [.curveEaseInOut, .beginFromCurrentState],
-                animations: {
-                    loaderView.alpha = 0
-                },
-                completion: { _ in
-                    loaderView.removeFromSuperview()
-                }
-            )
-        }
-
-        hideLoader.addDependency(layerTask)
-
-        operationQueue.addOperations([showLoader, layerTask, hideLoader], waitUntilFinished: false)
     }
 }
+

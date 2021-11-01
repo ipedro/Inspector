@@ -20,19 +20,6 @@
 
 import UIKit
 
-extension UIView {
-    func enableRasterization(maxScale: CGFloat = 2) {
-        layer.rasterizationScale = max(maxScale, UIScreen.main.scale)
-        layer.shouldRasterize = true
-    }
-
-    func snapshot(afterScreenUpdates: Bool, with size: CGSize? = nil) -> UIImage {
-        let renderer = UIGraphicsImageRenderer(size: bounds.size)
-
-        let image = renderer.image { _ in
-            drawHierarchy(in: bounds, afterScreenUpdates: afterScreenUpdates)
-        }
-
-        return image.resized(size ?? bounds.size)
-    }
+extension Int {
+    var cgFloat: CGFloat { CGFloat(self) }
 }

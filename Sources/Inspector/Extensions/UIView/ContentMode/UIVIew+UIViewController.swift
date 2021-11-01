@@ -21,18 +21,13 @@
 import UIKit
 
 extension UIView {
-    func enableRasterization(maxScale: CGFloat = 2) {
-        layer.rasterizationScale = max(maxScale, UIScreen.main.scale)
-        layer.shouldRasterize = true
-    }
-
-    func snapshot(afterScreenUpdates: Bool, with size: CGSize? = nil) -> UIImage {
-        let renderer = UIGraphicsImageRenderer(size: bounds.size)
-
-        let image = renderer.image { _ in
-            drawHierarchy(in: bounds, afterScreenUpdates: afterScreenUpdates)
+    var controller: UIViewController? {
+        guard
+            let allPresentendViewControllers = Inspector.host?.window?.allPresentendViewControllers
+        else {
+            return nil
         }
 
-        return image.resized(size ?? bounds.size)
+        return allPresentendViewControllers.first { self === $0.view }
     }
 }

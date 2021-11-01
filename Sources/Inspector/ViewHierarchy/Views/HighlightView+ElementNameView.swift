@@ -71,24 +71,19 @@ final class ElementNameView: LayerViewComponent {
 
     override var tintColor: UIColor! {
         didSet {
-            let shadowColor = tintColor.darker(amount: 0.98).cgColor
-
-            layer.shadowColor = shadowColor
-
-            roundedPillView.contentView.layer.shadowColor = shadowColor
-            roundedPillView.backgroundColor = tintColor
+            updateColors()
         }
     }
 
     var displayMode: DisplayMode = .auto {
         didSet {
             animate {
-                self.updateViews()
+                self.updateContent()
             }
         }
     }
 
-    private let cornerRadius: CGFloat = 7
+    private let cornerRadius: CGFloat = 8
     
     // MARK: - Components
 
@@ -105,16 +100,18 @@ final class ElementNameView: LayerViewComponent {
     }
 
     private(set) lazy var roundedPillView = LayerViewComponent().then {
-        $0.backgroundColor = tintColor
+        $0.clipsToBounds = true
         $0.contentView.addArrangedSubviews(imageView, label)
-        $0.contentView.spacing = cornerRadius / 2
-        $0.contentView.axis = .horizontal
         $0.contentView.alignment = .center
+        $0.contentView.axis = .horizontal
         $0.contentView.layer.shadowOffset = CGSize(width: 0, height: 1)
-        $0.contentView.layer.shadowColor = layer.shadowColor
-        $0.contentView.layer.shadowRadius = cornerRadius / 2
         $0.contentView.layer.shadowOpacity = 1
+        $0.contentView.layer.shadowRadius = 1
+        $0.contentView.spacing = cornerRadius / 2
+        $0.layer.borderWidth = 1 / UIScreen.main.scale
         $0.layer.cornerRadius = cornerRadius
+
+        enableRasterization()
     }
 
     override func setup() {
@@ -123,20 +120,30 @@ final class ElementNameView: LayerViewComponent {
         resetShadow()
 
         installView(roundedPillView, .autoResizingMask)
+
+        updateColors()
+
+        enableRasterization()
     }
 
     func resetShadow() {
-        layer.shadowOffset = CGSize(width: 0, height: cornerRadius / 4)
-        layer.shadowRadius = cornerRadius / 2
-        layer.shadowOpacity = 0.5
-        layer.shouldRasterize = true
-        layer.rasterizationScale = UIScreen.main.scale
+        layer.shadowOffset = .init(width: .zero, height: 1)
+        layer.shadowRadius = 1
+        layer.shadowOpacity = Float(colorStyle.disabledAlpha * 2)
     }
 
-    private var isFirstLayoutSubviews = true
+    @objc
+    private func updateColors() {
+        let darkerTintColor = tintColor.darker(amount: 2/3)
+
+        layer.shadowColor = darkerTintColor.cgColor
+        roundedPillView.contentView.layer.shadowColor = darkerTintColor.cgColor
+        roundedPillView.layer.borderColor = darkerTintColor.cgColor
+        roundedPillView.backgroundColor = tintColor
+    }
 
     @objc
-    private func updateViews() {
+    private func updateContent() {
         switch displayMode {
         case .auto:
             // ⚠️ important to unhide subviews before calculating layout size below
@@ -163,8 +170,16 @@ final class ElementNameView: LayerViewComponent {
 
         label.alpha = label.isHidden ? 0 : 1
         imageView.alpha = imageView.isHidden ? 0 : 1
-        roundedPillView.contentView.directionalLayoutMargins = label.isHidden ? .zero : .init(trailing: cornerRadius)
+
+        roundedPillView.contentView.directionalLayoutMargins = .init(
+            top: 1,
+            leading: imageView.isHidden ? 6: 3,
+            bottom: 1,
+            trailing: label.isHidden ? 3 : 6
+        )
     }
+
+    private var isFirstLayoutSubviews = true
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -175,29 +190,6 @@ final class ElementNameView: LayerViewComponent {
 
         isFirstLayoutSubviews = false
 
-        alpha = 0
-
-        let randomLower: CGFloat = .random(in: 0 ... 0.5)
-        let randomUpper: CGFloat = .random(in: 1.2 ... 1.5)
-
-        let scale = Bool.random() ? randomLower : randomUpper
-
-        let oldTransfrom = transform
-
-        transform = .init(
-            scaleX: scale,
-            y: scale
-        )
-
-        updateViews()
-
-        animate(
-            withDuration: .random(in: .short ... .long),
-            delay: .random(in: .veryShort ... .long),
-            damping: 0.7
-        ) {
-            self.alpha = 1
-            self.transform = oldTransfrom
-        }
+        updateContent()
     }
 }

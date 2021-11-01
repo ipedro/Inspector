@@ -59,19 +59,21 @@ final class HighlightView: LayerView {
             animate(withDuration: .veryLong) {
                 switch self.isDragging {
                 case true:
+                    self.elementNameView.layer.shadowOpacity = 2/3
                     self.elementNameView.layer.shadowRadius = 15
                     self.elementNameView.layer.shadowOffset = .init(
                         width: self.draggableViewCenterOffset.x,
                         height: -self.draggableViewCenterOffset.y
                     )
-                    self.elementNameView.transform = .init(scaleX: 1.5, y: 1.5)
+                    self.elementNameView.transform = self.initialTransformation
+                        .scaledBy(x: 1.5, y: 1.5)
                         .translatedBy(
                             x: self.draggableViewCenterOffset.x,
                             y: self.draggableViewCenterOffset.y
                         )
                 case false:
                     self.elementNameView.resetShadow()
-                    self.elementNameView.transform = .identity
+                    self.elementNameView.transform = self.initialTransformation
                 }
 
                 self.updateViews()
@@ -225,13 +227,44 @@ final class HighlightView: LayerView {
 
         guard let superview = superview else { return }
 
-        let color = colorScheme.value(for: superview)
+        let color = colorScheme.value(for: superview).darker(amount: round(CGFloat(depth) / 10) / 10)
 
         layoutMarginsShadeLayer.fillColor = color.cgColor
 
         borderColor = color
 
         maskLayoutMarginsGuideView(with: superview)
+    }
+
+    private var isFirstLayoutSubviews = true
+
+    lazy var initialTransformation = CGAffineTransform(
+        scaleX: 1.4 - cgFloatDepth / 50,
+        y: 1.4 - cgFloatDepth / 50
+    )
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard isFirstLayoutSubviews else {
+            return
+        }
+
+        isFirstLayoutSubviews = false
+
+        let oldTransfrom = elementNameView.transform
+
+        alpha = 0
+        elementNameView.transform = .init(scaleX: .zero, y: .zero)
+
+        animate(
+            withDuration: .random(in: .veryShort ... .average),
+            delay: TimeInterval(depth) / 12,
+            damping: 0.7
+        ) {
+            self.alpha = 1
+            self.elementNameView.transform = oldTransfrom
+        }
     }
 
     private func maskLayoutMarginsGuideView(with view: UIView) {
@@ -255,9 +288,9 @@ final class HighlightView: LayerView {
 
         switch colorStyle {
         case .light:
-            layoutMarginsGuideView.alpha = 0.14
+            layoutMarginsGuideView.alpha = 0.11
         case .dark:
-            layoutMarginsGuideView.alpha = 0.1
+            layoutMarginsGuideView.alpha = 0.07
         }
     }
 
@@ -300,19 +333,25 @@ private extension HighlightView {
 
         isSafelyHidden = false
 
+        elementNameView.enableRasterization()
+
+        elementNameView.transform = initialTransformation
+
         hostView.isUserInteractionEnabled = true
     }
+
+    private var cgFloatDepth: CGFloat { element.depth.cgFloat }
 
     func updateViews(isHighlighted: Bool? = nil) {
         elementNameView.tintColor = borderColor
 
         switch isHighlighted ?? isDragging {
         case true:
-            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha)
+            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha * 0.25)
             borderWidth = 4 / UIScreen.main.scale
 
         case false:
-            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha * 0.1)
+            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha * 0.08)
             borderWidth = 2 / UIScreen.main.scale
         }
     }
