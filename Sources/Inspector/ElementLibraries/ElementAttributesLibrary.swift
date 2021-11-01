@@ -41,6 +41,7 @@ enum ElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtoc
     case webView
 
     // base classes
+    case navigationController
     case viewController
     case window
     case scrollView
@@ -52,6 +53,9 @@ enum ElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtoc
 
     var targetClass: AnyClass {
         switch self {
+        case .navigationController:
+            return UINavigationController.self
+
         case .viewController:
             return UIViewController.self
 
@@ -122,6 +126,9 @@ enum ElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtoc
 
     func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
+        case .navigationController:
+            return .init(with: NavigationControllerAttributesSectionDataSource(with: object))
+            
         case .viewController:
             guard let viewController = object as? UIViewController else { return .empty }
 
