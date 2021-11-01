@@ -49,7 +49,7 @@ public extension Inspector {
         // MARK: - Metods
 
         func makeKeysForInspectableElements(in snapshot: ViewHierarchySnapshot) -> [ViewHierarchyElementKey] {
-            filter(flattenedViewHierarchy: snapshot.viewHierarchy).map { ViewHierarchyElementKey(reference: $0) }
+            filter(flattenedViewHierarchy: snapshot.viewHierarchy).compactMap { ViewHierarchyElementKey(reference: $0) }
         }
 
         func filter(flattenedViewHierarchy: [ViewHierarchyElementReference]) -> [ViewHierarchyElementReference] {

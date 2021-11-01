@@ -59,16 +59,22 @@ protocol ViewHierarchyLayerConstructorProtocol {
 
 class ViewHierarchyElementKey: Hashable {
     let reference: ViewHierarchyElementReference
+    private let viewIdentifier: ObjectIdentifier
 
-    init(reference: ViewHierarchyElementReference) {
+    init?(reference: ViewHierarchyElementReference) {
+        guard let viewIdentifier = reference.underlyingView?.objectIdentifier else {
+            return nil
+        }
+
         self.reference = reference
+        self.viewIdentifier = viewIdentifier
     }
 
     static func == (lhs: ViewHierarchyElementKey, rhs: ViewHierarchyElementKey) -> Bool {
-        lhs.reference.underlyingView?.objectIdentifier == rhs.reference.underlyingView?.objectIdentifier
+        lhs.viewIdentifier == rhs.viewIdentifier
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(reference.underlyingView?.objectIdentifier)
+        hasher.combine(viewIdentifier)
     }
 }

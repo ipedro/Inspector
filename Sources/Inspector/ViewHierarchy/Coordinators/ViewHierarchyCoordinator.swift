@@ -185,9 +185,17 @@ extension ViewHierarchyCoordinator {
         return snapshot
     }
 
-    func showHighlight(_ show: Bool, for element: ViewHierarchyElementReference, includeSubviews: Bool = true) {
+    func showHighlight(
+        _ show: Bool,
+        for element: ViewHierarchyElementReference,
+        includeSubviews: Bool = true
+    ) {
+
+        guard let key = ViewHierarchyElementKey(reference: element) else {
+            return
+        }
+
         let isHidden = !show
-        let key = ViewHierarchyElementKey(reference: element)
 
         guard includeSubviews else {
             highlightViews[key]?.element.isHidden = isHidden

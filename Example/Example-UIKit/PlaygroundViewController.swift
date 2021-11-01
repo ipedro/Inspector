@@ -159,8 +159,8 @@ final class PlaygroundViewController: UIViewController {
             )
         }
 
-        datePickerSegmentedControl.selectedSegmentIndex = 0
-        datePicker.preferredDatePickerStyle = .automatic
+        datePickerSegmentedControl.selectedSegmentIndex = 3
+        datePicker.preferredDatePickerStyle = .inline
     }
 
     // MARK: - Interface Actions

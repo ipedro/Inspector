@@ -258,8 +258,8 @@ final class HighlightView: LayerView {
         elementNameView.transform = .init(scaleX: .zero, y: .zero)
 
         animate(
-            withDuration: .random(in: .veryShort ... .average),
-            delay: TimeInterval(depth) / 12,
+            withDuration: .short + .random(in: -.veryShort ... .veryShort),
+            delay: TimeInterval(depth) / 10 + .random(in: -.veryShort ... .veryShort),
             damping: 0.7
         ) {
             self.alpha = 1
@@ -347,7 +347,7 @@ private extension HighlightView {
 
         switch isHighlighted ?? isDragging {
         case true:
-            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha * 0.25)
+            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha)
             borderWidth = 4 / UIScreen.main.scale
 
         case false:
