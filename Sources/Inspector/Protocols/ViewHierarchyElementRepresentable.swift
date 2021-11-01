@@ -30,6 +30,8 @@ protocol ViewHierarchyElementRepresentable {
 
     var isInternalView: Bool { get }
 
+    var isSystemContainer: Bool { get }
+
     /// String representation of the class name.
     var className: String { get }
 

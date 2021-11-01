@@ -62,6 +62,10 @@ extension UIView: ViewHierarchyElementRepresentable {
         _isInternalView
     }
 
+    var isSystemContainer: Bool {
+        _isSystemContainer
+    }
+
     var className: String {
         _className
     }
@@ -245,7 +249,7 @@ private extension UIView {
 
 extension NSObject {
     var _isInternalView: Bool {
-        _isSystemContainer || _className.starts(with: "_")
+        _className.starts(with: "_")
     }
 
     var _isSystemContainer: Bool {

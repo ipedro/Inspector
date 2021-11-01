@@ -29,29 +29,32 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
 
     let viewHierarchy: [ViewHierarchyElementReference]
 
-    init(layers: [ViewHierarchyLayer], window: ViewHierarchyElement, rootViewController: ViewHierarchyController) {
+    init(
+        layers: [ViewHierarchyLayer],
+        window: ViewHierarchyElement,
+        viewControllers: [ViewHierarchyController]
+    ) {
         availableLayers = layers.uniqueValues()
 
-        let allViewControllers = [rootViewController] + rootViewController.allChildren
+        viewHierarchy = Self.makeViewHierarchy(from: viewControllers, in: window)
 
-        var dict = [ViewHierarchyElementKey: ViewHierarchyController]()
-
-        for child in allViewControllers {
-            if let viewController = child as? ViewHierarchyController {
-                let key = ViewHierarchyElementKey(reference: viewController.rootElement)
-                dict[key] = viewController
-            }
+        populatedLayers = availableLayers.filter {
+            $0.filter(flattenedViewHierarchy: window.inspectableChildren).isEmpty == false
         }
+    }
+
+    private static func makeViewHierarchy(
+        from viewControllers: [ViewHierarchyController],
+        in window: ViewHierarchyElement
+    ) -> [ViewHierarchyElementReference] {
 
         var viewHierarchy = [ViewHierarchyElementReference]()
 
         window.inspectableChildren.reversed().enumerated().forEach { index, element in
-            let key = ViewHierarchyElementKey(reference: element)
-
             viewHierarchy.insert(element, at: .zero)
 
             guard
-                let viewController = dict[key],
+                let viewController = viewControllers.first(where: { $0.underlyingView === element.underlyingView }),
                 let element = element as? ViewHierarchyElement
             else {
                 return
@@ -65,7 +68,6 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
             viewController.parent = parent
             viewController.rootElement = element
             viewController.children = [element]
-
             // must set depth as last step
             viewController.depth = depth
 
@@ -76,10 +78,6 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
             viewHierarchy.insert(viewController, at: .zero)
         }
 
-        self.viewHierarchy = viewHierarchy
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: window.inspectableChildren).isEmpty == false
-        }
+        return viewHierarchy
     }
 }

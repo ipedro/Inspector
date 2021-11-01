@@ -65,6 +65,7 @@ extension ViewHierarchyController {
         let isBeingPresented: Bool
         let isEditing: Bool
         let isModalInPresentation: Bool
+        let isSystemContainer: Bool
         let isViewLoaded: Bool
         let modalPresentationStyle: UIModalPresentationStyle
         let modalTransitionStyle: UIModalTransitionStyle
@@ -115,10 +116,9 @@ extension ViewHierarchyController {
                 self.restorationClassName = nil
             }
 
-            self.superclassName = viewController._superclassName
+            self.additionalSafeAreaInsets = viewController.additionalSafeAreaInsets
             self.className = viewController._className
             self.classNameWithoutQualifiers = viewController._classNameWithoutQualifiers
-            self.additionalSafeAreaInsets = viewController.additionalSafeAreaInsets
             self.definesPresentationContext = viewController.definesPresentationContext
             self.depth = depth
             self.disablesAutomaticKeyboardDismissal = viewController.disablesAutomaticKeyboardDismissal
@@ -127,11 +127,13 @@ extension ViewHierarchyController {
             self.extendedLayoutIncludesOpaqueBars = viewController.extendedLayoutIncludesOpaqueBars
             self.isBeingPresented = viewController.isBeingPresented
             self.isEditing = viewController.isEditing
+            self.isSystemContainer = viewController._isSystemContainer
             self.isViewLoaded = viewController.isViewLoaded
             self.modalPresentationStyle = viewController.modalPresentationStyle
             self.modalTransitionStyle = viewController.modalTransitionStyle
             self.navigationItem = viewController.navigationItem
             self.nibName = viewController.nibName
+            self.overrideViewHierarchyInterfaceStyle = viewController.overrideViewHierarchyInterfaceStyle
             self.preferredContentSize = viewController.preferredContentSize
             self.preferredScreenEdgesDeferringSystemGestures = viewController.preferredScreenEdgesDeferringSystemGestures
             self.preferredStatusBarStyle = viewController.preferredStatusBarStyle
@@ -142,11 +144,11 @@ extension ViewHierarchyController {
             self.restorationIdentifier = viewController.restorationIdentifier
             self.restoresFocusAfterTransition = viewController.restoresFocusAfterTransition
             self.shouldAutomaticallyForwardAppearanceMethods = viewController.shouldAutomaticallyForwardAppearanceMethods
+            self.superclassName = viewController._superclassName
             self.systemMinimumLayoutMargins = viewController.systemMinimumLayoutMargins
             self.title = viewController.title
             self.traitCollection = viewController.traitCollection
             self.viewRespectsSystemMinimumLayoutMargins = viewController.viewRespectsSystemMinimumLayoutMargins
-            self.overrideViewHierarchyInterfaceStyle = viewController.overrideViewHierarchyInterfaceStyle
         }
     }
 }
@@ -232,18 +234,18 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
         self.store = SnapshotStore(initialSnapshot)
     }
 
-    private func makeChildren() -> [ViewHierarchyElementReference] {
-        guard let underlyingViewController = underlyingViewController else { return [] }
+    private func makeChildReference(from childViewController: UIViewController) -> ViewHierarchyController {
+        ViewHierarchyController(
+            with: childViewController,
+            iconProvider: iconProvider,
+            depth: depth + 1,
+            isCollapsed: isCollapsed,
+            parent: self
+        )
+    }
 
-        return underlyingViewController.children.compactMap { viewController in
-            ViewHierarchyController(
-                with: viewController,
-                iconProvider: iconProvider,
-                depth: depth + 1,
-                isCollapsed: isCollapsed,
-                parent: self
-            )
-        }
+    private func makeChildren() -> [ViewHierarchyElementReference] {
+        underlyingViewController?.children.compactMap { makeChildReference(from: $0) } ?? []
     }
 
     private func scheduleSnapshot() {
@@ -266,6 +268,10 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
 }
 
 extension ViewHierarchyController: ViewHierarchyElementReference {
+    var isSystemContainer: Bool {
+        store.first.isSystemContainer
+    }
+
     var underlyingView: UIView? {
         underlyingViewController?.view
     }

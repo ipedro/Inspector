@@ -140,27 +140,33 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
 
         let oldViewReferences = Set(oldValue.keys)
 
-        let removedReferences = oldViewReferences.subtracting(viewReferences)
+        let removedKeys = oldViewReferences.subtracting(viewReferences)
 
-        let newReferences = viewReferences.subtracting(oldViewReferences)
+        let newKeys = viewReferences.subtracting(oldViewReferences)
 
-        removedReferences.forEach {
-            guard let layerView = oldValue[$0] else {
+        removedKeys.forEach { oldKey in
+            guard let layerView = oldValue[oldKey] else {
                 return
             }
 
             layerView.removeFromSuperview()
         }
 
-        newReferences.forEach {
+        newKeys.forEach { newKey in
+            let reference = newKey.reference
+
             guard
-                let referenceView = $0.reference.underlyingView,
-                let inspectorView = newValue[$0]
+                let inspectorView = newValue[newKey],
+                let underlyingView = reference.underlyingView
             else {
                 return
             }
 
-            referenceView.installView(inspectorView, .autoResizingMask, position: referenceView.canPresentOnTop && inspectorView.canPresentOnTop ? .inFront : .behind)
+            underlyingView.installView(
+                inspectorView,
+                .autoResizingMask,
+                position: reference.canPresentOnTop && inspectorView.canPresentOnTop ? .inFront : .behind
+            )
         }
     }
 

@@ -65,10 +65,10 @@ class ViewHierarchyElementKey: Hashable {
     }
 
     static func == (lhs: ViewHierarchyElementKey, rhs: ViewHierarchyElementKey) -> Bool {
-        lhs.reference.objectIdentifier == rhs.reference.objectIdentifier
+        lhs.reference.underlyingView?.objectIdentifier == rhs.reference.underlyingView?.objectIdentifier
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(reference.objectIdentifier)
+        hasher.combine(reference.underlyingView?.objectIdentifier)
     }
 }

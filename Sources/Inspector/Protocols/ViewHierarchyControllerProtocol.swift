@@ -34,6 +34,7 @@ protocol ViewHierarchyControllerProtocol {
     var isBeingPresented: Bool { get }
     var isEditing: Bool { get }
     var isModalInPresentation: Bool { get }
+    var isSystemContainer: Bool { get }
     var isViewLoaded: Bool { get }
     var modalPresentationStyle: UIModalPresentationStyle { get }
     var modalTransitionStyle: UIModalTransitionStyle { get }

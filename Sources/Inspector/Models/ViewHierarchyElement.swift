@@ -46,6 +46,7 @@ extension ViewHierarchyElement {
         var isContainer: Bool
         var isHidden: Bool
         var isInternalView: Bool
+        var isSystemContainer: Bool
         var isUserInteractionEnabled: Bool
         var issues: [ViewHierarchyIssue]
         var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle
@@ -68,7 +69,8 @@ extension ViewHierarchyElement {
             iconImage = icon
             isContainer = !view.children.isEmpty
             isHidden = view.isHidden
-            isInternalView = view._isInternalView
+            isInternalView = view.isInternalView
+            isSystemContainer = view.isSystemContainer
             isUserInteractionEnabled = view.isUserInteractionEnabled
             issues = view.issues
             objectIdentifier = view.objectIdentifier
@@ -169,6 +171,10 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 // MARK: - ViewHierarchyElementReference {
 
 extension ViewHierarchyElement: ViewHierarchyElementReference {
+    var isSystemContainer: Bool {
+        store.first.isSystemContainer
+    }
+
     var underlyingObject: NSObject? {
         underlyingView
     }

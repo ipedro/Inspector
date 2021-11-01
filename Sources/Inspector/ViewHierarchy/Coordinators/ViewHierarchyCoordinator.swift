@@ -179,7 +179,7 @@ extension ViewHierarchyCoordinator {
         let snapshot = ViewHierarchySnapshot(
             layers: dataSource.layers,
             window: window,
-            rootViewController: rootViewController
+            viewControllers: ([rootViewController] + rootViewController.allChildren).compactMap{ $0 as? ViewHierarchyController }
         )
         
         return snapshot
