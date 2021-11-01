@@ -68,7 +68,7 @@ final class InspectorElementKeyCommandSectionView: BaseView {
             vertical: ElementInspector.appearance.verticalMargins / 2
         )
         $0.contentMargins = .zero
-        $0.backgroundColor = colorStyle.highlightBackgroundColor
+        $0.backgroundColor = colorStyle.cellHighlightBackgroundColor
         $0.contentView.addArrangedSubview(formView)
 
         formView.headerControl.layer.cornerRadius = $0.cornerRadius
