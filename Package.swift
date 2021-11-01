@@ -11,6 +11,11 @@ let package = Package(
         .library(
             name: "Inspector",
             targets: ["Inspector"]
+        ),
+        .library(
+            name: "InspectorDynamic",
+            type: .dynamic,
+            targets: ["Inspector"]
         )
     ],
     dependencies: [
