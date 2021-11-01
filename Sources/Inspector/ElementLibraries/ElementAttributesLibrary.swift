@@ -135,8 +135,9 @@ enum ElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtoc
             return [
                 InspectorElementSection(
                     rows:
-                        TabBarItemAttributesSectionDataSource(with: viewController),
-                        ViewControllerAttributesSectionDataSource(with: viewController)
+                        NavigationItemAttributesSectionDataSource(with: viewController),
+                        ViewControllerAttributesSectionDataSource(with: viewController),
+                        TabBarItemAttributesSectionDataSource(with: viewController)
                 ),
                 InspectorElementSection(
                     title: "Key Commands",
