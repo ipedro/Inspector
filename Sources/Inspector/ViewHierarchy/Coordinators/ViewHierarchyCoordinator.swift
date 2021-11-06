@@ -24,7 +24,9 @@ import UIKit
 typealias ViewHierarchyCoordinatorDelegate = ViewHierarchyActionableProtocol & AnyObject
 
 protocol ViewHierarchyCoordinatorDataSource: AnyObject {
-    var rootView: UIView? { get }
+    var windows: [UIWindow] { get }
+
+    var keyWindow: UIWindow? { get }
 
     var rootViewController: UIViewController? { get }
 
@@ -161,25 +163,14 @@ extension ViewHierarchyCoordinator {
     private func makeSnapshot() -> ViewHierarchySnapshot? {
         guard
             let dataSource = dataSource,
-            let view = dataSource.rootView,
-            let viewController = dataSource.rootViewController
+            let root = ViewHierarchyRootReference(windows: dataSource.windows, catalog: dataSource.catalog)
         else {
             return nil
         }
-
-        let window = dataSource.catalog.makeElement(from: view)
-
-        let rootViewController = ViewHierarchyController(
-            with: viewController,
-            iconProvider: dataSource.catalog.iconProvider,
-            depth: viewController.view.depth,
-            isCollapsed: false
-        )
-
+        
         let snapshot = ViewHierarchySnapshot(
             layers: dataSource.layers,
-            window: window,
-            viewControllers: ([rootViewController] + rootViewController.allChildren).compactMap{ $0 as? ViewHierarchyController }
+            root: root
         )
         
         return snapshot

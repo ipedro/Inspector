@@ -29,55 +29,13 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
 
     let viewHierarchy: [ViewHierarchyElementReference]
 
-    init(
-        layers: [ViewHierarchyLayer],
-        window: ViewHierarchyElement,
-        viewControllers: [ViewHierarchyController]
-    ) {
+    init(layers: [ViewHierarchyLayer], root: ViewHierarchyRootReference) {
         availableLayers = layers.uniqueValues()
 
-        viewHierarchy = Self.makeViewHierarchy(from: viewControllers, in: window)
+        viewHierarchy = root.children
 
         populatedLayers = availableLayers.filter {
-            $0.filter(flattenedViewHierarchy: window.inspectableChildren).isEmpty == false
+            $0.filter(viewHierarchy: root.children).isEmpty == false
         }
-    }
-
-    private static func makeViewHierarchy(
-        from viewControllers: [ViewHierarchyController],
-        in window: ViewHierarchyElement
-    ) -> [ViewHierarchyElementReference] {
-
-        var viewHierarchy = [ViewHierarchyElementReference]()
-
-        window.inspectableChildren.reversed().enumerated().forEach { index, element in
-            viewHierarchy.insert(element, at: .zero)
-
-            guard
-                let viewController = viewControllers.first(where: { $0.underlyingView === element.underlyingView }),
-                let element = element as? ViewHierarchyElement
-            else {
-                return
-            }
-
-            let depth = element.depth
-            let parent = element.parent
-
-            element.parent = viewController
-
-            viewController.parent = parent
-            viewController.rootElement = element
-            viewController.children = [element]
-            // must set depth as last step
-            viewController.depth = depth
-
-            if let index = parent?.children.firstIndex(where: { $0 === element }) {
-                parent?.children[index] = viewController
-            }
-
-            viewHierarchy.insert(viewController, at: .zero)
-        }
-
-        return viewHierarchy
     }
 }

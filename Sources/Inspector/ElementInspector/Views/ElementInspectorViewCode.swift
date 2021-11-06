@@ -39,7 +39,7 @@ final class ElementInspectorViewCode: BaseView {
     private lazy var scrollView = ScrollingStackView().then {
         $0.contentView.directionalLayoutMargins = .init(bottom: ElementInspector.appearance.horizontalMargins)
         $0.contentView.addArrangedSubviews(elementDescriptionView, separatorView, contentView)
-        $0.keyboardDismissMode = .onDrag
+        $0.keyboardDismissMode = .interactive
         $0.alwaysBounceVertical = true
     }
 

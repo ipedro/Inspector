@@ -24,7 +24,7 @@ extension ViewHierarchyCoordinator: AsyncOperationProtocol {
     func asyncOperation(name: String, execute closure: @escaping Closure) {
         let layerTask = MainThreadOperation(name: name, closure: closure)
 
-        guard let rootView = dataSource?.rootView else {
+        guard let rootView = dataSource?.keyWindow else {
             return operationQueue.addOperation(layerTask)
         }
 

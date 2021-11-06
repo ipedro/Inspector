@@ -108,11 +108,25 @@ extension UIView: ViewHierarchyElementRepresentable {
         }
     }
 
+    var canHostContextMenuInteraction: Bool {
+        canHostInspectorView &&
+        className != "UIWindow" &&
+        className != "UITransitionView" &&
+        className != "UIDropShadowView" &&
+        className != "_UIModernBarButton"
+    }
+
     var canHostInspectorView: Bool {
         let className = self._className
         let superViewClassName = superview?._className ?? ""
 
         guard
+            className != "UIRemoteKeyboardWindow",
+            className != "UITextEffectsWindow",
+            className != "UIEditingOverlayGestureView",
+            className != "UIInputSetContainerView",
+//            className != "TUISystemInputAssistantView",
+            
             // Adding subviews directly to a UIVisualEffectView throws runtime exception.
             self is UIVisualEffectView == false,
 
@@ -131,6 +145,7 @@ extension UIView: ViewHierarchyElementRepresentable {
             // Skip non inspectable views
             self is NonInspectableView == false,
             superview is NonInspectableView == false,
+            //allParents.filter({ $0 is NonInspectableView }).isEmpty,
 
             // Skip custom classes
             Inspector.configuration.nonInspectableClassNames.contains(className) == false,

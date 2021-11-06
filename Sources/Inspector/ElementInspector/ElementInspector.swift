@@ -38,7 +38,7 @@ extension ElementInspector {
         }
 
         var isPhoneIdiom: Bool {
-            guard let userInterfaceIdiom = Inspector.host?.window?.traitCollection.userInterfaceIdiom else {
+            guard let userInterfaceIdiom = Inspector.host?.keyWindow?.traitCollection.userInterfaceIdiom else {
                 // assume true
                 return true
             }

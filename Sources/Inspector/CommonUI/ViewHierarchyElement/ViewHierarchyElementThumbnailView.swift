@@ -115,9 +115,18 @@ class ViewHierarchyElementThumbnailView: BaseView {
         super.layoutSubviews()
         backgroundColor = backgroundStyle.color
 
-        guard !frame.isEmpty, heightConstraint == nil else { return }
+        guard heightConstraint == nil else { return }
 
         let proportionalFrame = calculateFrame(with: element.frame.size)
+
+        guard
+            !proportionalFrame.height.isNaN,
+            !proportionalFrame.height.isInfinite,
+            !proportionalFrame.height.isZero
+        else {
+            return
+        }
+
         heightConstraint = snapshotContainerView.heightAnchor.constraint(equalToConstant: proportionalFrame.height)
     }
 

@@ -37,10 +37,6 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost {
 
     var didFinish: (() -> Void)?
 
-    var window: UIWindow? {
-        UIApplication.shared.windows.first { $0.isKeyWindow }
-    }
-
     // MARK: - Initializer
 
     init(

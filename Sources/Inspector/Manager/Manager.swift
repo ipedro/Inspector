@@ -46,6 +46,8 @@ extension Inspector {
             }
         }
 
+        var interactionDelegates: [ObjectIdentifier: Bool] = [:]
+
         let operationQueue = OperationQueue.main
 
         var viewHierarchyCoordinator: ViewHierarchyCoordinator? {
@@ -58,7 +60,11 @@ extension Inspector {
 
         // MARK: - Init
 
-        init() {}
+        init() {
+            if #available(iOS 13, *), configuration.isSwizzlingEnabled {
+                UIView.startSwizzling()
+            }
+        }
 
         deinit {
             operationQueue.cancelAllOperations()
@@ -97,7 +103,7 @@ extension Inspector {
 
 extension Manager {
     var hostViewController: UIViewController? {
-        host?.window?.rootViewController?.presentedViewController ?? host?.window?.rootViewController
+        host?.keyWindow?.rootViewController?.topPresentedViewController
     }
 }
 

@@ -22,6 +22,7 @@ import UIKit
 
 /// A protocol that represents the public interface of a UIView.
 protocol ViewHierarchyElementRepresentable {
+    var canHostContextMenuInteraction: Bool { get }
 
     var objectIdentifier: ObjectIdentifier { get }
 

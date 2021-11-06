@@ -23,6 +23,7 @@ import UniformTypeIdentifiers
 
 extension ViewHierarchyElement {
     struct Snapshot: ViewHierarchyElementRepresentable, ExpirableProtocol, Equatable {
+
         static func == (lhs: ViewHierarchyElement.Snapshot, rhs: ViewHierarchyElement.Snapshot) -> Bool {
             lhs.identifier == rhs.identifier
         }
@@ -32,6 +33,7 @@ extension ViewHierarchyElement {
         let parent: ViewHierarchyElementReference? = nil
         var accessibilityIdentifier: String?
         var canHostInspectorView: Bool
+        var canHostContextMenuInteraction: Bool
         var canPresentOnTop: Bool
         var className: String
         var classNameWithoutQualifiers: String
@@ -57,6 +59,7 @@ extension ViewHierarchyElement {
             self.depth = depth
 
             accessibilityIdentifier = view.accessibilityIdentifier
+            canHostContextMenuInteraction = view.canHostContextMenuInteraction
             canHostInspectorView = view.canHostInspectorView
             canPresentOnTop = view.canPresentOnTop
             className = view._className
@@ -171,6 +174,10 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 // MARK: - ViewHierarchyElementReference {
 
 extension ViewHierarchyElement: ViewHierarchyElementReference {
+    var canHostContextMenuInteraction: Bool {
+        store.latest.canHostContextMenuInteraction
+    }
+
     var isSystemContainer: Bool {
         store.first.isSystemContainer
     }
@@ -440,6 +447,8 @@ extension ViewHierarchyElement: Hashable {
 
 private extension ViewHierarchyElementIconProvider {
     func resizedIcon(for view: UIView?) -> UIImage? {
-        value(for: view)?.resized(.elementIconSize)
+        autoreleasepool {
+            value(for: view)?.resized(.elementIconSize)
+        }
     }
 }

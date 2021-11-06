@@ -268,6 +268,10 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
 }
 
 extension ViewHierarchyController: ViewHierarchyElementReference {
+    var canHostContextMenuInteraction: Bool {
+        rootElement.canHostContextMenuInteraction
+    }
+
     var isSystemContainer: Bool {
         store.first.isSystemContainer
     }
@@ -328,18 +332,17 @@ extension ViewHierarchyController: ViewHierarchyElementReference {
 
 
     var shortElementDescription: String {
-        [superclassName,
-         className]
-            .compactMap { $0 }
-            .prefix(3)
-            .joined(separator: "\n")
+        elementDescription
     }
 
     var elementDescription: String {
-        [superclassName,
-         className]
-            .compactMap { $0 }
-            .joined(separator: "\n")
+        [
+            className,
+            superclassName,
+            "\(underlyingView?.allChildren.count ?? .zero) Subviews"
+        ]
+        .compactMap { $0 }
+        .joined(separator: "\n")
     }
 
     var isHidden: Bool {

@@ -21,8 +21,8 @@
 import UIKit
 
 public protocol InspectorHost: AnyObject {
-    /// The host window.
-    var window: UIWindow? { get }
+    /// The host windows.
+    var windows: [UIWindow] { get }
 
     /// Return your own icons for custom classes or override exsiting ones.
     var inspectorElementIconProvider: Inspector.ElementIconProvider? { get }
@@ -38,6 +38,14 @@ public protocol InspectorHost: AnyObject {
 
     /// Return your own command groups as sections on the Inspector interface. You can have as many groups, with as many actions as you would like.
     var inspectorCommandGroups: [Inspector.CommandsGroup]? { get }
+}
+
+public extension InspectorHost {
+    var windows: [UIWindow] { UIApplication.shared.windows }
+    
+    var keyWindow: UIWindow? {
+        windows.first { $0.isKeyWindow }
+    }
 }
 
 // MARK: - Swift UI

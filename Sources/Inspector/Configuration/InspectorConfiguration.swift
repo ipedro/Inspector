@@ -31,11 +31,13 @@ public struct InspectorConfiguration {
 
     public var nonInspectableClassNames: [String] = []
 
+    public var isSwizzlingEnabled: Bool
+
     var colorStyle: InspectorColorStyle {
-        guard let hostWindow = Inspector.host?.window else { return .dark }
+        guard let keyWindow = Inspector.host?.keyWindow else { return .dark }
 
         if #available(iOS 13.0, *) {
-            switch (hostWindow.overrideUserInterfaceStyle, hostWindow.traitCollection.userInterfaceStyle) {
+            switch (keyWindow.overrideUserInterfaceStyle, keyWindow.traitCollection.userInterfaceStyle) {
             case (.dark, _),
                  (.unspecified, .dark):
                 return .dark
@@ -48,6 +50,7 @@ public struct InspectorConfiguration {
     }
 
     let knownSystemContainers: [String] = [
+        "UIEditingOverlayViewController",
         "UIWindow",
         "UITransitionView",
         "UIDropShadowView",

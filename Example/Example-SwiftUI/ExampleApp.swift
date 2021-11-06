@@ -62,9 +62,11 @@ struct Content: View {
             Inspector.removeAllLayers()
         }
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
-                self.isInspecting = true
-                Inspector.toggle(.wireframes)
+            Inspector.start()
+
+            UIApplication.shared.windows.forEach { window in
+                window.setNeedsLayout()
+                window.layoutSubviews()
             }
         }
         .onShake {

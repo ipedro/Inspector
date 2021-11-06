@@ -24,12 +24,24 @@ typealias Closure = () -> Void
 
 public enum Inspector {
     static let manager = Inspector.Manager()
-
-    public static var configuration = InspectorConfiguration()
+    
+    public static var configuration = InspectorConfiguration(
+        isSwizzlingEnabled: {
+            #if DEBUG
+            return true
+            #else
+            return false
+            #endif
+        }()
+    )
 
     public static var host: InspectorHost? {
         get { manager.host }
         set { manager.host = newValue }
+    }
+
+    public static func start() {
+        _ = manager
     }
 
     public static func finish() {

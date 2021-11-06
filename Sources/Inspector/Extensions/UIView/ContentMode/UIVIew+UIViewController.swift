@@ -23,7 +23,7 @@ import UIKit
 extension UIView {
     var controller: UIViewController? {
         guard
-            let allPresentendViewControllers = Inspector.host?.window?.allPresentendViewControllers
+            let allPresentendViewControllers = Inspector.host?.keyWindow?.allPresentendViewControllers
         else {
             return nil
         }

@@ -21,9 +21,11 @@
 import UIKit
 
 extension Manager: ViewHierarchyCoordinatorDataSource {
-    var rootViewController: UIViewController? { host?.window?.rootViewController }
+    var rootViewController: UIViewController? { host?.keyWindow?.rootViewController }
 
-    var rootView: UIView? { host?.window }
+    var windows: [UIWindow] { host?.windows ?? [] }
+
+    var keyWindow: UIWindow? { host?.keyWindow }
 
     var layers: [Inspector.ViewHierarchyLayer] {
         var layers: [Inspector.ViewHierarchyLayer] = [
