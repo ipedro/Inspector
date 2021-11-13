@@ -21,7 +21,7 @@
 import UIKit
 
 extension Manager: ViewHierarchyActionableProtocol {
-    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElementReference, from sourceView: UIView) {
+    func perform(action: ViewHierarchyElementAction, with element: ViewHierarchyElementReference, from sourceView: UIView) {
         guard canPerform(action: action) else {
             assertionFailure("Should not happen")
             return
@@ -39,10 +39,13 @@ extension Manager: ViewHierarchyActionableProtocol {
 
         case .copy(.description):
             UIPasteboard.general.string = element.elementDescription
+            
+        case .copy(.report):
+            UIPasteboard.general.string = element.viewHierarchyDescription
         }
     }
 
-    func canPerform(action: ViewHierarchyAction) -> Bool {
+    func canPerform(action: ViewHierarchyElementAction) -> Bool {
         true
     }
 }

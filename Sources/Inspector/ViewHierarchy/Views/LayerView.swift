@@ -23,7 +23,7 @@ import UIKit
 protocol LayerViewDelegate: AnyObject {
     func layerView(_ layerView: LayerViewProtocol,
                    didSelect element: ViewHierarchyElementReference,
-                   withAction action: ViewHierarchyAction)
+                   withAction action: ViewHierarchyElementAction)
 }
 
 class LayerView: UIImageView, LayerViewProtocol {

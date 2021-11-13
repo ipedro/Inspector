@@ -39,11 +39,61 @@ protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyO
     var depth: Int { get set }
 
     var children: [ViewHierarchyElementReference] { get set }
+    
+    var viewHierarchy: [ViewHierarchyElementReference] { get }
 }
 
 extension ViewHierarchyElementReference {
+    var inspectableViewHierarchy: [ViewHierarchyElementReference] {
+        viewHierarchy.filter(\.canHostInspectorView)
+    }
+    
+    var viewHierarchyDescription: String {
+        let viewHierarchy = viewHierarchy
+        
+        var components: [String] = [
+            "",
+            elementName,
+            String(repeating: "=", count: elementName.count),
+            "",
+            elementDescription
+        ]
+        
+        if viewHierarchy.count <= 1 {
+            return components.joined(separator: "\n")
+        }
+        
+        components.append("")
+        components.append("")
+        components.append("Views:")
+        components.append("------")
+        components.append("")
+        
+        for child in viewHierarchy {
+            let indentation = String(repeating: "﹒", count: child.depth - depth)
+            let symbol = child.isContainer ? "▾" : "▸"
+            
+            var childComponents: [String] = [symbol]
+            
+            if let accessibilityIdentifier = child.accessibilityIdentifier {
+                childComponents.append("\(accessibilityIdentifier) (\(child.className))")
+            }
+            else {
+                childComponents.append(child.className)
+            }
+            
+            let childDescription = childComponents.joined(separator: " ")
+            
+            components.append(indentation + childDescription)
+        }
+        
+        return components.joined(separator: "\n")
+    }
+    
     var isContainer: Bool { !children.isEmpty }
 
+    var viewHierarchy: [ViewHierarchyElementReference] { [self] + allChildren }
+    
     var allChildren: [ViewHierarchyElementReference] {
         children.reversed().flatMap { [$0] + $0.allChildren }
     }

@@ -50,7 +50,7 @@ extension Manager {
                                           from sourceView: UIView,
                                           animated: Bool
     ) {
-        guard let snapshot = viewHierarchySnaphost else { return }
+        guard let snapshot = viewHierarchySnapshot else { return }
 
         let coordinator = ElementInspectorCoordinator(
             element: element,

@@ -101,7 +101,7 @@ extension ViewHierarchyCoordinator: DismissablePresentationProtocol {
 // MARK: - ViewHierarchyActionableProtocol
 
 extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
-    func canPerform(action: ViewHierarchyAction) -> Bool {
+    func canPerform(action: ViewHierarchyElementAction) -> Bool {
         switch action {
         case .layer:
             return true
@@ -111,7 +111,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
         }
     }
 
-    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElementReference, from sourceView: UIView) {
+    func perform(action: ViewHierarchyElementAction, with element: ViewHierarchyElementReference, from sourceView: UIView) {
         guard
             canPerform(action: action),
             case let .layer(layerAction) = action
@@ -122,10 +122,26 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
 
         switch layerAction {
         case .showHighlight:
-            showHighlight(true, for: element)
+            let elementKeys = element.viewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
+            
+            if var referenceKeys = visibleReferences[.highlightViews] {
+                referenceKeys.append(contentsOf: elementKeys)
+                visibleReferences[.highlightViews] = referenceKeys
+                elementKeys.forEach { addHighlightView(for: $0, with: dataSource?.colorScheme ?? .default) }
+                
+                installLayer(.highlightViews)
+            }
+            else {
+                visibleReferences.updateValue(elementKeys, forKey: .highlightViews)
+            }
 
         case .hideHighlight:
-            showHighlight(false, for: element)
+            let elementKeys = element.viewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
+            elementKeys.forEach { removeHighlightView(for: $0) }
+            "
+            if visibleReferences[.highlightViews].isNilOrEmpty {
+                removeLayer(.highlightViews)
+            }
         }
     }
 }
@@ -163,7 +179,7 @@ extension ViewHierarchyCoordinator {
     private func makeSnapshot() -> ViewHierarchySnapshot? {
         guard
             let dataSource = dataSource,
-            let root = ViewHierarchyRootReference(windows: dataSource.windows, catalog: dataSource.catalog)
+            let root = ViewHierarchyRoot(windows: dataSource.windows, catalog: dataSource.catalog)
         else {
             return nil
         }
@@ -175,35 +191,12 @@ extension ViewHierarchyCoordinator {
         
         return snapshot
     }
-
-    func showHighlight(
-        _ show: Bool,
-        for element: ViewHierarchyElementReference,
-        includeSubviews: Bool = true
-    ) {
-
-        guard let key = ViewHierarchyElementKey(reference: element) else {
-            return
-        }
-
-        let isHidden = !show
-
-        guard includeSubviews else {
-            highlightViews[key]?.element.isHidden = isHidden
-            return
-        }
-
-        element.underlyingView?.allSubviews.forEach {
-            guard let highlightView = $0 as? HighlightView else { return }
-            highlightView.isHidden = isHidden
-        }
-    }
 }
 
 // MARK: - LayerViewDelegate
 
 extension ViewHierarchyCoordinator: LayerViewDelegate {
-    func layerView(_ layerView: LayerViewProtocol, didSelect element: ViewHierarchyElementReference, withAction action: ViewHierarchyAction) {
+    func layerView(_ layerView: LayerViewProtocol, didSelect element: ViewHierarchyElementReference, withAction action: ViewHierarchyElementAction) {
         guard canPerform(action: action) else {
             delegate?.perform(action: action, with: element, from: layerView.sourceView)
             return
@@ -212,3 +205,8 @@ extension ViewHierarchyCoordinator: LayerViewDelegate {
         perform(action: action, with: element, from: layerView.sourceView)
     }
 }
+
+private extension ViewHierarchyLayer {
+    static let highlightViews = ViewHierarchyLayer(name: String(describing: type(of: HighlightView.self))) { _ in false }
+}
+

@@ -80,7 +80,7 @@ extension Manager {
     }
 
     func makeInspectorViewCoordinator() -> InspectorViewCoordinator? {
-        guard let snapshot = viewHierarchySnaphost else { return nil }
+        guard let snapshot = viewHierarchySnapshot else { return nil }
 
         let coordinator = InspectorViewCoordinator(
             snapshot: snapshot,

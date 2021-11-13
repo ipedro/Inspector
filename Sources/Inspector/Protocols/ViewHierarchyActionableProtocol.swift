@@ -21,9 +21,9 @@
 import UIKit
 
 protocol ViewHierarchyActionableProtocol {
-    func canPerform(action: ViewHierarchyAction) -> Bool
+    func canPerform(action: ViewHierarchyElementAction) -> Bool
 
-    func perform(action: ViewHierarchyAction,
+    func perform(action: ViewHierarchyElementAction,
                  with element: ViewHierarchyElementReference,
                  from sourceView: UIView)
 }

@@ -199,53 +199,64 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
             wireframeViews.removeAll()
         }
     }
+    
+    func removeWireframeView(for key: ViewHierarchyElementKey) {
+        wireframeViews[key]?.removeFromSuperview()
+        wireframeViews.removeValue(forKey: key)
+    }
+    
+    func removeHighlightView(for key: ViewHierarchyElementKey) {
+        highlightViews[key]?.removeFromSuperview()
+        highlightViews.removeValue(forKey: key)
+    }
+    
+    func addHighlightView(for key: ViewHierarchyElementKey, with colorScheme: ViewHierarchyColorScheme) {
+        guard
+            highlightViews[key] == nil,
+            let rootView = key.reference.underlyingView
+        else {
+            return
+        }
+
+        let highlightView = HighlightView(
+            frame: rootView.bounds,
+            name: rootView.elementName,
+            colorScheme: colorScheme,
+            element: key.reference
+        ).then {
+            $0.delegate = self
+        }
+
+        highlightViews[key] = highlightView
+    }
+    
+    func addWireframeView(for key: ViewHierarchyElementKey, with colorScheme: ViewHierarchyColorScheme) {
+        guard
+            highlightViews[key] == nil,
+            let rootView = key.reference.underlyingView
+        else {
+            return
+        }
+
+        let wireframeView = WireframeView(
+            frame: rootView.bounds,
+            element: key.reference
+        ).then {
+            $0.delegate = self
+        }
+
+        wireframeViews[key] = wireframeView
+    }
 
     func addReferences(for newLayers: Set<ViewHierarchyLayer>, with colorScheme: ViewHierarchyColorScheme) {
         for newLayer in newLayers {
-            guard let elements = visibleReferences[newLayer] else {
-                continue
+            guard let elements = visibleReferences[newLayer] else { continue }
+
+            if newLayer.showLabels {
+                elements.forEach { addHighlightView(for: $0, with: colorScheme) }
             }
-
-            switch newLayer.showLabels {
-            case true:
-                elements.forEach { key in
-                    guard
-                        highlightViews[key] == nil,
-                        let rootView = key.reference.underlyingView
-                    else {
-                        return
-                    }
-
-                    let highlightView = HighlightView(
-                        frame: rootView.bounds,
-                        name: rootView.elementName,
-                        colorScheme: colorScheme,
-                        element: key.reference
-                    ).then {
-                        $0.delegate = self
-                    }
-
-                    highlightViews[key] = highlightView
-                }
-
-            case false:
-                elements.forEach { key in
-                    guard
-                        highlightViews[key] == nil,
-                        let rootView = key.reference.underlyingView
-                    else {
-                        return
-                    }
-
-                    let wireframeView = WireframeView(
-                        frame: rootView.bounds,
-                        element: key.reference
-                    ).then {
-                        $0.delegate = self
-                    }
-
-                    wireframeViews[key] = wireframeView
-                }
+            else {
+                elements.forEach { addWireframeView(for: $0, with: colorScheme) }
             }
         }
     }

@@ -54,7 +54,7 @@ extension Inspector {
             children.first(where: { $0 is ViewHierarchyCoordinator }) as? ViewHierarchyCoordinator
         }
 
-        var viewHierarchySnaphost: ViewHierarchySnapshot? {
+        var viewHierarchySnapshot: ViewHierarchySnapshot? {
             viewHierarchyCoordinator?.latestSnapshot()
         }
 

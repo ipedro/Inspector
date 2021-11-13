@@ -127,13 +127,13 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
         deepestAbsoulteLevel - depth
     }
 
-    var inspectableChildren: [ViewHierarchyElementReference] {
-        let selfAndChildren = [self] + allChildren
-
-        let inspectableViews = selfAndChildren.filter(\.canHostInspectorView)
-
-        return inspectableViews
-    }
+//    var viewHierarchy: [ViewHierarchyElementReference] {
+//        let selfAndChildren = [self] + allChildren
+//
+//        let inspectableViews = selfAndChildren.filter(\.canHostInspectorView)
+//
+//        return inspectableViews
+//    }
 
     // MARK: - Init
 

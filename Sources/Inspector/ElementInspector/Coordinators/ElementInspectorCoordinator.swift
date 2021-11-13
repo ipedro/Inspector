@@ -213,7 +213,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
 // MARK: - ViewHierarchyActionableProtocol
 
 extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
-    func canPerform(action: ViewHierarchyAction) -> Bool {
+    func canPerform(action: ViewHierarchyElementAction) -> Bool {
         switch action {
         case .inspect:
             return true
@@ -222,7 +222,7 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
         }
     }
 
-    func perform(action: ViewHierarchyAction, with element: ViewHierarchyElementReference, from sourceView: UIView) {
+    func perform(action: ViewHierarchyElementAction, with element: ViewHierarchyElementReference, from sourceView: UIView) {
         guard canPerform(action: action) else {
             delegate?.perform(action: action, with: element, from: sourceView)
             return
@@ -272,11 +272,11 @@ extension ElementInspectorCoordinator: DismissablePresentationProtocol {
 
 private extension ElementInspectorCoordinator {
     func injectElementInspectorsForViewHierarchy(inside navigationController: ElementInspectorNavigationController) {
-        let populatedElements = snapshot.viewHierarchy.filter { $0.underlyingView === rootElement.underlyingView }
+        let populatedElements = snapshot.root.viewHierarchy.filter { $0.underlyingView === rootElement.underlyingView }
 
         guard let populatedElement = populatedElements.first else {
             let rootViewController = Self.makeElementInspectorViewController(
-                element: snapshot.viewHierarchy.first!,
+                element: snapshot.root.viewHierarchy.first!,
                 preferredPanel: initialPanel,
                 initialPanel: initialPanel,
                 delegate: self,

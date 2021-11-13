@@ -53,6 +53,26 @@ public enum Inspector {
     }
 }
 
+// MARK: - Utils
+
+public extension Inspector {
+    static func printViewHierarchyDescription() {
+        printViewHierarchyDescription(of: nil)
+    }
+    
+    static func printViewHierarchyDescription(of object: NSObject?) {
+        print(viewHierarchyDescription(of: object) ?? "No snaphsot available")
+    }
+    
+    static func viewHierarchyDescription(of object: NSObject? = nil) -> String? {
+        guard let root = manager.viewHierarchySnapshot?.root else { return nil }
+        
+        guard let object = object else { return root.viewHierarchyDescription }
+        
+        return root.viewHierarchy.first(where: { $0.underlyingObject === object })?.viewHierarchyDescription
+    }
+}
+
 // MARK: - Presentation
 
 public extension Inspector {

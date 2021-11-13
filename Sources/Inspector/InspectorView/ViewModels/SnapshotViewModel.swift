@@ -88,7 +88,7 @@ extension HierarchyInspectorViewModel {
         }
 
         func titleForHeader(in section: Int) -> String? {
-            Texts.allResults(count: currentSearchResults.count, in: snapshot.viewHierarchy.first!.elementName)
+            Texts.allResults(count: currentSearchResults.count, in: snapshot.root.viewHierarchy.first!.elementName)
         }
 
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
@@ -106,7 +106,7 @@ extension HierarchyInspectorViewModel {
                 }
 
                 if key == Inspector.configuration.showAllViewSearchQuery {
-                    let results = snapshot.viewHierarchy.map {
+                    let results = snapshot.root.viewHierarchy.map {
                         Details(with: $0, isEnabled: true)
                     }
 
@@ -120,7 +120,7 @@ extension HierarchyInspectorViewModel {
                     return queryItem.results
                 }
 
-                let results: [Details] = snapshot.viewHierarchy.compactMap { element in
+                let results: [Details] = snapshot.root.viewHierarchy.compactMap { element in
                     guard (element.displayName + element.className).localizedCaseInsensitiveContains(key) else { return nil }
                     return Details(with: element, isEnabled: true)
                 }

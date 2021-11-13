@@ -27,12 +27,12 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
 
     let populatedLayers: [ViewHierarchyLayer]
 
-    let viewHierarchy: [ViewHierarchyElementReference]
+    let root: ViewHierarchyRoot
 
-    init(layers: [ViewHierarchyLayer], root: ViewHierarchyRootReference) {
+    init(layers: [ViewHierarchyLayer], root: ViewHierarchyRoot) {
         availableLayers = layers.uniqueValues()
 
-        viewHierarchy = root.children
+        self.root = root
 
         populatedLayers = availableLayers.filter {
             $0.filter(viewHierarchy: root.children).isEmpty == false

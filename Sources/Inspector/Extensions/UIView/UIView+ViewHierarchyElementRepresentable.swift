@@ -38,8 +38,8 @@ extension UIView: ViewHierarchyElementRepresentable {
             array.append(parent)
             array.append(contentsOf: parent.allParents)
         }
-
-        return array
+        
+        return array.filter { !($0 is LayerViewProtocol) }
     }
 
     var children: [UIView] {

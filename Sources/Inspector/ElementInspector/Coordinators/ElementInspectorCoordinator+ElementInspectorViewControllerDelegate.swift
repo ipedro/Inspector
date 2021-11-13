@@ -23,7 +23,7 @@ import UIKit
 extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
     func elementInspectorViewController(_ viewController: ElementInspectorViewController,
                                         didSelect element: ViewHierarchyElementReference,
-                                        with action: ViewHierarchyAction,
+                                        with action: ViewHierarchyElementAction,
                                         from fromElement: ViewHierarchyElementReference) {
 
         if element.objectIdentifier == fromElement.objectIdentifier, case let .inspect(preferredPanel: panel?) = action {

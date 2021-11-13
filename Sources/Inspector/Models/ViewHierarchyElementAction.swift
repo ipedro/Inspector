@@ -20,7 +20,7 @@
 
 import UIKit
 
-enum ViewHierarchyAction: MenuContentProtocol {
+enum ViewHierarchyElementAction: MenuContentProtocol {
     case layer(ViewHierarchyLayerAction)
     case inspect(preferredPanel: ElementInspectorPanel?)
     case copy(ViewHierarchyInformation)
@@ -51,8 +51,8 @@ enum ViewHierarchyAction: MenuContentProtocol {
         }
     }
 
-    static func allCases(for element: ViewHierarchyElementReference) -> [ViewHierarchyAction] {
-        var actions = [ViewHierarchyAction]()
+    static func allCases(for element: ViewHierarchyElementReference) -> [ViewHierarchyElementAction] {
+        var actions = [ViewHierarchyElementAction]()
 
         for action in ViewHierarchyLayerAction.allCases(for: element) {
             actions.append(.layer(action))
@@ -69,7 +69,7 @@ enum ViewHierarchyAction: MenuContentProtocol {
         return actions
     }
 
-    static func groupedCases(for element: ViewHierarchyElementReference) -> [[ViewHierarchyAction]] {
+    static func groupedCases(for element: ViewHierarchyElementReference) -> [[ViewHierarchyElementAction]] {
         [
             ViewHierarchyLayerAction.allCases(for: element).map { .layer($0) },
             ElementInspectorPanel.allCases(for: element).map { .inspect(preferredPanel: $0) },

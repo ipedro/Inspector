@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ViewHierarchyRootReference {
+final class ViewHierarchyRoot {
     weak var parent: ViewHierarchyElementReference?
 
     lazy var children: [ViewHierarchyElementReference] = windows.compactMap { window -> [ViewHierarchyElementReference] in
@@ -61,7 +61,7 @@ final class ViewHierarchyRootReference {
     private static func makeViewHierarchy(window: ViewHierarchyElement, viewControllers: [ViewHierarchyController]) -> [ViewHierarchyElementReference] {
         var viewHierarchy = [ViewHierarchyElementReference]()
 
-        window.inspectableChildren.reversed().enumerated().forEach { index, element in
+        window.viewHierarchy.reversed().enumerated().forEach { index, element in
             viewHierarchy.insert(element, at: .zero)
 
             guard
@@ -94,7 +94,9 @@ final class ViewHierarchyRootReference {
     }
 }
 
-extension ViewHierarchyRootReference: ViewHierarchyElementReference {
+extension ViewHierarchyRoot: ViewHierarchyElementReference {
+    var viewHierarchy: [ViewHierarchyElementReference] { children }
+    
     var underlyingObject: NSObject? { UIApplication.shared }
 
     var underlyingView: UIView? { nil }
@@ -115,13 +117,13 @@ extension ViewHierarchyRootReference: ViewHierarchyElementReference {
 
     var isSystemContainer: Bool { false }
 
-    var className: String { "" }
+    var className: String { elementName }
 
-    var classNameWithoutQualifiers: String { "" }
+    var classNameWithoutQualifiers: String { elementName }
 
     var elementName: String { "View Hierarchy" }
 
-    var displayName: String { "" }
+    var displayName: String { elementName }
 
     var canPresentOnTop: Bool { false }
 
@@ -135,9 +137,9 @@ extension ViewHierarchyRootReference: ViewHierarchyElementReference {
 
     var constraintElements: [LayoutConstraintElement] { [] }
 
-    var shortElementDescription: String { "" }
+    var shortElementDescription: String { "\(viewHierarchy.count) Subviews" }
 
-    var elementDescription: String { "" }
+    var elementDescription: String { shortElementDescription }
 
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle { .unspecified }
 

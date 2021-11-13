@@ -38,16 +38,14 @@ extension Inspector.Manager: UIContextMenuInteractionDelegate {
         interactionDelegates[identifier] = true
 
         view.addInteraction(UIContextMenuInteraction(delegate: self))
-
-        print("🧬 Added Interaction \(view._className)")
     }
 
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         guard
             let sourceView = interaction.view,
             interactionDelegates[ObjectIdentifier(sourceView)] != false,
-            let snapshot = viewHierarchySnaphost,
-            let element = snapshot.viewHierarchy.first(where: { $0.underlyingView === sourceView }),
+            let snapshot = viewHierarchySnapshot,
+            let element = snapshot.root.inspectableViewHierarchy.first(where: { $0.underlyingView === sourceView }),
             element.canHostContextMenuInteraction
         else {
             return nil

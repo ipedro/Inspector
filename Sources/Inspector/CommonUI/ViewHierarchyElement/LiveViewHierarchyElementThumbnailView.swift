@@ -25,10 +25,10 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
     override var isHidden: Bool {
         didSet {
             if isHidden {
-                stopLiveUpdatingSnaphost()
+                stopLiveUpdatingSnapshot()
             }
             else {
-                startLiveUpdatingSnaphost()
+                startLiveUpdatingSnapshot()
             }
         }
     }
@@ -49,10 +49,10 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
         super.didMoveToSuperview()
 
         guard superview?.window != nil else {
-            return stopLiveUpdatingSnaphost()
+            return stopLiveUpdatingSnapshot()
         }
 
-        startLiveUpdatingSnaphost()
+        startLiveUpdatingSnapshot()
     }
 
     override func didMoveToWindow() {
@@ -63,7 +63,7 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
                 hoverGestureRecognizer.isEnabled = false
             }
 
-            return stopLiveUpdatingSnaphost()
+            return stopLiveUpdatingSnapshot()
         }
 
         if #available(iOS 13.0, *) {
@@ -75,11 +75,11 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
             hoverGestureRecognizer.isEnabled = ProcessInfo().isiOSAppOnMac == false
         }
 
-        startLiveUpdatingSnaphost()
+        startLiveUpdatingSnapshot()
     }
 
     @objc
-    func startLiveUpdatingSnaphost() {
+    func startLiveUpdatingSnapshot() {
         debounce(#selector(makeDisplayLink), delay: .average)
     }
 
@@ -89,7 +89,7 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
     }
 
     @objc
-    func stopLiveUpdatingSnaphost() {
+    func stopLiveUpdatingSnapshot() {
         Self.cancelPreviousPerformRequests(
             withTarget: self,
             selector: #selector(makeDisplayLink),
@@ -102,7 +102,7 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
     @objc
     func refresh() {
         guard element.underlyingView?.isAssociatedToWindow == true else {
-            return stopLiveUpdatingSnaphost()
+            return stopLiveUpdatingSnapshot()
         }
 
         if backgroundStyle.color != backgroundColor {
@@ -125,10 +125,10 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
     func hovering(_ recognizer: UIHoverGestureRecognizer) {
         switch recognizer.state {
         case .began, .changed:
-            stopLiveUpdatingSnaphost()
+            stopLiveUpdatingSnapshot()
 
         case .ended, .cancelled:
-            startLiveUpdatingSnaphost()
+            startLiveUpdatingSnapshot()
 
         default:
             break

@@ -21,7 +21,9 @@
 import UIKit
 
 enum ViewHierarchyInformation: Swift.CaseIterable, MenuContentProtocol {
-    case className, description
+    case className
+    case description
+    case report
 
     static func allCases(for element: ViewHierarchyElementReference) -> [ViewHierarchyInformation] {
         allCases
@@ -33,6 +35,8 @@ enum ViewHierarchyInformation: Swift.CaseIterable, MenuContentProtocol {
             return Texts.copy("Class Name")
         case .description:
             return Texts.copy("Description")
+        case .report:
+            return Texts.copy("View Report")
         }
     }
 

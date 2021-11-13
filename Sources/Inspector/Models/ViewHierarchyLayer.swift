@@ -49,7 +49,7 @@ public extension Inspector {
         // MARK: - Metods
 
         func makeKeysForInspectableElements(in snapshot: ViewHierarchySnapshot) -> [ViewHierarchyElementKey] {
-            filter(viewHierarchy: snapshot.viewHierarchy).compactMap { ViewHierarchyElementKey(reference: $0) }
+            filter(viewHierarchy: snapshot.root.inspectableViewHierarchy).compactMap { ViewHierarchyElementKey(reference: $0) }
         }
 
         func filter(viewHierarchy: [ViewHierarchyElementReference]) -> [ViewHierarchyElementReference] {
@@ -84,65 +84,65 @@ public extension Inspector {
 
 // MARK: - Built-in layers
 
-public extension ViewHierarchyLayer {
+extension ViewHierarchyLayer {
     /// Highlights activity indicator views
-    static let activityIndicators = Inspector.ViewHierarchyLayer(name: "Activity indicators", allowsInternalViews: true) { $0 is UIActivityIndicatorView }
+    public static let activityIndicators = Inspector.ViewHierarchyLayer(name: "Activity indicators", allowsInternalViews: true) { $0 is UIActivityIndicatorView }
     /// Highlights buttons
-    static let buttons = Inspector.ViewHierarchyLayer(name: "Buttons", allowsInternalViews: true) { $0 is UIButton }
+    public static let buttons = Inspector.ViewHierarchyLayer(name: "Buttons", allowsInternalViews: true) { $0 is UIButton }
     /// Highlights collection views
-    static let collectionViews = Inspector.ViewHierarchyLayer(name: "Collection views") { $0 is UICollectionView }
+    public static let collectionViews = Inspector.ViewHierarchyLayer(name: "Collection views") { $0 is UICollectionView }
     /// Highlights all container views
-    static let containerViews = Inspector.ViewHierarchyLayer(name: "Containers", allowsInternalViews: true) { $0.className == "UIView" && $0.children.isEmpty == false }
+    public static let containerViews = Inspector.ViewHierarchyLayer(name: "Containers", allowsInternalViews: true) { $0.className == "UIView" && $0.children.isEmpty == false }
     /// Highlights all controls
-    static let controls = Inspector.ViewHierarchyLayer(name: "Controls", allowsInternalViews: true) { $0 is UIControl || $0.superview is UIControl }
+    public static let controls = Inspector.ViewHierarchyLayer(name: "Controls", allowsInternalViews: true) { $0 is UIControl || $0.superview is UIControl }
     /// Highlights all image views
-    static let images = Inspector.ViewHierarchyLayer(name: "Images", allowsInternalViews: true) { $0 is UIImageView }
+    public static let images = Inspector.ViewHierarchyLayer(name: "Images", allowsInternalViews: true) { $0 is UIImageView }
     /// Highlights all map views
-    static let maps = Inspector.ViewHierarchyLayer(name: "Maps") { $0 is MKMapView || $0.superview is MKMapView }
+    public static let maps = Inspector.ViewHierarchyLayer(name: "Maps") { $0 is MKMapView || $0.superview is MKMapView }
     /// Highlights all picker views
-    static let pickers = Inspector.ViewHierarchyLayer(name: "Pickers") { $0 is UIPickerView }
+    public static let pickers = Inspector.ViewHierarchyLayer(name: "Pickers") { $0 is UIPickerView }
     /// Highlights all progress indicator views
-    static let progressIndicators = Inspector.ViewHierarchyLayer(name: "Progress indicators") { $0 is UIProgressView }
+    public static let progressIndicators = Inspector.ViewHierarchyLayer(name: "Progress indicators") { $0 is UIProgressView }
     /// Highlights all scroll views
-    static let scrollViews = Inspector.ViewHierarchyLayer(name: "Scroll views") { $0 is UIScrollView }
+    public static let scrollViews = Inspector.ViewHierarchyLayer(name: "Scroll views") { $0 is UIScrollView }
     /// Highlights all segmented controls
-    static let segmentedControls = Inspector.ViewHierarchyLayer(name: "Segmented controls") { $0 is UISegmentedControl || $0.superview is UISegmentedControl }
+    public static let segmentedControls = Inspector.ViewHierarchyLayer(name: "Segmented controls") { $0 is UISegmentedControl || $0.superview is UISegmentedControl }
     /// Highlights all spacer views
-    static let spacerViews = Inspector.ViewHierarchyLayer(name: "Spacers") { $0.className == "UIView" && $0.children.isEmpty }
+    public static let spacerViews = Inspector.ViewHierarchyLayer(name: "Spacers") { $0.className == "UIView" && $0.children.isEmpty }
     /// Highlights all stack views
-    static let stackViews = Inspector.ViewHierarchyLayer(name: "Stacks", allowsInternalViews: true) { $0 is UIStackView }
+    public static let stackViews = Inspector.ViewHierarchyLayer(name: "Stacks", allowsInternalViews: true) { $0 is UIStackView }
     /// Highlights all table view cells
-    static let tableViewCells = Inspector.ViewHierarchyLayer(name: "Table cells") { $0 is UITableViewCell }
+    public static let tableViewCells = Inspector.ViewHierarchyLayer(name: "Table cells") { $0 is UITableViewCell }
     /// Highlights all collection resusable views
-    static let collectionViewReusableView = Inspector.ViewHierarchyLayer(name: "Collection reusable views") { $0 is UICollectionReusableView }
+    public static let collectionViewReusableView = Inspector.ViewHierarchyLayer(name: "Collection reusable views") { $0 is UICollectionReusableView }
     /// Highlights all collection view cells
-    static let collectionViewCells = Inspector.ViewHierarchyLayer(name: "Collection cells") { $0 is UICollectionViewCell }
+    public static let collectionViewCells = Inspector.ViewHierarchyLayer(name: "Collection cells") { $0 is UICollectionViewCell }
     /// Highlights all static texts
-    static let staticTexts = Inspector.ViewHierarchyLayer(name: "Labels", allowsInternalViews: true) { $0 is UILabel } //  || $0 is UIKeyInput
+    public static let staticTexts = Inspector.ViewHierarchyLayer(name: "Labels", allowsInternalViews: true) { $0 is UILabel } //  || $0 is UIKeyInput
     /// Highlights all switches
-    static let switches = Inspector.ViewHierarchyLayer(name: "Switches") { $0 is UISwitch || $0.superview is UISwitch }
+    public static let switches = Inspector.ViewHierarchyLayer(name: "Switches") { $0 is UISwitch || $0.superview is UISwitch }
     /// Highlights all table views
-    static let tables = Inspector.ViewHierarchyLayer(name: "Tables") { $0 is UITableView }
+    public static let tables = Inspector.ViewHierarchyLayer(name: "Tables") { $0 is UITableView }
     /// Highlights all text fields
-    static let textFields = Inspector.ViewHierarchyLayer(name: "Text fields") { $0 is UITextField || $0.superview is UITextField }
+    public static let textFields = Inspector.ViewHierarchyLayer(name: "Text fields") { $0 is UITextField || $0.superview is UITextField }
     /// Highlights all text views
-    static let textViews = Inspector.ViewHierarchyLayer(name: "Text views") { $0 is UITextView || $0.superview is UITextView }
+    public static let textViews = Inspector.ViewHierarchyLayer(name: "Text views") { $0 is UITextView || $0.superview is UITextView }
     /// Highlights all text inputs
-    static let textInputs = Inspector.ViewHierarchyLayer(name: "Text inputs") { $0 is UIKeyInput || $0.superview is UIKeyInput }
+    public static let textInputs = Inspector.ViewHierarchyLayer(name: "Text inputs") { $0 is UIKeyInput || $0.superview is UIKeyInput }
     /// Highlights all web views
-    static let webViews = Inspector.ViewHierarchyLayer(name: "Web views") { $0 is WKWebView || $0.superview is WKWebView }
+    public static let webViews = Inspector.ViewHierarchyLayer(name: "Web views") { $0 is WKWebView || $0.superview is WKWebView }
     /// Highlights all views
-    static let allViews = Inspector.ViewHierarchyLayer(name: "All views") { $0.controller == nil }
+    public static let allViews = Inspector.ViewHierarchyLayer(name: "All views") { $0.controller == nil }
     /// Highlights all system containers
-    static let systemContainers = Inspector.ViewHierarchyLayer(name: "System containers", showLabels: true, allowsInternalViews: true, allowsSystemContainers: true) { $0._isSystemContainer }
+    public static let systemContainers = Inspector.ViewHierarchyLayer(name: "System containers", showLabels: true, allowsInternalViews: true, allowsSystemContainers: true) { $0._isSystemContainer }
     /// Highlights views with an accessbility identifier
-    static let withIdentifier = Inspector.ViewHierarchyLayer(name: "With Accessibility identifier") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == false }
+    public static let withIdentifier = Inspector.ViewHierarchyLayer(name: "With Accessibility identifier") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == false }
     /// Highlights views without an accessbility identifier
-    static let withoutIdentifier = Inspector.ViewHierarchyLayer(name: "Missing Accessibility identifier") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == true }
+    public static let withoutIdentifier = Inspector.ViewHierarchyLayer(name: "Missing Accessibility identifier") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == true }
     /// Shows frames of all views
-    static let wireframes = Inspector.ViewHierarchyLayer(name: "Wireframes", showLabels: false, allowsInternalViews: true) { _ in true }
+    public static let wireframes = Inspector.ViewHierarchyLayer(name: "Wireframes", showLabels: false, allowsInternalViews: true) { _ in true }
     /// Highlights all
-    static let internalViews = Inspector.ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsInternalViews: true) { $0._isInternalView }
+    public static let internalViews = Inspector.ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsInternalViews: true) { $0._isInternalView }
 
-    static let viewControllers = Inspector.ViewHierarchyLayer(name: "View Controllers", showLabels: true, allowsInternalViews: true, allowsSystemContainers: true) { $0.controller != nil }
+    public static let viewControllers = Inspector.ViewHierarchyLayer(name: "View Controllers", showLabels: true, allowsInternalViews: true, allowsSystemContainers: true) { $0.controller != nil }
 }
