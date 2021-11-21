@@ -342,7 +342,7 @@ extension ViewHierarchyController: ViewHierarchyElementReference {
             "\(underlyingView?.allChildren.count ?? .zero) Subviews"
         ]
         .compactMap { $0 }
-        .joined(separator: "\n")
+        .joined(separator: .newLine)
     }
 
     var isHidden: Bool {

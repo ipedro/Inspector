@@ -182,7 +182,7 @@ extension UIView: ViewHierarchyElementRepresentable {
          _className]
             .compactMap { $0 }
             .prefix(3)
-            .joined(separator: "\n")
+            .joined(separator: .newLine)
     }
 
     var elementDescription: String {
@@ -191,9 +191,9 @@ extension UIView: ViewHierarchyElementRepresentable {
          positionDescrpition,
          constraintsDescription,
          subviewsDescription,
-         issuesDescription?.string(prepending: "\n")]
+         issuesDescription?.string(prepending: .newLine)]
             .compactMap { $0 }
-            .joined(separator: "\n")
+            .joined(separator: .newLine)
     }
 }
 
@@ -244,7 +244,7 @@ private extension UIView {
                 multipleIssuesDescription = "⚠️ \(issues.count) Issues"
             }
             else {
-                multipleIssuesDescription?.append("\n")
+                multipleIssuesDescription?.append(.newLine)
                 multipleIssuesDescription?.append("• \(issue.description)")
             }
         }

@@ -59,8 +59,8 @@ extension ViewHierarchyElementReference {
             elementDescription
         ]
         
-        if viewHierarchy.count <= 1 {
-            return components.joined(separator: "\n")
+        guard viewHierarchy.count > 1 else {
+            return components.joined(separator: .newLine)
         }
         
         components.append("")
@@ -87,7 +87,7 @@ extension ViewHierarchyElementReference {
             components.append(indentation + childDescription)
         }
         
-        return components.joined(separator: "\n")
+        return components.joined(separator: .newLine)
     }
     
     var isContainer: Bool { !children.isEmpty }
