@@ -20,7 +20,7 @@
 
 import Foundation
 
-enum Console {
+enum Logger {
     static var showDebugLogs: Bool = {
         #if VERBOSE
         return true
@@ -29,7 +29,7 @@ enum Console {
         #endif
     }()
 
-    static func log(_ items: Any..., separator: String = " ", terminator: String = "\n") {
+    static func log(_ items: Any..., separator: String = " ", terminator: String = .newLine) {
         guard showDebugLogs else {
             return
         }

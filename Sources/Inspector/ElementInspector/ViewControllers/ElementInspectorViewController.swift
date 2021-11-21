@@ -65,7 +65,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
     override var preferredContentSize: CGSize {
         didSet {
-            Console.log(classForCoder, #function, preferredContentSize)
+            Logger.log(classForCoder, #function, preferredContentSize)
         }
     }
 

@@ -129,7 +129,7 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable {
         }
 
         animateWhenKeyboard(.willShow) { info in
-            Console.log(info)
+            Logger.log(info)
             self.viewCode.keyboardFrame = info.keyboardFrame
             self.viewCode.layoutIfNeeded()
         }
