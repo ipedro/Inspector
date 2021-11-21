@@ -28,6 +28,8 @@ extension UIView {
             return nil
         }
 
-        return allPresentendViewControllers.first { self === $0.view }
+        let viewControllersWithLoadedViews = allPresentendViewControllers.filter { $0.isViewLoaded }
+
+        return viewControllersWithLoadedViews.first { self === $0.view }
     }
 }
