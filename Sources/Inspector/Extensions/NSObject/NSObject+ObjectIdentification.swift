@@ -18,48 +18,25 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
+import UIKit
 
-final class SnapshotStore<Element: ExpirableProtocol>: NSObject {
-    typealias ElementProvider = Inspector.Provider<Void, Element?>
+extension NSObject: ObjectIdentification {
+    var objectIdentifier: ObjectIdentifier { ObjectIdentifier(self) }
 
-    let first: Element
+    var classes: [AnyClass] {
+        var array: [AnyClass] = [classForCoder]
 
-    var current: Element { history.last ?? first }
+        var aSuperclass: AnyClass? = superclass
 
-    var currentSnapshotIdentifier: UUID { current.identifier }
+        while aSuperclass != nil {
+            guard let aClass = aSuperclass else { return array }
 
-    var expirationDate: Date { current.expirationDate }
+            let instance = aClass.init()
 
-    // MARK: - Computed Properties
-
-    private var elementProvider: ElementProvider? {
-        didSet {
-            debounce(#selector(makeSnapshot), delay: first.self.delay)
+            array.append(instance.classForCoder)
+            aSuperclass = instance.superclass
         }
-    }
 
-    private lazy var history: [Element] = [first]
-
-    // MARK: - Init
-
-    init(element: Element) {
-        self.first = element
-    }
-
-    // MARK: - Methods
-
-    func hasChanges(inRelationTo identifier: UUID) -> Bool {
-        current.identifier == identifier
-    }
-
-    func scheduleSnapshot(_ elementprovider: ElementProvider) {
-        elementProvider = elementprovider
-    }
-
-    @objc private func makeSnapshot() {
-        guard let newSnapshot = elementProvider?.value else { return }
-
-        history.append(newSnapshot)
+        return array
     }
 }

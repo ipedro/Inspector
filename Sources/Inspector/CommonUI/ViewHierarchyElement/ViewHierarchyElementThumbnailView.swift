@@ -239,7 +239,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
             return
         }
 
-        if referenceView.isAssociatedToWindow == false {
+        if referenceView.inWindow == false {
             state = .noWindow
             return
         }

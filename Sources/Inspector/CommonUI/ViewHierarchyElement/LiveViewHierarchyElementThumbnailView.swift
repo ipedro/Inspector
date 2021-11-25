@@ -101,7 +101,7 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
 
     @objc
     func refresh() {
-        guard element.underlyingView?.isAssociatedToWindow == true else {
+        guard element.underlyingView?.inWindow == true else {
             return stopLiveUpdatingSnapshot()
         }
 

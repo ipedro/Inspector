@@ -21,7 +21,6 @@
 import UIKit
 
 extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
-
     var isShowingLayers: Bool {
         visibleReferences.keys.isEmpty == false
     }

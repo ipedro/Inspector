@@ -21,30 +21,6 @@
 import UIKit
 import UniformTypeIdentifiers
 
-extension UIEdgeInsets: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(String(describing: self))
-    }
-}
-
-extension UIRectEdge: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(String(describing: self))
-    }
-}
-
-extension CGSize: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(String(describing: self))
-    }
-}
-
-extension NSDirectionalEdgeInsets: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(String(describing: self))
-    }
-}
-
 extension ViewHierarchyController {
     struct Snapshot: ViewHierarchyControllerProtocol, ExpirableProtocol, Hashable {
         let identifier = UUID()
@@ -117,8 +93,8 @@ extension ViewHierarchyController {
             }
 
             self.additionalSafeAreaInsets = viewController.additionalSafeAreaInsets
-            self.className = viewController._className
-            self.classNameWithoutQualifiers = viewController._classNameWithoutQualifiers
+            self.className = viewController.className
+            self.classNameWithoutQualifiers = viewController.classNameWithoutQualifiers
             self.definesPresentationContext = viewController.definesPresentationContext
             self.depth = depth
             self.disablesAutomaticKeyboardDismissal = viewController.disablesAutomaticKeyboardDismissal
@@ -127,7 +103,7 @@ extension ViewHierarchyController {
             self.extendedLayoutIncludesOpaqueBars = viewController.extendedLayoutIncludesOpaqueBars
             self.isBeingPresented = viewController.isBeingPresented
             self.isEditing = viewController.isEditing
-            self.isSystemContainer = viewController._isSystemContainer
+            self.isSystemContainer = viewController.isSystemContainer
             self.isViewLoaded = viewController.isViewLoaded
             self.modalPresentationStyle = viewController.modalPresentationStyle
             self.modalTransitionStyle = viewController.modalTransitionStyle
@@ -144,7 +120,7 @@ extension ViewHierarchyController {
             self.restorationIdentifier = viewController.restorationIdentifier
             self.restoresFocusAfterTransition = viewController.restoresFocusAfterTransition
             self.shouldAutomaticallyForwardAppearanceMethods = viewController.shouldAutomaticallyForwardAppearanceMethods
-            self.superclassName = viewController._superclassName
+            self.superclassName = viewController.superclassName
             self.systemMinimumLayoutMargins = viewController.systemMinimumLayoutMargins
             self.title = viewController.title
             self.traitCollection = viewController.traitCollection
@@ -155,7 +131,7 @@ extension ViewHierarchyController {
 
 final class ViewHierarchyController: CustomDebugStringConvertible {
     var debugDescription: String {
-        String(describing: store.latest)
+        String(describing: store.current)
     }
 
     private(set) lazy var iconImage = iconProvider.value(for: underlyingViewController)
@@ -289,15 +265,15 @@ extension ViewHierarchyController: ViewHierarchyElementReference {
     }
 
     var latestSnapshotIdentifier: UUID {
-        store.latest.identifier
+        store.current.identifier
     }
 
     var canHostInspectorView: Bool {
         rootElement.canHostInspectorView
     }
 
-    var isInternalView: Bool {
-        rootElement.isInternalView
+    var isInternalType: Bool {
+        rootElement.isInternalType
     }
 
     var elementName: String {
@@ -365,11 +341,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var additionalSafeAreaInsets: UIEdgeInsets {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.additionalSafeAreaInsets
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.additionalSafeAreaInsets
         }
 
-        if viewController.additionalSafeAreaInsets != store.latest.additionalSafeAreaInsets {
+        if viewController.additionalSafeAreaInsets != store.current.additionalSafeAreaInsets {
             scheduleSnapshot()
         }
 
@@ -377,11 +353,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var definesPresentationContext: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.definesPresentationContext
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.definesPresentationContext
         }
 
-        if viewController.definesPresentationContext != store.latest.definesPresentationContext {
+        if viewController.definesPresentationContext != store.current.definesPresentationContext {
             scheduleSnapshot()
         }
 
@@ -389,11 +365,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var disablesAutomaticKeyboardDismissal: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.disablesAutomaticKeyboardDismissal
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.disablesAutomaticKeyboardDismissal
         }
 
-        if viewController.disablesAutomaticKeyboardDismissal != store.latest.disablesAutomaticKeyboardDismissal {
+        if viewController.disablesAutomaticKeyboardDismissal != store.current.disablesAutomaticKeyboardDismissal {
             scheduleSnapshot()
         }
 
@@ -401,11 +377,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var edgesForExtendedLayout: UIRectEdge {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.edgesForExtendedLayout
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.edgesForExtendedLayout
         }
 
-        if viewController.edgesForExtendedLayout != store.latest.edgesForExtendedLayout {
+        if viewController.edgesForExtendedLayout != store.current.edgesForExtendedLayout {
             scheduleSnapshot()
         }
 
@@ -413,11 +389,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var editButtonItem: UIBarButtonItem {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.editButtonItem
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.editButtonItem
         }
 
-        if viewController.editButtonItem != store.latest.editButtonItem {
+        if viewController.editButtonItem != store.current.editButtonItem {
             scheduleSnapshot()
         }
 
@@ -425,11 +401,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var extendedLayoutIncludesOpaqueBars: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.extendedLayoutIncludesOpaqueBars
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.extendedLayoutIncludesOpaqueBars
         }
 
-        if viewController.extendedLayoutIncludesOpaqueBars != store.latest.extendedLayoutIncludesOpaqueBars {
+        if viewController.extendedLayoutIncludesOpaqueBars != store.current.extendedLayoutIncludesOpaqueBars {
             scheduleSnapshot()
         }
 
@@ -439,13 +415,13 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     var focusGroupIdentifier: String? {
         guard
             #available(iOS 15.0, *),
-            store.latest.isExpired,
+            store.current.isExpired,
             let viewController = underlyingViewController
         else {
-            return store.latest.focusGroupIdentifier
+            return store.current.focusGroupIdentifier
         }
 
-        if viewController.focusGroupIdentifier != store.latest.focusGroupIdentifier {
+        if viewController.focusGroupIdentifier != store.current.focusGroupIdentifier {
             scheduleSnapshot()
         }
 
@@ -453,11 +429,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var isBeingPresented: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.isBeingPresented
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.isBeingPresented
         }
 
-        if viewController.isBeingPresented != store.latest.isBeingPresented {
+        if viewController.isBeingPresented != store.current.isBeingPresented {
             scheduleSnapshot()
         }
 
@@ -465,11 +441,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var isEditing: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.isEditing
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.isEditing
         }
 
-        if viewController.isEditing != store.latest.isEditing {
+        if viewController.isEditing != store.current.isEditing {
             scheduleSnapshot()
         }
 
@@ -479,13 +455,13 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     var isModalInPresentation: Bool {
         guard
             #available(iOS 13.0, *),
-            store.latest.isExpired,
+            store.current.isExpired,
             let viewController = underlyingViewController
         else {
-            return store.latest.isModalInPresentation
+            return store.current.isModalInPresentation
         }
 
-        if viewController.isModalInPresentation != store.latest.isModalInPresentation {
+        if viewController.isModalInPresentation != store.current.isModalInPresentation {
             scheduleSnapshot()
         }
 
@@ -493,11 +469,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var isViewLoaded: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.isViewLoaded
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.isViewLoaded
         }
 
-        if viewController.isViewLoaded != store.latest.isViewLoaded {
+        if viewController.isViewLoaded != store.current.isViewLoaded {
             scheduleSnapshot()
         }
 
@@ -505,11 +481,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var modalPresentationStyle: UIModalPresentationStyle {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.modalPresentationStyle
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.modalPresentationStyle
         }
 
-        if viewController.modalPresentationStyle != store.latest.modalPresentationStyle {
+        if viewController.modalPresentationStyle != store.current.modalPresentationStyle {
             scheduleSnapshot()
         }
 
@@ -517,11 +493,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var modalTransitionStyle: UIModalTransitionStyle {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.modalTransitionStyle
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.modalTransitionStyle
         }
 
-        if viewController.modalTransitionStyle != store.latest.modalTransitionStyle {
+        if viewController.modalTransitionStyle != store.current.modalTransitionStyle {
             scheduleSnapshot()
         }
 
@@ -529,11 +505,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var navigationItem: UINavigationItem {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.navigationItem
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.navigationItem
         }
 
-        if viewController.navigationItem != store.latest.navigationItem {
+        if viewController.navigationItem != store.current.navigationItem {
             scheduleSnapshot()
         }
 
@@ -541,11 +517,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var nibName: String? {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.nibName
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.nibName
         }
 
-        if viewController.nibName != store.latest.nibName {
+        if viewController.nibName != store.current.nibName {
             scheduleSnapshot()
         }
 
@@ -553,11 +529,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.overrideViewHierarchyInterfaceStyle
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.overrideViewHierarchyInterfaceStyle
         }
 
-        if viewController.overrideViewHierarchyInterfaceStyle != store.latest.overrideViewHierarchyInterfaceStyle {
+        if viewController.overrideViewHierarchyInterfaceStyle != store.current.overrideViewHierarchyInterfaceStyle {
             scheduleSnapshot()
         }
 
@@ -565,11 +541,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var traitCollection: UITraitCollection {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.traitCollection
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.traitCollection
         }
 
-        if viewController.traitCollection != store.latest.traitCollection {
+        if viewController.traitCollection != store.current.traitCollection {
             scheduleSnapshot()
         }
 
@@ -579,13 +555,13 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     var performsActionsWhilePresentingModally: Bool {
         guard
             #available(iOS 13.0, *),
-            store.latest.isExpired,
+            store.current.isExpired,
             let viewController = underlyingViewController
         else {
-            return store.latest.performsActionsWhilePresentingModally
+            return store.current.performsActionsWhilePresentingModally
         }
 
-        if viewController.performsActionsWhilePresentingModally != store.latest.performsActionsWhilePresentingModally {
+        if viewController.performsActionsWhilePresentingModally != store.current.performsActionsWhilePresentingModally {
             scheduleSnapshot()
         }
 
@@ -593,11 +569,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var preferredContentSize: CGSize {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.preferredContentSize
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.preferredContentSize
         }
 
-        if viewController.preferredContentSize != store.latest.preferredContentSize {
+        if viewController.preferredContentSize != store.current.preferredContentSize {
             scheduleSnapshot()
         }
 
@@ -605,11 +581,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var preferredScreenEdgesDeferringSystemGestures: UIRectEdge {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.preferredScreenEdgesDeferringSystemGestures
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.preferredScreenEdgesDeferringSystemGestures
         }
 
-        if viewController.preferredScreenEdgesDeferringSystemGestures != store.latest.preferredScreenEdgesDeferringSystemGestures {
+        if viewController.preferredScreenEdgesDeferringSystemGestures != store.current.preferredScreenEdgesDeferringSystemGestures {
             scheduleSnapshot()
         }
 
@@ -617,11 +593,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var preferredStatusBarStyle: UIStatusBarStyle {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.preferredStatusBarStyle
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.preferredStatusBarStyle
         }
 
-        if viewController.preferredStatusBarStyle != store.latest.preferredStatusBarStyle {
+        if viewController.preferredStatusBarStyle != store.current.preferredStatusBarStyle {
             scheduleSnapshot()
         }
 
@@ -629,11 +605,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.preferredStatusBarUpdateAnimation
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.preferredStatusBarUpdateAnimation
         }
 
-        if viewController.preferredStatusBarUpdateAnimation != store.latest.preferredStatusBarUpdateAnimation {
+        if viewController.preferredStatusBarUpdateAnimation != store.current.preferredStatusBarUpdateAnimation {
             scheduleSnapshot()
         }
 
@@ -641,11 +617,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var prefersHomeIndicatorAutoHidden: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.prefersHomeIndicatorAutoHidden
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.prefersHomeIndicatorAutoHidden
         }
 
-        if viewController.prefersHomeIndicatorAutoHidden != store.latest.prefersHomeIndicatorAutoHidden {
+        if viewController.prefersHomeIndicatorAutoHidden != store.current.prefersHomeIndicatorAutoHidden {
             scheduleSnapshot()
         }
 
@@ -655,13 +631,13 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     var prefersPointerLocked: Bool {
         guard
             #available(iOS 14.0, *),
-            store.latest.isExpired,
+            store.current.isExpired,
             let viewController = underlyingViewController
         else {
-            return store.latest.prefersPointerLocked
+            return store.current.prefersPointerLocked
         }
 
-        if viewController.prefersPointerLocked != store.latest.prefersPointerLocked {
+        if viewController.prefersPointerLocked != store.current.prefersPointerLocked {
             scheduleSnapshot()
         }
 
@@ -669,11 +645,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var prefersStatusBarHidden: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.prefersStatusBarHidden
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.prefersStatusBarHidden
         }
 
-        if viewController.prefersStatusBarHidden != store.latest.prefersStatusBarHidden {
+        if viewController.prefersStatusBarHidden != store.current.prefersStatusBarHidden {
             scheduleSnapshot()
         }
 
@@ -681,11 +657,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var providesPresentationContextTransitionStyle: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.providesPresentationContextTransitionStyle
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.providesPresentationContextTransitionStyle
         }
 
-        if viewController.providesPresentationContextTransitionStyle != store.latest.providesPresentationContextTransitionStyle {
+        if viewController.providesPresentationContextTransitionStyle != store.current.providesPresentationContextTransitionStyle {
             scheduleSnapshot()
         }
 
@@ -693,11 +669,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var restorationClassName: String? {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.restorationClassName
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.restorationClassName
         }
 
-        if viewController.restorationClassName != store.latest.restorationClassName {
+        if viewController.restorationClassName != store.current.restorationClassName {
             scheduleSnapshot()
         }
 
@@ -705,11 +681,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var restorationIdentifier: String? {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.restorationIdentifier
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.restorationIdentifier
         }
 
-        if viewController.restorationIdentifier != store.latest.restorationIdentifier {
+        if viewController.restorationIdentifier != store.current.restorationIdentifier {
             scheduleSnapshot()
         }
 
@@ -717,11 +693,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var restoresFocusAfterTransition: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.restoresFocusAfterTransition
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.restoresFocusAfterTransition
         }
 
-        if viewController.restoresFocusAfterTransition != store.latest.restoresFocusAfterTransition {
+        if viewController.restoresFocusAfterTransition != store.current.restoresFocusAfterTransition {
             scheduleSnapshot()
         }
 
@@ -729,11 +705,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var shouldAutomaticallyForwardAppearanceMethods: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.shouldAutomaticallyForwardAppearanceMethods
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.shouldAutomaticallyForwardAppearanceMethods
         }
 
-        if viewController.shouldAutomaticallyForwardAppearanceMethods != store.latest.shouldAutomaticallyForwardAppearanceMethods {
+        if viewController.shouldAutomaticallyForwardAppearanceMethods != store.current.shouldAutomaticallyForwardAppearanceMethods {
             scheduleSnapshot()
         }
 
@@ -741,11 +717,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var systemMinimumLayoutMargins: NSDirectionalEdgeInsets {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.systemMinimumLayoutMargins
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.systemMinimumLayoutMargins
         }
 
-        if viewController.systemMinimumLayoutMargins != store.latest.systemMinimumLayoutMargins {
+        if viewController.systemMinimumLayoutMargins != store.current.systemMinimumLayoutMargins {
             scheduleSnapshot()
         }
 
@@ -753,11 +729,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var title: String? {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.title
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.title
         }
 
-        if viewController.title != store.latest.title {
+        if viewController.title != store.current.title {
             scheduleSnapshot()
         }
 
@@ -765,11 +741,11 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     }
 
     var viewRespectsSystemMinimumLayoutMargins: Bool {
-        guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.viewRespectsSystemMinimumLayoutMargins
+        guard store.current.isExpired, let viewController = underlyingViewController else {
+            return store.current.viewRespectsSystemMinimumLayoutMargins
         }
 
-        if viewController.viewRespectsSystemMinimumLayoutMargins != store.latest.viewRespectsSystemMinimumLayoutMargins {
+        if viewController.viewRespectsSystemMinimumLayoutMargins != store.current.viewRespectsSystemMinimumLayoutMargins {
             scheduleSnapshot()
         }
 

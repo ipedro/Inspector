@@ -20,16 +20,40 @@
 
 import UIKit
 
-/// A protocol that represents the public interface of a UIView.
-protocol ViewHierarchyElementRepresentable {
-    var canHostContextMenuInteraction: Bool { get }
+// MARK: - UIViewController Extension
 
-    var objectIdentifier: ObjectIdentifier { get }
+extension ViewHierarchyElementDescription where Self: UIViewController {
+    var canPresentOnTop: Bool { view.canPresentOnTop }
+}
+
+/// A protocol that represents the public interface of a UIView.
+protocol ViewHierarchyElementDescription {
+    var view: UIView! { get }
+
+    var viewIdentifier: ObjectIdentifier? { get }
+
+    var canPresentOnTop: Bool { get }
+
+    var isHidden: Bool { get set }
+
+    var isInternalView: Bool { get }
+
+    var frame: CGRect { get }
 
     /// Determines if a view can host an inspector view.
     var canHostInspectorView: Bool { get }
 
-    var isInternalView: Bool { get }
+    var traitCollection: UITraitCollection { get }
+
+    var isViewLoaded: Bool { get }
+
+    var window: UIWindow? { get }
+
+    // MARK: - the rest
+
+    var objectIdentifier: ObjectIdentifier { get }
+
+    var isInternalType: Bool {  get }
 
     var isSystemContainer: Bool { get }
 
@@ -44,11 +68,7 @@ protocol ViewHierarchyElementRepresentable {
 
     var displayName: String { get }
 
-    var canPresentOnTop: Bool { get }
-
     var isUserInteractionEnabled: Bool { get }
-
-    var frame: CGRect { get }
 
     var accessibilityIdentifier: String? { get }
 
@@ -67,12 +87,11 @@ protocol ViewHierarchyElementRepresentable {
     var elementDescription: String { get }
 
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle { get }
-
-    var traitCollection: UITraitCollection { get }
-
-    var isHidden: Bool { get set }
 }
 
-extension ViewHierarchyElementRepresentable {
+extension ViewHierarchyElementDescription {
     var hasIssues: Bool { !issues.isEmpty }
+
+    var viewIdentifier: ObjectIdentifier? { isViewLoaded ? ObjectIdentifier(view) : nil }
 }
+

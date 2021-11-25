@@ -58,7 +58,7 @@ public extension Inspector {
                     return false
                 }
 
-                if !allowsInternalViews && $0.isInternalView {
+                if !allowsInternalViews && $0.isInternalType {
                     return false
                 }
 
@@ -76,7 +76,7 @@ public extension Inspector {
                 return filteredViews
 
             case false:
-                return filteredViews.filter { $0.isInternalView == false }
+                return filteredViews.filter { $0.isInternalType == false }
             }
         }
     }
@@ -142,7 +142,7 @@ extension ViewHierarchyLayer {
     /// Shows frames of all views
     public static let wireframes = Inspector.ViewHierarchyLayer(name: "Wireframes", showLabels: false, allowsInternalViews: true) { _ in true }
     /// Highlights all
-    public static let internalViews = Inspector.ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsInternalViews: true) { $0._isInternalView }
+    public static let internalViews = Inspector.ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsInternalViews: true) { $0._isInternalType }
 
     public static let viewControllers = Inspector.ViewHierarchyLayer(name: "View Controllers", showLabels: true, allowsInternalViews: true, allowsSystemContainers: true) { $0.controller != nil }
 }

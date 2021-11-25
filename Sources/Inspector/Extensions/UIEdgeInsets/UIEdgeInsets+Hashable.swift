@@ -18,15 +18,13 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
-extension UIViewController {
-    var topPresentedViewController: UIViewController? {
-        presentedViewController?.topPresentedViewController ?? self
-    }
-
-    var allChildren: [UIViewController] {
-        children.flatMap { [$0] + $0.allChildren }
+extension UIEdgeInsets: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(top)
+        hasher.combine(left)
+        hasher.combine(right)
+        hasher.combine(bottom)
     }
 }

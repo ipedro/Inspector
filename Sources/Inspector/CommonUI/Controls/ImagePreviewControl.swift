@@ -109,13 +109,19 @@ final class ImagePreviewControl: BaseFormControl {
 
     private func didUpdateImage() {
         imageView.image = image
+        imageNameLabel.text = imageDecription(image)
+    }
 
-        guard let image = image else {
-            imageNameLabel.text = "None"
-            return
+    private func imageDecription(_ image: UIImage?) -> String {
+        guard let image = image else { return "None" }
+
+        let sizeDesription = image.sizeDesription
+
+        guard let accessibilityIdentifier = image.accessibilityIdentifier else {
+            return sizeDesription
         }
 
-        imageNameLabel.text = image.assetName ?? image.sizeDesription
+        return "\(accessibilityIdentifier) (\(sizeDesription))"
     }
 
     @objc private func tapImage() {

@@ -19,91 +19,113 @@
 //  SOFTWARE.
 
 import UIKit
-import UniformTypeIdentifiers
 
-extension ViewHierarchyElement {
-    struct Snapshot: ViewHierarchyElementRepresentable, ExpirableProtocol, Equatable {
+struct UIViewSnapshot: ExpirableProtocol {
+    let identifier = UUID()
+    let objectIdentifier: ObjectIdentifier
+    let parent: ViewHierarchyElementReference? = nil
+    var accessibilityIdentifier: String?
+    var canHostInspectorView: Bool
+    var canHostContextMenuInteraction: Bool
+    var canPresentOnTop: Bool
+    var className: String
+    var classNameWithoutQualifiers: String
+    var constraintElements: [LayoutConstraintElement]
+    var depth: Int
+    var displayName: String
+    var elementDescription: String
+    var elementName: String
+    var expirationDate: Date = makeExpirationDate()
+    var frame: CGRect
+    var iconImage: UIImage?
+    var isContainer: Bool
+    var isHidden: Bool
+    var isInternalType: Bool
+    var isSystemContainer: Bool
+    var isUserInteractionEnabled: Bool
+    var issues: [ViewHierarchyIssue]
+    var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle
+    var shortElementDescription: String
+    var traitCollection: UITraitCollection
 
-        static func == (lhs: ViewHierarchyElement.Snapshot, rhs: ViewHierarchyElement.Snapshot) -> Bool {
-            lhs.identifier == rhs.identifier
-        }
+    init(view: UIView, icon: UIImage?, depth: Int) {
+        accessibilityIdentifier = view.accessibilityIdentifier
+        canHostContextMenuInteraction = view.canHostContextMenuInteraction
+        canHostInspectorView = view.canHostInspectorView
+        canPresentOnTop = view.canPresentOnTop
+        className = view.className
+        classNameWithoutQualifiers = view.classNameWithoutQualifiers
+        constraintElements = view.constraintElements
+        self.depth = depth
+        displayName = view.displayName
+        elementDescription = view.elementDescription
+        elementName = view.elementName
+        frame = view.frame
+        iconImage = icon
+        isContainer = view.isContainer
+        isHidden = view.isHidden
+        isInternalType = view.isInternalType
+        isSystemContainer = view.isSystemContainer
+        isUserInteractionEnabled = view.isUserInteractionEnabled
+        issues = view.issues
+        objectIdentifier = view.objectIdentifier
+        overrideViewHierarchyInterfaceStyle = view.overrideViewHierarchyInterfaceStyle
+        shortElementDescription = view.shortElementDescription
+        traitCollection = view.traitCollection
+    }
 
-        let identifier = UUID()
-        let objectIdentifier: ObjectIdentifier
-        let parent: ViewHierarchyElementReference? = nil
-        var accessibilityIdentifier: String?
-        var canHostInspectorView: Bool
-        var canHostContextMenuInteraction: Bool
-        var canPresentOnTop: Bool
-        var className: String
-        var classNameWithoutQualifiers: String
-        var constraintElements: [LayoutConstraintElement]
-        var depth: Int
-        var displayName: String
-        var elementDescription: String
-        var elementName: String
-        var expirationDate: Date = makeExpirationDate()
-        var frame: CGRect
-        var iconImage: UIImage?
-        var isContainer: Bool
-        var isHidden: Bool
-        var isInternalView: Bool
-        var isSystemContainer: Bool
-        var isUserInteractionEnabled: Bool
-        var issues: [ViewHierarchyIssue]
-        var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle
-        var shortElementDescription: String
-        var traitCollection: UITraitCollection
+    private static func makeExpirationDate() -> Date {
+        let expiration = Inspector.configuration.snapshotExpirationTimeInterval
+        let expirationDate = Date().addingTimeInterval(expiration)
 
-        init(view: UIView, icon: UIImage?, depth: Int) {
-            self.depth = depth
+        return expirationDate
+    }
 
-            accessibilityIdentifier = view.accessibilityIdentifier
-            canHostContextMenuInteraction = view.canHostContextMenuInteraction
-            canHostInspectorView = view.canHostInspectorView
-            canPresentOnTop = view.canPresentOnTop
-            className = view._className
-            classNameWithoutQualifiers = view._classNameWithoutQualifiers
-            constraintElements = view.constraintElements
-            displayName = view.displayName
-            elementDescription = view.elementDescription
-            elementName = view.elementName
-            frame = view.frame
-            iconImage = icon
-            isContainer = !view.children.isEmpty
-            isHidden = view.isHidden
-            isInternalView = view.isInternalView
-            isSystemContainer = view.isSystemContainer
-            isUserInteractionEnabled = view.isUserInteractionEnabled
-            issues = view.issues
-            objectIdentifier = view.objectIdentifier
-            overrideViewHierarchyInterfaceStyle = view.overrideViewHierarchyInterfaceStyle
-            shortElementDescription = view.shortElementDescription
-            traitCollection = view.traitCollection
-        }
-
-        private static func makeExpirationDate() -> Date {
-            let expiration = Inspector.configuration.snapshotExpirationTimeInterval
-            let expirationDate = Date().addingTimeInterval(expiration)
-
-            return expirationDate
-        }
+    static func == (lhs: UIViewSnapshot, rhs: UIViewSnapshot) -> Bool {
+        lhs.identifier == rhs.identifier
     }
 }
 
+final class New_ViewHierarchyElement<Element: ViewHierarchyNodeRelationship & ExpirableProtocol> {
+    let element: Element
 
-final class ViewHierarchyElement: CustomDebugStringConvertible {
-    var debugDescription: String {
-        String(describing: store.latest)
+    let iconProvider: ViewHierarchyElementIconProvider
+
+    var depth: Int {
+        didSet {
+            // children.forEach { $0.depth = depth + 1 }
+        }
     }
 
+    private var store: SnapshotStore<Element>
+
+    // MARK: - ViewHierarchyElementReference
+
+
+    init(
+        element: Element,
+        iconProvider: ViewHierarchyElementIconProvider,
+        depth: Int
+    ) {
+        self.element = element
+        self.iconProvider = iconProvider
+        self.depth = element.depth
+        self.store = SnapshotStore(element: element)
+    }
+}
+
+extension New_ViewHierarchyElement: ViewHierarchyElementReference {
+    
+}
+
+final class ViewHierarchyElement {
     weak var underlyingView: UIView?
 
     weak var parent: ViewHierarchyElementReference?
 
     let iconProvider: ViewHierarchyElementIconProvider
 
-    private var store: SnapshotStore<Snapshot>
+    private var store: SnapshotStore<UIViewSnapshot>
 
     var isCollapsed: Bool
 
@@ -151,7 +173,7 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
         self.isCollapsed = isCollapsed
         self.isUnderlyingViewUserInteractionEnabled = view.isUserInteractionEnabled
 
-        let initialSnapshot = Snapshot(
+        let initialSnapshot = UIViewSnapshot(
             view: view,
             icon: iconProvider.resizedIcon(for: view),
             depth: depth
@@ -160,7 +182,7 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
         self.store = SnapshotStore(initialSnapshot)
     }
 
-    var latestSnapshot: Snapshot { store.latest }
+    var latestSnapshot: UIViewSnapshot { store.current }
 
     var isUnderlyingViewUserInteractionEnabled: Bool
 
@@ -175,7 +197,7 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 
 extension ViewHierarchyElement: ViewHierarchyElementReference {
     var canHostContextMenuInteraction: Bool {
-        store.latest.canHostContextMenuInteraction
+        store.current.canHostContextMenuInteraction
     }
 
     var isSystemContainer: Bool {
@@ -210,11 +232,11 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     }
 
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.overrideViewHierarchyInterfaceStyle
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.overrideViewHierarchyInterfaceStyle
         }
 
-        if rootView.overrideViewHierarchyInterfaceStyle != store.latest.overrideViewHierarchyInterfaceStyle {
+        if rootView.overrideViewHierarchyInterfaceStyle != store.current.overrideViewHierarchyInterfaceStyle {
             scheduleSnapshot()
         }
 
@@ -222,11 +244,11 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     }
 
     var traitCollection: UITraitCollection {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.traitCollection
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.traitCollection
         }
 
-        if rootView.traitCollection != store.latest.traitCollection {
+        if rootView.traitCollection != store.current.traitCollection {
             scheduleSnapshot()
         }
 
@@ -236,13 +258,13 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     // MARK: - Cached properties
 
     var iconImage: UIImage? {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.iconImage
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.iconImage
         }
 
         let currentIcon = iconProvider.resizedIcon(for: rootView)
 
-        if currentIcon?.pngData() != store.latest.iconImage?.pngData() {
+        if currentIcon?.pngData() != store.current.iconImage?.pngData() {
             scheduleSnapshot()
         }
 
@@ -250,11 +272,11 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     }
 
     var isContainer: Bool {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.isContainer
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.isContainer
         }
 
-        if rootView.isContainer != store.latest.isContainer {
+        if rootView.isContainer != store.current.isContainer {
             scheduleSnapshot()
         }
 
@@ -262,11 +284,11 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     }
 
     var shortElementDescription: String {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.shortElementDescription
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.shortElementDescription
         }
 
-        if rootView.shortElementDescription != store.latest.shortElementDescription {
+        if rootView.shortElementDescription != store.current.shortElementDescription {
             scheduleSnapshot()
         }
 
@@ -275,10 +297,10 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
 
     var elementDescription: String {
         guard let rootView = underlyingView else {
-            return store.latest.elementDescription
+            return store.current.elementDescription
         }
 
-        if rootView.canHostInspectorView != store.latest.canHostInspectorView {
+        if rootView.canHostInspectorView != store.current.canHostInspectorView {
             scheduleSnapshot()
         }
 
@@ -286,35 +308,35 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     }
 
     var canHostInspectorView: Bool {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.canHostInspectorView
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.canHostInspectorView
         }
 
-        if rootView.canHostInspectorView != store.latest.canHostInspectorView {
+        if rootView.canHostInspectorView != store.current.canHostInspectorView {
             scheduleSnapshot()
         }
 
         return rootView.canHostInspectorView
     }
 
-    var isInternalView: Bool {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.isInternalView
+    var isInternalType: Bool {
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.isInternalType
         }
 
-        if rootView.isInternalView != store.latest.isInternalView {
+        if rootView.isInternalType != store.current.isInternalType {
             scheduleSnapshot()
         }
 
-        return rootView.isInternalView
+        return rootView.isInternalType
     }
 
     var elementName: String {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.elementName
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.elementName
         }
 
-        if rootView.elementName != store.latest.elementName {
+        if rootView.elementName != store.current.elementName {
             scheduleSnapshot()
         }
 
@@ -322,11 +344,11 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     }
 
     var displayName: String {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.displayName
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.displayName
         }
 
-        if rootView.displayName != store.latest.displayName {
+        if rootView.displayName != store.current.displayName {
             scheduleSnapshot()
         }
 
@@ -334,11 +356,11 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     }
 
     var frame: CGRect {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.frame
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.frame
         }
 
-        if rootView.frame != store.latest.frame {
+        if rootView.frame != store.current.frame {
             scheduleSnapshot()
         }
 
@@ -346,11 +368,11 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     }
 
     var accessibilityIdentifier: String? {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.accessibilityIdentifier
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.accessibilityIdentifier
         }
 
-        if rootView.accessibilityIdentifier != store.latest.accessibilityIdentifier {
+        if rootView.accessibilityIdentifier != store.current.accessibilityIdentifier {
             scheduleSnapshot()
         }
 
@@ -358,11 +380,11 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     }
 
     var constraintElements: [LayoutConstraintElement] {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.constraintElements
+        guard store.current.isExpired, let rootView = underlyingView else {
+            return store.current.constraintElements
         }
 
-        if rootView.constraintElements != store.latest.constraintElements {
+        if rootView.constraintElements != store.current.constraintElements {
             scheduleSnapshot()
         }
 
@@ -373,7 +395,7 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
         case dealocatedSelf, lostConnectionToView
     }
 
-    private func scheduleSnapshot(_ handler: ((Result<Snapshot, SnapshotSchedulingError>) -> Void)? = nil) {
+    private func scheduleSnapshot(_ handler: ((Result<UIViewSnapshot, SnapshotSchedulingError>) -> Void)? = nil) {
         store.scheduleSnapshot(
             .init(closure: { [weak self] in
                 guard let self = self else {
@@ -386,15 +408,15 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
                     return nil
                 }
 
-                let snapshot = Snapshot(
-                    view: rootView,
-                    icon: self.iconProvider.resizedIcon(for: rootView),
-                    depth: self.depth
+                handler?(
+                    .success(
+                        .init(
+                            view: rootView,
+                            icon: self.iconProvider.resizedIcon(for: rootView),
+                            depth: self.depth
+                        )
+                    )
                 )
-
-                handler?(.success(snapshot))
-
-                return snapshot
              }
           )
        )
@@ -415,13 +437,13 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
 
     var issues: [ViewHierarchyIssue] {
         guard let rootView = underlyingView else {
-            var issues = store.latest.issues
+            var issues = store.current.issues
             issues.append(.lostConnection)
 
             return issues
         }
 
-        if rootView.issues != store.latest.issues {
+        if rootView.issues != store.current.issues {
             scheduleSnapshot()
         }
 

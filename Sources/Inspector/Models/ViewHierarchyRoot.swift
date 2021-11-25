@@ -113,7 +113,7 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
 
     var canHostInspectorView: Bool { false }
 
-    var isInternalView: Bool { false }
+    var isInternalType: Bool { false }
 
     var isSystemContainer: Bool { false }
 

@@ -50,18 +50,123 @@ public struct InspectorConfiguration {
     }
 
     let knownSystemContainers: [String] = [
-        "UIEditingOverlayViewController",
-        "UIWindow",
-        "UITransitionView",
         "UIDropShadowView",
+        "UIEditingOverlayViewController",
         "UILayoutContainerView",
+        "UITransitionView",
+        "UIWindow",
         // Navigaiton
-        "UIViewControllerWrapperView",
         "UINavigationTransitionView",
+        "UIViewControllerWrapperView",
         // Swift UI
-        "_UIHostingView",
-        "PlatformViewHost",
+        "HostingScrollView",
         "PlatformGroupContainer",
-        "HostingScrollView"
+        "PlatformViewHost",
+        "_UIHostingView",
     ]
+
+    let blockLists = BlockLists()
+}
+
+extension InspectorConfiguration {
+    struct BlockLists {
+        var contextMenuInteraction: [String] = [
+            "UIDropShadowView",
+            "UITransitionView",
+            "UIWindow",
+            "_UIModernBarButton",
+        ]
+
+        var inspectorViewHost: [String] = [
+            "UIEditingOverlayGestureView",
+            "UIInputSetContainerView",
+            "UIRemoteKeyboardWindow",
+            "UITableViewCellContentView",
+            "UITextEffectsWindow",
+            "_UIPageViewControllerContentView",
+            "_UIQueuingScrollView",
+            "UIVisualEffectView"
+        ]
+
+        var inspectorSuperviewHost: [String] = [
+            "_UIQueuingScrollView",
+            "UIButton"
+        ]
+
+        var propertyNames = [
+            "UINavigationBar._contentViewHidden",
+            "UITextView.PINEntrySeparatorIndexes",
+            "UITextView.acceptsDictationSearchResults",
+            "UITextView.acceptsEmoji",
+            "UITextView.acceptsFloatingKeyboard",
+            "UITextView.acceptsInitialEmojiKeyboard",
+            "UITextView.acceptsPayloads",
+            "UITextView.acceptsSplitKeyboard",
+            "UITextView.autocapitalizationType",
+            "UITextView.autocorrectionContext",
+            "UITextView.autocorrectionType",
+            "UITextView.contentsIsSingleValue",
+            "UITextView.deferBecomingResponder",
+            "UITextView.disableHandwritingKeyboard",
+            "UITextView.disableInputBars",
+            "UITextView.disablePrediction",
+            "UITextView.displaySecureEditsUsingPlainText",
+            "UITextView.displaySecureTextUsingPlainText",
+            "UITextView.emptyContentReturnKeyType",
+            "UITextView.enablesReturnKeyAutomatically",
+            "UITextView.enablesReturnKeyOnNonWhiteSpaceContent",
+            "UITextView.floatingKeyboardEdgeInsets",
+            "UITextView.forceDefaultDictationInfo",
+            "UITextView.forceDictationKeyboardType",
+            "UITextView.forceFloatingKeyboard",
+            "UITextView.hasDefaultContents",
+            "UITextView.hidePrediction",
+            "UITextView.inputContextHistory",
+            "UITextView.insertionPointColor",
+            "UITextView.insertionPointWidth",
+            "UITextView.isCarPlayIdiom",
+            "UITextView.isSingleLineDocument",
+            "UITextView.keyboardAppearance",
+            "UITextView.keyboardType",
+            "UITextView.learnsCorrections",
+            "UITextView.loadKeyboardsForSiriLanguage",
+            "UITextView.passwordRules",
+            "UITextView.preferOnlineDictation",
+            "UITextView.preferredKeyboardStyle",
+            "UITextView.recentInputIdentifier",
+            "UITextView.responseContext",
+            "UITextView.returnKeyGoesToNextResponder",
+            "UITextView.returnKeyType",
+            "UITextView.selectionBarColor",
+            "UITextView.selectionBorderColor",
+            "UITextView.selectionBorderWidth",
+            "UITextView.selectionCornerRadius",
+            "UITextView.selectionDragDotImage",
+            "UITextView.selectionEdgeInsets",
+            "UITextView.selectionHighlightColor",
+            "UITextView.shortcutConversionType",
+            "UITextView.showDictationButton",
+            "UITextView.smartDashesType",
+            "UITextView.smartInsertDeleteType",
+            "UITextView.smartQuotesType",
+            "UITextView.spellCheckingType",
+            "UITextView.supplementalLexicon",
+            "UITextView.supplementalLexiconAmbiguousItemIcon",
+            "UITextView.suppressReturnKeyStyling",
+            "UITextView.textContentType",
+            "UITextView.textLoupeVisibility",
+            "UITextView.textScriptType",
+            "UITextView.textSelectionBehavior",
+            "UITextView.textSuggestionDelegate",
+            "UITextView.textTrimmingSet",
+            "UITextView.underlineColorForSpelling",
+            "UITextView.underlineColorForTextAlternatives",
+            "UITextView.useAutomaticEndpointing",
+            "UITextView.useInterfaceLanguageForLocalization",
+            "UITextView.validTextRange",
+            "UITextField.textTrimmingSet",
+            "WKContentView._wk_printedDocument",
+            "WKWebView._wk_printedDocument"
+        ]
+    }
 }

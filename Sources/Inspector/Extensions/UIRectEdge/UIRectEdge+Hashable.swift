@@ -18,23 +18,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
+import UIKit
 
-extension NSObject {
-    var classesForCoder: [AnyClass] {
-        var array = [classForCoder]
-
-        var objectClass: AnyClass = classForCoder
-
-        while objectClass.superclass() != nil {
-            guard let superclass = objectClass.superclass() else {
-                break
-            }
-
-            array.append(superclass)
-            objectClass = superclass
-        }
-
-        return array
+extension UIRectEdge: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(String(describing: self))
     }
 }

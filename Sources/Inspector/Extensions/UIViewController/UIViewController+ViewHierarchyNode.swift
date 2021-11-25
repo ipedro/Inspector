@@ -18,48 +18,50 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
+import UIKit
 
-final class SnapshotStore<Element: ExpirableProtocol>: NSObject {
-    typealias ElementProvider = Inspector.Provider<Void, Element?>
+extension UIViewController: ViewHierarchyNodeRelationship {
+    typealias Node = UIViewController
 
-    let first: Element
+    var isHidden: Bool {
+        get { view.isHidden }
+        set { view.isHidden = newValue }
+    }
 
-    var current: Element { history.last ?? first }
+    var frame: CGRect {
+        view.frame
+    }
 
-    var currentSnapshotIdentifier: UUID { current.identifier }
+    var window: UIWindow? {
+        view.window
+    }
 
-    var expirationDate: Date { current.expirationDate }
+    var canHostContextMenuInteraction: Bool {
+        if isViewLoaded { return view.canHostContextMenuInteraction }
+        return false
+    }
 
-    // MARK: - Computed Properties
+    var canHostInspectorView: Bool {
+        if isViewLoaded { return view.canHostInspectorView }
+        return false
+    }
 
-    private var elementProvider: ElementProvider? {
-        didSet {
-            debounce(#selector(makeSnapshot), delay: first.self.delay)
+    var topPresentedViewController: UIViewController? {
+        presentedViewController?.topPresentedViewController ?? self
+    }
+
+    var allParents: [UIViewController] {
+        var array = [UIViewController]()
+
+        if let parent = parent {
+            array.append(parent)
+            array.append(contentsOf: parent.allParents)
         }
+
+        return array.filter { !($0.view is LayerViewProtocol) }
     }
 
-    private lazy var history: [Element] = [first]
-
-    // MARK: - Init
-
-    init(element: Element) {
-        self.first = element
-    }
-
-    // MARK: - Methods
-
-    func hasChanges(inRelationTo identifier: UUID) -> Bool {
-        current.identifier == identifier
-    }
-
-    func scheduleSnapshot(_ elementprovider: ElementProvider) {
-        elementProvider = elementprovider
-    }
-
-    @objc private func makeSnapshot() {
-        guard let newSnapshot = elementProvider?.value else { return }
-
-        history.append(newSnapshot)
+    var allChildren: [UIViewController] {
+        children.flatMap { [$0] + $0.allChildren }
     }
 }

@@ -21,19 +21,6 @@
 import UIKit
 
 extension UIImage {
-    var assetName: String? {
-        guard
-            let regex = try? NSRegularExpression(pattern: "(?<=named\\().+(?=\\))|(?<=symbol\\()\\w+:\\s\\w+(?=\\))", options: .caseInsensitive),
-            let firstMatch = regex.firstMatch(in: description)
-        else {
-            return nil
-        }
-
-        let assetName = description.substring(with: firstMatch.range)
-
-        return assetName
-    }
-
     var sizeDesription: String {
         guard
             let width = formatter.string(from: size.width * scale / screenScale),

@@ -20,34 +20,10 @@
 
 import UIKit
 
-extension UIView: ViewHierarchyElementRepresentable {
-    var depth: Int {
-        allParents.count
-    }
-
-    var parent: UIView? {
-        superview
-    }
-
-    var isContainer: Bool { !children.isEmpty }
-
-    var allParents: [UIView] {
-        var array = [UIView]()
-
-        if let parent = parent {
-            array.append(parent)
-            array.append(contentsOf: parent.allParents)
-        }
-        
-        return array.filter { !($0 is LayerViewProtocol) }
-    }
-
-    var children: [UIView] {
-        subviews.filter { !($0 is LayerViewProtocol) }
-    }
-
-    var allChildren: [UIView] {
-        children.reversed().flatMap { [$0] + $0.allChildren }
+extension UIView: ViewHierarchyElementDescription {
+    var isInternalType: Bool {
+        className.first == "_" &&
+        className.isInternalType
     }
 
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle {
@@ -58,30 +34,6 @@ extension UIView: ViewHierarchyElementRepresentable {
         }
     }
 
-    var isInternalView: Bool {
-        _isInternalView
-    }
-
-    var isSystemContainer: Bool {
-        _isSystemContainer
-    }
-
-    var className: String {
-        _className
-    }
-
-    var classNameWithoutQualifiers: String {
-        _classNameWithoutQualifiers
-    }
-
-    var objectIdentifier: ObjectIdentifier {
-        ObjectIdentifier(self)
-    }
-
-    var isAssociatedToWindow: Bool {
-        window != nil || self is UIWindow
-    }
-
     var issues: [ViewHierarchyIssue] { ViewHierarchyIssue.issues(for: self) }
 
     var constraintElements: [LayoutConstraintElement] {
@@ -90,75 +42,9 @@ extension UIView: ViewHierarchyElementRepresentable {
             .uniqueValues()
     }
 
-    var canPresentOnTop: Bool {
-        // Avoid breaking UINavigationController large title.
-        if let superViewClassName = superview?._className, superViewClassName == "UIViewControllerWrapperView" {
-            return true
-        }
-
-        switch self {
-        case is UITextView:
-            return true
-
-        case is UIScrollView:
-            return false
-
-        default:
-            return true
-        }
-    }
-
-    var canHostContextMenuInteraction: Bool {
-        canHostInspectorView &&
-        className != "UIWindow" &&
-        className != "UITransitionView" &&
-        className != "UIDropShadowView" &&
-        className != "_UIModernBarButton"
-    }
-
-    var canHostInspectorView: Bool {
-        let className = self._className
-        let superViewClassName = superview?._className ?? ""
-
-        guard
-            className != "UIRemoteKeyboardWindow",
-            className != "UITextEffectsWindow",
-            className != "UIEditingOverlayGestureView",
-            className != "UIInputSetContainerView",
-//            className != "TUISystemInputAssistantView",
-            
-            // Adding subviews directly to a UIVisualEffectView throws runtime exception.
-            self is UIVisualEffectView == false,
-
-            // Adding subviews to UIPageViewController containers throws runtime exception.
-            className != "_UIPageViewControllerContentView",
-            subviews.map(\._className).contains("_UIPageViewControllerContentView") == false,
-            className != "_UIQueuingScrollView",
-            superViewClassName != "_UIQueuingScrollView",
-
-            // Avoid breaking UIButton layout.
-            superview is UIButton == false,
-
-            // Avoid breaking UITableView self sizing cells.
-            className != "UITableViewCellContentView",
-
-            // Skip non inspectable views
-            self is NonInspectableView == false,
-            superview is NonInspectableView == false,
-            //allParents.filter({ $0 is NonInspectableView }).isEmpty,
-
-            // Skip custom classes
-            Inspector.configuration.nonInspectableClassNames.contains(className) == false,
-            Inspector.configuration.nonInspectableClassNames.contains(superViewClassName) == false
-        else {
-            return false
-        }
-        return true
-    }
-
     var elementName: String {
         guard let description = accessibilityIdentifier?.split(separator: ".").last else {
-            return _classNameWithoutQualifiers
+            return classNameWithoutQualifiers
         }
 
         return String(description)
@@ -178,8 +64,8 @@ extension UIView: ViewHierarchyElementRepresentable {
          constraintsDescription,
          positionDescrpition,
          sizeDescription,
-         _superclassName,
-         _className]
+         superclassName,
+         className]
             .compactMap { $0 }
             .prefix(3)
             .joined(separator: .newLine)
@@ -225,11 +111,11 @@ private extension UIView {
     }
 
     var classNameDescription: String? {
-        guard let superclassName = _superclassName else {
-            return _className
+        guard let superclassName = superclassName else {
+            return className
         }
 
-        return "\(_className) (\(superclassName))"
+        return "\(className) (\(superclassName))"
     }
 
     var issuesDescription: String? {
@@ -260,40 +146,4 @@ private extension UIView {
             return totalCount == 1 ? "1 Constraint" : "\(totalCount) Constraints"
         }
     }
-}
-
-extension NSObject {
-    var _isInternalView: Bool {
-        _className.starts(with: "_")
-    }
-
-    var _isSystemContainer: Bool {
-        let className = _classNameWithoutQualifiers
-
-        for systemContainer in Inspector.configuration.knownSystemContainers {
-            if className == systemContainer || className.starts(with: "_UI") {
-                return true
-            }
-        }
-
-        return false
-    }
-
-    var _className: String {
-        String(describing: classForCoder)
-    }
-
-    var _superclassName: String? {
-        guard let superclass = superclass else { return nil }
-        return String(describing: superclass)
-    }
-
-    var _classNameWithoutQualifiers: String {
-        guard let nameWithoutQualifiers = _className.split(separator: "<").first else {
-            return _className
-        }
-
-        return String(nameWithoutQualifiers)
-    }
-
 }

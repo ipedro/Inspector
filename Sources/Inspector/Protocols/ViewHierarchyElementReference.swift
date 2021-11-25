@@ -18,19 +18,14 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
-protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyObject {
+protocol ViewHierarchyElementReference: ViewHierarchyElementDescription {
     var underlyingObject: NSObject? { get }
 
     var underlyingView: UIView? { get }
 
     var underlyingViewController: UIViewController? { get }
-
-    func hasChanges(inRelationTo identifier: UUID) -> Bool
-
-    var latestSnapshotIdentifier: UUID { get }
 
     var iconImage: UIImage? { get }
 
@@ -41,6 +36,14 @@ protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyO
     var children: [ViewHierarchyElementReference] { get set }
     
     var viewHierarchy: [ViewHierarchyElementReference] { get }
+
+    // MARK: - FODASE
+
+    var isViewLoaded: Bool { get }
+
+    var canHostContextMenuInteraction: Bool { get }
+
+    var window: UIWindow? { get }
 }
 
 extension ViewHierarchyElementReference {

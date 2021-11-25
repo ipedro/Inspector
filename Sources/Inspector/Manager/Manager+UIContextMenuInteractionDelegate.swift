@@ -28,7 +28,7 @@ extension Inspector.Manager: UIContextMenuInteractionDelegate {
 
         func skipView() {
             interactionDelegates[identifier] = false
-            print("🧬 Ignoring \(view._className)")
+            print("🧬 Ignoring \(view.className)")
         }
 
         let identifier = ObjectIdentifier(view)

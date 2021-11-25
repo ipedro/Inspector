@@ -33,7 +33,7 @@ extension ElementAttributesLibrary {
             guard let view = object as? UIView else { return nil }
 
             layer = view.layer
-            title = view.layer._className
+            title = view.layer.className
         }
 
         private enum Property: String, Swift.CaseIterable {
