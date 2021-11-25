@@ -92,11 +92,7 @@ extension ViewHierarchyElement {
 }
 
 
-final class ViewHierarchyElement: CustomDebugStringConvertible {
-    var debugDescription: String {
-        String(describing: store.latest)
-    }
-
+final class ViewHierarchyElement {
     weak var underlyingView: UIView?
 
     weak var parent: ViewHierarchyElementReference?
@@ -430,6 +426,14 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
 
     var objectIdentifier: ObjectIdentifier {
         store.first.objectIdentifier
+    }
+}
+
+// MARK: - CustomDebugStringConvertible
+
+extension ViewHierarchyElement: CustomDebugStringConvertible {
+    var debugDescription: String {
+        elementDescription
     }
 }
 

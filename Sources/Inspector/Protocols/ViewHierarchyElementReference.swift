@@ -21,7 +21,7 @@
 
 import UIKit
 
-protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyObject {
+protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyObject & CustomDebugStringConvertible {
     var underlyingObject: NSObject? { get }
 
     var underlyingView: UIView? { get }

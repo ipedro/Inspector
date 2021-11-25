@@ -42,6 +42,10 @@ final class ViewHierarchyRoot {
 
     }.flatMap { $0 }
 
+    var keyWindow: ViewHierarchyElementReference? {
+        children.first { ($0.underlyingView as? UIWindow)?.isKeyWindow == true }
+    }
+
     var depth: Int = .zero
 
     var isHidden: Bool = false
@@ -95,6 +99,8 @@ final class ViewHierarchyRoot {
 }
 
 extension ViewHierarchyRoot: ViewHierarchyElementReference {
+    var debugDescription: String { elementDescription }
+
     var viewHierarchy: [ViewHierarchyElementReference] { children }
     
     var underlyingObject: NSObject? { UIApplication.shared }
@@ -144,5 +150,4 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle { .unspecified }
 
     var traitCollection: UITraitCollection { UITraitCollection() }
-
 }

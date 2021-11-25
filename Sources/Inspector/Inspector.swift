@@ -24,7 +24,13 @@ typealias Closure = () -> Void
 
 public enum Inspector {
     static let manager = Inspector.Manager()
-    
+
+    public static var console: Console? {
+        guard let viewHierarchySnapshot = manager.viewHierarchySnapshot else { return nil }
+
+        return try? Console(snapshot: viewHierarchySnapshot)
+    }
+
     public static var configuration = InspectorConfiguration(
         isSwizzlingEnabled: {
             #if DEBUG
@@ -50,26 +56,6 @@ public enum Inspector {
 
     public static func restart() {
         manager.reset()
-    }
-}
-
-// MARK: - Utils
-
-public extension Inspector {
-    static func printViewHierarchyDescription() {
-        printViewHierarchyDescription(of: nil)
-    }
-    
-    static func printViewHierarchyDescription(of object: NSObject?) {
-        print(viewHierarchyDescription(of: object) ?? "No snaphsot available")
-    }
-    
-    static func viewHierarchyDescription(of object: NSObject? = nil) -> String? {
-        guard let root = manager.viewHierarchySnapshot?.root else { return nil }
-        
-        guard let object = object else { return root.viewHierarchyDescription }
-        
-        return root.viewHierarchy.first(where: { $0.underlyingObject === object })?.viewHierarchyDescription
     }
 }
 
