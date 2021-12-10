@@ -41,6 +41,4 @@ import UIKit
             action: action
         )
     }
-
-    override open var keyCommands: [UIKeyCommand]? { Inspector.manager.keyCommands }
 }
