@@ -25,15 +25,20 @@ typealias Closure = () -> Void
 public enum Inspector {
     static let manager = Inspector.Manager()
     
-    public static var configuration = InspectorConfiguration(isSwizzlingEnabled: false)
+    public static var configuration: InspectorConfiguration!
 
     public static var host: InspectorHost? {
         get { manager.host }
-        set { manager.host = newValue }
+        @available(*, deprecated, message: "Instead of setting host, prefer calling `start(host:configuration:)`")
+        set {
+            guard let newHost = newValue else { return manager.finish() }
+            start(host: newHost)
+        }
     }
 
-    public static func start() {
-        _ = manager
+    public static func start(host: InspectorHost, configuration: InspectorConfiguration = .default) {
+        self.configuration = configuration
+        self.manager.host = host
     }
 
     public static func finish() {

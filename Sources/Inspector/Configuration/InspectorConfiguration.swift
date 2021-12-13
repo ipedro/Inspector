@@ -25,13 +25,27 @@ public struct InspectorConfiguration {
 
     public var keyCommands: KeyCommandSettings = .init()
 
-    public var snapshotExpirationTimeInterval: TimeInterval = 0.5
+    public var snapshotExpirationTimeInterval: TimeInterval
 
-    public var showAllViewSearchQuery: String = "*"
+    public var showAllViewSearchQuery: String
 
-    public var nonInspectableClassNames: [String] = []
+    public var nonInspectableClassNames: [String]
 
     public var isSwizzlingEnabled: Bool
+
+    public init(
+        snapshotExpiration: TimeInterval = 1,
+        showAllViewSearchQuery: String = "*",
+        nonInspectableClassNames: [String] = [],
+        isSwizzlingEnabled: Bool = false
+    ) {
+        self.snapshotExpirationTimeInterval = snapshotExpiration
+        self.showAllViewSearchQuery = showAllViewSearchQuery
+        self.nonInspectableClassNames = nonInspectableClassNames
+        self.isSwizzlingEnabled = isSwizzlingEnabled
+    }
+
+    public static let `default` = InspectorConfiguration()
 
     var colorStyle: InspectorColorStyle {
         guard let keyWindow = Inspector.host?.keyWindow else { return .dark }
