@@ -25,15 +25,7 @@ typealias Closure = () -> Void
 public enum Inspector {
     static let manager = Inspector.Manager()
     
-    public static var configuration = InspectorConfiguration(
-        isSwizzlingEnabled: {
-            #if DEBUG
-            return true
-            #else
-            return false
-            #endif
-        }()
-    )
+    public static var configuration = InspectorConfiguration(isSwizzlingEnabled: false)
 
     public static var host: InspectorHost? {
         get { manager.host }
