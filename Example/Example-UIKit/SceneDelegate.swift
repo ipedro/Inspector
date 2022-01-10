@@ -30,8 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
-        Inspector.configuration.isSwizzlingEnabled = true
-        Inspector.host = self
+        Inspector.start(host: self, configuration: InspectorConfiguration(isSwizzlingEnabled: true))
 
         // For this example I want to keep the tab bar working even while inspecting the playground views.
         Inspector.configuration.nonInspectableClassNames = [

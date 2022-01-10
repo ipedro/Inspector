@@ -113,7 +113,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         #if DEBUG
         // Make your class the Inspector's host when connecting to a session
-        Inspector.host = self
+        Inspector.start(host: self)
         #endif
         
         guard let _ = (scene as? UIWindowScene) else { return }
@@ -149,7 +149,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         #if DEBUG
         // Make your class the Inspector's host on launch
-        Inspector.host = self
+        Inspector.start(host: self)
         #endif
 
         return true

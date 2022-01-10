@@ -25,7 +25,7 @@ typealias Closure = () -> Void
 public enum Inspector {
     static let manager = Inspector.Manager()
     
-    public static var configuration: InspectorConfiguration!
+    public static var configuration: InspectorConfiguration = .default
 
     public static var host: InspectorHost? {
         get { manager.host }
@@ -36,10 +36,22 @@ public enum Inspector {
         }
     }
 
+    public static var isStarted: Bool {
+        manager.host != nil
+    }
+
     public static func start(host: InspectorHost, configuration: InspectorConfiguration = .default) {
         self.configuration = configuration
         self.manager.host = host
     }
+
+    #if canImport(SwiftUI)
+    // MARK: - SwiftUI
+    static func start(swiftUIhost: InspectorSwiftUIHost, configuration: InspectorConfiguration = .default) {
+        self.configuration = configuration
+        self.manager.swiftUIhost = swiftUIhost
+    }
+    #endif
 
     public static func finish() {
         manager.finish()
