@@ -122,7 +122,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
 
         switch layerAction {
         case .showHighlight:
-            let elementKeys = element.viewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
+            let elementKeys = element.safelyInspectableViewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
             
             if var referenceKeys = visibleReferences[.highlightViews] {
                 referenceKeys.append(contentsOf: elementKeys)
@@ -136,7 +136,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
             }
 
         case .hideHighlight:
-            let elementKeys = element.viewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
+            let elementKeys = element.safelyInspectableViewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
             elementKeys.forEach { removeHighlightView(for: $0) }
             
             if visibleReferences[.highlightViews].isNilOrEmpty {

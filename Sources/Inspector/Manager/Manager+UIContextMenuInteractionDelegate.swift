@@ -45,7 +45,7 @@ extension Inspector.Manager: UIContextMenuInteractionDelegate {
             let sourceView = interaction.view,
             interactionDelegates[ObjectIdentifier(sourceView)] != false,
             let snapshot = viewHierarchySnapshot,
-            let element = snapshot.root.inspectableViewHierarchy.first(where: { $0.underlyingView === sourceView }),
+            let element = snapshot.root.safelyInspectableViewHierarchy.first(where: { $0.underlyingView === sourceView }),
             element.canHostContextMenuInteraction
         else {
             return nil

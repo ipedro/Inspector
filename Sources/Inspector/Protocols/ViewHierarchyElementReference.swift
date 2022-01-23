@@ -44,7 +44,7 @@ protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyO
 }
 
 extension ViewHierarchyElementReference {
-    var inspectableViewHierarchy: [ViewHierarchyElementReference] {
+    var safelyInspectableViewHierarchy: [ViewHierarchyElementReference] {
         viewHierarchy.filter(\.canHostInspectorView)
     }
     
