@@ -70,7 +70,12 @@ extension Manager {
 
     @discardableResult
     func presentInspector(animated: Bool, in presentingViewController: UIViewController) -> UIViewController? {
-        guard let coordinator = makeInspectorViewCoordinator() else { return nil }
+        guard
+            !children.contains(where: { $0 is InspectorViewCoordinator }),
+            let coordinator = makeInspectorViewCoordinator()
+        else {
+            return nil
+        }
 
         let viewController = coordinator.start()
 
