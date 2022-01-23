@@ -160,6 +160,11 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable {
         }
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        finish()
+    }
+
     // MARK: - Overrides
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
@@ -311,7 +316,7 @@ extension InspectorViewController {
 
 extension InspectorViewController: HierarchyInspectorViewCodeDelegate {
     func hierarchyInspectorViewCodeDidTapOutside(_ view: HierarchyInspectorViewCode) {
-        delegate?.inspectorViewControllerDidFinish(self)
+        finish()
     }
 }
 

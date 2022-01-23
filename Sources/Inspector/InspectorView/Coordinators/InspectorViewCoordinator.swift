@@ -81,12 +81,13 @@ final class InspectorViewCoordinator: ViewCoordinator, DataReloadingProtocol {
             return
         }
 
-        if let delegate = delegate {
-            inspectorViewController.dismiss(animated: true) {
-                delegate.inspectorViewCoordinator(self, didFinishWith: command)
-            }
+        guard let delegate = delegate else {
+            assertionFailure("Expected delegate")
             return
         }
+
+        inspectorViewController.dismiss(animated: true)
+        delegate.inspectorViewCoordinator(self, didFinishWith: command)
     }
 }
 
