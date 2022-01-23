@@ -84,7 +84,7 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost {
     }
 
     func makeUIViewController(context: Context) -> UIViewController {
-        Inspector.start(swiftUIhost: self, configuration: InspectorConfiguration(isSwizzlingEnabled: true))
+        Inspector.start(swiftUIhost: self, configuration: InspectorConfiguration(enableLayoutSubviewsSwizzling: true))
 
         guard let coordinator = Inspector.manager.makeInspectorViewCoordinator() else {
             return alertController(title: "Couldn't present inspector")

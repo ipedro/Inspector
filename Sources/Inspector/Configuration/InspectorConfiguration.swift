@@ -31,18 +31,22 @@ public struct InspectorConfiguration {
 
     public var nonInspectableClassNames: [String]
 
-    public var isSwizzlingEnabled: Bool
+    public let enableLayoutSubviewsSwizzling: Bool
+
+    public var verbose: Bool
 
     public init(
         snapshotExpiration: TimeInterval = 1,
         showAllViewSearchQuery: String = "*",
         nonInspectableClassNames: [String] = [],
-        isSwizzlingEnabled: Bool = false
+        enableLayoutSubviewsSwizzling: Bool = false,
+        verbose: Bool = false
     ) {
         self.snapshotExpirationTimeInterval = snapshotExpiration
         self.showAllViewSearchQuery = showAllViewSearchQuery
         self.nonInspectableClassNames = nonInspectableClassNames
-        self.isSwizzlingEnabled = isSwizzlingEnabled
+        self.enableLayoutSubviewsSwizzling = enableLayoutSubviewsSwizzling
+        self.verbose = verbose
     }
 
     public static let `default` = InspectorConfiguration()
