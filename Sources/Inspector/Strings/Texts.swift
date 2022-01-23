@@ -96,4 +96,6 @@ enum Texts {
     static let collapse = "Collapse"
 
     static let children = "Children"
+
+    static let actions = "Actions"
 }
