@@ -4,8 +4,8 @@ import UIKit
 extension UIView {
     // MARK: - Did Move To Superview
 
-    @objc func inspector_swizzledMethod() {
-        inspector_swizzledMethod()
+    @objc func inspector_swizzledLayoutSubviews() {
+        inspector_swizzledLayoutSubviews()
 
         Inspector.manager.addInteraction(to: self)
     }
@@ -16,7 +16,7 @@ extension UIView {
         let aClass: AnyClass! = object_getClass(instance)
 
         let originalMethod = class_getInstanceMethod(aClass, #selector(layoutSubviews))
-        let swizzledMethod = class_getInstanceMethod(aClass, #selector(UIView.inspector_swizzledMethod))
+        let swizzledMethod = class_getInstanceMethod(aClass, #selector(UIView.inspector_swizzledLayoutSubviews))
 
         guard
             let originalMethod = originalMethod,

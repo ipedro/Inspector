@@ -46,7 +46,7 @@ extension Inspector {
             }
         }
 
-        var interactionDelegates: [ObjectIdentifier: Bool] = [:]
+        var isContextMenuInteractionSetup: [ObjectIdentifier: Bool] = [:]
 
         let operationQueue = OperationQueue.main
 
@@ -61,7 +61,7 @@ extension Inspector {
         // MARK: - Init
 
         init() {
-            if #available(iOS 13, *), configuration.isSwizzlingEnabled {
+            if #available(iOS 13, *), configuration.enableLayoutSubviewsSwizzling {
                 UIView.startSwizzling()
             }
         }

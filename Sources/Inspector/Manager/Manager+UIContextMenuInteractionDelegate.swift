@@ -23,39 +23,38 @@ import UIKit
 
 @available(iOS 13.0, *)
 extension Inspector.Manager: UIContextMenuInteractionDelegate {
-
     func addInteraction(to view: UIView) {
+        let viewIdentifier = view.objectIdentifier
 
-        func skipView() {
-            interactionDelegates[identifier] = false
+        guard isContextMenuInteractionSetup[viewIdentifier] == nil else { return }
+
+        if view.canHostContextMenuInteraction {
+            view.addInteraction(UIContextMenuInteraction(delegate: self))
+            isContextMenuInteractionSetup[viewIdentifier] = true
+        }
+        else {
+            isContextMenuInteractionSetup[viewIdentifier] = false
             print("🧬 Ignoring \(view._className)")
         }
-
-        let identifier = ObjectIdentifier(view)
-
-        if interactionDelegates[identifier] != nil { return }
-
-        interactionDelegates[identifier] = true
-
-        view.addInteraction(UIContextMenuInteraction(delegate: self))
     }
 
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
+                                configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         guard
-            let sourceView = interaction.view,
-            interactionDelegates[ObjectIdentifier(sourceView)] != false,
-            let snapshot = viewHierarchySnapshot,
-            let element = snapshot.root.safelyInspectableViewHierarchy.first(where: { $0.underlyingView === sourceView }),
-            element.canHostContextMenuInteraction
+            let interactionView = interaction.view,
+            let viewHierarchy = viewHierarchySnapshot?.root.viewHierarchy,
+            let element = viewHierarchy.first(where: { $0.underlyingView === interaction.view })
         else {
-            return nil
+            return .none
         }
-        
-        return .contextMenuConfiguration(with: element, includeActions: true) { [weak self] reference, action in
+        return .contextMenuConfiguration(
+            with: element,
+            includeActions: true
+        ) { [weak self] reference, action in
             self?.perform(
                 action: action,
                 with: reference,
-                from: sourceView
+                from: interactionView
             )
         }
     }
