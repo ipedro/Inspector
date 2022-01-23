@@ -157,20 +157,30 @@ extension UIView: ViewHierarchyElementRepresentable {
     }
 
     var elementName: String {
-        guard let description = accessibilityIdentifier?.split(separator: ".").last else {
-            return _classNameWithoutQualifiers
-        }
+        prettyAccessibilityIdentifier ?? _classNameWithoutQualifiers
+    }
 
-        return String(description)
+    private var prettyAccessibilityIdentifier: String? {
+        guard let subSequence = accessibilityIdentifier?.split(separator: ".").last else { return nil }
+        return String(subSequence)
     }
 
     var displayName: String {
-        // prefer text content
-        if let textContent = (self as? TextElement)?.content {
-            return "\"" + textContent + "\""
-        }
+        switch (self, prettyAccessibilityIdentifier) {
+        case let (textElement as TextElement, identifier):
+            let name = identifier ?? textElement._classNameWithoutQualifiers
+            if let textContent = textElement.content?.prefix(30) {
+                return "\"\(textContent)\" (\(name))"
+            }
+            return "\(name) (Empty)"
+            
 
-        return elementName
+        case let (anyView, identifier?):
+            return "\(anyView._classNameWithoutQualifiers) (\(identifier))"
+
+        case let (anyView, .none):
+            return anyView._classNameWithoutQualifiers
+        }
     }
 
     var shortElementDescription: String {
