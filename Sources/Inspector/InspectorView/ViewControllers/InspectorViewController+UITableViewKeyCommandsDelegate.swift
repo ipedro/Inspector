@@ -38,10 +38,10 @@ extension InspectorViewController: UITableViewKeyCommandsDelegate {
     }
 
     func tableViewKeyCommandSelectionBelowBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior {
-        .resignFirstResponder
+        .wrapAround
     }
 
     func tableViewKeyCommandSelectionAboveBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior {
-        .resignFirstResponder
+        .wrapAround
     }
 }

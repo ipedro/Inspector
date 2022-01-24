@@ -100,13 +100,28 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable {
         view = viewCode
     }
 
+    @objc private func dismissKeyPressed() {
+        guard
+            let indexPathsForSelectedRows = viewCode.tableView.indexPathsForSelectedRows,
+                indexPathsForSelectedRows.count > 0
+        else {
+            return finish()
+        }
+
+        for indexPath in indexPathsForSelectedRows {
+            viewCode.tableView.deselectRow(at: indexPath, animated: false)
+        }
+        
+        viewCode.searchView.becomeFirstResponder()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         reloadData()
 
         // key commands
-        addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))
+        addKeyCommand(dismissModalKeyCommand(action: #selector(dismissKeyPressed)))
         addKeyCommand(UIKeyCommand(.tab, action: #selector(toggleResponderAndSelectFirstRow)))
         addKeyCommand(UIKeyCommand(.arrowDown, action: #selector(toggleResponderAndSelectFirstRow)))
         addKeyCommand(UIKeyCommand(.arrowUp, action: #selector(toggleResponderAndSelectLastRow)))
@@ -147,7 +162,7 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable {
 
         if shouldToggleFirstResponderOnAppear {
             DispatchQueue.main.async {
-                self.toggleFirstResponder()
+                self.viewCode.searchView.becomeFirstResponder()
             }
         }
     }
@@ -174,7 +189,6 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable {
         else {
             return
         }
-
         viewCode.tableViewContentSize = contentSize
     }
 
@@ -246,12 +260,11 @@ extension InspectorViewController {
 
     @objc
     func toggleFirstResponder() {
-        switch viewCode.searchView.isFirstResponder {
-        case true:
+        switch viewCode.tableView.isFirstResponder {
+        case false:
             viewCode.searchView.resignFirstResponder()
             viewCode.tableView.becomeFirstResponder()
-
-        case false:
+        case true:
             viewCode.tableView.resignFirstResponder()
             viewCode.searchView.becomeFirstResponder()
         }

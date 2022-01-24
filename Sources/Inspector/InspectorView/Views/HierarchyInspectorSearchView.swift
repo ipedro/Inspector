@@ -30,7 +30,7 @@ final class HierarchyInspectorSearchView: BaseView {
         )
     )
 
-    private(set) lazy var textField = UITextField(
+    private(set) lazy var textField = DismissableTextField(
         .clearButtonMode(.whileEditing),
         .textStyle(.title2),
         .textColor(colorStyle.textColor),
@@ -55,7 +55,7 @@ final class HierarchyInspectorSearchView: BaseView {
 
     @discardableResult
     override func becomeFirstResponder() -> Bool {
-        super.becomeFirstResponder()
+        super.becomeFirstResponder() // must call super at one point
         return textField.becomeFirstResponder()
     }
 
@@ -92,4 +92,22 @@ extension HierarchyInspectorSearchView {
     func deleteBackward() {
         textField.deleteBackward()
     }
+}
+
+extension HierarchyInspectorSearchView {
+    final class DismissableTextField: UITextField {
+        override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+            for press in presses {
+                switch press.key?.keyCode {
+                case .keyboardUpArrow,
+                     .keyboardDownArrow,
+                     .keyboardTab:
+                    resignFirstResponder()
+                default:
+                    super.pressesBegan(presses, with: event)
+                }
+            }
+        }
+    }
+
 }
