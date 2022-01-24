@@ -86,8 +86,9 @@ final class InspectorViewCoordinator: ViewCoordinator, DataReloadingProtocol {
             return
         }
 
-        inspectorViewController.dismiss(animated: true)
-        delegate.inspectorViewCoordinator(self, didFinishWith: command)
+        inspectorViewController.dismiss(animated: true) {
+            delegate.inspectorViewCoordinator(self, didFinishWith: command)
+        }
     }
 }
 
