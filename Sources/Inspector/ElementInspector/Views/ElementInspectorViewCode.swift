@@ -37,7 +37,7 @@ final class ElementInspectorViewCode: BaseView {
     }
 
     private lazy var scrollView = ScrollingStackView().then {
-        $0.contentView.directionalLayoutMargins = .init(bottom: ElementInspector.appearance.horizontalMargins)
+        $0.contentView.directionalLayoutMargins = .init(bottom: elementInspectorAppearance.horizontalMargins)
         $0.contentView.addArrangedSubviews(elementDescriptionView, separatorView, contentView)
         $0.keyboardDismissMode = .interactive
         $0.alwaysBounceVertical = true
@@ -50,9 +50,9 @@ final class ElementInspectorViewCode: BaseView {
         $0.elementNameLabel.isSafelyHidden = true
         $0.directionalLayoutMargins = .init(
             top: .zero,
-            leading: ElementInspector.appearance.horizontalMargins,
-            bottom: ElementInspector.appearance.horizontalMargins,
-            trailing: ElementInspector.appearance.horizontalMargins * 2
+            leading: elementInspectorAppearance.horizontalMargins,
+            bottom: elementInspectorAppearance.horizontalMargins,
+            trailing: elementInspectorAppearance.horizontalMargins * 2
         )
     }
 
@@ -149,7 +149,7 @@ final class ElementInspectorViewCode: BaseView {
         switch content.type {
         case .panelView:
             content.view.alpha = 0
-            content.view.transform = ElementInspector.appearance.panelInitialTransform
+            content.view.transform = elementInspectorAppearance.panelInitialTransform
         case .backgroundView:
             content.view.alpha = 0
 

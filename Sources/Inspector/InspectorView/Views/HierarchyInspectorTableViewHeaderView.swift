@@ -20,19 +20,19 @@
 
 import UIKit
 
-final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView {
+final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, ElementInspectorAppearanceProviding {
     var title: String? {
         didSet {
             titleLabel.text = title
 
             guard title?.trimmed.isNilOrEmpty == false else {
                 titleLabel.isHidden = true
-                stackView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets.with(top: .zero)
+                stackView.directionalLayoutMargins = elementInspectorAppearance.directionalInsets.with(top: .zero)
                 return
             }
             
             titleLabel.isHidden = false
-            stackView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
+            stackView.directionalLayoutMargins = elementInspectorAppearance.directionalInsets
         }
     }
 
@@ -48,7 +48,7 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView {
             separatorView,
             titleLabel
         ),
-        .spacing(ElementInspector.appearance.verticalMargins)
+        .spacing(elementInspectorAppearance.verticalMargins)
     )
 
     private(set) lazy var titleLabel = UILabel(

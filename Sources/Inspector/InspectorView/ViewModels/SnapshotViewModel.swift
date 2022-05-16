@@ -105,7 +105,7 @@ extension HierarchyInspectorViewModel {
                     return searchQueryItem.results
                 }
 
-                if key == Inspector.configuration.showAllViewSearchQuery {
+                if key == Inspector.sharedInstance.configuration.showAllViewSearchQuery {
                     let results = snapshot.root.viewHierarchy.map {
                         Details(with: $0, isEnabled: true)
                     }

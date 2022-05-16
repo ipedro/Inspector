@@ -27,7 +27,7 @@ final class ElementChildrenPanelViewCode: BaseView {
         .viewOptions(.isOpaque(true)),
         .tableFooterView(UIView()),
         .separatorStyle(.none),
-        .contentInset(bottom: ElementInspector.appearance.horizontalMargins)
+        .contentInset(bottom: elementInspectorAppearance.horizontalMargins)
     )
 
     override func setup() {

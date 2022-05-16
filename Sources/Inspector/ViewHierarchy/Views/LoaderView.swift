@@ -23,7 +23,8 @@ import UIKit
 final class LoaderView: LayerViewComponent {
     // MARK: - Components
 
-    private lazy var activityIndicator = UIActivityIndicatorView(style: .whiteLarge).then {
+    private lazy var activityIndicator = UIActivityIndicatorView(style: .large).then {
+        $0.color = .white
         $0.hidesWhenStopped = true
         $0.startAnimating()
     }

@@ -20,7 +20,7 @@
 
 import MapKit
 
-extension ElementAttributesLibrary {
+extension DefaultElementAttributesLibrary {
     final class MapViewAttributesSectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 

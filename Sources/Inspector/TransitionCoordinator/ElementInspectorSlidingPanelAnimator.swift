@@ -41,7 +41,7 @@ private extension ElementInspectorSlidingPanelAnimator {
 
     final class DropShadowView: BaseView {
         override func setup() {
-            layer.shadowRadius = ElementInspector.appearance.elementInspectorCornerRadius
+            layer.shadowRadius = elementInspectorAppearance.elementInspectorCornerRadius
             layer.shadowColor = UIColor(white: 0, alpha: 0.5).cgColor
         }
 
@@ -51,7 +51,7 @@ private extension ElementInspectorSlidingPanelAnimator {
     }
 }
 
-final class ElementInspectorSlidingPanelAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+final class ElementInspectorSlidingPanelAnimator: NSObject, ElementInspectorAppearanceProviding, UIViewControllerAnimatedTransitioning {
     let duration: TimeInterval = .veryLong
 
     var isPresenting: Bool = true
@@ -95,20 +95,20 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, UIViewControllerAnim
     }
 
     private func frameToTheRight(of containerView: UIView) -> CGRect {
-        var frame = containerView.bounds.inset(by: ElementInspector.appearance.directionalInsets.edgeInsets())
-        frame.size.width = ElementInspector.configuration.panelPreferredCompressedSize.width
-        frame.size.height = min(frame.size.height,  ElementInspector.configuration.panelSidePresentationMinimumContainerSize.height)
+        var frame = containerView.bounds.inset(by: elementInspectorAppearance.directionalInsets.edgeInsets())
+        frame.size.width = Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelPreferredCompressedSize.width
+        frame.size.height = min(frame.size.height,  Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelSidePresentationMinimumContainerSize.height)
         frame.origin.x = containerView.bounds.maxX
 
         return frame
     }
 
     private func topLeftMargins(of containerView: UIView) -> CGRect {
-        var frame = containerView.bounds.inset(by: ElementInspector.appearance.directionalInsets.edgeInsets())
-        frame.size.width = ElementInspector.configuration.panelPreferredCompressedSize.width
-        frame.size.height = min(frame.size.height,  ElementInspector.configuration.panelSidePresentationMinimumContainerSize.height)
+        var frame = containerView.bounds.inset(by: elementInspectorAppearance.directionalInsets.edgeInsets())
+        frame.size.width = Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelPreferredCompressedSize.width
+        frame.size.height = min(frame.size.height,  Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelSidePresentationMinimumContainerSize.height)
         frame.origin.x = containerView.bounds.maxX - frame.width
-        frame = frame.inset(by: ElementInspector.appearance.directionalInsets.edgeInsets())
+        frame = frame.inset(by: elementInspectorAppearance.directionalInsets.edgeInsets())
 
         return frame
     }
@@ -127,7 +127,7 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, UIViewControllerAnim
 
         let toFinalFrame = topLeftMargins(of: containerView)
 
-        toView.layer.cornerRadius = ElementInspector.appearance.elementInspectorCornerRadius
+        toView.layer.cornerRadius = elementInspectorAppearance.elementInspectorCornerRadius
         if #available(iOS 13.0, *) {
             toView.layer.cornerCurve = .continuous
         }

@@ -118,7 +118,7 @@ extension ElementChildrenPanelViewController {
                             guard let cell = tableView.cellForRow(at: deletedIndexPath) else { return }
 
                             cell.contentView.alpha = 0
-                            cell.transform = ElementInspector.appearance.panelInitialTransform
+                            cell.transform = self.elementInspectorAppearance.panelInitialTransform
                             cell.backgroundColor = .none
                         }
                     }

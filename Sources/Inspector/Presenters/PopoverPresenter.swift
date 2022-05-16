@@ -20,25 +20,14 @@
 
 import UIKit
 
-public extension InspectorConfiguration {
-    struct Appearance {
-        // MARK: - Wireframe Style
+final class PopoverPresenter: NSObject, UIPopoverPresentationControllerDelegate {
+    let onDismissHandler: (UIPopoverPresentationController) -> Void
 
-        public var regularIconSize = CGSize(width: 20, height: 20)
+    init(onDismiss: @escaping (UIPopoverPresentationController) -> Void) {
+        onDismissHandler = onDismiss
+    }
 
-        public var actionIconSize = CGSize(width: 32, height: 32)
-
-        public var elementIconSize = CGSize(
-            width: ElementInspector.appearance.verticalMargins * 3,
-            height: ElementInspector.appearance.verticalMargins * 3
-        )
-
-        public lazy var highlightLayerBorderWidth: CGFloat = 2 / UIScreen.main.scale
-
-        public lazy var wireframeLayerBorderWidth: CGFloat = 1 / UIScreen.main.scale
-
-        // MARK: - Empty Layer Style
-
-        public var emptyLayerBorderWidth: CGFloat = 0
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        onDismissHandler(popoverPresentationController)
     }
 }

@@ -61,7 +61,7 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
         imageView?.backgroundColor = colorStyle.quaternaryTextColor
         imageView?.contentMode = .center
 
-        imageView?.layer.cornerRadius = ElementInspector.appearance.verticalMargins / 2
+        imageView?.layer.cornerRadius = elementInspectorAppearance.verticalMargins / 2
         if #available(iOS 13.0, *) {
             imageView?.layer.cornerCurve = .continuous
         }

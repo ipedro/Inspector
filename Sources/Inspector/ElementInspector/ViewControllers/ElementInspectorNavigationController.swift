@@ -24,7 +24,7 @@ protocol ElementInspectorNavigationControllerDismissDelegate: AnyObject {
     func elementInspectorNavigationControllerDidFinish(_ navigationController: ElementInspectorNavigationController)
 }
 
-class ElementInspectorNavigationController: UINavigationController {
+class ElementInspectorNavigationController: UINavigationController, ElementInspectorAppearanceProviding {
     weak var dismissDelegate: ElementInspectorNavigationControllerDismissDelegate?
 
     var shouldAdaptModalPresentation: Bool = true {
@@ -52,12 +52,12 @@ class ElementInspectorNavigationController: UINavigationController {
         navigationBar.tintColor = view.tintColor
 
         navigationBar.directionalLayoutMargins.update(
-            leading: ElementInspector.appearance.horizontalMargins,
-            trailing: ElementInspector.appearance.horizontalMargins
+            leading: elementInspectorAppearance.horizontalMargins,
+            trailing: elementInspectorAppearance.horizontalMargins
         )
 
         navigationBar.largeTitleTextAttributes = [
-            .font: ElementInspector.appearance.titleFont(forRelativeDepth: .zero),
+            .font: elementInspectorAppearance.titleFont(forRelativeDepth: .zero),
             .foregroundColor: colorStyle.textColor
         ]
 

@@ -51,11 +51,12 @@ protocol HierarchyInspectorSectionViewModelProtocol {
 }
 
 final class HierarchyInspectorViewModel {
-    typealias CommandGroupsProvider = (() -> CommandGroups?)
 
     let commandGroupsViewModel: CommandGroupsViewModel
 
     let snapshotViewModel: SnapshotViewModel
+
+    let shouldAnimateKeyboard: Bool
 
     var isSearching: Bool {
         searchQuery.isNilOrEmpty == false
@@ -70,21 +71,18 @@ final class HierarchyInspectorViewModel {
 
     init(
         commandGroupsProvider: @escaping CommandGroupsProvider,
-        snapshot: ViewHierarchySnapshot
+        snapshot: ViewHierarchySnapshot,
+        shouldAnimateKeyboard: Bool
     ) {
         commandGroupsViewModel = CommandGroupsViewModel(commandGroupsProvider: commandGroupsProvider)
         snapshotViewModel = SnapshotViewModel(snapshot: snapshot)
+        self.shouldAnimateKeyboard = shouldAnimateKeyboard
     }
 }
 
 // MARK: - HierarchyInspectorViewModelProtocol
 
 extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
-    var shouldAnimateKeyboard: Bool {
-        // swift ui handles keyboard affordances on it's own
-        Inspector.manager.swiftUIhost == nil
-    }
-
     func isRowEnabled(at indexPath: IndexPath) -> Bool {
         switch isSearching {
         case true:

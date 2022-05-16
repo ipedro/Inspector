@@ -30,16 +30,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
-        Inspector.start(host: self, configuration: InspectorConfiguration(enableLayoutSubviewsSwizzling: true))
-
-        // For this example I want to keep the tab bar working even while inspecting the playground views.
-        Inspector.configuration.nonInspectableClassNames = [
-            "UITabBarSwappableImageView",
-            "UITabBarButton",
-            "UITabBarButtonLabel"
-        ]
-
         guard let _ = (scene as? UIWindowScene) else { return }
+
+        Inspector.setConfiguration(
+            .init(
+                enableLayoutSubviewsSwizzling: true,
+                nonInspectableClassNames: [
+                    "UITabBarButton",
+                    "UITabBarButtonLabel",
+                    "UITabBarSwappableImageView"
+                ]
+            )
+        )
+
+        Inspector.start()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -71,10 +75,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 }
 
-// MARK: - InspectorHost
+// MARK: - InspectorCustomizationProviding
 
-extension SceneDelegate: InspectorHost {
-    var inspectorElementIconProvider: Inspector.ElementIconProvider? {
+extension SceneDelegate: InspectorCustomizationProviding {
+    var elementIconProvider: Inspector.ElementIconProvider? {
         .init { view in
             switch view {
             case is CustomButton:
@@ -85,55 +89,46 @@ extension SceneDelegate: InspectorHost {
         }
     }
 
-    var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? {
+    var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? {
         [.attributes: ExampleAttributesLibrary.allCases]
     }
 
-    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
-        [
-            .staticTexts,
-            .stackViews,
-            .viewControllers
-        ]
+    var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
+        [.staticTexts,
+         .stackViews,
+         .viewControllers]
     }
 
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
+    var viewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
         .init { view in
             view is CustomButton ? .systemPink : nil
         }
     }
 
-    var inspectorCommandGroups: [Inspector.CommandsGroup]? {
-        guard let window = window else {
-            return nil
-        }
-
+    var commandGroups: [Inspector.CommandsGroup]? {
+        guard let window = Weak(window) else { return nil }
         return [
             .group(
                 title: "My custom actions",
                 commands: [
                     Inspector.Command(
                         title: {
-                            switch window.traitCollection.userInterfaceStyle {
-                            case .light:
-                                return "Switch to dark mode"
-                            case .dark:
-                                return "Switch to light mode"
-                            default:
-                                return "Stop forcing theme"
+                            switch window.weakReference?.traitCollection.userInterfaceStyle {
+                            case .light: return "Switch to dark mode"
+                            case .dark: return "Switch to light mode"
+                            default: return "Stop forcing theme"
                             }
                         }(),
                         icon: .exampleCommandIcon,
                         keyCommandOptions: .control(.shift(.key("i"))),
                         closure: {
-                            switch window.traitCollection.userInterfaceStyle {
-                            case .dark:
-                                window.overrideUserInterfaceStyle = .light
-                            case .light:
-                                window.overrideUserInterfaceStyle = .dark
-                            default:
-                                window.overrideUserInterfaceStyle = .unspecified
-                            }
+                            window.weakReference?.overrideUserInterfaceStyle = {
+                                switch window.weakReference?.traitCollection.userInterfaceStyle {
+                                case .dark: return .light
+                                case .light: return .dark
+                                default: return .unspecified
+                                }
+                            }()
                         }
                     ),
                     Inspector.Command(
@@ -144,8 +139,9 @@ extension SceneDelegate: InspectorHost {
                             let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                             let initialViewController = mainStoryboard.instantiateInitialViewController()
 
-                            window.rootViewController = initialViewController
-                            Inspector.restart()
+                            window.weakReference?.rootViewController = initialViewController
+                            Inspector.stop()
+                            Inspector.start()
                         }
                     ),
                     Inspector.Command(
@@ -172,9 +168,9 @@ extension UIWindow {
     override open func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         super.motionBegan(motion, with: event)
 
-        guard motion == .motionShake else { return }
-
-        Inspector.toggleAllLayers()
+        if motion == .motionShake {
+            Inspector.present()
+        }
     }
 }
 

@@ -187,7 +187,7 @@ enum InspectorColorStyle {
 protocol ColorStylable {}
 
 extension ColorStylable {
-    var colorStyle: InspectorColorStyle { Inspector.configuration.colorStyle }
+    var colorStyle: InspectorColorStyle { Inspector.sharedInstance.configuration.colorStyle }
 }
 
 extension UIView: ColorStylable {}

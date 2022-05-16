@@ -76,7 +76,7 @@ final class LengthMeasurementView: BaseView {
 
         contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(insets: 2)
 
-        contentView.spacing = ElementInspector.appearance.verticalMargins
+        contentView.spacing = elementInspectorAppearance.verticalMargins
 
         contentView.addArrangedSubview(valueLabel)
 

@@ -22,18 +22,18 @@
 import SwiftUI
 
 @available(iOS 14.0, *)
-final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost {
+final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost, InspectorCustomizationProviding {
     // MARK: - InspectorSwiftUIHostable
 
-    let inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]?
+    let viewHierarchyLayers: [Inspector.ViewHierarchyLayer]?
 
-    let inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme?
+    let viewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme?
 
-    let inspectorCommandGroups: [Inspector.CommandsGroup]?
+    let commandGroups: [Inspector.CommandsGroup]?
 
-    let inspectorElementLibraries: [Inspector.ElementPanelType : [InspectorElementLibraryProtocol]]?
+    let elementLibraries: [Inspector.ElementPanelType : [InspectorElementLibraryProtocol]]?
 
-    let inspectorElementIconProvider: Inspector.ElementIconProvider?
+    let elementIconProvider: Inspector.ElementIconProvider?
 
     var didFinish: (() -> Void)?
 
@@ -47,11 +47,11 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost {
         elementIconProvider: Inspector.ElementIconProvider?,
         didFinish: (() -> Void)?
     ) {
-        self.inspectorViewHierarchyLayers = layers
-        self.inspectorViewHierarchyColorScheme = colorScheme
-        self.inspectorCommandGroups = commandGroups
-        self.inspectorElementLibraries = elementLibraries
-        self.inspectorElementIconProvider = elementIconProvider
+        self.viewHierarchyLayers = layers
+        self.viewHierarchyColorScheme = colorScheme
+        self.commandGroups = commandGroups
+        self.elementLibraries = elementLibraries
+        self.elementIconProvider = elementIconProvider
         self.didFinish = didFinish
     }
 
@@ -84,9 +84,13 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost {
     }
 
     func makeUIViewController(context: Context) -> UIViewController {
-        Inspector.start(swiftUIhost: self, configuration: InspectorConfiguration(enableLayoutSubviewsSwizzling: true))
+        Inspector.sharedInstance.customization = self
+        Inspector.sharedInstance.swiftUIHost = self
+        Inspector.start()
 
-        guard let coordinator = Inspector.manager.makeInspectorViewCoordinator() else {
+        guard
+            let presenter = ViewHierarchy.application.topPresentedViewController,
+            let coordinator = Inspector.sharedInstance.manager?.makeInspectorViewCoordinator(presentedBy: presenter) else {
             return alertController(title: "Couldn't present inspector")
         }
 

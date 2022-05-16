@@ -148,8 +148,8 @@ extension UIView: ViewHierarchyElementRepresentable {
             //allParents.filter({ $0 is NonInspectableView }).isEmpty,
 
             // Skip custom classes
-            Inspector.configuration.nonInspectableClassNames.contains(className) == false,
-            Inspector.configuration.nonInspectableClassNames.contains(superViewClassName) == false
+            Inspector.sharedInstance.configuration.nonInspectableClassNames.contains(className) == false,
+            Inspector.sharedInstance.configuration.nonInspectableClassNames.contains(superViewClassName) == false
         else {
             return false
         }
@@ -280,7 +280,7 @@ extension NSObject {
     var _isSystemContainer: Bool {
         let className = _classNameWithoutQualifiers
 
-        for systemContainer in Inspector.configuration.knownSystemContainers {
+        for systemContainer in Inspector.sharedInstance.configuration.knownSystemContainers {
             if className == systemContainer || className.starts(with: "_UI") {
                 return true
             }

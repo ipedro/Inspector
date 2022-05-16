@@ -129,7 +129,7 @@ final class InspectorViewController: UIViewController, KeyboardAnimatable {
             UIKeyCommand(
                 .discoverabilityTitle(
                     title: Texts.dismissView,
-                    key: Inspector.configuration.keyCommands.presentationSettings.options
+                    key: Inspector.sharedInstance.configuration.keyCommands.presentationSettings.options
                 ),
                 action: #selector(finish)
             )

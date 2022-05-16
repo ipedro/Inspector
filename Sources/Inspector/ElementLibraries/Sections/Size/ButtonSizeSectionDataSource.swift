@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension ElementSizeLibrary {
+extension DefaultElementSizeLibrary {
     final class ButtonSizeSectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 

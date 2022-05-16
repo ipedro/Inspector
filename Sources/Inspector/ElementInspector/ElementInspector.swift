@@ -21,13 +21,8 @@
 import UIKit
 
 enum ElementInspector {
-    static var configuration = Configuration()
 
-    static var appearance = Appearance()
-}
-
-extension ElementInspector {
-    struct Configuration {
+    struct Configuration: Hashable {
         var isPresentingFromBottomSheet: Bool {
             #if swift(>=5.5)
             if #available(iOS 15.0, *) {
@@ -38,7 +33,7 @@ extension ElementInspector {
         }
 
         var isPhoneIdiom: Bool {
-            guard let userInterfaceIdiom = Inspector.host?.keyWindow?.traitCollection.userInterfaceIdiom else {
+            guard let userInterfaceIdiom = ViewHierarchy.application.keyWindow?.traitCollection.userInterfaceIdiom else {
                 // assume true
                 return true
             }
@@ -72,7 +67,7 @@ extension ElementInspector {
 }
 
 extension ElementInspector {
-    struct Appearance {
+    struct Appearance: Hashable {
         let horizontalMargins: CGFloat = 24
 
         let verticalMargins: CGFloat = 12

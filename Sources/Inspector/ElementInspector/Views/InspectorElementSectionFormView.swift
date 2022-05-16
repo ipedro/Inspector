@@ -96,10 +96,10 @@ class InspectorElementSectionFormView: BaseView {
         $0.addTarget(self, action: #selector(headerControlDidChangeState), for: .stateChanged)
 
         $0.contentView.isUserInteractionEnabled = false
-        $0.contentView.spacing = ElementInspector.appearance.verticalMargins
+        $0.contentView.spacing = elementInspectorAppearance.verticalMargins
         $0.contentView.addArrangedSubviews(collapseIcon, header)
         $0.contentView.alignment = .center
-        $0.contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
+        $0.contentView.directionalLayoutMargins = elementInspectorAppearance.directionalInsets
     }
 
     private(set) lazy var collapseIcon = CollapseIcon()
@@ -126,8 +126,8 @@ class InspectorElementSectionFormView: BaseView {
         updateViewsForState()
         installSeparators()
 
-        headerControl.contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
-        formStackView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets.with(top: .zero)
+        headerControl.contentView.directionalLayoutMargins = elementInspectorAppearance.directionalInsets
+        formStackView.directionalLayoutMargins = elementInspectorAppearance.directionalInsets.with(top: .zero)
 
         contentView.addArrangedSubviews(headerStackView, formStackView)
     }
@@ -169,7 +169,7 @@ extension InspectorElementSectionFormView: InspectorElementSectionView {
 
         if let titleAccessoryView = titleAccessoryView {
             headerSubviews.append(titleAccessoryView)
-            headerStackView.directionalLayoutMargins.update(trailing: ElementInspector.appearance.horizontalMargins)
+            headerStackView.directionalLayoutMargins.update(trailing: elementInspectorAppearance.horizontalMargins)
         }
         else {
             headerStackView.directionalLayoutMargins.update(trailing: .zero)
@@ -179,7 +179,7 @@ extension InspectorElementSectionFormView: InspectorElementSectionView {
     }
 
     func addFormViews(_ formViews: [UIView]) {
-        contentView.spacing = formViews.first is NoteControl ? .zero : ElementInspector.appearance.verticalMargins
+        contentView.spacing = formViews.first is NoteControl ? .zero : elementInspectorAppearance.verticalMargins
         formStackView.addArrangedSubviews(formViews)
     }
 }

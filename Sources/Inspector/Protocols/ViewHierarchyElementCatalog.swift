@@ -25,8 +25,8 @@ typealias ViewHierarchyControllerIconProvider = Inspector.Provider<UIViewControl
 typealias ViewHierarchyElementIconProvider = Inspector.Provider<NSObject?,UIImage?>
 
 struct ViewHierarchyElementCatalog {
-    let libraries: [ElementInspectorPanel: [InspectorElementLibraryProtocol]]
-    let iconProvider: ViewHierarchyElementIconProvider
+    var libraries: [ElementInspectorPanel: [InspectorElementLibraryProtocol]]
+    var iconProvider: ViewHierarchyElementIconProvider?
 
     func makeElement(from view: UIView) -> ViewHierarchyElement {
         ViewHierarchyElement(with: view, iconProvider: iconProvider)

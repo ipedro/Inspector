@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension ElementSizeLibrary {
+extension DefaultElementSizeLibrary {
     final class LabelSizeSectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 

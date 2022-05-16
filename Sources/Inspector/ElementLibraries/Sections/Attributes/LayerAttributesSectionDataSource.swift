@@ -21,7 +21,7 @@
 import QuartzCore
 import UIKit
 
-extension ElementAttributesLibrary {
+extension DefaultElementAttributesLibrary {
     final class LayerAttributesSectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 

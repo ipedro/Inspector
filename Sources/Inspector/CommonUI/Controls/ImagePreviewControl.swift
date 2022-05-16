@@ -59,7 +59,7 @@ final class ImagePreviewControl: BaseFormControl {
         $0.setContentHuggingPriority(.required, for: .horizontal)
         $0.setContentHuggingPriority(.required, for: .vertical)
 
-        $0.heightAnchor.constraint(equalToConstant: ElementInspector.appearance.horizontalMargins).isActive = true
+        $0.heightAnchor.constraint(equalToConstant: elementInspectorAppearance.horizontalMargins).isActive = true
 
         $0.installView(imageView)
     }

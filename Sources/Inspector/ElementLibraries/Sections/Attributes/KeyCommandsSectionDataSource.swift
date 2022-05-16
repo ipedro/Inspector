@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension ElementAttributesLibrary {
+extension DefaultElementAttributesLibrary {
     final class KeyCommandsSectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .expanded
 

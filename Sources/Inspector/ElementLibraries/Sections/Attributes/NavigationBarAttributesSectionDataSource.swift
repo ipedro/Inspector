@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension ElementAttributesLibrary {
+extension DefaultElementAttributesLibrary {
     final class NavigationBarAttributesSectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 

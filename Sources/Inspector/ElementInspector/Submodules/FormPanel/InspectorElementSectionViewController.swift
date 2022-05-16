@@ -53,7 +53,7 @@ protocol InspectorElementSectionViewControllerDelegate: OperationQueueManagerPro
     )
 }
 
-final class InspectorElementSectionViewController: UIViewController, DataReloadingProtocol {
+final class InspectorElementSectionViewController: UIViewController, DataReloadingProtocol, ElementInspectorAppearanceProviding {
     weak var delegate: InspectorElementSectionViewControllerDelegate?
 
     let viewCode: InspectorElementSectionView
@@ -198,13 +198,13 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
         switch property {
         case let .preview(target: container):
             return LiveViewHierarchyElementThumbnailView(with: container.reference).then {
-                $0.layer.cornerRadius = ElementInspector.appearance.elementInspectorCornerRadius / 2
+                $0.layer.cornerRadius = elementInspectorAppearance.elementInspectorCornerRadius / 2
             }
 
         case .separator:
             return SeparatorView(style: .medium).then {
                 $0.contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(
-                    vertical: ElementInspector.appearance.horizontalMargins
+                    vertical: elementInspectorAppearance.horizontalMargins
                 )
             }
 

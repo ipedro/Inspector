@@ -20,7 +20,7 @@
 
 import UIKit
 
-struct ViewHierarchyElementSummary {
+struct ViewHierarchyElementSummary: ElementInspectorAppearanceProviding {
     var automaticallyAdjustIndentation: Bool = false
     var hideCollapseButton: Bool = true
     var iconImage: UIImage?
@@ -30,9 +30,9 @@ struct ViewHierarchyElementSummary {
     var isHidden: Bool = false
     var relativeDepth: Int = .zero
     var subtitle: String?
-    var subtitleFont: UIFont = ElementInspector.appearance.font(forRelativeDepth: .zero)
+    var subtitleFont: UIFont = Inspector.sharedInstance.appearance.elementInspector.font(forRelativeDepth: .zero)
     var title: String?
-    var titleFont: UIFont = ElementInspector.appearance.titleFont(forRelativeDepth: .zero)
+    var titleFont: UIFont = Inspector.sharedInstance.appearance.elementInspector.titleFont(forRelativeDepth: .zero)
 }
 
 final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol {
@@ -51,7 +51,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
     private var isAutomaticallyAdjustIndentation: Bool = true {
         didSet {
             if isAutomaticallyAdjustIndentation {
-                indendationAdjustmentStackView.directionalLayoutMargins.update(leading: ElementInspector.appearance.horizontalMargins)
+                indendationAdjustmentStackView.directionalLayoutMargins.update(leading: elementInspectorAppearance.horizontalMargins)
             }
             else {
                 indendationAdjustmentStackView.directionalLayoutMargins.update(leading: .zero)
@@ -80,7 +80,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
 
         // Containers Insets
         let relativeDepth = summaryInfo?.relativeDepth ?? 0
-        let indentation = CGFloat(relativeDepth) * ElementInspector.appearance.horizontalMargins
+        let indentation = CGFloat(relativeDepth) * elementInspectorAppearance.horizontalMargins
         contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(leading: indentation)
     }
 
@@ -91,7 +91,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
 
     private lazy var contentViewContainer = UIStackView().then {
         $0.isLayoutMarginsRelativeArrangement = true
-        $0.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
+        $0.directionalLayoutMargins = elementInspectorAppearance.directionalInsets
         $0.addArrangedSubview(contentView)
     }
 
@@ -149,7 +149,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
     }
 
     private(set) lazy var elementIconAndDescriptionLabel = UIStackView.horizontal().then {
-        $0.spacing = ElementInspector.appearance.verticalMargins
+        $0.spacing = elementInspectorAppearance.verticalMargins
         $0.addArrangedSubviews(summaryInfoLabel, iconContainerView)
         $0.alignment = .top
     }
@@ -160,7 +160,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
         tintColor = colorStyle.textColor
 
         contentView.axis = .vertical
-        contentView.spacing = ElementInspector.appearance.verticalMargins
+        contentView.spacing = elementInspectorAppearance.verticalMargins
         contentView.addArrangedSubviews(elementNameLabel, elementIconAndDescriptionLabel)
 
         installView(indendationAdjustmentStackView, priority: .required)
@@ -173,7 +173,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
 
         elementIconAndDescriptionLabel.leadingAnchor.constraint(
             equalTo: collapseButton.trailingAnchor,
-            constant: ElementInspector.appearance.verticalMargins * 3 / 2
+            constant: elementInspectorAppearance.verticalMargins * 3 / 2
         ).isActive = true
     }
 }

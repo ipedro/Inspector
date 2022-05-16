@@ -20,7 +20,7 @@
 
 import UIKit
 
-enum ThumbnailBackgroundStyle: CaseIterable, RawRepresentable {
+enum ThumbnailBackgroundStyle: Hashable, CaseIterable, RawRepresentable {
     typealias RawValue = Int
 
     typealias AllCases = [ThumbnailBackgroundStyle]
@@ -63,7 +63,7 @@ enum ThumbnailBackgroundStyle: CaseIterable, RawRepresentable {
     }
 
     var color: UIColor {
-        switch (self, Inspector.configuration.colorStyle) {
+        switch (self, Inspector.sharedInstance.configuration.colorStyle) {
         case (.strong, .dark):
             return UIColor(white: 0.40, alpha: 1)
         case (.medium, .dark):
@@ -83,7 +83,7 @@ enum ThumbnailBackgroundStyle: CaseIterable, RawRepresentable {
     }
 
     var contrastingColor: UIColor {
-        switch (self, Inspector.configuration.colorStyle) {
+        switch (self, Inspector.sharedInstance.configuration.colorStyle) {
         case (.strong, .dark):
             return .darkText
         case (.medium, .dark):

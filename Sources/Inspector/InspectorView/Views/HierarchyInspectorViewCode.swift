@@ -77,11 +77,11 @@ final class HierarchyInspectorViewCode: BaseView {
         .separatorStyle(.none),
         .automaticRowHeight,
         .separatorInset(
-            left: ElementInspector.appearance.horizontalMargins,
-            right: ElementInspector.appearance.horizontalMargins
+            left: elementInspectorAppearance.horizontalMargins,
+            right: elementInspectorAppearance.horizontalMargins
         ),
         .contentInset(
-            bottom: ElementInspector.appearance.horizontalMargins
+            bottom: elementInspectorAppearance.horizontalMargins
         )
     )
 
@@ -91,10 +91,10 @@ final class HierarchyInspectorViewCode: BaseView {
         let blurView = UIVisualEffectView(effect: blur)
         blurView.translatesAutoresizingMaskIntoConstraints = false
         blurView.clipsToBounds = true
-        blurView.layer.cornerRadius = ElementInspector.appearance.verticalMargins
+        blurView.layer.cornerRadius = elementInspectorAppearance.verticalMargins
         blurView.layer.borderWidth = 1
         blurView.layer.borderColor = {
-            switch Inspector.configuration.colorStyle {
+            switch Inspector.sharedInstance.configuration.colorStyle {
             case .dark:
                 return colorStyle.tertiaryTextColor.cgColor
             case .light:
@@ -164,7 +164,7 @@ final class HierarchyInspectorViewCode: BaseView {
                                           : safeAreaLayoutGuide.topAnchor, constant: verticalMargin),
             blurView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
             blurView.widthAnchor.constraint(lessThanOrEqualTo: readableContentGuide.widthAnchor, constant: -horizontalMargin * 4),
-            blurView.widthAnchor.constraint(greaterThanOrEqualToConstant: ElementInspector.configuration.panelPreferredCompressedSize.width),
+            blurView.widthAnchor.constraint(greaterThanOrEqualToConstant: Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelPreferredCompressedSize.width),
             bottomAnchorConstraint
         ]
         .forEach {

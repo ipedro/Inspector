@@ -20,8 +20,8 @@
 
 import UIKit
 
-public struct InspectorConfiguration {
-    public var appearance: Appearance = .init()
+public struct InspectorConfiguration: Hashable {
+    var elementInspectorConfiguration = ElementInspector.Configuration()
 
     public var keyCommands: KeyCommandSettings = .init()
 
@@ -36,10 +36,10 @@ public struct InspectorConfiguration {
     public var verbose: Bool
 
     public init(
-        snapshotExpiration: TimeInterval = 1,
-        showAllViewSearchQuery: String = "*",
-        nonInspectableClassNames: [String] = [],
         enableLayoutSubviewsSwizzling: Bool = false,
+        nonInspectableClassNames: [String] = [],
+        showAllViewSearchQuery: String = "*",
+        snapshotExpiration: TimeInterval = 1,
         verbose: Bool = false
     ) {
         self.snapshotExpirationTimeInterval = snapshotExpiration
@@ -52,7 +52,7 @@ public struct InspectorConfiguration {
     public static let `default` = InspectorConfiguration()
 
     var colorStyle: InspectorColorStyle {
-        guard let keyWindow = Inspector.host?.keyWindow else { return .dark }
+        guard let keyWindow = ViewHierarchy(application: .shared).keyWindow else { return .light }
 
         if #available(iOS 13.0, *) {
             switch (keyWindow.overrideUserInterfaceStyle, keyWindow.traitCollection.userInterfaceStyle) {

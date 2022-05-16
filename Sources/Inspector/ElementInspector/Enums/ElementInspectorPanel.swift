@@ -20,7 +20,7 @@
 
 import UIKit
 
-enum ElementInspectorPanel: Swift.CaseIterable, MenuContentProtocol {
+enum ElementInspectorPanel: Hashable, Swift.CaseIterable, MenuContentProtocol {
     case identity
     case attributes
     case size

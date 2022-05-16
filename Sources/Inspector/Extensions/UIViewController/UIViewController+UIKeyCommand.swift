@@ -22,9 +22,14 @@ import UIKit
 
 @objc extension UIViewController {
     public func inspectorKeyCommandHandler(_ sender: Any) {
-        guard let keyCommand = sender as? UIKeyCommand else { return }
+        guard
+            let commandGroups = Inspector.sharedInstance.manager?.commandGroups,
+            let keyCommand = sender as? UIKeyCommand
+        else {
+            return
+        }
 
-        let flattenedCommands = Inspector.manager.commandGroups.flatMap(\.commands)
+        let flattenedCommands = commandGroups.flatMap(\.commands)
 
         for action in flattenedCommands where action.title == keyCommand.discoverabilityTitle {
             action.closure?()

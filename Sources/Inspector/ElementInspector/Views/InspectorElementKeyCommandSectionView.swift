@@ -55,17 +55,17 @@ final class InspectorElementKeyCommandSectionView: BaseView {
     private(set) lazy var header = SectionHeader(
         titleFont: .init(.callout, .traitBold),
         subtitleFont: .init(.footnote, .traitBold),
-        margins: .init(vertical: ElementInspector.appearance.verticalMargins)
+        margins: .init(vertical: elementInspectorAppearance.verticalMargins)
     )
 
     private lazy var cardView = BaseCardView().then {
-        var insets = ElementInspector.appearance.directionalInsets
+        var insets = elementInspectorAppearance.directionalInsets
         insets.bottom = insets.leading
         insets.top = .zero
 
         $0.margins = .init(
-            horizontal: ElementInspector.appearance.horizontalMargins,
-            vertical: ElementInspector.appearance.verticalMargins / 2
+            horizontal: elementInspectorAppearance.horizontalMargins,
+            vertical: elementInspectorAppearance.verticalMargins / 2
         )
         $0.contentMargins = .zero
         $0.backgroundColor = colorStyle.cellHighlightBackgroundColor

@@ -55,17 +55,17 @@ final class InspectorElementLayoutConstraintSectionView: BaseView {
     private(set) lazy var header = SectionHeader(
         titleFont: .init(.footnote, .traitBold),
         subtitleFont: .caption1,
-        margins: .init(vertical: ElementInspector.appearance.verticalMargins)
+        margins: .init(vertical: elementInspectorAppearance.verticalMargins)
     )
 
     private lazy var cardView = BaseCardView().then {
-        var insets = ElementInspector.appearance.directionalInsets
+        var insets = elementInspectorAppearance.directionalInsets
         insets.bottom = insets.leading
         insets.top = .zero
 
         $0.margins = insets
         $0.borderWidth = 1
-        $0.cornerRadius = ElementInspector.appearance.elementInspectorCornerRadius
+        $0.cornerRadius = elementInspectorAppearance.elementInspectorCornerRadius
         $0.contentMargins = .zero
         $0.backgroundColor = colorStyle.layoutConstraintsCardBackgroundColor
 

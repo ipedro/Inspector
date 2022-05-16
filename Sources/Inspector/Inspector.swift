@@ -18,122 +18,253 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+@_implementationOnly import Coordinator
+@_implementationOnly import CoordinatorAPI
 import UIKit
 
 typealias Closure = () -> Void
 
-public enum Inspector {
-    static let manager = Inspector.Manager()
-    
-    public static var configuration: InspectorConfiguration = .default
+typealias WeakReference<Object: AnyObject> = Weak<Object>
 
-    public static var host: InspectorHost? {
-        get { manager.host }
-        @available(*, deprecated, message: "Instead of setting host, prefer calling `start(host:configuration:)`")
-        set {
-            guard let newHost = newValue else { return manager.finish() }
-            start(host: newHost)
+public final class Inspector {
+    private enum State {
+        case idle, started
+    }
+
+    // MARK: - Private Properties
+
+    private(set) var manager: Manager?
+
+    private var state: State = .idle
+
+    // MARK: - Internal Properties
+
+    static let sharedInstance = Inspector()
+
+    let appearance = InspectorAppearance()
+
+    private(set) var contextMenuPresenter: ContextMenuPresenter?
+
+    var swiftUIHost: InspectorSwiftUIHost? {
+        didSet {
+            restartIfNeeded()
         }
     }
 
-    public static var isStarted: Bool {
-        manager.host != nil
+    // MARK: - Public Properties
+
+    public var configuration: InspectorConfiguration = .default {
+        didSet {
+            restartIfNeeded()
+        }
     }
 
-    public static func start(host: InspectorHost, configuration: InspectorConfiguration = .default) {
-        self.configuration = configuration
-        self.manager.host = host
+    public var customization: InspectorCustomizationProviding? {
+        didSet {
+            restartIfNeeded()
+        }
     }
 
-    #if canImport(SwiftUI)
-    // MARK: - SwiftUI
-    static func start(swiftUIhost: InspectorSwiftUIHost, configuration: InspectorConfiguration = .default) {
-        self.configuration = configuration
-        self.manager.swiftUIhost = swiftUIhost
-    }
-    #endif
+    private func setup() {
+        manager = Manager(
+            .init(
+                configuration: configuration,
+                coordinatorFactory: ViewHierarchyCoordinatorFactory.self,
+                customization: customization,
+                viewHierarchy: ViewHierarchy.application
+            ),
+            presentedBy: OperationQueue.main
+        )
 
-    public static func finish() {
-        manager.finish()
+        contextMenuPresenter = ContextMenuPresenter { [weak self] interaction in
+            guard
+                let self = self,
+                let sourceView = interaction.view,
+                let snapshot = self.manager?.snapshot?.root.viewHierarchy,
+                let element = snapshot.first(where: { $0.underlyingView === interaction.view })
+            else {
+                return .none
+            }
+            return .contextMenuConfiguration(
+                with: element,
+                includeActions: true
+            ) { [weak self] reference, action in
+                guard let self = self else { return }
+                self.manager?.perform(
+                    action: action,
+                    with: reference,
+                    from: sourceView
+                )
+            }
+        }
     }
 
-    public static func restart() {
-        manager.reset()
+    func start() {
+        guard state == .idle else { return }
+        setup()
+        manager?.start()
+        state = .started
+    }
+
+    func stop() {
+        guard state == .started else { return }
+        manager = .none
+        contextMenuPresenter = .none
+        state = .idle
+    }
+
+    private func restartIfNeeded() {
+        if state == .started { restart() }
+    }
+
+    private func restart() {
+        stop()
+        start()
     }
 }
 
-// MARK: - Utils
+// MARK: - Console Utils
 
-public extension Inspector {
-    static func printViewHierarchyDescription() {
+extension Inspector {
+    func printViewHierarchyDescription() {
         printViewHierarchyDescription(of: nil)
     }
-    
-    static func printViewHierarchyDescription(of object: NSObject?) {
+
+    func printViewHierarchyDescription(of object: NSObject?) {
         print(viewHierarchyDescription(of: object) ?? "No snaphsot available")
     }
-    
-    static func viewHierarchyDescription(of object: NSObject? = nil) -> String? {
-        guard let root = manager.viewHierarchySnapshot?.root else { return nil }
-        
-        guard let object = object else { return root.viewHierarchyDescription }
-        
+
+    func viewHierarchyDescription(of object: NSObject? = nil) -> String? {
+        guard let object = object else { return nil }
+        guard let root = manager?.snapshot?.root else { return nil }
         return root.viewHierarchy.first(where: { $0.underlyingObject === object })?.viewHierarchyDescription
     }
 }
 
 // MARK: - Presentation
 
-public extension Inspector {
-    static func present(animated: Bool = true) {
-        manager.presentInspector(animated: animated)
+extension Inspector {
+    func present(animated: Bool = true) {
+        manager?.presentInspector(animated: animated)
     }
 }
 
 // MARK: - Element
 
-public extension Inspector {
-    static func isInspecting(_ view: UIView) -> Bool {
+extension Inspector {
+    func isInspecting(_ view: UIView) -> Bool {
         view.allSubviews.contains { $0 is LayerViewProtocol }
     }
 
-    static func inspect(_ view: UIView, animated: Bool = true) {
-        manager.startElementInspectorCoordinator(for: view, panel: .none, from: view, animated: animated)
+    func inspect(_ view: UIView, animated: Bool = true) {
+        manager?.startElementInspectorCoordinator(for: view, panel: .none, from: view, animated: animated)
     }
 }
 
 // MARK: - View Hierarchy Layer
 
-public extension Inspector {
-    static func isInspecting(_ layer: Inspector.ViewHierarchyLayer) -> Bool {
-        manager.isShowingLayer(layer)
+extension Inspector {
+    func isInspecting(_ layer: Inspector.ViewHierarchyLayer) -> Bool {
+        manager?.isShowingLayer(layer) ?? false
     }
 
-    static func inspect(_ layer: Inspector.ViewHierarchyLayer) {
-        manager.toggleLayer(layer)
+    func inspect(_ layer: Inspector.ViewHierarchyLayer) {
+        manager?.toggleLayer(layer)
     }
 
-    static func toggle(_ layer: Inspector.ViewHierarchyLayer) {
-        manager.toggleLayer(layer)
+    func toggle(_ layer: Inspector.ViewHierarchyLayer) {
+        manager?.toggleLayer(layer)
     }
 
-    static func toggleAllLayers() {
-        manager.toggleAllLayers()
+    func toggleAllLayers() {
+        manager?.toggleAllLayers()
     }
 
-    static func stopInspecting(_ layer: Inspector.ViewHierarchyLayer) {
-        manager.removeLayer(layer)
+    func stopInspecting(_ layer: Inspector.ViewHierarchyLayer) {
+        manager?.removeLayer(layer)
     }
 
-    static func removeAllLayers() {
-        manager.removeAllLayers()
+    func removeAllLayers() {
+        manager?.removeAllLayers()
     }
 }
 
 // MARK: - KeyCommands
 
+extension Inspector {
+    var keyCommands: [UIKeyCommand]? {
+        manager?.keyCommands
+    }
+}
+
+// MARK: - Public API
+
 public extension Inspector {
-    static var keyCommands: [UIKeyCommand] {
-        manager.keyCommands
+    static func start() {
+        sharedInstance.start()
+    }
+
+    static func stop() {
+        sharedInstance.stop()
+    }
+
+    static func printViewHierarchyDescription() {
+        sharedInstance.printViewHierarchyDescription()
+    }
+
+    static func printViewHierarchyDescription(of object: NSObject?) {
+        sharedInstance.printViewHierarchyDescription(of: object)
+    }
+
+    static func viewHierarchyDescription(of object: NSObject? = nil) -> String? {
+        sharedInstance.viewHierarchyDescription(of: object)
+    }
+
+    static func present(animated: Bool = true) {
+        sharedInstance.present(animated: animated)
+    }
+
+    static func isInspecting(_ view: UIView) -> Bool {
+        sharedInstance.isInspecting(view)
+    }
+
+    static func inspect(_ view: UIView, animated: Bool = true) {
+        sharedInstance.inspect(view, animated: animated)
+    }
+
+    static func isInspecting(_ layer: Inspector.ViewHierarchyLayer) -> Bool {
+        sharedInstance.isInspecting(layer)
+    }
+
+    static func inspect(_ layer: Inspector.ViewHierarchyLayer) {
+        sharedInstance.inspect(layer)
+    }
+
+    static func toggle(_ layer: Inspector.ViewHierarchyLayer) {
+        sharedInstance.toggle(layer)
+    }
+
+    static func toggleAllLayers() {
+        sharedInstance.toggleAllLayers()
+    }
+
+    static func stopInspecting(_ layer: Inspector.ViewHierarchyLayer) {
+        sharedInstance.stopInspecting(layer)
+    }
+
+    static func removeAllLayers() {
+        sharedInstance.removeAllLayers()
+    }
+
+    static var keyCommands: [UIKeyCommand]? {
+        sharedInstance.keyCommands
+    }
+
+    static func setConfiguration(_ configuration: InspectorConfiguration?) {
+        sharedInstance.configuration = configuration ?? .default
+    }
+
+    static func setCustomization(_ customization: InspectorCustomizationProviding?) {
+        sharedInstance.customization = customization
     }
 }

@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2022 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -20,32 +20,9 @@
 
 import UIKit
 
-enum ElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
-    case preview
-    case highlightView
-    case runtimeAttributes
-
-    var targetClass: AnyClass {
-        switch self {
-        case .preview,
-             .highlightView:
-            return UIView.self
-
-        case .runtimeAttributes:
-            return NSObject.self
-        }
-    }
-
-    func sections(for object: NSObject) -> InspectorElementSections {
-        switch self {
-        case .preview:
-            return .init(with: PreviewIdentitySectionDataSource(with: object))
-
-        case .highlightView:
-            return .init(with: HighlightViewSectionDataSource(with: object))
-
-        case .runtimeAttributes:
-            return .init(with: RuntimeAttributesIdentitySectionDataSource(with: object))
-        }
-    }
+public protocol ViewHierarchyRepresentable {
+    var application: UIApplication { get }
+    var keyWindow: UIWindow? { get }
+    var topPresentedViewController: UIViewController? { get }
+    var windows: [UIWindow] { get }
 }

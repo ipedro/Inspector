@@ -33,7 +33,7 @@ protocol ElementChildrenPanelTableViewCellViewModelProtocol: ElementChildrenPane
     var isHidden: Bool { get }
 }
 
-final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
+final class ElementChildrenPanelTableViewCodeCell: UITableViewCell, ElementInspectorAppearanceProviding {
     weak var delegate: ElementChildrenPanelTableViewCodeCellDelegate?
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -66,7 +66,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
         $0.directionalLayoutMargins = defaultContainerMargins
     }
 
-    private let defaultContainerMargins = ElementInspector.appearance.directionalInsets
+    private var defaultContainerMargins: NSDirectionalEdgeInsets { elementInspectorAppearance.directionalInsets }
 
     var viewModel: ElementChildrenPanelTableViewCellViewModelProtocol? {
         didSet {
@@ -83,10 +83,10 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
             if isFirst {
                 containerStackView.directionalLayoutMargins = defaultContainerMargins.with(
                     top: .zero,
-                    trailing: ElementInspector.appearance.horizontalMargins
+                    trailing: elementInspectorAppearance.horizontalMargins
                 )
                 elementDescriptionView.directionalLayoutMargins = .init(
-                    bottom: ElementInspector.appearance.verticalMargins
+                    bottom: elementInspectorAppearance.verticalMargins
                 )
             }
             else {
@@ -94,7 +94,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell {
 
                 elementDescriptionView.directionalLayoutMargins = .init(
                     horizontal: .zero,
-                    vertical: ElementInspector.appearance.verticalMargins
+                    vertical: elementInspectorAppearance.verticalMargins
                 )
             }
         }

@@ -53,7 +53,7 @@ extension ViewHierarchyController {
         var className: String
         var superclassName: String?
         var classNameWithoutQualifiers: String
-        let expirationDate = Date().addingTimeInterval(Inspector.configuration.snapshotExpirationTimeInterval)
+        let expirationDate = Date().addingTimeInterval(Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval)
 
         let additionalSafeAreaInsets: UIEdgeInsets
         let definesPresentationContext: Bool
@@ -158,9 +158,9 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
         String(describing: store.latest)
     }
 
-    private(set) lazy var iconImage = iconProvider.value(for: underlyingViewController)
+    private(set) lazy var iconImage = iconProvider?.value(for: underlyingViewController)
 
-    let iconProvider: ViewHierarchyElementIconProvider
+    let iconProvider: ViewHierarchyElementIconProvider?
 
     weak var underlyingViewController: UIViewController?
 
@@ -207,7 +207,7 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
 
     init(
         with viewController: UIViewController,
-        iconProvider: ViewHierarchyElementIconProvider,
+        iconProvider: ViewHierarchyElementIconProvider?,
         depth: Int,
         isCollapsed: Bool,
         parent: ViewHierarchyController? = nil

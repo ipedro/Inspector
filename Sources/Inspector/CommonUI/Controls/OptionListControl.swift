@@ -57,8 +57,8 @@ final class OptionListControl: BaseFormControl {
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.contentView.addArrangedSubviews(valueLabel, icon)
         $0.contentView.alignment = .center
-        $0.contentView.spacing = ElementInspector.appearance.verticalMargins
-        $0.contentView.directionalLayoutMargins.update(top: ElementInspector.appearance.verticalMargins, bottom: ElementInspector.appearance.verticalMargins)
+        $0.contentView.spacing = elementInspectorAppearance.verticalMargins
+        $0.contentView.directionalLayoutMargins.update(top: elementInspectorAppearance.verticalMargins, bottom: elementInspectorAppearance.verticalMargins)
 
     }
 

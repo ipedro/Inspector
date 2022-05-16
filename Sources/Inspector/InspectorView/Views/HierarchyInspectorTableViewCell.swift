@@ -20,7 +20,7 @@
 
 import UIKit
 
-class HierarchyInspectorTableViewCell: UITableViewCell {
+class HierarchyInspectorTableViewCell: UITableViewCell, ElementInspectorAppearanceProviding {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
 
@@ -32,7 +32,7 @@ class HierarchyInspectorTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    let defaultLayoutMargins = NSDirectionalEdgeInsets(insets: ElementInspector.appearance.horizontalMargins)
+    var defaultLayoutMargins: NSDirectionalEdgeInsets { .init(insets: elementInspectorAppearance.horizontalMargins) }
 
     func setup() {
         backgroundView = UIView()
@@ -49,14 +49,14 @@ class HierarchyInspectorTableViewCell: UITableViewCell {
                 .clipsToBounds(true),
                 .backgroundColor(colorStyle.softTintColor),
                 .layerOptions(
-                    .cornerRadius(ElementInspector.appearance.verticalMargins / 2)
+                    .cornerRadius(elementInspectorAppearance.verticalMargins / 2)
                 )
             )
 
             $0.installView(
                 colorView,
                 .spacing(
-                    horizontal: ElementInspector.appearance.verticalMargins,
+                    horizontal: elementInspectorAppearance.verticalMargins,
                     vertical: .zero
                 )
             )

@@ -21,7 +21,6 @@
 import UIKit
 
 final class WireframeView: LayerView {
-
     private lazy var leadingAnchorConstraint = layoutGuideView.leadingAnchor.constraint(equalTo: leadingAnchor).then { $0.isActive = true }
 
     private lazy var topAnchorConstraint = layoutGuideView.topAnchor.constraint(equalTo: topAnchor).then { $0.isActive = true }
@@ -30,12 +29,11 @@ final class WireframeView: LayerView {
 
     private lazy var trailingAnchorConstraint = layoutGuideView.trailingAnchor.constraint(equalTo: trailingAnchor).then { $0.isActive = true }
 
-
     override init(
         frame: CGRect,
         element: ViewHierarchyElementReference,
-        color borderColor: UIColor = Inspector.configuration.colorStyle.wireframeLayerColor,
-        border borderWidth: CGFloat = Inspector.configuration.appearance.wireframeLayerBorderWidth
+        color borderColor: UIColor = Inspector.sharedInstance.configuration.colorStyle.wireframeLayerColor,
+        border borderWidth: CGFloat = Inspector.sharedInstance.appearance.wireframeLayerBorderWidth
     ) {
         super.init(frame: frame, element: element, color: borderColor, border: borderWidth)
     }
@@ -49,7 +47,7 @@ final class WireframeView: LayerView {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.layer.borderColor = borderColor?.cgColor
         $0.layer.borderWidth = borderWidth
-        $0.alpha = 1/4
+        $0.alpha = 1 / 4
     }
 
     override func didMoveToSuperview() {

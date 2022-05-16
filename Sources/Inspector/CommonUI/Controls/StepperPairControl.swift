@@ -111,7 +111,7 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
         applyTitleSectionStyle()
         
         contentView.axis = .vertical
-        contentView.spacing = ElementInspector.appearance.verticalMargins * 1.5
+        contentView.spacing = elementInspectorAppearance.verticalMargins * 1.5
         contentView.addArrangedSubviews(firstStepper, secondStepper)
     }
 

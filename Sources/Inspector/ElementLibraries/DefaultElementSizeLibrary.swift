@@ -20,7 +20,7 @@
 
 import UIKit
 
-enum ElementSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIterable {
+enum DefaultElementSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseIterable {
     case button
     case segmentedControl
     case label

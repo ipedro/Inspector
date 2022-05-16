@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2022 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -20,12 +20,24 @@
 
 import UIKit
 
-extension ElementInspectorCoordinator: UIPopoverPresentationControllerDelegate {
-    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
-        guard popoverPresentationController.presentedViewController === navigationController else {
-            return
-        }
+final class AdaptiveModalPresenter: NSObject, UIAdaptivePresentationControllerDelegate {
+    private let presentationStyleProvider: (UIPresentationController, UITraitCollection) -> UIModalPresentationStyle
+    private let dismissHandler: ((UIPresentationController) -> Void)?
 
-        finish(with: .dismiss)
+    init(
+        presentationStyleProvider: @escaping (UIPresentationController, UITraitCollection) -> UIModalPresentationStyle,
+        onDismiss: ((UIPresentationController) -> Void)? = .none
+    ) {
+        self.presentationStyleProvider = presentationStyleProvider
+        self.dismissHandler = onDismiss
+    }
+
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        presentationStyleProvider(controller, traitCollection)
+    }
+
+    @available(iOS 13.0, *)
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        dismissHandler?(presentationController)
     }
 }

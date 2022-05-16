@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2022 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -18,23 +18,13 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import Foundation
 import UIKit
 
-@available(iOS 14.0, *)
-extension ElementInspectorCoordinator: UIColorPickerViewControllerDelegate {
-    func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
-        switch currentPanelViewController {
-        case let formPanelController as ElementInspectorFormPanelViewController:
-            formPanelController.selectColor(viewController.selectedColor)
+protocol ElementInspectorAppearanceProviding {
+    var elementInspectorAppearance: ElementInspector.Appearance { get }
+}
 
-        default:
-            break
-        }
-    }
-
-    func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
-        guard let formPanelController = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
-
-        formPanelController.finishColorSelection()
-    }
+extension ElementInspectorAppearanceProviding {
+    var elementInspectorAppearance: ElementInspector.Appearance { Inspector.sharedInstance.appearance.elementInspector }
 }

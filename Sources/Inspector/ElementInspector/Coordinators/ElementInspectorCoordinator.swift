@@ -33,89 +33,124 @@ protocol ElementInspectorCoordinatorDelegate: ViewHierarchyActionableProtocol & 
 
 // MARK: - ElementInspectorCoordinator
 
-final class ElementInspectorCoordinator: NavigationCoordinator {
+struct ElementInspectorDependencies {
+    var catalog: ViewHierarchyElementCatalog
+    var initialPanel: ElementInspectorPanel?
+    var rootElement: ViewHierarchyElementReference
+    var snapshot: ViewHierarchySnapshot
+    var sourceView: UIView
+}
+
+final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencies, UIWindow, UINavigationController> {
     weak var delegate: ElementInspectorCoordinatorDelegate?
 
-    let catalog: ViewHierarchyElementCatalog
+    private(set) lazy var slidingPanelAnimator = ElementInspectorSlidingPanelAnimator()
 
-    let snapshot: ViewHierarchySnapshot
+    private(set) lazy var adaptiveModalPresenter = AdaptiveModalPresenter { [weak self] presentationController, _ in
+        switch presentationController.presentedViewController {
+        case let navigationController as ElementInspectorNavigationController where navigationController.shouldAdaptModalPresentation == false:
+            return .none
+        default:
+            if #available(iOS 15.0, *) {
+                if presentationController is UIPopoverPresentationController {
+                    return presentationController.presentationStyle
+                }
+            }
+            return .formSheet
+        }
+    } onDismiss: { [weak self] presentationController in
+        guard let self = self else { return }
+        if presentationController.presentedViewController === self.navigationController {
+            self.finish(with: .dismiss)
+        }
+    }
 
-    let rootElement: ViewHierarchyElementReference
+    private(set) lazy var transitionPresenter = UIViewControllerTransitionPresenter().then {
+        $0.delegate = self
+    }
 
-    let initialPanel: ElementInspectorPanel?
+    private var formPanelController: ElementInspectorFormPanelViewController? { currentPanelViewController as? ElementInspectorFormPanelViewController }
 
-    let sourceView: UIView
-
-    private lazy var slidingPanelAnimator = ElementInspectorSlidingPanelAnimator()
-
-    private var rootWindow: UIWindow? { rootElement.underlyingView?.window }
-
-    var isCapableOfSidePresentation: Bool {
+    @available(iOS 15.0, *)
+    private(set) lazy var sheetPresenter = SheetPresenter { [weak self] sheet in
         guard
-            let rootWindow = rootWindow,
-            ElementInspector.configuration.panelSidePresentationAvailable
+            let self = self,
+            let formPanelController = self.formPanelController
         else {
-            return false
+            return
+        }
+        formPanelController.isFullHeightPresentation = sheet.selectedDetentIdentifier == .large
+    }
+
+    @available(iOS 14.0, *)
+    private(set) lazy var colorPicker = ColorPickerPresenter { [weak self] selectedColor in
+        guard
+            let self = self,
+            let formPanelController = self.formPanelController
+        else {
+            return
+        }
+        formPanelController.selectColor(selectedColor)
+    } onDimiss: { [weak self] in
+        guard
+            let self = self,
+            let formPanelController = self.formPanelController
+        else {
+            return
+        }
+        formPanelController.finishColorSelection()
+    }
+
+    private(set) lazy var documentPicker = DocumentPickerPresenter { [weak self] urls in
+        guard
+            let self = self,
+            let formPanelController = self.currentPanelViewController as? ElementInspectorFormPanelViewController
+        else {
+            return
         }
 
-        let minimumSize = ElementInspector.configuration.panelSidePresentationMinimumContainerSize
+        for url in urls {
+            guard let data = try? Data(contentsOf: url) else { continue }
+            let image = UIImage(data: data)
+            formPanelController.selectImage(image)
+            break
+        }
+    }
 
-        return rootWindow.frame.width >= minimumSize.width && rootWindow.frame.height >= minimumSize.height
+    private lazy var popoverPresenter = PopoverPresenter { [weak self] popover in
+        guard let self = self else { return }
+
+        if popover.presentedViewController === self.navigationController {
+            self.finish(with: .dismiss)
+        }
+    }
+
+    var isCapableOfSidePresentation: Bool {
+        guard Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelSidePresentationAvailable else { return false }
+        let minimumSize = Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelSidePresentationMinimumContainerSize
+        return presenter.frame.width >= minimumSize.width && presenter.frame.height >= minimumSize.height
     }
 
     func transitionDelegate(for viewController: UIViewController) -> UIViewControllerTransitioningDelegate? {
         switch viewController {
         case is ElementInspectorNavigationController where isCapableOfSidePresentation:
-            return self
+            return transitionPresenter
         default:
             return nil
         }
     }
 
     private(set) lazy var navigationController: ElementInspectorNavigationController = {
-        let navigationController = makeNavigationController(from: sourceView)
+        let navigationController = makeNavigationController(from: dependencies.sourceView)
 
-        injectElementInspectorsForViewHierarchy(inside: navigationController)
+        injectElementInspectorsForViewHierarchy(inside: navigationController, dependencies: dependencies)
 
         return navigationController
     }()
 
     private(set) lazy var operationQueue = OperationQueue.main
 
-    init(
-        element: ViewHierarchyElementReference,
-        panel: ElementInspectorPanel?,
-        snapshot: ViewHierarchySnapshot,
-        catalog: ViewHierarchyElementCatalog,
-        sourceView: UIView
-    ) {
-        self.rootElement = element
-        self.initialPanel = panel
-        self.catalog = catalog
-        self.snapshot = snapshot
-        self.sourceView = sourceView
-    }
-
-    var permittedPopoverArrowDirections: UIPopoverArrowDirection {
-        switch navigationController.popoverPresentationController?.arrowDirection {
-        case .some(.up):
-            return [.up, .left, .right]
-
-        case .some(.down):
-            return [.down, .left, .right]
-
-        case .some(.left):
-            return [.left]
-
-        case .some(.right):
-            return [.right]
-
-        default:
-            return .any
-        }
-    }
-
-    func start() -> UINavigationController {
+    override func loadContent() -> UINavigationController {
         navigationController
     }
 
@@ -123,7 +158,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         operationQueue.cancelAllOperations()
         operationQueue.isSuspended = true
 
-        delegate?.elementInspectorCoordinator(self, didFinishInspecting: rootElement, with: reason)
+        delegate?.elementInspectorCoordinator(self, didFinishInspecting: dependencies.rootElement, with: reason)
     }
 
     func setPopoverModalPresentationStyle(for viewController: UIViewController, from sourceView: UIView) {
@@ -169,7 +204,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
         case .identity, .attributes, .size:
             let dataSource = DefaultFormPanelDataSource(
                 sections: {
-                    guard let libraries = catalog.libraries[panel] else { return [] }
+                    guard let libraries = dependencies.catalog.libraries[panel] else { return [] }
 
                     return libraries.formItems(for: element.underlyingObject)
                 }()
@@ -184,7 +219,7 @@ final class ElementInspectorCoordinator: NavigationCoordinator {
             return ElementChildrenPanelViewController(
                 viewModel: ElementChildrenPanelViewModel(
                     element: element,
-                    snapshot: snapshot
+                    snapshot: dependencies.snapshot
                 )
             ).then {
                 $0.delegate = self
@@ -246,9 +281,9 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
             let elementInspectorViewController = Self.makeElementInspectorViewController(
                 element: element,
                 preferredPanel: preferredPanel,
-                initialPanel: self.initialPanel,
+                initialPanel: self.dependencies.initialPanel,
                 delegate: self,
-                catalog: self.catalog
+                catalog: self.dependencies.catalog
             )
 
             self.navigationController.pushViewController(elementInspectorViewController, animated: true)
@@ -271,16 +306,19 @@ extension ElementInspectorCoordinator: DismissablePresentationProtocol {
 // MARK: - Private Helpers
 
 private extension ElementInspectorCoordinator {
-    func injectElementInspectorsForViewHierarchy(inside navigationController: ElementInspectorNavigationController) {
-        let populatedElements = snapshot.root.viewHierarchy.filter { $0.underlyingView === rootElement.underlyingView }
+    func injectElementInspectorsForViewHierarchy(
+        inside navigationController: ElementInspectorNavigationController,
+        dependencies: ElementInspectorDependencies
+    ) {
+        let populatedElements = dependencies.snapshot.root.viewHierarchy.filter { $0.underlyingView === dependencies.rootElement.underlyingView }
 
         guard let populatedElement = populatedElements.first else {
             let rootViewController = Self.makeElementInspectorViewController(
-                element: snapshot.root.viewHierarchy.first!,
-                preferredPanel: initialPanel,
-                initialPanel: initialPanel,
+                element: dependencies.snapshot.root.viewHierarchy.first!,
+                preferredPanel: dependencies.initialPanel,
+                initialPanel: dependencies.initialPanel,
                 delegate: self,
-                catalog: catalog
+                catalog: dependencies.catalog
             )
 
             navigationController.viewControllers = [rootViewController]
@@ -300,10 +338,10 @@ private extension ElementInspectorCoordinator {
 
                 let viewController = Self.makeElementInspectorViewController(
                     element: currentElement,
-                    preferredPanel: initialPanel,
-                    initialPanel: initialPanel,
+                    preferredPanel: dependencies.initialPanel,
+                    initialPanel: dependencies.initialPanel,
                     delegate: self,
-                    catalog: catalog
+                    catalog: dependencies.catalog
                 )
 
                 array.append(viewController)
@@ -316,8 +354,10 @@ private extension ElementInspectorCoordinator {
     }
 }
 
-extension ElementInspectorCoordinator: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+extension ElementInspectorCoordinator: UIViewControllerTransitionPresenterDelegate {
+    func animationController(forPresented presented: UIViewController,
+                             presenting: UIViewController,
+                             source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         guard transitionDelegate(for: presented) != nil else { return nil }
 
         switch presented {

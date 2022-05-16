@@ -23,7 +23,7 @@ import UIKit
 final class IconButton: BaseControl {
     typealias Action = () -> Void
 
-    enum Style {
+    enum Style: ElementInspectorAppearanceProviding {
         case rounded
         case plain
 
@@ -36,7 +36,9 @@ final class IconButton: BaseControl {
             }
         }
 
-        fileprivate var layoutMargins: NSDirectionalEdgeInsets { .init(insets: ElementInspector.appearance.verticalMargins / 3) }
+        fileprivate var layoutMargins: NSDirectionalEdgeInsets {
+            .init(insets: elementInspectorAppearance.verticalMargins / 3)
+        }
     }
 
     let style: Style
@@ -49,7 +51,7 @@ final class IconButton: BaseControl {
         _ glyph: Icon.Glyph,
         style: Style = .rounded,
         size: CGSize = .init(16),
-        tintColor: UIColor = Inspector.configuration.colorStyle.textColor,
+        tintColor: UIColor = Inspector.sharedInstance.configuration.colorStyle.textColor,
         actionHandler: Action? = nil
     ) {
         icon = Icon(glyph, color: tintColor, size: size)

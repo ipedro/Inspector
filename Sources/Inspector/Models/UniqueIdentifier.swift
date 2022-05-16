@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2022 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -18,31 +18,18 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
+import Foundation
 
-extension ElementInspectorCoordinator: UIAdaptivePresentationControllerDelegate {
-    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-        switch controller.presentedViewController {
-        case let navigationController as ElementInspectorNavigationController where navigationController.shouldAdaptModalPresentation == false:
-            return .none
+@propertyWrapper
+struct UniqueIdentifier<Value>: Hashable {
+    var wrappedValue: Value
+    let identifier = UUID()
 
-        default:
-            if #available(iOS 15.0, *) {
-                if controller is UIPopoverPresentationController {
-                    return controller.presentationStyle
-                }
-            }
-
-            return .formSheet
-        }
+    static func == (lhs: UniqueIdentifier<Value>, rhs: UniqueIdentifier<Value>) -> Bool {
+        lhs.identifier == rhs.identifier
     }
 
-    @available(iOS 13.0, *)
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        guard presentationController.presentedViewController === navigationController else {
-            return
-        }
-
-        finish(with: .dismiss)
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
     }
 }

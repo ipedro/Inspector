@@ -7,7 +7,7 @@ extension UIView {
     @objc func inspector_swizzledLayoutSubviews() {
         inspector_swizzledLayoutSubviews()
 
-        Inspector.manager.addInteraction(to: self)
+        Inspector.sharedInstance.contextMenuPresenter?.addInteraction(to: self)
     }
 
     private static let swizzleLayoutSubviewsImplementation: Void = {

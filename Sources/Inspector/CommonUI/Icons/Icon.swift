@@ -34,7 +34,7 @@ final class Icon: BaseView {
 
     private lazy var heightConstraint = heightAnchor.constraint(equalToConstant: size.height)
 
-    init(_ glpyh: Glyph, color: UIColor = Inspector.configuration.colorStyle.textColor, size: CGSize = CGSize(width: 16, height: 16)) {
+    init(_ glpyh: Glyph, color: UIColor = Inspector.sharedInstance.configuration.colorStyle.textColor, size: CGSize = CGSize(width: 16, height: 16)) {
         self.glpyh = glpyh
         self.size = size
 
@@ -87,7 +87,7 @@ extension Icon {
     static func chevronDownIcon() -> Icon {
         Icon(
             .chevronDown,
-            color: Inspector.configuration.colorStyle.textColor.withAlphaComponent(0.7),
+            color: Inspector.sharedInstance.configuration.colorStyle.textColor.withAlphaComponent(0.7),
             size: CGSize(16)
         )
     }

@@ -20,7 +20,7 @@
 
 import UIKit
 
-class ElementInspectorPanelViewController: UIViewController {
+class ElementInspectorPanelViewController: UIViewController, ElementInspectorAppearanceProviding {
     // MARK: - Layout
 
     open var panelScrollView: UIScrollView? { nil }
@@ -96,7 +96,7 @@ class ElementInspectorPanelViewController: UIViewController {
     func calculatePreferredContentSize() -> CGSize {
         if isViewLoaded {
             return view.systemLayoutSizeFitting(
-                ElementInspector.configuration.panelPreferredCompressedSize,
+                Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelPreferredCompressedSize,
                 withHorizontalFittingPriority: .defaultHigh,
                 verticalFittingPriority: .fittingSizeLevel
             )

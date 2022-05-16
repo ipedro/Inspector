@@ -23,7 +23,6 @@ import UniformTypeIdentifiers
 
 extension ViewHierarchyElement {
     struct Snapshot: ViewHierarchyElementRepresentable, ExpirableProtocol, Equatable {
-
         static func == (lhs: ViewHierarchyElement.Snapshot, rhs: ViewHierarchyElement.Snapshot) -> Bool {
             lhs.identifier == rhs.identifier
         }
@@ -83,14 +82,13 @@ extension ViewHierarchyElement {
         }
 
         private static func makeExpirationDate() -> Date {
-            let expiration = Inspector.configuration.snapshotExpirationTimeInterval
+            let expiration = Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval
             let expirationDate = Date().addingTimeInterval(expiration)
 
             return expirationDate
         }
     }
 }
-
 
 final class ViewHierarchyElement: CustomDebugStringConvertible {
     var debugDescription: String {
@@ -101,7 +99,7 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 
     weak var parent: ViewHierarchyElementReference?
 
-    let iconProvider: ViewHierarchyElementIconProvider
+    let iconProvider: ViewHierarchyElementIconProvider?
 
     private var store: SnapshotStore<Snapshot>
 
@@ -127,37 +125,29 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
         deepestAbsoulteLevel - depth
     }
 
-//    var viewHierarchy: [ViewHierarchyElementReference] {
-//        let selfAndChildren = [self] + allChildren
-//
-//        let inspectableViews = selfAndChildren.filter(\.canHostInspectorView)
-//
-//        return inspectableViews
-//    }
-
     // MARK: - Init
 
     init(
         with view: UIView,
-        iconProvider: ViewHierarchyElementIconProvider,
+        iconProvider: ViewHierarchyElementIconProvider? = .none,
         depth: Int = .zero,
         isCollapsed: Bool = false,
-        parent: ViewHierarchyElementReference? = nil
+        parent: ViewHierarchyElementReference? = .none
     ) {
-        self.underlyingView = view
+        underlyingView = view
         self.depth = depth
         self.parent = parent
         self.iconProvider = iconProvider
         self.isCollapsed = isCollapsed
-        self.isUnderlyingViewUserInteractionEnabled = view.isUserInteractionEnabled
+        isUnderlyingViewUserInteractionEnabled = view.isUserInteractionEnabled
 
         let initialSnapshot = Snapshot(
             view: view,
-            icon: iconProvider.resizedIcon(for: view),
+            icon: iconProvider?.resizedIcon(for: view),
             depth: depth
         )
 
-        self.store = SnapshotStore(initialSnapshot)
+        store = SnapshotStore(initialSnapshot)
     }
 
     var latestSnapshot: Snapshot { store.latest }
@@ -166,7 +156,12 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
 
     private func makeChildren() -> [ViewHierarchyElementReference] {
         underlyingView?.children.compactMap {
-            ViewHierarchyElement(with: $0, iconProvider: iconProvider, depth: depth + 1, parent: self)
+            ViewHierarchyElement(
+                with: $0,
+                iconProvider: iconProvider,
+                depth: depth + 1,
+                parent: self
+            )
         } ?? []
     }
 }
@@ -240,7 +235,7 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
             return store.latest.iconImage
         }
 
-        let currentIcon = iconProvider.resizedIcon(for: rootView)
+        let currentIcon = iconProvider?.resizedIcon(for: rootView)
 
         if currentIcon?.pngData() != store.latest.iconImage?.pngData() {
             scheduleSnapshot()
@@ -388,19 +383,20 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
 
                 let snapshot = Snapshot(
                     view: rootView,
-                    icon: self.iconProvider.resizedIcon(for: rootView),
+                    icon: self.iconProvider?.resizedIcon(for: rootView),
                     depth: self.depth
                 )
 
                 handler?(.success(snapshot))
 
                 return snapshot
-             }
-          )
-       )
+            }
+            )
+        )
     }
 
     // MARK: - Live Properties
+
     var canPresentOnTop: Bool {
         store.first.canPresentOnTop
     }

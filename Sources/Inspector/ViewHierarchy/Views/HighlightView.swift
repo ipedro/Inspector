@@ -39,7 +39,6 @@ extension HighlightView: DraggableViewProtocol {
 }
 
 final class HighlightView: LayerView {
-
     var displayMode: ElementNameView.DisplayMode {
         get {
             elementNameView.displayMode
@@ -55,11 +54,11 @@ final class HighlightView: LayerView {
     var isDragging: Bool = false {
         didSet {
             guard isDragging != oldValue else { return }
-            
+
             animate(withDuration: .veryLong) {
                 switch self.isDragging {
                 case true:
-                    self.elementNameView.layer.shadowOpacity = 2/3
+                    self.elementNameView.layer.shadowOpacity = 2 / 3
                     self.elementNameView.layer.shadowRadius = 15
                     self.elementNameView.layer.shadowOffset = .init(
                         width: self.draggableViewCenterOffset.x,
@@ -112,7 +111,7 @@ final class HighlightView: LayerView {
     override var sourceView: UIView { draggableView }
 
     private lazy var verticalAlignmentConstraint = elementNameView.centerYAnchor.constraint(equalTo: centerYAnchor)
-
+    
     // MARK: - Components
 
     private lazy var elementNameView = ElementNameView()
@@ -137,7 +136,7 @@ final class HighlightView: LayerView {
         name: String,
         colorScheme: ViewHierarchyColorScheme,
         element: ViewHierarchyElementReference,
-        border borderWidth: CGFloat = Inspector.configuration.appearance.highlightLayerBorderWidth
+        border borderWidth: CGFloat = Inspector.sharedInstance.appearance.highlightLayerBorderWidth
     ) {
         self.colorScheme = colorScheme
         self.name = name

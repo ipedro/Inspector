@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension ElementAttributesLibrary {
+extension DefaultElementAttributesLibrary {
     final class TableViewAttributesSectionDataSource: InspectorElementSectionDataSource {
         let title: String = "Table View"
 

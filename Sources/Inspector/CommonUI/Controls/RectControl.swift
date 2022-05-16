@@ -85,7 +85,7 @@ final class RectControl: BaseFormControl {
         applyTitleSectionStyle()
 
         contentView.axis = .vertical
-        contentView.spacing = ElementInspector.appearance.verticalMargins
+        contentView.spacing = elementInspectorAppearance.verticalMargins
         contentView.addArrangedSubviews(
             xStepper,
             yStepper,

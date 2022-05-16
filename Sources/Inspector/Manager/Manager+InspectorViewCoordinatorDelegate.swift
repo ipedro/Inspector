@@ -33,7 +33,7 @@ extension Manager: InspectorViewCoordinatorSwiftUIDelegate {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator,
                                   willFinishWith command: InspectorCommand?)
     {
-        swiftUIhost?.insectorViewWillFinishPresentation()
+        dependencies.swiftUIhost?.insectorViewWillFinishPresentation()
         removeChild(coordinator)
         execute(command)
     }
@@ -61,45 +61,46 @@ extension Manager {
         }
     }
 
-    @discardableResult
-    func presentInspector(animated: Bool) -> UIViewController? {
-        guard let hostViewController = hostViewController else { return nil }
-
-        return presentInspector(animated: animated, in: hostViewController)
+    func presentInspector(animated: Bool) {
+        guard let presenter = dependencies.viewHierarchy.topPresentedViewController else { return }
+        return presentInspector(animated: animated, from: presenter)
     }
 
-    @discardableResult
-    func presentInspector(animated: Bool, in presentingViewController: UIViewController) -> UIViewController? {
-        guard let coordinator = makeInspectorViewCoordinator() else {
-            return nil
+    func presentInspector(animated: Bool, from presenter: UIViewController) {
+        guard let coordinator = makeInspectorViewCoordinator(presentedBy: presenter) else {
+            return
         }
 
         for case let previousCoordinator as InspectorViewCoordinator in children {
-            previousCoordinator.finish()
+            previousCoordinator.removeFromParent()
         }
 
         addChild(coordinator)
 
-        let viewController = coordinator.start()
+        let inspectorViewController = coordinator.start()
 
-        presentingViewController.present(viewController, animated: animated)
-
-        return viewController
+        presenter.present(inspectorViewController, animated: animated)
     }
 
-    func makeInspectorViewCoordinator() -> InspectorViewCoordinator? {
-        guard let snapshot = viewHierarchySnapshot else { return nil }
+    func makeInspectorViewCoordinator(presentedBy presenter: UIViewController) -> InspectorViewCoordinator? {
+        guard let snapshot = snapshot else { return nil }
 
         let coordinator = InspectorViewCoordinator(
-            snapshot: snapshot,
-            commandGroups: { [weak self] in self?.commandGroups }
-        ).then {
-            if swiftUIhost != nil {
-                $0.swiftUIDelegate = self
-            }
-            else {
-                $0.delegate = self
-            }
+            .init(
+                snapshot: snapshot,
+                shouldAnimateKeyboard: dependencies.swiftUIhost == nil,
+                commandGroupsProvider: { [weak self] in
+                    guard let self = self else { return .none }
+                    return self.commandGroups
+                }
+            ),
+            presentedBy: presenter
+        )
+
+        if dependencies.swiftUIhost != nil {
+            coordinator.swiftUIDelegate = self
+        } else {
+            coordinator.delegate = self
         }
 
         return coordinator

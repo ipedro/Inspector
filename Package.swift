@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "Inspector",
     platforms: [
-        .iOS(.v11)
+        .iOS(.v13)
     ],
     products: [
         .library(
@@ -21,8 +21,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/ipedro/UIKeyCommandTableView.git", from: "0.2.1"),
         .package(url: "https://github.com/ipedro/UIKeyboardAnimatable.git", from: "0.3.0"),
-        .package(url: "https://github.com/ipedro/UIKitOptions.git", from: "0.3.2"),
-        .package(url: "https://github.com/ipedro/Coordinator.git", .exact("1.0.2"))
+        .package(url: "https://github.com/ipedro/UIKitOptions.git", from: "0.3.3"),
+        .package(url: "https://github.com/ipedro/Coordinator.git", from: "2.1.2")
     ],
     targets: [
         .target(

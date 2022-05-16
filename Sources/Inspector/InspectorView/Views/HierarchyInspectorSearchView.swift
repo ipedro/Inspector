@@ -64,8 +64,8 @@ final class HierarchyInspectorSearchView: BaseView {
 
         contentView.axis = .horizontal
         contentView.alignment = .center
-        contentView.directionalLayoutMargins = ElementInspector.appearance.directionalInsets.with(trailing: ElementInspector.appearance.verticalMargins)
-        contentView.spacing = ElementInspector.appearance.verticalMargins
+        contentView.directionalLayoutMargins = elementInspectorAppearance.directionalInsets.with(trailing: elementInspectorAppearance.verticalMargins)
+        contentView.spacing = elementInspectorAppearance.verticalMargins
 
         contentView.addArrangedSubview(searchIcon)
         contentView.addArrangedSubview(textField)

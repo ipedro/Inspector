@@ -128,7 +128,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     private lazy var viewCode = ElementInspectorViewCode(
         frame: CGRect(
             origin: .zero,
-            size: ElementInspector.configuration.panelPreferredCompressedSize
+            size: Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelPreferredCompressedSize
         )
     ).then {
         $0.elementDescriptionView.summaryInfo = viewModel.element.summaryInfo
@@ -592,9 +592,9 @@ private extension UIMenu {
                     image: panel.image,
                     identifier: nil,
                     discoverabilityTitle: panel.title,
-                    state: ElementInspector.configuration.defaultPanel == panel ? .on : .off
+                    state: Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel == panel ? .on : .off
                 ) { _ in
-                    ElementInspector.configuration.defaultPanel = panel
+                    Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel = panel
                 }
             }
         )

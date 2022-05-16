@@ -21,7 +21,7 @@
 import UIKit
 
 struct ViewHierarchySnapshot: ExpirableProtocol {
-    let expirationDate = Date().addingTimeInterval(Inspector.configuration.snapshotExpirationTimeInterval)
+    let expirationDate = Date().addingTimeInterval(Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval)
 
     let availableLayers: [ViewHierarchyLayer]
 

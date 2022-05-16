@@ -42,10 +42,10 @@ class ViewHierarchyElementThumbnailView: BaseView {
 
     var backgroundStyle: ThumbnailBackgroundStyle {
         get {
-            ElementInspector.configuration.thumbnailBackgroundStyle
+            Inspector.sharedInstance.configuration.elementInspectorConfiguration.thumbnailBackgroundStyle
         }
         set {
-            ElementInspector.configuration.thumbnailBackgroundStyle = newValue
+            Inspector.sharedInstance.configuration.elementInspectorConfiguration.thumbnailBackgroundStyle = newValue
             backgroundColor = newValue.color
         }
     }
@@ -76,7 +76,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
 
     private lazy var statusContentView = UIStackView.vertical(
         .directionalLayoutMargins(contentView.directionalLayoutMargins),
-        .spacing(ElementInspector.appearance.verticalMargins / 2),
+        .spacing(elementInspectorAppearance.verticalMargins / 2),
         .verticalAlignment(.center)
     )
 
@@ -85,7 +85,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
         $0.layer.shadowRadius = Self.contentMargins.leading
     }
 
-    static let contentMargins = NSDirectionalEdgeInsets(insets: ElementInspector.appearance.horizontalMargins)
+    static let contentMargins = NSDirectionalEdgeInsets(insets: Inspector.sharedInstance.appearance.elementInspector.horizontalMargins)
 
     // MARK: - View Lifecycle
 

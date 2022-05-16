@@ -44,7 +44,7 @@ class BaseCardView: BaseView {
         }
     }
 
-    var cornerRadius: CGFloat = ElementInspector.appearance.horizontalMargins {
+    var cornerRadius: CGFloat = .zero {
         didSet {
             roundedView.layer.cornerRadius = cornerRadius
         }
@@ -75,6 +75,8 @@ class BaseCardView: BaseView {
     override func setup() {
         super.setup()
 
+        cornerRadius = elementInspectorAppearance.horizontalMargins
+        
         installView(stackView, priority: .required)
 
         contentView.directionalLayoutMargins = contentMargins

@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension ElementIdentityLibrary {
+extension DefaultElementIdentityLibrary {
     final class RuntimeAttributesIdentitySectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 

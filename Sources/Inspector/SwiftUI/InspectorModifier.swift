@@ -34,10 +34,10 @@ public extension View {
         modifier(
             InspectorModifier(
                 isPresented: isPresented,
-                inspectorViewHierarchyLayers: layers,
-                inspectorViewHierarchyColorScheme: colorScheme,
-                inspectorCommandGroups: commandGroups,
-                inspectorElementLibraries: elementLibraries,
+                viewHierarchyLayers: layers,
+                viewHierarchyColorScheme: colorScheme,
+                commandGroups: commandGroups,
+                elementLibraries: elementLibraries,
                 inspectorIconProvider: elementIconProvider
             )
         )
@@ -48,13 +48,13 @@ public extension View {
 struct InspectorModifier: ViewModifier {
     @Binding var isPresented: Bool
 
-    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]?
+    var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]?
 
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme?
+    var viewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme?
 
-    var inspectorCommandGroups: [Inspector.CommandsGroup]?
+    var commandGroups: [Inspector.CommandsGroup]?
 
-    var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]?
+    var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]?
 
     var inspectorIconProvider: Inspector.ElementIconProvider?
 
@@ -64,10 +64,10 @@ struct InspectorModifier: ViewModifier {
 
             if isPresented {
                 InspectorUI(
-                    layers: inspectorViewHierarchyLayers,
-                    colorScheme: inspectorViewHierarchyColorScheme,
-                    commandGroups: inspectorCommandGroups,
-                    elementLibraries: inspectorElementLibraries,
+                    layers: viewHierarchyLayers,
+                    colorScheme: viewHierarchyColorScheme,
+                    commandGroups: commandGroups,
+                    elementLibraries: elementLibraries,
                     elementIconProvider: inspectorIconProvider,
                     didFinish: {
                         withAnimation(.spring()) {

@@ -21,13 +21,15 @@
 import UIKit
 
 extension SectionHeader {
+    private static var elementInspectorAppearance: ElementInspector.Appearance { Inspector.sharedInstance.appearance.elementInspector }
+    
     static func formSectionTitle(title: String? = nil, subtitle: String? = nil) -> SectionHeader {
         SectionHeader(
             title: title,
             titleFont: .init(.callout, .traitBold),
             subtitle: subtitle,
             subtitleFont: .caption1,
-            margins: .init(vertical: ElementInspector.appearance.verticalMargins / 2)
+            margins: .init(vertical: elementInspectorAppearance.verticalMargins / 2)
         )
     }
 
@@ -38,8 +40,8 @@ extension SectionHeader {
             subtitle: subtitle,
             subtitleFont: .caption1,
             margins: .init(
-                top: ElementInspector.appearance.verticalMargins * 3,
-                bottom: ElementInspector.appearance.verticalMargins
+                top: elementInspectorAppearance.verticalMargins * 3,
+                bottom: elementInspectorAppearance.verticalMargins
             )
         ).then {
             $0.titleLabel.textColor = $0.colorStyle.tertiaryTextColor
@@ -143,7 +145,7 @@ final class SectionHeader: BaseView {
         super.setup()
         contentView.axis = .vertical
         contentView.addArrangedSubviews(titleLabel, subtitleLabel)
-        contentView.spacing = ElementInspector.appearance.verticalMargins / 2
+        contentView.spacing = elementInspectorAppearance.verticalMargins / 2
     }
 
     override func layoutSubviews() {
@@ -165,7 +167,7 @@ final class SectionHeader: BaseView {
         titleFont: FontOptions = .title3,
         subtitle: String? = nil,
         subtitleFont: FontOptions = .body,
-        margins: NSDirectionalEdgeInsets = ElementInspector.appearance.directionalInsets
+        margins: NSDirectionalEdgeInsets? = .none
     ) {
         self.titleFont = titleFont
         self.subtitleFont = subtitleFont
@@ -174,7 +176,7 @@ final class SectionHeader: BaseView {
 
         self.title = title
         self.subtitle = subtitle
-        self.margins = margins
+        self.margins = margins ?? elementInspectorAppearance.directionalInsets
     }
 
     @available(*, unavailable)

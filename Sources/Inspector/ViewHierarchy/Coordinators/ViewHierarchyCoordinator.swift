@@ -23,28 +23,17 @@ import UIKit
 
 typealias ViewHierarchyCoordinatorDelegate = ViewHierarchyActionableProtocol & AnyObject
 
-protocol ViewHierarchyCoordinatorDataSource: AnyObject {
-    var windows: [UIWindow] { get }
+struct ViewHierarchyDependencies {
+    var catalog: ViewHierarchyElementCatalog
+    var colorScheme: ViewHierarchyColorScheme
+    var layers: [ViewHierarchyLayer]
+    var windows: [UIWindow]
 
-    var keyWindow: UIWindow? { get }
-
-    var rootViewController: UIViewController? { get }
-
-    var layers: [ViewHierarchyLayer] { get }
-
-    var colorScheme: ViewHierarchyColorScheme { get }
-
-    var catalog: ViewHierarchyElementCatalog { get }
+    var keyWindow: UIWindow? { windows.first { $0.isKeyWindow } }
 }
 
-final class ViewHierarchyCoordinator: Coordinator {
-    // MARK: - Properties
-
+final class ViewHierarchyCoordinator: Coordinator<ViewHierarchyDependencies, OperationQueue, Void> {
     weak var delegate: ViewHierarchyCoordinatorDelegate?
-
-    weak var dataSource: ViewHierarchyCoordinatorDataSource?
-
-    let operationQueue = OperationQueue.main
 
     private var cachedSnapshot: ViewHierarchySnapshot? { history.last }
 
@@ -70,24 +59,9 @@ final class ViewHierarchyCoordinator: Coordinator {
             let removedLayers = oldLayers.subtracting(layers)
 
             removeReferences(for: removedLayers, in: oldValue)
-
-            guard let dataSource = dataSource else { return }
-
-            addReferences(for: newLayers, with: dataSource.colorScheme)
+            addReferences(for: newLayers, with: dependencies.colorScheme)
         }
     }
-
-    // MARK: - Init
-
-    init(
-        dataSource: ViewHierarchyCoordinatorDataSource?,
-        delegate: ViewHierarchyCoordinatorDelegate?
-    ) {
-        self.dataSource = dataSource
-        self.delegate = delegate
-    }
-
-    func start() {}
 }
 
 // MARK: - DismissablePresentationProtocol
@@ -103,11 +77,8 @@ extension ViewHierarchyCoordinator: DismissablePresentationProtocol {
 extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
     func canPerform(action: ViewHierarchyElementAction) -> Bool {
         switch action {
-        case .layer:
-            return true
-
-        case .inspect, .copy:
-            return false
+        case .layer: return true
+        case .inspect, .copy: return false
         }
     }
 
@@ -123,12 +94,12 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
         switch layerAction {
         case .showHighlight:
             let elementKeys = element.safelyInspectableViewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
-            
+
             if var referenceKeys = visibleReferences[.highlightViews] {
                 referenceKeys.append(contentsOf: elementKeys)
                 visibleReferences[.highlightViews] = referenceKeys
-                elementKeys.forEach { addHighlightView(for: $0, with: dataSource?.colorScheme ?? .default) }
-                
+                elementKeys.forEach { addHighlightView(for: $0, with: dependencies.colorScheme) }
+
                 installLayer(.highlightViews)
             }
             else {
@@ -138,7 +109,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
         case .hideHighlight:
             let elementKeys = element.safelyInspectableViewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
             elementKeys.forEach { removeHighlightView(for: $0) }
-            
+
             if visibleReferences[.highlightViews].isNilOrEmpty {
                 removeLayer(.highlightViews)
             }
@@ -160,7 +131,6 @@ extension ViewHierarchyCoordinator {
         if cachedSnapshot?.isValid == true { return cachedSnapshot }
 
         guard let snapshot = makeSnapshot() else { return nil }
-
         history.append(snapshot)
 
         return snapshot
@@ -177,36 +147,26 @@ extension ViewHierarchyCoordinator {
     }
 
     private func makeSnapshot() -> ViewHierarchySnapshot? {
-        guard
-            let dataSource = dataSource,
-            let root = ViewHierarchyRoot(windows: dataSource.windows, catalog: dataSource.catalog)
-        else {
+        guard let root = ViewHierarchyRoot(
+            windows: dependencies.windows,
+            catalog: dependencies.catalog
+        ) else {
             return nil
         }
-        
+
         let snapshot = ViewHierarchySnapshot(
-            layers: dataSource.layers,
+            layers: dependencies.layers,
             root: root
         )
-        
+
         return snapshot
     }
 }
 
-// MARK: - LayerViewDelegate
-
-extension ViewHierarchyCoordinator: LayerViewDelegate {
-    func layerView(_ layerView: LayerViewProtocol, didSelect element: ViewHierarchyElementReference, withAction action: ViewHierarchyElementAction) {
-        guard canPerform(action: action) else {
-            delegate?.perform(action: action, with: element, from: layerView.sourceView)
-            return
-        }
-
-        perform(action: action, with: element, from: layerView.sourceView)
+private extension ViewHierarchyLayer {
+    static let highlightViews: ViewHierarchyLayer = .layer(
+        name: String(describing: type(of: HighlightView.self))
+    ) { _ in
+        return false
     }
 }
-
-private extension ViewHierarchyLayer {
-    static let highlightViews = ViewHierarchyLayer(name: String(describing: type(of: HighlightView.self))) { _ in false }
-}
-

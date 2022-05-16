@@ -20,43 +20,30 @@
 
 import SwiftUI
 import UIKit
+@_implementationOnly import Coordinator
 
-extension ElementAttributesLibrary {
+extension DefaultElementAttributesLibrary {
     @available(iOS 13.0, *)
     final class NavigationBarAppearanceAttributesSectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 
-        var title: String {
-            type.description.string(appending: "Appearance", separator: " ")
-        }
+        let kind: Kind
 
-        let type: `Type`
+        weak var appearance: UINavigationBarAppearance?
 
-        weak var navigationBar: UINavigationBar?
-
-        var appearance: UINavigationBarAppearance? {
-            switch type {
-            case .standard:
-                return navigationBar?.standardAppearance
-            case .compact:
-                return navigationBar?.compactAppearance
-            case .scrollEdge:
-                return navigationBar?.scrollEdgeAppearance
-            case .compactScrollEdge:
-                #if swift(>=5.5)
-                if #available(iOS 15.0, *) {
-                    return navigationBar?.compactScrollEdgeAppearance
-                }
-                #endif
+        init?(with object: NSObject, _ kind: Kind) {
+            guard
+                let navigationBar = object as? UINavigationBar,
+                let appearance = kind.appearance(from: navigationBar)
+            else {
                 return nil
             }
+            self.kind = kind
+            self.appearance = appearance
         }
 
-        init?(with object: NSObject, type: Type) {
-            guard let navigationBar = object as? UINavigationBar else { return nil }
-
-            self.type = type
-            self.navigationBar = navigationBar
+        var title: String {
+            kind.description.string(appending: "Appearance", separator: " ")
         }
 
         private enum Property: String, Swift.CaseIterable {
@@ -87,22 +74,16 @@ extension ElementAttributesLibrary {
             case largeTitleShadowOffset = "Large Title Shadow Offset"
         }
 
-        var properties: [InspectorElementProperty] {
-            if let appearance = appearance {
-                return makeProperties(for: appearance)
-            }
+        private(set) lazy var properties = makeProperties(for: appearance)
 
-            return type.properties
-        }
+        private func makeProperties(for appearance: UINavigationBarAppearance?) -> [InspectorElementProperty] {
+            guard let appearance = appearance else { return [] }
 
-        private func makeProperties(for appearance: UINavigationBarAppearance) -> [InspectorElementProperty] {
-            Property.allCases.compactMap { property in
+            return Property.allCases.compactMap { property in
                 switch property {
-                case .information:
-                    return type.properties.first
+                case .information: return kind.infoNote
 
-                case .iOS15_behaviorWarning:
-                    return type.properties.last
+                case .iOS15_behaviorWarning: return kind.warning
 
                 case .backgroundEffect:
                     return .optionsList(
@@ -176,8 +157,7 @@ extension ElementAttributesLibrary {
                 case .titleOffset:
                     return nil
 
-                case .titleGroup,
-                     .largeTitleGroup:
+                case .titleGroup, .largeTitleGroup:
                     return .group(title: property.rawValue)
 
                 case .titleFontName:
@@ -254,7 +234,7 @@ extension ElementAttributesLibrary {
 // MARK: - TitleAttribute
 
 @available(iOS 13.0, *)
-extension ElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataSource {
+extension DefaultElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataSource {
     private enum TitleAttribute: String, Swift.CaseIterable {
         case groupTitle
         case fontName = "Title Font Name"
@@ -268,9 +248,27 @@ extension ElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataS
 // MARK: - `Type`
 
 @available(iOS 13.0, *)
-extension ElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataSource {
-    enum `Type`: CustomStringConvertible {
+extension DefaultElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataSource {
+    enum Kind: CustomStringConvertible {
         case standard, compact, scrollEdge, compactScrollEdge
+
+        func appearance(from navigationBar: UINavigationBar) -> UINavigationBarAppearance? {
+            switch self {
+            case .standard:
+                return navigationBar.standardAppearance
+            case .compact:
+                return navigationBar.compactAppearance
+            case .scrollEdge:
+                return navigationBar.scrollEdgeAppearance
+            case .compactScrollEdge:
+                #if swift(>=5.5)
+                if #available(iOS 15.0, *) {
+                    return navigationBar.compactScrollEdgeAppearance
+                }
+                #endif
+                return .none
+            }
+        }
 
         var description: String {
             switch self {
@@ -288,9 +286,9 @@ extension ElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataS
         var message: String {
             switch self {
             case .standard:
-                return "The appearance settings for a standard-height navigation bar."
+                return "The appearance settings for a standard height navigation bar."
             case .compact:
-                return "The appearance settings for a compact-height navigation bar."
+                return "The appearance settings for a compact height navigation bar."
             case .scrollEdge:
                 return "The appearance settings for the navigation bar when content is scrolled to the top."
             case .compactScrollEdge:
@@ -298,33 +296,29 @@ extension ElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataS
             }
         }
 
-        var properties: [InspectorElementProperty] {
-            var array: [InspectorElementProperty] = []
+        var infoNote: InspectorElementProperty {
+            .infoNote(icon: .info, text: message)
+        }
 
-            array.append(.infoNote(icon: .info, text: message))
+        var warning: InspectorElementProperty? {
+            guard #available(iOS 15.0, *) else { return .none }
 
-            if #available(iOS 15.0, *) {
-                switch self {
-                case .scrollEdge:
-                    array.append(
-                        .infoNote(
-                            icon: .warning,
-                            text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top."
-                        )
-                    )
-                case .compactScrollEdge:
-                    array.append(
-                        .infoNote(
-                            icon: .warning,
-                            text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top in a vertically compact orientation."
-                        )
-                    )
-                default:
-                    break
-                }
+            switch self {
+            case .scrollEdge:
+                return .infoNote(
+                    icon: .warning,
+                    text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top."
+                )
+
+            case .compactScrollEdge:
+                return .infoNote(
+                    icon: .warning,
+                    text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top in a vertically compact orientation."
+                )
+
+            default:
+                return .none
             }
-
-            return array
         }
     }
 }

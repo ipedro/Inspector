@@ -20,23 +20,32 @@
 
 import UIKit
 
-extension ElementInspectorCoordinator: UIDocumentPickerDelegate {
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        guard let formPanelController = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
+enum DefaultElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
+    case preview
+    case highlightView
+    case runtimeAttributes
 
-        for url in urls {
-            guard let imageData = try? Data(contentsOf: url) else {
-                continue
-            }
+    var targetClass: AnyClass {
+        switch self {
+        case .preview,
+             .highlightView:
+            return UIView.self
 
-            let image = UIImage(data: imageData)
-
-            formPanelController.selectImage(image)
-            break
+        case .runtimeAttributes:
+            return NSObject.self
         }
     }
 
-    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-        controller.dismiss(animated: true)
+    func sections(for object: NSObject) -> InspectorElementSections {
+        switch self {
+        case .preview:
+            return .init(with: PreviewIdentitySectionDataSource(with: object))
+
+        case .highlightView:
+            return .init(with: HighlightViewSectionDataSource(with: object))
+
+        case .runtimeAttributes:
+            return .init(with: RuntimeAttributesIdentitySectionDataSource(with: object))
+        }
     }
 }

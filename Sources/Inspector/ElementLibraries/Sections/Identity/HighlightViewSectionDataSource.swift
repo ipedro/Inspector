@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension ElementIdentityLibrary {
+extension DefaultElementIdentityLibrary {
     final class HighlightViewSectionDataSource: InspectorElementSectionDataSource {
 
         var state: InspectorElementSectionState = .collapsed

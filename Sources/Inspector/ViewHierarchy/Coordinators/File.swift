@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2022 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -18,15 +18,17 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
+import Foundation
 
-#if swift(>=5.5)
-@available(iOS 15.0, *)
-extension ElementInspectorCoordinator: UISheetPresentationControllerDelegate {
-    func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
-        guard let formPanelController = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
+// MARK: - LayerViewDelegate
 
-        formPanelController.isFullHeightPresentation = sheetPresentationController.selectedDetentIdentifier == .large
+extension ViewHierarchyCoordinator: LayerViewDelegate {
+    func layerView(_ layerView: LayerViewProtocol, didSelect element: ViewHierarchyElementReference, withAction action: ViewHierarchyElementAction) {
+        guard canPerform(action: action) else {
+            delegate?.perform(action: action, with: element, from: layerView.sourceView)
+            return
+        }
+
+        perform(action: action, with: element, from: layerView.sourceView)
     }
 }
-#endif

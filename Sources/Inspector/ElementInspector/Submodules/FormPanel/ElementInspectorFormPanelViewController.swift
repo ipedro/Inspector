@@ -179,9 +179,9 @@ extension ElementInspectorFormPanelViewController: DataReloadingProtocol {
         SectionHeader(
             title: title,
             titleFont: .title3,
-            margins: ElementInspector.appearance.directionalInsets.with(
-                top: ElementInspector.appearance.horizontalMargins * 2,
-                bottom: ElementInspector.appearance.horizontalMargins * 2
+            margins: elementInspectorAppearance.directionalInsets.with(
+                top: elementInspectorAppearance.horizontalMargins * 2,
+                bottom: elementInspectorAppearance.horizontalMargins * 2
             )
         ).then {
             $0.alpha = 0.5

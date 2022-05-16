@@ -22,38 +22,38 @@ import UIKit
 
 extension Manager: ViewHierarchyLayerManagerProtocol {
     var isShowingLayers: Bool {
-        viewHierarchyCoordinator?.isShowingLayers == true
+        viewHierarchyCoordinator.isShowingLayers == true
     }
 
     func isShowingLayer(_ layer: ViewHierarchyLayer) -> Bool {
-        viewHierarchyCoordinator?.isShowingLayer(layer) == true
+        viewHierarchyCoordinator.isShowingLayer(layer) == true
     }
 
     func toggleLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        if viewHierarchyCoordinator?.isShowingLayer(layer) == true {
-            viewHierarchyCoordinator?.removeLayer(layer)
+        if viewHierarchyCoordinator.isShowingLayer(layer) == true {
+            viewHierarchyCoordinator.removeLayer(layer)
         }
         else {
-            viewHierarchyCoordinator?.installLayer(layer)
+            viewHierarchyCoordinator.installLayer(layer)
         }
     }
 
     func removeLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        if viewHierarchyCoordinator?.isShowingLayer(layer) == true {
-            viewHierarchyCoordinator?.removeLayer(layer)
+        if viewHierarchyCoordinator.isShowingLayer(layer) == true {
+            viewHierarchyCoordinator.removeLayer(layer)
         }
     }
 
     func toggleAllLayers() {
-        if viewHierarchyCoordinator?.isShowingLayers == true {
-            viewHierarchyCoordinator?.removeAllLayers()
+        if viewHierarchyCoordinator.isShowingLayers == true {
+            viewHierarchyCoordinator.removeAllLayers()
         }
         else {
-            viewHierarchyCoordinator?.installAllLayers()
+            viewHierarchyCoordinator.installAllLayers()
         }
     }
 
     func removeAllLayers() {
-        viewHierarchyCoordinator?.removeAllLayers()
+        viewHierarchyCoordinator.removeAllLayers()
     }
 }

@@ -22,7 +22,7 @@ import UIKit
 @_implementationOnly import UIKitOptions
 
 public extension InspectorConfiguration {
-    struct KeyCommandSettings {
+    struct KeyCommandSettings: Hashable {
         public var layerToggleInputRange: ClosedRange<Int> = (1...9)
 
         public var layerToggleModifierFlags: UIKeyModifierFlags = [.control]
@@ -41,7 +41,7 @@ public extension InspectorConfiguration {
             modifierFlags: [.control, .shift]
         )
 
-        public struct KeyCommandOptions {
+        public struct KeyCommandOptions: Hashable {
             public var input: String
             public var modifierFlags: UIKeyModifierFlags
 
@@ -52,5 +52,11 @@ public extension InspectorConfiguration {
                 )
             }
         }
+    }
+}
+
+extension UIKeyModifierFlags: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
     }
 }

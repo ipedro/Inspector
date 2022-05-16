@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2022 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -10,7 +10,7 @@
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
 //
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  THE SOFTWARE IS PROVIDED "AS IS", WorITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 //  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -20,12 +20,25 @@
 
 import Foundation
 
-extension ViewHierarchyLayer: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
+final class Weak<Object: AnyObject>: Hashable {
+    private let objectIdentifier: ObjectIdentifier
+    weak var weakReference: Object?
+
+    init(_ object: Object) {
+        objectIdentifier = ObjectIdentifier(object)
+        weakReference = object
     }
 
-    public static func == (lhs: Inspector.ViewHierarchyLayer, rhs: Inspector.ViewHierarchyLayer) -> Bool {
-        lhs.name == rhs.name
+    convenience init?(_ object: Object?) {
+        guard let object = object else { return nil }
+        self.init(object)
+    }
+
+    static func == (lhs: Weak<Object>, rhs: Weak<Object>) -> Bool {
+        lhs.objectIdentifier == rhs.objectIdentifier
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(objectIdentifier)
     }
 }

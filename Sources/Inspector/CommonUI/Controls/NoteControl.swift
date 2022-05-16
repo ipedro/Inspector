@@ -70,8 +70,8 @@ final class NoteControl: BaseControl {
         subtitle: text,
         subtitleFont: .caption2,
         margins: .init(
-            leading: ElementInspector.appearance.verticalMargins,
-            trailing: ElementInspector.appearance.horizontalMargins
+            leading: elementInspectorAppearance.verticalMargins,
+            trailing: elementInspectorAppearance.horizontalMargins
         )
     ).then {
         $0.titleLabel.numberOfLines = 0
@@ -87,7 +87,7 @@ final class NoteControl: BaseControl {
 
         contentView.spacing = .zero
 
-        contentView.directionalLayoutMargins.update(bottom: ElementInspector.appearance.horizontalMargins)
+        contentView.directionalLayoutMargins.update(bottom: elementInspectorAppearance.horizontalMargins)
 
         contentView.addArrangedSubviews(imageView, header)
 

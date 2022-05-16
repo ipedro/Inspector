@@ -18,11 +18,17 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
 @available(iOS 13.0, *)
-extension Inspector.Manager: UIContextMenuInteractionDelegate {
+final class ContextMenuPresenter: NSObject, UIContextMenuInteractionDelegate {
+    private let configurationProvider: (UIContextMenuInteraction) -> UIContextMenuConfiguration?
+    private var isContextMenuInteractionSetup: [ObjectIdentifier: Bool] = [:]
+
+    init(configurationProvider: @escaping (UIContextMenuInteraction) -> UIContextMenuConfiguration?) {
+        self.configurationProvider = configurationProvider
+    }
+
     func addInteraction(to view: UIView) {
         let viewIdentifier = view.objectIdentifier
 
@@ -39,23 +45,8 @@ extension Inspector.Manager: UIContextMenuInteractionDelegate {
     }
 
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
-                                configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        guard
-            let interactionView = interaction.view,
-            let viewHierarchy = viewHierarchySnapshot?.root.viewHierarchy,
-            let element = viewHierarchy.first(where: { $0.underlyingView === interaction.view })
-        else {
-            return .none
-        }
-        return .contextMenuConfiguration(
-            with: element,
-            includeActions: true
-        ) { [weak self] reference, action in
-            self?.perform(
-                action: action,
-                with: reference,
-                from: interactionView
-            )
-        }
+                                configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration?
+    {
+        configurationProvider(interaction)
     }
 }

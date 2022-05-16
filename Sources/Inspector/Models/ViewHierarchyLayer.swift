@@ -25,7 +25,7 @@ import WebKit
 typealias ViewHierarchyLayer = Inspector.ViewHierarchyLayer
 
 public extension Inspector {
-    struct ViewHierarchyLayer {
+    struct ViewHierarchyLayer: Hashable {
         public typealias Filter = (UIView) -> Bool
 
         // MARK: - Properties
@@ -38,12 +38,14 @@ public extension Inspector {
 
         var allowsSystemContainers: Bool = false
 
-        public var filter: Filter
+        public var filter: Filter { _filter }
+
+        @UniqueIdentifier var _filter: Filter
 
         // MARK: - Init
 
         public static func layer(name: String, filter: @escaping Filter) -> ViewHierarchyLayer {
-            ViewHierarchyLayer(name: name, filter: filter)
+            ViewHierarchyLayer(name: name, _filter: filter)
         }
 
         // MARK: - Metods

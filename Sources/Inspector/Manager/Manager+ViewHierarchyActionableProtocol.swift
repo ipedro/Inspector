@@ -29,7 +29,7 @@ extension Manager: ViewHierarchyActionableProtocol {
 
         switch action {
         case .layer:
-            viewHierarchyCoordinator?.perform(action: action, with: element, from: sourceView)
+            viewHierarchyCoordinator.perform(action: action, with: element, from: sourceView)
 
         case let .inspect(preferredPanel: preferredPanel):
             startElementInspectorCoordinator(for: element, panel: preferredPanel, from: sourceView, animated: true)

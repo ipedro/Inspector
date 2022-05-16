@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension ElementSizeLibrary {
+extension DefaultElementSizeLibrary {
     final class TableViewSizeSectionDataSource: InspectorElementSectionDataSource {
         let title: String = "Table View"
 

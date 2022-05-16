@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension ElementIdentityLibrary {
+extension DefaultElementIdentityLibrary {
     final class PreviewIdentitySectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 
@@ -51,10 +51,10 @@ extension ElementIdentityLibrary {
                 case .backgroundColor:
                     return .colorPicker(
                         title: property.rawValue,
-                        color: { ElementInspector.configuration.thumbnailBackgroundStyle.color },
+                        color: { Inspector.sharedInstance.configuration.elementInspectorConfiguration.thumbnailBackgroundStyle.color },
                         handler: {
                             guard let color = $0 else { return }
-                            ElementInspector.configuration.thumbnailBackgroundStyle = .custom(color)
+                            Inspector.sharedInstance.configuration.elementInspectorConfiguration.thumbnailBackgroundStyle = .custom(color)
                         }
                     )
                 }

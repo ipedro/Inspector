@@ -138,7 +138,7 @@ final class TextViewControl: BaseFormControl {
         textView.text = value
 
         isScrollEnabled = hasLongText
-        accessoryControl.directionalLayoutMargins = !hasLongText ? .zero : .init(horizontal: .zero, vertical: ElementInspector.appearance.verticalMargins)
+        accessoryControl.directionalLayoutMargins = !hasLongText ? .zero : .init(horizontal: .zero, vertical: elementInspectorAppearance.verticalMargins)
     }
 
     override var canBecomeFirstResponder: Bool {

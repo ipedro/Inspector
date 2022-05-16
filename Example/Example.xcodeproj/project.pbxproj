@@ -25,6 +25,7 @@
 		EB76A50B26C7AAE10088E571 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EB76A50A26C7AAE10088E571 /* Inspector */; };
 		EBC0288226354CAB00502C90 /* ExampleAttributesLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC0288126354CAB00502C90 /* ExampleAttributesLibrary.swift */; };
 		EBEC3E22263AC75B00131D60 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EBEC3E21263AC75B00131D60 /* Inspector */; };
+		EBF6BCE12831109100D68BD0 /* WeakObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF6BCE02831109100D68BD0 /* WeakObject.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,7 @@
 		EB76A50426C7A7A50088E571 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EB76A50626C7A7A50088E571 /* SwiftUI-Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SwiftUI-Example-Info.plist"; sourceTree = "<group>"; };
 		EBC0288126354CAB00502C90 /* ExampleAttributesLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleAttributesLibrary.swift; sourceTree = "<group>"; };
+		EBF6BCE02831109100D68BD0 /* WeakObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakObject.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 				EB04BCEF266B052C00F106C2 /* PlaygroundViewController.swift */,
 				EB5E1FE1261A48EB002301F5 /* ReadMeViewController.swift */,
 				EB5E1FDF261A48EB002301F5 /* SceneDelegate.swift */,
+				EBF6BCE02831109100D68BD0 /* WeakObject.swift */,
 				EB5E1FE3261A48EB002301F5 /* Main.storyboard */,
 				EB5E6EFE26FC8900000D13CD /* ElementLibrary */,
 				EB5E6EFF26FC891E000D13CD /* Extensions */,
@@ -340,6 +343,7 @@
 				EBC0288226354CAB00502C90 /* ExampleAttributesLibrary.swift in Sources */,
 				EB5E1FE2261A48EB002301F5 /* ReadMeViewController.swift in Sources */,
 				EB210C862624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift in Sources */,
+				EBF6BCE12831109100D68BD0 /* WeakObject.swift in Sources */,
 				EB210C7B2624E4D00032B9AE /* CustomButtonAttributesSectionDataSource.swift in Sources */,
 				EB6595F0266BE2BA0021CC91 /* UIView+Animations.swift in Sources */,
 				EB5E1FDE261A48EB002301F5 /* AppDelegate.swift in Sources */,
@@ -635,7 +639,7 @@
 			repositoryURL = "https://github.com/johnxnguyen/Down.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.11.0;
+				minimumVersion = 0.10.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

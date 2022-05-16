@@ -47,7 +47,7 @@ extension ElementInspectorViewCode {
             let label = UILabel()
             label.text = message
             label.font = .preferredFont(forTextStyle: .body)
-            label.directionalLayoutMargins = ElementInspector.appearance.directionalInsets
+            label.directionalLayoutMargins = Inspector.sharedInstance.appearance.elementInspector.directionalInsets
             label.textAlignment = .center
             label.textColor = label.colorStyle.tertiaryTextColor
 

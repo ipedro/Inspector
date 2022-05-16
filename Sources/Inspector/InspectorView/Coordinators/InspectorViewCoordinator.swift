@@ -29,21 +29,24 @@ protocol InspectorViewCoordinatorDelegate: AnyObject {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, didFinishWith command: InspectorCommand?)
 }
 
-final class InspectorViewCoordinator: ViewCoordinator, DataReloadingProtocol {
-    typealias CommandGroupsProvider = HierarchyInspectorViewModel.CommandGroupsProvider
+typealias CommandGroupsProvider = () -> CommandGroups?
 
+struct InspectorViewDependencies {
+    var snapshot: ViewHierarchySnapshot
+    var shouldAnimateKeyboard: Bool
+    var commandGroupsProvider: CommandGroupsProvider
+}
+
+final class InspectorViewCoordinator: Coordinator<InspectorViewDependencies, UIViewController, UIViewController>, DataReloadingProtocol {
     weak var swiftUIDelegate: InspectorViewCoordinatorSwiftUIDelegate?
 
     weak var delegate: InspectorViewCoordinatorDelegate?
 
-    let hierarchySnapshot: ViewHierarchySnapshot
-
-    let commandGroupsProvider: CommandGroupsProvider
-
     private lazy var inspectorViewController: InspectorViewController = {
         let viewModel = HierarchyInspectorViewModel(
-            commandGroupsProvider: commandGroupsProvider,
-            snapshot: hierarchySnapshot
+            commandGroupsProvider: dependencies.commandGroupsProvider,
+            snapshot: dependencies.snapshot,
+            shouldAnimateKeyboard: dependencies.shouldAnimateKeyboard
         )
 
         return InspectorViewController(viewModel: viewModel).then {
@@ -53,28 +56,18 @@ final class InspectorViewCoordinator: ViewCoordinator, DataReloadingProtocol {
         }
     }()
 
-    init(
-        snapshot: ViewHierarchySnapshot,
-        commandGroups: @escaping CommandGroupsProvider
-    ) {
-        hierarchySnapshot = snapshot
-        commandGroupsProvider = commandGroups
-
-        super.init()
-    }
-
-    func start() -> UIViewController {
-        inspectorViewController
-    }
-
-    func reloadData() {
-        inspectorViewController.reloadData()
-    }
-
-    func finish() {
+    deinit {
         finish(command: .none)
     }
 
+    override func loadContent() -> UIViewController? {
+        inspectorViewController
+    }
+    
+    func reloadData() {
+        inspectorViewController.reloadData()
+    }
+    
     func finish(command: InspectorCommand?) {
         if let swiftUIDelegate = swiftUIDelegate {
             swiftUIDelegate.inspectorViewCoordinator(self, willFinishWith: command)
@@ -100,6 +93,6 @@ extension InspectorViewCoordinator: InspectorViewControllerDelegate {
     }
 
     func inspectorViewControllerDidFinish(_ viewController: InspectorViewController) {
-        finish()
+        finish(command: .none)
     }
 }

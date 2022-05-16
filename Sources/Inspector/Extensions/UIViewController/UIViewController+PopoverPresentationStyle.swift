@@ -42,9 +42,12 @@ extension UIViewController {
             adaptiveSheetPresentationController.detents = [.medium(), .large()]
             adaptiveSheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = false
             adaptiveSheetPresentationController.largestUndimmedDetentIdentifier = .medium
-            adaptiveSheetPresentationController.preferredCornerRadius = ElementInspector.appearance.horizontalMargins
             adaptiveSheetPresentationController.prefersEdgeAttachedInCompactHeight = true
             adaptiveSheetPresentationController.delegate = delegate as? UISheetPresentationControllerDelegate
+            
+            if let appearance = (sourceView as? ElementInspectorAppearanceProviding)?.elementInspectorAppearance {
+                adaptiveSheetPresentationController.preferredCornerRadius = appearance.horizontalMargins
+            }
         }
         #else
         if sourceView?.traitCollection.userInterfaceIdiom == .phone {

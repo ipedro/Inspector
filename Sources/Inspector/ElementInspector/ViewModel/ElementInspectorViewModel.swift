@@ -49,7 +49,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     var isFullHeightPresentation: Bool = true
 
-    private static var defaultPanel: ElementInspectorPanel { ElementInspector.configuration.defaultPanel }
+    private static var defaultPanel: ElementInspectorPanel { Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel }
 
     var title: String { element.elementName }
 

@@ -85,7 +85,7 @@ final class EdgeInsetsControl: BaseFormControl {
         applyTitleSectionStyle()
 
         contentView.axis = .vertical
-        contentView.spacing = ElementInspector.appearance.verticalMargins
+        contentView.spacing = elementInspectorAppearance.verticalMargins
         contentView.addArrangedSubviews(
             topStepper,
             leftStepper,

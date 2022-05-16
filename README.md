@@ -29,9 +29,9 @@ Inspector is a debugging library written in Swift.
     * [With motion gestures](#with-motion-gestures)
     * [Adding custom UI](#adding-custom-ui)
 * [Customization](#Customization)
-    * [InspectorHost Protocol](#inspectorhost-protocol)
+    * [InspectorCustomizationProviding Protocol](#inspectorcustomizationproviding-protocol)
         * [Custom element libraries](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
-        * [Custom Element icons](#var-inspectorElementIconProvider-inspectorelementiconprovider--get-)
+        * [Custom Element icons](#var-elementIconProvider-inspectorelementiconprovider--get-)
         * [View hierarchy layers](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
         * [View hierarchy color scheme](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
         * [Custom commands](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
@@ -83,7 +83,7 @@ dependencies: [
 ---
 ## Setup
 
-After a [successful installation](#installation), you need to add conformance to the [`InspectorHost`](#inspectorhost-protocol) protocol in [`SceneDelegate.swift`](#scene-delegate-example) or [`AppDelegate.swift`](#app-delegate-example) assign itself as `Inspector` host.
+After a [successful installation](#installation), you need to add conformance to the [`InspectorCustomizationProviding`](#inspectorcustomizationproviding-protocol) protocol in [`SceneDelegate.swift`](#scene-delegate-example) or [`AppDelegate.swift`](#app-delegate-example) assign itself as `Inspector` host.
 
 ### SceneDelegate.swift
 
@@ -95,14 +95,14 @@ import UIKit
 #if DEBUG
 import Inspector
 
-extension SceneDelegate: InspectorHost {
-    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
+extension SceneDelegate: InspectorCustomizationProviding {
+    var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
     
-    var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { nil }
+    var viewHierarchyColorScheme: Inspector.ColorScheme? { nil }
     
-    var inspectorCommandGroups: [Inspector.CommandsGroup]? { nil }
+    var commandGroups: [Inspector.CommandsGroup]? { nil }
 
-    var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? { nil }
+    var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? { nil }
 }
 #endif
 
@@ -131,14 +131,14 @@ import UIKit
 #if DEBUG
 import Inspector
 
-extension AppDelegate: InspectorHost {
-    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
+extension AppDelegate: InspectorCustomizationProviding {
+    var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
     
-    var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { nil }
+    var viewHierarchyColorScheme: Inspector.ColorScheme? { nil }
     
-    var inspectorCommandGroups: [Inspector.CommandsGroup]? { nil }
+    var commandGroups: [Inspector.CommandsGroup]? { nil }
 
-    var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? { nil }
+    var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? { nil }
 }
 #endif
 
@@ -195,10 +195,10 @@ struct ContentView: View {
             }
             .inspect(
                 isPresented: $isInspecting,
-                inspectorViewHierarchyLayers: nil,
-                inspectorViewHierarchyColorScheme: nil,
-                inspectorCommandGroups: nil,
-                inspectorElementLibraries: nil
+                viewHierarchyLayers: nil,
+                viewHierarchyColorScheme: nil,
+                commandGroups: nil,
+                elementLibraries: nil
             )
             .navigationTitle("SwiftUI Inspector")
         }
@@ -303,19 +303,18 @@ private func tap(_ sender: Any) {
 
 ## Customization
 
-`Inspector` allows you to customize and introduce new behavior on views specific to your codebase, through the `InspectorHost` Protocol.
+`Inspector` allows you to customize and introduce new behavior on views specific to your codebase, through the `InspectorCustomizationProviding` Protocol.
 
-## InspectorHost Protocol
-* `var window: UIWindow? { get }`
-* [`var inspectorElementIconProvider: Inspector.ElementIconProvider? { get }`](#var-inspectorElementIconProvider-inspectorelementiconprovider--get-)
-* [`var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
-* [`var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { get }`](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
-* [`var inspectorCommandGroups: [Inspector.CommandGroup]? { get }`](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
-* [`var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] { get }`](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
+## InspectorCustomizationProviding Protocol
+* [`var elementIconProvider: Inspector.ElementIconProvider? { get }`](#var-elementIconProvider-inspectorelementiconprovider--get-)
+* [`var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
+* [`var viewHierarchyColorScheme: Inspector.ColorScheme? { get }`](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
+* [`var commandGroups: [Inspector.CommandGroup]? { get }`](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
+* [`var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] { get }`](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
 
 ---
 
-#### `var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`
+#### `var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`
 
 `ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1 - 8</kbd>. You can use one of the default ones or create your own.
 
@@ -355,7 +354,7 @@ private func tap(_ sender: Any) {
 ```swift
 // Example
 
-var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
+var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
     [
         .controls,
         .buttons,
@@ -376,14 +375,14 @@ var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
 
 ---
 
-#### `var inspectorElementIconProvider: Inspector.ElementIconProvider? { get }`
+#### `var elementIconProvider: Inspector.ElementIconProvider? { get }`
 
     Return your own icons for custom classes or override exsiting ones. Preferred size is 32 x 32
 
 ```swift
 // Example
 
-var inspectorElementIconProvider: Inspector.ElementIconProvider? {
+var elementIconProvider: Inspector.ElementIconProvider? {
     .init { view in
         switch view {
         case is MyView:
@@ -398,14 +397,14 @@ var inspectorElementIconProvider: Inspector.ElementIconProvider? {
 ```
 ---
 
-#### `var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? { get }`
+#### `var viewHierarchyColorScheme: Inspector.ColorScheme? { get }`
 
 Return your own color scheme for the hierarchy label colors, instead of (or to extend) the default color scheme.
 
 ```swift
 // Example
 
-var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? {
+var viewHierarchyColorScheme: Inspector.ColorScheme? {
     .init { view in
         switch view {
         case is MyView:
@@ -420,14 +419,14 @@ var inspectorViewHierarchyColorScheme: Inspector.ColorScheme? {
 ```
 ---
 
-#### `var inspectorCommandGroups: [Inspector.CommandGroup]? { get }`
+#### `var commandGroups: [Inspector.CommandGroup]? { get }`
 
 Command groups appear as sections on the main `Inspector` UI and can have key command shortcuts associated with them, you can have as many groups, with as many commands as you want.
 
 ```swift
 // Example
 
-var inspectorCommandGroups: [Inspector.CommandGroup]? {
+var commandGroups: [Inspector.CommandGroup]? {
     guard let window = window else { return [] }
     
     [
@@ -458,14 +457,14 @@ var inspectorCommandGroups: [Inspector.CommandGroup]? {
 
 ---
 
-#### `var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] { get }`
+#### `var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] { get }`
 
 Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Use enumerations.*
 
 ```swift 
 // Example
 
-var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] {
+var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] {
     [.attributes: ExampleElementLibrary.allCases]
 }
 ```

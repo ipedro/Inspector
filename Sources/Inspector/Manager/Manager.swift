@@ -19,91 +19,73 @@
 //  SOFTWARE.
 
 @_implementationOnly import Coordinator
+@_implementationOnly import CoordinatorAPI
 import UIKit
 
-typealias Manager = Inspector.Manager
-
-typealias Coordinator = BaseCoordinator<Void> & StartProtocol
-
-extension Inspector {
-    final class Manager: Coordinator {
-        // MARK: - Properties
-
-        weak var host: InspectorHost? {
-            didSet {
-                if oldValue != nil {
-                    finish()
-                }
-                if host != nil {
-                    start()
-                }
-            }
-        }
-
-        var swiftUIhost: InspectorSwiftUIHost? {
-            didSet {
-                host = swiftUIhost
-            }
-        }
-
-        var isContextMenuInteractionSetup: [ObjectIdentifier: Bool] = [:]
-
-        let operationQueue = OperationQueue.main
-
-        var viewHierarchyCoordinator: ViewHierarchyCoordinator? {
-            children.first(where: { $0 is ViewHierarchyCoordinator }) as? ViewHierarchyCoordinator
-        }
-
-        var viewHierarchySnapshot: ViewHierarchySnapshot? {
-            viewHierarchyCoordinator?.latestSnapshot()
-        }
-
-        // MARK: - Init
-
-        init() {
-            if #available(iOS 13, *), configuration.enableLayoutSubviewsSwizzling {
-                UIView.startSwizzling()
-            }
-        }
-
-        deinit {
-            operationQueue.cancelAllOperations()
-            host = nil
-        }
-
-        func reset() {
-            finish()
-            start()
-        }
-
-        func start() {
-            if children.contains(where: { $0 is ViewHierarchyCoordinator }) {
-                return
-            }
-
-            let viewHierarchyCoordinator = ViewHierarchyCoordinator(dataSource: self, delegate: self)
-            viewHierarchyCoordinator.start()
-
-            addChild(viewHierarchyCoordinator)
-        }
-
-        func finish() {
-            operationQueue.cancelAllOperations()
-
-            children.forEach { child in
-                (child as? DismissablePresentationProtocol)?.dismissPresentation(animated: true)
-
-                removeChild(child)
-            }
-        }
-    }
+struct ManagerDependencies {
+    var configuration: InspectorConfiguration
+    var coordinatorFactory: ViewHierarchyCoordinatorFactoryProtocol.Type
+    var customization: InspectorCustomizationProviding?
+    var viewHierarchy: ViewHierarchyRepresentable
+    var swiftUIhost: InspectorSwiftUIHost?
 }
 
-// MARK: - Host ViewController n
+final class Manager: Coordinator<ManagerDependencies, OperationQueue, Void> {
+    var snapshot: ViewHierarchySnapshot? { viewHierarchyCoordinator.latestSnapshot() }
+    var keyWindow: UIWindow? { dependencies.viewHierarchy.keyWindow }
+    var catalog: ViewHierarchyElementCatalog { viewHierarchyCoordinator.dependencies.catalog }
 
-extension Manager {
-    var hostViewController: UIViewController? {
-        host?.keyWindow?.rootViewController?.topPresentedViewController
+    private(set) lazy var viewHierarchyCoordinator: ViewHierarchyCoordinator = {
+        let coordinator = dependencies.coordinatorFactory.makeCoordinator(
+            with: dependencies.viewHierarchy.windows,
+            operationQueue: operationQueue,
+            customization: dependencies.customization,
+            defaultLayers: [
+                .allViews,
+                .withIdentifier,
+                .withoutIdentifier
+            ]
+        )
+
+        coordinator.delegate = self
+        return coordinator
+    }()
+
+    // MARK: - Init
+
+    override init(
+        _ dependencies: ManagerDependencies,
+        presentedBy presenter: OperationQueue,
+        parent: CoordinatorProtocol? = nil,
+        children: [CoordinatorProtocol] = []
+    ) {
+        super.init(
+            dependencies,
+            presentedBy: presenter,
+            parent: parent,
+            children: children
+        )
+
+        if dependencies.configuration.enableLayoutSubviewsSwizzling {
+            UIView.startSwizzling()
+        }
+
+        print("Created Manager", self)
+    }
+
+    deinit {
+        print("Destroyed Manager", self)
+
+        operationQueue.cancelAllOperations()
+
+        children.forEach { child in
+            (child as? DismissablePresentationProtocol)?.dismissPresentation(animated: true)
+            child.removeFromParent()
+        }
+    }
+
+    override func loadContent() -> Void? {
+        viewHierarchyCoordinator.start()
     }
 }
 

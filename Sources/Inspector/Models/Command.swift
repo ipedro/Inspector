@@ -56,7 +56,7 @@ public extension Inspector {
 
 extension Command {
     private static var keyCommandSettings: InspectorConfiguration.KeyCommandSettings {
-        Inspector.configuration.keyCommands
+        Inspector.sharedInstance.configuration.keyCommands
     }
 
     static func emptyLayer(_ title: String) -> Command {
@@ -116,7 +116,7 @@ extension Command {
         )
     }
 
-    static func presentInspector(from host: InspectorHost, animated: Bool = true) -> Command {
+    static func presentInspector(from customization: InspectorCustomizationProviding, animated: Bool = true) -> Command {
         Command(
             title: Texts.presentInspector.lowercased(),
             icon: nil,

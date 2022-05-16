@@ -28,7 +28,7 @@ protocol ElementChildrenPanelItemViewModelProtocol: AnyObject {
 }
 
 extension ElementChildrenPanelViewModel {
-    final class ChildViewModel {
+    final class ChildViewModel: ElementInspectorAppearanceProviding {
         weak var parent: ElementChildrenPanelItemViewModelProtocol?
 
         private var _isCollapsed: Bool {
@@ -93,7 +93,7 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
 
     var appearance: (transform: CGAffineTransform, alpha: CGFloat) {
         if animatedDisplay {
-            return (transform: ElementInspector.appearance.panelInitialTransform, alpha: .zero)
+            return (transform: Inspector.sharedInstance.appearance.elementInspector.panelInitialTransform, alpha: .zero)
         }
         return (transform: .identity, alpha: 1)
     }
@@ -125,12 +125,12 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
 
     private var subtitle: String? { relativeDepth > .zero ? element.shortElementDescription : element.elementDescription }
 
-    private var titleFont: UIFont { ElementInspector.appearance.titleFont(forRelativeDepth: relativeDepth) }
+    private var titleFont: UIFont { elementInspectorAppearance.titleFont(forRelativeDepth: relativeDepth) }
 
-    private var subtitleFont: UIFont { ElementInspector.appearance.font(forRelativeDepth: relativeDepth) }
+    private var subtitleFont: UIFont { elementInspectorAppearance.font(forRelativeDepth: relativeDepth) }
 
     private var isCollapseButtonEnabled: Bool {
-        relativeDepth < ElementInspector.configuration.childrenListMaximumInteractiveDepth
+        relativeDepth < Inspector.sharedInstance.configuration.elementInspectorConfiguration.childrenListMaximumInteractiveDepth
     }
 
     private var hideCollapseButton: Bool {
@@ -161,15 +161,15 @@ extension ElementChildrenPanelViewModel.ChildViewModel: Hashable {
 private extension ElementChildrenPanelViewModel.ChildViewModel {
     static let thumbnailImageLostConnection = IconKit.imageOfWifiExlusionMark(
         CGSize(
-            width: ElementInspector.appearance.horizontalMargins * 1.5,
-            height: ElementInspector.appearance.horizontalMargins * 1.5
+            width: Inspector.sharedInstance.appearance.elementInspector.horizontalMargins * 1.5,
+            height: Inspector.sharedInstance.appearance.elementInspector.horizontalMargins * 1.5
         )
     ).withRenderingMode(.alwaysTemplate)
 
     static let thumbnailImageIsHidden = IconKit.imageOfEyeSlashFill(
         CGSize(
-            width: ElementInspector.appearance.horizontalMargins * 1.5,
-            height: ElementInspector.appearance.horizontalMargins * 1.5
+            width: Inspector.sharedInstance.appearance.elementInspector.horizontalMargins * 1.5,
+            height: Inspector.sharedInstance.appearance.elementInspector.horizontalMargins * 1.5
         )
     ).withRenderingMode(.alwaysTemplate)
 }

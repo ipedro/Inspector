@@ -20,36 +20,25 @@
 
 import UIKit
 
-public protocol InspectorHost: AnyObject {
-    /// The host windows.
-    var windows: [UIWindow] { get }
-
+public protocol InspectorCustomizationProviding: AnyObject {
     /// Return your own icons for custom classes or override exsiting ones.
-    var inspectorElementIconProvider: Inspector.ElementIconProvider? { get }
+    var elementIconProvider: Inspector.ElementIconProvider? { get }
 
     /// Element Libraries are entities that conform to `InspectorElementLibraryProtocol` and are each tied to a unique type. *Pro-tip: Enumerations are recommended.
-    var inspectorElementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? { get }
+    var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? { get }
 
     /// `ViewHierarchyLayer` are toggleable and shown in the `Highlight views` section on the Inspector interface, and also can be triggered with `Ctrl + Shift + 1 - 9`. Add your own custom inspector layers.
-    var inspectorViewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }
+    var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }
 
     /// Return your own color scheme for the hierarchy label colors.
-    var inspectorViewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }
+    var viewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? { get }
 
     /// Return your own command groups as sections on the Inspector interface. You can have as many groups, with as many actions as you would like.
-    var inspectorCommandGroups: [Inspector.CommandsGroup]? { get }
-}
-
-public extension InspectorHost {
-    var windows: [UIWindow] { UIApplication.shared.windows }
-    
-    var keyWindow: UIWindow? {
-        windows.first { $0.isKeyWindow }
-    }
+    var commandGroups: [Inspector.CommandsGroup]? { get }
 }
 
 // MARK: - Swift UI
 
-protocol InspectorSwiftUIHost: InspectorHost {
+protocol InspectorSwiftUIHost: InspectorCustomizationProviding {
     func insectorViewWillFinishPresentation()
 }

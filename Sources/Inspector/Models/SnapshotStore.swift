@@ -37,7 +37,7 @@ final class SnapshotStore<Snapshot>: NSObject {
         }
     }
 
-    init(_ initial: Snapshot, delay: TimeInterval = Inspector.configuration.snapshotExpirationTimeInterval) {
+    init(_ initial: Snapshot, delay: TimeInterval = Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval) {
         self.first = initial
         self.delay = delay
     }

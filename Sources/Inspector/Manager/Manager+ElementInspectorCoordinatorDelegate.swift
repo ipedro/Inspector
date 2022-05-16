@@ -23,24 +23,27 @@ import UIKit
 extension Manager: ElementInspectorCoordinatorDelegate {
     func elementInspectorCoordinator(_ coordinator: ElementInspectorCoordinator,
                                      didFinishInspecting element: ViewHierarchyElementReference,
-                                     with reason: ElementInspectorDismissReason) {
+                                     with reason: ElementInspectorDismissReason)
+    {
         switch reason {
         case .dismiss:
             removeChild(coordinator)
             coordinator.dismissPresentation(animated: true)
 
         case .stopInspecting:
-            reset()
+            Inspector.stop()
         }
     }
 }
 
 extension Manager {
+
+
     func startElementInspectorCoordinator(for view: UIView,
                                           panel: ElementInspectorPanel?,
                                           from sourceView: UIView,
-                                          animated: Bool) {
-
+                                          animated: Bool)
+    {
         let reference = catalog.makeElement(from: view)
         startElementInspectorCoordinator(for: reference, panel: panel, from: sourceView, animated: animated)
     }
@@ -48,22 +51,29 @@ extension Manager {
     func startElementInspectorCoordinator(for element: ViewHierarchyElementReference,
                                           panel: ElementInspectorPanel?,
                                           from sourceView: UIView,
-                                          animated: Bool
-    ) {
-        guard let snapshot = viewHierarchySnapshot else { return }
+                                          animated: Bool)
+    {
+        guard
+            let snapshot = snapshot,
+            let keyWindow = keyWindow
+        else {
+            return
+        }
 
         let coordinator = ElementInspectorCoordinator(
-            element: element,
-            panel: panel,
-            snapshot: snapshot,
-            catalog: catalog,
-            sourceView: sourceView
-        ).then {
-            $0.delegate = self
-        }
+            .init(
+                catalog: catalog,
+                initialPanel: panel,
+                rootElement: element,
+                snapshot: snapshot,
+                sourceView: sourceView
+            ),
+            presentedBy: keyWindow
+        )
+        coordinator.delegate = self
 
         addChild(coordinator)
 
-        host?.keyWindow?.topPresentedViewController?.present(coordinator.start(), animated: animated)
+        dependencies.viewHierarchy.keyWindow?.topPresentedViewController?.present(coordinator.start(), animated: animated)
     }
 }
