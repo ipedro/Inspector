@@ -71,5 +71,5 @@ typealias ViewHierarchyColorScheme = Inspector.Provider<UIView, UIColor>
 
 public extension Inspector {
     typealias ElementIconProvider = Provider<UIView, UIImage?>
-    typealias ViewHierarchyColorScheme = Provider<UIView, UIColor?>
+    typealias ElementColorProvider = Provider<UIView, UIColor?>
 }

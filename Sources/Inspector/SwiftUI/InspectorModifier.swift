@@ -26,7 +26,7 @@ public extension View {
     func inspect(
         isPresented: Binding<Bool>,
         layers: [Inspector.ViewHierarchyLayer]? = nil,
-        colorScheme: Inspector.ViewHierarchyColorScheme? = nil,
+        colorScheme: Inspector.ElementColorProvider? = nil,
         commandGroups: [Inspector.CommandsGroup]? = nil,
         elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? = nil,
         elementIconProvider: Inspector.ElementIconProvider? = nil
@@ -35,7 +35,7 @@ public extension View {
             InspectorModifier(
                 isPresented: isPresented,
                 viewHierarchyLayers: layers,
-                viewHierarchyColorScheme: colorScheme,
+                elementColorProvider: colorScheme,
                 commandGroups: commandGroups,
                 elementLibraries: elementLibraries,
                 inspectorIconProvider: elementIconProvider
@@ -50,7 +50,7 @@ struct InspectorModifier: ViewModifier {
 
     var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]?
 
-    var viewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme?
+    var elementColorProvider: Inspector.ElementColorProvider?
 
     var commandGroups: [Inspector.CommandsGroup]?
 
@@ -65,7 +65,7 @@ struct InspectorModifier: ViewModifier {
             if isPresented {
                 InspectorUI(
                     layers: viewHierarchyLayers,
-                    colorScheme: viewHierarchyColorScheme,
+                    colorScheme: elementColorProvider,
                     commandGroups: commandGroups,
                     elementLibraries: elementLibraries,
                     elementIconProvider: inspectorIconProvider,

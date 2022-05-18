@@ -27,7 +27,7 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost, In
 
     let viewHierarchyLayers: [Inspector.ViewHierarchyLayer]?
 
-    let viewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme?
+    let elementColorProvider: Inspector.ElementColorProvider?
 
     let commandGroups: [Inspector.CommandsGroup]?
 
@@ -41,14 +41,14 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost, In
 
     init(
         layers: [Inspector.ViewHierarchyLayer]?,
-        colorScheme: Inspector.ViewHierarchyColorScheme?,
+        colorScheme: Inspector.ElementColorProvider?,
         commandGroups: [Inspector.CommandsGroup]?,
         elementLibraries: [Inspector.ElementPanelType : [InspectorElementLibraryProtocol]]?,
         elementIconProvider: Inspector.ElementIconProvider?,
         didFinish: (() -> Void)?
     ) {
         self.viewHierarchyLayers = layers
-        self.viewHierarchyColorScheme = colorScheme
+        self.elementColorProvider = colorScheme
         self.commandGroups = commandGroups
         self.elementLibraries = elementLibraries
         self.elementIconProvider = elementIconProvider

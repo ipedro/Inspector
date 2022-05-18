@@ -44,7 +44,7 @@ enum ViewHierarchyCoordinatorFactory: ViewHierarchyCoordinatorFactoryProtocol {
         }
 
         var colorScheme: ViewHierarchyColorScheme {
-            guard let colorScheme = customization?.viewHierarchyColorScheme else {
+            guard let colorScheme = customization?.elementColorProvider else {
                 return .default
             }
 

@@ -65,7 +65,6 @@ final class CustomButtonAttributesSectionDataSource: InspectorElementSectionData
                     title: property.rawValue,
                     color: { self.customButton.backgroundColor }
                 ) { newBackgroundColor in
-
                     self.customButton.backgroundColor = newBackgroundColor
                 }
             }

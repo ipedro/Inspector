@@ -76,14 +76,20 @@ Once you have your Swift package set up, adding `Inspector` as a dependency is a
 ```swift
 // Add to Package.swift
 
+// For projects with iOS 11+ support
 dependencies: [
-  .package(url: "https://github.com/ipedro/Inspector.git", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/ipedro/Inspector.git", .upToNextMajor(from: "2.0.0"))
+]
+
+// For projects with iOS 13+ support
+dependencies: [
+    .package(url: "https://github.com/ipedro/Inspector.git", .upToNextMajor(from: "3.0.0"))
 ]
 ```
 ---
 ## Setup
 
-After a [successful installation](#installation), you need to add conformance to the [`InspectorCustomizationProviding`](#inspectorcustomizationproviding-protocol) protocol in [`SceneDelegate.swift`](#scene-delegate-example) or [`AppDelegate.swift`](#app-delegate-example) assign itself as `Inspector` host.
+After a [successful installation](#installation), all you need to do is start the Inspector after your app finishes launching in [`SceneDelegate.swift`](#scene-delegate-example) or [`AppDelegate.swift`](#app-delegate-example). You can optionally add your own custom content, and tweak some configurations.
 
 ### SceneDelegate.swift
 
@@ -92,31 +98,25 @@ After a [successful installation](#installation), you need to add conformance to
 
 import UIKit
 
+// Your application will not be rejected if you include the Inspector framework in your final bundle, however it's recommended that you import it only when debugging.
+
 #if DEBUG
 import Inspector
-
-extension SceneDelegate: InspectorCustomizationProviding {
-    var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
-    
-    var viewHierarchyColorScheme: Inspector.ColorScheme? { nil }
-    
-    var commandGroups: [Inspector.CommandsGroup]? { nil }
-
-    var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? { nil }
-}
 #endif
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-
-        #if DEBUG
-        // Make your class the Inspector's host when connecting to a session
-        Inspector.start(host: self)
-        #endif
-        
         guard let _ = (scene as? UIWindowScene) else { return }
+
+        (...)
+        
+        #if DEBUG
+        Inspector.setConfiguration(...) // Optional. Add link to InspectorConfiguration
+        Inspector.setCustomization(...) // Optional. Pass an object that conforms to the `InspectorCustomizationProviding` protocol.
+        Inspector.start()
+        #endif
     }
 
     (...)
@@ -128,28 +128,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 // App Delegate Example
 
 import UIKit
+
+// Your application will not be rejected if you include the Inspector framework in your final bundle, however it's recommended that you import it only when debugging.
+
 #if DEBUG
 import Inspector
-
-extension AppDelegate: InspectorCustomizationProviding {
-    var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { nil }
-    
-    var viewHierarchyColorScheme: Inspector.ColorScheme? { nil }
-    
-    var commandGroups: [Inspector.CommandsGroup]? { nil }
-
-    var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]? { nil }
-}
 #endif
 
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {        
+        (...)
+
         #if DEBUG
-        // Make your class the Inspector's host on launch
-        Inspector.start(host: self)
+        Inspector.setConfiguration(...) // Optional. Add link to InspectorConfiguration
+        Inspector.setCustomization(...) // Optional. Pass an object that conforms to the `InspectorCustomizationProviding` protocol.
+        Inspector.start()
         #endif
 
         return true
@@ -196,7 +191,7 @@ struct ContentView: View {
             .inspect(
                 isPresented: $isInspecting,
                 viewHierarchyLayers: nil,
-                viewHierarchyColorScheme: nil,
+                elementColorProvider: nil,
                 commandGroups: nil,
                 elementLibraries: nil
             )
@@ -306,11 +301,11 @@ private func tap(_ sender: Any) {
 `Inspector` allows you to customize and introduce new behavior on views specific to your codebase, through the `InspectorCustomizationProviding` Protocol.
 
 ## InspectorCustomizationProviding Protocol
-* [`var elementIconProvider: Inspector.ElementIconProvider? { get }`](#var-elementIconProvider-inspectorelementiconprovider--get-)
-* [`var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`](#var-inspectorviewhierarchylayers-inspectorviewhierarchylayer--get-)
-* [`var viewHierarchyColorScheme: Inspector.ColorScheme? { get }`](#var-inspectorviewhierarchycolorscheme-inspectorviewhierarchycolorscheme--get-)
-* [`var commandGroups: [Inspector.CommandGroup]? { get }`](#var-inspectorcommandgroups-inspectorcommandgroup--get-)
-* [`var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] { get }`](#var-inspectorelementlibraries-inspectorelementlibraryprotocol--get-)
+* [`var elementIconProvider: Inspector.ElementIconProvider? { get }`](#var-elementIconProvider-elementiconprovider--get-)
+* [`var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? { get }`](#var-viewhierarchylayers-viewhierarchylayer--get-)
+* [`var elementColorProvider: Inspector.ElementColorProvider? { get }`](#var-viewhierarchycolorscheme-viewhierarchycolorscheme--get-)
+* [`var commandGroups: [Inspector.CommandGroup]? { get }`](#var-commandgroups-commandgroup--get-)
+* [`var elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]] { get }`](#var-elementlibraries-inspectorelementlibraryprotocol--get-)
 
 ---
 
@@ -397,14 +392,14 @@ var elementIconProvider: Inspector.ElementIconProvider? {
 ```
 ---
 
-#### `var viewHierarchyColorScheme: Inspector.ColorScheme? { get }`
+#### `var elementColorProvider: Inspector.ElementColorProvider? { get }`
 
 Return your own color scheme for the hierarchy label colors, instead of (or to extend) the default color scheme.
 
 ```swift
 // Example
 
-var viewHierarchyColorScheme: Inspector.ColorScheme? {
+var elementColorProvider: Inspector.ElementColorProvider? {
     .init { view in
         switch view {
         case is MyView:
@@ -476,78 +471,83 @@ import UIKit
 import Inspector
 
 enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case myView
-    
+    case customButton
+
     var targetClass: AnyClass {
         switch self {
-        case .myView:
-            return MyView.self
+        case .customButton:
+            return CustomButton.self
         }
     }
-    
-    func sections(for object: NSObject) -> InspectorElementSections { {
+
+    func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
-        case .myClass:
-            return .init(with: MyClassAttributes(view: referenceView))
+        case .customButton:
+            return .init(with: CustomButtonAttributesSectionDataSource(with: object))
         }
     }
 }
 ```
-```swift
-// Element ViewModel Example
 
+```swift
+// Element Section Data Source
+
+#if DEBUG
 import UIKit
 import Inspector
 
-final class MyClassAttributes: InspectorElementLibraryItemProtocol {
-    var title: String = "My View"
-    
-    private weak var myView: MyView?
-    
+final class CustomButtonAttributesSectionDataSource: InspectorElementSectionDataSource {
     var state: InspectorElementSectionState = .collapsed
-    
+
+    var title: String = "Custom Button"
+
+    let customButton: CustomButton
+
     init?(with object: NSObject) {
-        guard let myView = object as? MyView else {
+        guard let customButton = object as? CustomButton else {
             return nil
         }
-        self.myView = myView
+        self.customButton = customButton
     }
-    
+
     enum Properties: String, CaseIterable {
+        case animateOnTouch = "Animate On Touch"
         case cornerRadius = "Round Corners"
         case backgroundColor = "Background Color"
     }
-    
+
     var properties: [InspectorElementProperty] {
-        guard let myView = myView else { return [] }
-        
-        return Properties.allCases.map { property in
+        Properties.allCases.map { property in
             switch property {
+            case .animateOnTouch:
+                return .switch(
+                    title: property.rawValue,
+                    isOn: { self.customButton.animateOnTouch }
+                ) { animateOnTouch in
+                    self.customButton.animateOnTouch = animateOnTouch
+                }
+
             case .cornerRadius:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { self.myView.roundCorners }
-                ) { [weak self] roundCorners in
-                    guard let self = self else { return }
-
-                    self.myView.roundCorners = roundCorners
+                    isOn: { self.customButton.roundCorners }
+                ) { roundCorners in
+                    self.customButton.roundCorners = roundCorners
                 }
-                
+
             case .backgroundColor:
                 return .colorPicker(
                     title: property.rawValue,
-                    color: { self.myView.backgroundColor }
-                ) { [weak self] newBackgroundColor in
-                    guard let self = self else { return }
-
-                    self.myView.backgroundColor = newBackgroundColor
+                    color: { self.customButton.backgroundColor }
+                ) { newBackgroundColor in
+                    self.customButton.backgroundColor = newBackgroundColor
                 }
             }
-            
         }
     }
 }
 
+#endif
 ```
 ---
 

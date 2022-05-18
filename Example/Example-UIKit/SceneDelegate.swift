@@ -99,7 +99,7 @@ extension SceneDelegate: InspectorCustomizationProviding {
          .viewControllers]
     }
 
-    var viewHierarchyColorScheme: Inspector.ViewHierarchyColorScheme? {
+    var elementColorProvider: Inspector.ElementColorProvider? {
         .init { view in
             view is CustomButton ? .systemPink : nil
         }
