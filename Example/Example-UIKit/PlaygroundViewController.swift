@@ -102,14 +102,13 @@ final class PlaygroundViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        instructionsLabel.text = "Long press any view below"
+        instructionsLabel.text = "Long press any view below or shake the device"
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        Inspector.removeAllLayers()
-
         super.viewWillAppear(animated)
+
+        Inspector.removeAllLayers()
 
         guard hasAppeared == false else { return }
 
@@ -123,14 +122,12 @@ final class PlaygroundViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
         NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(toggleInspectorLayers), object: nil)
         perform(#selector(toggleInspectorLayers), with: nil, afterDelay: 0.2)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
         Inspector.removeAllLayers()
     }
 
@@ -157,9 +154,7 @@ final class PlaygroundViewController: UIViewController {
     // MARK: - Interface Actions
 
     @IBAction private func changeDatePickerStyle(_ sender: UISegmentedControl) {
-        guard let datePickerStyle = UIDatePickerStyle(rawValue: sender.selectedSegmentIndex) else {
-            return
-        }
+        guard let datePickerStyle = UIDatePickerStyle(rawValue: sender.selectedSegmentIndex) else { return }
 
         if #available(iOS 14.0, *) {
             if
@@ -175,7 +170,6 @@ final class PlaygroundViewController: UIViewController {
 
     @IBAction private func rotateActivityIndicator(_ sender: UISlider) {
         let angle = (sender.value - 1) * .pi
-
         activityIndicator.transform = CGAffineTransform(rotationAngle: CGFloat(angle))
     }
 
