@@ -77,7 +77,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     private lazy var segmentedControl = UISegmentedControl.segmentedControlStyle().then {
         $0.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
         $0.addInteraction(UIContextMenuInteraction(delegate: self))
-        }
     }
 
     private lazy var toggleCollapseButton = ToogleCollapseButton().then {
