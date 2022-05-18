@@ -108,12 +108,9 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
 
         case .navigationBar:
             var section = InspectorElementSection()
-
-            if #available(iOS 13.0, *) {
-                section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .standard))
-                section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .compact))
-                section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .scrollEdge))
-            }
+            section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .standard))
+            section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .compact))
+            section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .scrollEdge))
 
             if #available(iOS 15.0, *) {
                 section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .compactScrollEdge))

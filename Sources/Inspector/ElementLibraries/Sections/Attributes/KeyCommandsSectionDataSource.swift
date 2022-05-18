@@ -39,11 +39,7 @@ extension DefaultElementAttributesLibrary {
                 return nil
             }
 
-            if #available(iOS 13.0, *) {
-                self.subtitle = keyCommand.title
-            } else {
-                self.subtitle = keyCommand.discoverabilityTitle
-            }
+            self.subtitle = keyCommand.title
 
             self.title = (keyCommand.symbols ?? keyCommand.action?.description) ?? "Key Command"
 

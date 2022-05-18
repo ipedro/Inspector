@@ -52,10 +52,7 @@ final class TextViewControl: BaseFormControl {
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.animateOnTouch = false
         $0.contentView.addArrangedSubview(textView)
-
-        if #available(iOS 13.0, *) {
-            $0.addInteraction(UIContextMenuInteraction(delegate: self))
-        }
+        $0.addInteraction(UIContextMenuInteraction(delegate: self))
     }
 
     override var isEnabled: Bool {
@@ -159,7 +156,6 @@ final class TextViewControl: BaseFormControl {
         placeholderLabel.preferredMaxLayoutWidth = placeholderLabel.frame.width
     }
 
-    @available(iOS 13.0, *)
     override func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
                                          configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         let localPoint = convert(location, to: accessoryControl)

@@ -20,7 +20,6 @@
 
 import UIKit
 
-@available(iOS 13.0, *)
 final class ContextMenuPresenter: NSObject, UIContextMenuInteractionDelegate {
     private let configurationProvider: (UIContextMenuInteraction) -> UIContextMenuConfiguration?
     private var isContextMenuInteractionSetup: [ObjectIdentifier: Bool] = [:]

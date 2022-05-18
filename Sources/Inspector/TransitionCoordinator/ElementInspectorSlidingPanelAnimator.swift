@@ -128,9 +128,7 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, ElementInspectorAppe
         let toFinalFrame = topLeftMargins(of: containerView)
 
         toView.layer.cornerRadius = elementInspectorAppearance.elementInspectorCornerRadius
-        if #available(iOS 13.0, *) {
-            toView.layer.cornerCurve = .continuous
-        }
+        toView.layer.cornerCurve = .continuous
 
         backgroundGestureView.alpha = 0
         containerView.installView(backgroundGestureView, position: .behind)

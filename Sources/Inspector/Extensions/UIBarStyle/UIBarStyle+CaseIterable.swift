@@ -26,7 +26,6 @@ extension UIBarStyle: CaseIterable {
 
     static let allCases: [UIBarStyle] = [
         .default,
-        .black,
-        .blackTranslucent
+        .black
     ]
 }

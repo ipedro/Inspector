@@ -40,9 +40,6 @@ class BaseView: UIView, InternalViewProtocol, ElementInspectorAppearanceProvidin
 
     func setup() {
         preservesSuperviewLayoutMargins = true
-
-        if #available(iOS 13.0, *) {
-            layer.cornerCurve = .continuous
-        }
+        layer.cornerCurve = .continuous
     }
 }

@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "Coordinator",
+        "repositoryURL": "https://github.com/ipedro/Coordinator.git",
+        "state": {
+          "branch": null,
+          "revision": "4633fd02b0cac039e1a35fe70a36cd6e72c3992b",
+          "version": "2.1.3"
+        }
+      },
+      {
         "package": "Down",
         "repositoryURL": "https://github.com/johnxnguyen/Down.git",
         "state": {

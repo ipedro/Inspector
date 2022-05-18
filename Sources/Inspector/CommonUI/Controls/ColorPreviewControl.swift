@@ -67,9 +67,7 @@ final class ColorPreviewControl: BaseFormControl {
         $0.addGestureRecognizer(tapGestureRecognizer)
         $0.contentView.addArrangedSubview(colorDisplayLabel)
         $0.contentView.addArrangedSubview(colorDisplayControl)
-        if #available(iOS 13.0, *) {
-            $0.addInteraction(UIContextMenuInteraction(delegate: self))
-        }
+        $0.addInteraction(UIContextMenuInteraction(delegate: self))
     }
 
     let emptyTitle: String?
@@ -120,7 +118,6 @@ final class ColorPreviewControl: BaseFormControl {
         delegate?.colorPreviewControlDidTap(self)
     }
 
-    @available(iOS 13.0, *)
     override func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
                                          configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         let localPoint = convert(location, to: colorDisplayControl)

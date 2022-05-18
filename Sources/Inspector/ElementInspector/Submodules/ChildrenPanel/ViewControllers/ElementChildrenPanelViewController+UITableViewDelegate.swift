@@ -53,7 +53,6 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
         delegate?.perform(action: .inspect(preferredPanel: .children), with: selectedCellViewModel.element, from: cell)
     }
 
-    @available(iOS 13.0, *)
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         guard
             indexPath != .firstRow,

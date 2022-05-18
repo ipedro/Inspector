@@ -56,7 +56,6 @@ class LayerView: UIImageView, LayerViewProtocol {
 
     open var sourceView: UIView { self }
 
-    @available(iOS 13.0, *)
     private lazy var menuInteraction = UIContextMenuInteraction(delegate: self)
 
     // MARK: - Init
@@ -97,10 +96,8 @@ class LayerView: UIImageView, LayerViewProtocol {
     override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
 
-        if #available(iOS 13.0, *) {
-            superview?.removeInteraction(menuInteraction)
-            newSuperview?.addInteraction(menuInteraction)
-        }
+        superview?.removeInteraction(menuInteraction)
+        newSuperview?.addInteraction(menuInteraction)
 
         // reset views
         guard newSuperview == nil else { return }
@@ -123,17 +120,12 @@ extension UIView {
     func matchCornerRadius(of otherView: UIView?) {
         guard let otherView = otherView else { return }
 
-        if #available(iOS 13.0, *) {
-            layer.cornerCurve = otherView.layer.cornerCurve
-        }
-
+        layer.cornerCurve = otherView.layer.cornerCurve
         layer.maskedCorners = otherView.layer.maskedCorners
-
         layer.cornerRadius = otherView.layer.cornerRadius
     }
 }
 
-@available(iOS 13.0, *)
 extension LayerView: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
                                 configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {

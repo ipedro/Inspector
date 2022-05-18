@@ -47,7 +47,6 @@ extension UIImage {
     static let emptyViewSymbol: UIImage = .moduleImage(named: "EmptyView-32_Normal")!
 }
 
-@available(iOS 13.0, *)
 extension UIImage {
     static let copySymbol: UIImage = .init(systemName: "doc.on.doc")!
     static let closeSymbol: UIImage = .init(systemName: "xmark.circle")!

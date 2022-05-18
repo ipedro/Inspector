@@ -73,7 +73,7 @@ extension ViewHierarchyElementIconProvider {
                 return .moduleImage(named: "ImageView-32_Normal")
             }
 
-            if #available(iOS 13.0, *), image.renderingMode == .alwaysTemplate {
+            if image.renderingMode == .alwaysTemplate {
                 return image.withTintColor(imageView.tintColor)
             }
 

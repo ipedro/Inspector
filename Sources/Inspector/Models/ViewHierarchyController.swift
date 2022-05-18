@@ -90,13 +90,8 @@ extension ViewHierarchyController {
         let viewRespectsSystemMinimumLayoutMargins: Bool
 
         init(viewController: UIViewController, depth: Int) {
-            if #available(iOS 13.0, *) {
-                self.isModalInPresentation = viewController.isModalInPresentation
-                self.performsActionsWhilePresentingModally = viewController.performsActionsWhilePresentingModally
-            } else {
-                self.isModalInPresentation = false
-                self.performsActionsWhilePresentingModally = false
-            }
+            self.isModalInPresentation = viewController.isModalInPresentation
+            self.performsActionsWhilePresentingModally = viewController.performsActionsWhilePresentingModally
 
             if #available(iOS 14.0, *) {
                 self.prefersPointerLocked = viewController.prefersPointerLocked
@@ -779,10 +774,7 @@ extension ViewHierarchyController: ViewHierarchyControllerProtocol {
 
 private extension UIViewController {
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle {
-        if #available(iOS 13.0, *) {
-            return .init(rawValue: overrideUserInterfaceStyle) ?? .unspecified
-        }
-        return .unspecified
+        .init(rawValue: overrideUserInterfaceStyle) ?? .unspecified
     }
 
     var restorationClassName: String? {

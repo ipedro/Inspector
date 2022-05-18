@@ -23,21 +23,9 @@ import UIKit
 extension UIActivityIndicatorView.Style: CaseIterable {
     typealias AllCases = [UIActivityIndicatorView.Style]
 
-    static let allCases: [UIActivityIndicatorView.Style] = {
-        if #available(iOS 13.0, *) {
-            return [
-                .medium,
-                .large,
-                .whiteLarge,
-                .white,
-                .gray
-            ]
-        }
-
-        return [
-            .whiteLarge,
-            .white,
-            .gray
-        ]
-    }()
+    static let allCases: [UIActivityIndicatorView.Style] = [
+        .whiteLarge,
+        .white,
+        .gray
+    ]
 }

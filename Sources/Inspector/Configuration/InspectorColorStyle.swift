@@ -24,15 +24,11 @@ enum InspectorColorStyle {
     case light, dark
 
     init(with traitCollection: UITraitCollection) {
-        if #available(iOS 13.0, *) {
-            switch traitCollection.userInterfaceStyle {
-            case .dark:
-                self = .dark
-            default:
-                self = .light
-            }
-        } else {
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
             self = .dark
+        default:
+            self = .light
         }
     }
 
@@ -89,15 +85,11 @@ enum InspectorColorStyle {
     }
 
     var blurStyle: UIBlurEffect.Style {
-        if #available(iOS 13.0, *) {
-            switch self {
-            case .dark:
-                return .systemMaterial
-            case .light:
-                return .systemThinMaterial
-            }
-        } else {
-            return .regular
+        switch self {
+        case .dark:
+            return .systemMaterial
+        case .light:
+            return .systemThinMaterial
         }
     }
 
@@ -172,13 +164,9 @@ enum InspectorColorStyle {
     }
 
     private func dynamicColor(_ closure: @escaping (InspectorColorStyle) -> UIColor) -> UIColor {
-        if #available(iOS 13.0, *) {
-            return UIColor { traitCollection in
-                closure(.init(with: traitCollection))
-            }
+        UIColor { traitCollection in
+            closure(.init(with: traitCollection))
         }
-
-        return closure(self)
     }
 }
 

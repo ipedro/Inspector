@@ -103,12 +103,7 @@ final class PlaygroundViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if #available(iOS 13.0, *) {
-            instructionsLabel.text = "Long press any view below"
-        }
-        else {
-            instructionsLabel.text = "Tap any highlited view below"
-        }
+        instructionsLabel.text = "Long press any view below"
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -140,13 +135,8 @@ final class PlaygroundViewController: UIViewController {
     }
 
     @objc private func toggleInspectorLayers() {
-        if #available(iOS 13.0, *) {
-            Inspector.toggle(.allViews)
-            Inspector.printViewHierarchyDescription()
-        }
-        else {
-            Inspector.toggleAllLayers()
-        }
+        Inspector.toggleAllLayers()
+        Inspector.printViewHierarchyDescription()
     }
 
     private func setupSegmentedControl() {

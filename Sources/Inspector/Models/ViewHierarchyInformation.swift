@@ -40,11 +40,5 @@ enum ViewHierarchyInformation: Swift.CaseIterable, MenuContentProtocol {
         }
     }
 
-    var image: UIImage? {
-        if #available(iOS 13.0, *) {
-            return .copySymbol
-        } else {
-            return nil
-        }
-    }
+    var image: UIImage? { .copySymbol }
 }

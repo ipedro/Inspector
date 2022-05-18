@@ -56,13 +56,7 @@ extension ElementInspectorViewCode {
 
         static var loadingIndicator: Content {
             let activityIndicator = UIActivityIndicatorView()
-            if #available(iOS 13.0, *) {
-                activityIndicator.style = .large
-            }
-            else {
-                activityIndicator.style = .whiteLarge
-            }
-
+            activityIndicator.style = .large
             activityIndicator.hidesWhenStopped = true
             activityIndicator.color = activityIndicator.colorStyle.secondaryTextColor
             activityIndicator.startAnimating()

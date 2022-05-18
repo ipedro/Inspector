@@ -23,7 +23,6 @@ import UIKit
 @_implementationOnly import Coordinator
 
 extension DefaultElementAttributesLibrary {
-    @available(iOS 13.0, *)
     final class NavigationBarAppearanceAttributesSectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 
@@ -233,7 +232,6 @@ extension DefaultElementAttributesLibrary {
 
 // MARK: - TitleAttribute
 
-@available(iOS 13.0, *)
 extension DefaultElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataSource {
     private enum TitleAttribute: String, Swift.CaseIterable {
         case groupTitle
@@ -247,7 +245,6 @@ extension DefaultElementAttributesLibrary.NavigationBarAppearanceAttributesSecti
 
 // MARK: - `Type`
 
-@available(iOS 13.0, *)
 extension DefaultElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataSource {
     enum Kind: CustomStringConvertible {
         case standard, compact, scrollEdge, compactScrollEdge

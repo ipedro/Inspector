@@ -47,9 +47,7 @@ final class HierarchyInspectorActionTableViewCell: HierarchyInspectorTableViewCe
         textLabel?.textColor = colorStyle.textColor
         textLabel?.font = .preferredFont(forTextStyle: .callout)
 
-        if #available(iOS 13.0, *) {
-            imageView?.layer.cornerCurve = .continuous
-        }
+        imageView?.layer.cornerCurve = .continuous
         imageView?.layer.cornerRadius = 6
         imageView?.layer.masksToBounds = true
     }

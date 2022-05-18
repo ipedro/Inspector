@@ -57,9 +57,7 @@ final class ToggleControl: BaseFormControl {
     private lazy var switchContainer = UIStackView().then {
         $0.addArrangedSubview(switchControl)
         $0.isLayoutMarginsRelativeArrangement = true
-        if #available(iOS 13.0, *) {
-            $0.directionalLayoutMargins = .init(trailing: 2)
-        }
+        $0.directionalLayoutMargins = .init(trailing: 2)
     }
 
     // MARK: - Init

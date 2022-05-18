@@ -34,7 +34,6 @@ enum ElementInspectorDismissReason: Swift.CaseIterable {
         }
     }
 
-    @available(iOS 13.0, *)
     var icon: UIImage? {
         switch self {
         case .dismiss:
@@ -77,27 +76,17 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
     private lazy var segmentedControl = UISegmentedControl.segmentedControlStyle().then {
         $0.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
-
-        if #available(iOS 13.0, *) {
-            $0.addInteraction(UIContextMenuInteraction(delegate: self))
+        $0.addInteraction(UIContextMenuInteraction(delegate: self))
         }
     }
 
     private lazy var toggleCollapseButton = ToogleCollapseButton().then {
         $0.addTarget(self, action: #selector(didTapToggleCollapseButton), for: .touchUpInside)
-
-        if #available(iOS 13.0, *) {
-            $0.addInteraction(UIContextMenuInteraction(delegate: self))
-        }
+        $0.addInteraction(UIContextMenuInteraction(delegate: self))
     }
 
     private let dismissItem: UIBarButtonItem.SystemItem = {
-        if #available(iOS 13.0, *) {
-            return .close
-        }
-        else {
-            return .done
-        }
+        return .close
     }()
 
     private(set) lazy var dismissBarButtonItem = UIBarButtonItem(
@@ -509,7 +498,6 @@ extension ElementInspectorViewController: ElementInspectorFormPanelItemStateDele
 
 // MARK: - UIContextMenuInteractionDelegate
 
-@available(iOS 13.0, *)
 extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         switch interaction.view {
@@ -579,7 +567,6 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
     }
 }
 
-@available(iOS 13.0, *)
 private extension UIMenu {
     static func defaultElementInspectorPanelMenu() -> UIMenu {
         UIMenu(

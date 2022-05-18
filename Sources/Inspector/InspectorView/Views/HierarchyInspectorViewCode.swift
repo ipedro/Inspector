@@ -93,6 +93,7 @@ final class HierarchyInspectorViewCode: BaseView {
         blurView.clipsToBounds = true
         blurView.layer.cornerRadius = elementInspectorAppearance.verticalMargins
         blurView.layer.borderWidth = 1
+        blurView.layer.cornerCurve = .continuous
         blurView.layer.borderColor = {
             switch Inspector.sharedInstance.configuration.colorStyle {
             case .dark:
@@ -101,10 +102,6 @@ final class HierarchyInspectorViewCode: BaseView {
                 return colorStyle.quaternaryTextColor.cgColor
             }
         }()
-
-        if #available(iOS 13.0, *) {
-            blurView.layer.cornerCurve = .continuous
-        }
 
         return blurView
     }()

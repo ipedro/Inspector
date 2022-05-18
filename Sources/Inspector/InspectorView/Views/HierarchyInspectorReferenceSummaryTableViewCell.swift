@@ -62,9 +62,7 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
         imageView?.contentMode = .center
 
         imageView?.layer.cornerRadius = elementInspectorAppearance.verticalMargins / 2
-        if #available(iOS 13.0, *) {
-            imageView?.layer.cornerCurve = .continuous
-        }
+        imageView?.layer.cornerCurve = .continuous
 
         installView(contentView)
     }

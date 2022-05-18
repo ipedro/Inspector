@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/ipedro/Coordinator.git",
         "state": {
           "branch": null,
-          "revision": "14e73a7e528cb37bf34b6c92ed4c2eafca88be3b",
-          "version": "1.0.1"
+          "revision": "064d1e3dc78356fdf8f3fb1044f9328c2fa7795c",
+          "version": "2.1.2"
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/ipedro/UIKitOptions.git",
         "state": {
           "branch": null,
-          "revision": "2a60d39d0a986d55e3a258576042713e25f7b3d2",
-          "version": "0.3.2"
+          "revision": "66c73e7529e2b65afd9d729025ebafec2b65a93b",
+          "version": "0.3.3"
         }
       }
     ]

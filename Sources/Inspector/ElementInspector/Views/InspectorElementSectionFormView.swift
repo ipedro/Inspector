@@ -117,11 +117,9 @@ class InspectorElementSectionFormView: BaseView {
     override func setup() {
         super.setup()
 
-        if #available(iOS 13.0, *) {
-            let interaction = UIContextMenuInteraction(delegate: self)
-            headerControl.addInteraction(interaction)
-        }
-
+        let interaction = UIContextMenuInteraction(delegate: self)
+        headerControl.addInteraction(interaction)
+        
         clipsToBounds = true
         updateViewsForState()
         installSeparators()
@@ -239,7 +237,6 @@ extension InspectorElementSectionFormView {
 
 // MARK: - UIContextMenuInteractionDelegate
 
-@available(iOS 13.0, *)
 extension InspectorElementSectionFormView: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         UIContextMenuConfiguration(

@@ -181,12 +181,7 @@ extension UITableViewCell.SeparatorStyle: CustomStringConvertible {
 extension UITableView.Style: CaseIterable {
     typealias AllCases = [UITableView.Style]
 
-    static var allCases: [UITableView.Style] {
-        if #available(iOS 13.0, *) {
-            return [.plain, .grouped, .insetGrouped]
-        }
-        return [.plain, .grouped]
-    }
+    static let allCases: [UITableView.Style] = [.plain, .grouped, .insetGrouped]
 }
 
 extension UITableView.Style: CustomStringConvertible {

@@ -22,7 +22,6 @@ import UIKit
 
 typealias ViewHierarchyActionHandler = (ViewHierarchyElementReference, ViewHierarchyElementAction) -> Void
 
-@available(iOS 13.0, *)
 extension UIMenu {
     convenience init?(
         with element: ViewHierarchyElementReference,

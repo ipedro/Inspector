@@ -23,23 +23,16 @@ import UIKit
 extension UIModalPresentationStyle: CaseIterable {
     typealias AllCases = [UIModalPresentationStyle]
 
-    static let allCases: [UIModalPresentationStyle] = {
-        var cases: [UIModalPresentationStyle] = [
-            .fullScreen,
-            .pageSheet,
-            .formSheet,
-            .currentContext,
-            .custom,
-            .overFullScreen,
-            .overCurrentContext,
-            .popover,
-            .none
-        ]
-
-        if #available(iOS 13.0, *) {
-            cases.insert(.automatic, at: .zero)
-        }
-
-        return cases
-    }()
+    static let allCases: [UIModalPresentationStyle] = [
+        .automatic,
+        .fullScreen,
+        .pageSheet,
+        .formSheet,
+        .currentContext,
+        .custom,
+        .overFullScreen,
+        .overCurrentContext,
+        .popover,
+        .none
+    ]
 }

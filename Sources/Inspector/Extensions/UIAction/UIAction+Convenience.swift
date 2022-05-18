@@ -20,7 +20,6 @@
 
 import UIKit
 
-@available(iOS 13.0, *)
 extension UIAction {
     static func collapseAction(_ isCollapsed: Bool,
                                expandTitle: String = Texts.expand,

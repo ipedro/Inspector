@@ -22,15 +22,9 @@ import UIKit
 extension UISegmentedControl {
     static func segmentedControlStyle(items: [Any]? = nil) -> UISegmentedControl {
         let segmentedControl = UISegmentedControl(items: items)
-
-        if #available(iOS 13.0, *) {
-            segmentedControl.selectedSegmentTintColor = segmentedControl.colorStyle.tintColor
-            segmentedControl.setTitleTextAttributes([.foregroundColor: segmentedControl.colorStyle.secondaryTextColor], for: .normal)
-            segmentedControl.setTitleTextAttributes([.foregroundColor: segmentedControl.colorStyle.selectedSegmentedControlForegroundColor], for: .selected)
-        }
-        else {
-            segmentedControl.tintColor = segmentedControl.colorStyle.tintColor
-        }
+        segmentedControl.selectedSegmentTintColor = segmentedControl.colorStyle.tintColor
+        segmentedControl.setTitleTextAttributes([.foregroundColor: segmentedControl.colorStyle.secondaryTextColor], for: .normal)
+        segmentedControl.setTitleTextAttributes([.foregroundColor: segmentedControl.colorStyle.selectedSegmentedControlForegroundColor], for: .selected)
 
         return segmentedControl
     }

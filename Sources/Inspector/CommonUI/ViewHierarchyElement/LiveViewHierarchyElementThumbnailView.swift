@@ -59,17 +59,12 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
         super.didMoveToWindow()
 
         guard let window = window else {
-            if #available(iOS 13.0, *) {
-                hoverGestureRecognizer.isEnabled = false
-            }
-
+            hoverGestureRecognizer.isEnabled = false
             return stopLiveUpdatingSnapshot()
         }
 
-        if #available(iOS 13.0, *) {
-            window.addGestureRecognizer(hoverGestureRecognizer)
-            hoverGestureRecognizer.isEnabled = true
-        }
+        window.addGestureRecognizer(hoverGestureRecognizer)
+        hoverGestureRecognizer.isEnabled = true
 
         if #available(iOS 14.0, *) {
             hoverGestureRecognizer.isEnabled = ProcessInfo().isiOSAppOnMac == false
@@ -114,13 +109,11 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
         }
     }
 
-    @available(iOS 13.0, *)
     private lazy var hoverGestureRecognizer = UIHoverGestureRecognizer(
         target: self,
         action: #selector(hovering(_:))
     )
 
-    @available(iOS 13.0, *)
     @objc
     func hovering(_ recognizer: UIHoverGestureRecognizer) {
         switch recognizer.state {

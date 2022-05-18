@@ -36,7 +36,6 @@ final class AdaptiveModalPresenter: NSObject, UIAdaptivePresentationControllerDe
         presentationStyleProvider(controller, traitCollection)
     }
 
-    @available(iOS 13.0, *)
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         dismissHandler?(presentationController)
     }

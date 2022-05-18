@@ -20,7 +20,6 @@
 
 import UIKit
 
-@available(iOS 13.0, *)
 extension UIBlurEffect.Style: CustomStringConvertible {
     var description: String {
         switch self {

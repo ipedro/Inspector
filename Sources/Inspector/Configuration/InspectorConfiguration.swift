@@ -54,17 +54,13 @@ public struct InspectorConfiguration: Hashable {
     var colorStyle: InspectorColorStyle {
         guard let keyWindow = ViewHierarchy(application: .shared).keyWindow else { return .light }
 
-        if #available(iOS 13.0, *) {
-            switch (keyWindow.overrideUserInterfaceStyle, keyWindow.traitCollection.userInterfaceStyle) {
-            case (.dark, _),
-                 (.unspecified, .dark):
-                return .dark
-            default:
-                return .light
-            }
+        switch (keyWindow.overrideUserInterfaceStyle, keyWindow.traitCollection.userInterfaceStyle) {
+        case (.dark, _),
+            (.unspecified, .dark):
+            return .dark
+        default:
+            return .light
         }
-
-        return .dark
     }
 
     let knownSystemContainers: [String] = [

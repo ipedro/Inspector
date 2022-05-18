@@ -20,7 +20,6 @@
 
 import UIKit
 
-@available(iOS 13.0, *)
 extension UIMenuElement {
     func insideDivider() -> UIMenuElement {
         UIMenu(
@@ -49,7 +48,6 @@ extension UIMenuElement {
     }
 }
 
-@available(iOS 13.0, *)
 extension Array where Element: UIMenuElement {
     func insideDivider() -> [UIMenuElement] {
         [UIMenu(
