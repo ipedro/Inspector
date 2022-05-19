@@ -38,4 +38,8 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
             $0.filter(viewHierarchy: root.children).isEmpty == false
         }
     }
+
+    func containsReference(for object: NSObject?) -> ViewHierarchyElementReference? {
+        root.viewHierarchy.first { $0.underlyingObject === object }
+    }
 }

@@ -24,7 +24,7 @@ extension Manager: InspectorViewCoordinatorDelegate {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator,
                                   didFinishWith command: InspectorCommand?)
     {
-        removeChild(coordinator)
+        coordinator.removeFromParent()
         execute(command)
     }
 }
@@ -34,7 +34,7 @@ extension Manager: InspectorViewCoordinatorSwiftUIDelegate {
                                   willFinishWith command: InspectorCommand?)
     {
         dependencies.swiftUIhost?.insectorViewWillFinishPresentation()
-        removeChild(coordinator)
+        coordinator.removeFromParent()
         execute(command)
     }
 }

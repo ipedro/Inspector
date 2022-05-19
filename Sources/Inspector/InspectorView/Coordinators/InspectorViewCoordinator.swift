@@ -56,10 +56,6 @@ final class InspectorViewCoordinator: Coordinator<InspectorViewDependencies, UIV
         }
     }()
 
-    deinit {
-        finish(command: .none)
-    }
-
     override func loadContent() -> UIViewController? {
         inspectorViewController
     }
@@ -74,14 +70,9 @@ final class InspectorViewCoordinator: Coordinator<InspectorViewDependencies, UIV
             return
         }
 
-        guard let delegate = delegate else {
-            assertionFailure("Expected delegate")
-            return
-        }
+        inspectorViewController.dismiss(animated: true)
 
-        inspectorViewController.dismiss(animated: true) {
-            delegate.inspectorViewCoordinator(self, didFinishWith: command)
-        }
+        delegate?.inspectorViewCoordinator(self, didFinishWith: command)
     }
 }
 

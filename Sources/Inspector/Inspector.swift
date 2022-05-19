@@ -24,33 +24,7 @@ import UIKit
 
 typealias Closure = () -> Void
 
-typealias WeakReference<Object: AnyObject> = Weak<Object>
-
 public final class Inspector {
-    private enum State {
-        case idle, started
-    }
-
-    // MARK: - Private Properties
-
-    private(set) var manager: Manager?
-
-    private var state: State = .idle
-
-    // MARK: - Internal Properties
-
-    static let sharedInstance = Inspector()
-
-    let appearance = InspectorAppearance()
-
-    private(set) var contextMenuPresenter: ContextMenuPresenter?
-
-    var swiftUIHost: InspectorSwiftUIHost? {
-        didSet {
-            restartIfNeeded()
-        }
-    }
-
     // MARK: - Public Properties
 
     public var configuration: InspectorConfiguration = .default {
@@ -63,6 +37,57 @@ public final class Inspector {
         didSet {
             restartIfNeeded()
         }
+    }
+
+    // MARK: - Private Properties
+
+    private enum State {
+        case idle, started
+    }
+
+    private(set) var manager: Manager?
+
+    private var state: State = .idle
+
+    // MARK: - Internal Properties
+
+    static let sharedInstance = Inspector()
+
+    let appearance = InspectorAppearance()
+
+    private(set) lazy var console = ConsoleLogger { [weak self] in
+        self?.manager?.snapshot
+    }
+
+    private(set) var contextMenuPresenter: ContextMenuPresenter?
+
+    var swiftUIHost: InspectorSwiftUIHost? {
+        didSet {
+            restartIfNeeded()
+        }
+    }
+
+    func start() {
+        guard state == .idle else { return }
+        setup()
+        manager?.start()
+        state = .started
+    }
+
+    func stop() {
+        guard state == .started else { return }
+        manager = .none
+        contextMenuPresenter = .none
+        state = .idle
+    }
+
+    private func restartIfNeeded() {
+        if state == .started { restart() }
+    }
+
+    private func restart() {
+        stop()
+        start()
     }
 
     private func setup() {
@@ -98,46 +123,56 @@ public final class Inspector {
             }
         }
     }
-
-    func start() {
-        guard state == .idle else { return }
-        setup()
-        manager?.start()
-        state = .started
-    }
-
-    func stop() {
-        guard state == .started else { return }
-        manager = .none
-        contextMenuPresenter = .none
-        state = .idle
-    }
-
-    private func restartIfNeeded() {
-        if state == .started { restart() }
-    }
-
-    private func restart() {
-        stop()
-        start()
-    }
 }
 
 // MARK: - Console Utils
 
-extension Inspector {
+struct ConsoleLogger {
+    let snapshotProvider: () -> ViewHierarchySnapshot?
+
+    enum Error: Swift.Error, CustomStringConvertible {
+        case snapshotUnavailable
+        case objectIsNil
+        case couldNotFindObject
+
+        var description: String {
+            switch self {
+            case .snapshotUnavailable: return "Couldn't capture the view hierarchy. Make sure Inspector.start() was called"
+            case .couldNotFindObject: return "Couldn't find the object in the view hierarchy"
+            case .objectIsNil: return "The object is nil"
+            }
+        }
+    }
+
     func printViewHierarchyDescription() {
-        printViewHierarchyDescription(of: nil)
+        switch takeSnapshot() {
+        case let .success(snapshot):
+            print(snapshot.root.viewHierarchyDescription)
+        case let .failure(error):
+            print(error.description)
+        }
     }
 
     func printViewHierarchyDescription(of object: NSObject?) {
-        print(viewHierarchyDescription(of: object) ?? "No snaphsot available")
+        switch takeSnapshot() {
+        case let .success(snapshot):
+            guard let object = object else { return print(Error.objectIsNil) }
+            guard let reference = snapshot.containsReference(for: object) else { return print(Error.couldNotFindObject) }
+            print(reference.viewHierarchyDescription)
+        case let .failure(error):
+            print(error.description)
+        }
     }
 
-    func viewHierarchyDescription(of object: NSObject? = nil) -> String? {
-        guard let object = object else { return nil }
-        guard let root = manager?.snapshot?.root else { return nil }
-        return root.viewHierarchy.first(where: { $0.underlyingObject === object })?.viewHierarchyDescription
+    private func takeSnapshot() -> Result<ViewHierarchySnapshot, Error> {
+        guard let snapshot = snapshotProvider() else {
+            return .failure(.snapshotUnavailable)
+        }
+        return .success(snapshot)
+    }
+
+    private func print(_ message: CustomStringConvertible) {
+        Swift.print(message.description)
     }
 }
 
@@ -209,15 +244,11 @@ public extension Inspector {
     }
 
     static func printViewHierarchyDescription() {
-        sharedInstance.printViewHierarchyDescription()
+        sharedInstance.console.printViewHierarchyDescription()
     }
 
     static func printViewHierarchyDescription(of object: NSObject?) {
-        sharedInstance.printViewHierarchyDescription(of: object)
-    }
-
-    static func viewHierarchyDescription(of object: NSObject? = nil) -> String? {
-        sharedInstance.viewHierarchyDescription(of: object)
+        sharedInstance.console.printViewHierarchyDescription(of: object)
     }
 
     static func present(animated: Bool = true) {
