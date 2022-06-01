@@ -70,8 +70,6 @@ final class InspectorViewCoordinator: Coordinator<InspectorViewDependencies, UIV
             return
         }
 
-        inspectorViewController.dismiss(animated: true)
-
         delegate?.inspectorViewCoordinator(self, didFinishWith: command)
     }
 }

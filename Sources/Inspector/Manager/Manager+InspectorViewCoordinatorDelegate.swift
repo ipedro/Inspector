@@ -24,8 +24,11 @@ extension Manager: InspectorViewCoordinatorDelegate {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator,
                                   didFinishWith command: InspectorCommand?)
     {
-        coordinator.removeFromParent()
-        execute(command)
+        coordinator.presenter.dismiss(animated: true) { [weak self] in
+            coordinator.removeFromParent()
+            guard let self = self else { return }
+            self.execute(command)
+        }
     }
 }
 
