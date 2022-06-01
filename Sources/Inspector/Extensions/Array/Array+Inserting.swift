@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2022 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -18,28 +18,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
+import Foundation
 
-struct ViewHierarchySnapshot: ExpirableProtocol {
-    let expirationDate = Date().addingTimeInterval(Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval)
-
-    let availableLayers: [ViewHierarchyLayer]
-
-    let populatedLayers: [ViewHierarchyLayer]
-
-    let root: ViewHierarchyApplication
-
-    init(layers: [ViewHierarchyLayer], root: ViewHierarchyApplication) {
-        availableLayers = layers.uniqueValues()
-
-        self.root = root
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(viewHierarchy: root.children).isEmpty == false
-        }
-    }
-
-    func containsReference(for object: NSObject?) -> ViewHierarchyElementReference? {
-        root.viewHierarchy.first { $0.underlyingObject === object }
+extension Array {
+    func inserting(_ newElement: Element, at index: Int) -> [Element] {
+        var copy = self
+        copy.insert(newElement, at: index)
+        return copy
     }
 }

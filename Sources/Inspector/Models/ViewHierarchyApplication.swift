@@ -20,27 +20,35 @@
 
 import UIKit
 
-final class ViewHierarchyRoot {
+final class ViewHierarchyApplication {
     weak var parent: ViewHierarchyElementReference?
 
-    lazy var children: [ViewHierarchyElementReference] = windows.compactMap { window -> [ViewHierarchyElementReference] in
-        let windowReference = catalog.makeElement(from: window)
-        windowReference.parent = self
+    lazy var children: [ViewHierarchyElementReference] = windows
+        .compactMap { window -> [ViewHierarchyElementReference] in
+            let windowReference = catalog.makeElement(from: window)
+            windowReference.parent = self
 
-        guard let rootViewController = window.rootViewController else { return [] }
+            guard let rootViewController = window.rootViewController else { return [] }
 
-        let rootViewControllerReference = ViewHierarchyController(
-            with: rootViewController,
-            iconProvider: catalog.iconProvider,
-            depth: rootViewController.view.depth,
-            isCollapsed: false
-        )
+            let rootViewControllerReference = ViewHierarchyController(
+                with: rootViewController,
+                iconProvider: catalog.iconProvider,
+                depth: rootViewController.view.depth,
+                isCollapsed: false
+            )
 
-        let viewControllerReferences = ([rootViewControllerReference] + rootViewControllerReference.allChildren).compactMap{ $0 as? ViewHierarchyController }
+            let viewControllerReferences = rootViewControllerReference
+                .allChildren
+                .inserting(rootViewControllerReference, at: .zero)
+                .compactMap { $0 as? ViewHierarchyController }
 
-        return Self.makeViewHierarchy(window: windowReference, viewControllers: viewControllerReferences)
+            return Self.inject(
+                viewControllers: viewControllerReferences,
+                in: windowReference
+            )
 
-    }.flatMap { $0 }
+        }
+        .flatMap { $0 }
 
     var depth: Int = .zero
 
@@ -58,10 +66,13 @@ final class ViewHierarchyRoot {
 
     }
 
-    private static func makeViewHierarchy(window: ViewHierarchyElement, viewControllers: [ViewHierarchyController]) -> [ViewHierarchyElementReference] {
+    private static func inject(
+        viewControllers: [ViewHierarchyController],
+        in root: ViewHierarchyElement
+    ) -> [ViewHierarchyElementReference] {
         var viewHierarchy = [ViewHierarchyElementReference]()
 
-        window.viewHierarchy.reversed().enumerated().forEach { index, element in
+        root.viewHierarchy.reversed().enumerated().forEach { index, element in
             viewHierarchy.insert(element, at: .zero)
 
             guard
@@ -94,7 +105,7 @@ final class ViewHierarchyRoot {
     }
 }
 
-extension ViewHierarchyRoot: ViewHierarchyElementReference {
+extension ViewHierarchyApplication: ViewHierarchyElementReference {
     var viewHierarchy: [ViewHierarchyElementReference] { children }
     
     var underlyingObject: NSObject? { UIApplication.shared }

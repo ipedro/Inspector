@@ -147,7 +147,7 @@ extension ViewHierarchyCoordinator {
     }
 
     private func makeSnapshot() -> ViewHierarchySnapshot? {
-        guard let root = ViewHierarchyRoot(
+        guard let root = ViewHierarchyApplication(
             windows: dependencies.windows,
             catalog: dependencies.catalog
         ) else {
@@ -159,6 +159,8 @@ extension ViewHierarchyCoordinator {
             root: root
         )
 
+        print(snapshot)
+        
         return snapshot
     }
 }
