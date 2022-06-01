@@ -9,7 +9,6 @@
 --conflictmarkers reject
 --decimalgrouping none
 --elseposition next-line
---emptybraces no-space
 --enumthreshold 0
 --exponentcase lowercase
 --exponentgrouping disabled
@@ -25,7 +24,6 @@
 --hexgrouping none
 --hexliteralcase uppercase
 --ifdef no-indent
---importgrouping alpha
 --indent 4
 --indentcase false
 --lifecycle 
@@ -34,7 +32,6 @@
 --marktypes always
 --maxwidth none
 --modifierorder 
---nevertrailing 
 --nospaceoperators ...
 --nowrapoperators 
 --octalgrouping none
@@ -42,7 +39,6 @@
 --organizetypes actor,class,enum,struct
 --patternlet hoist
 --ranges spaced
---redundanttype inferred
 --self remove
 --selfrequired 
 --semicolons never
