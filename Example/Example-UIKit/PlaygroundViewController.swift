@@ -133,7 +133,7 @@ final class PlaygroundViewController: UIViewController {
 
     @objc private func toggleInspectorLayers() {
         Inspector.toggleAllLayers()
-        Inspector.printViewHierarchyDescription()
+        printViewHierarchyDescription()
     }
 
     private func setupSegmentedControl() {
@@ -155,6 +155,8 @@ final class PlaygroundViewController: UIViewController {
 
     @IBAction private func changeDatePickerStyle(_ sender: UISegmentedControl) {
         guard let datePickerStyle = UIDatePickerStyle(rawValue: sender.selectedSegmentIndex) else { return }
+
+        printViewHierarchyDescription()
 
         if #available(iOS 14.0, *) {
             if

@@ -125,57 +125,6 @@ public final class Inspector {
     }
 }
 
-// MARK: - Console Utils
-
-struct ConsoleLogger {
-    let snapshotProvider: () -> ViewHierarchySnapshot?
-
-    enum Error: Swift.Error, CustomStringConvertible {
-        case snapshotUnavailable
-        case objectIsNil
-        case couldNotFindObject
-
-        var description: String {
-            switch self {
-            case .snapshotUnavailable: return "Couldn't capture the view hierarchy. Make sure Inspector.start() was called"
-            case .couldNotFindObject: return "Couldn't find the object in the view hierarchy"
-            case .objectIsNil: return "The object is nil"
-            }
-        }
-    }
-
-    func printViewHierarchyDescription() {
-        switch takeSnapshot() {
-        case let .success(snapshot):
-            print(snapshot.root.viewHierarchyDescription)
-        case let .failure(error):
-            print(error.description)
-        }
-    }
-
-    func printViewHierarchyDescription(of object: NSObject?) {
-        switch takeSnapshot() {
-        case let .success(snapshot):
-            guard let object = object else { return print(Error.objectIsNil) }
-            guard let reference = snapshot.containsReference(for: object) else { return print(Error.couldNotFindObject) }
-            print(reference.viewHierarchyDescription)
-        case let .failure(error):
-            print(error.description)
-        }
-    }
-
-    private func takeSnapshot() -> Result<ViewHierarchySnapshot, Error> {
-        guard let snapshot = snapshotProvider() else {
-            return .failure(.snapshotUnavailable)
-        }
-        return .success(snapshot)
-    }
-
-    private func print(_ message: CustomStringConvertible) {
-        Swift.print(message.description)
-    }
-}
-
 // MARK: - Presentation
 
 extension Inspector {
@@ -241,14 +190,6 @@ public extension Inspector {
 
     static func stop() {
         sharedInstance.stop()
-    }
-
-    static func printViewHierarchyDescription() {
-        sharedInstance.console.printViewHierarchyDescription()
-    }
-
-    static func printViewHierarchyDescription(of object: NSObject?) {
-        sharedInstance.console.printViewHierarchyDescription(of: object)
     }
 
     static func present(animated: Bool = true) {
