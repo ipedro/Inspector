@@ -27,9 +27,9 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
 
     let populatedLayers: [ViewHierarchyLayer]
 
-    let root: ViewHierarchyApplication
+    let root: ApplicationReference
 
-    init(layers: [ViewHierarchyLayer], root: ViewHierarchyApplication) {
+    init(layers: [ViewHierarchyLayer], root: ApplicationReference) {
         availableLayers = layers.uniqueValues()
 
         self.root = root

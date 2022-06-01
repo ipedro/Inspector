@@ -50,7 +50,7 @@ final class ElementChildrenPanelViewModel: NSObject {
 
     private static func makeChildViewModels(
         element: ViewHierarchyElementReference,
-        parent: ChildViewModel?,
+        parent: ChildViewModel? = .none,
         snapshot: ViewHierarchySnapshot,
         rootDepth: Int
     ) -> [ChildViewModel] {
@@ -84,7 +84,6 @@ final class ElementChildrenPanelViewModel: NSObject {
 
         children = Self.makeChildViewModels(
             element: rootElement,
-            parent: nil,
             snapshot: snapshot,
             rootDepth: rootElement.depth
         )

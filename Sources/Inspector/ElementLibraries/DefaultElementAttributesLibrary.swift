@@ -39,6 +39,7 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
     case textField
     case textView
     case webView
+    case application
 
     // base classes
     case control
@@ -53,6 +54,7 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
 
     var targetClass: AnyClass {
         switch self {
+        case .application: return UIApplication.self
         case .activityIndicator: return UIActivityIndicatorView.self
         case .button: return UIButton.self
         case .control: return UIControl.self
@@ -81,6 +83,8 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
 
     func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
+        case .application: return .init(with: ApplicationAttributesSectionDataSource(with: object))
+            
         case .navigationController: return .init(with: NavigationControllerAttributesSectionDataSource(with: object))
 
         case .viewController:

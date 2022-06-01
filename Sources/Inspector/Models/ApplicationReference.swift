@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ViewHierarchyApplication {
+final class ApplicationReference {
     weak var parent: ViewHierarchyElementReference?
 
     lazy var children: [ViewHierarchyElementReference] = windows
@@ -41,6 +41,8 @@ final class ViewHierarchyApplication {
                 .allChildren
                 .inserting(rootViewControllerReference, at: .zero)
                 .compactMap { $0 as? ViewHierarchyController }
+            
+            windowReference.depth = 1
 
             return Self.inject(
                 viewControllers: viewControllerReferences,
@@ -63,7 +65,6 @@ final class ViewHierarchyApplication {
     init?(windows: [UIWindow], catalog: ViewHierarchyElementCatalog) {
         self.windows = windows
         self.catalog = catalog
-
     }
 
     private static func inject(
@@ -105,7 +106,7 @@ final class ViewHierarchyApplication {
     }
 }
 
-extension ViewHierarchyApplication: ViewHierarchyElementReference {
+extension ApplicationReference: ViewHierarchyElementReference {
     var viewHierarchy: [ViewHierarchyElementReference] { children }
     
     var underlyingObject: NSObject? { UIApplication.shared }
@@ -116,7 +117,7 @@ extension ViewHierarchyApplication: ViewHierarchyElementReference {
 
     func hasChanges(inRelationTo identifier: UUID) -> Bool { false }
 
-    var iconImage: UIImage? { nil }
+    var iconImage: UIImage? { .init(systemName: "app.badge.fill") }
 
     var canHostContextMenuInteraction: Bool { false }
 
@@ -132,7 +133,7 @@ extension ViewHierarchyApplication: ViewHierarchyElementReference {
 
     var classNameWithoutQualifiers: String { elementName }
 
-    var elementName: String { "View Hierarchy" }
+    var elementName: String { "Application" }
 
     var displayName: String { elementName }
 

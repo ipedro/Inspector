@@ -37,7 +37,7 @@ public enum InspectorElementProperty {
     case colorPicker(title: String,
                      emptyTitle: String = "No color",
                      color: ColorProvider,
-                     handler: ColorHandler?)
+                     handler: ColorHandler? = .none)
 
     case group(title: String, subtitle: String? = nil)
 
@@ -49,77 +49,77 @@ public enum InspectorElementProperty {
 
     case imagePicker(title: String,
                      image: ImageProvider,
-                     handler: ImageHandler?)
+                     handler: ImageHandler? = .none)
 
     case optionsList(title: String,
                      emptyTitle: String = "Unspecified",
                      axis: NSLayoutConstraint.Axis = .horizontal,
                      options: [String],
                      selectedIndex: SelectionProvider,
-                     handler: SelectionHandler?)
+                     handler: SelectionHandler? = .none)
 
     case textButtonGroup(title: String,
                          axis: NSLayoutConstraint.Axis = .vertical,
                          texts: [String],
                          selectedIndex: SelectionProvider,
-                         handler: SelectionHandler?)
+                         handler: SelectionHandler? = .none)
 
     case imageButtonGroup(title: String,
                           axis: NSLayoutConstraint.Axis = .vertical,
                           images: [UIImage],
                           selectedIndex: SelectionProvider,
-                          handler: SelectionHandler?)
+                          handler: SelectionHandler? = .none)
 
     case stepper(title: String,
                  value: DoubleProvider,
                  range: DoubleClosedRangeProvider,
                  stepValue: DoubleProvider,
                  isDecimalValue: Bool,
-                 handler: DoubleHandler?)
+                 handler: DoubleHandler? = .none)
 
     case textField(title: String,
                    placeholder: String?,
                    axis: NSLayoutConstraint.Axis = .vertical,
                    value: StringProvider,
-                   handler: StringHandler?)
+                   handler: StringHandler? = .none)
 
     case textView(title: String,
                   placeholder: String?,
                   value: StringProvider,
-                  handler: StringHandler?)
+                  handler: StringHandler? = .none)
 
     case `switch`(title: String,
                   isOn: BoolProvider,
-                  handler: BoolHandler?)
+                  handler: BoolHandler? = .none)
 
     case cgRect(title: String,
                 rect: CGRectProvider,
-                handler: CGRectHandler?)
+                handler: CGRectHandler? = .none)
 
     case cgPoint(title: String,
                  point: CGPointProvider,
-                 handler: CGPointHandler?)
+                 handler: CGPointHandler? = .none)
 
     case cgSize(title: String,
                 size: CGSizeProvider,
-                handler: CGSizeHandler?)
+                handler: CGSizeHandler? = .none)
 
     case uiOffset(title: String,
                 offset: UIOffsetProvider,
-                handler: UIOffsetHandler?)
+                  handler: UIOffsetHandler? = .none)
 
     case directionalInsets(title: String,
                            insets: NSDirectionalEdgeInsetsProvider,
-                           handler: NSDirectionalEdgeInsetsHandler?)
+                           handler: NSDirectionalEdgeInsetsHandler? = .none)
 
     case edgeInsets(title: String,
                     insets: UIEdgeInsetsProvider,
-                    handler: UIEdgeInsetsHandler?)
+                    handler: UIEdgeInsetsHandler? = .none)
 
     @available(*, deprecated, renamed: "switch(title:isOn:handler:)")
     public static func toggleControl(title: String,
                                      isOn: @escaping BoolProvider,
-                                     handler: BoolHandler?) -> Self
+                                     handler: BoolHandler? = .none) -> Self
     {
         .switch(title: title, isOn: isOn, handler: handler)
     }
