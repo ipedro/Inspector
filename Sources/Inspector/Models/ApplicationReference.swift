@@ -79,13 +79,12 @@ final class ApplicationReference {
     
     private let application: UIApplication
 
-    init?(
-        application: UIApplication = .shared,
-        windows: [UIWindow],
+    init(
+        _ application: UIApplication,
         catalog: ViewHierarchyElementCatalog
     ) {
         self.application = application
-        self.windows = windows
+        self.windows = application.windows
         self.catalog = catalog
     }
 
@@ -140,7 +139,7 @@ extension ApplicationReference: ViewHierarchyElementReference {
     func hasChanges(inRelationTo identifier: UUID) -> Bool { false }
 
     var iconImage: UIImage? {
-        guard let iconName = bundleInfo?.icons.primaryIcon.files.last else {
+        guard let iconName = bundleInfo?.icons?.primaryIcon.files.last else {
              return .init(systemName: "app.badge.fill")
         }
         return .init(named: iconName)
@@ -161,7 +160,7 @@ extension ApplicationReference: ViewHierarchyElementReference {
     var classNameWithoutQualifiers: String { className }
 
     var elementName: String {
-        bundleInfo?.displayName ?? className
+        bundleInfo?.displayName ?? bundleInfo?.executableName ?? className
     }
 
     var displayName: String { elementName }

@@ -22,11 +22,11 @@ import Foundation
 
 struct BundleInfo: Codable {
     var build: String
-    var displayName: String
-    var executableName: String
-    var icons: Icons
-    var identifier: String
-    var minimumOSVersion: String
+    var displayName: String?
+    var executableName: String?
+    var icons: Icons?
+    var identifier: String?
+    var minimumOSVersion: String?
     var name: String
     var version: String
     var xcodeVersion: String

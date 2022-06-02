@@ -27,9 +27,6 @@ struct ViewHierarchyDependencies {
     var catalog: ViewHierarchyElementCatalog
     var colorScheme: ViewHierarchyColorScheme
     var layers: [ViewHierarchyLayer]
-    var windows: [UIWindow]
-
-    var keyWindow: UIWindow? { windows.first { $0.isKeyWindow } }
 }
 
 final class ViewHierarchyCoordinator: Coordinator<ViewHierarchyDependencies, OperationQueue, Void> {
@@ -130,7 +127,7 @@ extension ViewHierarchyCoordinator {
     func latestSnapshot() -> ViewHierarchySnapshot? {
         if cachedSnapshot?.isValid == true { return cachedSnapshot }
 
-        guard let snapshot = makeSnapshot() else { return nil }
+        let snapshot = makeSnapshot()
         history.append(snapshot)
 
         return snapshot
@@ -146,21 +143,9 @@ extension ViewHierarchyCoordinator {
         return commands
     }
 
-    private func makeSnapshot() -> ViewHierarchySnapshot? {
-        guard let root = ApplicationReference(
-            windows: dependencies.windows,
-            catalog: dependencies.catalog
-        ) else {
-            return nil
-        }
-
-        let snapshot = ViewHierarchySnapshot(
-            layers: dependencies.layers,
-            root: root
-        )
-
-        print(snapshot)
-        
+    private func makeSnapshot() -> ViewHierarchySnapshot {
+        let application = ApplicationReference(.shared, catalog: dependencies.catalog)
+        let snapshot = ViewHierarchySnapshot(layers: dependencies.layers, root: application)
         return snapshot
     }
 }

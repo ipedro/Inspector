@@ -79,8 +79,7 @@ enum ViewHierarchyCoordinatorFactory: ViewHierarchyCoordinatorFactoryProtocol {
             .init(
                 catalog: catalog,
                 colorScheme: colorScheme,
-                layers: layers,
-                windows: windows
+                layers: layers
             ),
             presentedBy: operationQueue
         )
