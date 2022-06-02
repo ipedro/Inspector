@@ -21,15 +21,16 @@
 import UIKit
 
 protocol ElementChildrenPanelItemViewModelProtocol: AnyObject {
-    var parent: ElementChildrenPanelItemViewModelProtocol? { get set }
+    typealias Parent = ElementChildrenPanelItemViewModelProtocol & ElementChildrenPanelTableViewCellViewModelProtocol
+    var parent: Parent? { get set }
     var element: ViewHierarchyElementReference { get }
     var isCollapsed: Bool { get set }
     var availablePanels: [ElementInspectorPanel] { get }
 }
 
 extension ElementChildrenPanelViewModel {
-    final class ChildViewModel: ElementInspectorAppearanceProviding {
-        weak var parent: ElementChildrenPanelItemViewModelProtocol?
+    final class CellViewModel: ElementInspectorAppearanceProviding {
+        weak var parent: Parent?
 
         private var _isCollapsed: Bool {
             didSet {
@@ -51,7 +52,7 @@ extension ElementChildrenPanelViewModel {
 
         init(
             element: ViewHierarchyElementReference,
-            parent: ElementChildrenPanelItemViewModelProtocol? = nil,
+            parent: Parent? = nil,
             rootDepth: Int,
             thumbnailImage: UIImage?,
             isCollapsed: Bool
@@ -67,7 +68,7 @@ extension ElementChildrenPanelViewModel {
 
 // MARK: - ElementChildrenPanelTableViewCellViewModelProtocol
 
-extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTableViewCellViewModelProtocol {
+extension ElementChildrenPanelViewModel.CellViewModel: ElementChildrenPanelTableViewCellViewModelProtocol {
     var summaryInfo: ViewHierarchyElementSummary {
         ViewHierarchyElementSummary(
             automaticallyAdjustIndentation: automaticallyAdjustIndentation,
@@ -99,10 +100,7 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
     }
 
     var isHidden: Bool {
-        guard let parent = parent as? ElementChildrenPanelTableViewCellViewModelProtocol else {
-            return parent?.isCollapsed == true
-        }
-
+        guard let parent = parent else { return isCollapsed }
         return parent.isCollapsed == true || parent.isHidden == true
     }
 
@@ -111,10 +109,7 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
             isContainer ? _isCollapsed : true
         }
         set {
-            guard isContainer else {
-                return
-            }
-
+            guard isContainer else { return }
             _isCollapsed = newValue
         }
     }
@@ -135,7 +130,6 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
 
     private var hideCollapseButton: Bool {
         if relativeDepth == .zero { return true }
-
         return !isContainer
     }
 
@@ -146,8 +140,8 @@ extension ElementChildrenPanelViewModel.ChildViewModel: ElementChildrenPanelTabl
 
 // MARK: - Hashable
 
-extension ElementChildrenPanelViewModel.ChildViewModel: Hashable {
-    static func == (lhs: ElementChildrenPanelViewModel.ChildViewModel, rhs: ElementChildrenPanelViewModel.ChildViewModel) -> Bool {
+extension ElementChildrenPanelViewModel.CellViewModel: Hashable {
+    static func == (lhs: ElementChildrenPanelViewModel.CellViewModel, rhs: ElementChildrenPanelViewModel.CellViewModel) -> Bool {
         lhs.element.objectIdentifier == rhs.element.objectIdentifier
     }
 
@@ -158,7 +152,7 @@ extension ElementChildrenPanelViewModel.ChildViewModel: Hashable {
 
 // MARK: - Images
 
-private extension ElementChildrenPanelViewModel.ChildViewModel {
+private extension ElementChildrenPanelViewModel.CellViewModel {
     static let thumbnailImageLostConnection = IconKit.imageOfWifiExlusionMark(
         CGSize(
             width: Inspector.sharedInstance.appearance.elementInspector.horizontalMargins * 1.5,

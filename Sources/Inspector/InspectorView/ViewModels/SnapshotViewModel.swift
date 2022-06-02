@@ -88,7 +88,7 @@ extension HierarchyInspectorViewModel {
         }
 
         func titleForHeader(in section: Int) -> String? {
-            Texts.allResults(count: currentSearchResults.count, in: snapshot.root.viewHierarchy.first!.elementName)
+            Texts.allResults(count: currentSearchResults.count, in: snapshot.root.displayName)
         }
 
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {

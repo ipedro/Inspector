@@ -42,7 +42,7 @@ protocol ElementChildrenPanelViewModelProtocol {
 final class ElementChildrenPanelViewModel: NSObject {
     let rootElement: ViewHierarchyElementReference
 
-    private(set) var children: [ChildViewModel] {
+    private(set) var children: [CellViewModel] {
         didSet {
             updateVisibleChildren()
         }
@@ -50,11 +50,10 @@ final class ElementChildrenPanelViewModel: NSObject {
 
     private static func makeChildViewModels(
         element: ViewHierarchyElementReference,
-        parent: ChildViewModel? = .none,
-        snapshot: ViewHierarchySnapshot,
+        parent: CellViewModel? = .none,
         rootDepth: Int
-    ) -> [ChildViewModel] {
-        let viewModel = ChildViewModel(
+    ) -> [CellViewModel] {
+        let viewModel = CellViewModel(
             element: element,
             parent: parent,
             rootDepth: rootDepth,
@@ -62,11 +61,10 @@ final class ElementChildrenPanelViewModel: NSObject {
             isCollapsed: element.depth > rootDepth
         )
 
-        let childrenViewModels: [ChildViewModel] = element.children.flatMap { childElement in
+        let childrenViewModels: [CellViewModel] = element.children.flatMap { childElement in
             makeChildViewModels(
                 element: childElement,
                 parent: viewModel,
-                snapshot: snapshot,
                 rootDepth: rootDepth
             )
         }
@@ -74,7 +72,7 @@ final class ElementChildrenPanelViewModel: NSObject {
         return [viewModel] + childrenViewModels
     }
 
-    private lazy var visibleChildren: [ChildViewModel] = []
+    private lazy var visibleChildren: [CellViewModel] = []
 
     let snapshot: ViewHierarchySnapshot
 
@@ -84,7 +82,6 @@ final class ElementChildrenPanelViewModel: NSObject {
 
         children = Self.makeChildViewModels(
             element: rootElement,
-            snapshot: snapshot,
             rootDepth: rootElement.depth
         )
 
@@ -109,7 +106,7 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
 
     func indexPath(for item: ElementChildrenPanelItemViewModelProtocol?) -> IndexPath? {
         guard
-            let item = item as? ChildViewModel,
+            let item = item as? CellViewModel,
             let row = visibleChildren.firstIndex(of: item)
         else {
             return nil

@@ -35,7 +35,7 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
         self.root = root
 
         populatedLayers = availableLayers.filter {
-            $0.filter(viewHierarchy: root.children).isEmpty == false
+            $0.filter(viewHierarchy: root.viewHierarchy).isEmpty == false
         }
     }
 

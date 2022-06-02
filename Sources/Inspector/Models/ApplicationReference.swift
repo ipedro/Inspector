@@ -22,58 +22,81 @@ import UIKit
 
 final class ApplicationReference {
     weak var parent: ViewHierarchyElementReference?
+    
+    lazy var children = windows.compactMap { window -> ViewHierarchyElementReference? in
+        let windowReference = catalog.makeElement(from: window)
+        windowReference.parent = self
+        windowReference.isCollapsed = true
+        
+        guard let root = window.rootViewController else { return .none }
 
-    lazy var children: [ViewHierarchyElementReference] = windows
-        .compactMap { window -> [ViewHierarchyElementReference] in
-            let windowReference = catalog.makeElement(from: window)
-            windowReference.parent = self
+        let windowRootReference = ViewHierarchyController(
+            with: root,
+            iconProvider: catalog.iconProvider,
+            depth: root.view.depth,
+            isCollapsed: true
+        )
 
-            guard let rootViewController = window.rootViewController else { return [] }
+        let windowChildrenReference = windowRootReference
+            .viewHierarchy
+            .compactMap { $0 as? ViewHierarchyController }
 
-            let rootViewControllerReference = ViewHierarchyController(
-                with: rootViewController,
-                iconProvider: catalog.iconProvider,
-                depth: rootViewController.view.depth,
-                isCollapsed: false
-            )
+        Self.connect(
+            viewControllers: [windowRootReference] + windowChildrenReference,
+            with: windowReference
+        )
+        
+        return windowReference
+    }
 
-            let viewControllerReferences = rootViewControllerReference
-                .allChildren
-                .inserting(rootViewControllerReference, at: .zero)
-                .compactMap { $0 as? ViewHierarchyController }
-            
-            windowReference.depth = 1
-
-            return Self.inject(
-                viewControllers: viewControllerReferences,
-                in: windowReference
-            )
-
-        }
-        .flatMap { $0 }
-
-    var depth: Int = .zero
+    var depth: Int = -1
 
     var isHidden: Bool = false
+    
+    var isCollapsed: Bool = true
 
     let latestSnapshotIdentifier: UUID = UUID()
 
     private let windows: [UIWindow]
 
     private let catalog: ViewHierarchyElementCatalog
+    
+    private lazy var bundleInfo: BundleInfo? = {
+        guard
+            let infoDictionary = Bundle.main.infoDictionary
+        else {
+            return nil
+        }
+        do {
+            let data = try JSONSerialization.data(withJSONObject: infoDictionary, options: [])
+            return try JSONDecoder().decode(BundleInfo.self, from: data)
+        }
+        catch {
+            print(error)
+            return nil
+        }
+    }()
+    
+    private let application: UIApplication
 
-    init?(windows: [UIWindow], catalog: ViewHierarchyElementCatalog) {
+    init?(
+        application: UIApplication = .shared,
+        windows: [UIWindow],
+        catalog: ViewHierarchyElementCatalog
+    ) {
+        self.application = application
         self.windows = windows
         self.catalog = catalog
     }
 
-    private static func inject(
+    @discardableResult
+    private static func connect(
         viewControllers: [ViewHierarchyController],
-        in root: ViewHierarchyElement
+        with window: ViewHierarchyElement
     ) -> [ViewHierarchyElementReference] {
         var viewHierarchy = [ViewHierarchyElementReference]()
 
-        root.viewHierarchy.reversed().enumerated().forEach { index, element in
+        window.viewHierarchy.reversed().enumerated().forEach { index, element in
             viewHierarchy.insert(element, at: .zero)
 
             guard
@@ -87,41 +110,45 @@ final class ApplicationReference {
             let parent = element.parent
 
             element.parent = viewController
-
-            viewController.parent = parent
-            viewController.rootElement = element
-            viewController.children = [element]
-            // must set depth as last step
-            viewController.depth = depth
-
+            
             if let index = parent?.children.firstIndex(where: { $0 === element }) {
                 parent?.children[index] = viewController
             }
+            
+            viewController.parent = parent
+            viewController.rootElement = element
+            viewController.children = [element]
 
+            // must set depth as last step
+            viewController.depth = depth
+            
             viewHierarchy.insert(viewController, at: .zero)
-
         }
-
         return viewHierarchy
     }
 }
 
 extension ApplicationReference: ViewHierarchyElementReference {
-    var viewHierarchy: [ViewHierarchyElementReference] { children }
+    var viewHierarchy: [ViewHierarchyElementReference] { children.flatMap(\.viewHierarchy) }
     
-    var underlyingObject: NSObject? { UIApplication.shared }
+    var underlyingObject: NSObject? { application }
 
-    var underlyingView: UIView? { nil }
+    var underlyingView: UIView? { .none }
 
-    var underlyingViewController: UIViewController? { nil }
+    var underlyingViewController: UIViewController? { .none }
 
     func hasChanges(inRelationTo identifier: UUID) -> Bool { false }
 
-    var iconImage: UIImage? { .init(systemName: "app.badge.fill") }
+    var iconImage: UIImage? {
+        guard let iconName = bundleInfo?.icons.primaryIcon.files.last else {
+             return .init(systemName: "app.badge.fill")
+        }
+        return .init(named: iconName)
+    }
 
     var canHostContextMenuInteraction: Bool { false }
 
-    var objectIdentifier: ObjectIdentifier { ObjectIdentifier(UIApplication.shared) }
+    var objectIdentifier: ObjectIdentifier { ObjectIdentifier(application) }
 
     var canHostInspectorView: Bool { false }
 
@@ -129,11 +156,13 @@ extension ApplicationReference: ViewHierarchyElementReference {
 
     var isSystemContainer: Bool { false }
 
-    var className: String { elementName }
+    var className: String { application._className }
 
-    var classNameWithoutQualifiers: String { elementName }
+    var classNameWithoutQualifiers: String { className }
 
-    var elementName: String { "Application" }
+    var elementName: String {
+        bundleInfo?.displayName ?? className
+    }
 
     var displayName: String { elementName }
 
@@ -149,12 +178,29 @@ extension ApplicationReference: ViewHierarchyElementReference {
 
     var constraintElements: [LayoutConstraintElement] { [] }
 
-    var shortElementDescription: String { "\(viewHierarchy.count) Subviews" }
+    var shortElementDescription: String {
+        guard
+            let identifier = bundleInfo?.identifier,
+            let version = bundleInfo?.version,
+            let build = bundleInfo?.build,
+            let minimumOSVersion = bundleInfo?.minimumOSVersion,
+            let executableName = bundleInfo?.executableName
+        else {
+            return ""
+        }
+        
+        return [
+            "Version: \(version) (\(build))",
+            "Executable: \(executableName).app",
+            "Identifier: \(identifier)",
+            "Support: iOS \(minimumOSVersion)+"
+        ]
+        .joined(separator: "\n")
+    }
 
     var elementDescription: String { shortElementDescription }
 
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle { .unspecified }
 
     var traitCollection: UITraitCollection { UITraitCollection() }
-
 }

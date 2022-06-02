@@ -37,6 +37,8 @@ protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyO
     var parent: ViewHierarchyElementReference? { get set }
 
     var depth: Int { get set }
+    
+    var isCollapsed: Bool { get set }
 
     var children: [ViewHierarchyElementReference] { get set }
     
@@ -95,7 +97,7 @@ extension ViewHierarchyElementReference {
     var viewHierarchy: [ViewHierarchyElementReference] { [self] + allChildren }
     
     var allChildren: [ViewHierarchyElementReference] {
-        children.reversed().flatMap { [$0] + $0.allChildren }
+        children.reversed().flatMap { $0.viewHierarchy }
     }
 
     var allParents: [ViewHierarchyElementReference] {

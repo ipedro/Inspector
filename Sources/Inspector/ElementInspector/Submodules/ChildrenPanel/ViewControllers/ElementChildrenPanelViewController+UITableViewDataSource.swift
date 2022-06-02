@@ -21,7 +21,6 @@
 import UIKit
 
 extension ElementChildrenPanelViewController: UITableViewDataSource {
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.numberOfRows
     }
@@ -32,7 +31,6 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
         cell.isEvenRow = indexPath.isEvenRow
         cell.isFirst = indexPath.isFirst
         cell.delegate = self
-        
         return cell
     }
 
@@ -45,7 +43,6 @@ extension ElementChildrenPanelViewController: UITableViewDataSource {
 extension ElementChildrenPanelViewController: ElementChildrenPanelTableViewCodeCellDelegate {
     func elementChildrenPanelTableViewCodeCellDidToggleCollapse(_ cell: ElementChildrenPanelTableViewCodeCell) {
         guard let indexPath = viewModel.indexPath(for: cell.viewModel) else { return }
-
         toggleCollapse(at: indexPath)
     }
 }
