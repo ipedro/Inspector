@@ -187,16 +187,15 @@ extension ApplicationReference: ViewHierarchyElementReference {
             let identifier = bundleInfo?.identifier,
             let version = bundleInfo?.version,
             let build = bundleInfo?.build,
-            let minimumOSVersion = bundleInfo?.minimumOSVersion,
-            let executableName = bundleInfo?.executableName
+            let minimumOSVersion = bundleInfo?.minimumOSVersion
         else {
             return ""
         }
         
         return [
-            "Version: \(version) (\(build))",
-            "Executable: \(executableName).app",
+            className,
             "Identifier: \(identifier)",
+            "Version: \(version) (\(build))",
             "Requirement: iOS \(minimumOSVersion)+"
         ]
         .joined(separator: "\n")

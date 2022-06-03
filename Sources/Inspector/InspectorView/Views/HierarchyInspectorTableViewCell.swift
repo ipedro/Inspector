@@ -32,7 +32,7 @@ class HierarchyInspectorTableViewCell: UITableViewCell, ElementInspectorAppearan
         fatalError("init(coder:) has not been implemented")
     }
 
-    var defaultLayoutMargins: NSDirectionalEdgeInsets { .init(insets: elementInspectorAppearance.horizontalMargins) }
+    var defaultLayoutMargins: NSDirectionalEdgeInsets { elementInspectorAppearance.directionalInsets }
 
     func setup() {
         backgroundView = UIView()

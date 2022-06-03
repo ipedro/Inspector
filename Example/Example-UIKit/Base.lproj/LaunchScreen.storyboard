@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -40,7 +41,7 @@
                                     <color key="textColor" name="titleColor"/>
                                 </textAttributes>
                                 <items>
-                                    <navigationItem title="🕵🏽‍♂️ Inspector" largeTitleDisplayMode="always" id="gFD-aX-DO1"/>
+                                    <navigationItem title="🧬 Playground" largeTitleDisplayMode="always" id="gFD-aX-DO1"/>
                                 </items>
                             </navigationBar>
                             <tabBar contentMode="scaleToFill" verticalHuggingPriority="252" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="R5u-TN-sV0">
@@ -51,7 +52,7 @@
                                 <items/>
                             </tabBar>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="20Y-3r-Yt1">
-                                <rect key="frame" x="354" y="51" width="36" height="35"/>
+                                <rect key="frame" x="357" y="51" width="37" height="37"/>
                                 <imageReference key="image" image="magnifyingglass.circle.fill" catalog="system" symbolScale="large" renderingMode="template"/>
                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="font" weight="bold">
                                     <fontDescription key="fontDescription" type="system" pointSize="24"/>
@@ -62,9 +63,9 @@
                         <color key="backgroundColor" systemColor="systemGray6Color"/>
                         <constraints>
                             <constraint firstItem="AHG-gu-pXh" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="3nv-ed-Ovc"/>
-                            <constraint firstItem="20Y-3r-Yt1" firstAttribute="trailing" secondItem="hFo-LJ-QLa" secondAttribute="trailing" constant="-24" id="5Fi-HD-RD2"/>
+                            <constraint firstItem="20Y-3r-Yt1" firstAttribute="trailing" secondItem="hFo-LJ-QLa" secondAttribute="trailing" constant="-20" id="5Fi-HD-RD2"/>
                             <constraint firstItem="AHG-gu-pXh" firstAttribute="top" secondItem="jVi-fG-2Nr" secondAttribute="bottomMargin" constant="36" id="AL8-P8-ARG"/>
-                            <constraint firstItem="20Y-3r-Yt1" firstAttribute="top" secondItem="hFo-LJ-QLa" secondAttribute="top" constant="10" id="ANW-UU-nwp"/>
+                            <constraint firstItem="20Y-3r-Yt1" firstAttribute="top" secondItem="hFo-LJ-QLa" secondAttribute="top" constant="11" id="ANW-UU-nwp"/>
                             <constraint firstItem="R5u-TN-sV0" firstAttribute="centerX" secondItem="hFo-LJ-QLa" secondAttribute="centerX" id="Fd1-XE-b1e"/>
                             <constraint firstAttribute="bottomMargin" secondItem="R5u-TN-sV0" secondAttribute="bottom" id="IPf-kI-HyV"/>
                             <constraint firstItem="jVi-fG-2Nr" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-8" id="dHx-LP-UmM"/>
