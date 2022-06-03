@@ -568,7 +568,7 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
 private extension UIMenu {
     static func defaultElementInspectorPanelMenu() -> UIMenu {
         UIMenu(
-            title: "Default Panel",
+            title: "Select Default Panel",
             image: nil,
             identifier: nil,
             children: ElementInspectorPanel.allCases.map { panel in

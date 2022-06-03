@@ -91,12 +91,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
     }
 
     var panelSelectionMode: ElementInspectorPanelSelectionMode {
-        if isFullHeightPresentation {
-            return .multipleSelection
-        }
-        else {
-            return .singleSelection
-        }
+        isFullHeightPresentation ? .multipleSelection : .singleSelection
     }
 
     override var isFullHeightPresentation: Bool {

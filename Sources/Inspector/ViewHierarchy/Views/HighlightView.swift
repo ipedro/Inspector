@@ -235,7 +235,12 @@ final class HighlightView: LayerView {
         maskLayoutMarginsGuideView(with: superview)
     }
 
-    private var isFirstLayoutSubviews = true
+    enum Transition {
+        typealias Settings = (transform: CGAffineTransform, alpha: CGFloat)
+        case appear, dismiss
+    }
+
+    private var pendingTransition: Transition? = .appear
 
     lazy var initialTransformation = CGAffineTransform(
         scaleX: 1.4 - cgFloatDepth / 50,
@@ -245,25 +250,42 @@ final class HighlightView: LayerView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        guard isFirstLayoutSubviews else {
+        perform(pendingTransition) { _ in
+            self.pendingTransition = .none
+        }
+    }
+    
+    func perform(_ transition: Transition?, completion: ((Bool) -> Void)? = .none) {
+        let start: Transition.Settings
+        let finish: Transition.Settings
+        let delay: TimeInterval
+        
+        switch transition {
+        case .none:
             return
+        case .appear:
+            start = (transform: initialTransformation, alpha: .zero)
+            finish = (transform: .identity, alpha: 1)
+            delay = TimeInterval(depth) / 10 + .random(in: -.veryShort ... .veryShort)
+        case .dismiss:
+            start = (transform: elementNameView.transform, alpha: alpha)
+            finish = (transform: initialTransformation, alpha: .zero)
+            delay = .short
         }
 
-        isFirstLayoutSubviews = false
-
-        let oldTransfrom = elementNameView.transform
-
-        alpha = 0
-        elementNameView.transform = .init(scaleX: .zero, y: .zero)
+        alpha = start.alpha
+        elementNameView.transform = start.transform
 
         animate(
             withDuration: .short + .random(in: -.veryShort ... .veryShort),
-            delay: TimeInterval(depth) / 10 + .random(in: -.veryShort ... .veryShort),
-            damping: 0.7
-        ) {
-            self.alpha = 1
-            self.elementNameView.transform = oldTransfrom
-        }
+            delay: delay,
+            damping: 0.7,
+            animations: {
+                self.alpha = finish.alpha
+                self.elementNameView.transform = finish.transform
+            },
+            completion: completion
+        )
     }
 
     private func maskLayoutMarginsGuideView(with view: UIView) {

@@ -32,14 +32,9 @@ class HierarchyInspectorTableViewCell: UITableViewCell, ElementInspectorAppearan
         fatalError("init(coder:) has not been implemented")
     }
 
-    var defaultLayoutMargins: NSDirectionalEdgeInsets { elementInspectorAppearance.directionalInsets }
-
     func setup() {
         backgroundView = UIView()
         backgroundColor = nil
-
-        directionalLayoutMargins = defaultLayoutMargins
-        separatorInset = UIEdgeInsets(left: defaultLayoutMargins.leading, right: defaultLayoutMargins.trailing)
 
         textLabel?.textColor = colorStyle.textColor
         detailTextLabel?.textColor = colorStyle.secondaryTextColor
@@ -85,9 +80,6 @@ class HierarchyInspectorTableViewCell: UITableViewCell, ElementInspectorAppearan
 
     override func prepareForReuse() {
         super.prepareForReuse()
-
         layer.mask = nil
-        
-        directionalLayoutMargins = defaultLayoutMargins
     }
 }

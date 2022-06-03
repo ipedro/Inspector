@@ -20,14 +20,35 @@
 
 import UIKit
 
-final class PopoverPresenter: NSObject, UIPopoverPresentationControllerDelegate {
-    let onDismissHandler: (UIPopoverPresentationController) -> Void
-
-    init(onDismiss: @escaping (UIPopoverPresentationController) -> Void) {
+final class PopoverSheetPresenter: NSObject {
+    enum Detent {
+        case medium, large
+    }
+    let onChangeSelectedDetentHandler: (Detent?) -> Void
+    let onDismissHandler: (UIPresentationController) -> Void
+    
+    init(
+        onChangeSelectedDetent: @escaping (Detent?) -> Void,
+        onDismiss: @escaping (UIPresentationController) -> Void
+    ) {
+        onChangeSelectedDetentHandler = onChangeSelectedDetent
         onDismissHandler = onDismiss
     }
+}
 
+extension PopoverSheetPresenter: UIPopoverPresentationControllerDelegate {
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
         onDismissHandler(popoverPresentationController)
     }
 }
+
+#if swift(>=5.5)
+@available(iOS 15.0, *)
+extension PopoverSheetPresenter: UISheetPresentationControllerDelegate {
+    func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
+        onChangeSelectedDetentHandler(
+            sheetPresentationController.selectedDetentIdentifier == .medium ? .medium : .large
+        )
+    }
+}
+#endif

@@ -29,11 +29,11 @@ extension UIImage {
 }
 
 extension UIImage {
-    static let visibleLayerAction: UIImage = .moduleImage(named: "LayerAction-Show")!
-    static let hiddenLayerAction: UIImage = .moduleImage(named: "LayerAction-Hide")!
-    static let emptyLayerAction: UIImage = .moduleImage(named: "LayerAction-Empty")!
-    static let showAllLayersAction: UIImage = .moduleImage(named: "LayerAction-HideAll")!
-    static let hideAllLayersAction: UIImage = .moduleImage(named: "LayerAction-ShowAll")!
+    static let visibleLayerAction: UIImage = .init(systemName: "checkmark.circle.fill")!
+    static let hiddenLayerAction: UIImage = .init(systemName: "circle")!
+    static let emptyLayerAction: UIImage = .init(systemName: "circle.dotted")!
+    static let showAllLayersAction: UIImage = .init(systemName: "staroflife.circle")!
+    static let hideAllLayersAction: UIImage = .init(systemName: "staroflife.circle.fill")!
     static let expandSymbol: UIImage = .moduleImage(named: "expand")!
     static let collapseSymbol: UIImage = .moduleImage(named: "collapse")!
     static let collapseMirroredSymbol: UIImage = .moduleImage(named: "collapse-mirrored")!

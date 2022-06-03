@@ -66,8 +66,8 @@ extension ViewHierarchyCoordinator: AsyncOperationProtocol {
             loaderView.done()
 
             UIView.animate(
-                withDuration: .average,
-                delay: .veryLong,
+                withDuration: .long,
+                delay: .long,
                 options: [.curveEaseInOut, .beginFromCurrentState],
                 animations: {
                     loaderView.alpha = .zero

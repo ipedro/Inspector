@@ -36,6 +36,7 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
             detailTextLabel?.text = viewModel?.subtitle
             imageView?.image = viewModel?.image
 
+            let defaultLayoutMargins = directionalLayoutMargins
             let depth = CGFloat(viewModel?.depth ?? 0)
             var margins = defaultLayoutMargins
             margins.leading += depth * 5

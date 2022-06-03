@@ -73,16 +73,25 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
 
     private var formPanelController: ElementInspectorFormPanelViewController? { currentPanelViewController as? ElementInspectorFormPanelViewController }
 
-    @available(iOS 15.0, *)
-    private(set) lazy var sheetPresenter = SheetPresenter { [weak self] sheet in
-        guard
-            let self = self,
-            let formPanelController = self.formPanelController
-        else {
-            return
+    private(set) lazy var adaptivePresenter = PopoverSheetPresenter(
+        onChangeSelectedDetent: { [weak self] detent in
+            guard
+                let self = self,
+                let formPanelController = self.formPanelController
+            else {
+                return
+            }
+            formPanelController.isFullHeightPresentation = detent == .large
+
+        },
+        onDismiss: { [weak self] popover in
+            guard let self = self else { return }
+
+            if popover.presentedViewController === self.navigationController {
+                self.finish(with: .dismiss)
+            }
         }
-        formPanelController.isFullHeightPresentation = sheet.selectedDetentIdentifier == .large
-    }
+    )
 
     @available(iOS 14.0, *)
     private(set) lazy var colorPicker = ColorPickerPresenter { [weak self] selectedColor in
@@ -116,14 +125,6 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
             let image = UIImage(data: data)
             formPanelController.selectImage(image)
             break
-        }
-    }
-
-    private lazy var popoverPresenter = PopoverPresenter { [weak self] popover in
-        guard let self = self else { return }
-
-        if popover.presentedViewController === self.navigationController {
-            self.finish(with: .dismiss)
         }
     }
 
@@ -164,11 +165,19 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
     }
 
     func setPopoverModalPresentationStyle(for viewController: UIViewController, from sourceView: UIView) {
-        viewController.setPopoverModalPresentationStyle(
-            delegate: self,
-            transitionDelegate: transitionDelegate(for: viewController),
-            from: sourceView
-        )
+        if #available(iOS 15.0, *) {
+            viewController.setPopoverModalPresentationStyle(
+                delegate: adaptivePresenter,
+                transitionDelegate: transitionDelegate(for: viewController),
+                from: sourceView
+            )
+        } else {
+            viewController.setPopoverModalPresentationStyle(
+                delegate: adaptivePresenter,
+                transitionDelegate: transitionDelegate(for: viewController),
+                from: sourceView
+            )
+        }
     }
 
     static func makeElementInspectorViewController(
