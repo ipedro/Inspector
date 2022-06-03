@@ -22,10 +22,6 @@
 import UIKit
 
 extension UIViewController {
-    var topPresentedViewController: UIViewController? {
-        presentedViewController?.topPresentedViewController ?? self
-    }
-
     var allChildren: [UIViewController] {
         children.flatMap { [$0] + $0.allChildren }
     }

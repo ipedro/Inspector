@@ -64,7 +64,6 @@ extension Manager: KeyCommandPresentable {
                     self?.perform(action: .inspect(preferredPanel: .children), with: rootViewControllerReference, from: keyWindow)
                 }
             )
-            
             if let selectedTabViewController = (rootViewController as? UITabBarController)?.selectedViewController {
                 let tabBarViewControllerReference = ViewHierarchyController(selectedTabViewController)
                 commands.append(

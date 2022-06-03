@@ -68,7 +68,6 @@ extension InspectorViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let command = viewModel.selectRow(at: indexPath)
-
         delegate?.inspectorViewController(self, didSelect: command)
     }
 }
