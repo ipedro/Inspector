@@ -46,7 +46,7 @@ final class HierarchyInspectorActionTableViewCell: HierarchyInspectorTableViewCe
 
         textLabel?.textColor = colorStyle.textColor
         textLabel?.minimumScaleFactor = 0.8
-        textLabel?.font = .preferredFont(forTextStyle: .callout)
+        textLabel?.font = .preferredFont(forTextStyle: .footnote)
 
         imageView?.layer.cornerCurve = .continuous
         imageView?.layer.cornerRadius = 6

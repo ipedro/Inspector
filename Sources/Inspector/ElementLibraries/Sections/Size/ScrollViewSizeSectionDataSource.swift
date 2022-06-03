@@ -34,7 +34,8 @@ extension DefaultElementSizeLibrary {
         }
         
         private enum Properties: String, Swift.CaseIterable {
-            case scrollIndicatorInsets = "Indicator Insets"
+            case verticalScrollIndicatorInsets = "Vertical Indicator Insets"
+            case horizontalScrollIndicatorInsets = "Horizontal Indicator Insets"
             case contentInsetsAdjustmentBehavior = "Content Insets Adjustment"
             case contentInset = "Content Inset"
             case separator
@@ -46,11 +47,17 @@ extension DefaultElementSizeLibrary {
 
             return Properties.allCases.map { property in
                 switch property {
-                case .scrollIndicatorInsets:
+                case .verticalScrollIndicatorInsets:
                     return .edgeInsets(
                         title: property.rawValue,
-                        insets: { scrollView.scrollIndicatorInsets },
-                        handler: { scrollView.scrollIndicatorInsets = $0 }
+                        insets: { scrollView.verticalScrollIndicatorInsets },
+                        handler: { scrollView.verticalScrollIndicatorInsets = $0 }
+                    )
+                case .horizontalScrollIndicatorInsets:
+                    return .edgeInsets(
+                        title: property.rawValue,
+                        insets: { scrollView.horizontalScrollIndicatorInsets },
+                        handler: { scrollView.horizontalScrollIndicatorInsets = $0 }
                     )
                 case .contentInsetsAdjustmentBehavior:
                     return .optionsList(
