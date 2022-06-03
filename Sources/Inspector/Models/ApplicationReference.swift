@@ -139,10 +139,15 @@ extension ApplicationReference: ViewHierarchyElementReference {
     func hasChanges(inRelationTo identifier: UUID) -> Bool { false }
 
     var iconImage: UIImage? {
-        guard let iconName = bundleInfo?.icons?.primaryIcon.files.last else {
-             return .init(systemName: "app.badge.fill")
+        guard
+            let iconName = bundleInfo?.icons?.primaryIcon.files.last,
+            let appIcon = UIImage(named: iconName),
+            let appIconTemplate = UIImage.moduleImage(named: "app-icon-template")
+        else {
+            return .init(systemName: "app.badge.fill")
         }
-        return .init(named: iconName)
+        
+        return appIcon.maskImage(with: appIconTemplate)
     }
 
     var canHostContextMenuInteraction: Bool { false }
