@@ -129,12 +129,13 @@ extension Command {
     static func inspectElement(
         _ element: ViewHierarchyElementReference,
         displayName: String? = .none,
+        icon: UIImage? = .none,
         keyCommandOptions: UIKeyCommand.Options? = .none,
         with closure: @escaping Closure
     ) -> Command {
         Command(
             title: Texts.inspect(displayName ?? element.displayName),
-            icon: .elementChildrenPanel,
+            icon: icon,
             keyCommandOptions: keyCommandOptions,
             closure: closure
         )

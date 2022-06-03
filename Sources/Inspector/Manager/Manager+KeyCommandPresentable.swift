@@ -44,7 +44,7 @@ extension Manager: KeyCommandPresentable {
             
             let rootReference = snapshot.root
             commands.append(
-                .inspectElement(rootReference) { [weak self] in
+                .inspectElement(rootReference, icon: .elementIdentityPanel) { [weak self] in
                     self?.perform(action: .inspect(preferredPanel: .identity), with: rootReference, from: keyWindow)
                 }
             )
@@ -52,24 +52,30 @@ extension Manager: KeyCommandPresentable {
             guard let rootView = snapshot.root.underlyingView else { return commands }
             let rootViewReference = catalog.makeElement(from: rootView)
             commands.append(
-                .inspectElement(rootViewReference) { [weak self] in
-                    self?.perform(action: .inspect(preferredPanel: .identity), with: rootViewReference, from: keyWindow)
+                .inspectElement(rootViewReference, icon: .elementChildrenPanel) { [weak self] in
+                    self?.perform(action: .inspect(preferredPanel: .children), with: rootViewReference, from: keyWindow)
                 }
             )
             
             guard let rootViewController = snapshot.root.underlyingViewController else { return commands }
             let rootViewControllerReference = ViewHierarchyController(rootViewController)
             commands.append(
-                .inspectElement(rootViewControllerReference) { [weak self] in
-                    self?.perform(action: .inspect(preferredPanel: .identity), with: rootViewControllerReference, from: keyWindow)
+                .inspectElement(rootViewControllerReference, icon: .elementChildrenPanel) { [weak self] in
+                    self?.perform(action: .inspect(preferredPanel: .children), with: rootViewControllerReference, from: keyWindow)
                 }
             )
             
             if let selectedTabViewController = (rootViewController as? UITabBarController)?.selectedViewController {
                 let tabBarViewControllerReference = ViewHierarchyController(selectedTabViewController)
                 commands.append(
-                    .inspectElement(tabBarViewControllerReference, displayName: tabBarViewControllerReference.className) { [weak self] in
-                        self?.perform(action: .inspect(preferredPanel: .children), with: tabBarViewControllerReference, from: keyWindow)
+                    .inspectElement(
+                        tabBarViewControllerReference,
+                        displayName: tabBarViewControllerReference.className,
+                        icon: .elementChildrenPanel
+                    ) { [weak self] in
+                        self?.perform(
+                            action: .inspect(preferredPanel: .children),
+                            with: tabBarViewControllerReference, from: keyWindow)
                     }
                 )
             }
