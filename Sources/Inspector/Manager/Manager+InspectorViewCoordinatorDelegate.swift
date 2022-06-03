@@ -86,7 +86,7 @@ extension Manager {
     }
 
     func makeInspectorViewCoordinator(presentedBy presenter: UIViewController) -> InspectorViewCoordinator? {
-        guard let snapshot = snapshot else { return nil }
+        guard canPresentInspectorView else { return nil }
 
         let coordinator = InspectorViewCoordinator(
             .init(

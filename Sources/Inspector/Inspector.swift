@@ -105,8 +105,8 @@ public final class Inspector {
             guard
                 let self = self,
                 let sourceView = interaction.view,
-                let snapshot = self.manager?.snapshot?.root.viewHierarchy,
-                let element = snapshot.first(where: { $0.underlyingView === interaction.view })
+                let viewHierarchy = self.manager?.snapshot.root.viewHierarchy,
+                let element = viewHierarchy.first(where: { $0.underlyingView === interaction.view })
             else {
                 return .none
             }

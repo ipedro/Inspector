@@ -31,9 +31,13 @@ struct ManagerDependencies {
 }
 
 final class Manager: Coordinator<ManagerDependencies, OperationQueue, Void> {
-    var snapshot: ViewHierarchySnapshot? { viewHierarchyCoordinator.latestSnapshot() }
+    var snapshot: ViewHierarchySnapshot { viewHierarchyCoordinator.latestSnapshot() }
     var keyWindow: UIWindow? { dependencies.viewHierarchy.keyWindow }
     var catalog: ViewHierarchyElementCatalog { viewHierarchyCoordinator.dependencies.catalog }
+    
+    var canPresentInspectorView: Bool {
+        children.filter(type: InspectorViewCoordinator.self).isEmpty
+    }
 
     private(set) lazy var viewHierarchyCoordinator: ViewHierarchyCoordinator = {
         let coordinator = dependencies.coordinatorFactory.makeCoordinator(

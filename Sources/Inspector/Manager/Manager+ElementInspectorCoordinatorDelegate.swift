@@ -53,12 +53,7 @@ extension Manager {
                                           from sourceView: UIView,
                                           animated: Bool)
     {
-        guard
-            let snapshot = snapshot,
-            let keyWindow = keyWindow
-        else {
-            return
-        }
+        guard let keyWindow = keyWindow else { return }
 
         let coordinator = ElementInspectorCoordinator(
             .init(
