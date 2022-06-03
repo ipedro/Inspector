@@ -21,14 +21,63 @@
 import UIKit
 
 extension Manager: KeyCommandPresentable {
-    var commandGroups: CommandGroups {
+    var commandGroups: CommandsGroups {
         let userCommands = dependencies.customization?.commandGroups ?? []
-        let viewHierarchyCommands = viewHierarchyCoordinator.commandGroups() ?? []
+        let layersCommands = viewHierarchyCoordinator.commandsGroup()
+        
+        var groups = CommandsGroups()
+        groups.append(contentsOf: userCommands)
+        if let elementCommands = elementCommands {
+            groups.append(elementCommands)
+        }
+        groups.append(layersCommands)
 
-        var commands = CommandGroups()
-        commands.append(contentsOf: userCommands)
-        commands.append(contentsOf: viewHierarchyCommands)
-
-        return commands
+        return groups
+    }
+    
+    private var elementCommands: CommandsGroup? {
+        guard let keyWindow = keyWindow else { return .none }
+        
+        return .group(
+            title: "Inspect Elements",
+            commands: {
+                let snapshot = viewHierarchyCoordinator.latestSnapshot()
+                var commands = [Inspector.Command]()
+                
+                let rootReference = snapshot.root
+                commands.append(
+                    .inspectElement(rootReference) { [weak self] in
+                        self?.perform(action: .inspect(preferredPanel: .identity), with: rootReference, from: keyWindow)
+                    }
+                )
+                
+                guard let rootView = snapshot.root.underlyingView else { return commands }
+                let rootViewReference = catalog.makeElement(from: rootView)
+                commands.append(
+                    .inspectElement(rootViewReference) { [weak self] in
+                        self?.perform(action: .inspect(preferredPanel: .identity), with: rootViewReference, from: keyWindow)
+                    }
+                )
+                
+                guard let rootViewController = snapshot.root.underlyingViewController else { return commands }
+                let rootViewControllerReference = ViewHierarchyController(rootViewController)
+                commands.append(
+                    .inspectElement(rootViewControllerReference) { [weak self] in
+                        self?.perform(action: .inspect(preferredPanel: .identity), with: rootViewControllerReference, from: keyWindow)
+                    }
+                )
+                
+                if let selectedTabViewController = (rootViewController as? UITabBarController)?.selectedViewController {
+                    let tabBarViewControllerReference = ViewHierarchyController(selectedTabViewController)
+                    commands.append(
+                        .inspectElement(tabBarViewControllerReference, displayName: tabBarViewControllerReference.className) { [weak self] in
+                            self?.perform(action: .inspect(preferredPanel: .children), with: tabBarViewControllerReference, from: keyWindow)
+                        }
+                    )
+                }
+                
+                return commands
+            }()
+        )
     }
 }

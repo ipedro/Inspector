@@ -29,7 +29,7 @@ protocol InspectorViewCoordinatorDelegate: AnyObject {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, didFinishWith command: InspectorCommand?)
 }
 
-typealias CommandGroupsProvider = () -> CommandGroups?
+typealias CommandGroupsProvider = () -> CommandsGroups?
 
 struct InspectorViewDependencies {
     var snapshot: ViewHierarchySnapshot

@@ -87,5 +87,7 @@ class HierarchyInspectorTableViewCell: UITableViewCell, ElementInspectorAppearan
         super.prepareForReuse()
 
         layer.mask = nil
+        
+        directionalLayoutMargins = defaultLayoutMargins
     }
 }

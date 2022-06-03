@@ -201,10 +201,10 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
     // MARK: - Init
 
     init(
-        with viewController: UIViewController,
-        iconProvider: ViewHierarchyElementIconProvider?,
-        depth: Int,
-        isCollapsed: Bool,
+        _ viewController: UIViewController,
+        iconProvider: ViewHierarchyElementIconProvider? = .none,
+        depth: Int = .zero,
+        isCollapsed: Bool = false,
         parent: ViewHierarchyController? = nil
     ) {
         self.objectIdentifier = ObjectIdentifier(viewController)
@@ -231,7 +231,7 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
 
     private func makeChildReference(from childViewController: UIViewController) -> ViewHierarchyController {
         ViewHierarchyController(
-            with: childViewController,
+            childViewController,
             iconProvider: iconProvider,
             depth: depth + 1,
             isCollapsed: isCollapsed,

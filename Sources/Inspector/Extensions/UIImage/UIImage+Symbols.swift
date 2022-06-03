@@ -32,8 +32,8 @@ extension UIImage {
     static let visibleLayerAction: UIImage = .moduleImage(named: "LayerAction-Show")!
     static let hiddenLayerAction: UIImage = .moduleImage(named: "LayerAction-Hide")!
     static let emptyLayerAction: UIImage = .moduleImage(named: "LayerAction-Empty")!
-    static let hideAllLayersAction: UIImage = .moduleImage(named: "LayerAction-HideAll")!
-    static let showAllLayersAction: UIImage = .moduleImage(named: "LayerAction-ShowAll")!
+    static let showAllLayersAction: UIImage = .moduleImage(named: "LayerAction-HideAll")!
+    static let hideAllLayersAction: UIImage = .moduleImage(named: "LayerAction-ShowAll")!
     static let expandSymbol: UIImage = .moduleImage(named: "expand")!
     static let collapseSymbol: UIImage = .moduleImage(named: "collapse")!
     static let collapseMirroredSymbol: UIImage = .moduleImage(named: "collapse-mirrored")!

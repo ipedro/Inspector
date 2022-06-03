@@ -30,7 +30,7 @@ extension HierarchyInspectorViewModel {
             var isEnabled: Bool
         }
 
-        private(set) lazy var layerCommandGroups = CommandGroups()
+        private(set) lazy var layerCommandGroups = CommandsGroups()
 
         let provider: CommandGroupsProvider
 

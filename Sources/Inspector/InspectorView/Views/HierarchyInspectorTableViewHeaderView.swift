@@ -69,9 +69,16 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
 
     func setup() {
         backgroundView = UIView()
-
         contentView.directionalLayoutMargins = .zero
-
-        contentView.installView(stackView)
+        stackView.isLayoutMarginsRelativeArrangement = false
+        contentView.installView(
+            stackView,
+            .spacing(
+                top: 2,
+                leading: elementInspectorAppearance.horizontalMargins,
+                bottom: elementInspectorAppearance.verticalMargins,
+                trailing: elementInspectorAppearance.horizontalMargins
+            )
+        )
     }
 }

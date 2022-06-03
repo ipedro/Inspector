@@ -312,11 +312,13 @@ private extension ElementInspectorCoordinator {
         inside navigationController: ElementInspectorNavigationController,
         dependencies: ElementInspectorDependencies
     ) {
-        let populatedElements = dependencies.snapshot.root.viewHierarchy.filter { $0.underlyingView === dependencies.rootElement.underlyingView }
+        let allElements = [dependencies.snapshot.root] + dependencies.snapshot.root.viewHierarchy
+        
+        let populatedElements = allElements.filter { $0.underlyingObject === dependencies.rootElement.underlyingObject }
 
         guard let populatedElement = populatedElements.first else {
             let rootViewController = Self.makeElementInspectorViewController(
-                element: dependencies.snapshot.root.viewHierarchy.first!,
+                element: dependencies.snapshot.root,
                 preferredPanel: dependencies.initialPanel,
                 initialPanel: dependencies.initialPanel,
                 delegate: self,

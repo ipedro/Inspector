@@ -21,7 +21,7 @@
 import UIKit
 
 protocol KeyCommandPresentable {
-    var commandGroups: CommandGroups { get }
+    var commandGroups: CommandsGroups { get }
 
     var keyCommands: [UIKeyCommand] { get }
 }

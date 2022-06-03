@@ -31,7 +31,7 @@ final class ApplicationReference {
         guard let root = window.rootViewController else { return .none }
 
         let windowRootReference = ViewHierarchyController(
-            with: root,
+            root,
             iconProvider: catalog.iconProvider,
             depth: root.view.depth,
             isCollapsed: true
@@ -132,9 +132,9 @@ extension ApplicationReference: ViewHierarchyElementReference {
     
     var underlyingObject: NSObject? { application }
 
-    var underlyingView: UIView? { .none }
+    var underlyingView: UIView? { windows.first(where: \.isKeyWindow) }
 
-    var underlyingViewController: UIViewController? { .none }
+    var underlyingViewController: UIViewController? { windows.first(where: \.isKeyWindow)?.rootViewController }
 
     func hasChanges(inRelationTo identifier: UUID) -> Bool { false }
 

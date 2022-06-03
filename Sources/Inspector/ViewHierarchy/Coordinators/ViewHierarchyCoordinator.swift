@@ -124,23 +124,22 @@ extension ViewHierarchyCoordinator {
         highlightViews.removeAll()
     }
 
-    func latestSnapshot() -> ViewHierarchySnapshot? {
-        if cachedSnapshot?.isValid == true { return cachedSnapshot }
-
+    func latestSnapshot() -> ViewHierarchySnapshot {
+        if let cachedSnapshot = cachedSnapshot, cachedSnapshot.isValid { return cachedSnapshot }
         let snapshot = makeSnapshot()
         history.append(snapshot)
-
         return snapshot
     }
 
-    func commandGroups() -> CommandGroups? {
-        guard let snapshot = latestSnapshot() else { return nil }
-
-        var commands = CommandGroups()
-        commands.append(toggleAllLayersCommands(for: snapshot))
-        commands.append(availableLayerCommands(for: snapshot))
-
-        return commands
+    func commandsGroup() -> CommandsGroup {
+        let snapshot = latestSnapshot()
+        let toggleAll = toggleAllLayersCommands(for: snapshot)
+        let layers = availableLayerCommands(for: snapshot)
+        
+        return CommandsGroup.group(
+            title: Texts.highlightElements,
+            commands: toggleAll + layers
+        )
     }
 
     private func makeSnapshot() -> ViewHierarchySnapshot {

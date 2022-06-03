@@ -21,7 +21,7 @@
 import UIKit
 
 extension ViewHierarchyCoordinator: LayerCommandProtocol {
-    func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> CommandsGroup {
+    func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> [Command] {
         let layerToggleInputRange = Inspector.sharedInstance.configuration.keyCommands.layerToggleInputRange
 
         let maxCount = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
@@ -34,10 +34,7 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
             commands.append(command)
         }
 
-        return .group(
-            title: Texts.highlightElements,
-            commands: Array(commands.prefix(maxCount))
-        )
+        return Array(commands.prefix(maxCount))
     }
 
     func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command {
@@ -58,26 +55,21 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
         }
     }
 
-    func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> CommandsGroup {
-        .group(
-            title: nil,
-            commands: {
-                var array = [Command]()
-
-                if activeLayers.count > .zero {
-                    array.append(
-                        .hideVisibleLayers { [weak self] in self?.removeAllLayers() }
-                    )
-                }
-
-                if activeLayers.count < populatedLayers.count {
-                    array.append(
-                        .showAllLayers { [weak self] in self?.installAllLayers() }
-                    )
-                }
-
-                return array
-            }()
-        )
+    func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> [Command] {
+        var array = [Command]()
+        
+        if activeLayers.count > .zero {
+            array.append(
+                .hideVisibleLayers { [weak self] in self?.removeAllLayers() }
+            )
+        }
+        
+        if activeLayers.count < populatedLayers.count {
+            array.append(
+                .showAllLayers { [weak self] in self?.installAllLayers() }
+            )
+        }
+        
+        return array
     }
 }

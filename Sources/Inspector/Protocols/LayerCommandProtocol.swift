@@ -21,9 +21,9 @@
 import Foundation
 
 protocol LayerCommandProtocol {
-    func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> CommandsGroup
+    func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> [Command]
 
-    func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> CommandsGroup
+    func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> [Command]
 
     func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command
 }

@@ -31,7 +31,7 @@ final class HierarchyInspectorActionTableViewCell: HierarchyInspectorTableViewCe
         didSet {
             textLabel?.text = viewModel?.title
 
-            imageView?.image = viewModel?.icon
+            imageView?.image = viewModel?.icon?.resized(.init(24))
 
             contentView.alpha = viewModel?.isEnabled == true ? 1 : colorStyle.disabledAlpha
 
@@ -45,6 +45,7 @@ final class HierarchyInspectorActionTableViewCell: HierarchyInspectorTableViewCe
         tintColor = colorStyle.textColor
 
         textLabel?.textColor = colorStyle.textColor
+        textLabel?.minimumScaleFactor = 0.8
         textLabel?.font = .preferredFont(forTextStyle: .callout)
 
         imageView?.layer.cornerCurve = .continuous

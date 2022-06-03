@@ -20,7 +20,7 @@
 
 import UIKit
 
-typealias CommandGroups = [Inspector.CommandsGroup]
+typealias CommandsGroups = [Inspector.CommandsGroup]
 typealias CommandsGroup = Inspector.CommandsGroup
 
 public extension Inspector {
