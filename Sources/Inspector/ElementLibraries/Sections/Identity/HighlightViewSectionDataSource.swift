@@ -29,15 +29,13 @@ extension DefaultElementIdentityLibrary {
 
         weak var highlightView: HighlightView?
 
-        init?(with object: NSObject) {
-            guard
-                let view = object as? UIView,
-                let highlightView = view._highlightView
+        init?(with view: UIView) {
+            if let highlightView = view._highlightView {
+                self.highlightView = highlightView
+            }
             else {
                 return nil
             }
-
-            self.highlightView = highlightView
         }
 
         private enum Property: String, Swift.CaseIterable {

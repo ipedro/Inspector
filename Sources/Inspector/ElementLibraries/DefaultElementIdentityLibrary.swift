@@ -28,24 +28,31 @@ enum DefaultElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryP
     var targetClass: AnyClass {
         switch self {
         case .preview,
-             .highlightView:
-            return UIView.self
-
-        case .runtimeAttributes:
+             .highlightView,
+             .runtimeAttributes:
             return NSObject.self
         }
     }
 
     func sections(for object: NSObject) -> InspectorElementSections {
-        switch self {
-        case .preview:
-            return .init(with: PreviewIdentitySectionDataSource(with: object))
-
-        case .highlightView:
-            return .init(with: HighlightViewSectionDataSource(with: object))
-
-        case .runtimeAttributes:
+        switch (self, object) {
+        case let (.preview, view as UIView):
+            return .init(with: PreviewIdentitySectionDataSource(with: view))
+            
+        case let (.preview, viewController as UIViewController):
+            return .init(with: PreviewIdentitySectionDataSource(with: viewController.view))
+            
+        case let (.highlightView, view as UIView):
+            return .init(with: HighlightViewSectionDataSource(with: view))
+            
+        case let (.highlightView, viewController as UIViewController):
+            return .init(with: HighlightViewSectionDataSource(with: viewController.view))
+            
+        case (.runtimeAttributes, _):
             return .init(with: RuntimeAttributesIdentitySectionDataSource(with: object))
+            
+        default:
+            return .empty
         }
     }
 }

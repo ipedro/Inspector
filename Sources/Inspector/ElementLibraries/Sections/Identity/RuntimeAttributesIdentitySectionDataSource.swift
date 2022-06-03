@@ -32,24 +32,27 @@ extension DefaultElementIdentityLibrary {
 
         private let hideUknownValues: Bool = true
 
-        init?(with object: NSObject) {
-            let properties = object.propertyNames().sorted {
-                $0.lowercased().filter({ $0 != "_"}) < $1.lowercased().filter({ $0 != "_"})
-            }
-
-            if properties.isEmpty { return nil }
-
+        init(with object: NSObject) {
             self.object = object
-            propertyNames = properties
+            self.propertyNames = object
+                .propertyNames()
+                .sorted(by: <)
         }
 
         var properties: [InspectorElementProperty] {
-            guard let view = object else { return [] }
+            guard
+                let object = object,
+                !propertyNames.isEmpty
+            else {
+                return [
+                    .infoNote(icon: .info, title: "No inspectable properties", text: .none)
+                ]
+            }
 
             return propertyNames.compactMap { property in
                 guard
-                    view.responds(to: Selector(property)),
-                    let result = view.safeValue(forKey: property)
+                    object.responds(to: Selector(property)),
+                    let result = object.safeValue(forKey: property)
                 else {
                     if hideUknownValues {
                         return nil

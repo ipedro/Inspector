@@ -30,10 +30,8 @@ extension DefaultElementIdentityLibrary {
 
         private var isHighlightingViews: Bool { element.containsVisibleHighlightViews }
 
-        init?(with object: NSObject) {
-            guard let view = object as? UIView else { return nil }
-
-            self.element = .init(with: view, iconProvider: .default)
+        init(with view: UIView) {
+            element = .init(with: view, iconProvider: .default)
         }
 
         private enum Property: String, Swift.CaseIterable {
