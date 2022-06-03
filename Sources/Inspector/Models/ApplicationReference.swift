@@ -192,7 +192,7 @@ extension ApplicationReference: ViewHierarchyElementReference {
             "Version: \(version) (\(build))",
             "Executable: \(executableName).app",
             "Identifier: \(identifier)",
-            "Support: iOS \(minimumOSVersion)+"
+            "Requirement: iOS \(minimumOSVersion)+"
         ]
         .joined(separator: "\n")
     }
