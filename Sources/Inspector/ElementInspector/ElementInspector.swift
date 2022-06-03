@@ -22,7 +22,7 @@ import UIKit
 
 enum ElementInspector {
 
-    struct Configuration: Hashable {
+    final class Configuration {
         var isPresentingFromBottomSheet: Bool {
             #if swift(>=5.5)
             if #available(iOS 15.0, *) {

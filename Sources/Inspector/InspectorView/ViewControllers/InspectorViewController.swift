@@ -319,6 +319,8 @@ extension InspectorViewController {
     }
 
     func finish() {
+        guard !isFinishing else { return }
+        
         isFinishing = true
         view.endEditing(true)
         delegate?.inspectorViewControllerDidFinish(self)

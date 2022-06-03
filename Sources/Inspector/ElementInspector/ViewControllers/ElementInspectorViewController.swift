@@ -388,7 +388,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-
         currentPanelViewController?.viewDidDisappear(animated)
     }
 

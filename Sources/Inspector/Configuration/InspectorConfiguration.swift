@@ -20,7 +20,7 @@
 
 import UIKit
 
-public struct InspectorConfiguration: Hashable {
+public struct InspectorConfiguration {
     var elementInspectorConfiguration = ElementInspector.Configuration()
 
     public var keyCommands: KeyCommandSettings = .init()

@@ -51,11 +51,13 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
         case let navigationController as ElementInspectorNavigationController where navigationController.shouldAdaptModalPresentation == false:
             return .none
         default:
+            #if swift(>=5.5)
             if #available(iOS 15.0, *) {
                 if presentationController is UIPopoverPresentationController {
                     return presentationController.presentationStyle
                 }
             }
+            #endif
             return .formSheet
         }
     } onDismiss: { [weak self] presentationController in
