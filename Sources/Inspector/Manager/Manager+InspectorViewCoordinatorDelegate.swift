@@ -21,11 +21,7 @@
 import UIKit
 
 extension Manager: InspectorViewCoordinatorDelegate {
-    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator,
-                                  didFinishWith command: InspectorCommand?)
-    {
-        coordinator.removeFromParent()
-        
+    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, execute command: InspectorCommand) {
         coordinator.start().dismiss(animated: true) { [weak self] in    
             guard let self = self else { return }
             self.execute(command)
@@ -38,7 +34,6 @@ extension Manager: InspectorViewCoordinatorSwiftUIDelegate {
                                   willFinishWith command: InspectorCommand?)
     {
         dependencies.swiftUIhost?.insectorViewWillFinishPresentation()
-        coordinator.removeFromParent()
         execute(command)
     }
 }

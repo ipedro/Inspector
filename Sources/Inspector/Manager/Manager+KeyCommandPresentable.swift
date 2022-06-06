@@ -49,7 +49,7 @@ extension Manager: KeyCommandPresentable {
             commands.append(
                 .inspectElement(rootReference) { [weak self] in
                     self?.perform(
-                        action: .inspect(preferredPanel: .identity),
+                        action: .inspect(preferredPanel: .children),
                         with: rootReference,
                         from: keyWindow
                     )
@@ -61,7 +61,7 @@ extension Manager: KeyCommandPresentable {
             commands.append(
                 .inspectElement(rootViewReference) { [weak self] in
                     self?.perform(
-                        action: .inspect(preferredPanel: .identity),
+                        action: .inspect(preferredPanel: .children),
                         with: rootViewReference,
                         from: keyWindow
                     )
@@ -73,7 +73,7 @@ extension Manager: KeyCommandPresentable {
                 commands.append(
                     .inspectElement(reference) { [weak self] in
                         self?.perform(
-                            action: .inspect(preferredPanel: .identity),
+                            action: .inspect(preferredPanel: .children),
                             with: reference,
                             from: keyWindow
                         )
@@ -81,7 +81,7 @@ extension Manager: KeyCommandPresentable {
                 )
             }
             
-            return commands
+            return Array(commands.prefix(10))
         }()
         
         return .group(title: "Inspect Elements", commands: commands.reversed())

@@ -23,38 +23,16 @@ import UIKit
 final class ApplicationReference {
     weak var parent: ViewHierarchyElementReference?
     
-    lazy var children = windows.compactMap { window -> ViewHierarchyElementReference? in
+    lazy var children = windows.map { window -> ViewHierarchyElementReference in
         let windowReference = catalog.makeElement(from: window)
         windowReference.parent = self
         windowReference.isCollapsed = true
         
-        guard let root = window.rootViewController else { return .none }
+        guard let root = window.rootViewController else { return windowReference }
 
-        let rootViewController = ViewHierarchyController(
-            root,
-            iconProvider: catalog.iconProvider,
-            depth: root.view.depth,
-            isCollapsed: true
-        )
-
-        let rootChildren = rootViewController
-            .viewHierarchy
-            .compactMap { $0 as? ViewHierarchyController }
-
-        let presented = root
-            .allPresentedViewControllers
-            .reversed()
-            .enumerated()
-            .map {
-                catalog.makeElement(from: $0.element)
-            }
-            .flatMap(\.viewHierarchy)
-            .compactMap { $0 as? ViewHierarchyController }
-    
-        Self.connect(
-            viewControllers: [rootViewController] + rootChildren + presented,
-            with: windowReference
-        )
+        let viewControllerReferences = allViewControllers.map { catalog.makeElement(from: $0) }
+        
+        Self.connect(viewControllers: viewControllerReferences, with: windowReference)
         
         return windowReference
     }
@@ -217,8 +195,13 @@ extension ApplicationReference: ViewHierarchyElementReference {
 
     var traitCollection: UITraitCollection { UITraitCollection() }
     
+    var allViewControllers: [UIViewController] {
+        guard let root = underlyingViewController else { return [] }
+        return [root] + root.allChildren + root.allPresentedViewControllers.flatMap { [$0] + $0.allChildren }
+    }
+    
     var visibleViewControllers: [UIViewController] {
         guard let root = underlyingViewController else { return [] }
-        return [root] + root.allActiveChildren + root.allPresentedViewControllers
+        return [root] + root.allActiveChildren + root.allPresentedViewControllers.flatMap { [$0] + $0.allActiveChildren }
     }
 }
