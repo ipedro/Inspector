@@ -153,7 +153,9 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
         String(describing: store.latest)
     }
 
-    private(set) lazy var iconImage = iconProvider?.value(for: underlyingViewController)
+    var iconImage: UIImage? {
+        underlyingViewController?.tabBarItem.image ?? iconProvider?.value(for: underlyingViewController)
+    }
 
     let iconProvider: ViewHierarchyElementIconProvider?
 

@@ -93,6 +93,8 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
     var panelSelectionMode: ElementInspectorPanelSelectionMode {
         isFullHeightPresentation ? .multipleSelection : .singleSelection
     }
+    
+    private var previousCompactHeightState: ElementInspectorPanelListState?
 
     override var isFullHeightPresentation: Bool {
         didSet {
@@ -101,7 +103,11 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
             let isExpanding = !oldValue && isFullHeightPresentation
 
             if isExpanding {
-                self.apply(state: self.collapseState.next(), animated: true)
+                previousCompactHeightState = collapseState
+                self.apply(state: .allExpanded, animated: true)
+            }
+            else if let previousCompactHeightState = previousCompactHeightState {
+                self.apply(state: previousCompactHeightState, animated: true)
             }
             else {
                 self.apply(state: self.collapseState.previous(), animated: true)
