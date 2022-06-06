@@ -36,9 +36,10 @@ extension HierarchyInspectorViewModel {
                 self.title = element.displayName
                 self.isEnabled = isEnabled
                 self.subtitle = element.shortElementDescription
-                self.image = element.iconImage
                 self.depth = element.depth
                 self.element = element
+                self.image = element.iconImage?
+                    .resized(Inspector.sharedInstance.appearance.actionIconSize)
             }
         }
 

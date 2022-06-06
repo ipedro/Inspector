@@ -139,7 +139,7 @@ extension Command {
         with closure: @escaping Closure
     ) -> Command {
         Command(
-            title: Texts.inspect(displayName ?? element.displayName),
+            title: displayName ?? element.displayName,
             icon: icon ?? element.iconImage,
             keyCommandOptions: keyCommandOptions,
             closure: closure

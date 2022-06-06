@@ -177,7 +177,9 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
 
     lazy var children: [ViewHierarchyElementReference] = makeChildren()
 
-    private(set) lazy var allChildren: [ViewHierarchyElementReference] = children.flatMap { $0.viewHierarchy }
+    var allChildren: [ViewHierarchyElementReference] {
+        children.reversed().flatMap { [$0] + $0.allChildren }
+    }
 
     // MARK: - Computed Properties
 
