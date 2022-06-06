@@ -46,7 +46,7 @@ extension Manager: KeyCommandPresentable {
             
             let rootReference = snapshot.root
             commands.append(
-                .inspectElement(rootReference, displayName: rootReference.className) { [weak self] in
+                .inspectElement(rootReference) { [weak self] in
                     self?.perform(
                         action: .inspect(preferredPanel: .identity),
                         with: rootReference,

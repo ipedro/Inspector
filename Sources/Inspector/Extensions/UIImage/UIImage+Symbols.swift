@@ -48,7 +48,7 @@ extension UIImage {
     static let closeSymbol: UIImage =         .light(systemName: "xmark.circle")!
     static let copySymbol: UIImage =          .light(systemName: "doc.on.doc")!
     static let stopSymbol: UIImage =          .light(systemName: "hand.raised.fill")!
-    static let emptyLayerAction: UIImage =    .light(systemName: "rectangle.dashed")!
+    static let emptyLayerAction: UIImage =    .light(systemName: "questionmark.circle")!
     static let hideAllLayersAction: UIImage = .light(systemName: "square.stack.3d.up.slash.fill")!
     static let showAllLayersAction: UIImage = .light(systemName: "square.stack.3d.up.fill")!
     static let layerAction: UIImage =   .light(systemName: "square.3.stack.3d.middle.filled")!

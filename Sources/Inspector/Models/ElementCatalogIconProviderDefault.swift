@@ -50,7 +50,7 @@ extension ViewHierarchyElementIconProvider {
 
         switch view {
         case is UIWindow:
-            return .light(systemName: "macwindow")
+            return .light(systemName: "uiwindow.split.2x1")
 
         case is UIActivityIndicatorView:
             return .moduleImage(named: "UIActivityIndicator_32_Dark_Normal")
