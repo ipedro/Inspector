@@ -26,7 +26,7 @@ protocol InspectorViewCoordinatorSwiftUIDelegate: AnyObject {
 }
 
 protocol InspectorViewCoordinatorDelegate: AnyObject {
-    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, didFinishWith command: InspectorCommand?)
+    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, execute command: InspectorCommand)
 }
 
 typealias CommandGroupsProvider = () -> CommandsGroups?
@@ -65,12 +65,14 @@ final class InspectorViewCoordinator: Coordinator<InspectorViewDependencies, UIV
     }
     
     func finish(command: InspectorCommand?) {
+        removeFromParent()
+        
         if let swiftUIDelegate = swiftUIDelegate {
             swiftUIDelegate.inspectorViewCoordinator(self, willFinishWith: command)
             return
         }
 
-        delegate?.inspectorViewCoordinator(self, didFinishWith: command)
+        delegate?.inspectorViewCoordinator(self, execute: command)
     }
 }
 

@@ -25,14 +25,8 @@ extension Manager: ElementInspectorCoordinatorDelegate {
                                      didFinishInspecting element: ViewHierarchyElementReference,
                                      with reason: ElementInspectorDismissReason)
     {
-        switch reason {
-        case .dismiss:
-            removeChild(coordinator)
-            coordinator.dismissPresentation(animated: true)
-
-        case .stopInspecting:
-            Inspector.stop()
-        }
+        coordinator.removeFromParent()
+        coordinator.dismissPresentation(animated: true)
     }
 }
 
