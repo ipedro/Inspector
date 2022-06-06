@@ -75,7 +75,7 @@ extension Command {
     static func visibleLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
         Command(
             title: Texts.highlighting(title.lowercased()),
-            icon: .visibleLayerAction,
+            icon: .layerAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: String(index),
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
@@ -88,7 +88,7 @@ extension Command {
     static func hiddenLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
         Command(
             title: Texts.highlight(title.lowercased()),
-            icon: .hiddenLayerAction,
+            icon: .layerAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: String(index),
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
@@ -99,7 +99,7 @@ extension Command {
 
     static func showAllLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.enable(Texts.allLayers.lowercased()),
+            title: Texts.enable(Texts.all.lowercased()),
             icon: .showAllLayersAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
@@ -111,7 +111,7 @@ extension Command {
 
     static func hideVisibleLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.hide(Texts.allLayers.lowercased()),
+            title: Texts.disable(Texts.all.lowercased()),
             icon: .hideAllLayersAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
