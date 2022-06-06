@@ -31,7 +31,7 @@ final class HierarchyInspectorSearchView: BaseView {
     )
 
     private(set) lazy var textField = DismissableTextField(
-        .clearButtonMode(.whileEditing),
+        .clearButtonMode(.always),
         .textStyle(.title2),
         .textColor(colorStyle.textColor),
         .attributedPlaceholder(

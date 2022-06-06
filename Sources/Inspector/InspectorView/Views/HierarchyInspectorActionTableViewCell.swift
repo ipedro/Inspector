@@ -39,13 +39,15 @@ final class HierarchyInspectorActionTableViewCell: HierarchyInspectorTableViewCe
             selectionStyle = viewModel?.isEnabled == true ? .default : .none
             
             if viewModel?.isSelected == true {
-                accessoryView = UIImageView(image: checkmarkImage)
+                accessoryView = checkmarkImageView
             }
             else {
                 accessoryView = nil
             }
         }
     }
+    
+    private lazy var checkmarkImageView = UIImageView(image: checkmarkImage)
     
     private lazy var checkmarkImage = UIImage(systemName: "checkmark")!
         .applyingSymbolConfiguration(
