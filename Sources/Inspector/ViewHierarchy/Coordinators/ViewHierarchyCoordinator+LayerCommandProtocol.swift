@@ -38,9 +38,7 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
     }
 
     func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command {
-        guard isEmpty == false else {
-            return .emptyLayer(layer.emptyActionTitle)
-        }
+        if isEmpty { return .emptyLayer(layer.emptyActionTitle) }
 
         switch isShowingLayer(layer) {
         case true:

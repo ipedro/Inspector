@@ -28,6 +28,7 @@ extension HierarchyInspectorViewModel {
             let title: String
             var icon: UIImage?
             var isEnabled: Bool
+            var isSelected: Bool
         }
 
         private(set) lazy var layerCommandGroups = CommandsGroups()
@@ -82,7 +83,8 @@ extension HierarchyInspectorViewModel {
                 Details(
                     title: action.title,
                     icon: action.icon?.resized(.actionIconSize),
-                    isEnabled: action.isEnabled
+                    isEnabled: action.isEnabled,
+                    isSelected: action.isSelected
                 )
             )
         }

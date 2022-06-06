@@ -32,6 +32,8 @@ public extension Inspector {
 
         public var keyCommandOptions: UIKeyCommand.Options?
 
+        public let isSelected: Bool
+        
         var closure: Closure?
 
         var isEnabled: Bool {
@@ -42,11 +44,13 @@ public extension Inspector {
             title: String,
             icon: UIImage?,
             keyCommandOptions: UIKeyCommand.Options?,
+            isSelected: Bool = false,
             closure: Closure?
         ) {
             self.title = title
             self.icon = icon?.resized(.actionIconSize)
             self.keyCommandOptions = keyCommandOptions
+            self.isSelected = isSelected
             self.closure = closure
         }
     }
@@ -76,6 +80,7 @@ extension Command {
                 input: String(index),
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
             ),
+            isSelected: true,
             closure: closure
         )
     }

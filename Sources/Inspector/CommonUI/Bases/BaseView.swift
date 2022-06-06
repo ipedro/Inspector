@@ -20,7 +20,7 @@
 
 import UIKit
 
-class BaseView: UIView, InternalViewProtocol, ElementInspectorAppearanceProviding {
+class BaseView: UIView, InternalViewProtocol, InspectorAppearanceProviding, ElementInspectorAppearanceProviding {
     private(set) lazy var contentView = UIStackView.vertical().then {
         installView($0, priority: .required)
     }

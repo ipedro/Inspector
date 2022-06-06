@@ -21,10 +21,10 @@
 import Foundation
 import UIKit
 
-protocol ElementInspectorAppearanceProviding: InspectorAppearanceProviding {
-    var elementInspectorAppearance: ElementInspector.Appearance { get }
+protocol InspectorAppearanceProviding {
+    var inspectorAppearance: InspectorAppearance { get }
 }
 
-extension ElementInspectorAppearanceProviding {
-    var elementInspectorAppearance: ElementInspector.Appearance { inspectorAppearance.elementInspector }
+extension InspectorAppearanceProviding {
+    var inspectorAppearance: InspectorAppearance { Inspector.sharedInstance.appearance }
 }

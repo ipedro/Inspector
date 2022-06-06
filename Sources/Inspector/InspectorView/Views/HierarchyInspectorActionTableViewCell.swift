@@ -24,6 +24,7 @@ protocol HierarchyInspectorActionTableViewCellViewModelProtocol {
     var title: String { get }
     var icon: UIImage? { get }
     var isEnabled: Bool { get }
+    var isSelected: Bool { get }
 }
 
 final class HierarchyInspectorActionTableViewCell: HierarchyInspectorTableViewCell {
@@ -31,13 +32,25 @@ final class HierarchyInspectorActionTableViewCell: HierarchyInspectorTableViewCe
         didSet {
             textLabel?.text = viewModel?.title
 
-            imageView?.image = viewModel?.icon?.resized(.init(24))
+            imageView?.image = viewModel?.icon
 
             contentView.alpha = viewModel?.isEnabled == true ? 1 : colorStyle.disabledAlpha
 
             selectionStyle = viewModel?.isEnabled == true ? .default : .none
+            
+            if viewModel?.isSelected == true {
+                accessoryView = UIImageView(image: checkmarkImage)
+            }
+            else {
+                accessoryView = nil
+            }
         }
     }
+    
+    private lazy var checkmarkImage = UIImage(systemName: "checkmark")!
+        .applyingSymbolConfiguration(
+            .init(pointSize: 16)
+        )
 
     override func setup() {
         super.setup()
