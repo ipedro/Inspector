@@ -52,9 +52,17 @@ enum Texts {
     static func highlight(_ something: String) -> String {
         "Highlight \(something)"
     }
-
+    
+    static func enable(_ something: String) -> String {
+        "Enable \(something)"
+    }
+    
     static func hide(_ something: String) -> String {
         "Hide \(something)"
+    }
+
+    static func highlighting(_ something: String) -> String {
+        "Highlighting \(something)"
     }
 
     static func open(_ something: String) -> String {

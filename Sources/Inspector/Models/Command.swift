@@ -70,7 +70,7 @@ extension Command {
 
     static func visibleLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.hide(title.lowercased()),
+            title: Texts.highlighting(title.lowercased()),
             icon: .visibleLayerAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: String(index),
@@ -94,7 +94,7 @@ extension Command {
 
     static func showAllLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.highlight(Texts.allLayers.lowercased()),
+            title: Texts.enable(Texts.allLayers.lowercased()),
             icon: .showAllLayersAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
@@ -135,7 +135,7 @@ extension Command {
     ) -> Command {
         Command(
             title: Texts.inspect(displayName ?? element.displayName),
-            icon: icon,
+            icon: icon ?? element.iconImage,
             keyCommandOptions: keyCommandOptions,
             closure: closure
         )

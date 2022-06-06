@@ -34,15 +34,15 @@ extension ViewHierarchyElementIconProvider {
             case is UIPageViewController:
                 return .moduleImage(named: "UIPageViewController")
             case is UINavigationController:
-                return .moduleImage(named: "UINavigationController")
+                return .light(systemName: "chevron.left.square")
             case is UICollectionViewController:
-                return .moduleImage(named: "UICollectionViewController")
+                return .light(systemName: "square.grid.3x3.square")
             case is UITableViewController:
                 return .moduleImage(named: "UITableViewController")
             case is UITabBarController:
-                return .moduleImage(named: "UITabBarController")
+                return .moduleImage(named: "TabbedView-32_Normal")
             default:
-                return .moduleImage(named: "NSObject")
+                return .light(systemName: "shippingbox")
             }
         }
 
@@ -50,7 +50,7 @@ extension ViewHierarchyElementIconProvider {
 
         switch view {
         case is UIWindow:
-            return .moduleImage(named: "Window-32_Normal")
+            return .light(systemName: "macwindow")
 
         case is UIActivityIndicatorView:
             return .moduleImage(named: "UIActivityIndicator_32_Dark_Normal")
@@ -66,7 +66,7 @@ extension ViewHierarchyElementIconProvider {
 
         case is UIButton,
              is UIControl where view.className.contains("Button"):
-            return .moduleImage(named: "UIButton_32-Dark_Normal")
+            return .moduleImage(named: "Button-32_Normal")
 
         case let imageView as UIImageView:
             guard let image = imageView.isHighlighted ? imageView.highlightedImage : imageView.image else {

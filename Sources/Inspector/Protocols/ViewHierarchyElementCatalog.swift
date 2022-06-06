@@ -31,4 +31,8 @@ struct ViewHierarchyElementCatalog {
     func makeElement(from view: UIView) -> ViewHierarchyElement {
         ViewHierarchyElement(with: view, iconProvider: iconProvider)
     }
+    
+    func makeElement(from viewController: UIViewController) -> ViewHierarchyController {
+        ViewHierarchyController(viewController, iconProvider: iconProvider)
+    }
 }

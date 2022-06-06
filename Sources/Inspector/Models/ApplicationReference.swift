@@ -144,7 +144,7 @@ extension ApplicationReference: ViewHierarchyElementReference {
             let appIcon = UIImage(named: iconName),
             let appIconTemplate = UIImage.moduleImage(named: "app-icon-template")
         else {
-            return .init(systemName: "app.badge.fill")
+            return .light(systemName: "app.badge.fill")
         }
         
         return appIcon.maskImage(with: appIconTemplate)

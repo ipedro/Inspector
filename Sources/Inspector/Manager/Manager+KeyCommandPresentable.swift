@@ -22,14 +22,16 @@ import UIKit
 
 extension Manager: KeyCommandPresentable {
     var commandGroups: CommandsGroups {
-        let userCommands = dependencies.customization?.commandGroups ?? []
-        let layersCommands = viewHierarchyCoordinator.commandsGroup()
-        
         var groups = CommandsGroups()
+        
+        let userCommands = dependencies.customization?.commandGroups ?? []
         groups.append(contentsOf: userCommands)
+        
         if let elementCommands = elementCommands {
             groups.append(elementCommands)
         }
+        
+        let layersCommands = viewHierarchyCoordinator.commandsGroup()
         groups.append(layersCommands)
 
         return groups
@@ -44,7 +46,7 @@ extension Manager: KeyCommandPresentable {
             
             let rootReference = snapshot.root
             commands.append(
-                .inspectElement(rootReference, displayName: rootReference.className, icon: .elementIdentityPanel) { [weak self] in
+                .inspectElement(rootReference, displayName: rootReference.className) { [weak self] in
                     self?.perform(
                         action: .inspect(preferredPanel: .identity),
                         with: rootReference,
@@ -56,7 +58,7 @@ extension Manager: KeyCommandPresentable {
             guard let rootView = snapshot.root.underlyingView else { return commands }
             let rootViewReference = catalog.makeElement(from: rootView)
             commands.append(
-                .inspectElement(rootViewReference, icon: .elementIdentityPanel) { [weak self] in
+                .inspectElement(rootViewReference) { [weak self] in
                     self?.perform(
                         action: .inspect(preferredPanel: .identity),
                         with: rootViewReference,
@@ -66,9 +68,9 @@ extension Manager: KeyCommandPresentable {
             )
             
             guard let rootViewController = snapshot.root.underlyingViewController else { return commands }
-            let rootViewControllerReference = ViewHierarchyController(rootViewController)
+            let rootViewControllerReference = catalog.makeElement(from: rootViewController)
             commands.append(
-                .inspectElement(rootViewControllerReference, icon: .elementIdentityPanel) { [weak self] in
+                .inspectElement(rootViewControllerReference) { [weak self] in
                     self?.perform(
                         action: .inspect(preferredPanel: .identity),
                         with: rootViewControllerReference,
@@ -77,12 +79,11 @@ extension Manager: KeyCommandPresentable {
                 }
             )
             guard let selectedTabViewController = (rootViewController as? UITabBarController)?.selectedViewController else { return commands }
-            let selectedTabViewControllerReference = ViewHierarchyController(selectedTabViewController)
+            let selectedTabViewControllerReference = catalog.makeElement(from: selectedTabViewController)
             commands.append(
                 .inspectElement(
                     selectedTabViewControllerReference,
-                    displayName: selectedTabViewControllerReference.className,
-                    icon: .elementIdentityPanel
+                    displayName: selectedTabViewControllerReference.className
                 ) { [weak self] in
                     self?.perform(
                         action: .inspect(preferredPanel: .identity),
@@ -93,12 +94,11 @@ extension Manager: KeyCommandPresentable {
             )
             
             guard let viewController = (selectedTabViewController as? UINavigationController)?.topViewController else { return commands }
-            let viewControllerReference = ViewHierarchyController(viewController)
+            let viewControllerReference = catalog.makeElement(from: viewController)
             commands.append(
                 .inspectElement(
                     viewControllerReference,
-                    displayName: viewControllerReference.className,
-                    icon: .elementChildrenPanel
+                    displayName: viewControllerReference.className
                 ) { [weak self] in
                     self?.perform(
                         action: .inspect(preferredPanel: .identity),

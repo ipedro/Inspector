@@ -73,7 +73,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
     func installAllLayers() {
         let snapshot = latestSnapshot()
 
-        asyncOperation(name: Texts.highlight(Texts.allLayers)) {
+        asyncOperation(name: Texts.enable(Texts.allLayers)) {
             for layer in self.populatedLayers where layer.allowsInternalViews == false {
                 self.make(layer: layer, for: snapshot)
             }
@@ -149,7 +149,14 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
                 return
             }
 
-            layerView.removeFromSuperview()
+            if let highlightView = layerView as? HighlightView {
+                highlightView.perform(.dismiss) { _ in
+                    highlightView.removeFromSuperview()
+                }
+            }
+            else {
+                layerView.removeFromSuperview()
+            }
         }
 
         newKeys.forEach { newKey in

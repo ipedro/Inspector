@@ -25,7 +25,7 @@ struct InspectorAppearance: Hashable {
 
     var regularIconSize = CGSize(width: 20, height: 20)
 
-    var actionIconSize = CGSize(width: 32, height: 32)
+    var actionIconSize = CGSize(width: 24, height: 24)
 
     var elementIconSize: CGSize {
         CGSize(

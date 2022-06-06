@@ -25,3 +25,12 @@ extension UIImage {
         UIImage(named: imageName, in: .module, compatibleWith: nil)
     }
 }
+
+extension UIImage {
+    static func light(systemName: String) -> UIImage? {
+        .init(systemName: systemName)?
+            .applyingSymbolConfiguration(
+                .init(weight: .light)
+            )
+    }
+}
