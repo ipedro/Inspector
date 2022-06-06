@@ -274,7 +274,7 @@ extension ViewHierarchyController: ViewHierarchyElementReference {
     }
 
     var underlyingView: UIView? {
-        underlyingViewController?.view
+        underlyingViewController?.viewIfLoaded
     }
 
     var underlyingObject: NSObject? {
