@@ -95,8 +95,7 @@ extension SceneDelegate: InspectorCustomizationProviding {
 
     var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
         [.staticTexts,
-         .stackViews,
-         .viewControllers]
+         .stackViews]
     }
 
     var elementColorProvider: Inspector.ElementColorProvider? {

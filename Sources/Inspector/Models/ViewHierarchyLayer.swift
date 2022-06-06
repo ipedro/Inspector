@@ -134,17 +134,15 @@ extension ViewHierarchyLayer {
     /// Highlights all web views
     public static let webViews = Inspector.ViewHierarchyLayer(name: "Web views") { $0 is WKWebView || $0.superview is WKWebView }
     /// Highlights all views
-    public static let allViews = Inspector.ViewHierarchyLayer(name: "All views") { $0.controller == nil }
+    public static let allViews = Inspector.ViewHierarchyLayer(name: "All views") { !$0.isHidden }
     /// Highlights all system containers
     public static let systemContainers = Inspector.ViewHierarchyLayer(name: "System containers", showLabels: true, allowsInternalViews: true, allowsSystemContainers: true) { $0._isSystemContainer }
     /// Highlights views with an accessbility identifier
-    public static let withIdentifier = Inspector.ViewHierarchyLayer(name: "With Accessibility identifier") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == false }
+    public static let withIdentifier = Inspector.ViewHierarchyLayer(name: "UI Test Accessible") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == false }
     /// Highlights views without an accessbility identifier
     public static let withoutIdentifier = Inspector.ViewHierarchyLayer(name: "Missing Accessibility identifier") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == true }
     /// Shows frames of all views
     public static let wireframes = Inspector.ViewHierarchyLayer(name: "Wireframes", showLabels: false, allowsInternalViews: true) { _ in true }
     /// Highlights all
     public static let internalViews = Inspector.ViewHierarchyLayer(name: "Internal views", showLabels: true, allowsInternalViews: true) { $0._isInternalView }
-
-    public static let viewControllers = Inspector.ViewHierarchyLayer(name: "View Controllers", showLabels: true, allowsInternalViews: true, allowsSystemContainers: true) { $0.controller != nil }
 }

@@ -45,6 +45,7 @@ extension Manager: KeyCommandPresentable {
             var commands = [Inspector.Command]()
             
             let rootReference = snapshot.root
+            
             commands.append(
                 .inspectElement(rootReference) { [weak self] in
                     self?.perform(
@@ -55,7 +56,7 @@ extension Manager: KeyCommandPresentable {
                 }
             )
             
-            guard let rootView = snapshot.root.underlyingView else { return commands }
+            guard let rootView = rootReference.underlyingView else { return commands }
             let rootViewReference = catalog.makeElement(from: rootView)
             commands.append(
                 .inspectElement(rootViewReference) { [weak self] in
@@ -67,46 +68,18 @@ extension Manager: KeyCommandPresentable {
                 }
             )
             
-            guard let rootViewController = snapshot.root.underlyingViewController else { return commands }
-            let rootViewControllerReference = catalog.makeElement(from: rootViewController)
-            commands.append(
-                .inspectElement(rootViewControllerReference) { [weak self] in
-                    self?.perform(
-                        action: .inspect(preferredPanel: .identity),
-                        with: rootViewControllerReference,
-                        from: keyWindow
-                    )
-                }
-            )
-            guard let selectedTabViewController = (rootViewController as? UITabBarController)?.selectedViewController else { return commands }
-            let selectedTabViewControllerReference = catalog.makeElement(from: selectedTabViewController)
-            commands.append(
-                .inspectElement(
-                    selectedTabViewControllerReference,
-                    displayName: selectedTabViewControllerReference.className
-                ) { [weak self] in
-                    self?.perform(
-                        action: .inspect(preferredPanel: .identity),
-                        with: selectedTabViewControllerReference,
-                        from: keyWindow
-                    )
-                }
-            )
-            
-            guard let viewController = (selectedTabViewController as? UINavigationController)?.topViewController else { return commands }
-            let viewControllerReference = catalog.makeElement(from: viewController)
-            commands.append(
-                .inspectElement(
-                    viewControllerReference,
-                    displayName: viewControllerReference.className
-                ) { [weak self] in
-                    self?.perform(
-                        action: .inspect(preferredPanel: .identity),
-                        with: viewControllerReference,
-                        from: keyWindow
-                    )
-                }
-            )
+            for viewController in rootReference.visibleViewControllers {
+                let reference = catalog.makeElement(from: viewController)
+                commands.append(
+                    .inspectElement(reference) { [weak self] in
+                        self?.perform(
+                            action: .inspect(preferredPanel: .identity),
+                            with: reference,
+                            from: keyWindow
+                        )
+                    }
+                )
+            }
             
             return commands
         }()

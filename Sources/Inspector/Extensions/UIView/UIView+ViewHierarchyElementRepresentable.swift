@@ -121,7 +121,6 @@ extension UIView: ViewHierarchyElementRepresentable {
             className != "UITextEffectsWindow",
             className != "UIEditingOverlayGestureView",
             className != "UIInputSetContainerView",
-//            className != "TUISystemInputAssistantView",
             
             // Adding subviews directly to a UIVisualEffectView throws runtime exception.
             self is UIVisualEffectView == false,
@@ -141,7 +140,6 @@ extension UIView: ViewHierarchyElementRepresentable {
             // Skip non inspectable views
             self is NonInspectableView == false,
             superview is NonInspectableView == false,
-            //allParents.filter({ $0 is NonInspectableView }).isEmpty,
 
             // Skip custom classes
             Inspector.sharedInstance.configuration.nonInspectableClassNames.contains(className) == false,

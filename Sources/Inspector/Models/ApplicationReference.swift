@@ -30,19 +30,29 @@ final class ApplicationReference {
         
         guard let root = window.rootViewController else { return .none }
 
-        let windowRootReference = ViewHierarchyController(
+        let rootViewController = ViewHierarchyController(
             root,
             iconProvider: catalog.iconProvider,
             depth: root.view.depth,
             isCollapsed: true
         )
 
-        let windowChildrenReference = windowRootReference
+        let rootChildren = rootViewController
             .viewHierarchy
             .compactMap { $0 as? ViewHierarchyController }
 
+        let presented = root
+            .allPresentedViewControllers
+            .reversed()
+            .enumerated()
+            .map {
+                catalog.makeElement(from: $0.element)
+            }
+            .flatMap(\.viewHierarchy)
+            .compactMap { $0 as? ViewHierarchyController }
+    
         Self.connect(
-            viewControllers: [windowRootReference] + windowChildrenReference,
+            viewControllers: [rootViewController] + rootChildren + presented,
             with: windowReference
         )
         
@@ -206,4 +216,9 @@ extension ApplicationReference: ViewHierarchyElementReference {
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle { .unspecified }
 
     var traitCollection: UITraitCollection { UITraitCollection() }
+    
+    var visibleViewControllers: [UIViewController] {
+        guard let root = underlyingViewController else { return [] }
+        return [root] + root.allActiveChildren + root.allPresentedViewControllers
+    }
 }

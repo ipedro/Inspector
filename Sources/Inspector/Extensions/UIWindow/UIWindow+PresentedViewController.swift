@@ -27,10 +27,6 @@ extension UIWindow {
     }
 
     var allPresentendViewControllers: [UIViewController] {
-        guard let rootViewController = topPresentedViewController else { return [] }
-
-        let allPresentendViewControllers = [rootViewController] + rootViewController.allChildren
-
-        return allPresentendViewControllers
+        rootViewController?.allPresentedViewControllers ?? []
     }
 }

@@ -289,9 +289,7 @@ extension ViewHierarchyController: ViewHierarchyElementReference {
         store.latest.identifier
     }
 
-    var canHostInspectorView: Bool {
-        rootElement.canHostInspectorView
-    }
+    var canHostInspectorView: Bool { false }
 
     var isInternalView: Bool {
         rootElement.isInternalView
@@ -302,7 +300,7 @@ extension ViewHierarchyController: ViewHierarchyElementReference {
     }
 
     var displayName: String {
-        title ?? classNameWithoutQualifiers
+        classNameWithoutQualifiers
     }
 
     var canPresentOnTop: Bool {
