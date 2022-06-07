@@ -203,7 +203,7 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
             viewModel: ElementInspectorViewModel(
                 catalog: catalog,
                 element: element,
-                selectedPanel: selectedPanel,
+                preferredPanel: selectedPanel,
                 availablePanels: availablePanels
             )
         ).then {

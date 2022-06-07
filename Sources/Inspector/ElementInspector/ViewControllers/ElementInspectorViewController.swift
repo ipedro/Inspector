@@ -245,10 +245,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
         if segmentedControl.numberOfSegments == .zero {
             updatePanelsSegmentedControl()
-
-            if let panel = viewModel.currentPanel {
-                installPanel(panel)
-            }
+            installPanel(viewModel.currentPanel)
         }
 
         guard

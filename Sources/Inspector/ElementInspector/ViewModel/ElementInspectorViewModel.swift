@@ -29,7 +29,7 @@ protocol ElementInspectorViewModelProtocol: AnyObject {
 
     var availablePanels: [ElementInspectorPanel] { get }
 
-    var currentPanel: ElementInspectorPanel? { get }
+    var currentPanel: ElementInspectorPanel { get }
 
     var currentPanelIndex: Int { get }
 
@@ -43,7 +43,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     let availablePanels: [ElementInspectorPanel]
 
-    var currentPanel: ElementInspectorPanel?
+    var currentPanel: ElementInspectorPanel
 
     var isCollapsed: Bool = false
 
@@ -54,10 +54,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     var title: String { element.elementName }
 
     var currentPanelIndex: Int {
-        guard
-            let panel = currentPanel,
-            let index = availablePanels.firstIndex(of: panel)
-        else {
+        guard let index = availablePanels.firstIndex(of: currentPanel) else {
             return UISegmentedControl.noSegment
         }
         return index
@@ -66,7 +63,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
     init(
         catalog: ViewHierarchyElementCatalog,
         element: ViewHierarchyElementReference,
-        selectedPanel: ElementInspectorPanel?,
+        preferredPanel: ElementInspectorPanel?,
         availablePanels: [ElementInspectorPanel]
     ) {
         self.catalog = catalog
@@ -74,10 +71,12 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         self.availablePanels = availablePanels
 
         currentPanel = {
-            let preferredPanel = selectedPanel ?? Self.defaultPanel
-
-            guard availablePanels.contains(preferredPanel) else { return availablePanels.first }
-
+            guard
+                let preferredPanel = preferredPanel,
+                availablePanels.contains(preferredPanel)
+            else {
+                return availablePanels.first ?? Self.defaultPanel
+            }
             return preferredPanel
         }()
     }
