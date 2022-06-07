@@ -49,8 +49,11 @@ extension ViewHierarchyElementIconProvider {
         guard view.isHidden == false else { return .hiddenViewSymbol }
 
         switch view {
+        case let window as UIWindow where window.isKeyWindow:
+            return .moduleImage(named: "Key-UIWindow-32_Normal")
+
         case is UIWindow:
-            return .light(systemName: "uiwindow.split.2x1")
+            return .moduleImage(named: "UIWindow-32_Normal")
 
         case is UIActivityIndicatorView:
             return .moduleImage(named: "UIActivityIndicator_32_Dark_Normal")

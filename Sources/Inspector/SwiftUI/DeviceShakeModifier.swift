@@ -4,8 +4,8 @@
 import SwiftUI
 import UIKit
 
-// The notification we'll send when a shake gesture happens.
 extension UIDevice {
+    /// The notification we'll send when a shake gesture happens.
     static let deviceDidShakeNotification = Notification.Name(rawValue: "deviceDidShakeNotification")
 }
 
@@ -18,8 +18,7 @@ extension UIWindow {
     }
 }
 
-// A view modifier that detects shaking and calls a function of our choosing.
-@available(iOS 13.0.0, *)
+/// A view modifier that detects shaking and calls a function of our choosing.
 struct DeviceShakeViewModifier: ViewModifier {
     let action: () -> Void
 
@@ -32,9 +31,8 @@ struct DeviceShakeViewModifier: ViewModifier {
     }
 }
 
-// A View extension to make the modifier easier to use.
-@available(iOS 13.0.0, *)
 public extension View {
+    /// A View extension to make the modifier easier to use.
     func onShake(perform action: @escaping () -> Void) -> some View {
         modifier(DeviceShakeViewModifier(action: action))
     }
