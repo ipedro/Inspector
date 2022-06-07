@@ -38,7 +38,7 @@ public struct InspectorConfiguration {
     public init(
         enableLayoutSubviewsSwizzling: Bool = false,
         nonInspectableClassNames: [String] = [],
-        showAllViewSearchQuery: String = "*",
+        showAllViewSearchQuery: String = ".",
         snapshotExpiration: TimeInterval = 1,
         verbose: Bool = false
     ) {
