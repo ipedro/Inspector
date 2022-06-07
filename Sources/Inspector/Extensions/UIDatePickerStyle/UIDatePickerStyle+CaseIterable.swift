@@ -24,7 +24,7 @@ import UIKit
 extension UIDatePickerStyle: CaseIterable {
     typealias AllCases = [UIDatePickerStyle]
 
-    static let allCases: [UIDatePickerStyle] = {
+    static var allCases: [UIDatePickerStyle] {
         if #available(iOS 14.0, *) {
             return [
                 .automatic,
@@ -39,5 +39,5 @@ extension UIDatePickerStyle: CaseIterable {
             .wheels,
             .compact
         ]
-    }()
+    }
 }

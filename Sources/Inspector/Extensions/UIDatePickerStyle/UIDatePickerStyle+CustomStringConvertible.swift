@@ -26,16 +26,12 @@ extension UIDatePickerStyle: CustomStringConvertible {
         switch self {
         case .automatic:
             return "Automatic"
-
         case .wheels:
             return "Wheels"
-
         case .compact:
             return "Compact"
-
         case .inline:
             return "Inline"
-
         @unknown default:
             return "Unknown"
         }
