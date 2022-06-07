@@ -21,7 +21,7 @@
 import UIKit
 
 extension Manager: InspectorViewCoordinatorDelegate {
-    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, execute command: InspectorCommand) {
+    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, execute command: InspectorCommand?) {
         coordinator.start().dismiss(animated: true) { [weak self] in    
             guard let self = self else { return }
             self.execute(command)
@@ -66,24 +66,20 @@ extension Manager {
     }
 
     func presentInspector(animated: Bool, from presenter: UIViewController) {
-        guard let coordinator = makeInspectorViewCoordinator(presentedBy: presenter) else {
-            return
+        dismissInspectorViewIfNeeded { [weak self] in
+            guard let self = self else { return }
+            
+            let coordinator = self.makeInspectorViewCoordinator(presentedBy: presenter)
+
+            let inspectorViewController = coordinator.start()
+
+            presenter.present(inspectorViewController, animated: animated) {
+                self.addChild(coordinator)
+            }
         }
-
-        for case let previousCoordinator as InspectorViewCoordinator in children {
-            previousCoordinator.removeFromParent()
-        }
-
-        addChild(coordinator)
-
-        let inspectorViewController = coordinator.start()
-
-        presenter.present(inspectorViewController, animated: animated)
     }
 
-    func makeInspectorViewCoordinator(presentedBy presenter: UIViewController) -> InspectorViewCoordinator? {
-        guard canPresentInspectorView else { return nil }
-
+    func makeInspectorViewCoordinator(presentedBy presenter: UIViewController) -> InspectorViewCoordinator {
         let coordinator = InspectorViewCoordinator(
             .init(
                 snapshot: snapshot,

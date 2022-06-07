@@ -28,7 +28,7 @@ protocol InspectorViewControllerDelegate: AnyObject {
     func inspectorViewControllerDidFinish(_ viewController: InspectorViewController)
 }
 
-final class InspectorViewController: UIViewController, KeyboardAnimatable {
+final class InspectorViewController: UIViewController, NonInspectableView, KeyboardAnimatable {
     // MARK: - Properties
 
     private(set) var isFinishing = false

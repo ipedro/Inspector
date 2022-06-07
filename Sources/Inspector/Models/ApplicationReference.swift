@@ -30,7 +30,7 @@ final class ApplicationReference {
         
         guard let root = window.rootViewController else { return windowReference }
 
-        let viewControllerReferences = allViewControllers.map { catalog.makeElement(from: $0) }
+        let viewControllerReferences = allViewControllers(with: root).map { catalog.makeElement(from: $0) }
         
         Self.connect(viewControllers: viewControllerReferences, with: windowReference)
         
@@ -195,13 +195,8 @@ extension ApplicationReference: ViewHierarchyElementReference {
 
     var traitCollection: UITraitCollection { UITraitCollection() }
     
-    var allViewControllers: [UIViewController] {
-        guard let root = underlyingViewController else { return [] }
-        return [root] + root.allChildren + root.allPresentedViewControllers.flatMap { [$0] + $0.allChildren }
-    }
-    
-    var visibleViewControllers: [UIViewController] {
-        guard let root = underlyingViewController else { return [] }
-        return [root] + root.allActiveChildren + root.allPresentedViewControllers.flatMap { [$0] + $0.allActiveChildren }
+    private func allViewControllers(with rootViewController: UIViewController?) -> [UIViewController] {
+        guard let rootViewController = rootViewController else { return [] }
+        return [rootViewController] + rootViewController.allChildren + rootViewController.allPresentedViewControllers.flatMap { [$0] + $0.allChildren }
     }
 }

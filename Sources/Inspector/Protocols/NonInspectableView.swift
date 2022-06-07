@@ -21,4 +21,4 @@
 import UIKit
 
 /// Conform to this protocol to prevent a view to be inspected.
-public protocol NonInspectableView: UIView {}
+public protocol NonInspectableView {}

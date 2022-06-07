@@ -26,7 +26,7 @@ protocol InspectorViewCoordinatorSwiftUIDelegate: AnyObject {
 }
 
 protocol InspectorViewCoordinatorDelegate: AnyObject {
-    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, execute command: InspectorCommand)
+    func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, execute command: InspectorCommand?)
 }
 
 typealias CommandGroupsProvider = () -> CommandsGroups?

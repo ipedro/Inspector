@@ -24,7 +24,7 @@ protocol OptionSelectorViewControllerDelegate: AnyObject {
     func optionSelectorViewController(_ viewController: OptionSelectorViewController, didSelectIndex selectedIndex: Int?)
 }
 
-final class OptionSelectorViewController: UIViewController {
+final class OptionSelectorViewController: UIViewController, NonInspectableView {
     weak var delegate: OptionSelectorViewControllerDelegate?
 
     private var viewModel: OptionSelectorViewModelProtocol! {

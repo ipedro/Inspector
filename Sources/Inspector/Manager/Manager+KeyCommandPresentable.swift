@@ -68,13 +68,17 @@ extension Manager: KeyCommandPresentable {
                 }
             )
             
-            for viewController in rootReference.visibleViewControllers {
-                let reference = catalog.makeElement(from: viewController)
+            let visibleViewControllers = rootReference.viewHierarchy
+                .compactMap { $0 as? ViewHierarchyController }
+                .filter { $0.underlyingView?.window === rootView }
+                .sorted { $0.depth < $1.depth }
+            
+            for child in visibleViewControllers {
                 commands.append(
-                    .inspectElement(reference) { [weak self] in
+                    .inspectElement(child) { [weak self] in
                         self?.perform(
                             action: .inspect(preferredPanel: .children),
-                            with: reference,
+                            with: child,
                             from: keyWindow
                         )
                     }

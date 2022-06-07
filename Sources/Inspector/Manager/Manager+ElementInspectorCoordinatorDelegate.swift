@@ -31,11 +31,9 @@ extension Manager: ElementInspectorCoordinatorDelegate {
 }
 
 extension Manager {
-
-
     func startElementInspectorCoordinator(for view: UIView,
                                           panel: ElementInspectorPanel?,
-                                          from sourceView: UIView,
+                                          from sourceView: UIView?,
                                           animated: Bool)
     {
         let reference = catalog.makeElement(from: view)
@@ -44,7 +42,7 @@ extension Manager {
 
     func startElementInspectorCoordinator(for element: ViewHierarchyElementReference,
                                           panel: ElementInspectorPanel?,
-                                          from sourceView: UIView,
+                                          from sourceView: UIView?,
                                           animated: Bool)
     {
         guard let keyWindow = keyWindow else { return }
@@ -55,14 +53,14 @@ extension Manager {
                 initialPanel: panel,
                 rootElement: element,
                 snapshot: snapshot,
-                sourceView: sourceView
+                sourceView: sourceView ?? keyWindow
             ),
             presentedBy: keyWindow
         )
         coordinator.delegate = self
 
-        addChild(coordinator)
-
-        dependencies.viewHierarchy.keyWindow?.topPresentedViewController?.present(coordinator.start(), animated: animated)
+        keyWindow.topPresentedViewController?.present(coordinator.start(), animated: animated) {
+            self.addChild(coordinator)
+        }
     }
 }

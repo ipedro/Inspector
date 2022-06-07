@@ -49,7 +49,6 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
                    let sheet = $0.sheetPresentationController {
                     sheet.detents = [.medium(), .large()]
                     sheet.selectedDetentIdentifier = .medium
-                    sheet.largestUndimmedDetentIdentifier = .medium
                     sheet.prefersGrabberVisible = true
                     sheet.sourceView = colorPreviewControl
                     sheet.preferredCornerRadius = Inspector.sharedInstance.appearance.elementInspector.horizontalMargins

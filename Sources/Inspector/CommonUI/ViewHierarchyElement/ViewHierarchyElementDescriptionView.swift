@@ -144,7 +144,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
     private(set) lazy var iconImageView = UIImageView().then {
         $0.clipsToBounds = false
         $0.contentMode = .scaleAspectFit
-        $0.widthAnchor.constraint(equalToConstant: CGSize.actionIconSize.width).isActive = true
+        $0.widthAnchor.constraint(equalToConstant: CGSize.elementIconSize.width).isActive = true
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor).isActive = true
     }
 
