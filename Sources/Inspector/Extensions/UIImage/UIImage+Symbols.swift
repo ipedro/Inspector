@@ -50,7 +50,7 @@ extension UIImage {
     static let copySymbol: UIImage = .systemIcon("doc.on.doc")!
     static let stopSymbol: UIImage = .systemIcon("hand.raised.fill")!
     static let emptyLayerAction: UIImage = .systemIcon("questionmark.circle")!
-    static let hideAllLayersAction: UIImage = .systemIcon("square.stack.3d.up.slash.fill")!
-    static let showAllLayersAction: UIImage = .systemIcon("square.stack.3d.up.fill")!
-    static let layerAction: UIImage = .systemIcon("square.3.stack.3d.middle.filled")!
+    static let hideAllLayersAction: UIImage = .systemIcon("square.stack.3d.down.forward")!
+    static let showAllLayersAction: UIImage = .systemIcon("square.stack.3d.down.forward.fill")!
+    static let layerAction: UIImage = .systemIcon("square.stack.3d.down.forward")!
 }

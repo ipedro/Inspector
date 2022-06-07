@@ -22,32 +22,40 @@ import UIKit
 
 extension ViewHierarchyCoordinator: LayerCommandProtocol {
     func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> [Command] {
-        let layerToggleInputRange = Inspector.sharedInstance.configuration.keyCommands.layerToggleInputRange
-
         let maxCount = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
 
-        var commands = [Command]()
-        commands.append(command(for: .wireframes, at: layerToggleInputRange.lowerBound, isEmpty: false))
-
-        for (index, layer) in snapshot.availableLayers.enumerated() {
-            let command = command(for: layer, at: layerToggleInputRange.lowerBound + index + 1, isEmpty: snapshot.populatedLayers.contains(layer) == false)
-            commands.append(command)
-        }
+        let commands = snapshot.availableLayers
+            .enumerated()
+            .map { index, layer in
+                command(
+                    for: layer,
+                    at: layerToggleInputRange.lowerBound + index + 1,
+                    isEmpty: snapshot.populatedLayers.contains(layer) == false
+                )
+            }
 
         return Array(commands.prefix(maxCount))
     }
 
     func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command {
         if isEmpty { return .emptyLayer(layer.emptyActionTitle) }
+        let title: String = {
+            switch (layer, isShowingLayer(layer)) {
+            case (.wireframes, true): return "Showing Wireframes"
+            case (.wireframes, false): return "Show Wireframes"
+            case (_, true): return Texts.highlighting(layer.title)
+            case (_, false): return Texts.highlight(layer.title)
+            }
+        }()
 
         switch isShowingLayer(layer) {
         case true:
-            return .visibleLayer(layer.title, at: index) { [weak self] in
+            return .visibleLayer(title, at: index) { [weak self] in
                 self?.removeLayer(layer)
             }
 
         case false:
-            return .hiddenLayer(layer.title, at: index) { [weak self] in
+            return .hiddenLayer(title, at: index) { [weak self] in
                 self?.installLayer(layer)
             }
         }

@@ -27,12 +27,12 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
 
             guard title?.trimmed.isNilOrEmpty == false else {
                 titleLabel.isHidden = true
-                stackView.directionalLayoutMargins = elementInspectorAppearance.directionalInsets.with(top: .zero)
+                stackView.removeFromSuperview()
                 return
             }
 
             titleLabel.isHidden = false
-            stackView.directionalLayoutMargins = elementInspectorAppearance.directionalInsets
+            contentView.installView(stackView, .spacing(horizontal: directionalLayoutMargins.leading * 2, vertical: .zero))
         }
     }
 
@@ -46,7 +46,8 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
     private lazy var stackView = UIStackView.vertical(
         .arrangedSubviews(
             separatorView,
-            titleLabel
+            titleLabel,
+            UIView()
         ),
         .spacing(elementInspectorAppearance.verticalMargins)
     )
@@ -69,16 +70,5 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
 
     func setup() {
         backgroundView = UIView()
-        contentView.directionalLayoutMargins = .zero
-        stackView.isLayoutMarginsRelativeArrangement = false
-        contentView.installView(
-            stackView,
-            .spacing(
-                top: 2,
-                leading: elementInspectorAppearance.horizontalMargins,
-                bottom: elementInspectorAppearance.verticalMargins,
-                trailing: elementInspectorAppearance.horizontalMargins
-            )
-        )
     }
 }

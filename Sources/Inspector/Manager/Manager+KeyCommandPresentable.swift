@@ -26,13 +26,13 @@ extension Manager: KeyCommandPresentable {
         if let userCommandGroups = dependencies.customization?.commandGroups {
             commandGroups.append(contentsOf: userCommandGroups)
         }
-        commandGroups.append(viewHierarchyCommands)
+        commandGroups.append(contentsOf: viewHierarchyCommandGroups)
         commandGroups.append(contentsOf: elementCommandGroups)
         return commandGroups
     }
 
-    private var viewHierarchyCommands: CommandsGroup {
-        viewHierarchyCoordinator.commandsGroup()
+    private var viewHierarchyCommandGroups: CommandsGroups {
+        viewHierarchyCoordinator.commandsGroups()
     }
 
     private var elementCommandGroups: CommandsGroups {
@@ -84,8 +84,15 @@ extension Manager: KeyCommandPresentable {
         viewHierarchy
             .compactMap { $0 as? ViewHierarchyController }
             .sorted { $0.depth < $1.depth }
-            .map { viewController in
-                .inspectElement(viewController) { [weak self] in
+            .enumerated()
+            .map { offset, viewController in
+                .inspectElement(
+                    viewController,
+                    displayName: [
+                        Array(repeating: "  ", count: offset + 1).joined(),
+                        viewController.displayName
+                    ].joined()
+                ) { [weak self] in
                     guard let self = self else { return }
                     self.perform(action: action, with: viewController, from: sourceView)
                 }

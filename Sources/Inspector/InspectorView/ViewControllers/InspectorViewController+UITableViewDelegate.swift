@@ -58,6 +58,10 @@ extension InspectorViewController: UITableViewDelegate {
         return header
     }
 
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        viewModel.titleForHeader(in: section)?.isEmpty == false ? UITableView.automaticDimension : .zero
+    }
+
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         UIView()
     }

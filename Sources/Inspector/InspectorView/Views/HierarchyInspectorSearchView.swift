@@ -67,7 +67,7 @@ final class HierarchyInspectorSearchView: BaseView {
         contentView.addArrangedSubview(searchIcon)
         contentView.addArrangedSubview(textField)
 
-        installView(separatorView, .spacing(leading: .zero, bottom: -separatorView.thickness, trailing: .zero))
+        installView(separatorView, .spacing(leading: .zero, bottom: -separatorView.thicknesInPixels, trailing: .zero))
     }
 }
 

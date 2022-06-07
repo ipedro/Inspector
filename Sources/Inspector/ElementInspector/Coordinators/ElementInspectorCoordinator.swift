@@ -217,7 +217,6 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
             let dataSource = DefaultFormPanelDataSource(
                 sections: {
                     guard let libraries = dependencies.catalog.libraries[panel] else { return [] }
-
                     return libraries.formItems(for: element.underlyingObject)
                 }()
             )
@@ -225,6 +224,8 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
             return ElementInspectorFormPanelViewController().then {
                 $0.dataSource = dataSource
                 $0.formDelegate = self
+                $0.initialCompactListState = .allCollapsed
+                $0.initialListState = .firstExpanded
             }
 
         case .children:

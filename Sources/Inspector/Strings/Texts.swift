@@ -54,11 +54,11 @@ enum Texts {
     }
 
     static func enable(_ something: String) -> String {
-        "Enable \(something)"
+        "Apply \(something)"
     }
 
     static func disable(_ something: String) -> String {
-        "Disable \(something)"
+        "Remove \(something)"
     }
 
     static func highlighting(_ something: String) -> String {
@@ -87,7 +87,7 @@ enum Texts {
 
     static let presentInspector = "Open Inspector..."
 
-    static let all = "All"
+    static let all = "All Highlights"
 
     static let dismissView = "Dismiss View"
 

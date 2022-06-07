@@ -47,7 +47,7 @@ final class SeparatorView: BaseView {
         }
     }
 
-    private var thicknesInPixels: CGFloat { thickness / UIScreen.main.scale }
+    var thicknesInPixels: CGFloat { thickness / UIScreen.main.scale }
 
     var style: Style {
         didSet {

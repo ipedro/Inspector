@@ -64,6 +64,14 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         }
     }
 
+    var initialListState: ElementInspectorPanelListState?
+
+    var initialCompactListState: ElementInspectorPanelListState?
+
+    private var initialListStateForCurrentHeight: ElementInspectorPanelListState? {
+        isFullHeightPresentation ? initialListState : initialCompactListState
+    }
+
     var selectedColorPreviewControl: ColorPreviewControl?
 
     var selectedImagePreviewControl: ImagePreviewControl?
@@ -92,6 +100,21 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
     var panelSelectionMode: ElementInspectorPanelSelectionMode { .multipleSelection }
 
+    override var isFullHeightPresentation: Bool {
+        didSet {
+            switch (oldValue, isFullHeightPresentation) {
+            // is expanding
+            case (false, true):
+                apply(state: initialListState ?? .firstExpanded, animated: true)
+            // is collapsing
+            case (true, false):
+                apply(state: initialCompactListState, animated: true)
+            default:
+                return
+            }
+        }
+    }
+
     private lazy var viewCode = BaseView()
 
     override func loadView() {
@@ -103,7 +126,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
 
         reloadData()
 
-        togglePanels(to: .firstExpanded, animated: false)
+        togglePanels(to: initialListStateForCurrentHeight, animated: false)
     }
 }
 
@@ -168,7 +191,9 @@ extension ElementInspectorFormPanelViewController: DataReloadingProtocol {
 }
 
 extension ElementInspectorFormPanelViewController {
-    func togglePanels(to newState: ElementInspectorPanelListState, animated: Bool, completion: ((Bool) -> Void)? = nil) {
+    func togglePanels(to newState: ElementInspectorPanelListState?, animated: Bool, completion: ((Bool) -> Void)? = nil) {
+        let newState = newState ?? .allCollapsed
+
         guard animated else {
             apply(state: newState, animated: false)
             itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)

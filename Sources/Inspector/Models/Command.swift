@@ -65,7 +65,7 @@ extension Command {
 
     static func emptyLayer(_ title: String) -> Command {
         Command(
-            title: title.lowercased(),
+            title: title,
             icon: .emptyLayerAction,
             keyCommandOptions: nil,
             closure: nil
@@ -73,33 +73,29 @@ extension Command {
     }
 
     static func visibleLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
-        Command(
-            title: Texts.highlighting(title.lowercased()),
-            icon: .layerAction,
-            keyCommandOptions: UIKeyCommand.Options(
-                input: String(index),
-                modifierFlags: keyCommandSettings.layerToggleModifierFlags
-            ),
-            isSelected: true,
-            closure: closure
-        )
+        .layer(title: title, at: index, isSelected: true, closure: closure)
     }
 
     static func hiddenLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
+        .layer(title: title, at: index, isSelected: false, closure: closure)
+    }
+
+    static func layer(title: String, at index: Int, isSelected: Bool, closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.highlight(title.lowercased()),
+            title: title,
             icon: .layerAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: String(index),
                 modifierFlags: keyCommandSettings.layerToggleModifierFlags
             ),
+            isSelected: isSelected,
             closure: closure
         )
     }
 
     static func showAllLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.enable(Texts.all.lowercased()),
+            title: Texts.enable(Texts.all),
             icon: .showAllLayersAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
@@ -111,7 +107,7 @@ extension Command {
 
     static func hideVisibleLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.disable(Texts.all.lowercased()),
+            title: Texts.disable(Texts.all),
             icon: .hideAllLayersAction,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,

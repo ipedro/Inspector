@@ -30,6 +30,8 @@ struct ViewHierarchyDependencies {
 }
 
 final class ViewHierarchyCoordinator: Coordinator<ViewHierarchyDependencies, OperationQueue, Void> {
+    let layerToggleInputRange = Inspector.sharedInstance.configuration.keyCommands.layerToggleInputRange
+
     weak var delegate: ViewHierarchyCoordinatorDelegate?
 
     private var cachedSnapshot: ViewHierarchySnapshot? { history.last }
@@ -131,15 +133,21 @@ extension ViewHierarchyCoordinator {
         return snapshot
     }
 
-    func commandsGroup() -> CommandsGroup {
+    func commandsGroups() -> CommandsGroups {
         let snapshot = latestSnapshot()
         let toggleAll = toggleAllLayersCommands(for: snapshot)
         let layers = availableLayerCommands(for: snapshot)
+        let wireframes = [command(for: .wireframes, at: layerToggleInputRange.lowerBound, isEmpty: false)]
 
-        return CommandsGroup.group(
-            title: Texts.highlightElements,
-            commands: toggleAll + layers
-        )
+        return [
+            .group(
+                commands: toggleAll
+            ),
+            .group(
+                title: Texts.highlightElements,
+                commands: wireframes + layers
+            )
+        ]
     }
 
     private func makeSnapshot() -> ViewHierarchySnapshot {
