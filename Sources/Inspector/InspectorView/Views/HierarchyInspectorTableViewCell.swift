@@ -58,26 +58,6 @@ class HierarchyInspectorTableViewCell: UITableViewCell, ElementInspectorAppearan
         }
     }
 
-    func maskCellFromTop(margin: CGFloat) {
-        layer.mask = visibilityMaskWithLocation(location: margin / frame.size.height)
-        layer.masksToBounds = true
-    }
-
-    func visibilityMaskWithLocation(location: CGFloat) -> CAGradientLayer {
-        let mask = CAGradientLayer()
-        mask.frame = bounds
-        mask.locations = [
-            NSNumber(value: Float(location)),
-            NSNumber(value: Float(location))
-        ]
-        mask.colors = [
-            UIColor(white: 1, alpha: 0).cgColor,
-            UIColor(white: 1, alpha: 1).cgColor
-        ]
-
-        return mask
-    }
-
     override func prepareForReuse() {
         super.prepareForReuse()
         layer.mask = nil

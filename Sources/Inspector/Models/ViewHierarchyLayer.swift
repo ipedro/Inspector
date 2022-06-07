@@ -138,9 +138,9 @@ public extension ViewHierarchyLayer {
     /// Highlights all system containers
     static let systemContainers = Inspector.ViewHierarchyLayer(name: "System containers", showLabels: true, allowsInternalViews: true, allowsSystemContainers: true) { $0._isSystemContainer }
     /// Highlights views with an accessbility identifier
-    static let withIdentifier = Inspector.ViewHierarchyLayer(name: "UI Test Accessible") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == false }
+    static let withIdentifier = Inspector.ViewHierarchyLayer(name: "Accessibility Identifiers") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == false }
     /// Highlights views without an accessbility identifier
-    static let withoutIdentifier = Inspector.ViewHierarchyLayer(name: "Missing Accessibility identifier") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == true }
+    static let withoutIdentifier = Inspector.ViewHierarchyLayer(name: "Missing Accessibility Identifiers") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == true }
     /// Shows frames of all views
     static let wireframes = Inspector.ViewHierarchyLayer(name: "Wireframes", showLabels: false, allowsInternalViews: true) { _ in true }
     /// Highlights all

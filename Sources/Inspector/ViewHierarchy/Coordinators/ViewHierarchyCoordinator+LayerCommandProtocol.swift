@@ -26,7 +26,7 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
 
         let commands = snapshot.availableLayers
             .enumerated()
-            .map { index, layer in
+            .compactMap { index, layer in
                 command(
                     for: layer,
                     at: layerToggleInputRange.lowerBound + index + 1,
@@ -37,8 +37,8 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
         return Array(commands.prefix(maxCount))
     }
 
-    func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command {
-        if isEmpty { return .emptyLayer(layer.emptyActionTitle) }
+    func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command? {
+        if isEmpty { return /* .emptyLayer(layer.emptyActionTitle) */ .none }
         let title: String = {
             switch (layer, isShowingLayer(layer)) {
             case (.wireframes, true): return "Showing Wireframes"

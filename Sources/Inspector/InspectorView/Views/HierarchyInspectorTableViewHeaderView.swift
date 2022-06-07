@@ -32,12 +32,18 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
             }
 
             titleLabel.isHidden = false
-            contentView.installView(stackView, .spacing(horizontal: directionalLayoutMargins.leading * 2, vertical: .zero))
+
+            if stackView.superview == self { return }
+
+            contentView.installView(
+                stackView, .spacing(horizontal: 16,
+                                    vertical: .zero)
+            )
         }
     }
 
     var showSeparatorView: Bool {
-        get { !separatorView.isHidden }
+        get { separatorView.isHidden }
         set { separatorView.isHidden = !newValue }
     }
 
@@ -45,7 +51,7 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
 
     private lazy var stackView = UIStackView.vertical(
         .arrangedSubviews(
-            separatorView,
+            UIView(),
             titleLabel,
             UIView()
         ),
@@ -59,7 +65,6 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
-
         setup()
     }
 
@@ -70,5 +75,13 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
 
     func setup() {
         backgroundView = UIView()
+        installView(
+            separatorView,
+            .spacing(
+                top: -separatorView.thicknesInPixels,
+                leading: .zero,
+                trailing: .zero
+            )
+        )
     }
 }

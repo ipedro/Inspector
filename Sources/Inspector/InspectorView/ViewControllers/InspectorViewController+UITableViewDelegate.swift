@@ -30,16 +30,14 @@ extension InspectorViewController: UITableViewDelegate {
         }
 
         for cell in viewCode.tableView.visibleCells {
-            guard let cell = cell as? HierarchyInspectorTableViewCell else {
-                return
-            }
+            guard let cell = cell as? HierarchyInspectorTableViewCell else { continue }
 
             let headerHeight: CGFloat = headerView.frame.height
 
             let hiddenFrameHeight = scrollView.contentOffset.y + headerHeight - cell.frame.origin.y
 
             if hiddenFrameHeight >= 0 || hiddenFrameHeight <= cell.frame.size.height {
-                cell.maskCellFromTop(margin: max(0, hiddenFrameHeight))
+                cell.maskFromTop(margin: max(0, hiddenFrameHeight))
             }
             else {
                 break
@@ -67,7 +65,7 @@ extension InspectorViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        .zero
+        1
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

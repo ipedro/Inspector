@@ -315,7 +315,9 @@ extension InspectorViewController {
     }
 
     @objc private func scrollToTopSection() {
-        viewCode.tableView.scrollToRow(at: IndexPath(row: NSNotFound, section: .zero), at: .top, animated: false)
+        if viewCode.tableView.contentOffset.y > 100 {
+            viewCode.tableView.scrollToRow(at: IndexPath(row: NSNotFound, section: .zero), at: .top, animated: true)
+        }
     }
 
     func finish() {

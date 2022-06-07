@@ -46,7 +46,7 @@ enum Texts {
     }
 
     static func emptyLayer(with description: String) -> String {
-        "No \(description) found"
+        description
     }
 
     static func highlight(_ something: String) -> String {

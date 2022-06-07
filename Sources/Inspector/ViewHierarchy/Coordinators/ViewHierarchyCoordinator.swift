@@ -135,17 +135,20 @@ extension ViewHierarchyCoordinator {
 
     func commandsGroups() -> CommandsGroups {
         let snapshot = latestSnapshot()
-        let toggleAll = toggleAllLayersCommands(for: snapshot)
-        let layers = availableLayerCommands(for: snapshot)
-        let wireframes = [command(for: .wireframes, at: layerToggleInputRange.lowerBound, isEmpty: false)]
+        let toggleAllHighlights = toggleAllLayersCommands(for: snapshot)
+        let highlights = availableLayerCommands(for: snapshot)
+        let wireframes = [
+            command(for: .wireframes, at: layerToggleInputRange.lowerBound, isEmpty: false)
+        ]
+        .compactMap { $0 }
 
         return [
             .group(
-                commands: toggleAll
+                commands: wireframes
             ),
             .group(
                 title: Texts.highlightElements,
-                commands: wireframes + layers
+                commands: toggleAllHighlights + highlights
             )
         ]
     }

@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2022 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -18,12 +18,26 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
+import UIKit
 
-protocol LayerCommandProtocol {
-    func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> [Command]
+extension UIView {
+    func maskFromTop(margin: CGFloat) {
+        layer.mask = visibilityMaskWithLocation(location: margin / frame.size.height)
+        layer.masksToBounds = true
+    }
 
-    func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> [Command]
+    func visibilityMaskWithLocation(location: CGFloat) -> CAGradientLayer {
+        let mask = CAGradientLayer()
+        mask.frame = bounds
+        mask.locations = [
+            NSNumber(value: Float(location)),
+            NSNumber(value: Float(location))
+        ]
+        mask.colors = [
+            UIColor(white: 1, alpha: 0).cgColor,
+            UIColor(white: 1, alpha: 1).cgColor
+        ]
 
-    func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command?
+        return mask
+    }
 }
