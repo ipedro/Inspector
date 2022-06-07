@@ -23,19 +23,25 @@ import UIKit
 final class ApplicationReference {
     weak var parent: ViewHierarchyElementReference?
 
-    lazy var children = windows.map { window -> ViewHierarchyElementReference in
-        let windowReference = catalog.makeElement(from: window)
-        windowReference.parent = self
-        windowReference.isCollapsed = true
+    lazy var children = windows
+        .sorted { $0.windowLevel > $1.windowLevel }
+        .map { window -> ViewHierarchyElementReference in
+            let windowReference = catalog.makeElement(from: window)
+            windowReference.parent = self
+            windowReference.isCollapsed = true
 
-        guard let root = window.rootViewController else { return windowReference }
+            guard let root = window.rootViewController else {
+                return windowReference
+            }
 
-        let viewControllerReferences = allViewControllers(with: root).map { catalog.makeElement(from: $0) }
+            let viewControllerReferences = allViewControllers(with: root).map {
+                catalog.makeElement(from: $0)
+            }
 
-        Self.connect(viewControllers: viewControllerReferences, with: windowReference)
+            Self.connect(viewControllers: viewControllerReferences, with: windowReference)
 
-        return windowReference
-    }
+            return windowReference
+        }
 
     var depth: Int = -1
 

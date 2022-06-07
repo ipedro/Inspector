@@ -42,7 +42,7 @@ extension Manager: KeyCommandPresentable {
         let rootReference = snapshot.root
 
         let windows = CommandsGroup.group(
-            title: "Visible Windows",
+            title: "Windows",
             commands: rootReference.children
                 .filter { $0.underlyingView is UIWindow }
                 .compactMap { element in
