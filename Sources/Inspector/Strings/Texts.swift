@@ -83,7 +83,7 @@ enum Texts {
 
     static let highlightElements = "Highlight Elements"
 
-    static let hierarchySearch = "Search views"
+    static let searchViews = "Search views"
 
     static let presentInspector = "Open Inspector..."
 

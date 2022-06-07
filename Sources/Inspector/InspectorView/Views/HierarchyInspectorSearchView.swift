@@ -24,10 +24,7 @@ final class HierarchyInspectorSearchView: BaseView {
     private lazy var searchIcon = Icon(
         .search,
         color: colorStyle.textColor.withAlphaComponent(0.73),
-        size: CGSize(
-            width: 19,
-            height: 19
-        )
+        size: CGSize(19)
     )
 
     private(set) lazy var textField = DismissableTextField(
@@ -36,8 +33,8 @@ final class HierarchyInspectorSearchView: BaseView {
         .textColor(colorStyle.textColor),
         .attributedPlaceholder(
             NSAttributedString(
-                Texts.hierarchySearch,
-                .foregroundColor(colorStyle.tertiaryTextColor),
+                Texts.searchViews,
+                .foregroundColor(colorStyle.secondaryTextColor),
                 .textStyle(.title2)
             )
         )
