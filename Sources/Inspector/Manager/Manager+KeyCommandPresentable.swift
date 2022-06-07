@@ -26,8 +26,8 @@ extension Manager: KeyCommandPresentable {
         if let userCommandGroups = dependencies.customization?.commandGroups {
             commandGroups.append(contentsOf: userCommandGroups)
         }
-        commandGroups.append(contentsOf: elementCommandGroups)
         commandGroups.append(viewHierarchyCommands)
+        commandGroups.append(contentsOf: elementCommandGroups)
         return commandGroups
     }
 
@@ -39,44 +39,56 @@ extension Manager: KeyCommandPresentable {
         guard let keyWindow = keyWindow else { return [] }
 
         let snapshot = viewHierarchyCoordinator.latestSnapshot()
-        let rootReference = snapshot.root
+        let root = snapshot.root
+        let windows = root.children
+            .filter { $0.underlyingView is UIWindow }
 
-        let windows = CommandsGroup.group(
-            title: "Windows",
-            commands: rootReference.children
-                .filter { $0.underlyingView is UIWindow }
-                .compactMap { element in
-                    .inspectElement(element) { [weak self] in
-                        guard let self = self else { return }
-                        self.perform(
-                            action: .inspect(preferredPanel: .children),
-                            with: element,
+        return windows.map { window in
+            .group(
+                title: "\(window.displayName) Hierarchy",
+                commands: {
+                    var commands = [Command]()
+                    commands.append(
+                        .inspectElement(window) { [weak self] in
+                            guard let self = self else { return }
+                            self.perform(
+                                action: .inspect(
+                                    preferredPanel: .children
+                                ),
+                                with: window,
+                                from: keyWindow
+                            )
+                        }
+                    )
+
+                    commands.append(
+                        contentsOf: forEach(
+                            viewController: root.viewHierarchy
+                                .filter { $0.underlyingView?.window === window.underlyingView },
+                            .inspect(preferredPanel: .children),
                             from: keyWindow
                         )
-                    }
+                    )
+
+                    return commands
+                }()
+            )
+        }
+    }
+
+    private func forEach(
+        viewController viewHierarchy: [ViewHierarchyElementReference],
+        _ action: ViewHierarchyElementAction,
+        from sourceView: UIView
+    ) -> [Command] {
+        viewHierarchy
+            .compactMap { $0 as? ViewHierarchyController }
+            .sorted { $0.depth < $1.depth }
+            .map { viewController in
+                .inspectElement(viewController) { [weak self] in
+                    guard let self = self else { return }
+                    self.perform(action: action, with: viewController, from: sourceView)
                 }
-        )
-
-        guard let rootView = rootReference.underlyingView else { return [windows] }
-
-        let viewControllers = CommandsGroup.group(
-            title: "Visible View Controllers",
-            commands: rootReference.viewHierarchy
-                .compactMap { $0 as? ViewHierarchyController }
-                .filter { $0.underlyingView?.window === rootView }
-                .sorted { $1.depth < $0.depth }
-                .map { element in
-                    .inspectElement(element) { [weak self] in
-                        guard let self = self else { return }
-                        self.perform(
-                            action: .inspect(preferredPanel: .children),
-                            with: element,
-                            from: keyWindow
-                        )
-                    }
-                }
-        )
-
-        return [viewControllers, windows]
+            }
     }
 }

@@ -24,7 +24,7 @@ final class ApplicationReference {
     weak var parent: ViewHierarchyElementReference?
 
     lazy var children = windows
-        .sorted { $0.windowLevel > $1.windowLevel }
+        .sorted { $0.windowLevel < $1.windowLevel }
         .map { window -> ViewHierarchyElementReference in
             let windowReference = catalog.makeElement(from: window)
             windowReference.parent = self
