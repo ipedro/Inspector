@@ -53,7 +53,7 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
 
     private(set) lazy var titleLabel = UILabel(
         .textStyle(.caption1, traits: .traitBold),
-        .textColor(colorStyle.tertiaryTextColor)
+        .textColor(colorStyle.secondaryTextColor)
     )
 
     override init(reuseIdentifier: String?) {

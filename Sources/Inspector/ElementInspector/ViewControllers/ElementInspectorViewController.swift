@@ -23,14 +23,11 @@ import UIKit
 
 enum ElementInspectorDismissReason: Swift.CaseIterable {
     case dismiss
-    case stopInspecting
 
     var title: String {
         switch self {
         case .dismiss:
             return "Dismiss"
-        case .stopInspecting:
-            return "Stop Inspecting"
         }
     }
 
@@ -38,8 +35,6 @@ enum ElementInspectorDismissReason: Swift.CaseIterable {
         switch self {
         case .dismiss:
             return .closeSymbol
-        case .stopInspecting:
-            return .stopSymbol
         }
     }
 }
@@ -92,26 +87,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         barButtonSystemItem: dismissItem,
         target: self,
         action: #selector(dismiss(_:))
-    ).then {
-        if #available(iOS 14.0, *) {
-            $0.menu = UIMenu(
-                title: String(),
-                image: nil,
-                identifier: nil,
-                children: ElementInspectorDismissReason.allCases.map { action in
-                    UIAction(
-                        title: action.title,
-                        image: action.icon,
-                        identifier: nil,
-                        discoverabilityTitle: action.title
-                    ) { [weak self] _ in
-                        guard let self = self else { return }
-                        self.delegate?.elementInspectorViewControllerDidFinish(self, with: action)
-                    }
-                }
-            )
-        }
-    }
+    )
 
     private lazy var viewCode = ElementInspectorViewCode(
         frame: CGRect(

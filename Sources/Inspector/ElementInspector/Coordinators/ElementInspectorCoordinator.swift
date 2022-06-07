@@ -73,7 +73,7 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
 
     private var formPanelController: ElementInspectorFormPanelViewController? { currentPanelViewController as? ElementInspectorFormPanelViewController }
 
-    private(set) lazy var adaptivePresenter = PopoverSheetPresenter(
+    private(set) lazy var popoverSheetPresenter = PopoverSheetPresenter(
         onChangeSelectedDetent: { [weak self] detent in
             guard
                 let self = self,
@@ -167,13 +167,13 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
     func setPopoverModalPresentationStyle(for viewController: UIViewController, from sourceView: UIView) {
         if #available(iOS 15.0, *) {
             viewController.setPopoverModalPresentationStyle(
-                delegate: adaptivePresenter,
+                delegate: popoverSheetPresenter,
                 transitionDelegate: transitionDelegate(for: viewController),
                 from: sourceView
             )
         } else {
             viewController.setPopoverModalPresentationStyle(
-                delegate: adaptivePresenter,
+                delegate: popoverSheetPresenter,
                 transitionDelegate: transitionDelegate(for: viewController),
                 from: sourceView
             )

@@ -90,30 +90,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         return .mixed
     }
 
-    var panelSelectionMode: ElementInspectorPanelSelectionMode {
-        isFullHeightPresentation ? .multipleSelection : .singleSelection
-    }
-    
-    private var previousCompactHeightState: ElementInspectorPanelListState?
-
-    override var isFullHeightPresentation: Bool {
-        didSet {
-            guard oldValue != isFullHeightPresentation else { return }
-
-            let isExpanding = !oldValue && isFullHeightPresentation
-
-            if isExpanding {
-                previousCompactHeightState = collapseState
-                self.apply(state: .allExpanded, animated: true)
-            }
-            else if let previousCompactHeightState = previousCompactHeightState {
-                self.apply(state: previousCompactHeightState, animated: true)
-            }
-            else {
-                self.apply(state: self.collapseState.previous(), animated: true)
-            }
-        }
-    }
+    var panelSelectionMode: ElementInspectorPanelSelectionMode { .multipleSelection }
 
     private lazy var viewCode = BaseView()
 
@@ -125,6 +102,8 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         super.viewWillAppear(animated)
 
         reloadData()
+        
+        togglePanels(to: .firstExpanded, animated: false)
     }
 }
 
@@ -151,15 +130,13 @@ extension ElementInspectorFormPanelViewController: DataReloadingProtocol {
                 )
             }
 
-            for (row, item) in section.rows.enumerated() {
-                item.state = row + sectionIndex == .zero ? .expanded : .collapsed
-
-                let view = item.makeView().then {
+            for dataSource in section.dataSources {
+                let view = dataSource.makeView().then {
                     $0.separatorStyle = .bottom
                 }
 
                 let sectionViewController = InspectorElementSectionViewController(view: view).then {
-                    $0.dataSource = item
+                    $0.dataSource = dataSource
                     $0.delegate = self
                 }
 

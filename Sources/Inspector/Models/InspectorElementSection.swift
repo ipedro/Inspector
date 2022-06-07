@@ -26,26 +26,26 @@ public typealias InspectorElementSections = [InspectorElementSection]
 /// An object that represents an inspector section.
 public struct InspectorElementSection {
     public var title: String?
-    public private(set) var rows: [InspectorElementSectionDataSource]
+    public private(set) var dataSources: [InspectorElementSectionDataSource]
 
     public init(title: String? = nil, rows: [InspectorElementSectionDataSource] = []) {
         self.title = title
-        self.rows = rows
+        self.dataSources = rows
     }
 
     public init(title: String? = nil, rows: InspectorElementSectionDataSource...) {
         self.title = title
-        self.rows = rows
+        self.dataSources = rows
     }
 
     public init(title: String? = nil, rows: [InspectorElementSectionDataSource?]) {
         self.title = title
-        self.rows = rows.compactMap { $0 }
+        self.dataSources = rows.compactMap { $0 }
     }
 
     public init(title: String? = nil, rows: InspectorElementSectionDataSource?...) {
         self.title = title
-        self.rows = rows.compactMap { $0 }
+        self.dataSources = rows.compactMap { $0 }
     }
 
     public mutating func append(_ dataSource: InspectorElementSectionDataSource?) {
@@ -53,7 +53,7 @@ public struct InspectorElementSection {
             return
         }
 
-        rows.append(dataSource)
+        dataSources.append(dataSource)
     }
 }
 

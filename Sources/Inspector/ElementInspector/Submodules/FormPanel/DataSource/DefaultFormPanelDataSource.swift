@@ -32,7 +32,7 @@ struct DefaultFormPanelDataSource: ElementInspectorFormPanelDataSource {
     }
 
     func numberOfItems(in section: Int) -> Int {
-        self.section(at: section).rows.count
+        self.section(at: section).dataSources.count
     }
 
     func section(at section: Int) -> InspectorElementSection {
@@ -40,6 +40,6 @@ struct DefaultFormPanelDataSource: ElementInspectorFormPanelDataSource {
     }
 
     func item(at indexPath: IndexPath) -> InspectorElementSectionDataSource {
-        section(at: indexPath.section).rows[indexPath.row]
+        section(at: indexPath.section).dataSources[indexPath.row]
     }
 }
