@@ -26,12 +26,9 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
             titleLabel.text = title
 
             guard title?.trimmed.isNilOrEmpty == false else {
-                titleLabel.isHidden = true
                 stackView.removeFromSuperview()
                 return
             }
-
-            titleLabel.isHidden = false
 
             if stackView.superview == self { return }
 
