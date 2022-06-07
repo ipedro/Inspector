@@ -30,19 +30,19 @@ extension ViewHierarchyElementIconProvider {
         guard let view = object as? UIView else {
             switch object {
             case is UISearchController:
-                return .moduleImage(named: "UISearchController")
+                return .icon("UISearchController")
             case is UIPageViewController:
-                return .moduleImage(named: "UIPageViewController")
+                return .icon("UIPageViewController")
             case is UINavigationController:
-                return .light(systemName: "chevron.left.square")
+                return .systemIcon("chevron.left.square")
             case is UICollectionViewController:
-                return .light(systemName: "square.grid.3x3.square")
+                return .systemIcon("square.grid.3x3.square")
             case is UITableViewController:
-                return .moduleImage(named: "UITableViewController")
+                return .icon("UITableViewController")
             case is UITabBarController:
-                return .moduleImage(named: "TabbedView-32_Normal")
+                return .icon("TabbedView-32_Normal")
             default:
-                return .light(systemName: "shippingbox")
+                return .systemIcon("shippingbox")
             }
         }
 
@@ -50,30 +50,30 @@ extension ViewHierarchyElementIconProvider {
 
         switch view {
         case let window as UIWindow where window.isKeyWindow:
-            return .moduleImage(named: "Key-UIWindow-32_Normal")
+            return .icon("Key-UIWindow-32_Normal")
 
         case is UIWindow:
-            return .moduleImage(named: "UIWindow-32_Normal")
+            return .icon("UIWindow-32_Normal")
 
         case is UIActivityIndicatorView:
-            return .moduleImage(named: "UIActivityIndicator_32_Dark_Normal")
+            return .icon("UIActivityIndicator_32_Dark_Normal")
 
         case is UISlider:
-            return .moduleImage(named: "Slider-32_Normal")
+            return .icon("Slider-32_Normal")
 
         case is UIDatePicker:
-            return .moduleImage(named: "UIDatePicker_32_Normal")
+            return .icon("UIDatePicker_32_Normal")
 
         case is UISwitch:
-            return .moduleImage(named: "Toggle-32_Normal")
+            return .icon("Toggle-32_Normal")
 
         case is UIButton,
              is UIControl where view.className.contains("Button"):
-            return .moduleImage(named: "Button-32_Normal")
+            return .icon("Button-32_Normal")
 
         case let imageView as UIImageView:
             guard let image = imageView.isHighlighted ? imageView.highlightedImage : imageView.image else {
-                return .moduleImage(named: "ImageView-32_Normal")
+                return .icon("ImageView-32_Normal")
             }
 
             if image.renderingMode == .alwaysTemplate {
@@ -83,64 +83,64 @@ extension ViewHierarchyElementIconProvider {
             return image
 
         case is UILabel:
-            return .moduleImage(named: "UILabel_32-Dark_Normal")
+            return .icon("UILabel_32-Dark_Normal")
 
         case is UISegmentedControl:
-            return .moduleImage(named: "UISegmentedControl_32_Normal")
+            return .icon("UISegmentedControl_32_Normal")
 
         case let stackView as UIStackView:
             switch stackView.axis {
             case .horizontal:
-                return .moduleImage(named: "HStack-32_Normal")
+                return .icon("HStack-32_Normal")
 
             case .vertical:
-                return .moduleImage(named: "VStack-32_Normal")
+                return .icon("VStack-32_Normal")
 
             @unknown default:
                 return .missingSymbol
             }
 
         case is UITextField:
-            return .moduleImage(named: "TextField-32_Normal")
+            return .icon("TextField-32_Normal")
 
         case is UITextView:
-            return .moduleImage(named: "TextView-32_Normal")
+            return .icon("TextView-32_Normal")
 
         case is WKWebView:
-            return .moduleImage(named: "Webview-32_Normal")
+            return .icon("Webview-32_Normal")
 
         case is UIScrollView:
-            return .moduleImage(named: "UIScrollView_32_Normal")
+            return .icon("UIScrollView_32_Normal")
 
         case is UINavigationBar:
-            return .moduleImage(named: "NavigationBar-32_Normal")
+            return .icon("NavigationBar-32_Normal")
 
         case is UITabBar:
-            return .moduleImage(named: "TabbedView-32_Normal")
+            return .icon("TabbedView-32_Normal")
 
         case is UIToolbar:
-            return .moduleImage(named: "UIToolbar-32_Normal")
+            return .icon("UIToolbar-32_Normal")
 
         case is UIControl:
-            return .moduleImage(named: "UIControl-32_Normal")
+            return .icon("UIControl-32_Normal")
 
         case let view where view.className.contains("VisualEffect"):
-            return .moduleImage(named: "VisualEffectsView-32_Normal")
+            return .icon("VisualEffectsView-32_Normal")
 
         case let view where view.className.contains("TransitionView"):
-            return .moduleImage(named: "UITransitionView-32_Normal")
+            return .icon("UITransitionView-32_Normal")
 
         case let view where view.className.contains("DropShadow"):
-            return .moduleImage(named: "DropShadow-32_Normal")
+            return .icon("DropShadow-32_Normal")
 
         case let view where view.className.contains("Background"):
-            return .moduleImage(named: "BackgroundView-32_Normal")
+            return .icon("BackgroundView-32_Normal")
 
         case let view where view.className.contains("_UI"):
-            return .moduleImage(named: "keyboardShortcut-32_Normal")
+            return .icon("keyboardShortcut-32_Normal")
 
         case let view where !view.children.isEmpty:
-            return .moduleImage(named: "filled-view-32_Normal")
+            return .icon("filled-view-32_Normal")
 
         default:
             return .emptyViewSymbol

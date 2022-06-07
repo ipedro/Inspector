@@ -157,7 +157,9 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
     }
 
     var iconImage: UIImage? {
-        underlyingViewController?.tabBarItem.image ?? iconProvider?.value(for: underlyingViewController)
+        let image = underlyingViewController?.tabBarItem.image ?? iconProvider?.value(for: underlyingViewController)
+        guard underlyingViewController?.viewIfLoaded?.window != nil else { return image }
+        return underlyingViewController?.tabBarItem.selectedImage ?? image
     }
 
     let iconProvider: ViewHierarchyElementIconProvider?

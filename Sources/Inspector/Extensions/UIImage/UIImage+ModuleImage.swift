@@ -21,16 +21,19 @@
 import UIKit
 
 extension UIImage {
-    static func moduleImage(named imageName: String) -> UIImage? {
-        UIImage(named: imageName, in: .module, compatibleWith: nil)
+    static func icon(_ name: String) -> UIImage? {
+        UIImage(named: name, in: .module, compatibleWith: nil)
     }
 }
 
 extension UIImage {
-    static func light(systemName: String) -> UIImage? {
+    static func systemIcon(
+        _ systemName: String,
+        weight: UIImage.SymbolWeight = .light,
+        render renderingMode: UIImage.RenderingMode = .alwaysTemplate
+    ) -> UIImage? {
         .init(systemName: systemName)?
-            .applyingSymbolConfiguration(
-                .init(weight: .light)
-            )
+            .applyingSymbolConfiguration(.init(weight: weight))?
+            .withRenderingMode(renderingMode)
     }
 }

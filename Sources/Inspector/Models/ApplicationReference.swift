@@ -136,9 +136,9 @@ extension ApplicationReference: ViewHierarchyElementReference {
         guard
             let iconName = bundleInfo?.icons?.primaryIcon.files.last,
             let appIcon = UIImage(named: iconName),
-            let appIconTemplate = UIImage.moduleImage(named: "app-icon-template")
+            let appIconTemplate = UIImage.icon("app-icon-template")
         else {
-            return .light(systemName: "app.badge.fill")
+            return .systemIcon("app.badge.fill")
         }
 
         return appIcon.maskImage(with: appIconTemplate)
