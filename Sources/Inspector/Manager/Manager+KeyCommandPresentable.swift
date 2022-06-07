@@ -22,72 +22,61 @@ import UIKit
 
 extension Manager: KeyCommandPresentable {
     var commandGroups: CommandsGroups {
-        var groups = CommandsGroups()
-
-        let userCommands = dependencies.customization?.commandGroups ?? []
-        groups.append(contentsOf: userCommands)
-
-        if let elementCommands = elementCommands {
-            groups.append(elementCommands)
+        var commandGroups = CommandsGroups()
+        if let userCommandGroups = dependencies.customization?.commandGroups {
+            commandGroups.append(contentsOf: userCommandGroups)
         }
-
-        let layersCommands = viewHierarchyCoordinator.commandsGroup()
-        groups.append(layersCommands)
-
-        return groups
+        commandGroups.append(contentsOf: elementCommandGroups)
+        commandGroups.append(viewHierarchyCommands)
+        return commandGroups
     }
 
-    private var elementCommands: CommandsGroup? {
-        guard let keyWindow = keyWindow else { return .none }
+    private var viewHierarchyCommands: CommandsGroup {
+        viewHierarchyCoordinator.commandsGroup()
+    }
 
-        let commands: [Command] = {
-            let snapshot = viewHierarchyCoordinator.latestSnapshot()
-            var commands = [Inspector.Command]()
+    private var elementCommandGroups: CommandsGroups {
+        guard let keyWindow = keyWindow else { return [] }
 
-            let rootReference = snapshot.root
+        let snapshot = viewHierarchyCoordinator.latestSnapshot()
+        let rootReference = snapshot.root
 
-            commands.append(
-                .inspectElement(rootReference) { [weak self] in
-                    self?.perform(
-                        action: .inspect(preferredPanel: .children),
-                        with: rootReference,
-                        from: keyWindow
-                    )
-                }
-            )
-
-            guard let rootView = rootReference.underlyingView else { return commands }
-            let rootViewReference = catalog.makeElement(from: rootView)
-            commands.append(
-                .inspectElement(rootViewReference) { [weak self] in
-                    self?.perform(
-                        action: .inspect(preferredPanel: .children),
-                        with: rootViewReference,
-                        from: keyWindow
-                    )
-                }
-            )
-
-            let visibleViewControllers = rootReference.viewHierarchy
-                .compactMap { $0 as? ViewHierarchyController }
-                .filter { $0.underlyingView?.window === rootView }
-                .sorted { $0.depth < $1.depth }
-
-            for child in visibleViewControllers {
-                commands.append(
-                    .inspectElement(child) { [weak self] in
-                        self?.perform(
+        let windows = CommandsGroup.group(
+            title: "Visible Windows",
+            commands: rootReference.children
+                .filter { $0.underlyingView is UIWindow }
+                .compactMap { element in
+                    .inspectElement(element) { [weak self] in
+                        guard let self = self else { return }
+                        self.perform(
                             action: .inspect(preferredPanel: .children),
-                            with: child,
+                            with: element,
                             from: keyWindow
                         )
                     }
-                )
-            }
+                }
+        )
 
-            return Array(commands.prefix(10))
-        }()
+        guard let rootView = rootReference.underlyingView else { return [windows] }
 
-        return .group(title: "Inspect Elements", commands: commands.reversed())
+        let viewControllers = CommandsGroup.group(
+            title: "Visible View Controllers",
+            commands: rootReference.viewHierarchy
+                .compactMap { $0 as? ViewHierarchyController }
+                .filter { $0.underlyingView?.window === rootView }
+                .sorted { $1.depth < $0.depth }
+                .map { element in
+                    .inspectElement(element) { [weak self] in
+                        guard let self = self else { return }
+                        self.perform(
+                            action: .inspect(preferredPanel: .children),
+                            with: element,
+                            from: keyWindow
+                        )
+                    }
+                }
+        )
+
+        return [viewControllers, windows]
     }
 }
