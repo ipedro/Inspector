@@ -27,7 +27,7 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
             secondStepper.isEnabled = isEnabled
         }
     }
-    
+
     var firstSubtitle: String? {
         get { firstStepper.title }
         set { firstStepper.title = newValue }
@@ -107,9 +107,9 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
         super.setup()
 
         axis = .vertical
-        
+
         applyTitleSectionStyle()
-        
+
         contentView.axis = .vertical
         contentView.spacing = elementInspectorAppearance.verticalMargins * 1.5
         contentView.addArrangedSubviews(firstStepper, secondStepper)

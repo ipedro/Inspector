@@ -10,7 +10,7 @@ extension UIView {
     }
 
     private static let swizzleLayoutSubviewsImplementation: Void = {
-        let instance: UIView = UIView()
+        let instance = UIView()
 
         let aClass: AnyClass! = object_getClass(instance)
 

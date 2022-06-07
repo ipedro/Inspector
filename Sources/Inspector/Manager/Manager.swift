@@ -34,17 +34,17 @@ final class Manager: Coordinator<ManagerDependencies, OperationQueue, Void> {
     var snapshot: ViewHierarchySnapshot { viewHierarchyCoordinator.latestSnapshot() }
     var keyWindow: UIWindow? { dependencies.viewHierarchy.keyWindow }
     var catalog: ViewHierarchyElementCatalog { viewHierarchyCoordinator.dependencies.catalog }
-    
+
     func dismissInspectorViewIfNeeded(_ closure: @escaping () -> Void) {
         let coordinators = children.compactMap { $0 as? InspectorViewCoordinator }
-        
+
         if coordinators.isEmpty { return closure() }
-        
+
         for coordinator in coordinators {
             coordinator.removeFromParent()
             coordinator.start().dismiss(animated: false)
         }
-        
+
         DispatchQueue.main.async(execute: closure)
     }
 

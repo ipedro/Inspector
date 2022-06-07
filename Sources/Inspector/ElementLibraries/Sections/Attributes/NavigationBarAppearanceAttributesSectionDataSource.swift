@@ -18,9 +18,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+@_implementationOnly import Coordinator
 import SwiftUI
 import UIKit
-@_implementationOnly import Coordinator
 
 extension DefaultElementAttributesLibrary {
     final class NavigationBarAppearanceAttributesSectionDataSource: InspectorElementSectionDataSource {
@@ -88,7 +88,7 @@ extension DefaultElementAttributesLibrary {
                     return .optionsList(
                         title: property.rawValue,
                         emptyTitle: "None",
-                        options: UIBlurEffect.Style.allCases.map { $0.description },
+                        options: UIBlurEffect.Style.allCases.map(\.description),
                         selectedIndex: {
                             guard let style = appearance.backgroundEffect?.style else { return nil }
                             return UIBlurEffect.Style.allCases.firstIndex(of: style)

@@ -42,7 +42,7 @@ public struct InspectorConfiguration {
         snapshotExpiration: TimeInterval = 1,
         verbose: Bool = false
     ) {
-        self.snapshotExpirationTimeInterval = snapshotExpiration
+        snapshotExpirationTimeInterval = snapshotExpiration
         self.showAllViewSearchQuery = showAllViewSearchQuery
         self.nonInspectableClassNames = nonInspectableClassNames
         self.enableLayoutSubviewsSwizzling = enableLayoutSubviewsSwizzling
@@ -56,7 +56,7 @@ public struct InspectorConfiguration {
 
         switch (keyWindow.overrideUserInterfaceStyle, keyWindow.traitCollection.userInterfaceStyle) {
         case (.dark, _),
-            (.unspecified, .dark):
+             (.unspecified, .dark):
             return .dark
         default:
             return .light

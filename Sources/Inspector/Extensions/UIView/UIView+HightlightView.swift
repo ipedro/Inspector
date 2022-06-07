@@ -24,7 +24,7 @@ extension UIView {
     var _highlightView: HighlightView? {
         subviews.compactMap { $0 as? HighlightView }.first
     }
-    
+
     var _layerView: LayerView? {
         subviews.compactMap { $0 as? LayerView }.first
     }

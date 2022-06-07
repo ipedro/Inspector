@@ -24,7 +24,8 @@ extension UIAction {
     static func collapseAction(_ isCollapsed: Bool,
                                expandTitle: String = Texts.expand,
                                collapseTitle: String = Texts.collapse,
-                               handler: @escaping UIActionHandler) -> UIAction {
+                               handler: @escaping UIActionHandler) -> UIAction
+    {
         UIAction(
             title: isCollapsed ? expandTitle : collapseTitle,
             image: isCollapsed ? .expandSymbol : .collapseSymbol,

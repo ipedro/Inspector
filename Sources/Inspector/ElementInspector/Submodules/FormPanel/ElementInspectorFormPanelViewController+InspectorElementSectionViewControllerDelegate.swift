@@ -20,22 +20,18 @@
 
 import UIKit
 
-extension ElementInspectorFormPanelViewController: InspectorElementSectionViewControllerDelegate
-{
+extension ElementInspectorFormPanelViewController: InspectorElementSectionViewControllerDelegate {
     func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
-                                               willUpdate property: InspectorElementProperty) {
-    }
+                                               willUpdate property: InspectorElementProperty) {}
 
     func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
                                                didUpdate property: InspectorElementProperty)
     {
-        let updateOperation = MainThreadOperation(name: "update sections")
-        { [weak self] in
+        let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
             guard
                 let self = self,
                 let item = self.sections[sectionViewController]
-            else
-            {
+            else {
                 return
             }
 
@@ -49,13 +45,13 @@ extension ElementInspectorFormPanelViewController: InspectorElementSectionViewCo
 
     func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
                                                willChangeFrom oldState: InspectorElementSectionState?,
-                                               to newState: InspectorElementSectionState) {
-
+                                               to newState: InspectorElementSectionState)
+    {
         sectionViewController.setState(newState, animated: true)
 
         switch newState {
-        case .expanded where self.panelSelectionMode == .singleSelection:
-            for aFormItemController in self.formPanels where aFormItemController !== sectionViewController {
+        case .expanded where panelSelectionMode == .singleSelection:
+            for aFormItemController in formPanels where aFormItemController !== sectionViewController {
                 aFormItemController.setState(.collapsed, animated: true)
             }
 
@@ -63,7 +59,7 @@ extension ElementInspectorFormPanelViewController: InspectorElementSectionViewCo
             break
         }
 
-        self.itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
+        itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
     }
 
     func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,

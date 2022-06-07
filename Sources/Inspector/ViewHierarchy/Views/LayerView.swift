@@ -63,7 +63,8 @@ class LayerView: UIImageView, LayerViewProtocol {
     init(frame: CGRect,
          element: ViewHierarchyElementReference,
          color borderColor: UIColor,
-         border borderWidth: CGFloat) {
+         border borderWidth: CGFloat)
+    {
         self.element = element
         self.borderColor = borderColor
         self.borderWidth = borderWidth
@@ -128,7 +129,8 @@ extension UIView {
 
 extension LayerView: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
-                                configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+                                configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration?
+    {
         .contextMenuConfiguration(with: element) { [weak self] element, action in
             guard let self = self else { return }
 

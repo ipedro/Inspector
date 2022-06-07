@@ -26,7 +26,6 @@ protocol UIViewControllerTransitionPresenterDelegate: AnyObject {
                              source: UIViewController) -> UIViewControllerAnimatedTransitioning?
 
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning?
-
 }
 
 final class UIViewControllerTransitionPresenter: NSObject, UIViewControllerTransitioningDelegate {
@@ -34,7 +33,8 @@ final class UIViewControllerTransitionPresenter: NSObject, UIViewControllerTrans
 
     func animationController(forPresented presented: UIViewController,
                              presenting: UIViewController,
-                             source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+                             source: UIViewController) -> UIViewControllerAnimatedTransitioning?
+    {
         delegate?.animationController(forPresented: presented, presenting: presenting, source: source)
     }
 

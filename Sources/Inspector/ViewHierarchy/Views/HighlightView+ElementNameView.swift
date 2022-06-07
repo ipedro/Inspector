@@ -84,7 +84,7 @@ final class ElementNameView: LayerViewComponent {
     }
 
     private let cornerRadius: CGFloat = 8
-    
+
     // MARK: - Components
 
     private(set) lazy var label = UILabel().then {
@@ -134,7 +134,7 @@ final class ElementNameView: LayerViewComponent {
 
     @objc
     private func updateColors() {
-        let darkerTintColor = tintColor.darker(amount: 2/3)
+        let darkerTintColor = tintColor.darker(amount: 2 / 3)
 
         layer.shadowColor = darkerTintColor.cgColor
         roundedPillView.contentView.layer.shadowColor = darkerTintColor.cgColor
@@ -173,7 +173,7 @@ final class ElementNameView: LayerViewComponent {
 
         roundedPillView.contentView.directionalLayoutMargins = .init(
             top: 1,
-            leading: imageView.isHidden ? 6: 3,
+            leading: imageView.isHidden ? 6 : 3,
             bottom: 1,
             trailing: label.isHidden ? 3 : 6
         )

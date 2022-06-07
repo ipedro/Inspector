@@ -22,7 +22,6 @@ import UIKit
 
 private extension ElementInspectorSlidingPanelAnimator {
     final class BackgroundGestureView: BaseView {
-
         override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
             let result = super.hitTest(point, with: event)
 
@@ -36,7 +35,6 @@ private extension ElementInspectorSlidingPanelAnimator {
 
             return rootResult
         }
-
     }
 
     final class DropShadowView: BaseView {
@@ -55,13 +53,13 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, ElementInspectorAppe
     let duration: TimeInterval = .veryLong
 
     var isPresenting: Bool = true
-    
+
     private var isObservingSize = false
 
     private lazy var backgroundGestureView = BackgroundGestureView().then {
         $0.addObserver(self, forKeyPath: .bounds, options: .new, context: nil)
     }
-    
+
     override func observeValue(
         forKeyPath keyPath: String?,
         of object: Any?,
@@ -70,7 +68,7 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, ElementInspectorAppe
     ) {
         guard let containerView = shadowView.superview else { return }
 
-        self.shadowView.frame = self.topLeftMargins(of: containerView)
+        shadowView.frame = topLeftMargins(of: containerView)
     }
 
     deinit {
@@ -82,7 +80,7 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, ElementInspectorAppe
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?)
         -> TimeInterval
     {
-        return duration
+        duration
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -97,7 +95,7 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, ElementInspectorAppe
     private func frameToTheRight(of containerView: UIView) -> CGRect {
         var frame = containerView.bounds.inset(by: elementInspectorAppearance.directionalInsets.edgeInsets())
         frame.size.width = Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelPreferredCompressedSize.width
-        frame.size.height = min(frame.size.height,  Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelSidePresentationMinimumContainerSize.height)
+        frame.size.height = min(frame.size.height, Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelSidePresentationMinimumContainerSize.height)
         frame.origin.x = containerView.bounds.maxX
 
         return frame
@@ -106,7 +104,7 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, ElementInspectorAppe
     private func topLeftMargins(of containerView: UIView) -> CGRect {
         var frame = containerView.bounds.inset(by: elementInspectorAppearance.directionalInsets.edgeInsets())
         frame.size.width = Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelPreferredCompressedSize.width
-        frame.size.height = min(frame.size.height,  Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelSidePresentationMinimumContainerSize.height)
+        frame.size.height = min(frame.size.height, Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelSidePresentationMinimumContainerSize.height)
         frame.origin.x = containerView.bounds.maxX - frame.width
         frame = frame.inset(by: elementInspectorAppearance.directionalInsets.edgeInsets())
 
@@ -164,7 +162,6 @@ final class ElementInspectorSlidingPanelAnimator: NSObject, ElementInspectorAppe
             transitionContext.completeTransition(finish)
         }
     }
-
 }
 
 private extension String {

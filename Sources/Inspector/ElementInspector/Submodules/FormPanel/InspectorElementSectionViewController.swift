@@ -69,7 +69,7 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
     private var hasAddedFormViews = false
 
     init(view: InspectorElementSectionView) {
-        self.viewCode = view
+        viewCode = view
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -154,7 +154,6 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
 
             delegate.addOperationToQueue(operation)
         }
-
     }
 
     func setState(_ state: InspectorElementSectionState, animated: Bool) {
@@ -182,12 +181,11 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
         ) { [weak self] in
             self?.viewCode.state = state
 
-        } completion: { [weak self] finished in
+        } completion: { [weak self] _ in
             if let formView = self?.viewCode as? InspectorElementSectionFormView {
                 formView.collapseIcon.hideLoading()
             }
         }
-
     }
 
     var state: InspectorElementSectionState { viewCode.state }

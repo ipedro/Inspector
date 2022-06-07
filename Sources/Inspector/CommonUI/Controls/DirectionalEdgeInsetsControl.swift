@@ -112,5 +112,4 @@ final class DirectionalEdgeInsetsControl: BaseFormControl {
             $0.isShowingSeparator = false
         }
     }
-
 }

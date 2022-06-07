@@ -51,7 +51,6 @@ protocol HierarchyInspectorSectionViewModelProtocol {
 }
 
 final class HierarchyInspectorViewModel {
-
     let commandGroupsViewModel: CommandGroupsViewModel
 
     let snapshotViewModel: SnapshotViewModel

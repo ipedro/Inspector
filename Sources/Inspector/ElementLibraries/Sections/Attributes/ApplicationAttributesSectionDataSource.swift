@@ -76,7 +76,7 @@ extension DefaultElementAttributesLibrary {
                     return .switch(
                         title: property.rawValue,
                         isOn: { self.application.applicationSupportsShakeToEdit },
-                        handler: { self.application.applicationSupportsShakeToEdit = $0}
+                        handler: { self.application.applicationSupportsShakeToEdit = $0 }
                     )
                 case .applicationState:
                     return .textField(

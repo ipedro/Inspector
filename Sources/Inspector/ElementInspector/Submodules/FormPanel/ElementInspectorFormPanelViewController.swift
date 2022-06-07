@@ -102,7 +102,7 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         super.viewWillAppear(animated)
 
         reloadData()
-        
+
         togglePanels(to: .firstExpanded, animated: false)
     }
 }

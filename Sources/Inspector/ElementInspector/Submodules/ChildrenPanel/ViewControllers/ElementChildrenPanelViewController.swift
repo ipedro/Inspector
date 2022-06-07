@@ -71,7 +71,7 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
 
         hasDisappeared = false
 
-        if let indexPathsForSelectedRows = self.viewCode.tableView.indexPathsForSelectedRows {
+        if let indexPathsForSelectedRows = viewCode.tableView.indexPathsForSelectedRows {
             transitionCoordinator?.animate { _ in
                 indexPathsForSelectedRows.forEach {
                     self.viewCode.tableView.deselectRow(at: $0, animated: animated)

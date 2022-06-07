@@ -23,7 +23,7 @@ import UIKit
 /// A protocol that maps the public properties of a UIViewController.
 protocol ViewHierarchyControllerProtocol {
     var className: String { get }
-    var classNameWithoutQualifiers: String{ get }
+    var classNameWithoutQualifiers: String { get }
     var additionalSafeAreaInsets: UIEdgeInsets { get }
     var definesPresentationContext: Bool { get }
     var disablesAutomaticKeyboardDismissal: Bool { get }

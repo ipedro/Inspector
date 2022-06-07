@@ -38,7 +38,6 @@ final class InspectorElementLayoutConstraintSectionView: BaseView {
 
     private lazy var formView = InspectorElementSectionFormView(header: header, state: state).then {
         $0.separatorStyle = .none
-
     }
 
     var delegate: InspectorElementFormItemViewDelegate? {
@@ -77,18 +76,18 @@ final class InspectorElementLayoutConstraintSectionView: BaseView {
     private var isConstraintActive = true {
         didSet {
             if isConstraintActive {
-                self.header.alpha = 1
-                self.tintAdjustmentMode = .automatic
+                header.alpha = 1
+                tintAdjustmentMode = .automatic
 
-                self.cardView.borderColor = self.colorStyle.tintColor
-                self.cardView.backgroundColor = self.colorStyle.layoutConstraintsCardBackgroundColor
+                cardView.borderColor = colorStyle.tintColor
+                cardView.backgroundColor = colorStyle.layoutConstraintsCardBackgroundColor
             }
             else {
-                self.header.alpha = 0.5
-                self.tintAdjustmentMode = .dimmed
+                header.alpha = 0.5
+                tintAdjustmentMode = .dimmed
 
-                self.cardView.borderColor = self.colorStyle.quaternaryTextColor
-                self.cardView.backgroundColor = self.colorStyle.layoutConstraintsCardInactiveBackgroundColor
+                cardView.borderColor = colorStyle.quaternaryTextColor
+                cardView.backgroundColor = colorStyle.layoutConstraintsCardInactiveBackgroundColor
             }
         }
     }

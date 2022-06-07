@@ -34,7 +34,7 @@ extension DefaultElementIdentityLibrary {
 
         init(with object: NSObject) {
             self.object = object
-            self.propertyNames = object
+            propertyNames = object
                 .propertyNames()
                 .sorted(by: <)
         }
@@ -89,7 +89,7 @@ extension DefaultElementIdentityLibrary {
                     return .stepper(
                         title: property,
                         value: { number.doubleValue },
-                        range: { 0 ... max(1, number.doubleValue) },
+                        range: { 0...max(1, number.doubleValue) },
                         stepValue: { 1 },
                         isDecimalValue: Double(number.intValue) != number.doubleValue,
                         handler: nil

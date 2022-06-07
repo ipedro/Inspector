@@ -83,7 +83,7 @@ extension DefaultElementAttributesLibrary {
                     return .optionsList(
                         title: property.rawValue,
                         axis: .vertical,
-                        options: UINavigationItem.LargeTitleDisplayMode.allCases.map { $0.description },
+                        options: UINavigationItem.LargeTitleDisplayMode.allCases.map(\.description),
                         selectedIndex: { UINavigationItem.LargeTitleDisplayMode.allCases.firstIndex(of: navigationItem.largeTitleDisplayMode) },
                         handler: {
                             guard let newIndex = $0 else { return }

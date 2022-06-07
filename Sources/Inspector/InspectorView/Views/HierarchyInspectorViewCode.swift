@@ -157,8 +157,8 @@ final class HierarchyInspectorViewCode: BaseView {
         contentView.addSubview(blurView)
 
         [
-            blurView.topAnchor.constraint(equalTo
-                                          : safeAreaLayoutGuide.topAnchor, constant: verticalMargin),
+            blurView.topAnchor.constraint(equalTo:
+                safeAreaLayoutGuide.topAnchor, constant: verticalMargin),
             blurView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
             blurView.widthAnchor.constraint(lessThanOrEqualTo: readableContentGuide.widthAnchor, constant: -horizontalMargin * 4),
             blurView.widthAnchor.constraint(greaterThanOrEqualToConstant: Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelPreferredCompressedSize.width),

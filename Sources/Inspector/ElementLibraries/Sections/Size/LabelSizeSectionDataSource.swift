@@ -36,7 +36,7 @@ extension DefaultElementSizeLibrary {
         private enum Properties: String, Swift.CaseIterable {
             case preferredMaxLayoutWidth = "Desired Width"
         }
-        
+
         var properties: [InspectorElementProperty] {
             guard let label = label else { return [] }
 

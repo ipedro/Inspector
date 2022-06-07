@@ -29,7 +29,7 @@ final class AdaptiveModalPresenter: NSObject, UIAdaptivePresentationControllerDe
         onDismiss: ((UIPresentationController) -> Void)? = .none
     ) {
         self.presentationStyleProvider = presentationStyleProvider
-        self.dismissHandler = onDismiss
+        dismissHandler = onDismiss
     }
 
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {

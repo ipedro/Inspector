@@ -90,60 +90,63 @@ extension ViewHierarchyController {
         let viewRespectsSystemMinimumLayoutMargins: Bool
 
         init(viewController: UIViewController, depth: Int) {
-            self.isModalInPresentation = viewController.isModalInPresentation
-            self.performsActionsWhilePresentingModally = viewController.performsActionsWhilePresentingModally
+            isModalInPresentation = viewController.isModalInPresentation
+            performsActionsWhilePresentingModally = viewController.performsActionsWhilePresentingModally
 
             if #available(iOS 14.0, *) {
                 self.prefersPointerLocked = viewController.prefersPointerLocked
-            } else {
-                self.prefersPointerLocked = false
+            }
+            else {
+                prefersPointerLocked = false
             }
 
             if #available(iOS 15.0, *) {
                 self.focusGroupIdentifier = viewController.focusGroupIdentifier
-            } else {
-                self.focusGroupIdentifier = nil
+            }
+            else {
+                focusGroupIdentifier = nil
             }
 
             if let restorationClass = viewController.restorationClass {
-                self.restorationClassName = String(describing: restorationClass)
-            } else {
-                self.restorationClassName = nil
+                restorationClassName = String(describing: restorationClass)
+            }
+            else {
+                restorationClassName = nil
             }
 
-            self.additionalSafeAreaInsets = viewController.additionalSafeAreaInsets
-            self.className = viewController._className
-            self.classNameWithoutQualifiers = viewController._classNameWithoutQualifiers
-            self.definesPresentationContext = viewController.definesPresentationContext
+            additionalSafeAreaInsets = viewController.additionalSafeAreaInsets
+            className = viewController._className
+            classNameWithoutQualifiers = viewController._classNameWithoutQualifiers
+            definesPresentationContext = viewController.definesPresentationContext
             self.depth = depth
-            self.disablesAutomaticKeyboardDismissal = viewController.disablesAutomaticKeyboardDismissal
-            self.edgesForExtendedLayout = viewController.edgesForExtendedLayout
-            self.editButtonItem = viewController.editButtonItem
-            self.extendedLayoutIncludesOpaqueBars = viewController.extendedLayoutIncludesOpaqueBars
-            self.isBeingPresented = viewController.isBeingPresented
-            self.isEditing = viewController.isEditing
-            self.isSystemContainer = viewController._isSystemContainer
-            self.isViewLoaded = viewController.isViewLoaded
-            self.modalPresentationStyle = viewController.modalPresentationStyle
-            self.modalTransitionStyle = viewController.modalTransitionStyle
-            self.navigationItem = viewController.navigationItem
-            self.nibName = viewController.nibName
-            self.overrideViewHierarchyInterfaceStyle = viewController.overrideViewHierarchyInterfaceStyle
-            self.preferredContentSize = viewController.preferredContentSize
-            self.preferredScreenEdgesDeferringSystemGestures = viewController.preferredScreenEdgesDeferringSystemGestures
-            self.preferredStatusBarStyle = viewController.preferredStatusBarStyle
-            self.preferredStatusBarUpdateAnimation = viewController.preferredStatusBarUpdateAnimation
-            self.prefersHomeIndicatorAutoHidden = viewController.prefersHomeIndicatorAutoHidden
-            self.prefersStatusBarHidden = viewController.prefersStatusBarHidden
-            self.providesPresentationContextTransitionStyle = viewController.providesPresentationContextTransitionStyle
-            self.restorationIdentifier = viewController.restorationIdentifier
-            self.restoresFocusAfterTransition = viewController.restoresFocusAfterTransition
-            self.shouldAutomaticallyForwardAppearanceMethods = viewController.shouldAutomaticallyForwardAppearanceMethods
-            self.superclassName = viewController._superclassName
-            self.systemMinimumLayoutMargins = viewController.systemMinimumLayoutMargins
-            self.title = viewController.title
-            self.traitCollection = viewController.traitCollection
-            self.viewRespectsSystemMinimumLayoutMargins = viewController.viewRespectsSystemMinimumLayoutMargins
+            disablesAutomaticKeyboardDismissal = viewController.disablesAutomaticKeyboardDismissal
+            edgesForExtendedLayout = viewController.edgesForExtendedLayout
+            editButtonItem = viewController.editButtonItem
+            extendedLayoutIncludesOpaqueBars = viewController.extendedLayoutIncludesOpaqueBars
+            isBeingPresented = viewController.isBeingPresented
+            isEditing = viewController.isEditing
+            isSystemContainer = viewController._isSystemContainer
+            isViewLoaded = viewController.isViewLoaded
+            modalPresentationStyle = viewController.modalPresentationStyle
+            modalTransitionStyle = viewController.modalTransitionStyle
+            navigationItem = viewController.navigationItem
+            nibName = viewController.nibName
+            overrideViewHierarchyInterfaceStyle = viewController.overrideViewHierarchyInterfaceStyle
+            preferredContentSize = viewController.preferredContentSize
+            preferredScreenEdgesDeferringSystemGestures = viewController.preferredScreenEdgesDeferringSystemGestures
+            preferredStatusBarStyle = viewController.preferredStatusBarStyle
+            preferredStatusBarUpdateAnimation = viewController.preferredStatusBarUpdateAnimation
+            prefersHomeIndicatorAutoHidden = viewController.prefersHomeIndicatorAutoHidden
+            prefersStatusBarHidden = viewController.prefersStatusBarHidden
+            providesPresentationContextTransitionStyle = viewController.providesPresentationContextTransitionStyle
+            restorationIdentifier = viewController.restorationIdentifier
+            restoresFocusAfterTransition = viewController.restoresFocusAfterTransition
+            shouldAutomaticallyForwardAppearanceMethods = viewController.shouldAutomaticallyForwardAppearanceMethods
+            superclassName = viewController._superclassName
+            systemMinimumLayoutMargins = viewController.systemMinimumLayoutMargins
+            title = viewController.title
+            traitCollection = viewController.traitCollection
+            viewRespectsSystemMinimumLayoutMargins = viewController.viewRespectsSystemMinimumLayoutMargins
         }
     }
 }
@@ -166,7 +169,7 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
     private var store: SnapshotStore<Snapshot>
 
     var isCollapsed: Bool
-    
+
     var depth: Int {
         didSet {
             children.forEach { $0.depth = depth + 1 }
@@ -211,26 +214,26 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
         isCollapsed: Bool = false,
         parent: ViewHierarchyController? = nil
     ) {
-        self.objectIdentifier = ObjectIdentifier(viewController)
+        objectIdentifier = ObjectIdentifier(viewController)
         self.isCollapsed = isCollapsed
-        self.underlyingViewController = viewController
+        underlyingViewController = viewController
         self.depth = depth
         self.parent = parent
         self.iconProvider = iconProvider
-        self.rootElement = ViewHierarchyElement(
+        rootElement = ViewHierarchyElement(
             with: viewController.view,
             iconProvider: iconProvider,
             depth: depth,
             isCollapsed: isCollapsed,
             parent: parent?.rootElement
-       )
+        )
 
         let initialSnapshot = Snapshot(
             viewController: viewController,
             depth: depth
         )
 
-        self.store = SnapshotStore(initialSnapshot)
+        store = SnapshotStore(initialSnapshot)
     }
 
     private func makeChildReference(from childViewController: UIViewController) -> ViewHierarchyController {
@@ -327,7 +330,6 @@ extension ViewHierarchyController: ViewHierarchyElementReference {
         rootElement.constraintElements
     }
 
-
     var shortElementDescription: String {
         elementDescription
     }
@@ -350,15 +352,15 @@ extension ViewHierarchyController: ViewHierarchyElementReference {
 
 extension ViewHierarchyController: ViewHierarchyControllerProtocol {
     var className: String {
-        return store.first.className
+        store.first.className
     }
 
     var superclassName: String? {
-        return store.first.superclassName
+        store.first.superclassName
     }
 
     var classNameWithoutQualifiers: String {
-        return store.first.classNameWithoutQualifiers
+        store.first.classNameWithoutQualifiers
     }
 
     var additionalSafeAreaInsets: UIEdgeInsets {

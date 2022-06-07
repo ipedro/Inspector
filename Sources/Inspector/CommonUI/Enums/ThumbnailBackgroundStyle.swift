@@ -38,11 +38,11 @@ enum ThumbnailBackgroundStyle: Hashable, CaseIterable, RawRepresentable {
 
     init?(rawValue: Int) {
         switch rawValue {
-        case  0:
+        case 0:
             self = .strong
-        case  1:
+        case 1:
             self = .medium
-        case  2:
+        case 2:
             self = .systemBackground
         default:
             return nil

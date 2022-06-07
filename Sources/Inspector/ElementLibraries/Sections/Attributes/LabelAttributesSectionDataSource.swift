@@ -29,7 +29,7 @@ extension DefaultElementAttributesLibrary {
         private weak var label: UILabel?
 
         init?(with object: NSObject) {
-            guard let label = object as? UILabel else { return nil}
+            guard let label = object as? UILabel else { return nil }
 
             self.label = label
         }
@@ -122,7 +122,7 @@ extension DefaultElementAttributesLibrary {
                     return .integerStepper(
                         title: property.rawValue,
                         value: { label.numberOfLines },
-                        range: { 0 ... 100 },
+                        range: { 0...100 },
                         stepValue: { 1 }
                     ) { numberOfLines in
                         label.numberOfLines = numberOfLines

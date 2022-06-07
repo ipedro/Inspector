@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
 protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyObject {
@@ -37,11 +36,11 @@ protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyO
     var parent: ViewHierarchyElementReference? { get set }
 
     var depth: Int { get set }
-    
+
     var isCollapsed: Bool { get set }
 
     var children: [ViewHierarchyElementReference] { get set }
-    
+
     var viewHierarchy: [ViewHierarchyElementReference] { get }
 }
 
@@ -49,10 +48,10 @@ extension ViewHierarchyElementReference {
     var safelyInspectableViewHierarchy: [ViewHierarchyElementReference] {
         viewHierarchy.filter(\.canHostInspectorView)
     }
-    
+
     var viewHierarchyDescription: String {
         let viewHierarchy = viewHierarchy
-        
+
         var components: [String] = [
             "",
             elementName,
@@ -60,44 +59,44 @@ extension ViewHierarchyElementReference {
             "",
             elementDescription
         ]
-        
+
         guard viewHierarchy.count > 1 else {
             return components.joined(separator: .newLine)
         }
-        
+
         components.append("")
         components.append("")
         components.append("Views:")
         components.append("------")
         components.append("")
-        
+
         for child in viewHierarchy {
             let indentation = String(repeating: "﹒", count: child.depth - depth)
             let symbol = child.isContainer ? "▾" : "▸"
-            
+
             var childComponents: [String] = [symbol]
-            
+
             if let accessibilityIdentifier = child.accessibilityIdentifier {
                 childComponents.append("\(accessibilityIdentifier) (\(child.className))")
             }
             else {
                 childComponents.append(child.className)
             }
-            
+
             let childDescription = childComponents.joined(separator: " ")
-            
+
             components.append(indentation + childDescription)
         }
-        
+
         return components.joined(separator: .newLine)
     }
-    
+
     var isContainer: Bool { !children.isEmpty }
 
     var viewHierarchy: [ViewHierarchyElementReference] { [self] + allChildren }
-    
+
     var allChildren: [ViewHierarchyElementReference] {
-        children.reversed().flatMap { $0.viewHierarchy }
+        children.reversed().flatMap(\.viewHierarchy)
     }
 
     var allParents: [ViewHierarchyElementReference] {

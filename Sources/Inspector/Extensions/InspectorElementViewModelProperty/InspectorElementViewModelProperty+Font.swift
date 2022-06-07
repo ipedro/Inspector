@@ -58,7 +58,7 @@ public extension InspectorElementProperty {
         .cgFloatStepper(
             title: title,
             value: { fontProvider()?.pointSize ?? 0 },
-            range: { 0 ... 256 },
+            range: { 0...256 },
             stepValue: { 1 }
         ) { fontSize in
 

@@ -111,7 +111,7 @@ final class HighlightView: LayerView {
     override var sourceView: UIView { draggableView }
 
     private lazy var verticalAlignmentConstraint = elementNameView.centerYAnchor.constraint(equalTo: centerYAnchor)
-    
+
     // MARK: - Components
 
     private lazy var elementNameView = ElementNameView()
@@ -254,12 +254,12 @@ final class HighlightView: LayerView {
             self.pendingTransition = .none
         }
     }
-    
+
     func perform(_ transition: Transition?, completion: ((Bool) -> Void)? = .none) {
         let start: Transition.Settings
         let finish: Transition.Settings
         let delay: TimeInterval
-        
+
         switch transition {
         case .none:
             return

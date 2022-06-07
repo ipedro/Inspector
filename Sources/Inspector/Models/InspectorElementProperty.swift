@@ -105,7 +105,7 @@ public enum InspectorElementProperty {
                 handler: CGSizeHandler? = .none)
 
     case uiOffset(title: String,
-                offset: UIOffsetProvider,
+                  offset: UIOffsetProvider,
                   handler: UIOffsetHandler? = .none)
 
     case directionalInsets(title: String,
@@ -182,7 +182,7 @@ extension InspectorElementProperty {
 // MARK: - Value Handlers
 
 public extension InspectorElementProperty {
-    typealias Handler<Value> = ((Value) -> Void)
+    typealias Handler<Value> = (Value) -> Void
 
     typealias BoolHandler = Handler<Bool>
     typealias CGColorHandler = Handler<CGColor?>
@@ -206,7 +206,7 @@ public extension InspectorElementProperty {
 // MARK: - Value Providers
 
 public extension InspectorElementProperty {
-    typealias Provider<Value> = (() -> Value)
+    typealias Provider<Value> = () -> Value
 
     typealias BoolProvider = Provider<Bool>
     typealias CGColorProvider = Provider<CGColor?>

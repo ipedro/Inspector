@@ -23,29 +23,29 @@ import UIKit
 extension Manager: KeyCommandPresentable {
     var commandGroups: CommandsGroups {
         var groups = CommandsGroups()
-        
+
         let userCommands = dependencies.customization?.commandGroups ?? []
         groups.append(contentsOf: userCommands)
-        
+
         if let elementCommands = elementCommands {
             groups.append(elementCommands)
         }
-        
+
         let layersCommands = viewHierarchyCoordinator.commandsGroup()
         groups.append(layersCommands)
 
         return groups
     }
-    
+
     private var elementCommands: CommandsGroup? {
         guard let keyWindow = keyWindow else { return .none }
-        
+
         let commands: [Command] = {
             let snapshot = viewHierarchyCoordinator.latestSnapshot()
             var commands = [Inspector.Command]()
-            
+
             let rootReference = snapshot.root
-            
+
             commands.append(
                 .inspectElement(rootReference) { [weak self] in
                     self?.perform(
@@ -55,7 +55,7 @@ extension Manager: KeyCommandPresentable {
                     )
                 }
             )
-            
+
             guard let rootView = rootReference.underlyingView else { return commands }
             let rootViewReference = catalog.makeElement(from: rootView)
             commands.append(
@@ -67,12 +67,12 @@ extension Manager: KeyCommandPresentable {
                     )
                 }
             )
-            
+
             let visibleViewControllers = rootReference.viewHierarchy
                 .compactMap { $0 as? ViewHierarchyController }
                 .filter { $0.underlyingView?.window === rootView }
                 .sorted { $0.depth < $1.depth }
-            
+
             for child in visibleViewControllers {
                 commands.append(
                     .inspectElement(child) { [weak self] in
@@ -84,10 +84,10 @@ extension Manager: KeyCommandPresentable {
                     }
                 )
             }
-            
+
             return Array(commands.prefix(10))
         }()
-        
+
         return .group(title: "Inspect Elements", commands: commands.reversed())
     }
 }

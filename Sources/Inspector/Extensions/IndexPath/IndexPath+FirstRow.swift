@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import Foundation
 
 extension IndexPath {
@@ -27,5 +26,4 @@ extension IndexPath {
     var isFirst: Bool { self == .firstRow }
 
     var isEvenRow: Bool { row % 2 == 0 }
-    
 }

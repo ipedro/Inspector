@@ -136,7 +136,7 @@ extension DefaultElementAttributesLibrary {
                         title: property.rawValue,
                         emptyTitle: "Default",
                         axis: .horizontal,
-                        options: UIModalTransitionStyle.allCases.map { $0.description },
+                        options: UIModalTransitionStyle.allCases.map(\.description),
                         selectedIndex: { UIModalTransitionStyle.allCases.firstIndex(of: viewController.modalTransitionStyle) },
                         handler: {
                             guard let newIndex = $0 else { return }
@@ -150,7 +150,7 @@ extension DefaultElementAttributesLibrary {
                         title: property.rawValue,
                         emptyTitle: "Default",
                         axis: .horizontal,
-                        options:  UIModalPresentationStyle.allCases.map { $0.description },
+                        options: UIModalPresentationStyle.allCases.map(\.description),
                         selectedIndex: { UIModalPresentationStyle.allCases.firstIndex(of: viewController.modalPresentationStyle) },
                         handler: {
                             guard let newIndex = $0 else { return }

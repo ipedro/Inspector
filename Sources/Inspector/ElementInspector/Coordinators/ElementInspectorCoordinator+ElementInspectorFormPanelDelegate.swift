@@ -24,7 +24,8 @@ import UIKit
 extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
                                    didUpdateProperty property: InspectorElementProperty,
-                                   in section: InspectorElementSection) {
+                                   in section: InspectorElementSection)
+    {
         guard let elementInspectorViewController = formPanelViewController.parent as? ElementInspectorViewController else {
             assertionFailure("whaaaat")
             return
@@ -43,10 +44,11 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
                 if let selectedColor = colorPreviewControl.selectedColor {
                     $0.selectedColor = selectedColor
                 }
-                
+
                 #if swift(>=5.5)
                 if #available(iOS 15.0, *),
-                   let sheet = $0.sheetPresentationController {
+                   let sheet = $0.sheetPresentationController
+                {
                     sheet.detents = [.medium(), .large()]
                     sheet.selectedDetentIdentifier = .medium
                     sheet.prefersGrabberVisible = true

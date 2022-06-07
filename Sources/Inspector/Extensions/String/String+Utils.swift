@@ -22,7 +22,7 @@ import Foundation
 
 extension String {
     static let newLine = "\n"
-    
+
     var trimmed: String? {
         let trimmedString = trimmingCharacters(in: .whitespacesAndNewlines)
 

@@ -32,11 +32,11 @@ extension UIColor {
     }
 
     func lighter(amount: CGFloat = 0.25) -> UIColor {
-        return hueColorWithBrightnessAmount(amount: 1 + amount)
+        hueColorWithBrightnessAmount(amount: 1 + amount)
     }
 
     func darker(amount: CGFloat = 0.25) -> UIColor {
-        return hueColorWithBrightnessAmount(amount: 1 - amount)
+        hueColorWithBrightnessAmount(amount: 1 - amount)
     }
 
     private func hueColorWithBrightnessAmount(amount: CGFloat) -> UIColor {
@@ -50,8 +50,10 @@ extension UIColor {
                 hue: hue,
                 saturation: saturation,
                 brightness: brightness * amount,
-                alpha: alpha)
-        } else {
+                alpha: alpha
+            )
+        }
+        else {
             return self
         }
     }

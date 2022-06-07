@@ -131,7 +131,7 @@ enum InspectorColorStyle {
     }
 
     var layoutConstraintsCardInactiveBackgroundColor: UIColor {
-        return accessoryControlBackgroundColor
+        accessoryControlBackgroundColor
     }
 
     var accessoryControlBackgroundColor: UIColor {

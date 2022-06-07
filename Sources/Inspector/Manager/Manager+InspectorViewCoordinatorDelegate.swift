@@ -22,7 +22,7 @@ import UIKit
 
 extension Manager: InspectorViewCoordinatorDelegate {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, execute command: InspectorCommand?) {
-        coordinator.start().dismiss(animated: true) { [weak self] in    
+        coordinator.start().dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
             self.execute(command)
         }
@@ -51,10 +51,10 @@ extension Manager {
                 guard let self = self, let sourceView = reference.underlyingView else { return }
 
                 self.startElementInspectorCoordinator(
-                   for: reference,
-                   panel: .none,
-                   from: sourceView,
-                   animated: true
+                    for: reference,
+                    panel: .none,
+                    from: sourceView,
+                    animated: true
                 )
             }
         }
@@ -68,7 +68,7 @@ extension Manager {
     func presentInspector(animated: Bool, from presenter: UIViewController) {
         dismissInspectorViewIfNeeded { [weak self] in
             guard let self = self else { return }
-            
+
             let coordinator = self.makeInspectorViewCoordinator(presentedBy: presenter)
 
             let inspectorViewController = coordinator.start()
@@ -94,7 +94,8 @@ extension Manager {
 
         if dependencies.swiftUIhost != nil {
             coordinator.swiftUIDelegate = self
-        } else {
+        }
+        else {
             coordinator.delegate = self
         }
 

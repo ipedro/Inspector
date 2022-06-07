@@ -58,7 +58,7 @@ enum DefaultElementSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseItera
         switch self {
         case .tableView:
             return .init(with: TableViewSizeSectionDataSource(with: object))
-            
+
         case .button:
             return .init(with: ButtonSizeSectionDataSource(with: object))
 
@@ -70,7 +70,7 @@ enum DefaultElementSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseItera
 
         case .scrollView:
             return .init(with: ScrollViewSizeSectionDataSource(with: object))
-            
+
         case .viewFrame:
             return .init(with: ViewFrameSizeSectionDataSource(with: object))
 

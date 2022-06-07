@@ -74,7 +74,7 @@ extension UIView {
     var inspectableSubviews: [UIView] {
         subviews.filter { $0 is NonInspectableView == false }
     }
-    
+
     var allInspectableSubviews: [UIView] {
         inspectableSubviews.reversed().flatMap { [$0] + $0.allInspectableSubviews }
     }

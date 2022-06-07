@@ -22,33 +22,33 @@ import UIKit
 
 final class ApplicationReference {
     weak var parent: ViewHierarchyElementReference?
-    
+
     lazy var children = windows.map { window -> ViewHierarchyElementReference in
         let windowReference = catalog.makeElement(from: window)
         windowReference.parent = self
         windowReference.isCollapsed = true
-        
+
         guard let root = window.rootViewController else { return windowReference }
 
         let viewControllerReferences = allViewControllers(with: root).map { catalog.makeElement(from: $0) }
-        
+
         Self.connect(viewControllers: viewControllerReferences, with: windowReference)
-        
+
         return windowReference
     }
 
     var depth: Int = -1
 
     var isHidden: Bool = false
-    
+
     var isCollapsed: Bool = true
 
-    let latestSnapshotIdentifier: UUID = UUID()
+    let latestSnapshotIdentifier: UUID = .init()
 
     private let windows: [UIWindow]
 
     private let catalog: ViewHierarchyElementCatalog
-    
+
     private lazy var bundleInfo: BundleInfo? = {
         guard
             let infoDictionary = Bundle.main.infoDictionary
@@ -64,7 +64,7 @@ final class ApplicationReference {
             return nil
         }
     }()
-    
+
     private let application: UIApplication
 
     init(
@@ -72,7 +72,7 @@ final class ApplicationReference {
         catalog: ViewHierarchyElementCatalog
     ) {
         self.application = application
-        self.windows = application.windows
+        windows = application.windows
         self.catalog = catalog
     }
 
@@ -83,7 +83,7 @@ final class ApplicationReference {
     ) -> [ViewHierarchyElementReference] {
         var viewHierarchy = [ViewHierarchyElementReference]()
 
-        window.viewHierarchy.reversed().enumerated().forEach { index, element in
+        window.viewHierarchy.reversed().enumerated().forEach { _, element in
             viewHierarchy.insert(element, at: .zero)
 
             guard
@@ -97,18 +97,18 @@ final class ApplicationReference {
             let parent = element.parent
 
             element.parent = viewController
-            
+
             if let index = parent?.children.firstIndex(where: { $0 === element }) {
                 parent?.children[index] = viewController
             }
-            
+
             viewController.parent = parent
             viewController.rootElement = element
             viewController.children = [element]
 
             // must set depth as last step
             viewController.depth = depth
-            
+
             viewHierarchy.insert(viewController, at: .zero)
         }
         return viewHierarchy
@@ -117,7 +117,7 @@ final class ApplicationReference {
 
 extension ApplicationReference: ViewHierarchyElementReference {
     var viewHierarchy: [ViewHierarchyElementReference] { children.flatMap(\.viewHierarchy) }
-    
+
     var underlyingObject: NSObject? { application }
 
     var underlyingView: UIView? { windows.first(where: \.isKeyWindow) }
@@ -134,7 +134,7 @@ extension ApplicationReference: ViewHierarchyElementReference {
         else {
             return .light(systemName: "app.badge.fill")
         }
-        
+
         return appIcon.maskImage(with: appIconTemplate)
     }
 
@@ -179,7 +179,7 @@ extension ApplicationReference: ViewHierarchyElementReference {
         else {
             return ""
         }
-        
+
         return [
             className,
             "Identifier: \(identifier)",
@@ -194,7 +194,7 @@ extension ApplicationReference: ViewHierarchyElementReference {
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle { .unspecified }
 
     var traitCollection: UITraitCollection { UITraitCollection() }
-    
+
     private func allViewControllers(with rootViewController: UIViewController?) -> [UIViewController] {
         guard let rootViewController = rootViewController else { return [] }
         return [rootViewController] + rootViewController.allChildren + rootViewController.allPresentedViewControllers.flatMap { [$0] + $0.allChildren }

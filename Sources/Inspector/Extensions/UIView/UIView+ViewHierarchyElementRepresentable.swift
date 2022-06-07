@@ -38,7 +38,7 @@ extension UIView: ViewHierarchyElementRepresentable {
             array.append(parent)
             array.append(contentsOf: parent.allParents)
         }
-        
+
         return array.filter { !($0 is LayerViewProtocol) }
     }
 
@@ -106,14 +106,14 @@ extension UIView: ViewHierarchyElementRepresentable {
 
     var canHostContextMenuInteraction: Bool {
         canHostInspectorView &&
-        className != "UIWindow" &&
-        className != "UITransitionView" &&
-        className != "UIDropShadowView" &&
-        className != "_UIModernBarButton"
+            className != "UIWindow" &&
+            className != "UITransitionView" &&
+            className != "UIDropShadowView" &&
+            className != "_UIModernBarButton"
     }
 
     var canHostInspectorView: Bool {
-        let className = self._className
+        let className = _className
         let superViewClassName = superview?._className ?? ""
 
         guard
@@ -121,7 +121,7 @@ extension UIView: ViewHierarchyElementRepresentable {
             className != "UITextEffectsWindow",
             className != "UIEditingOverlayGestureView",
             className != "UIInputSetContainerView",
-            
+
             // Adding subviews directly to a UIVisualEffectView throws runtime exception.
             self is UIVisualEffectView == false,
 
@@ -167,7 +167,6 @@ extension UIView: ViewHierarchyElementRepresentable {
                 return "\"\(textContent)\" (\(name))"
             }
             return "\(name) (Empty)"
-            
 
         case let (anyView, identifier?):
             return "\(anyView._classNameWithoutQualifiers) (\(identifier))"
@@ -299,5 +298,4 @@ extension NSObject {
 
         return String(nameWithoutQualifiers)
     }
-
 }

@@ -33,7 +33,7 @@ public extension Inspector {
         public var keyCommandOptions: UIKeyCommand.Options?
 
         public let isSelected: Bool
-        
+
         var closure: Closure?
 
         var isEnabled: Bool {
@@ -130,7 +130,7 @@ extension Command {
             Inspector.present(animated: animated)
         }
     }
-    
+
     static func inspectElement(
         _ element: ViewHierarchyElementReference,
         displayName: String? = .none,

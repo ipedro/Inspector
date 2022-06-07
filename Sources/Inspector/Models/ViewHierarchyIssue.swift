@@ -57,7 +57,7 @@ enum ViewHierarchyIssue: CustomStringConvertible, Hashable {
         if (view as? UIControl)?.isEnabled == false {
             array.append(.controlDisabled)
         }
-        
+
         #if swift(>=5.5)
         guard #available(iOS 15.0, *) else { return array }
 
@@ -76,5 +76,4 @@ enum ViewHierarchyIssue: CustomStringConvertible, Hashable {
 
         return array
     }
-    
 }

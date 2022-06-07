@@ -47,7 +47,7 @@ class ElementInspectorPanelViewController: UIViewController, ElementInspectorApp
 
     override func didMove(toParent parent: UIViewController?) {
         super.didMove(toParent: parent)
-        
+
         updateVerticalPresentationState()
     }
 

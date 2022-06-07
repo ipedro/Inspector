@@ -21,7 +21,6 @@
 import UIKit
 
 extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
-
     var isShowingLayers: Bool {
         visibleReferences.keys.isEmpty == false
     }
@@ -206,17 +205,17 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
             wireframeViews.removeAll()
         }
     }
-    
+
     func removeWireframeView(for key: ViewHierarchyElementKey) {
         wireframeViews[key]?.removeFromSuperview()
         wireframeViews.removeValue(forKey: key)
     }
-    
+
     func removeHighlightView(for key: ViewHierarchyElementKey) {
         highlightViews[key]?.removeFromSuperview()
         highlightViews.removeValue(forKey: key)
     }
-    
+
     func addHighlightView(for key: ViewHierarchyElementKey, with colorScheme: ViewHierarchyColorScheme) {
         guard
             highlightViews[key] == nil,
@@ -236,7 +235,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
 
         highlightViews[key] = highlightView
     }
-    
+
     func addWireframeView(for key: ViewHierarchyElementKey, with colorScheme: ViewHierarchyColorScheme) {
         guard
             highlightViews[key] == nil,

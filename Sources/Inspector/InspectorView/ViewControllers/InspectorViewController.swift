@@ -103,7 +103,7 @@ final class InspectorViewController: UIViewController, NonInspectableView, Keybo
     @objc private func dismissKeyPressed() {
         guard
             let indexPathsForSelectedRows = viewCode.tableView.indexPathsForSelectedRows,
-                indexPathsForSelectedRows.count > 0
+            indexPathsForSelectedRows.count > 0
         else {
             return finish()
         }
@@ -111,7 +111,7 @@ final class InspectorViewController: UIViewController, NonInspectableView, Keybo
         for indexPath in indexPathsForSelectedRows {
             viewCode.tableView.deselectRow(at: indexPath, animated: false)
         }
-        
+
         viewCode.searchView.becomeFirstResponder()
     }
 
@@ -320,7 +320,7 @@ extension InspectorViewController {
 
     func finish() {
         guard !isFinishing else { return }
-        
+
         isFinishing = true
         view.endEditing(true)
         delegate?.inspectorViewControllerDidFinish(self)

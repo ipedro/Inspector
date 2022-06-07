@@ -112,5 +112,4 @@ final class EdgeInsetsControl: BaseFormControl {
             $0.isShowingSeparator = false
         }
     }
-
 }

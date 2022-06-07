@@ -33,7 +33,7 @@ protocol ElementInspectorViewModelProtocol: AnyObject {
 
     var currentPanelIndex: Int { get }
 
-    var title: String {get }
+    var title: String { get }
 }
 
 final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
@@ -73,7 +73,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         self.element = element
         self.availablePanels = availablePanels
 
-        self.currentPanel = {
+        currentPanel = {
             let preferredPanel = selectedPanel ?? Self.defaultPanel
 
             guard availablePanels.contains(preferredPanel) else { return availablePanels.first }
@@ -82,7 +82,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         }()
 
         if let selectedPanel = selectedPanel {
-            self.currentPanel = availablePanels.contains(selectedPanel) ? selectedPanel : nil
+            currentPanel = availablePanels.contains(selectedPanel) ? selectedPanel : nil
         }
     }
 

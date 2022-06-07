@@ -55,19 +55,19 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
 
     func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> [Command] {
         var array = [Command]()
-        
+
         if activeLayers.count > .zero {
             array.append(
                 .hideVisibleLayers { [weak self] in self?.removeAllLayers() }
             )
         }
-        
+
         if activeLayers.count < populatedLayers.count {
             array.append(
                 .showAllLayers { [weak self] in self?.installAllLayers() }
             )
         }
-        
+
         return array
     }
 }

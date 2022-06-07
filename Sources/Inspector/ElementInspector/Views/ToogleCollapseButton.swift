@@ -99,4 +99,3 @@ final class ToogleCollapseButton: BaseControl {
         }
     }
 }
-

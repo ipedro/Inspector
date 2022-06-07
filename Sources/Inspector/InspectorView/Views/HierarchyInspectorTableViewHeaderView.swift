@@ -30,7 +30,7 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
                 stackView.directionalLayoutMargins = elementInspectorAppearance.directionalInsets.with(top: .zero)
                 return
             }
-            
+
             titleLabel.isHidden = false
             stackView.directionalLayoutMargins = elementInspectorAppearance.directionalInsets
         }

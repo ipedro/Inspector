@@ -62,7 +62,7 @@ extension DefaultElementAttributesLibrary {
                 case .style:
                     return .optionsList(
                         title: property.rawValue,
-                        options: UIBarStyle.allCases.map { $0.description },
+                        options: UIBarStyle.allCases.map(\.description),
                         selectedIndex: { UIBarStyle.allCases.firstIndex(of: navigationBar.barStyle) },
                         handler: { newIndex in
                             guard let index = newIndex else { return }

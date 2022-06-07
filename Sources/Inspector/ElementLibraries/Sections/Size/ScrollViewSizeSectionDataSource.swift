@@ -32,7 +32,7 @@ extension DefaultElementSizeLibrary {
             guard let scrollView = object as? UIScrollView else { return nil }
             self.scrollView = scrollView
         }
-        
+
         private enum Properties: String, Swift.CaseIterable {
             case verticalScrollIndicatorInsets = "Vertical Indicator Insets"
             case horizontalScrollIndicatorInsets = "Horizontal Indicator Insets"
@@ -63,7 +63,7 @@ extension DefaultElementSizeLibrary {
                     return .optionsList(
                         title: property.rawValue,
                         axis: .vertical,
-                        options: UIScrollView.ContentInsetAdjustmentBehavior.allCases.map { $0.description },
+                        options: UIScrollView.ContentInsetAdjustmentBehavior.allCases.map(\.description),
                         selectedIndex: { UIScrollView.ContentInsetAdjustmentBehavior.allCases.firstIndex(of: scrollView.contentInsetAdjustmentBehavior) },
                         handler: {
                             guard let newIndex = $0 else { return }

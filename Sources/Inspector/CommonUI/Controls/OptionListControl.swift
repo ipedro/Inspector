@@ -59,7 +59,6 @@ final class OptionListControl: BaseFormControl {
         $0.contentView.alignment = .center
         $0.contentView.spacing = elementInspectorAppearance.verticalMargins
         $0.contentView.directionalLayoutMargins.update(top: elementInspectorAppearance.verticalMargins, bottom: elementInspectorAppearance.verticalMargins)
-
     }
 
     // MARK: - Init
@@ -152,8 +151,8 @@ final class OptionListControl: BaseFormControl {
 
         guard accessoryControl.point(inside: localPoint, with: nil) else { return nil }
 
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
-            return self.makeOptionSelectionMenu()
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            self.makeOptionSelectionMenu()
         }
     }
 

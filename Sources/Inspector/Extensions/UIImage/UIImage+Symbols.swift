@@ -21,6 +21,7 @@
 import UIKit
 
 // MARK: - Element Inspector Panels
+
 extension UIImage {
     static let elementIdentityPanel: UIImage = .moduleImage(named: "identityPanel")!
     static let elementAttributesPanel: UIImage = IconKit.imageOfSliderHorizontal().withRenderingMode(.alwaysTemplate)
@@ -30,27 +31,27 @@ extension UIImage {
 
 extension UIImage {
     static let collapseMirroredSymbol: UIImage = .moduleImage(named: "collapse-mirrored")!
-    static let collapseSymbol: UIImage =        .moduleImage(named: "collapse")!
-    static let emptyViewSymbol: UIImage =       .moduleImage(named: "EmptyView-32_Normal")!
-    static let expandSymbol: UIImage =          .moduleImage(named: "expand")!
-    static let hiddenViewSymbol: UIImage =      .moduleImage(named: "Hidden-32_Normal")!
-    static let hideHighlightsSymbol: UIImage =  .moduleImage(named: "hideHighlights")!
-    static let infoOutlineSymbol: UIImage =     .moduleImage(named: "info.circle")!
-    static let missingSymbol: UIImage =         .moduleImage(named: "missing-view-32_Normal")!
-    static let showHighlightsSymbol: UIImage =  .moduleImage(named: "showHighlights")!
-    static let warningSymbol: UIImage =         .moduleImage(named: "exclamationmark.triangle")!
-    static let infoSymbol: UIImage =            IconKit.imageOfInfoCircleFill().withRenderingMode(.alwaysTemplate)
+    static let collapseSymbol: UIImage = .moduleImage(named: "collapse")!
+    static let emptyViewSymbol: UIImage = .moduleImage(named: "EmptyView-32_Normal")!
+    static let expandSymbol: UIImage = .moduleImage(named: "expand")!
+    static let hiddenViewSymbol: UIImage = .moduleImage(named: "Hidden-32_Normal")!
+    static let hideHighlightsSymbol: UIImage = .moduleImage(named: "hideHighlights")!
+    static let infoOutlineSymbol: UIImage = .moduleImage(named: "info.circle")!
+    static let missingSymbol: UIImage = .moduleImage(named: "missing-view-32_Normal")!
+    static let showHighlightsSymbol: UIImage = .moduleImage(named: "showHighlights")!
+    static let warningSymbol: UIImage = .moduleImage(named: "exclamationmark.triangle")!
+    static let infoSymbol: UIImage = IconKit.imageOfInfoCircleFill().withRenderingMode(.alwaysTemplate)
 }
 
 extension UIImage {
-    static let chevronDownSymbol: UIImage =   .light(systemName: "chevron.down.circle")!
-    static let chevronRightSymbol: UIImage =  .light(systemName: "chevron.right.circle")!
-    static let closeSymbol: UIImage =         .light(systemName: "xmark.circle")!
-    static let copySymbol: UIImage =          .light(systemName: "doc.on.doc")!
-    static let stopSymbol: UIImage =          .light(systemName: "hand.raised.fill")!
-    static let emptyLayerAction: UIImage =    .light(systemName: "questionmark.circle")!
+    static let chevronDownSymbol: UIImage = .light(systemName: "chevron.down.circle")!
+    static let chevronRightSymbol: UIImage = .light(systemName: "chevron.right.circle")!
+    static let closeSymbol: UIImage = .light(systemName: "xmark.circle")!
+    static let copySymbol: UIImage = .light(systemName: "doc.on.doc")!
+    static let stopSymbol: UIImage = .light(systemName: "hand.raised.fill")!
+    static let emptyLayerAction: UIImage = .light(systemName: "questionmark.circle")!
     static let hideAllLayersAction: UIImage = .light(systemName: "square.stack.3d.up.slash.fill")!
     static let showAllLayersAction: UIImage = .light(systemName: "square.stack.3d.up.fill")!
-    static let layerAction: UIImage =   .light(systemName: "square.3.stack.3d.middle.filled")!
-    //static let visibleLayerAction: UIImage =  .light(systemName: "square.3.stack.3d")!
+    static let layerAction: UIImage = .light(systemName: "square.3.stack.3d.middle.filled")!
+    // static let visibleLayerAction: UIImage =  .light(systemName: "square.3.stack.3d")!
 }

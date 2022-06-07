@@ -34,7 +34,7 @@ extension DefaultElementAttributesLibrary {
         }
 
         private enum Properties: String, Swift.CaseIterable {
-            case style          = "Style"
+            case style = "Style"
             case separatorStyle = "Separator"
             case separatorColor = "Color"
             case divider
@@ -52,14 +52,14 @@ extension DefaultElementAttributesLibrary {
                 case .style:
                     return .optionsList(
                         title: property.rawValue,
-                        options: UITableView.Style.allCases.map { $0.description },
+                        options: UITableView.Style.allCases.map(\.description),
                         selectedIndex: { UITableView.Style.allCases.firstIndex(of: tableView.style) },
                         handler: nil
                     )
                 case .separatorStyle:
                     return .optionsList(
                         title: property.rawValue,
-                        options: UITableViewCell.SeparatorStyle.allCases.map { $0.description },
+                        options: UITableViewCell.SeparatorStyle.allCases.map(\.description),
                         selectedIndex: { UITableViewCell.SeparatorStyle.allCases.firstIndex(of: tableView.separatorStyle) },
                         handler: {
                             guard let newIndex = $0 else { return }
@@ -176,7 +176,6 @@ extension UITableViewCell.SeparatorStyle: CustomStringConvertible {
         }
     }
 }
-
 
 extension UITableView.Style: CaseIterable {
     typealias AllCases = [UITableView.Style]

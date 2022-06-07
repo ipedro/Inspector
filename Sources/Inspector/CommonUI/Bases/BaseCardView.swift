@@ -76,7 +76,7 @@ class BaseCardView: BaseView {
         super.setup()
 
         cornerRadius = elementInspectorAppearance.horizontalMargins
-        
+
         installView(stackView, priority: .required)
 
         contentView.directionalLayoutMargins = contentMargins

@@ -100,7 +100,6 @@ extension UIColor {
     // perceptived luminance
     // https://stackoverflow.com/questions/1855884/determine-font-color-based-on-background-color
     var contrasting: UIColor {
-
         let ciColor = CIColor(color: self)
 
         let compRed: CGFloat = ciColor.red * 0.299
@@ -114,6 +113,6 @@ extension UIColor {
         // dark colors - white font
         let col: CGFloat = luminance < 0.55 ? 0 : 1
 
-        return UIColor( red: col, green: col, blue: col, alpha: ciColor.alpha)
+        return UIColor(red: col, green: col, blue: col, alpha: ciColor.alpha)
     }
 }

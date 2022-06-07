@@ -34,7 +34,7 @@ extension DefaultElementAttributesLibrary {
             self.datePicker = datePicker
         }
 
-        private let minuteIntervalRange = 1 ... 30
+        private let minuteIntervalRange = 1...30
 
         private lazy var validMinuteIntervals = minuteIntervalRange.filter { 60 % $0 == 0 }
 

@@ -22,7 +22,6 @@ import UIKit
 
 extension DefaultElementIdentityLibrary {
     final class HighlightViewSectionDataSource: InspectorElementSectionDataSource {
-
         var state: InspectorElementSectionState = .collapsed
 
         let title: String = "Highlight View"
@@ -61,7 +60,7 @@ extension DefaultElementIdentityLibrary {
                 case .nameDisplayMode:
                     return .optionsList(
                         title: property.rawValue,
-                        options: ElementNameView.DisplayMode.allCases.map { $0.title },
+                        options: ElementNameView.DisplayMode.allCases.map(\.title),
                         selectedIndex: { ElementNameView.DisplayMode.allCases.firstIndex(of: highlightView.displayMode) },
                         handler: {
                             guard let newIndex = $0 else { return }

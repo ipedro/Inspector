@@ -24,11 +24,11 @@ final class ViewHierarchy: ViewHierarchyRepresentable {
     static let application = ViewHierarchy(application: .shared)
 
     var application: UIApplication
-    
+
     var windows: [UIWindow] { application.windows }
-    
+
     var keyWindow: UIWindow? { windows.first(where: \.isKeyWindow) }
-    
+
     var topPresentedViewController: UIViewController? {
         guard
             let keyWindow = keyWindow,
@@ -36,14 +36,14 @@ final class ViewHierarchy: ViewHierarchyRepresentable {
         else {
             return .none
         }
-        
+
         var candidates = [UIViewController]()
-        
+
         for presentedViewController in rootViewController.allPresentedViewControllers {
             if presentedViewController is NonInspectableView { break }
             candidates.append(presentedViewController)
         }
-        
+
         return candidates.last ?? rootViewController
     }
 

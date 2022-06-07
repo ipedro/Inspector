@@ -33,7 +33,7 @@ final class InspectorElementKeyCommandSectionView: BaseView {
 
     var separatorStyle: InspectorElementItemSeparatorStyle {
         get { .none }
-        set {  }
+        set {}
     }
 
     private lazy var formView = InspectorElementSectionFormView(header: header, state: state).then {

@@ -194,7 +194,7 @@ extension DefaultElementAttributesLibrary {
                     return .cgFloatStepper(
                         title: property.rawValue,
                         value: { textField.minimumFontSize },
-                        range: { 0 ... 256 },
+                        range: { 0...256 },
                         stepValue: { 1 }
                     ) { minimumFontSize in
                         textField.minimumFontSize = minimumFontSize

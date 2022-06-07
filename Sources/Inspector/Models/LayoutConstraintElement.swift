@@ -83,7 +83,7 @@ final class LayoutConstraintElement: Hashable {
         axis = firstAxis
         self.first = first
         self.second = second
-        self.underlyingConstraint = constraint
+        underlyingConstraint = constraint
         self.view = view
 
         let theirBindings = Self.find(.theirs, bindings: first, second, inRelationTo: view)

@@ -112,7 +112,7 @@ final class TextViewControl: BaseFormControl {
         updateViews()
     }
 
-    private let aspectRatio: CGFloat = 3/5
+    private let aspectRatio: CGFloat = 3 / 5
 
     private lazy var textViewHeightConstraint = textView.heightAnchor.constraint(equalTo: textView.widthAnchor, multiplier: aspectRatio)
 
@@ -157,7 +157,8 @@ final class TextViewControl: BaseFormControl {
     }
 
     override func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
-                                         configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+                                         configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration?
+    {
         let localPoint = convert(location, to: accessoryControl)
 
         guard accessoryControl.point(inside: localPoint, with: nil) else { return nil }
@@ -195,7 +196,7 @@ final class TextViewControl: BaseFormControl {
             identifier: nil,
             previewProvider: nil
         ) { _ in
-            UIMenu.init(
+            UIMenu(
                 title: "",
                 image: nil,
                 identifier: nil,

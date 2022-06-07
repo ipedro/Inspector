@@ -119,7 +119,8 @@ final class ColorPreviewControl: BaseFormControl {
     }
 
     override func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
-                                         configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+                                         configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration?
+    {
         let localPoint = convert(location, to: colorDisplayControl)
 
         guard colorDisplayControl.point(inside: localPoint, with: .none) else { return nil }
@@ -128,7 +129,7 @@ final class ColorPreviewControl: BaseFormControl {
             identifier: nil,
             previewProvider: nil
         ) { _ in
-            UIMenu.init(
+            UIMenu(
                 title: "",
                 image: nil,
                 identifier: nil,

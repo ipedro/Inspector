@@ -64,7 +64,8 @@ extension UIMenu {
 
     private static func childrenMenu(element: ViewHierarchyElementReference,
                                      options: UIMenu.Options = .init(),
-                                     handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
+                                     handler: @escaping ViewHierarchyActionHandler) -> UIMenu?
+    {
         guard element.isContainer else { return nil }
 
         return UIMenu(
@@ -80,7 +81,8 @@ extension UIMenu {
 
     private static func actionsMenu(element: ViewHierarchyElementReference,
                                     options: UIMenu.Options = .init(),
-                                    handler: @escaping ViewHierarchyActionHandler) -> UIMenu? {
+                                    handler: @escaping ViewHierarchyActionHandler) -> UIMenu?
+    {
         let groupedCases = ViewHierarchyElementAction.groupedCases(for: element)
 
         guard !groupedCases.isEmpty else { return nil }

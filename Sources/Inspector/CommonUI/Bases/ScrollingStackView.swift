@@ -18,7 +18,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
 final class ScrollingStackView: UIScrollView {
@@ -30,5 +29,4 @@ final class ScrollingStackView: UIScrollView {
         installView($0, priority: .required)
         widthAnchor.constraint(equalTo: $0.widthAnchor).isActive = true
     }
-    
 }

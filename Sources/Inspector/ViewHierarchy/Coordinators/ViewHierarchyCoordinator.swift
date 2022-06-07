@@ -135,7 +135,7 @@ extension ViewHierarchyCoordinator {
         let snapshot = latestSnapshot()
         let toggleAll = toggleAllLayersCommands(for: snapshot)
         let layers = availableLayerCommands(for: snapshot)
-        
+
         return CommandsGroup.group(
             title: Texts.highlightElements,
             commands: toggleAll + layers
@@ -153,6 +153,6 @@ private extension ViewHierarchyLayer {
     static let highlightViews: ViewHierarchyLayer = .layer(
         name: String(describing: type(of: HighlightView.self))
     ) { _ in
-        return false
+        false
     }
 }

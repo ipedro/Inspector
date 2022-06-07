@@ -85,7 +85,7 @@ extension String {
     public static let systemFontFamilyName = "System Font"
 
     fileprivate func camelCaseToWords() -> String {
-        return unicodeScalars.reduce(String()) {
+        unicodeScalars.reduce(String()) {
             guard
                 CharacterSet.uppercaseLetters.contains($1),
                 let previous = $0.last?.unicodeScalars.last,

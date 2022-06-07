@@ -20,7 +20,6 @@
 
 import UIKit
 
-
 // MARK: - ElementInspectorViewCode
 
 final class ElementInspectorViewCode: BaseView {
@@ -57,7 +56,7 @@ final class ElementInspectorViewCode: BaseView {
     }
 
     private func adjustedContentSize(of scrollView: UIScrollView) -> CGSize {
-        return CGSize(
+        CGSize(
             width: scrollView.contentSize.width + scrollView.adjustedContentInset.left + scrollView.adjustedContentInset.right,
             height: scrollView.contentSize.height + scrollView.adjustedContentInset.top + scrollView.adjustedContentInset.bottom
         )
@@ -65,7 +64,7 @@ final class ElementInspectorViewCode: BaseView {
 
     var contentSize: CGSize {
         var frameWidth: CGSize {
-            CGSize(width: frame.width, height: frame.width )
+            CGSize(width: frame.width, height: frame.width)
         }
 
         switch content?.type {
@@ -111,9 +110,8 @@ final class ElementInspectorViewCode: BaseView {
                 [backgroundView.topAnchor.constraint(equalTo: separatorView.bottomAnchor),
                  backgroundView.leadingAnchor.constraint(equalTo: scrollView.readableContentGuide.leadingAnchor),
                  backgroundView.trailingAnchor.constraint(equalTo: scrollView.readableContentGuide.trailingAnchor),
-                 backgroundView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
-                ]
-                .forEach { $0.isActive = true}
+                 backgroundView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)]
+                    .forEach { $0.isActive = true }
             }
 
         case .panelView:
@@ -174,5 +172,4 @@ final class ElementInspectorViewCode: BaseView {
             }
         )
     }
-
 }

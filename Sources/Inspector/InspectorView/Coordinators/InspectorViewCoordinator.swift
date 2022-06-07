@@ -59,14 +59,14 @@ final class InspectorViewCoordinator: Coordinator<InspectorViewDependencies, UIV
     override func loadContent() -> UIViewController? {
         inspectorViewController
     }
-    
+
     func reloadData() {
         inspectorViewController.reloadData()
     }
-    
+
     func finish(command: InspectorCommand?) {
         removeFromParent()
-        
+
         if let swiftUIDelegate = swiftUIDelegate {
             swiftUIDelegate.inspectorViewCoordinator(self, willFinishWith: command)
             return

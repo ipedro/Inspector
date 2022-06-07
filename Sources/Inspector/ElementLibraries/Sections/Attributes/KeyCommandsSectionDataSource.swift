@@ -39,9 +39,9 @@ extension DefaultElementAttributesLibrary {
                 return nil
             }
 
-            self.subtitle = keyCommand.title
+            subtitle = keyCommand.title
 
-            self.title = (keyCommand.symbols ?? keyCommand.action?.description) ?? "Key Command"
+            title = (keyCommand.symbols ?? keyCommand.action?.description) ?? "Key Command"
 
             self.keyCommand = keyCommand
         }
@@ -80,7 +80,7 @@ extension DefaultElementAttributesLibrary {
 
 extension UIKeyCommand {
     var symbols: String? {
-        let keys = (modifierFlags.symbols + [input?.localizedUppercase]).compactMap {$0}
+        let keys = (modifierFlags.symbols + [input?.localizedUppercase]).compactMap { $0 }
 
         if keys.isEmpty { return nil }
 

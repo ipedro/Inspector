@@ -79,9 +79,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         $0.addInteraction(UIContextMenuInteraction(delegate: self))
     }
 
-    private let dismissItem: UIBarButtonItem.SystemItem = {
-        return .close
-    }()
+    private let dismissItem: UIBarButtonItem.SystemItem = .close
 
     private(set) lazy var dismissBarButtonItem = UIBarButtonItem(
         barButtonSystemItem: dismissItem,
@@ -197,7 +195,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
         super.init(nibName: nil, bundle: nil)
 
-        self.title = viewModel.title
+        title = viewModel.title
     }
 
     @available(*, unavailable)
@@ -498,16 +496,16 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
 
     private func nextActions(for currentState: ElementInspectorPanelListState?) -> [UIMenuElement] {
         guard let firstState = currentState?.next() else {
-            let state =  ElementInspectorPanelListState.allCollapsed
+            let state = ElementInspectorPanelListState.allCollapsed
 
             return [
-                    UIAction(
-                        title: state.title,
-                        image: state.image,
-                        identifier: nil,
-                        discoverabilityTitle: state.title,
-                        handler: { [weak self] _ in
-                            self?.currentFormPanelViewController?.togglePanels(to: state, animated: true)
+                UIAction(
+                    title: state.title,
+                    image: state.image,
+                    identifier: nil,
+                    discoverabilityTitle: state.title,
+                    handler: { [weak self] _ in
+                        self?.currentFormPanelViewController?.togglePanels(to: state, animated: true)
                     }
                 )
             ]

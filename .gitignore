@@ -2,3 +2,5 @@
 /.build
 /Packages
 xcuserdata/
+BuildTools/.build
+BuildTools/.swiftpm

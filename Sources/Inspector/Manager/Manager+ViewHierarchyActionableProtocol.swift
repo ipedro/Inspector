@@ -39,7 +39,7 @@ extension Manager: ViewHierarchyActionableProtocol {
 
         case .copy(.description):
             UIPasteboard.general.string = element.elementDescription
-            
+
         case .copy(.report):
             UIPasteboard.general.string = element.viewHierarchyDescription
         }

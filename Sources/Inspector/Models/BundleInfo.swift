@@ -34,22 +34,22 @@ struct BundleInfo: Codable {
 
     struct Icons: Codable {
         var primaryIcon: Icon
-        
+
         private enum CodingKeys: String, CodingKey {
             case primaryIcon = "CFBundlePrimaryIcon"
         }
     }
-    
+
     struct Icon: Codable {
         var files: [String]
         var name: String
-        
+
         private enum CodingKeys: String, CodingKey {
             case files = "CFBundleIconFiles"
             case name = "CFBundleIconName"
         }
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case minimumOSVersion = "MinimumOSVersion"
         case name = "CFBundleName"

@@ -84,7 +84,7 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
     func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
         case .application: return .init(with: ApplicationAttributesSectionDataSource(with: object))
-            
+
         case .navigationController: return .init(with: NavigationControllerAttributesSectionDataSource(with: object))
 
         case .viewController:
@@ -93,9 +93,9 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
             return [
                 InspectorElementSection(
                     rows:
-                        NavigationItemAttributesSectionDataSource(with: viewController),
-                        ViewControllerAttributesSectionDataSource(with: viewController),
-                        TabBarItemAttributesSectionDataSource(with: viewController)
+                    NavigationItemAttributesSectionDataSource(with: viewController),
+                    ViewControllerAttributesSectionDataSource(with: viewController),
+                    TabBarItemAttributesSectionDataSource(with: viewController)
                 ),
                 InspectorElementSection(
                     title: "Key Commands",

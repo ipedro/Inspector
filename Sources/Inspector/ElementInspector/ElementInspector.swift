@@ -21,7 +21,6 @@
 import UIKit
 
 enum ElementInspector {
-
     final class Configuration {
         var isPresentingFromBottomSheet: Bool {
             #if swift(>=5.5)
@@ -95,18 +94,18 @@ extension ElementInspector {
             UIFont.preferredFont(
                 forTextStyle: {
                     switch relativeDepth {
-                        case let depth where depth <= -5:
-                            return .title2
-                        case -4:
-                            return .headline
-                        case -3:
-                            return .subheadline
-                        case -2:
-                            return .body
-                        case -1:
-                            return .callout
-                        default:
-                            return .footnote
+                    case let depth where depth <= -5:
+                        return .title2
+                    case -4:
+                        return .headline
+                    case -3:
+                        return .subheadline
+                    case -2:
+                        return .body
+                    case -1:
+                        return .callout
+                    default:
+                        return .footnote
                     }
                 }()
             )

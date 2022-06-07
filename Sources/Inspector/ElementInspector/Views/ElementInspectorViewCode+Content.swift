@@ -62,7 +62,7 @@ extension ElementInspectorViewCode {
             activityIndicator.startAnimating()
 
             activityIndicator.alpha = 0
-            activityIndicator.transform = .init(scaleX: 0, y: 0 )
+            activityIndicator.transform = .init(scaleX: 0, y: 0)
 
             activityIndicator.animate(withDuration: .long, delay: .long) {
                 activityIndicator.alpha = 1

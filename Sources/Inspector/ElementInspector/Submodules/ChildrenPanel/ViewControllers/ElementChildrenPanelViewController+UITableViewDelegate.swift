@@ -83,10 +83,11 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
                     )
                 ]
             }(),
-            with: cellViewModel.element) { [weak self] element, action in
-                guard let cell = tableView.cellForRow(at: indexPath) else { return }
-                self?.delegate?.perform(action: action, with: element, from: cell)
-            }
+            with: cellViewModel.element
+        ) { [weak self] element, action in
+            guard let cell = tableView.cellForRow(at: indexPath) else { return }
+            self?.delegate?.perform(action: action, with: element, from: cell)
+        }
     }
 }
 

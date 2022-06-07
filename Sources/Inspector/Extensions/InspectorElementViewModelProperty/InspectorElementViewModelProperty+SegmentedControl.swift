@@ -22,7 +22,7 @@ import UIKit
 
 public extension InspectorElementProperty {
     static func segmentPicker(for segmentedControl: UISegmentedControl, handler: SelectionHandler?) -> InspectorElementProperty {
-        return .optionsList(
+        .optionsList(
             title: "Segment",
             emptyTitle: "No Segments",
             options: segmentedControl.segmentsOptions,

@@ -33,19 +33,19 @@ extension HierarchyInspectorViewModel {
             let element: ViewHierarchyElementReference
 
             init(with element: ViewHierarchyElementReference, isEnabled: Bool) {
-                self.title = element.displayName
+                title = element.displayName
                 self.isEnabled = isEnabled
-                self.subtitle = element.shortElementDescription
-                self.depth = element.depth
+                subtitle = element.shortElementDescription
+                depth = element.depth
                 self.element = element
-                self.image = element.iconImage?
+                image = element.iconImage?
                     .resized(Inspector.sharedInstance.appearance.actionIconSize)
             }
         }
 
         private struct SearchQueryItem: ExpirableProtocol {
             let query: String
-            let expirationDate: Date = Date().addingTimeInterval(5)
+            let expirationDate: Date = .init().addingTimeInterval(5)
             let results: [Details]
         }
 

@@ -31,7 +31,7 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost, In
 
     let commandGroups: [Inspector.CommandsGroup]?
 
-    let elementLibraries: [Inspector.ElementPanelType : [InspectorElementLibraryProtocol]]?
+    let elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]?
 
     let elementIconProvider: Inspector.ElementIconProvider?
 
@@ -43,12 +43,12 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost, In
         layers: [Inspector.ViewHierarchyLayer]?,
         colorScheme: Inspector.ElementColorProvider?,
         commandGroups: [Inspector.CommandsGroup]?,
-        elementLibraries: [Inspector.ElementPanelType : [InspectorElementLibraryProtocol]]?,
+        elementLibraries: [Inspector.ElementPanelType: [InspectorElementLibraryProtocol]]?,
         elementIconProvider: Inspector.ElementIconProvider?,
         didFinish: (() -> Void)?
     ) {
-        self.viewHierarchyLayers = layers
-        self.elementColorProvider = colorScheme
+        viewHierarchyLayers = layers
+        elementColorProvider = colorScheme
         self.commandGroups = commandGroups
         self.elementLibraries = elementLibraries
         self.elementIconProvider = elementIconProvider
@@ -90,7 +90,8 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost, In
 
         guard
             let presenter = ViewHierarchy.application.topPresentedViewController,
-            let coordinator = Inspector.sharedInstance.manager?.makeInspectorViewCoordinator(presentedBy: presenter) else {
+            let coordinator = Inspector.sharedInstance.manager?.makeInspectorViewCoordinator(presentedBy: presenter)
+        else {
             return alertController(title: "Couldn't present inspector")
         }
 

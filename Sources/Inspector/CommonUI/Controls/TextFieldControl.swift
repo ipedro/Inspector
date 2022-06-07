@@ -105,7 +105,8 @@ final class TextFieldControl: BaseFormControl {
     }
 
     override func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
-                                         configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+                                         configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration?
+    {
         let localPoint = convert(location, to: accessoryControl)
 
         guard accessoryControl.point(inside: localPoint, with: .none) else { return nil }
@@ -114,7 +115,7 @@ final class TextFieldControl: BaseFormControl {
             identifier: nil,
             previewProvider: nil
         ) { _ in
-            UIMenu.init(
+            UIMenu(
                 title: "",
                 image: nil,
                 identifier: nil,

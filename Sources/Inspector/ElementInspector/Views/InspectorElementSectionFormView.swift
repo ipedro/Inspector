@@ -106,8 +106,8 @@ class InspectorElementSectionFormView: BaseView {
 
     init(header: SectionHeader,
          state: InspectorElementSectionState,
-         frame: CGRect = .zero
-    ) {
+         frame: CGRect = .zero)
+    {
         self.state = state
         self.header = header
 
@@ -119,7 +119,7 @@ class InspectorElementSectionFormView: BaseView {
 
         let interaction = UIContextMenuInteraction(delegate: self)
         headerControl.addInteraction(interaction)
-        
+
         clipsToBounds = true
         updateViewsForState()
         installSeparators()
@@ -206,7 +206,6 @@ extension InspectorElementSectionFormView: InspectorElementSectionView {
 
 extension InspectorElementSectionFormView {
     final class CollapseIcon: BaseView {
-
         private lazy var icon = IconButton(.chevronDown).then {
             $0.isUserInteractionEnabled = false
         }

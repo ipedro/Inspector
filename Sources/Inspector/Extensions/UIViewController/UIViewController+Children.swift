@@ -18,15 +18,14 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 import UIKit
 
 extension UIViewController {
     var allPresentedViewControllers: [UIViewController] {
         var allPresentedViewControllers = [UIViewController]()
-        
+
         var viewController: UIViewController? = self
-        
+
         while viewController != nil {
             guard
                 let presented = viewController?.presentedViewController,
@@ -37,18 +36,18 @@ extension UIViewController {
             allPresentedViewControllers.append(presented)
             viewController = presented
         }
-        
+
         return allPresentedViewControllers
     }
-    
+
     var allChildren: [UIViewController] {
         children.flatMap { [$0] + $0.allChildren }
     }
-    
+
     var allActiveChildren: [UIViewController] {
         activeChildren.flatMap { [$0] + $0.allActiveChildren }
     }
-    
+
     var activeChildren: [UIViewController] {
         switch self {
         case let tabBarController as UITabBarController:
@@ -56,13 +55,13 @@ extension UIViewController {
                 return []
             }
             return [selectedViewController]
-            
+
         case let navigationController as UINavigationController:
             guard let topViewController = navigationController.topViewController else {
                 return []
             }
             return [topViewController]
-            
+
         default:
             return children
                 .filter(\.isViewLoaded)

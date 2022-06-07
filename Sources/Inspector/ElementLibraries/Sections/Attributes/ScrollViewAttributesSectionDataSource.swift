@@ -33,7 +33,7 @@ extension DefaultElementAttributesLibrary {
 
             self.scrollView = scrollView
         }
-        
+
         private enum Property: String, Swift.CaseIterable {
             case groupIndicators = "Indicators"
             case indicatorStyle = "Indicator Style"

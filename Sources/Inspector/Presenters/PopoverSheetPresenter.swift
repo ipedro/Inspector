@@ -24,9 +24,10 @@ final class PopoverSheetPresenter: NSObject {
     enum Detent {
         case medium, large
     }
+
     let onChangeSelectedDetentHandler: (Detent?) -> Void
     let onDismissHandler: (UIPresentationController) -> Void
-    
+
     init(
         onChangeSelectedDetent: @escaping (Detent?) -> Void,
         onDismiss: @escaping (UIPresentationController) -> Void

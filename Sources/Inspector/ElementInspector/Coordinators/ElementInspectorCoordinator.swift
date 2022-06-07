@@ -171,7 +171,8 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
                 transitionDelegate: transitionDelegate(for: viewController),
                 from: sourceView
             )
-        } else {
+        }
+        else {
             viewController.setPopoverModalPresentationStyle(
                 delegate: popoverSheetPresenter,
                 transitionDelegate: transitionDelegate(for: viewController),
@@ -322,7 +323,7 @@ private extension ElementInspectorCoordinator {
         dependencies: ElementInspectorDependencies
     ) {
         let allElements = [dependencies.snapshot.root] + dependencies.snapshot.root.viewHierarchy
-        
+
         let populatedElements = allElements.filter { $0.underlyingObject === dependencies.rootElement.underlyingObject }
 
         guard let populatedElement = populatedElements.first else {
@@ -370,7 +371,8 @@ private extension ElementInspectorCoordinator {
 extension ElementInspectorCoordinator: UIViewControllerTransitionPresenterDelegate {
     func animationController(forPresented presented: UIViewController,
                              presenting: UIViewController,
-                             source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+                             source: UIViewController) -> UIViewControllerAnimatedTransitioning?
+    {
         guard transitionDelegate(for: presented) != nil else { return nil }
 
         switch presented {
