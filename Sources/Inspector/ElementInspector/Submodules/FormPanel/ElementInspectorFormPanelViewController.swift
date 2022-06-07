@@ -250,8 +250,4 @@ extension ElementInspectorFormPanelViewController {
     func finishOptionSelction() {
         selectedOptionListControl = nil
     }
-
-    func willUpdate(property: InspectorElementProperty) {}
-
-    func didUpdate(property: InspectorElementProperty) {}
 }

@@ -23,9 +23,7 @@ import UIKit
 extension ElementInspectorFormPanelViewController: InspectorElementSectionViewControllerDelegate
 {
     func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
-                                               willUpdate property: InspectorElementProperty)
-    {
-        willUpdate(property: property)
+                                               willUpdate property: InspectorElementProperty) {
     }
 
     func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
@@ -42,8 +40,6 @@ extension ElementInspectorFormPanelViewController: InspectorElementSectionViewCo
             }
 
             self.formPanels.forEach { $0.reloadData() }
-
-            self.didUpdate(property: property)
 
             self.formDelegate?.elementInspectorFormPanel(self, didUpdateProperty: property, in: item)
         }
