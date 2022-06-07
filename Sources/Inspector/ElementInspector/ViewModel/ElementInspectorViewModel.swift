@@ -80,10 +80,6 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
             return preferredPanel
         }()
-
-        if let selectedPanel = selectedPanel {
-            currentPanel = availablePanels.contains(selectedPanel) ? selectedPanel : nil
-        }
     }
 
     var summaryInfo: ViewHierarchyElementSummary {
