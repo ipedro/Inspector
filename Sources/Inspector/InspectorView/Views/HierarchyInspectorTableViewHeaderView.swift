@@ -22,7 +22,7 @@ import UIKit
 
 final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, ElementInspectorAppearanceProviding {
     private(set) lazy var separatorView = SeparatorView(style: .hard)
-    
+
     private lazy var stackView = UIStackView.vertical(
         .arrangedSubviews(
             titleLabel
@@ -37,7 +37,7 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
         .textStyle(.caption1, traits: .traitBold),
         .textColor(colorStyle.secondaryTextColor)
     )
-    
+
     var title: String = "" {
         didSet {
             titleLabel.text = title
@@ -61,9 +61,9 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
 
     func setup() {
         backgroundView = UIView()
-        
+
         contentView.installView(stackView)
-        
+
         contentView.installView(
             separatorView,
             .spacing(

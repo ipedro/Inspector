@@ -64,7 +64,7 @@ public struct InspectorConfiguration {
             return .light
         }
     }
-    
+
     let defaultLayers: [ViewHierarchyLayer] = [
         .accessibile,
         .activityIndicators,
