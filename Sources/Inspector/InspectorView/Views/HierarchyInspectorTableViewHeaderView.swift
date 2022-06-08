@@ -21,20 +21,26 @@
 import UIKit
 
 final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, ElementInspectorAppearanceProviding {
-    var title: String? {
+    private(set) lazy var separatorView = SeparatorView(style: .hard)
+    
+    private lazy var stackView = UIStackView.vertical(
+        .arrangedSubviews(
+            titleLabel
+        ),
+        .spacing(elementInspectorAppearance.verticalMargins),
+        .viewOptions(
+            .directionalLayoutMargins(.init(insets: 16))
+        )
+    )
+
+    private(set) lazy var titleLabel = UILabel(
+        .textStyle(.caption1, traits: .traitBold),
+        .textColor(colorStyle.secondaryTextColor)
+    )
+    
+    var title: String = "" {
         didSet {
             titleLabel.text = title
-
-            guard title?.trimmed.isNilOrEmpty == false else {
-                stackView.removeFromSuperview()
-                return
-            }
-
-            if stackView.superview == self { return }
-
-            contentView.installView(
-                stackView, .spacing(horizontal: 16, vertical: .zero)
-            )
         }
     }
 
@@ -42,22 +48,6 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
         get { separatorView.isHidden }
         set { separatorView.isHidden = !newValue }
     }
-
-    private(set) lazy var separatorView = SeparatorView(style: .hard)
-
-    private lazy var stackView = UIStackView.vertical(
-        .arrangedSubviews(
-            UIView(),
-            titleLabel,
-            UIView()
-        ),
-        .spacing(elementInspectorAppearance.verticalMargins)
-    )
-
-    private(set) lazy var titleLabel = UILabel(
-        .textStyle(.caption1, traits: .traitBold),
-        .textColor(colorStyle.secondaryTextColor)
-    )
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -71,7 +61,10 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
 
     func setup() {
         backgroundView = UIView()
-        installView(
+        
+        contentView.installView(stackView)
+        
+        contentView.installView(
             separatorView,
             .spacing(
                 top: -separatorView.thicknesInPixels,
@@ -79,7 +72,5 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
                 trailing: .zero
             )
         )
-
-        heightAnchor.constraint(greaterThanOrEqualToConstant: elementInspectorAppearance.horizontalMargins).isActive = true
     }
 }

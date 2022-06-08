@@ -38,44 +38,47 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
     }
 
     func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command? {
-        if isEmpty { return /* .emptyLayer(layer.emptyActionTitle) */ .none }
+        if isEmpty { return .none }
+
+        let isSelected = isShowingLayer(layer)
+        let icon: UIImage = layer == .wireframes ? .wireframeAction : .layerAction
         let title: String = {
-            switch (layer, isShowingLayer(layer)) {
-            case (.wireframes, true): return "Showing Wireframes"
-            case (.wireframes, false): return "Show Wireframes"
-            case (_, true): return Texts.highlighting(layer.title)
-            case (_, false): return Texts.highlight(layer.title)
+            switch (layer, isSelected) {
+            case (.wireframes, true): return Texts.hide(layer.title)
+            case (.wireframes, false): return Texts.show(layer.title)
+            default: return layer.title
             }
         }()
 
-        switch isShowingLayer(layer) {
-        case true:
-            return .visibleLayer(title, at: index) { [weak self] in
-                self?.removeLayer(layer)
-            }
-
-        case false:
-            return .hiddenLayer(title, at: index) { [weak self] in
-                self?.installLayer(layer)
-            }
+        return Command(
+            title: title,
+            icon: icon,
+            keyCommandOptions: Command.keyCommand(index: index),
+            isSelected: isSelected
+        ) { [weak self] in
+            guard let self = self else { return }
+            isSelected ? self.removeLayer(layer) : self.installLayer(layer)
         }
     }
 
     func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> [Command] {
         var array = [Command]()
-
-        if activeLayers.count > .zero {
-            array.append(
-                .hideVisibleLayers { [weak self] in self?.removeAllLayers() }
-            )
-        }
-
         if activeLayers.count < populatedLayers.count {
             array.append(
-                .showAllLayers { [weak self] in self?.installAllLayers() }
+                .showAllLayers { [weak self] in
+                    guard let self = self else { return }
+                    self.installAllLayers()
+                }
             )
         }
-
+        if activeLayers.count > .zero {
+            array.append(
+                .hideVisibleLayers { [weak self] in
+                    guard let self = self else { return }
+                    self.removeAllLayers()
+                }
+            )
+        }
         return array
     }
 }

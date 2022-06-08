@@ -56,5 +56,6 @@ extension UIImage {
     static let copySymbol: UIImage = .systemIcon("doc.on.doc")!
     static let emptyLayerAction: UIImage = .systemIcon("questionmark.diamond")!
     static let layerAction: UIImage = .systemIcon("square.stack.3d.down.forward")!
-    static let layerActionAll: UIImage = .systemIcon("square.stack.3d.down.forward.fill")!
+    static let wireframeAction: UIImage = .systemIcon("square.stack.3d.forward.dottedline")!
+    static let layerActionAll: UIImage = .systemIcon("square.stack.3d.up.badge.a.fill")!
 }

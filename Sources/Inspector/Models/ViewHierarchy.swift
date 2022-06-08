@@ -40,7 +40,7 @@ final class ViewHierarchy: ViewHierarchyRepresentable {
         var candidates = [UIViewController]()
 
         for presentedViewController in rootViewController.allPresentedViewControllers {
-            if presentedViewController is InternalViewProtocol { break }
+            if presentedViewController is InternalViewProtocol || presentedViewController.view is InternalViewProtocol { break }
             candidates.append(presentedViewController)
         }
 

@@ -64,6 +64,25 @@ public struct InspectorConfiguration {
             return .light
         }
     }
+    
+    let defaultLayers: [ViewHierarchyLayer] = [
+        .accessibile,
+        .activityIndicators,
+        .collectionViewCells,
+        .controls,
+        .images,
+        .maps,
+        .progressIndicators,
+        .progressIndicators,
+        .scrollViews,
+        .segmentedControls,
+        .stackViews,
+        .staticTexts,
+        .switches,
+        .tableViewCells,
+        .textInputs,
+        .webViews
+    ]
 
     let knownSystemContainers: [String] = [
         "UIEditingOverlayViewController",

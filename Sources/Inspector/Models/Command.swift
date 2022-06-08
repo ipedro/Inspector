@@ -72,30 +72,26 @@ extension Command {
         )
     }
 
-    static func visibleLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
-        .layer(title: title, at: index, isSelected: true, closure: closure)
-    }
-
-    static func hiddenLayer(_ title: String, at index: Int, closure: @escaping Closure) -> Command {
-        .layer(title: title, at: index, isSelected: false, closure: closure)
-    }
-
-    static func layer(title: String, at index: Int, isSelected: Bool, closure: @escaping Closure) -> Command {
-        Command(
+    static func layer(_ title: String, isSelected: Bool, at index: Int, closure: @escaping Closure) -> Command {
+        .init(
             title: title,
             icon: .layerAction,
-            keyCommandOptions: UIKeyCommand.Options(
-                input: String(index),
-                modifierFlags: keyCommandSettings.layerToggleModifierFlags
-            ),
+            keyCommandOptions: keyCommand(index: index),
             isSelected: isSelected,
             closure: closure
         )
     }
 
+    static func keyCommand(index: Int) -> UIKeyCommand.Options {
+        .init(
+            input: String(index),
+            modifierFlags: keyCommandSettings.layerToggleModifierFlags
+        )
+    }
+
     static func showAllLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.enable(Texts.allHighlights),
+            title: Texts.show(Texts.all),
             icon: .layerActionAll,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
@@ -107,7 +103,7 @@ extension Command {
 
     static func hideVisibleLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.disable(Texts.allHighlights),
+            title: Texts.hide("Visible"),
             icon: .layerActionAll,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,

@@ -135,17 +135,36 @@ extension ViewHierarchyCoordinator {
         let snapshot = latestSnapshot()
         let toggleAllHighlights = toggleAllLayersCommands(for: snapshot)
         let highlights = availableLayerCommands(for: snapshot)
-        let wireframes = [
-            command(for: .wireframes, at: layerToggleInputRange.lowerBound, isEmpty: false)
-        ]
-        .compactMap { $0 }
+        let wireframes = command(for: .wireframes, at: layerToggleInputRange.lowerBound, isEmpty: false)
+
+        let totalSpeed = snapshot
+            .root
+            .windows
+            .map(\.layer.speed)
+            .reduce(into: 0.0) { partialResult, speed in
+                partialResult += speed
+            }
+        let isSlowingAnimations = totalSpeed < Float(snapshot.root.windows.count)
+
+        let slowAnimations = Command(
+            title: "Slow Animations",
+            icon: .systemIcon("tortoise"),
+            keyCommandOptions: .none,
+            isSelected: isSlowingAnimations
+        ) {
+            snapshot
+                .root
+                .windows
+                .forEach { $0.layer.speed = isSlowingAnimations ? 1 : 1 / 5 }
+        }
 
         return [
             .group(
-                commands: wireframes
+                commands: [wireframes, slowAnimations]
+                    .compactMap { $0 }
             ),
             .group(
-                title: Texts.highlightElements,
+                title: Texts.highlightViews,
                 commands: toggleAllHighlights + highlights
             )
         ]

@@ -51,17 +51,24 @@ extension InspectorViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(HierarchyInspectorTableViewHeaderView.self)
-        header.title = viewModel.titleForHeader(in: section)
+        guard let title = viewModel.titleForHeader(in: section) else { return UIView() }
+        header.title = title
         header.showSeparatorView = section > .zero
         return header
     }
-
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        .none
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if viewModel.titleForHeader(in: section) == nil { return .zero }
+        return UITableView.automaticDimension
     }
 
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        UIView()
+    }
+    
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        .zero
+        if viewModel.titleForHeader(in: section) == nil { return .zero }
+        return viewCode.elementInspectorAppearance.horizontalMargins
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

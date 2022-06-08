@@ -23,7 +23,7 @@ import Foundation
 enum Texts {
     static let `default` = "Default"
     static let actions = "Actions"
-    static let allHighlights = "All Highlights"
+    static let all = "All"
     static let cancel = "Cancel"
     static let children = "Children"
     static let clearImage = "Clear image"
@@ -31,7 +31,7 @@ enum Texts {
     static let copy = "Copy"
     static let dismissView = "Dismiss View"
     static let expand = "Expand"
-    static let highlightElements = highlight("Elements")
+    static let highlightViews = highlight("Views")
     static let importImage = "Import image..."
     static let lostConnectionToView = "Lost connection to view"
     static let noElementInspector = "No Element Inspector"
@@ -73,11 +73,19 @@ enum Texts {
     }
 
     static func enable(_ something: String) -> String {
-        "Apply \(something)"
+        "Enable \(something)"
     }
 
     static func disable(_ something: String) -> String {
-        "Remove \(something)"
+        "Disable \(something)"
+    }
+    
+    static func show(_ something: String) -> String {
+        "Show \(something)"
+    }
+
+    static func hide(_ something: String) -> String {
+        "Hide \(something)"
     }
 
     static func highlighting(_ something: String) -> String {

@@ -53,13 +53,8 @@ final class Manager: Coordinator<ManagerDependencies, OperationQueue, Void> {
             with: dependencies.viewHierarchy.windows,
             operationQueue: operationQueue,
             customization: dependencies.customization,
-            defaultLayers: [
-                .allViews,
-                .withIdentifier,
-                .withoutIdentifier
-            ]
+            defaultLayers: dependencies.configuration.defaultLayers.sorted(by: <)
         )
-
         coordinator.delegate = self
         return coordinator
     }()
@@ -82,13 +77,9 @@ final class Manager: Coordinator<ManagerDependencies, OperationQueue, Void> {
         if dependencies.configuration.enableLayoutSubviewsSwizzling {
             UIView.startSwizzling()
         }
-
-        print("Created Manager", self)
     }
 
     deinit {
-        print("Destroyed Manager", self)
-
         operationQueue.cancelAllOperations()
 
         children.forEach { child in
@@ -106,8 +97,8 @@ final class Manager: Coordinator<ManagerDependencies, OperationQueue, Void> {
 
 extension Manager: AsyncOperationProtocol {
     func asyncOperation(name: String = #function, execute closure: @escaping Closure) {
-        let asyncOperation = MainThreadAsyncOperation(name: name, closure: closure)
-
-        operationQueue.addOperation(asyncOperation)
+        operationQueue.addOperation(
+            MainThreadAsyncOperation(name: name, closure: closure)
+        )
     }
 }

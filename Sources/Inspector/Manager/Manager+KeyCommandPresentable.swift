@@ -45,16 +45,14 @@ extension Manager: KeyCommandPresentable {
 
         return windows.map { window in
             .group(
-                title: "\(window.displayName) Hierarchy",
+                title: "Inspect \(window.displayName) Hierarchy",
                 commands: {
                     var commands = [Command]()
                     commands.append(
                         .inspectElement(window) { [weak self] in
                             guard let self = self else { return }
                             self.perform(
-                                action: .inspect(
-                                    preferredPanel: .children
-                                ),
+                                action: .inspect(preferredPanel: .children),
                                 with: window,
                                 from: keyWindow
                             )
