@@ -43,7 +43,7 @@ Inspector is a debugging library written in Swift.
 
 ## Requirements
 
-* iOS 14.0+ (For iOS 11+ Support use v2.x)
+* iOS 11+
 * Xcode 13+
 * Swift 5.4+
 
@@ -83,7 +83,7 @@ dependencies: [
     .package(url: "https://github.com/ipedro/Inspector.git", .upToNextMajor(from: "2.0.0"))
 ]
 
-// For projects with iOS 13+ support
+// For projects with iOS 14+ support
 dependencies: [
     .package(url: "https://github.com/ipedro/Inspector.git", .upToNextMajor(from: "3.0.0"))
 ]
