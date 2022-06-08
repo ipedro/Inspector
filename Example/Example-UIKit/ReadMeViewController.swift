@@ -24,10 +24,10 @@ import SafariServices
 import UIKit
 import WebKit
 
-final class ReadMeViewController: UIViewController {
+final class ReadMeViewController: BaseViewController {
     // MARK: - Components
 
-    @IBOutlet var inspectBarButton: CustomButton!
+    @IBOutlet var inspectBarButton: RoundedButton!
 
     private lazy var activityIndicatorView: UIActivityIndicatorView = {
         let activityIndicatorView = UIActivityIndicatorView(style: .large)

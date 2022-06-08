@@ -82,8 +82,8 @@ extension SceneDelegate: InspectorCustomizationProviding {
     var elementIconProvider: Inspector.ElementIconProvider? {
         .init { view in
             switch view {
-            case is CustomButton:
-                return #imageLiteral(resourceName: "CustomButton_32")
+            case is RoundedButton:
+                return #imageLiteral(resourceName: "RoundedButton_32")
             default:
                 return nil
             }
@@ -101,7 +101,7 @@ extension SceneDelegate: InspectorCustomizationProviding {
 
     var elementColorProvider: Inspector.ElementColorProvider? {
         .init { view in
-            view is CustomButton ? .systemPink : nil
+            view is RoundedButton ? .systemPink : nil
         }
     }
 

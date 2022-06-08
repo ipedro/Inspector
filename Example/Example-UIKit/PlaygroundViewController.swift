@@ -22,7 +22,7 @@ import Inspector
 import MapKit
 import UIKit
 
-final class PlaygroundViewController: UIViewController {
+final class PlaygroundViewController: BaseViewController {
     // MARK: - Stack Views
 
     @IBOutlet var instructionsLabel: UILabel!
@@ -84,7 +84,7 @@ final class PlaygroundViewController: UIViewController {
         }
     }
 
-    @IBOutlet var inspectBarButton: CustomButton!
+    @IBOutlet var inspectBarButton: RoundedButton!
 
     @IBOutlet var datePickerSegmentedControl: UISegmentedControl!
 
@@ -108,8 +108,6 @@ final class PlaygroundViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        Inspector.removeAllLayers()
-
         guard hasAppeared == false else { return }
 
         if #available(iOS 13.4, *) {
@@ -118,22 +116,6 @@ final class PlaygroundViewController: UIViewController {
         else {
             datePickerSegmentedControl.removeSegment(at: 1, animated: false)
         }
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(toggleInspectorLayers), object: nil)
-        perform(#selector(toggleInspectorLayers), with: nil, afterDelay: 0.2)
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        Inspector.removeAllLayers()
-    }
-
-    @objc private func toggleInspectorLayers() {
-        Inspector.toggleAllLayers()
-        printViewHierarchyDescription()
     }
 
     private func setupSegmentedControl() {

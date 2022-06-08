@@ -471,19 +471,19 @@ import UIKit
 import Inspector
 
 enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+    case roundedButton
 
     var targetClass: AnyClass {
         switch self {
-        case .customButton:
-            return CustomButton.self
+        case .roundedButton:
+            return RoundedButton.self
         }
     }
 
     func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
-        case .customButton:
-            return .init(with: CustomButtonAttributesSectionDataSource(with: object))
+        case .roundedButton:
+            return .init(with: RoundedButtonAttributesSectionDataSource(with: object))
         }
     }
 }
@@ -496,18 +496,18 @@ enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
 import UIKit
 import Inspector
 
-final class CustomButtonAttributesSectionDataSource: InspectorElementSectionDataSource {
+final class RoundedButtonAttributesSectionDataSource: InspectorElementSectionDataSource {
     var state: InspectorElementSectionState = .collapsed
 
-    var title: String = "Custom Button"
+    var title: String = "Rounded Button"
 
-    let customButton: CustomButton
+    let roundedButton: RoundedButton
 
     init?(with object: NSObject) {
-        guard let customButton = object as? CustomButton else {
+        guard let roundedButton = object as? RoundedButton else {
             return nil
         }
-        self.customButton = customButton
+        self.roundedButton = roundedButton
     }
 
     enum Properties: String, CaseIterable {
@@ -522,25 +522,25 @@ final class CustomButtonAttributesSectionDataSource: InspectorElementSectionData
             case .animateOnTouch:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { self.customButton.animateOnTouch }
+                    isOn: { self.roundedButton.animateOnTouch }
                 ) { animateOnTouch in
-                    self.customButton.animateOnTouch = animateOnTouch
+                    self.roundedButton.animateOnTouch = animateOnTouch
                 }
 
             case .cornerRadius:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { self.customButton.roundCorners }
+                    isOn: { self.roundedButton.roundCorners }
                 ) { roundCorners in
-                    self.customButton.roundCorners = roundCorners
+                    self.roundedButton.roundCorners = roundCorners
                 }
 
             case .backgroundColor:
                 return .colorPicker(
                     title: property.rawValue,
-                    color: { self.customButton.backgroundColor }
+                    color: { self.roundedButton.backgroundColor }
                 ) { newBackgroundColor in
-                    self.customButton.backgroundColor = newBackgroundColor
+                    self.roundedButton.backgroundColor = newBackgroundColor
                 }
             }
         }

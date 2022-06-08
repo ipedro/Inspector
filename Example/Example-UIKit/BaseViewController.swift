@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2022 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -21,20 +21,14 @@
 import Inspector
 import UIKit
 
-enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case roundedButton
-
-    var targetClass: AnyClass {
-        switch self {
-        case .roundedButton:
-            return RoundedButton.self
-        }
+class BaseViewController: UIViewController {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Inspector.removeAllLayers()
     }
 
-    func sections(for object: NSObject) -> InspectorElementSections {
-        switch self {
-        case .roundedButton:
-            return .init(with: RoundedButtonAttributesSectionDataSource(with: object))
-        }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        Inspector.removeAllLayers()
     }
 }
