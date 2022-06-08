@@ -22,25 +22,32 @@ import UIKit
 
 final class ContextMenuPresenter: NSObject, UIContextMenuInteractionDelegate {
     private let configurationProvider: (UIContextMenuInteraction) -> UIContextMenuConfiguration?
-    private var isContextMenuInteractionSetup: [ObjectIdentifier: Bool] = [:]
+    private var store: [ObjectIdentifier: UIContextMenuInteraction] = [:]
 
     init(configurationProvider: @escaping (UIContextMenuInteraction) -> UIContextMenuConfiguration?) {
         self.configurationProvider = configurationProvider
     }
 
     func addInteraction(to view: UIView) {
-        let viewIdentifier = view.objectIdentifier
+        let key = view.objectIdentifier
 
-        guard isContextMenuInteractionSetup[viewIdentifier] == nil else { return }
-
-        if view.canHostContextMenuInteraction {
-            view.addInteraction(UIContextMenuInteraction(delegate: self))
-            isContextMenuInteractionSetup[viewIdentifier] = true
-        }
+        guard
+            view.canHostContextMenuInteraction,
+            store[key] == nil
         else {
-            isContextMenuInteractionSetup[viewIdentifier] = false
-            // print("🧬 Ignoring \(view._className)")
+            return
         }
+
+        let interaction = UIContextMenuInteraction(delegate: self)
+        view.addInteraction(interaction)
+        store[key] = interaction
+    }
+
+    func removeInteraction(from view: UIView) {
+        let key = view.objectIdentifier
+        guard let interaction = store[key] else { return }
+        view.removeInteraction(interaction)
+        store[key] = nil
     }
 
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction,

@@ -34,9 +34,7 @@ final class ViewHierarchyCoordinator: Coordinator<ViewHierarchyDependencies, Ope
 
     weak var delegate: ViewHierarchyCoordinatorDelegate?
 
-    private var cachedSnapshot: ViewHierarchySnapshot? { history.last }
-
-    private lazy var history: [ViewHierarchySnapshot] = []
+    private var cachedSnapshot: ViewHierarchySnapshot?
 
     var wireframeViews: [ViewHierarchyElementKey: WireframeView] = [:] {
         didSet {
@@ -92,7 +90,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
 
         switch layerAction {
         case .showHighlight:
-            let elementKeys = element.safelyInspectableViewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
+            let elementKeys = element.inspectorHostableViewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
 
             if var referenceKeys = visibleReferences[.highlightViews] {
                 referenceKeys.append(contentsOf: elementKeys)
@@ -106,7 +104,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
             }
 
         case .hideHighlight:
-            let elementKeys = element.safelyInspectableViewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
+            let elementKeys = element.inspectorHostableViewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
             elementKeys.forEach { removeHighlightView(for: $0) }
 
             if visibleReferences[.highlightViews].isNilOrEmpty {
@@ -120,7 +118,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
 
 extension ViewHierarchyCoordinator {
     func clearData() {
-        history.removeAll()
+        cachedSnapshot = .none
         visibleReferences.removeAll()
         wireframeViews.removeAll()
         highlightViews.removeAll()
@@ -129,7 +127,7 @@ extension ViewHierarchyCoordinator {
     func latestSnapshot() -> ViewHierarchySnapshot {
         if let cachedSnapshot = cachedSnapshot, cachedSnapshot.isValid { return cachedSnapshot }
         let snapshot = makeSnapshot()
-        history.append(snapshot)
+        cachedSnapshot = snapshot
         return snapshot
     }
 
@@ -154,7 +152,7 @@ extension ViewHierarchyCoordinator {
     }
 
     private func makeSnapshot() -> ViewHierarchySnapshot {
-        let application = ApplicationReference(.shared, catalog: dependencies.catalog)
+        let application = ViewHierarchyElementRoot(.shared, catalog: dependencies.catalog)
         let snapshot = ViewHierarchySnapshot(layers: dependencies.layers, root: application)
         return snapshot
     }

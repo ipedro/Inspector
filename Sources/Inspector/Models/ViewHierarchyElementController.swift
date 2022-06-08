@@ -45,7 +45,7 @@ extension NSDirectionalEdgeInsets: Hashable {
     }
 }
 
-extension ViewHierarchyController {
+extension ViewHierarchyElementController {
     struct Snapshot: ViewHierarchyControllerProtocol, ExpirableProtocol, Hashable {
         let identifier = UUID()
         let depth: Int
@@ -151,7 +151,7 @@ extension ViewHierarchyController {
     }
 }
 
-final class ViewHierarchyController: CustomDebugStringConvertible {
+final class ViewHierarchyElementController: CustomDebugStringConvertible {
     var debugDescription: String {
         String(describing: store.latest)
     }
@@ -214,7 +214,7 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
         iconProvider: ViewHierarchyElementIconProvider? = .none,
         depth: Int = .zero,
         isCollapsed: Bool = false,
-        parent: ViewHierarchyController? = nil
+        parent: ViewHierarchyElementController? = nil
     ) {
         objectIdentifier = ObjectIdentifier(viewController)
         self.isCollapsed = isCollapsed
@@ -238,8 +238,8 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
         store = SnapshotStore(initialSnapshot)
     }
 
-    private func makeChildReference(from childViewController: UIViewController) -> ViewHierarchyController {
-        ViewHierarchyController(
+    private func makeChildReference(from childViewController: UIViewController) -> ViewHierarchyElementController {
+        ViewHierarchyElementController(
             childViewController,
             iconProvider: iconProvider,
             depth: depth + 1,
@@ -271,7 +271,7 @@ final class ViewHierarchyController: CustomDebugStringConvertible {
     }
 }
 
-extension ViewHierarchyController: ViewHierarchyElementReference {
+extension ViewHierarchyElementController: ViewHierarchyElementReference {
     var canHostContextMenuInteraction: Bool {
         rootElement.canHostContextMenuInteraction
     }
@@ -352,7 +352,7 @@ extension ViewHierarchyController: ViewHierarchyElementReference {
     }
 }
 
-extension ViewHierarchyController: ViewHierarchyControllerProtocol {
+extension ViewHierarchyElementController: ViewHierarchyControllerProtocol {
     var className: String {
         store.first.className
     }

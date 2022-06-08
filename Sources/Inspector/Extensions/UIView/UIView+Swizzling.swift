@@ -1,21 +1,28 @@
 import UIKit
 
 extension UIView {
-    // MARK: - Did Move To Superview
+    // MARK: - Did Move To didMoveToWindow
 
-    @objc func inspector_swizzledLayoutSubviews() {
-        inspector_swizzledLayoutSubviews()
+    private static let performSwizzling: Void = sizzle(#selector(didMoveToWindow), with: #selector(swizzled_didMoveToWindow))
 
-        Inspector.sharedInstance.contextMenuPresenter?.addInteraction(to: self)
+    @objc func swizzled_didMoveToWindow() {
+        swizzled_didMoveToWindow()
+
+        if window == nil {
+            Inspector.sharedInstance.contextMenuPresenter?.removeInteraction(from: self)
+        }
+        else {
+            Inspector.sharedInstance.contextMenuPresenter?.addInteraction(to: self)
+        }
     }
 
-    private static let swizzleLayoutSubviewsImplementation: Void = {
+    private static func sizzle(_ aSelector: Selector, with otherSelector: Selector) {
         let instance = UIView()
 
         let aClass: AnyClass! = object_getClass(instance)
 
-        let originalMethod = class_getInstanceMethod(aClass, #selector(layoutSubviews))
-        let swizzledMethod = class_getInstanceMethod(aClass, #selector(UIView.inspector_swizzledLayoutSubviews))
+        let originalMethod = class_getInstanceMethod(aClass, aSelector)
+        let swizzledMethod = class_getInstanceMethod(aClass, otherSelector)
 
         guard
             let originalMethod = originalMethod,
@@ -25,9 +32,9 @@ extension UIView {
         }
 
         method_exchangeImplementations(originalMethod, swizzledMethod)
-    }()
+    }
 
     static func startSwizzling() {
-        _ = swizzleLayoutSubviewsImplementation
+        _ = performSwizzling
     }
 }

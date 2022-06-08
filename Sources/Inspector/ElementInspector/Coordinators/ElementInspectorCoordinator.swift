@@ -46,84 +46,59 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
 
     private(set) lazy var slidingPanelAnimator = ElementInspectorSlidingPanelAnimator()
 
-    private(set) lazy var adaptiveModalPresenter = AdaptiveModalPresenter { [weak self] presentationController, _ in
-        switch presentationController.presentedViewController {
-        case let navigationController as ElementInspectorNavigationController where navigationController.shouldAdaptModalPresentation == false:
-            return .none
-        default:
-            #if swift(>=5.5)
-            if #available(iOS 15.0, *) {
-                if presentationController is UIPopoverPresentationController {
-                    return presentationController.presentationStyle
-                }
-            }
-            #endif
-            return .formSheet
-        }
-    } onDismiss: { [weak self] presentationController in
-        guard let self = self else { return }
-        if presentationController.presentedViewController === self.navigationController {
-            self.finish(with: .dismiss)
-        }
-    }
-
     private(set) lazy var transitionPresenter = UIViewControllerTransitionPresenter().then {
         $0.delegate = self
     }
 
     private var formPanelController: ElementInspectorFormPanelViewController? { currentPanelViewController as? ElementInspectorFormPanelViewController }
 
-    private(set) lazy var popoverSheetPresenter = PopoverSheetPresenter(
-        onChangeSelectedDetent: { [weak self] detent in
-            guard
-                let self = self,
-                let formPanelController = self.formPanelController
-            else {
-                return
+    private(set) lazy var adaptiveModalPresenter = AdaptiveModalPresenter(
+        presentationStyle: { presentationController, _ in
+            switch presentationController.presentedViewController {
+            case let navigationController as ElementInspectorNavigationController where navigationController.shouldAdaptModalPresentation == false:
+                return .none
+            default:
+                #if swift(>=5.5)
+                if #available(iOS 15.0, *) {
+                    if presentationController is UIPopoverPresentationController {
+                        return presentationController.presentationStyle
+                    }
+                }
+                #endif
+                return .formSheet
             }
-            formPanelController.isFullHeightPresentation = detent == .large
-
         },
-        onDismiss: { [weak self] popover in
+        onChangeSelectedDetent: { [weak self] detent in
             guard let self = self else { return }
-
-            if popover.presentedViewController === self.navigationController {
+            self.formPanelController?.isFullHeightPresentation = detent == .large
+        },
+        onDismiss: { [weak self] presentationController in
+            guard let self = self else { return }
+            if self.navigationController === presentationController.presentedViewController {
                 self.finish(with: .dismiss)
             }
         }
     )
 
     @available(iOS 14.0, *)
-    private(set) lazy var colorPicker = ColorPickerPresenter { [weak self] selectedColor in
-        guard
-            let self = self,
-            let formPanelController = self.formPanelController
-        else {
-            return
+    private(set) lazy var colorPicker = ColorPickerPresenter(
+        onColorSelected: { [weak self] selectedColor in
+            guard let self = self else { return }
+            self.formPanelController?.selectColor(selectedColor)
+        },
+        onDimiss: { [weak self] in
+            guard let self = self else { return }
+            self.formPanelController?.finishColorSelection()
         }
-        formPanelController.selectColor(selectedColor)
-    } onDimiss: { [weak self] in
-        guard
-            let self = self,
-            let formPanelController = self.formPanelController
-        else {
-            return
-        }
-        formPanelController.finishColorSelection()
-    }
+    )
 
     private(set) lazy var documentPicker = DocumentPickerPresenter { [weak self] urls in
-        guard
-            let self = self,
-            let formPanelController = self.currentPanelViewController as? ElementInspectorFormPanelViewController
-        else {
-            return
-        }
+        guard let self = self else { return }
 
         for url in urls {
             guard let data = try? Data(contentsOf: url) else { continue }
             let image = UIImage(data: data)
-            formPanelController.selectImage(image)
+            self.formPanelController?.selectImage(image)
             break
         }
     }
@@ -167,14 +142,14 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
     func setPopoverModalPresentationStyle(for viewController: UIViewController, from sourceView: UIView) {
         if #available(iOS 15.0, *) {
             viewController.setPopoverModalPresentationStyle(
-                delegate: popoverSheetPresenter,
+                delegate: adaptiveModalPresenter,
                 transitionDelegate: transitionDelegate(for: viewController),
                 from: sourceView
             )
         }
         else {
             viewController.setPopoverModalPresentationStyle(
-                delegate: popoverSheetPresenter,
+                delegate: adaptiveModalPresenter,
                 transitionDelegate: transitionDelegate(for: viewController),
                 from: sourceView
             )

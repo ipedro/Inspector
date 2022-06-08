@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+@_implementationOnly import Coordinator
 import UIKit
 
 final class LayoutConstraintElement {
@@ -204,8 +205,9 @@ extension LayoutConstraintElement {
             return "\(item.displayName).\(attributeName)"
         }
 
-        func ownership(to view: UIView) -> Ownership {
-            ObjectIdentifier(item.target) == ObjectIdentifier(view) ? .mine : .theirs
+        func ownership(to view: UIView) -> Ownership? {
+            guard let target = item.target else { return .none }
+            return ObjectIdentifier(target) == ObjectIdentifier(view) ? .mine : .theirs
         }
     }
 }
@@ -234,46 +236,46 @@ extension LayoutConstraintElement {
 
 extension LayoutConstraintElement {
     enum Item: Hashable {
-        case view(UIView)
-        case layoutGuide(UILayoutGuide)
-        case other(NSObject)
+        case view(Weak<UIView>)
+        case layoutGuide(Weak<UILayoutGuide>)
+        case other(Weak<NSObject>)
 
         var targetView: UIView? {
             switch self {
             case let .layoutGuide(layoutGuide):
-                return layoutGuide.owningView
+                return layoutGuide.weakReference?.owningView
 
             case let .view(view):
-                return view
+                return view.weakReference
 
             case .other:
                 return nil
             }
         }
 
-        var target: NSObject {
+        var target: NSObject? {
             switch self {
             case let .layoutGuide(layoutGuide):
-                return layoutGuide.owningView ?? layoutGuide
+                return layoutGuide.weakReference?.owningView ?? layoutGuide.weakReference
 
             case let .view(view):
-                return view
+                return view.weakReference
 
             case let .other(object):
-                return object
+                return object.weakReference
             }
         }
 
         init?(with object: AnyObject?) {
             switch object {
             case let view as UIView:
-                self = .view(view)
+                self = .view(Weak(view))
 
             case let layoutGuide as UILayoutGuide:
-                self = .layoutGuide(layoutGuide)
+                self = .layoutGuide(Weak(layoutGuide))
 
             case let object as NSObject:
-                self = .other(object)
+                self = .other(Weak(object))
 
             default:
                 return nil
@@ -281,18 +283,29 @@ extension LayoutConstraintElement {
         }
 
         var displayName: String {
+            _displayName ?? "Constraint"
+        }
+
+        private var _displayName: String? {
             switch self {
             case let .view(view):
-                return view.elementName
+                return view.weakReference?.elementName
 
             case let .layoutGuide(layoutGuide):
-                if let owningView = layoutGuide.owningView {
-                    return String(describing: layoutGuide.classForCoder).replacingOccurrences(of: "UILayoutGuide", with: "\(owningView.elementName) Margins")
+                if
+                    let reference = layoutGuide.weakReference,
+                    let owningView = reference.owningView
+                {
+                    return String(describing: reference.classForCoder)
+                        .replacingOccurrences(of: "UILayoutGuide", with: "\(owningView.elementName) Margins")
                 }
-                return String(describing: layoutGuide.classForCoder)
+                return .none
 
             case let .other(object):
-                return String(describing: object)
+                if let reference = object.weakReference {
+                    return String(describing: reference)
+                }
+                return .none
             }
         }
     }

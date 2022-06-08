@@ -27,9 +27,11 @@ final class SnapshotStore<Snapshot>: NSObject {
 
     let first: Snapshot
 
-    var latest: Snapshot { history.last ?? first }
+    let maxCount: Int
 
-    private lazy var history: [Snapshot] = [first]
+    var latest: Snapshot { snapshots.last ?? first }
+
+    private lazy var snapshots: [Snapshot] = [first]
 
     private var snapshotProvider: Provider? {
         didSet {
@@ -37,9 +39,14 @@ final class SnapshotStore<Snapshot>: NSObject {
         }
     }
 
-    init(_ initial: Snapshot, delay: TimeInterval = Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval) {
+    init(
+        _ initial: Snapshot,
+        maxCount: Int = Inspector.sharedInstance.configuration.snapshotMaxCount,
+        delay: TimeInterval = Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval
+    ) {
         first = initial
         self.delay = delay
+        self.maxCount = maxCount
     }
 
     func scheduleSnapshot(_ provider: Provider) {
@@ -48,7 +55,7 @@ final class SnapshotStore<Snapshot>: NSObject {
 
     @objc private func makeSnapshot() {
         guard let newSnapshot = snapshotProvider?.value else { return }
-
-        history.append(newSnapshot)
+        snapshots.append(newSnapshot)
+        snapshots = Array(snapshots.suffix(maxCount))
     }
 }

@@ -20,7 +20,7 @@
 
 import UIKit
 
-final class ApplicationReference {
+final class ViewHierarchyElementRoot {
     weak var parent: ViewHierarchyElementReference?
 
     lazy var children = windows
@@ -84,7 +84,7 @@ final class ApplicationReference {
 
     @discardableResult
     private static func connect(
-        viewControllers: [ViewHierarchyController],
+        viewControllers: [ViewHierarchyElementController],
         with window: ViewHierarchyElement
     ) -> [ViewHierarchyElementReference] {
         var viewHierarchy = [ViewHierarchyElementReference]()
@@ -121,8 +121,8 @@ final class ApplicationReference {
     }
 }
 
-extension ApplicationReference: ViewHierarchyElementReference {
-    var viewHierarchy: [ViewHierarchyElementReference] { children.flatMap(\.viewHierarchy) }
+extension ViewHierarchyElementRoot: ViewHierarchyElementReference {
+    var viewHierarchy: [ViewHierarchyElementReference] { children.flatMap(\.nonInternalViewHierarchy) }
 
     var underlyingObject: NSObject? { application }
 

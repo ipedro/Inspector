@@ -20,23 +20,49 @@
 
 import UIKit
 
-final class AdaptiveModalPresenter: NSObject, UIAdaptivePresentationControllerDelegate {
-    private let presentationStyleProvider: (UIPresentationController, UITraitCollection) -> UIModalPresentationStyle
-    private let dismissHandler: ((UIPresentationController) -> Void)?
-
-    init(
-        presentationStyleProvider: @escaping (UIPresentationController, UITraitCollection) -> UIModalPresentationStyle,
-        onDismiss: ((UIPresentationController) -> Void)? = .none
-    ) {
-        self.presentationStyleProvider = presentationStyleProvider
-        dismissHandler = onDismiss
+final class AdaptiveModalPresenter: NSObject {
+    enum Detent {
+        case medium, large
     }
 
+    private let presentationStyleProvider: (UIPresentationController, UITraitCollection) -> UIModalPresentationStyle
+    private let onChangeSelectedDetentHandler: (Detent?) -> Void
+    private let onDismissHandler: (UIPresentationController) -> Void
+
+    init(
+        presentationStyle: @escaping (UIPresentationController, UITraitCollection) -> UIModalPresentationStyle,
+        onChangeSelectedDetent: @escaping (Detent?) -> Void,
+        onDismiss: @escaping ((UIPresentationController) -> Void)
+    ) {
+        onChangeSelectedDetentHandler = onChangeSelectedDetent
+        presentationStyleProvider = presentationStyle
+        onDismissHandler = onDismiss
+    }
+}
+
+extension AdaptiveModalPresenter: UIAdaptivePresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
         presentationStyleProvider(controller, traitCollection)
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        dismissHandler?(presentationController)
+        onDismissHandler(presentationController)
     }
 }
+
+extension AdaptiveModalPresenter: UIPopoverPresentationControllerDelegate {
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        onDismissHandler(popoverPresentationController)
+    }
+}
+
+#if swift(>=5.5)
+@available(iOS 15.0, *)
+extension AdaptiveModalPresenter: UISheetPresentationControllerDelegate {
+    func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
+        onChangeSelectedDetentHandler(
+            sheetPresentationController.selectedDetentIdentifier == .medium ? .medium : .large
+        )
+    }
+}
+#endif

@@ -51,7 +51,7 @@ public extension Inspector {
         // MARK: - Metods
 
         func makeKeysForInspectableElements(in snapshot: ViewHierarchySnapshot) -> [ViewHierarchyElementKey] {
-            filter(viewHierarchy: snapshot.root.safelyInspectableViewHierarchy).compactMap { ViewHierarchyElementKey(reference: $0) }
+            filter(viewHierarchy: snapshot.root.inspectorHostableViewHierarchy).compactMap { ViewHierarchyElementKey(reference: $0) }
         }
 
         func filter(viewHierarchy: [ViewHierarchyElementReference]) -> [ViewHierarchyElementReference] {

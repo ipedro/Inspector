@@ -29,7 +29,7 @@ extension ViewHierarchyColorScheme {
             return .systemGray
         }
 
-        if view._layerView?.element is ViewHierarchyController {
+        if view._layerView?.element is ViewHierarchyElementController {
             return .darkGray
         }
 

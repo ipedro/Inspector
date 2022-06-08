@@ -32,6 +32,10 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
         }
     }
 
+    deinit {
+        stopLiveUpdatingSnapshot()
+    }
+
     private var displayLink: CADisplayLink? {
         didSet {
             if let oldLink = oldValue {
