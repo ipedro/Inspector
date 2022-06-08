@@ -20,7 +20,6 @@
 
 import UIKit
 
-@available(iOS 13.4, *)
 extension UIDatePickerStyle: CaseIterable {
     typealias AllCases = [UIDatePickerStyle]
 

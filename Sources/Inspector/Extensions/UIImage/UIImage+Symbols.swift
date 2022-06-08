@@ -39,6 +39,14 @@ extension UIImage {
     static let missingSymbol: UIImage = .icon("missing-view-32_Normal")!
     static let warningSymbol: UIImage = .icon("exclamationmark.triangle")!
     static let infoSymbol: UIImage = IconKit.imageOfInfoCircleFill().withRenderingMode(.alwaysTemplate)
+
+    static let navigationController: UIImage = .systemIcon("chevron.left.square")!
+
+    static let collectionViewController: UIImage = .systemIcon("square.grid.3x3")!
+
+    static let nsObject: UIImage = .systemIcon("shippingbox")!
+
+    static let applicationIcon: UIImage = .systemIcon("app.badge.fill")!
 }
 
 extension UIImage {

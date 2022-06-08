@@ -34,15 +34,15 @@ extension ViewHierarchyElementIconProvider {
             case is UIPageViewController:
                 return .icon("UIPageViewController")
             case is UINavigationController:
-                return .systemIcon("chevron.left.square")
+                return .navigationController
             case is UICollectionViewController:
-                return .systemIcon("square.grid.3x3.square")
+                return .collectionViewController
             case is UITableViewController:
                 return .icon("UITableViewController")
             case is UITabBarController:
                 return .icon("TabbedView-32_Normal")
             default:
-                return .systemIcon("shippingbox")
+                return .nsObject
             }
         }
 

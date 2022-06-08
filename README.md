@@ -41,6 +41,14 @@ Inspector is a debugging library written in Swift.
 
 ---
 
+## Requirements
+
+* iOS 14.0+ (For iOS 11+ Support use v2.x)
+* Xcode 13+
+* Swift 5.4+
+
+---
+
 ## Why use it?
 
 ### Improve development experience
@@ -57,12 +65,6 @@ Inspector is a debugging library written in Swift.
 * Easily validate specific state behaviors.
 * Better understanding of the inner-workings of components
 * Give more accurate feedback for developers. 
-
-## Requirements
-
-* iOS 11.0+
-* Xcode 12+
-* Swift 5.4+
 
 ---
 ## Installation

@@ -33,6 +33,7 @@ final class ContextMenuPresenter: NSObject, UIContextMenuInteractionDelegate {
 
         guard
             view.canHostContextMenuInteraction,
+            view.allParents.filter({ $0 is InternalViewProtocol }).isEmpty,
             store[key] == nil
         else {
             return

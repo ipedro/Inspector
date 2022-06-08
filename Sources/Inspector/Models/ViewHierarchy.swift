@@ -40,7 +40,7 @@ final class ViewHierarchy: ViewHierarchyRepresentable {
         var candidates = [UIViewController]()
 
         for presentedViewController in rootViewController.allPresentedViewControllers {
-            if presentedViewController is NonInspectableView { break }
+            if presentedViewController is InternalViewProtocol { break }
             candidates.append(presentedViewController)
         }
 

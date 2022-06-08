@@ -137,7 +137,7 @@ extension ViewHierarchyElementRoot: ViewHierarchyElementReference {
             let appIcon = UIImage(named: iconName),
             let appIconTemplate = UIImage.icon("app-icon-template")
         else {
-            return .systemIcon("app.badge.fill")
+            return .applicationIcon
         }
 
         return appIcon.maskImage(with: appIconTemplate)

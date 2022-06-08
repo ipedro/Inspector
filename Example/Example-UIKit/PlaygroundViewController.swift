@@ -110,12 +110,7 @@ final class PlaygroundViewController: BaseViewController {
 
         guard hasAppeared == false else { return }
 
-        if #available(iOS 13.4, *) {
-            setupSegmentedControl()
-        }
-        else {
-            datePickerSegmentedControl.removeSegment(at: 1, animated: false)
-        }
+        setupSegmentedControl()
     }
 
     private func setupSegmentedControl() {
