@@ -20,15 +20,7 @@
 
 import UIKit
 
-final class LayoutConstraintElement: Hashable {
-    static func == (lhs: LayoutConstraintElement, rhs: LayoutConstraintElement) -> Bool {
-        lhs.underlyingConstraint == rhs.underlyingConstraint
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(underlyingConstraint)
-    }
-
+final class LayoutConstraintElement {
     weak var underlyingConstraint: NSLayoutConstraint?
 
     weak var view: UIView?
@@ -134,6 +126,18 @@ final class LayoutConstraintElement: Hashable {
 
             return binding
         }
+    }
+}
+
+// MARK: - Hashable
+
+extension LayoutConstraintElement: Hashable {
+    static func == (lhs: LayoutConstraintElement, rhs: LayoutConstraintElement) -> Bool {
+        lhs.underlyingConstraint == rhs.underlyingConstraint
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(underlyingConstraint)
     }
 }
 
