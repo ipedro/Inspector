@@ -212,7 +212,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        animateWhenKeyboard(.willChangeFrame) { info in
+        animateWhenKeyboard(.willChangeFrame) { [weak self] info in
+            guard let self = self else { return }
             self.viewCode.keyboardHeight = info.keyboardFrame.height
             self.viewCode.layoutIfNeeded()
         }
