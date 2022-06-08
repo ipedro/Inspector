@@ -105,7 +105,7 @@
                                                         <imageReference key="image" image="hand.point.down.fill" catalog="system" symbolScale="large"/>
                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
                                                     </imageView>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hNH-cI-DFG" customClass="RoundedButton" customModule="Example" customModuleProvider="target">
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hNH-cI-DFG" customClass="RoundedButton" customModule="Example" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="116" width="414" height="44"/>
                                                         <color key="backgroundColor" name="AccentColor"/>
                                                         <constraints>
@@ -286,7 +286,7 @@
                     <tabBarItem key="tabBarItem" title="Playground" image="tab-bar-playground-off" selectedImage="tab-bar-playground-on" id="hZK-SV-H0t"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="RgH-s8-kZS">
-                        <rect key="frame" x="0.0" y="44" width="414" height="119"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" systemColor="systemBackgroundColor"/>
                         <textAttributes key="titleTextAttributes">
