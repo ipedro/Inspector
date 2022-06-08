@@ -38,19 +38,17 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
     }
 
     func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command? {
-        if isEmpty { return /* .emptyLayer(layer.emptyActionTitle) */ .none }
-        let title: String = {
-            switch (layer, isShowingLayer(layer)) {
-            case (.wireframes, true): return "Showing Wireframes"
-            case (.wireframes, false): return "Show Wireframes"
-            case (_, true): return Texts.highlighting(layer.title)
-            case (_, false): return Texts.highlight(layer.title)
-            }
-        }()
+        if isEmpty { return .none }
 
         let isSelected = isShowingLayer(layer)
-
         let icon: UIImage = layer == .wireframes ? .wireframeAction : .layerAction
+        let title: String = {
+            switch (layer, isSelected) {
+            case (.wireframes, true): return Texts.hide(layer.title)
+            case (.wireframes, false): return Texts.show(layer.title)
+            default: return layer.title
+            }
+        }()
 
         return Command(
             title: title,
@@ -65,19 +63,22 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
 
     func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> [Command] {
         var array = [Command]()
-
-        if activeLayers.count > .zero {
-            array.append(
-                .hideVisibleLayers { [weak self] in self?.removeAllLayers() }
-            )
-        }
-
         if activeLayers.count < populatedLayers.count {
             array.append(
-                .showAllLayers { [weak self] in self?.installAllLayers() }
+                .showAllLayers { [weak self] in
+                    guard let self = self else { return }
+                    self.installAllLayers()
+                }
             )
         }
-
+        if activeLayers.count > .zero {
+            array.append(
+                .hideVisibleLayers { [weak self] in
+                    guard let self = self else { return }
+                    self.removeAllLayers()
+                }
+            )
+        }
         return array
     }
 }

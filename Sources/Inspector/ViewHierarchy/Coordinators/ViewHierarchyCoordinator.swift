@@ -155,7 +155,7 @@ extension ViewHierarchyCoordinator {
             snapshot
                 .root
                 .windows
-                .forEach { $0.layer.speed = isSlowingAnimations ? 1 : 1 / 4 }
+                .forEach { $0.layer.speed = isSlowingAnimations ? 1 : 1 / 5 }
         }
 
         return [
@@ -164,7 +164,7 @@ extension ViewHierarchyCoordinator {
                     .compactMap { $0 }
             ),
             .group(
-                title: Texts.highlightElements,
+                title: Texts.highlightViews,
                 commands: toggleAllHighlights + highlights
             )
         ]

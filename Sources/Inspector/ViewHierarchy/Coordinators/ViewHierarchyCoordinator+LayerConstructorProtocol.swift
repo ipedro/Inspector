@@ -62,18 +62,16 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
     // MARK: Install
 
     func installLayer(_ layer: Inspector.ViewHierarchyLayer) {
-        let snapshot = latestSnapshot()
-
         asyncOperation(name: layer.title) {
+            let snapshot = self.latestSnapshot()
             self.make(layer: layer, for: snapshot)
         }
     }
 
     func installAllLayers() {
-        let snapshot = latestSnapshot()
-
-        asyncOperation(name: Texts.enable(Texts.allHighlights)) {
-            for layer in self.populatedLayers where layer.allowsInternalViews == false {
+        asyncOperation(name: Texts.enable(Texts.all)) {
+            let snapshot = self.latestSnapshot()
+            for layer in self.populatedLayers {
                 self.make(layer: layer, for: snapshot)
             }
         }
@@ -86,7 +84,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
             return
         }
 
-        asyncOperation(name: Texts.disable(Texts.allHighlights)) {
+        asyncOperation(name: Texts.disable(Texts.all)) {
             self.destroyAllLayers()
         }
     }

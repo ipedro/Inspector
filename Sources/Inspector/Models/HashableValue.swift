@@ -21,15 +21,19 @@
 import Foundation
 
 @propertyWrapper
-struct UniqueIdentifier<Value>: Hashable {
-    var wrappedValue: Value
-    let identifier = UUID()
+public struct HashableValue<Value>: Hashable {
+    private let identifier = UUID()
+    public var wrappedValue: Value
 
-    static func == (lhs: UniqueIdentifier<Value>, rhs: UniqueIdentifier<Value>) -> Bool {
+    public init(wrappedValue: Value) {
+        self.wrappedValue = wrappedValue
+    }
+
+    public static func == (lhs: HashableValue<Value>, rhs: HashableValue<Value>) -> Bool {
         lhs.identifier == rhs.identifier
     }
 
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
     }
 }
