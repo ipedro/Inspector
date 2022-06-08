@@ -38,18 +38,13 @@ enum ViewHierarchyLayerAction: Swift.CaseIterable, MenuContentProtocol {
     var title: String {
         switch self {
         case .showHighlight:
-            return "Highlight Views"
+            return Texts.highlight("Views")
         case .hideHighlight:
-            return "Stop Highlighting"
+            return Texts.highlighting("Views")
         }
     }
 
     var image: UIImage? {
-        switch self {
-        case .showHighlight:
-            return .showHighlightsSymbol
-        case .hideHighlight:
-            return .hideHighlightsSymbol
-        }
+        .layerAction
     }
 }

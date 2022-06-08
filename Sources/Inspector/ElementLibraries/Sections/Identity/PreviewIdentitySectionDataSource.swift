@@ -24,7 +24,7 @@ extension DefaultElementIdentityLibrary {
     final class PreviewIdentitySectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 
-        let title: String = "Preview"
+        let title: String = Texts.preview
 
         private let element: ViewHierarchyElement
 

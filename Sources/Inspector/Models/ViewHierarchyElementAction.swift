@@ -21,9 +21,9 @@
 import UIKit
 
 enum ViewHierarchyElementAction: MenuContentProtocol {
-    case layer(ViewHierarchyLayerAction)
+    case layer(action: ViewHierarchyLayerAction)
     case inspect(preferredPanel: ElementInspectorPanel?)
-    case copy(ViewHierarchyInformation)
+    case copy(info: ViewHierarchyInformation)
 
     var title: String {
         switch self {
@@ -38,14 +38,24 @@ enum ViewHierarchyElementAction: MenuContentProtocol {
         }
     }
 
+    var isOn: Bool {
+        switch self {
+        case let .layer(action):
+            switch action {
+            case .hideHighlight: return true
+            case .showHighlight: return false
+            }
+        case .inspect: return false
+        case .copy: return false
+        }
+    }
+
     var image: UIImage? {
         switch self {
         case let .layer(action):
             return action.image
-
         case let .inspect(preferredPanel):
             return preferredPanel?.image
-
         case let .copy(content):
             return content.image
         }
@@ -55,7 +65,7 @@ enum ViewHierarchyElementAction: MenuContentProtocol {
         var actions = [ViewHierarchyElementAction]()
 
         for action in ViewHierarchyLayerAction.allCases(for: element) {
-            actions.append(.layer(action))
+            actions.append(.layer(action: action))
         }
 
         for panel in ElementInspectorPanel.allCases(for: element) {
@@ -63,7 +73,7 @@ enum ViewHierarchyElementAction: MenuContentProtocol {
         }
 
         for content in ViewHierarchyInformation.allCases(for: element) {
-            actions.append(.copy(content))
+            actions.append(.copy(info: content))
         }
 
         return actions
@@ -71,9 +81,9 @@ enum ViewHierarchyElementAction: MenuContentProtocol {
 
     static func groupedCases(for element: ViewHierarchyElementReference) -> [[ViewHierarchyElementAction]] {
         [
-            ViewHierarchyLayerAction.allCases(for: element).map { .layer($0) },
-            ElementInspectorPanel.allCases(for: element).map { .inspect(preferredPanel: $0) },
-            ViewHierarchyInformation.allCases(for: element).map { .copy($0) }
+            ViewHierarchyLayerAction.allCases(for: element).map { .layer(action: $0) },
+            ViewHierarchyInformation.allCases(for: element).map { .copy(info: $0) },
+            ElementInspectorPanel.allCases(for: element).map { .inspect(preferredPanel: $0) }
         ]
     }
 }

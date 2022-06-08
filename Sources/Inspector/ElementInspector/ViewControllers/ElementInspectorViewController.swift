@@ -548,7 +548,7 @@ private extension UIMenu {
                     image: panel.image,
                     identifier: nil,
                     discoverabilityTitle: panel.title,
-                    state: Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel == panel ? .on : .off
+                    state: panel.isDefault ? .on : .off
                 ) { _ in
                     Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel = panel
                 }

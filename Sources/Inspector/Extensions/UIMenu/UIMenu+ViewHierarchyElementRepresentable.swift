@@ -99,7 +99,11 @@ extension UIMenu {
                     identifier: nil,
                     options: .displayInline,
                     children: group.map { action in
-                        UIAction(title: action.title, image: action.image) {
+                        UIAction(
+                            title: action.title,
+                            image: action.image,
+                            state: action.isOn ? .on : .off
+                        ) {
                             _ in handler(element, action)
                         }
                     }

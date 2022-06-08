@@ -21,6 +21,25 @@
 import Foundation
 
 enum Texts {
+    static let `default` = "Default"
+    static let actions = "Actions"
+    static let allHighlights = "All Highlights"
+    static let cancel = "Cancel"
+    static let children = "Children"
+    static let clearImage = "Clear image"
+    static let collapse = "Collapse"
+    static let copy = "Copy"
+    static let dismissView = "Dismiss View"
+    static let expand = "Expand"
+    static let highlightElements = highlight("Elements")
+    static let importImage = "Import image..."
+    static let lostConnectionToView = "Lost connection to view"
+    static let noElementInspector = "No Element Inspector"
+    static let open = "Open"
+    static let presentInspector = "Open Inspector..."
+    static let preview = "Preview"
+    static let searchViews = "Search views"
+
     static func inspect(_ name: Any) -> String {
         "Inspect \(String(describing: name))..."
     }
@@ -72,38 +91,4 @@ enum Texts {
     static func copy(_ something: String) -> String {
         "Copy \(something)"
     }
-
-    static let lostConnectionToView = "Lost connection to view"
-
-    static let `default` = "Default"
-
-    static let open = "Open"
-
-    static let copy = "Copy"
-
-    static let highlightElements = "Highlight Elements"
-
-    static let searchViews = "Search views"
-
-    static let presentInspector = "Open Inspector..."
-
-    static let all = "All Highlights"
-
-    static let dismissView = "Dismiss View"
-
-    static let cancel = "Cancel"
-
-    static let clearImage = "Clear image"
-
-    static let importImage = "Import image..."
-
-    static let noElementInspector = "No Element Inspector"
-
-    static let expand = "Expand"
-
-    static let collapse = "Collapse"
-
-    static let children = "Children"
-
-    static let actions = "Actions"
 }
