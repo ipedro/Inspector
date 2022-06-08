@@ -38,11 +38,12 @@ extension UIViewController {
             popoverPresentationController.delegate = delegate as? UIPopoverPresentationControllerDelegate
 
             let sheet = popoverPresentationController.adaptiveSheetPresentationController
+            sheet.delegate = delegate as? UISheetPresentationControllerDelegate
             sheet.detents = [.medium(), .large()]
             sheet.largestUndimmedDetentIdentifier = .medium
-            sheet.delegate = delegate as? UISheetPresentationControllerDelegate
-            sheet.sourceView = sourceView
             sheet.preferredCornerRadius = Inspector.sharedInstance.appearance.elementInspector.horizontalMargins
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+            sheet.sourceView = sourceView
         }
         #else
         if sourceView?.traitCollection.userInterfaceIdiom == .phone {
