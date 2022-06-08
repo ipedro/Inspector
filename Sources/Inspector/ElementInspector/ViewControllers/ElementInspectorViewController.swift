@@ -234,7 +234,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
         coordinator.animate { _ in
             //
-        } completion: { _ in
+        } completion: { [weak self] _ in
+            guard let self = self else { return }
             self.reloadData()
             (self.currentPanelViewController as? DataReloadingProtocol)?.reloadData()
         }
@@ -266,7 +267,6 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
         // FIXME: convert to proper transition coordinator
         transitionCoordinator.animate { transitionContext in
-
             self.viewCode.alpha = 1
 
             guard
@@ -309,6 +309,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         currentPanelViewController?.viewDidAppear(animated)
+        stopAnimatingWhenKeyboard(.willChangeFrame)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
