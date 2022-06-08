@@ -51,11 +51,12 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
 
-        guard superview?.window != nil else {
-            return stopLiveUpdatingSnapshot()
+        if superview?.window == nil {
+            stopLiveUpdatingSnapshot()
         }
-
-        startLiveUpdatingSnapshot()
+        else {
+            startLiveUpdatingSnapshot()
+        }
     }
 
     override func didMoveToWindow() {
@@ -69,9 +70,9 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
         window.addGestureRecognizer(hoverGestureRecognizer)
         hoverGestureRecognizer.isEnabled = true
 
-        if #available(iOS 14.0, *) {
-            hoverGestureRecognizer.isEnabled = ProcessInfo().isiOSAppOnMac == false
-        }
+        hoverGestureRecognizer.isEnabled = ProcessInfo().isiOSAppOnMac == false
+
+        startLiveUpdatingSnapshot()
     }
 
     @objc

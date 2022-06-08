@@ -55,6 +55,7 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell, ElementInspe
     }
 
     private lazy var disclosureIconContainer = BaseView().then {
+        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         $0.installView(disclosureIcon, .spacing(leading: .zero, trailing: .zero))
     }
 
@@ -136,6 +137,8 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell, ElementInspe
         elementDescriptionView.collapseButton.isEnabled = false
 
         contentView.installView(containerStackView, priority: .required)
+
+        disclosureIconContainer.widthAnchor.constraint(equalToConstant: 16).isActive = true
 
         disclosureIcon.centerYAnchor.constraint(equalTo: elementDescriptionView.iconImageView.centerYAnchor).isActive = true
     }
