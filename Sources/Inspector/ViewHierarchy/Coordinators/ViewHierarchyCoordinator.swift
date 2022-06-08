@@ -160,6 +160,7 @@ extension ViewHierarchyCoordinator {
 
         return [
             .group(
+                title: "Debug",
                 commands: [wireframes, slowAnimations]
                     .compactMap { $0 }
             ),
