@@ -58,7 +58,7 @@ extension InspectorViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if viewModel.titleForHeader(in: section) == nil { return .zero }
+        if viewModel.titleForHeader(in: section) == nil { return viewCode.elementInspectorAppearance.verticalMargins }
         return UITableView.automaticDimension
     }
 
@@ -67,7 +67,7 @@ extension InspectorViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        viewCode.elementInspectorAppearance.horizontalMargins
+        viewCode.elementInspectorAppearance.verticalMargins
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
