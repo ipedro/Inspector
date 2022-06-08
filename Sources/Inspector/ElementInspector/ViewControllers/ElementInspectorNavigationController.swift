@@ -40,6 +40,14 @@ class ElementInspectorNavigationController: UINavigationController, NonInspectab
         }
     }
 
+    override func loadView() {
+        super.loadView()
+        let container = BaseView()
+        container.installView(view)
+        container.frame = view.frame
+        view = container
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

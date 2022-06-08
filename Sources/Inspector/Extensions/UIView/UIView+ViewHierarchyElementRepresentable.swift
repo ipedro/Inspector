@@ -32,14 +32,17 @@ extension UIView: ViewHierarchyElementRepresentable {
     var isContainer: Bool { !children.isEmpty }
 
     var allParents: [UIView] {
-        var array = [UIView]()
+        allSuperviews
+            .filter { $0 is InternalViewProtocol == false }
+    }
 
-        if let parent = parent {
-            array.append(parent)
-            array.append(contentsOf: parent.allParents)
+    var allSuperviews: [UIView] {
+        var superviews = [UIView]()
+        if let superview = superview {
+            superviews.append(superview)
+            superviews.append(contentsOf: superview.allSuperviews)
         }
-
-        return array.filter { $0 is InternalViewProtocol == false }
+        return superviews
     }
 
     var children: [UIView] {
@@ -106,7 +109,7 @@ extension UIView: ViewHierarchyElementRepresentable {
 
     var canHostContextMenuInteraction: Bool {
         canHostInspectorView &&
-            className != "UIWindow" &&
+            self is UIWindow == false &&
             className != "UITransitionView" &&
             className != "UIDropShadowView" &&
             className != "_UIModernBarButton"
