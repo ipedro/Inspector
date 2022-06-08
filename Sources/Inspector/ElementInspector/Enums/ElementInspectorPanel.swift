@@ -29,13 +29,13 @@ enum ElementInspectorPanel: Hashable, Swift.CaseIterable, MenuContentProtocol {
     var title: String {
         switch self {
         case .identity:
-            return "Inspect Identity"
+            return Texts.inspect("Identity")
         case .attributes:
-            return "Inspect Attributes"
+            return Texts.inspect("Attributes")
         case .children:
-            return "Inspect Children"
+            return Texts.inspect("Children")
         case .size:
-            return "Inspect Size"
+            return Texts.inspect("Size")
         }
     }
 

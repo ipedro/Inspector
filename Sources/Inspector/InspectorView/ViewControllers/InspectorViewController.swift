@@ -210,7 +210,7 @@ final class InspectorViewController: UIViewController, NonInspectableView, Keybo
 // MARK: - DataReloading
 
 extension InspectorViewController: DataReloadingProtocol {
-    func reloadData() {
+    @objc func reloadData() {
         viewModel.loadData()
         viewCode.reloadData()
         viewCode.updateTableViewHeight()
@@ -293,12 +293,12 @@ extension InspectorViewController {
         }()
 
         viewCode.searchView.insertText(character)
-        search()
+        debounce(#selector(search), delay: .short)
     }
 
     func backspaceKey() {
         viewCode.searchView.deleteBackward()
-        search()
+        debounce(#selector(search), delay: .short)
     }
 
     func search() {
@@ -308,15 +308,22 @@ extension InspectorViewController {
 
         guard viewCode.searchView.isFirstResponder else { return }
 
-        viewModel.searchQuery = viewCode.searchView.query
-        reloadData()
-
-        debounce(#selector(scrollToTopSection), delay: .short)
+        viewModel.search(viewCode.searchView.query) {
+            self.reloadData()
+            self.scrollToTopSection()
+        }
     }
 
     @objc private func scrollToTopSection() {
         if viewCode.tableView.contentOffset.y > 100 {
-            viewCode.tableView.scrollToRow(at: IndexPath(row: NSNotFound, section: .zero), at: .top, animated: true)
+            viewCode.tableView.scrollToRow(
+                at: IndexPath(
+                    row: NSNotFound,
+                    section: .zero
+                ),
+                at: .top,
+                animated: true
+            )
         }
     }
 

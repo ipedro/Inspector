@@ -33,8 +33,7 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
             if stackView.superview == self { return }
 
             contentView.installView(
-                stackView, .spacing(horizontal: 16,
-                                    vertical: .zero)
+                stackView, .spacing(horizontal: 16, vertical: .zero)
             )
         }
     }
@@ -80,5 +79,7 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
                 trailing: .zero
             )
         )
+
+        heightAnchor.constraint(greaterThanOrEqualToConstant: elementInspectorAppearance.horizontalMargins).isActive = true
     }
 }
