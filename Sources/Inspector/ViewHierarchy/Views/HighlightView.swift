@@ -243,8 +243,8 @@ final class HighlightView: LayerView {
     private var pendingTransition: Transition? = .appear
 
     lazy var initialTransformation = CGAffineTransform(
-        scaleX: 1.4 - cgFloatDepth / 50,
-        y: 1.4 - cgFloatDepth / 50
+        scaleX: 1.7 - cgFloatDepth / 50,
+        y: 1.7 - cgFloatDepth / 50
     )
 
     override func layoutSubviews() {
@@ -264,20 +264,21 @@ final class HighlightView: LayerView {
         case .none:
             return
         case .appear:
-            start = (transform: initialTransformation, alpha: .zero)
-            finish = (transform: .identity, alpha: 1)
             delay = TimeInterval(depth) / 10 + .random(in: -.veryShort ... .veryShort)
+            finish = (transform: .identity, alpha: 1)
+            start = (transform: initialTransformation, alpha: .zero)
+
         case .dismiss:
-            start = (transform: elementNameView.transform, alpha: alpha)
+            delay = 10 / TimeInterval(depth) + .random(in: -.short ... .veryShort)
             finish = (transform: initialTransformation, alpha: .zero)
-            delay = .short
+            start = (transform: elementNameView.transform, alpha: alpha)
         }
 
         alpha = start.alpha
         elementNameView.transform = start.transform
 
         animate(
-            withDuration: .short + .random(in: -.veryShort ... .veryShort),
+            withDuration: .random(in: .veryShort ... .long),
             delay: delay,
             damping: 0.7,
             animations: {
