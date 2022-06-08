@@ -95,8 +95,9 @@ extension SceneDelegate: InspectorCustomizationProviding {
     }
 
     var viewHierarchyLayers: [Inspector.ViewHierarchyLayer]? {
-        [.staticTexts,
-         .stackViews]
+        [
+            .layer(name: "Rounded buttons", filter: { $0 is RoundedButton })
+        ]
     }
 
     var elementColorProvider: Inspector.ElementColorProvider? {
