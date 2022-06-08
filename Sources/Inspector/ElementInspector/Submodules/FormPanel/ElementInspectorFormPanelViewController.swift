@@ -84,17 +84,13 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         children.compactMap { $0 as? InspectorElementSectionViewController }
     }
 
-    var containsExpandedFormItem: Bool { collapseState != .allCollapsed }
+    var containsExpandedFormItem: Bool { listState != .allCollapsed }
 
-    var collapseState: ElementInspectorPanelListState {
-        let expandedItems = formPanels.filter { $0.state == .expanded }
-
-        guard expandedItems.isEmpty == false else { return .allCollapsed }
-
-        guard expandedItems.count < formPanels.count else { return .allExpanded }
-
-        if expandedItems.first?.state == .expanded { return .firstExpanded }
-
+    var listState: ElementInspectorPanelListState {
+        let expandedPanels = formPanels.filter { $0.state == .expanded }
+        if expandedPanels.isEmpty { return .allCollapsed }
+        if formPanels.count == expandedPanels.count { return .allExpanded }
+        if expandedPanels.count == 1, formPanels.first?.state == .expanded { return .firstExpanded }
         return .mixed
     }
 
@@ -104,11 +100,21 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         didSet {
             switch (oldValue, isFullHeightPresentation) {
             // is expanding
-            case (false, true):
-                apply(state: initialListState ?? .firstExpanded, animated: true)
-            // is collapsing
-            case (true, false):
-                apply(state: initialCompactListState, animated: true)
+            case (false, true),
+                 (true, false):
+                apply(
+                    state: {
+                        switch listState {
+                        case .allCollapsed, .firstExpanded:
+                            return initialListStateForCurrentHeight
+                        case .mixed:
+                            return .mixed
+                        case .allExpanded:
+                            return .allExpanded
+                        }
+                    }(),
+                    animated: true
+                )
             default:
                 return
             }
@@ -218,23 +224,15 @@ extension ElementInspectorFormPanelViewController {
     @discardableResult
     private func apply(state: ElementInspectorPanelListState?, animated: Bool) -> Bool {
         switch state {
-        case .none:
+        case .none, .mixed:
             return false
-
-        case .mixed:
-            assertionFailure("should never set mixed state")
-            return false
-
         case .allCollapsed:
             collapseAllSections(animated: animated)
-
         case .firstExpanded:
             expandFirstSection(animated: animated)
-
         case .allExpanded:
             expandAllSections(animated: animated)
         }
-
         return true
     }
 

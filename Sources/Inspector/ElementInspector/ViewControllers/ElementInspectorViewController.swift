@@ -103,7 +103,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         guard let formPanel = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
 
         DispatchQueue.main.async {
-            formPanel.togglePanels(to: formPanel.collapseState.next() ?? .allCollapsed, animated: true)
+            formPanel.togglePanels(to: formPanel.listState.next() ?? .allCollapsed, animated: true)
         }
     }
 
@@ -160,7 +160,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                     if let formPanel = self?.currentFormPanelViewController {
                         self?.toggleCollapseButton.alpha = 1
                         self?.toggleCollapseButton.isHidden = false
-                        self?.toggleCollapseButton.collapseState = formPanel.collapseState
+                        self?.toggleCollapseButton.collapseState = formPanel.listState
                     }
                     else {
                         self?.toggleCollapseButton.alpha = 0
@@ -461,7 +461,7 @@ private extension ElementInspectorViewController {
 
 extension ElementInspectorViewController: ElementInspectorFormPanelItemStateDelegate {
     func elementInspectorFormPanelItemDidChangeState(_ formPanelViewController: ElementInspectorFormPanelViewController) {
-        toggleCollapseButton.collapseState = formPanelViewController.collapseState
+        toggleCollapseButton.collapseState = formPanelViewController.listState
     }
 }
 
