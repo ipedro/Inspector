@@ -70,20 +70,15 @@ final class HierarchyInspectorViewCode: BaseView {
 
     private(set) lazy var searchView = HierarchyInspectorSearchView()
 
-    private(set) lazy var tableView = UIKeyCommandTableView(
-        .keyboardDismissMode(.onDrag),
-        .backgroundColor(nil),
-        .tableFooterView(UIView()),
-        .separatorStyle(.none),
-        .automaticRowHeight,
-        .separatorInset(
-            left: elementInspectorAppearance.horizontalMargins,
-            right: elementInspectorAppearance.horizontalMargins
-        ),
-        .contentInset(
-            bottom: elementInspectorAppearance.horizontalMargins
-        )
-    )
+    private(set) lazy var tableView = UIKeyCommandTableView().then {
+        $0.backgroundColor = .none
+        $0.keyboardDismissMode = .interactive
+        $0.rowHeight = UITableView.automaticDimension
+        $0.separatorStyle = .none
+        if #available(iOS 15.0, *) {
+            $0.sectionHeaderTopPadding = 0
+        }
+    }
 
     private lazy var blurView: UIVisualEffectView = {
         let blur = UIBlurEffect(style: colorStyle.blurStyle)
@@ -95,11 +90,9 @@ final class HierarchyInspectorViewCode: BaseView {
         blurView.layer.borderWidth = 1
         blurView.layer.cornerCurve = .continuous
         blurView.layer.borderColor = {
-            switch Inspector.sharedInstance.configuration.colorStyle {
-            case .dark:
-                return colorStyle.tertiaryTextColor.cgColor
-            case .light:
-                return colorStyle.quaternaryTextColor.cgColor
+            switch colorStyle {
+            case .dark: return colorStyle.tertiaryTextColor.cgColor
+            case .light: return colorStyle.quaternaryTextColor.cgColor
             }
         }()
 
