@@ -49,8 +49,37 @@ extension HierarchyInspectorViewModel {
             return totalActionCount == 0
         }
 
+        private struct ExpirableSnapshot<Value>: ExpirableProtocol {
+            private let _value: Value
+            let expirationDate: Date
+
+            var value: Value? {
+                isValid ? _value : .none
+            }
+
+            init(_ value: Value) {
+                _value = value
+                expirationDate = Date()
+                    .addingTimeInterval(10)
+            }
+        }
+
+        private var layerCommandGroupsSnapshot: ExpirableSnapshot<CommandsGroups>?
+
         func loadData() {
-            layerCommandGroups = provider() ?? layerCommandGroups
+            if let cachedValue = layerCommandGroupsSnapshot?.value {
+                layerCommandGroups = cachedValue
+                return
+            }
+
+            guard let groups = provider() else {
+                layerCommandGroups = layerCommandGroups
+                return
+            }
+
+            let snapshot = ExpirableSnapshot(groups)
+            layerCommandGroupsSnapshot = snapshot
+            layerCommandGroups = groups
         }
 
         func selectRow(at indexPath: IndexPath) -> InspectorCommand? {

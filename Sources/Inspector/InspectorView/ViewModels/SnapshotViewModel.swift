@@ -52,7 +52,7 @@ extension HierarchyInspectorViewModel {
         var searchQuery: String? {
             didSet {
                 if oldValue != searchQuery {
-                    debounce(#selector(loadData), delay: .short)
+                    loadData()
                 }
             }
         }

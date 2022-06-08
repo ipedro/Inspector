@@ -27,7 +27,8 @@ enum HierarchyInspectorCellViewModel {
 
 protocol HierarchyInspectorViewModelProtocol: HierarchyInspectorSectionViewModelProtocol {
     var isSearching: Bool { get }
-    var searchQuery: String? { get set }
+    var searchQuery: String? { get }
+    func search(_ searchQuery: String?, completion: () -> Void)
 }
 
 protocol HierarchyInspectorSectionViewModelProtocol {
@@ -61,7 +62,7 @@ final class HierarchyInspectorViewModel {
         searchQuery.isNilOrEmpty == false
     }
 
-    var searchQuery: String? {
+    private(set) var searchQuery: String? {
         didSet {
             let trimmedQuery = searchQuery?.trimmingCharacters(in: .whitespacesAndNewlines)
             snapshotViewModel.searchQuery = trimmedQuery?.isEmpty == false ? trimmedQuery : nil
@@ -82,6 +83,11 @@ final class HierarchyInspectorViewModel {
 // MARK: - HierarchyInspectorViewModelProtocol
 
 extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
+    func search(_ searchQuery: String?, completion: () -> Void) {
+        self.searchQuery = searchQuery
+        completion()
+    }
+
     func isRowEnabled(at indexPath: IndexPath) -> Bool {
         switch isSearching {
         case true:
