@@ -35,10 +35,8 @@ extension UIImage {
     static let emptyViewSymbol: UIImage = .icon("EmptyView-32_Normal")!
     static let expandSymbol: UIImage = .icon("expand")!
     static let hiddenViewSymbol: UIImage = .icon("Hidden-32_Normal")!
-    static let hideHighlightsSymbol: UIImage = .icon("hideHighlights")!
     static let infoOutlineSymbol: UIImage = .icon("info.circle")!
     static let missingSymbol: UIImage = .icon("missing-view-32_Normal")!
-    static let showHighlightsSymbol: UIImage = .icon("showHighlights")!
     static let warningSymbol: UIImage = .icon("exclamationmark.triangle")!
     static let infoSymbol: UIImage = IconKit.imageOfInfoCircleFill().withRenderingMode(.alwaysTemplate)
 }

@@ -52,6 +52,10 @@ enum ElementInspectorPanel: Hashable, Swift.CaseIterable, MenuContentProtocol {
         }
     }
 
+    var isDefault: Bool {
+        Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel == self
+    }
+
     static func allCases(for element: ViewHierarchyElementReference) -> [ElementInspectorPanel] {
         allCases.filter { panel in
             switch panel {

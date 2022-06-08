@@ -50,12 +50,11 @@ class ViewHierarchyElementThumbnailView: BaseView {
         }
     }
 
-    private var heightConstraint: NSLayoutConstraint? {
-        didSet {
-            oldValue?.isActive = false
-            heightConstraint?.priority = .init(rawValue: 999)
-            heightConstraint?.isActive = true
-        }
+    private lazy var heightConstraint = snapshotContainerView.heightAnchor.constraint(
+        equalToConstant: .zero
+    ).then {
+        $0.priority = .init(rawValue: 999)
+        $0.isActive = true
     }
 
     // MARK: - Init
@@ -115,8 +114,6 @@ class ViewHierarchyElementThumbnailView: BaseView {
         super.layoutSubviews()
         backgroundColor = backgroundStyle.color
 
-        guard heightConstraint == nil else { return }
-
         let proportionalFrame = calculateFrame(with: element.frame.size)
 
         guard
@@ -127,7 +124,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
             return
         }
 
-        heightConstraint = snapshotContainerView.heightAnchor.constraint(equalToConstant: proportionalFrame.height)
+        heightConstraint.constant = proportionalFrame.height
     }
 
     var aspectRatio: CGFloat {
@@ -163,24 +160,24 @@ class ViewHierarchyElementThumbnailView: BaseView {
 
                 newSnapshot.contentMode = contentMode
                 snapshotContainerView.contentView.addArrangedSubview(newSnapshot)
-                heightConstraint = snapshotContainerView.heightAnchor.constraint(equalToConstant: proportionalFrame.height)
+                heightConstraint.constant = proportionalFrame.height
 
             case .isHidden:
-                showStatus(icon: .eyeSlashFill, message: "View is hidden.")
+                showEmptyStatus(icon: .eyeSlashFill, message: "View is hidden.")
 
             case .lostConnection:
-                showStatus(icon: .wifiExlusionMark, message: Texts.lostConnectionToView)
+                showEmptyStatus(icon: .wifiExlusionMark, message: Texts.lostConnectionToView)
 
             case let .frameIsEmpty(frame):
-                showStatus(icon: .eyeSlashFill, message: "View frame is empty.\n\(frame)")
+                showEmptyStatus(icon: .eyeSlashFill, message: "View frame is empty.\n\(frame)")
 
             case .noWindow:
-                showStatus(icon: .wifiExlusionMark, message: "Not in the view hierarchy")
+                showEmptyStatus(icon: .wifiExlusionMark, message: "Not in the view hierarchy")
             }
         }
     }
 
-    private func showStatus(icon glyph: Icon.Glyph, message: String) {
+    private func showEmptyStatus(icon glyph: Icon.Glyph, message: String) {
         statusContentView.removeAllArrangedSubviews()
 
         let color = backgroundStyle.contrastingColor
@@ -202,11 +199,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
 
         statusContentView.addArrangedSubview(label)
 
-        heightConstraint = makeEmptyHeightConstraint()
-    }
-
-    private func makeEmptyHeightConstraint() -> NSLayoutConstraint {
-        contentView.widthAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 3)
+        heightConstraint.constant = frame.width
     }
 
     private func calculateFrame(with snapshotSize: CGSize) -> CGRect {

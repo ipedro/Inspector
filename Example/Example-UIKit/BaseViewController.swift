@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2022 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -18,28 +18,17 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import Inspector
 import UIKit
 
-struct ViewHierarchySnapshot: ExpirableProtocol {
-    let expirationDate = Date().addingTimeInterval(Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval)
-
-    let availableLayers: [ViewHierarchyLayer]
-
-    let populatedLayers: [ViewHierarchyLayer]
-
-    let root: ViewHierarchyElementRoot
-
-    init(layers: [ViewHierarchyLayer], root: ViewHierarchyElementRoot) {
-        availableLayers = layers.uniqueValues()
-
-        self.root = root
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(viewHierarchy: root.viewHierarchy).isEmpty == false
-        }
+class BaseViewController: UIViewController {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Inspector.removeAllLayers()
     }
 
-    func containsReference(for object: NSObject?) -> ViewHierarchyElementReference? {
-        root.viewHierarchy.first { $0.underlyingObject === object }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        Inspector.removeAllLayers()
     }
 }

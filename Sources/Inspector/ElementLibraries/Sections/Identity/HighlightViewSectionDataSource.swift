@@ -24,7 +24,7 @@ extension DefaultElementIdentityLibrary {
     final class HighlightViewSectionDataSource: InspectorElementSectionDataSource {
         var state: InspectorElementSectionState = .collapsed
 
-        let title: String = "Highlight View"
+        let title: String = Texts.highlight("View")
 
         weak var highlightView: HighlightView?
 

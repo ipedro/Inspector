@@ -27,6 +27,8 @@ public struct InspectorConfiguration {
 
     public var snapshotExpirationTimeInterval: TimeInterval
 
+    public var snapshotMaxCount: Int = 1
+
     public var showAllViewSearchQuery: String
 
     public var nonInspectableClassNames: [String]

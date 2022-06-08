@@ -82,7 +82,7 @@ extension Manager: KeyCommandPresentable {
         from sourceView: UIView
     ) -> [Command] {
         viewHierarchy
-            .compactMap { $0 as? ViewHierarchyController }
+            .compactMap { $0 as? ViewHierarchyElementController }
             .sorted { $0.depth < $1.depth }
             .enumerated()
             .map { offset, viewController in

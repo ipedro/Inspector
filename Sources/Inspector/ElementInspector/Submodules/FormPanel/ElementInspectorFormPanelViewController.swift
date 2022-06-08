@@ -127,8 +127,13 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
         view = viewCode
     }
 
+    private var viewHasAppeared = false
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        if viewHasAppeared { return }
+        viewHasAppeared = true
 
         reloadData()
 

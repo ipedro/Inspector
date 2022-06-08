@@ -21,18 +21,18 @@
 import Inspector
 import UIKit
 
-final class CustomButtonAttributesSectionDataSource: InspectorElementSectionDataSource {
+final class RoundedButtonAttributesSectionDataSource: InspectorElementSectionDataSource {
     var state: InspectorElementSectionState = .collapsed
 
-    var title: String = "Custom Button"
+    var title: String = "Rounded Button"
 
-    let customButton: CustomButton
+    let button: RoundedButton
 
     init?(with object: NSObject) {
-        guard let customButton = object as? CustomButton else {
+        guard let button = object as? RoundedButton else {
             return nil
         }
-        self.customButton = customButton
+        self.button = button
     }
 
     enum Properties: String, CaseIterable {
@@ -47,25 +47,25 @@ final class CustomButtonAttributesSectionDataSource: InspectorElementSectionData
             case .animateOnTouch:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { self.customButton.animateOnTouch }
+                    isOn: { self.button.animateOnTouch }
                 ) { animateOnTouch in
-                    self.customButton.animateOnTouch = animateOnTouch
+                    self.button.animateOnTouch = animateOnTouch
                 }
 
             case .cornerRadius:
                 return .switch(
                     title: property.rawValue,
-                    isOn: { self.customButton.roundCorners }
+                    isOn: { self.button.roundCorners }
                 ) { roundCorners in
-                    self.customButton.roundCorners = roundCorners
+                    self.button.roundCorners = roundCorners
                 }
 
             case .backgroundColor:
                 return .colorPicker(
                     title: property.rawValue,
-                    color: { self.customButton.backgroundColor }
+                    color: { self.button.backgroundColor }
                 ) { newBackgroundColor in
-                    self.customButton.backgroundColor = newBackgroundColor
+                    self.button.backgroundColor = newBackgroundColor
                 }
             }
         }

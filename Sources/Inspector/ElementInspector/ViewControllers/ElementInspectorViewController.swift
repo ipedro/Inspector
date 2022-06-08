@@ -212,7 +212,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        animateWhenKeyboard(.willChangeFrame) { info in
+        animateWhenKeyboard(.willChangeFrame) { [weak self] info in
+            guard let self = self else { return }
             self.viewCode.keyboardHeight = info.keyboardFrame.height
             self.viewCode.layoutIfNeeded()
         }
@@ -548,7 +549,7 @@ private extension UIMenu {
                     image: panel.image,
                     identifier: nil,
                     discoverabilityTitle: panel.title,
-                    state: Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel == panel ? .on : .off
+                    state: panel.isDefault ? .on : .off
                 ) { _ in
                     Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel = panel
                 }

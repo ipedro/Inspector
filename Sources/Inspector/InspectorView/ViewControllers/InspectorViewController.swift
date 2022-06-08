@@ -88,12 +88,6 @@ final class InspectorViewController: UIViewController, NonInspectableView, Keybo
         self.viewModel = viewModel
     }
 
-    deinit {
-        if isViewLoaded {
-            viewCode.tableView.removeObserver(self, forKeyPath: .contentSize, context: nil)
-        }
-    }
-
     // MARK: - Lifecycle
 
     override func loadView() {
@@ -138,12 +132,14 @@ final class InspectorViewController: UIViewController, NonInspectableView, Keybo
         guard viewModel.shouldAnimateKeyboard else { return }
 
         // keyboard event handlers
-        animateWhenKeyboard(.willHide) { _ in
+        animateWhenKeyboard(.willHide) { [weak self] _ in
+            guard let self = self else { return }
             self.viewCode.keyboardFrame = nil
             self.viewCode.layoutIfNeeded()
         }
 
-        animateWhenKeyboard(.willShow) { info in
+        animateWhenKeyboard(.willShow) { [weak self] info in
+            guard let self = self else { return }
             Logger.log(info)
             self.viewCode.keyboardFrame = info.keyboardFrame
             self.viewCode.layoutIfNeeded()
@@ -293,12 +289,12 @@ extension InspectorViewController {
         }()
 
         viewCode.searchView.insertText(character)
-        debounce(#selector(search), delay: .short)
+        debounce(#selector(search), delay: .veryLong)
     }
 
     func backspaceKey() {
         viewCode.searchView.deleteBackward()
-        debounce(#selector(search), delay: .short)
+        debounce(#selector(search), delay: .veryLong)
     }
 
     func search() {
@@ -329,9 +325,12 @@ extension InspectorViewController {
 
     func finish() {
         guard !isFinishing else { return }
-
+        if isViewLoaded {
+            viewCode.tableView.removeObserver(self, forKeyPath: .contentSize)
+            viewCode.endEditing(true)
+            stopAnimatingWhenKeyboard(.willHide, .willShow)
+        }
         isFinishing = true
-        view.endEditing(true)
         delegate?.inspectorViewControllerDidFinish(self)
     }
 }

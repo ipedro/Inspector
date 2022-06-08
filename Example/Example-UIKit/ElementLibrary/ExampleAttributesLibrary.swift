@@ -22,19 +22,19 @@ import Inspector
 import UIKit
 
 enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
-    case customButton
+    case roundedButton
 
     var targetClass: AnyClass {
         switch self {
-        case .customButton:
-            return CustomButton.self
+        case .roundedButton:
+            return RoundedButton.self
         }
     }
 
     func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
-        case .customButton:
-            return .init(with: CustomButtonAttributesSectionDataSource(with: object))
+        case .roundedButton:
+            return .init(with: RoundedButtonAttributesSectionDataSource(with: object))
         }
     }
 }

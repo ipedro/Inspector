@@ -116,7 +116,9 @@ final class HierarchyInspectorViewCode: BaseView {
     override func didMoveToWindow() {
         super.didMoveToWindow()
 
-        updateTableViewHeight()
+        if window == .none {
+            customConstraints.forEach(removeConstraint(_:))
+        }
     }
 
     override func didMoveToSuperview() {
@@ -140,6 +142,15 @@ final class HierarchyInspectorViewCode: BaseView {
         }
     }
 
+    private lazy var customConstraints = [
+        blurView.topAnchor.constraint(equalTo:
+            safeAreaLayoutGuide.topAnchor, constant: verticalMargin),
+        blurView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
+        blurView.widthAnchor.constraint(lessThanOrEqualTo: readableContentGuide.widthAnchor, constant: -horizontalMargin * 4),
+        blurView.widthAnchor.constraint(greaterThanOrEqualToConstant: Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelPreferredCompressedSize.width),
+        bottomAnchorConstraint
+    ]
+
     override func setup() {
         super.setup()
 
@@ -156,15 +167,7 @@ final class HierarchyInspectorViewCode: BaseView {
 
         contentView.addSubview(blurView)
 
-        [
-            blurView.topAnchor.constraint(equalTo:
-                safeAreaLayoutGuide.topAnchor, constant: verticalMargin),
-            blurView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
-            blurView.widthAnchor.constraint(lessThanOrEqualTo: readableContentGuide.widthAnchor, constant: -horizontalMargin * 4),
-            blurView.widthAnchor.constraint(greaterThanOrEqualToConstant: Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelPreferredCompressedSize.width),
-            bottomAnchorConstraint
-        ]
-        .forEach {
+        customConstraints.forEach {
             $0.priority = .defaultHigh
             $0.isActive = true
         }
