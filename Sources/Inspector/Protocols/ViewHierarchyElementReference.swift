@@ -49,10 +49,6 @@ extension ViewHierarchyElementReference {
         viewHierarchy.filter(\.canHostInspectorView)
     }
 
-    var nonInternalViewHierarchy: [ViewHierarchyElementReference] {
-        viewHierarchy.filter { !($0 is NonInspectableView) }
-    }
-
     var viewHierarchyDescription: String {
         let viewHierarchy = viewHierarchy
 
