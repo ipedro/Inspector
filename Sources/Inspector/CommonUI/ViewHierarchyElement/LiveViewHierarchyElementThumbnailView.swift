@@ -37,9 +37,9 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
             if let oldLink = oldValue {
                 oldLink.invalidate()
             }
-
             if let newLink = displayLink {
-                newLink.add(to: .current, forMode: .default)
+                newLink.preferredFramesPerSecond = 30
+                newLink.add(to: .current, forMode: .common)
             }
         }
     }
@@ -59,7 +59,7 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
 
         guard let window = window else {
             hoverGestureRecognizer.isEnabled = false
-            return stopLiveUpdatingSnapshot()
+            return
         }
 
         window.addGestureRecognizer(hoverGestureRecognizer)
@@ -68,17 +68,16 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
         if #available(iOS 14.0, *) {
             hoverGestureRecognizer.isEnabled = ProcessInfo().isiOSAppOnMac == false
         }
-
-        startLiveUpdatingSnapshot()
     }
 
     @objc
     func startLiveUpdatingSnapshot() {
-        debounce(#selector(makeDisplayLink), delay: .average)
+        debounce(#selector(makeDisplayLinkIfNeeded), delay: .average)
     }
 
     @objc
-    func makeDisplayLink() {
+    func makeDisplayLinkIfNeeded() {
+        guard displayLink == nil else { return }
         displayLink = CADisplayLink(target: self, selector: #selector(refresh))
     }
 
@@ -86,7 +85,7 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
     func stopLiveUpdatingSnapshot() {
         Self.cancelPreviousPerformRequests(
             withTarget: self,
-            selector: #selector(makeDisplayLink),
+            selector: #selector(makeDisplayLinkIfNeeded),
             object: nil
         )
 
