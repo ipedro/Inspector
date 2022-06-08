@@ -48,16 +48,18 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
             }
         }()
 
-        switch isShowingLayer(layer) {
-        case true:
-            return .visibleLayer(title, at: index) { [weak self] in
-                self?.removeLayer(layer)
-            }
+        let isSelected = isShowingLayer(layer)
 
-        case false:
-            return .hiddenLayer(title, at: index) { [weak self] in
-                self?.installLayer(layer)
-            }
+        let icon: UIImage = layer == .wireframes ? .wireframeAction : .layerAction
+
+        return Command(
+            title: title,
+            icon: icon,
+            keyCommandOptions: Command.keyCommand(index: index),
+            isSelected: isSelected
+        ) { [weak self] in
+            guard let self = self else { return }
+            isSelected ? self.removeLayer(layer) : self.installLayer(layer)
         }
     }
 

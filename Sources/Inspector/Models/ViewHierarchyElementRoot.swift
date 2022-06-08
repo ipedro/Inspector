@@ -51,7 +51,7 @@ final class ViewHierarchyElementRoot {
 
     let latestSnapshotIdentifier: UUID = .init()
 
-    private let windows: [UIWindow]
+    let windows: [UIWindow]
 
     private let catalog: ViewHierarchyElementCatalog
 
