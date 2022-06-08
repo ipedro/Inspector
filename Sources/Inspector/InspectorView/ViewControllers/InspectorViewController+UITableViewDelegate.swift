@@ -61,11 +61,11 @@ extension InspectorViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        UIView()
+        .none
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        1
+        .zero
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
