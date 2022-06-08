@@ -224,7 +224,7 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
             return ElementInspectorFormPanelViewController().then {
                 $0.dataSource = dataSource
                 $0.formDelegate = self
-                $0.initialCompactListState = .allCollapsed
+                $0.initialCompactListState = panel == .identity && element.canHostInspectorView ? .firstExpanded : .allCollapsed
                 $0.initialListState = .firstExpanded
             }
 
