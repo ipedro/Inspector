@@ -111,7 +111,6 @@ final class ViewHierarchyElementRoot {
             viewController.parent = parent
             viewController.rootElement = element
             viewController.children = [element]
-
             // must set depth as last step
             viewController.depth = depth
 
@@ -122,7 +121,7 @@ final class ViewHierarchyElementRoot {
 }
 
 extension ViewHierarchyElementRoot: ViewHierarchyElementReference {
-    var viewHierarchy: [ViewHierarchyElementReference] { children.flatMap(\.nonInternalViewHierarchy) }
+    var viewHierarchy: [ViewHierarchyElementReference] { children.flatMap(\.viewHierarchy) }
 
     var underlyingObject: NSObject? { application }
 
@@ -138,7 +137,7 @@ extension ViewHierarchyElementRoot: ViewHierarchyElementReference {
             let appIcon = UIImage(named: iconName),
             let appIconTemplate = UIImage.icon("app-icon-template")
         else {
-            return .systemIcon("app.badge.fill")
+            return .applicationIcon
         }
 
         return appIcon.maskImage(with: appIconTemplate)

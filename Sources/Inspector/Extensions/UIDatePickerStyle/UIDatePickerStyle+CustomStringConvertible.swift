@@ -20,7 +20,6 @@
 
 import UIKit
 
-@available(iOS 13.4, *)
 extension UIDatePickerStyle: CustomStringConvertible {
     var description: String {
         switch self {

@@ -144,15 +144,12 @@ extension DefaultElementAttributesLibrary {
                         button.setBackgroundImage(backgroundImage, for: self.selectedControlState)
                     }
                 case .isPointerInteractionEnabled:
-                    if #available(iOS 13.4, *) {
-                        return .switch(
-                            title: property.rawValue,
-                            isOn: { button.isPointerInteractionEnabled }
-                        ) { isPointerInteractionEnabled in
-                            button.isPointerInteractionEnabled = isPointerInteractionEnabled
-                        }
+                    return .switch(
+                        title: property.rawValue,
+                        isOn: { button.isPointerInteractionEnabled }
+                    ) { isPointerInteractionEnabled in
+                        button.isPointerInteractionEnabled = isPointerInteractionEnabled
                     }
-                    return nil
                 case .adjustsImageSizeForAccessibilityContentSizeCategory:
                     return .switch(
                         title: property.rawValue,

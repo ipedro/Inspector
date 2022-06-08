@@ -51,31 +51,28 @@ extension DefaultElementAttributesLibrary {
             return Property.allCases.compactMap { property in
                 switch property {
                 case .datePickerStyle:
-                    if #available(iOS 13.4, *) {
-                        return .optionsList(
-                            title: property.rawValue,
-                            options: UIDatePickerStyle.allCases.map(\.description),
-                            selectedIndex: { UIDatePickerStyle.allCases.firstIndex(of: datePicker.datePickerStyle) }
-                        ) {
-                            guard let newIndex = $0 else {
-                                return
-                            }
-
-                            let datePickerStyle = UIDatePickerStyle.allCases[newIndex]
-
-                            if #available(iOS 14.0, *) {
-                                if
-                                    datePicker.datePickerMode == .countDownTimer,
-                                    datePickerStyle == .inline || datePickerStyle == .compact
-                                {
-                                    datePicker.datePickerMode = .dateAndTime
-                                }
-                            }
-
-                            datePicker.preferredDatePickerStyle = datePickerStyle
+                    return .optionsList(
+                        title: property.rawValue,
+                        options: UIDatePickerStyle.allCases.map(\.description),
+                        selectedIndex: { UIDatePickerStyle.allCases.firstIndex(of: datePicker.datePickerStyle) }
+                    ) {
+                        guard let newIndex = $0 else {
+                            return
                         }
+
+                        let datePickerStyle = UIDatePickerStyle.allCases[newIndex]
+
+                        if #available(iOS 14.0, *) {
+                            if
+                                datePicker.datePickerMode == .countDownTimer,
+                                datePickerStyle == .inline || datePickerStyle == .compact
+                            {
+                                datePicker.datePickerMode = .dateAndTime
+                            }
+                        }
+
+                        datePicker.preferredDatePickerStyle = datePickerStyle
                     }
-                    return nil
 
                 case .datePickerMode:
                     return .optionsList(

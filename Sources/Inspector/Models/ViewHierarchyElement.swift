@@ -155,14 +155,17 @@ final class ViewHierarchyElement: CustomDebugStringConvertible {
     var isUnderlyingViewUserInteractionEnabled: Bool
 
     private func makeChildren() -> [ViewHierarchyElementReference] {
-        underlyingView?.children.compactMap {
-            ViewHierarchyElement(
-                with: $0,
-                iconProvider: iconProvider,
-                depth: depth + 1,
-                parent: self
-            )
-        } ?? []
+        guard let underlyingView = underlyingView else { return [] }
+        return underlyingView
+            .children
+            .compactMap {
+                ViewHierarchyElement(
+                    with: $0,
+                    iconProvider: iconProvider,
+                    depth: depth + 1,
+                    parent: self
+                )
+            }
     }
 }
 

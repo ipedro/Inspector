@@ -39,11 +39,11 @@ extension UIView: ViewHierarchyElementRepresentable {
             array.append(contentsOf: parent.allParents)
         }
 
-        return array.filter { !($0 is LayerViewProtocol) }
+        return array.filter { $0 is InternalViewProtocol == false }
     }
 
     var children: [UIView] {
-        subviews.filter { !($0 is LayerViewProtocol) }
+        subviews.filter { $0 is InternalViewProtocol == false }
     }
 
     var allChildren: [UIView] {
