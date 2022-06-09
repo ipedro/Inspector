@@ -75,11 +75,4 @@ extension ElementInspectorFormPanelViewController: InspectorElementSectionViewCo
         selectedColorPreviewControl = colorPreviewControl
         formDelegate?.elementInspectorFormPanel(self, didTap: colorPreviewControl)
     }
-
-    func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
-                                               didTap optionListControl: OptionListControl)
-    {
-        selectedOptionListControl = optionListControl
-        formDelegate?.elementInspectorFormPanel(self, didTap: optionListControl)
-    }
 }
