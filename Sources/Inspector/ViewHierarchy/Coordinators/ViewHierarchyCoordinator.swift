@@ -160,13 +160,14 @@ extension ViewHierarchyCoordinator {
 
         return [
             .group(
-                title: "Debug",
-                commands: [wireframes, slowAnimations]
-                    .compactMap { $0 }
+                title: "Commands",
+                commands:
+                [slowAnimations, wireframes].compactMap { $0 }
+                    + toggleAllHighlights
             ),
             .group(
-                title: Texts.highlightViews,
-                commands: toggleAllHighlights + highlights
+                title: "Highlights",
+                commands: highlights
             )
         ]
     }

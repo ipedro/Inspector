@@ -45,7 +45,7 @@ extension Manager: KeyCommandPresentable {
 
         return windows.map { window in
             .group(
-                title: "Inspect \(window.displayName) Hierarchy",
+                title: "\(window.underlyingView === keyWindow ? "Key " : "")\(window.displayName) Hierarchy",
                 commands: {
                     var commands = [Command]()
                     commands.append(
@@ -82,12 +82,11 @@ extension Manager: KeyCommandPresentable {
         viewHierarchy
             .compactMap { $0 as? ViewHierarchyElementController }
             .sorted { $0.depth < $1.depth }
-            .enumerated()
-            .map { offset, viewController in
+            .map { viewController in
                 .inspectElement(
                     viewController,
                     displayName: [
-                        Array(repeating: "  ", count: offset + 1).joined(),
+                        Array(repeating: " ", count: viewController.depth).joined(),
                         viewController.displayName
                     ].joined()
                 ) { [weak self] in

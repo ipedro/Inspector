@@ -91,7 +91,7 @@ extension Command {
 
     static func showAllLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.show(Texts.all),
+            title: Texts.enable("All Highlights"),
             icon: .layerActionAll,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,
@@ -103,7 +103,7 @@ extension Command {
 
     static func hideVisibleLayers(closure: @escaping Closure) -> Command {
         Command(
-            title: Texts.hide("Visible"),
+            title: Texts.disable("Visible Highlights"),
             icon: .layerActionAll,
             keyCommandOptions: UIKeyCommand.Options(
                 input: keyCommandSettings.allLayersToggleInput,

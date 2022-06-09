@@ -44,8 +44,8 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
         let icon: UIImage = layer == .wireframes ? .wireframeAction : .layerAction
         let title: String = {
             switch (layer, isSelected) {
-            case (.wireframes, true): return Texts.hide(layer.title)
-            case (.wireframes, false): return Texts.show(layer.title)
+            case (.wireframes, true): return Texts.enable(layer.title)
+            case (.wireframes, false): return Texts.disable(layer.title)
             default: return layer.title
             }
         }()
