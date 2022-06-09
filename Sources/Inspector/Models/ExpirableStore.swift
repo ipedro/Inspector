@@ -18,32 +18,32 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
+import Foundation
 
-final class ViewHierarchy {
-    static let shared = ViewHierarchy(application: .shared)
+struct ExpirableStore<Value>: ExpirableProtocol {
+    private let lifespan: TimeInterval
+    
+    private(set) var expirationDate : Date
+    
+    private var _wrappedValue: Value?
 
-    let application: UIApplication
-
-    init(application: UIApplication) {
-        self.application = application
+    var wrappedValue: Value? {
+        get {
+            isValid ? _wrappedValue : .none
+        }
+        set {
+            _wrappedValue = newValue
+            expirationDate = Self.makeExpirationDate(lifespan)
+        }
     }
-}
 
-// MARK: - ViewHierarchyRepresentable
-
-extension ViewHierarchy: ViewHierarchyRepresentable {
-    var windows: [UIWindow] { application.windows }
-
-    var keyWindow: UIWindow? { windows.first(where: \.isKeyWindow) }
-
-    var topPresentableViewController: UIViewController? {
-        presentedViewControllers?.last ?? keyWindow?.rootViewController
+    init(_ value: Value? = .none, lifespan: TimeInterval) {
+        expirationDate = Self.makeExpirationDate(lifespan)
+        _wrappedValue = value
+        self.lifespan = lifespan
     }
     
-    var presentedViewControllers: [UIViewController]? {
-        keyWindow?.rootViewController?.allPresentedViewControllers
-            .filter { $0 is InternalViewProtocol == false }
-            .filter { $0._isInternalView == false }
+    private static func makeExpirationDate(_ lifespan: TimeInterval) -> Date {
+        Date().addingTimeInterval(lifespan)
     }
 }

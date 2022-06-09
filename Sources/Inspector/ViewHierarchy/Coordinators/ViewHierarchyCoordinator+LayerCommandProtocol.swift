@@ -24,7 +24,7 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
     func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> [Command] {
         let maxCount = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
 
-        let commands = snapshot.availableLayers
+        let commands = snapshot.populatedLayers
             .enumerated()
             .compactMap { index, layer in
                 command(

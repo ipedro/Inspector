@@ -21,18 +21,23 @@
 import UIKit
 
 extension Manager: KeyCommandPresentable {
+    var keyCommands: [UIKeyCommand] {
+        if let cachedKeyCommands = keyCommandsStore.wrappedValue {
+            return cachedKeyCommands
+        }
+        let keyCommands = makeKeyCommands(withSelector: keyCommandAction)
+        keyCommandsStore.wrappedValue = keyCommands
+        return keyCommands
+    }
+
     var commandGroups: CommandsGroups {
         var commandGroups = CommandsGroups()
         if let userCommandGroups = dependencies.customization?.commandGroups {
             commandGroups.append(contentsOf: userCommandGroups)
         }
-        commandGroups.append(contentsOf: viewHierarchyCommandGroups)
+        commandGroups.append(contentsOf: viewHierarchyCoordinator.commandsGroups())
         commandGroups.append(contentsOf: elementCommandGroups)
         return commandGroups
-    }
-
-    private var viewHierarchyCommandGroups: CommandsGroups {
-        viewHierarchyCoordinator.commandsGroups()
     }
 
     private var elementCommandGroups: CommandsGroups {

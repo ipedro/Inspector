@@ -27,15 +27,11 @@ protocol KeyCommandPresentable {
 }
 
 extension KeyCommandPresentable {
-    var keyCommands: [UIKeyCommand] {
-        makeKeyCommands(withSelector: keyCommandAction)
-    }
-
-    public var keyCommandAction: Selector {
+    var keyCommandAction: Selector {
         #selector(UIViewController.inspectorKeyCommandHandler(_:))
     }
 
-    public func makeKeyCommands(withSelector aSelector: Selector) -> [UIKeyCommand] {
+    func makeKeyCommands(withSelector aSelector: Selector) -> [UIKeyCommand] {
         commandGroups.flatMap { commandGroup in
             commandGroup.commands.compactMap { action -> UIKeyCommand? in
                 guard let options = action.keyCommandOptions else { return nil }
