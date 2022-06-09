@@ -24,7 +24,7 @@ protocol ElementInspectorNavigationControllerDismissDelegate: AnyObject {
     func elementInspectorNavigationControllerDidFinish(_ navigationController: ElementInspectorNavigationController)
 }
 
-class ElementInspectorNavigationController: UINavigationController, NonInspectableView, ElementInspectorAppearanceProviding {
+class ElementInspectorNavigationController: UINavigationController, InternalViewProtocol, ElementInspectorAppearanceProviding {
     weak var dismissDelegate: ElementInspectorNavigationControllerDismissDelegate?
 
     var shouldAdaptModalPresentation: Bool = true {

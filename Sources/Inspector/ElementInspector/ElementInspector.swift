@@ -32,7 +32,7 @@ enum ElementInspector {
         }
 
         var isPhoneIdiom: Bool {
-            guard let userInterfaceIdiom = ViewHierarchy.application.keyWindow?.traitCollection.userInterfaceIdiom else {
+            guard let userInterfaceIdiom = ViewHierarchy.shared.keyWindow?.traitCollection.userInterfaceIdiom else {
                 // assume true
                 return true
             }

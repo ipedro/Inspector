@@ -48,8 +48,11 @@ extension Manager {
                 closure()
 
             case let .inspect(reference):
-                guard let self = self, let sourceView = reference.underlyingView else { return }
-
+                guard
+                    let self = self,
+                    let sourceView = reference.underlyingView
+                else { return }
+                
                 self.startElementInspectorCoordinator(
                     for: reference,
                     panel: .none,
@@ -61,7 +64,7 @@ extension Manager {
     }
 
     func presentInspector(animated: Bool) {
-        guard let presenter = dependencies.viewHierarchy.topPresentedViewController else { return }
+        guard let presenter = dependencies.viewHierarchy.topPresentableViewController else { return }
         return presentInspector(animated: animated, from: presenter)
     }
 
@@ -71,9 +74,7 @@ extension Manager {
 
             let coordinator = self.makeInspectorViewCoordinator(presentedBy: presenter)
 
-            let inspectorViewController = coordinator.start()
-
-            presenter.present(inspectorViewController, animated: animated) {
+            presenter.present(coordinator.start(), animated: animated) {
                 self.addChild(coordinator)
             }
         }

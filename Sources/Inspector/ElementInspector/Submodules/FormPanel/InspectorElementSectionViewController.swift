@@ -384,9 +384,7 @@ extension InspectorElementSectionViewController {
             }
 
             let didUpdateOperation = MainThreadOperation(name: "did update property value") { [weak self] in
-                guard let self = self else {
-                    return
-                }
+                guard let self = self else { return }
 
                 self.delegate?.inspectorElementSectionViewController(self, didUpdate: property)
             }

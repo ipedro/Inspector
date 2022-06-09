@@ -89,7 +89,7 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost, In
         Inspector.start()
 
         guard
-            let presenter = ViewHierarchy.application.topPresentedViewController,
+            let presenter = ViewHierarchy.shared.topPresentableViewController,
             let coordinator = Inspector.sharedInstance.manager?.makeInspectorViewCoordinator(presentedBy: presenter)
         else {
             return alertController(title: "Couldn't present inspector")

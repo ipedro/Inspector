@@ -20,34 +20,32 @@
 
 import UIKit
 
-final class ViewHierarchy: ViewHierarchyRepresentable {
-    static let application = ViewHierarchy(application: .shared)
+final class ViewHierarchy {
+    static let shared = ViewHierarchy(application: .shared)
 
-    var application: UIApplication
+    let application: UIApplication
 
+    init(application: UIApplication) {
+        self.application = application
+    }
+}
+
+// MARK: - ViewHierarchyRepresentable
+
+extension ViewHierarchy: ViewHierarchyRepresentable {
     var windows: [UIWindow] { application.windows }
 
     var keyWindow: UIWindow? { windows.first(where: \.isKeyWindow) }
 
-    var topPresentedViewController: UIViewController? {
-        guard
-            let keyWindow = keyWindow,
-            let rootViewController = keyWindow.rootViewController
-        else {
-            return .none
-        }
-
-        var candidates = [UIViewController]()
-
-        for presentedViewController in rootViewController.allPresentedViewControllers {
-            if presentedViewController is InternalViewProtocol || presentedViewController.view is InternalViewProtocol { break }
-            candidates.append(presentedViewController)
-        }
-
-        return candidates.last ?? rootViewController
+    var topPresentableViewController: UIViewController? {
+        presentedViewControllers?.last ?? keyWindow?.rootViewController
     }
-
-    init(application: UIApplication) {
-        self.application = application
+    
+    var presentedViewControllers: [UIViewController]? {
+        keyWindow?
+            .rootViewController?
+            .allPresentedViewControllers
+            .filter { $0 is InternalViewProtocol == false }
+            .filter { $0._isInternalView == false }
     }
 }
