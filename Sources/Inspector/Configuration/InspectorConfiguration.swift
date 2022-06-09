@@ -41,7 +41,7 @@ public struct InspectorConfiguration {
         enableLayoutSubviewsSwizzling: Bool = false,
         nonInspectableClassNames: [String] = [],
         showAllViewSearchQuery: String = ".",
-        snapshotExpiration: TimeInterval = 1,
+        snapshotExpiration: TimeInterval = 10,
         verbose: Bool = false
     ) {
         snapshotExpirationTimeInterval = snapshotExpiration
