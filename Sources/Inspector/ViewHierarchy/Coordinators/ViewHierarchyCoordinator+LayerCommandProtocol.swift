@@ -24,7 +24,7 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
     func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> [Command] {
         let maxCount = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
 
-        let commands = snapshot.availableLayers
+        let commands = snapshot.populatedLayers
             .enumerated()
             .compactMap { index, layer in
                 command(
@@ -44,8 +44,8 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
         let icon: UIImage = layer == .wireframes ? .wireframeAction : .layerAction
         let title: String = {
             switch (layer, isSelected) {
-            case (.wireframes, true): return Texts.hide(layer.title)
-            case (.wireframes, false): return Texts.show(layer.title)
+            case (.wireframes, true): return Texts.enable(layer.title)
+            case (.wireframes, false): return Texts.disable(layer.title)
             default: return layer.title
             }
         }()

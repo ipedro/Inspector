@@ -34,6 +34,8 @@ final class Manager: Coordinator<ManagerDependencies, OperationQueue, Void> {
     var snapshot: ViewHierarchySnapshot { viewHierarchyCoordinator.latestSnapshot() }
     var keyWindow: UIWindow? { dependencies.viewHierarchy.keyWindow }
     var catalog: ViewHierarchyElementCatalog { viewHierarchyCoordinator.dependencies.catalog }
+    
+    lazy var keyCommandsStore = ExpirableStore<[UIKeyCommand]>(lifespan: dependencies.configuration.snapshotExpirationTimeInterval)
 
     func dismissInspectorViewIfNeeded(_ closure: @escaping () -> Void) {
         let coordinators = children.compactMap { $0 as? InspectorViewCoordinator }

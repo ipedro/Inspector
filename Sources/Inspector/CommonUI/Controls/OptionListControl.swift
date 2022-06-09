@@ -21,7 +21,6 @@
 import UIKit
 
 protocol OptionListControlDelegate: AnyObject {
-    func optionListControlDidTap(_ optionListControl: OptionListControl)
     func optionListControlDidChangeSelectedIndex(_ optionListControl: OptionListControl)
 }
 
@@ -102,18 +101,12 @@ final class OptionListControl: BaseFormControl {
 
         updateViews()
 
-        if #available(iOS 14.0, *) {
-            showsMenuAsPrimaryAction = true
-            isContextMenuInteractionEnabled = true
-        }
-        else {
-            accessoryControl.addTarget(self, action: #selector(tap), for: .touchUpInside)
-        }
+        showsMenuAsPrimaryAction = true
+        isContextMenuInteractionEnabled = true
     }
 
     func updateSelectedIndex(_ selectedIndex: Int?) {
         self.selectedIndex = selectedIndex
-
         sendActions(for: .valueChanged)
     }
 
@@ -128,11 +121,6 @@ final class OptionListControl: BaseFormControl {
 
     // MARK: - Actions
 
-    @objc private func tap() {
-        delegate?.optionListControlDidTap(self)
-    }
-
-    @available(iOS 14.0, *)
     override func menuAttachmentPoint(for configuration: UIContextMenuConfiguration) -> CGPoint {
         switch axis {
         case .horizontal:
@@ -145,7 +133,6 @@ final class OptionListControl: BaseFormControl {
         }
     }
 
-    @available(iOS 14.0, *)
     override func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         let localPoint = convert(location, to: accessoryControl)
 
@@ -156,7 +143,6 @@ final class OptionListControl: BaseFormControl {
         }
     }
 
-    @available(iOS 14.0, *)
     private func makeOptionSelectionMenu() -> UIMenu {
         UIMenu(
             title: String(),

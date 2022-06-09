@@ -54,7 +54,11 @@ public extension Inspector {
 
         func filter(viewHierarchy: [ViewHierarchyElementReference]) -> [ViewHierarchyElementReference] {
             let filteredViews = viewHierarchy.filter {
-                guard let rootView = $0.underlyingView, !rootView.isHidden else {
+                guard
+                    let rootView = $0.underlyingView,
+                    rootView.isHidden == false,
+                    rootView is NonInspectableView == false
+                else {
                     return false
                 }
 

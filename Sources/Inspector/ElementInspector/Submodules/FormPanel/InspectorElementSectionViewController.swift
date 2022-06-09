@@ -33,11 +33,6 @@ protocol InspectorElementSectionViewControllerDelegate: OperationQueueManagerPro
 
     func inspectorElementSectionViewController(
         _ sectionViewController: InspectorElementSectionViewController,
-        didTap optionListControl: OptionListControl
-    )
-
-    func inspectorElementSectionViewController(
-        _ sectionViewController: InspectorElementSectionViewController,
         didUpdate property: InspectorElementProperty
     )
 
@@ -384,9 +379,7 @@ extension InspectorElementSectionViewController {
             }
 
             let didUpdateOperation = MainThreadOperation(name: "did update property value") { [weak self] in
-                guard let self = self else {
-                    return
-                }
+                guard let self = self else { return }
 
                 self.delegate?.inspectorElementSectionViewController(self, didUpdate: property)
             }
@@ -505,10 +498,6 @@ extension InspectorElementSectionViewController: ColorPreviewControlDelegate {
 extension InspectorElementSectionViewController: OptionListControlDelegate {
     func optionListControlDidChangeSelectedIndex(_ optionListControl: OptionListControl) {
         valueChanged(optionListControl)
-    }
-
-    func optionListControlDidTap(_ optionListControl: OptionListControl) {
-        delegate?.inspectorElementSectionViewController(self, didTap: optionListControl)
     }
 }
 

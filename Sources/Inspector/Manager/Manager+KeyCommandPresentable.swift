@@ -21,18 +21,23 @@
 import UIKit
 
 extension Manager: KeyCommandPresentable {
+    var keyCommands: [UIKeyCommand] {
+        if let cachedKeyCommands = keyCommandsStore.wrappedValue {
+            return cachedKeyCommands
+        }
+        let keyCommands = makeKeyCommands(withSelector: keyCommandAction)
+        keyCommandsStore.wrappedValue = keyCommands
+        return keyCommands
+    }
+
     var commandGroups: CommandsGroups {
         var commandGroups = CommandsGroups()
         if let userCommandGroups = dependencies.customization?.commandGroups {
             commandGroups.append(contentsOf: userCommandGroups)
         }
-        commandGroups.append(contentsOf: viewHierarchyCommandGroups)
+        commandGroups.append(contentsOf: viewHierarchyCoordinator.commandsGroups())
         commandGroups.append(contentsOf: elementCommandGroups)
         return commandGroups
-    }
-
-    private var viewHierarchyCommandGroups: CommandsGroups {
-        viewHierarchyCoordinator.commandsGroups()
     }
 
     private var elementCommandGroups: CommandsGroups {
@@ -45,7 +50,7 @@ extension Manager: KeyCommandPresentable {
 
         return windows.map { window in
             .group(
-                title: "Inspect \(window.displayName) Hierarchy",
+                title: "\(window.underlyingView === keyWindow ? "Key " : "")\(window.displayName) Hierarchy",
                 commands: {
                     var commands = [Command]()
                     commands.append(
@@ -82,12 +87,11 @@ extension Manager: KeyCommandPresentable {
         viewHierarchy
             .compactMap { $0 as? ViewHierarchyElementController }
             .sorted { $0.depth < $1.depth }
-            .enumerated()
-            .map { offset, viewController in
+            .map { viewController in
                 .inspectElement(
                     viewController,
                     displayName: [
-                        Array(repeating: "  ", count: offset + 1).joined(),
+                        Array(repeating: " ", count: viewController.depth).joined(),
                         viewController.displayName
                     ].joined()
                 ) { [weak self] in

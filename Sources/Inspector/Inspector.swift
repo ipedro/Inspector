@@ -96,7 +96,7 @@ public final class Inspector {
                 configuration: configuration,
                 coordinatorFactory: ViewHierarchyCoordinatorFactory.self,
                 customization: customization,
-                viewHierarchy: ViewHierarchy.application
+                viewHierarchy: ViewHierarchy.shared
             ),
             presentedBy: OperationQueue.main
         )

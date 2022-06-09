@@ -23,6 +23,7 @@ import UIKit
 public protocol ViewHierarchyRepresentable {
     var application: UIApplication { get }
     var keyWindow: UIWindow? { get }
-    var topPresentedViewController: UIViewController? { get }
+    var topPresentableViewController: UIViewController? { get }
+    var presentedViewControllers: [UIViewController]? { get }
     var windows: [UIWindow] { get }
 }

@@ -61,28 +61,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
             formPanelViewController.present(colorPickerViewController, animated: true)
         }
     }
-
-    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
-                                   didTap optionListControl: OptionListControl)
-    {
-        let viewModel = OptionSelectorViewModel(
-            title: optionListControl.title,
-            options: optionListControl.options,
-            selectedIndex: optionListControl.selectedIndex
-        )
-
-        let optionSelectorViewController = OptionSelectorViewController(viewModel: viewModel).then {
-            $0.delegate = self
-        }
-
-        let navigationController = makeNavigationController(from: optionListControl.accessoryControl).then {
-            $0.viewControllers = [optionSelectorViewController]
-            $0.shouldAdaptModalPresentation = false
-        }
-
-        formPanelViewController.present(navigationController, animated: true)
-    }
-
+    
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
                                    didTap imagePreviewControl: ImagePreviewControl)
     {

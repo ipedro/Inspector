@@ -137,6 +137,10 @@ final class ReadMeViewController: BaseViewController {
 
         task.resume()
     }
+
+    @IBAction private func openInspector(_ sender: Any) {
+        Inspector.present(animated: true)
+    }
 }
 
 extension ReadMeViewController: WKNavigationDelegate {

@@ -23,7 +23,7 @@ import Foundation
 enum Texts {
     static let `default` = "Default"
     static let actions = "Actions"
-    static let all = "All"
+    static let all = "All Views"
     static let cancel = "Cancel"
     static let children = "Children"
     static let clearImage = "Clear image"
@@ -31,14 +31,13 @@ enum Texts {
     static let copy = "Copy"
     static let dismissView = "Dismiss View"
     static let expand = "Expand"
-    static let highlightViews = highlight("Views")
     static let importImage = "Import image..."
     static let lostConnectionToView = "Lost connection to view"
     static let noElementInspector = "No Element Inspector"
     static let open = "Open"
     static let presentInspector = "Open Inspector..."
     static let preview = "Preview"
-    static let searchViews = "Search views"
+    static let searchViews = "Search Hierarchy"
 
     static func inspect(_ name: Any) -> String {
         "Inspect \(String(describing: name))..."

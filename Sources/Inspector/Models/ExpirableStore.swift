@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2022 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -18,12 +18,32 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import UIKit
+import Foundation
 
-extension ElementInspectorCoordinator: OptionSelectorViewControllerDelegate {
-    func optionSelectorViewController(_ viewController: OptionSelectorViewController, didSelectIndex selectedIndex: Int?) {
-        guard let formPanelController = currentPanelViewController as? ElementInspectorFormPanelViewController else { return }
+struct ExpirableStore<Value>: ExpirableProtocol {
+    private let lifespan: TimeInterval
+    
+    private(set) var expirationDate : Date
+    
+    private var _wrappedValue: Value?
 
-        formPanelController.selectOptionAtIndex(selectedIndex)
+    var wrappedValue: Value? {
+        get {
+            isValid ? _wrappedValue : .none
+        }
+        set {
+            _wrappedValue = newValue
+            expirationDate = Self.makeExpirationDate(lifespan)
+        }
+    }
+
+    init(_ value: Value? = .none, lifespan: TimeInterval) {
+        expirationDate = Self.makeExpirationDate(lifespan)
+        _wrappedValue = value
+        self.lifespan = lifespan
+    }
+    
+    private static func makeExpirationDate(_ lifespan: TimeInterval) -> Date {
+        Date().addingTimeInterval(lifespan)
     }
 }

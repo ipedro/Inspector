@@ -28,9 +28,6 @@ protocol ElementInspectorFormPanelDelegate: OperationQueueManagerProtocol {
                                    didTap imagePreviewControl: ImagePreviewControl)
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
-                                   didTap optionListControl: OptionListControl)
-
-    func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
                                    didUpdateProperty property: InspectorElementProperty,
                                    in section: InspectorElementSection)
 }
@@ -75,8 +72,6 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
     var selectedColorPreviewControl: ColorPreviewControl?
 
     var selectedImagePreviewControl: ImagePreviewControl?
-
-    var selectedOptionListControl: OptionListControl?
 
     private(set) var sections: [InspectorElementSectionViewController: InspectorElementSection] = [:]
 
@@ -267,15 +262,7 @@ extension ElementInspectorFormPanelViewController {
         selectedColorPreviewControl?.updateSelectedColor(color)
     }
 
-    func selectOptionAtIndex(_ index: Int?) {
-        selectedOptionListControl?.updateSelectedIndex(index)
-    }
-
     func finishColorSelection() {
         selectedColorPreviewControl = nil
-    }
-
-    func finishOptionSelction() {
-        selectedOptionListControl = nil
     }
 }
