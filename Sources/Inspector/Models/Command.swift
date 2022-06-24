@@ -23,7 +23,7 @@ import UIKit
 typealias Command = Inspector.Command
 
 public extension Inspector {
-    struct Command {
+    struct Command: Hashable {
         public typealias Closure = () -> Void
 
         public var title: String
@@ -34,7 +34,7 @@ public extension Inspector {
 
         public let isSelected: Bool
 
-        var closure: Closure?
+        @HashableValue var closure: Closure?
 
         var isEnabled: Bool {
             closure != nil
@@ -53,6 +53,14 @@ public extension Inspector {
             self.isSelected = isSelected
             self.closure = closure
         }
+    }
+}
+
+extension Inspector.Command: Comparable {
+    private var comparableTitle: String { "\(isSelected ? "0" : "1")-\(title)" }
+
+    public static func < (lhs: Inspector.Command, rhs: Inspector.Command) -> Bool {
+        lhs.comparableTitle < rhs.comparableTitle
     }
 }
 
@@ -113,7 +121,7 @@ extension Command {
         )
     }
 
-    static func presentInspector(from customization: InspectorCustomizationProviding, animated: Bool = true) -> Command {
+    static func presentInspector(animated: Bool = true) -> Command {
         Command(
             title: Texts.presentInspector.lowercased(),
             icon: nil,

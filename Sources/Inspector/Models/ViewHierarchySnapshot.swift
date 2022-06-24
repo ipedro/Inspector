@@ -23,20 +23,23 @@ import UIKit
 struct ViewHierarchySnapshot: ExpirableProtocol {
     let expirationDate = Date().addingTimeInterval(Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval)
 
-    let availableLayers: [ViewHierarchyLayer]
+    let availableLayers: [ViewHierarchyLayer: Int]
 
-    let populatedLayers: [ViewHierarchyLayer]
+    var populatedLayers: [ViewHierarchyLayer: Int] {
+        availableLayers
+            .filter { $0.value > .zero }
+    }
 
     let root: ViewHierarchyElementRoot
 
     init(layers: [ViewHierarchyLayer], root: ViewHierarchyElementRoot) {
-        availableLayers = layers.uniqueValues()
-
         self.root = root
-
-        populatedLayers = availableLayers.filter {
-            $0.filter(viewHierarchy: root.viewHierarchy).isEmpty == false
-        }
+        availableLayers = layers
+            .uniqueValues()
+            .reduce(into: [:]) { availableLayers, layer in
+                let matches = layer.filter(viewHierarchy: root.viewHierarchy)
+                availableLayers[layer] = matches.count
+            }
     }
 
     func containsReference(for object: NSObject?) -> ViewHierarchyElementReference? {

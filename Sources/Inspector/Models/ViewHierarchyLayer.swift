@@ -90,7 +90,7 @@ public extension Inspector {
 
 extension ViewHierarchyLayer: Comparable {
     public static func < (lhs: Inspector.ViewHierarchyLayer, rhs: Inspector.ViewHierarchyLayer) -> Bool {
-        lhs.title < rhs.title
+        lhs.title.localizedLowercase < rhs.title.localizedLowercase
     }
 }
 

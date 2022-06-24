@@ -32,8 +32,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         guard let _ = (scene as? UIWindowScene) else { return }
         Inspector.setConfiguration(
-            .init(
-                enableLayoutSubviewsSwizzling: true,
+            .config(
+                // enableLayoutSubviewsSwizzling: true,
                 nonInspectableClassNames: [
                     "UITabBarButton",
                     "UITabBarButtonLabel",

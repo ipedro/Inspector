@@ -20,8 +20,8 @@
 
 import UIKit
 
-@objc extension UIViewController {
-    public func inspectorKeyCommandHandler(_ sender: Any) {
+@objc public extension UIViewController {
+    func inspectorKeyCommandHandler(_ sender: Any) {
         guard
             let commandGroups = Inspector.sharedInstance.manager?.commandGroups,
             let keyCommand = sender as? UIKeyCommand
@@ -37,7 +37,11 @@ import UIKit
         }
     }
 
-    func dismissModalKeyCommand(action: Selector) -> UIKeyCommand {
+    func presentationKeyCommandHandler(_ sender: Any) {
+        Inspector.present()
+    }
+
+    internal func dismissModalKeyCommand(action: Selector) -> UIKeyCommand {
         UIKeyCommand(
             .discoverabilityTitle(
                 title: Texts.dismissView,

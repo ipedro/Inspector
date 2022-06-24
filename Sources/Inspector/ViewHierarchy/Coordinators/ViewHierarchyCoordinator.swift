@@ -135,7 +135,7 @@ extension ViewHierarchyCoordinator {
         let snapshot = latestSnapshot()
         let toggleAllHighlights = toggleAllLayersCommands(for: snapshot)
         let highlights = availableLayerCommands(for: snapshot)
-        let wireframes = command(for: .wireframes, at: layerToggleInputRange.lowerBound, isEmpty: false)
+        let wireframes = command(for: .wireframes, at: layerToggleInputRange.lowerBound)
 
         let totalSpeed = snapshot
             .root

@@ -37,21 +37,23 @@ public struct InspectorConfiguration {
 
     public var verbose: Bool
 
-    public init(
+    public static func config(
         enableLayoutSubviewsSwizzling: Bool = false,
         nonInspectableClassNames: [String] = [],
         showAllViewSearchQuery: String = ".",
         snapshotExpiration: TimeInterval = 1,
         verbose: Bool = false
-    ) {
-        snapshotExpirationTimeInterval = snapshotExpiration
-        self.showAllViewSearchQuery = showAllViewSearchQuery
-        self.nonInspectableClassNames = nonInspectableClassNames
-        self.enableLayoutSubviewsSwizzling = enableLayoutSubviewsSwizzling
-        self.verbose = verbose
+    ) -> InspectorConfiguration {
+        .init(
+            snapshotExpirationTimeInterval: snapshotExpiration,
+            showAllViewSearchQuery: showAllViewSearchQuery,
+            nonInspectableClassNames: nonInspectableClassNames,
+            enableLayoutSubviewsSwizzling: enableLayoutSubviewsSwizzling,
+            verbose: verbose
+        )
     }
 
-    public static let `default` = InspectorConfiguration()
+    public static let `default` = InspectorConfiguration.config()
 
     var colorStyle: InspectorColorStyle {
         guard let keyWindow = ViewHierarchy(application: .shared).keyWindow else { return .light }

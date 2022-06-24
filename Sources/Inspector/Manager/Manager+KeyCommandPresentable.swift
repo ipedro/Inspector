@@ -25,7 +25,7 @@ extension Manager: KeyCommandPresentable {
         if let cachedKeyCommands = keyCommandsStore.wrappedValue {
             return cachedKeyCommands
         }
-        let keyCommands = makeKeyCommands(withSelector: keyCommandAction)
+        let keyCommands = [presentInspectorKeyCommand] + makeKeyCommands(withSelector: keyCommandAction)
         keyCommandsStore.wrappedValue = keyCommands
         return keyCommands
     }
@@ -38,6 +38,32 @@ extension Manager: KeyCommandPresentable {
         commandGroups.append(contentsOf: viewHierarchyCoordinator.commandsGroups())
         commandGroups.append(contentsOf: elementCommandGroups)
         return commandGroups
+    }
+
+    var keyCommandAction: Selector {
+        #selector(UIViewController.inspectorKeyCommandHandler(_:))
+    }
+
+    func makeKeyCommands(withSelector aSelector: Selector) -> [UIKeyCommand] {
+        commandGroups
+            .map(\.commands)
+            .flatMap { $0 }
+            .compactMap { command in
+                guard let key = command.keyCommandOptions else { return nil }
+                return UIKeyCommand(.discoverabilityTitle(title: command.title, key: key), action: aSelector)
+            }
+            .sortedByInputKey()
+    }
+
+    private var presentInspectorKeyCommand: UIKeyCommand {
+        let settings = Inspector.sharedInstance.configuration.keyCommands.presentationSettings
+        return .init(
+            title: Texts.presentInspector,
+            image: .init(systemName: "search"),
+            action: #selector(UIViewController.presentationKeyCommandHandler(_:)),
+            input: settings.input,
+            modifierFlags: settings.modifierFlags
+        )
     }
 
     private var elementCommandGroups: CommandsGroups {

@@ -176,8 +176,8 @@ extension Inspector {
 // MARK: - KeyCommands
 
 extension Inspector {
-    var keyCommands: [UIKeyCommand]? {
-        manager?.keyCommands
+    var keyCommands: [UIKeyCommand] {
+        manager?.keyCommands ?? []
     }
 }
 

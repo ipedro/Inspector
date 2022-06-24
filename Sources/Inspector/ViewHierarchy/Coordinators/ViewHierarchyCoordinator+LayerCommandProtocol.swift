@@ -22,32 +22,48 @@ import UIKit
 
 extension ViewHierarchyCoordinator: LayerCommandProtocol {
     func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> [Command] {
-        let maxCount = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
-
-        let commands = snapshot.populatedLayers
+        snapshot
+            .populatedLayers
+            .keys
+            .sorted(by: <)
             .enumerated()
             .compactMap { index, layer in
                 command(
                     for: layer,
                     at: layerToggleInputRange.lowerBound + index + 1,
-                    isEmpty: snapshot.populatedLayers.contains(layer) == false
+                    count: snapshot.populatedLayers[layer]
                 )
             }
-
-        return Array(commands.prefix(maxCount))
+            .prefix(layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound)
+            .sorted(by: <)
     }
 
-    func command(for layer: ViewHierarchyLayer, at index: Int, isEmpty: Bool) -> Command? {
-        if isEmpty { return .none }
-
+    func command(for layer: ViewHierarchyLayer, at index: Int, count: Int? = .none) -> Command? {
         let isSelected = isShowingLayer(layer)
-        let icon: UIImage = layer == .wireframes ? .wireframeAction : .layerAction
-        let title: String = {
-            switch (layer, isSelected) {
-            case (.wireframes, true): return Texts.enable(layer.title)
-            case (.wireframes, false): return Texts.disable(layer.title)
-            default: return layer.title
+
+        let icon: UIImage = {
+            switch layer {
+            case .wireframes:
+                return .wireframeAction
+            default:
+                return .layerAction
             }
+        }()
+
+        let layerName: String = {
+            switch layer {
+            case .wireframes where isSelected:
+                return Texts.enable(layer.title)
+            case .wireframes:
+                return Texts.disable(layer.title)
+            default:
+                return layer.title
+            }
+        }()
+
+        let title: String = {
+            guard let count = count, count > .zero else { return layerName }
+            return "\(layerName) (\(count))"
         }()
 
         return Command(

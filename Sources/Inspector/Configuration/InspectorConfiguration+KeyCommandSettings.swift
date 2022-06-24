@@ -37,8 +37,8 @@ public extension InspectorConfiguration {
         }
 
         public var presentationSettings = KeyCommandOptions(
-            input: "0",
-            modifierFlags: [.control, .shift]
+            input: "1",
+            modifierFlags: [.control, .alternate]
         )
 
         public struct KeyCommandOptions: Hashable {
