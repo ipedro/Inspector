@@ -22,22 +22,5 @@ import UIKit
 
 protocol KeyCommandPresentable {
     var commandGroups: CommandsGroups { get }
-
     var keyCommands: [UIKeyCommand] { get }
-}
-
-extension KeyCommandPresentable {
-    var keyCommandAction: Selector {
-        #selector(UIViewController.inspectorKeyCommandHandler(_:))
-    }
-
-    func makeKeyCommands(withSelector aSelector: Selector) -> [UIKeyCommand] {
-        commandGroups.flatMap { commandGroup in
-            commandGroup.commands.compactMap { action -> UIKeyCommand? in
-                guard let options = action.keyCommandOptions else { return nil }
-                return UIKeyCommand(.discoverabilityTitle(title: action.title, key: options), action: aSelector)
-            }
-        }
-        .sortedByInputKey()
-    }
 }

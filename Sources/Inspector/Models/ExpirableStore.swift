@@ -22,9 +22,9 @@ import Foundation
 
 struct ExpirableStore<Value>: ExpirableProtocol {
     private let lifespan: TimeInterval
-    
-    private(set) var expirationDate : Date
-    
+
+    private(set) var expirationDate: Date
+
     private var _wrappedValue: Value?
 
     var wrappedValue: Value? {
@@ -42,7 +42,7 @@ struct ExpirableStore<Value>: ExpirableProtocol {
         _wrappedValue = value
         self.lifespan = lifespan
     }
-    
+
     private static func makeExpirationDate(_ lifespan: TimeInterval) -> Date {
         Date().addingTimeInterval(lifespan)
     }

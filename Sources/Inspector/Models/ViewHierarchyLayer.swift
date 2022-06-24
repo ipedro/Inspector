@@ -90,7 +90,7 @@ public extension Inspector {
 
 extension ViewHierarchyLayer: Comparable {
     public static func < (lhs: Inspector.ViewHierarchyLayer, rhs: Inspector.ViewHierarchyLayer) -> Bool {
-        lhs.title < rhs.title
+        lhs.title.localizedLowercase < rhs.title.localizedLowercase
     }
 }
 
@@ -130,7 +130,7 @@ public extension ViewHierarchyLayer {
     /// Highlights all collection view cells
     static let collectionViewCells = Inspector.ViewHierarchyLayer(name: "Collection Cells") { $0 is UICollectionViewCell }
     /// Highlights all static texts
-    static let staticTexts = Inspector.ViewHierarchyLayer(name: "Static Texts", allowsInternalViews: true) { $0 is UILabel || $0 is UIKeyInput }
+    static let staticTexts = Inspector.ViewHierarchyLayer(name: "Static Texts", allowsInternalViews: true) { $0 is UILabel }
     /// Highlights all switches
     static let switches = Inspector.ViewHierarchyLayer(name: "Switches") { $0 is UISwitch }
     /// Highlights all table views
@@ -146,7 +146,7 @@ public extension ViewHierarchyLayer {
     /// Highlights all system containers
     static let systemContainers = Inspector.ViewHierarchyLayer(name: "System Containers", showLabels: true, allowsInternalViews: true, allowsSystemContainers: true) { $0._isSystemContainer }
     /// Highlights views with a valid UI Automation identifier
-    static let accessibile = Inspector.ViewHierarchyLayer(name: "With Accessibility Identifiers") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == false }
+    static let accessibile = Inspector.ViewHierarchyLayer(name: "Accessibility Identifiers") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == false }
     /// Highlights views without a UI Automation identifier
     static let notAccessible = Inspector.ViewHierarchyLayer(name: "Without Accessibility Identifiers") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == true }
     /// Shows frames of all views

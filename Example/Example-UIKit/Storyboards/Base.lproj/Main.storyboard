@@ -105,25 +105,27 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="60" translatesAutoresizingMaskIntoConstraints="NO" id="d2F-0P-dbg">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="1607.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="1515"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="edQ-YE-7ct">
-                                                <rect key="frame" x="0.0" y="0.0" width="414" height="153"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="170.5"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Long press any view below" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sh0-1q-0vL">
-                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="20.5"/>
-                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
-                                                        <nil key="textColor"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
                                                     <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wKv-vg-Jpd">
-                                                        <rect key="frame" x="0.0" y="46" width="414" height="45"/>
+                                                        <rect key="frame" x="0.0" y="-4.5" width="414" height="45"/>
                                                         <color key="tintColor" name="AccentColor"/>
                                                         <imageReference key="image" image="hand.point.down.fill" catalog="system" symbolScale="large"/>
                                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
                                                     </imageView>
+                                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="Long press any view below" textAlignment="center" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rb4-Wb-ocJ">
+                                                        <rect key="frame" x="0.0" y="65.5" width="414" height="38"/>
+                                                        <accessibility key="accessibilityConfiguration" identifier="textView"/>
+                                                        <color key="textColor" systemColor="labelColor"/>
+                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
+                                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                        <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" calendarEvent="YES" shipmentTrackingNumber="YES" flightNumber="YES" lookupSuggestion="YES"/>
+                                                    </textView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="gpQ-D6-lFG">
-                                                        <rect key="frame" x="0.0" y="116" width="414" height="37"/>
+                                                        <rect key="frame" x="0.0" y="133.5" width="414" height="37"/>
                                                         <subviews>
                                                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="V4B-vZ-KPb">
                                                                 <rect key="frame" x="-2" y="0.0" width="361" height="38"/>
@@ -142,7 +144,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="5Nt-7q-lSg">
-                                                <rect key="frame" x="0.0" y="213" width="414" height="114"/>
+                                                <rect key="frame" x="0.0" y="230.5" width="414" height="114"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7oM-xj-J0M">
                                                         <rect key="frame" x="0.0" y="0.0" width="414" height="40"/>
@@ -170,8 +172,19 @@
                                                     </button>
                                                 </subviews>
                                             </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="sRK-tj-a7O">
+                                                <rect key="frame" x="0.0" y="404.5" width="414" height="35.5"/>
+                                                <subviews>
+                                                    <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cJS-og-qBk">
+                                                        <rect key="frame" x="0.0" y="-4.5" width="414" height="45"/>
+                                                        <color key="tintColor" name="AccentColor"/>
+                                                        <imageReference key="image" image="hand.point.down.fill" catalog="system" symbolScale="large"/>
+                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
+                                                    </imageView>
+                                                </subviews>
+                                            </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="CIc-jj-6GV">
-                                                <rect key="frame" x="0.0" y="387" width="414" height="509.5"/>
+                                                <rect key="frame" x="0.0" y="500" width="414" height="509.5"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="01c-30-mvW">
                                                         <rect key="frame" x="0.0" y="-3" width="417.5" height="45.5"/>
@@ -199,27 +212,8 @@
                                                     </stackView>
                                                 </subviews>
                                             </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="sRK-tj-a7O">
-                                                <rect key="frame" x="0.0" y="956.5" width="414" height="145.5"/>
-                                                <subviews>
-                                                    <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cJS-og-qBk">
-                                                        <rect key="frame" x="0.0" y="-4.5" width="414" height="45"/>
-                                                        <color key="tintColor" name="AccentColor"/>
-                                                        <imageReference key="image" image="hand.point.down.fill" catalog="system" symbolScale="large"/>
-                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="30"/>
-                                                    </imageView>
-                                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rb4-Wb-ocJ">
-                                                        <rect key="frame" x="0.0" y="65.5" width="414" height="80"/>
-                                                        <accessibility key="accessibilityConfiguration" identifier="textView"/>
-                                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
-                                                        <color key="textColor" systemColor="secondaryLabelColor"/>
-                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                    </textView>
-                                                </subviews>
-                                            </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="kbE-m8-pTl">
-                                                <rect key="frame" x="0.0" y="1162" width="414" height="445.5"/>
+                                                <rect key="frame" x="0.0" y="1069.5" width="414" height="445.5"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pYB-gM-szJ">
                                                         <rect key="frame" x="0.0" y="-3.5" width="414" height="43.5"/>
@@ -295,7 +289,7 @@
                         <outlet property="datePickerSegmentedControl" destination="Cp5-q0-d7b" id="1Fm-Sl-mnY"/>
                         <outlet property="datePickerStackView" destination="CIc-jj-6GV" id="Dgv-Ox-8I6"/>
                         <outlet property="inspectBarButton" destination="8GJ-XY-T7m" id="b4B-t1-iDt"/>
-                        <outlet property="instructionsLabel" destination="Sh0-1q-0vL" id="cBW-v8-ZDe"/>
+                        <outlet property="instructionsTextView" destination="Rb4-Wb-ocJ" id="Ikk-Rc-0H0"/>
                         <outlet property="mapStackView" destination="kbE-m8-pTl" id="Dew-5s-pUc"/>
                         <outlet property="mapView" destination="XAi-RD-PNd" id="e9J-nq-Abb"/>
                         <outlet property="scrollView" destination="d8e-2x-EDf" id="1Ez-1D-4k3"/>
@@ -355,9 +349,6 @@
         </namedColor>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="secondaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

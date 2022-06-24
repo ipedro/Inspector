@@ -40,7 +40,7 @@ extension ViewHierarchy: ViewHierarchyRepresentable {
     var topPresentableViewController: UIViewController? {
         presentedViewControllers?.last ?? keyWindow?.rootViewController
     }
-    
+
     var presentedViewControllers: [UIViewController]? {
         keyWindow?.rootViewController?.allPresentedViewControllers
             .filter { $0 is InternalViewProtocol == false }

@@ -47,10 +47,14 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
 
     var availableLayers: [ViewHierarchyLayer] {
         latestSnapshot().availableLayers
+            .keys
+            .sorted(by: <)
     }
 
     var populatedLayers: [ViewHierarchyLayer] {
         latestSnapshot().populatedLayers
+            .keys
+            .sorted(by: <)
     }
 
     // MARK: - Layer Methods

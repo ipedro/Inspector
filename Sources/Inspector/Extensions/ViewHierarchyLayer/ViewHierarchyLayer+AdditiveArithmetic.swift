@@ -23,7 +23,7 @@ import Foundation
 extension ViewHierarchyLayer: AdditiveArithmetic {
     public static func - (lhs: Inspector.ViewHierarchyLayer, rhs: Inspector.ViewHierarchyLayer) -> Inspector.ViewHierarchyLayer {
         ViewHierarchyLayer(
-            name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",-"),
+            name: [lhs.name, rhs.name].joined(separator: ",-"),
             showLabels: lhs.showLabels,
             allowsInternalViews: lhs.allowsInternalViews
         ) {
@@ -33,7 +33,7 @@ extension ViewHierarchyLayer: AdditiveArithmetic {
 
     public static func + (lhs: Inspector.ViewHierarchyLayer, rhs: Inspector.ViewHierarchyLayer) -> Inspector.ViewHierarchyLayer {
         ViewHierarchyLayer(
-            name: [lhs.name, rhs.name.localizedLowercase].joined(separator: ",+"),
+            name: [lhs.name, rhs.name].joined(separator: ",+"),
             showLabels: lhs.showLabels,
             allowsInternalViews: lhs.allowsInternalViews
         ) {

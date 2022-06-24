@@ -113,8 +113,29 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
         super.viewDidLoad()
 
         reloadData()
+        registerNavigationKeyCommands()
 
-        // key commands
+        if viewModel.shouldAnimateKeyboard {
+            registerKeyboardAnimations()
+        }
+    }
+
+    private func registerKeyboardAnimations() {
+        animateWhenKeyboard(.willHide) { [weak self] _ in
+            guard let self = self else { return }
+            self.viewCode.keyboardFrame = nil
+            self.viewCode.layoutIfNeeded()
+        }
+
+        animateWhenKeyboard(.willShow) { [weak self] info in
+            guard let self = self else { return }
+            Logger.log(info)
+            self.viewCode.keyboardFrame = info.keyboardFrame
+            self.viewCode.layoutIfNeeded()
+        }
+    }
+
+    private func registerNavigationKeyCommands() {
         addKeyCommand(dismissModalKeyCommand(action: #selector(dismissKeyPressed)))
         addKeyCommand(UIKeyCommand(.tab, action: #selector(toggleResponderAndSelectFirstRow)))
         addKeyCommand(UIKeyCommand(.arrowDown, action: #selector(toggleResponderAndSelectFirstRow)))
@@ -128,22 +149,6 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
                 action: #selector(finish)
             )
         )
-
-        guard viewModel.shouldAnimateKeyboard else { return }
-
-        // keyboard event handlers
-        animateWhenKeyboard(.willHide) { [weak self] _ in
-            guard let self = self else { return }
-            self.viewCode.keyboardFrame = nil
-            self.viewCode.layoutIfNeeded()
-        }
-
-        animateWhenKeyboard(.willShow) { [weak self] info in
-            guard let self = self else { return }
-            Logger.log(info)
-            self.viewCode.keyboardFrame = info.keyboardFrame
-            self.viewCode.layoutIfNeeded()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

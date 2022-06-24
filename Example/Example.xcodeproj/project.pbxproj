@@ -24,6 +24,7 @@
 		EB76A4FE26C7A7A40088E571 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */; };
 		EB76A50526C7A7A50088E571 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB76A50426C7A7A50088E571 /* Preview Assets.xcassets */; };
 		EB76A50B26C7AAE10088E571 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EB76A50A26C7AAE10088E571 /* Inspector */; };
+		EBBA573A2865C01000997B50 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBA57392865C01000997B50 /* UIKit.framework */; };
 		EBC0288226354CAB00502C90 /* ExampleAttributesLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC0288126354CAB00502C90 /* ExampleAttributesLibrary.swift */; };
 		EBEC3E22263AC75B00131D60 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EBEC3E21263AC75B00131D60 /* Inspector */; };
 		EBF6BCE12831109100D68BD0 /* WeakObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF6BCE02831109100D68BD0 /* WeakObject.swift */; };
@@ -49,6 +50,7 @@
 		EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
 		EB76A50426C7A7A50088E571 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EB76A50626C7A7A50088E571 /* SwiftUI-Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SwiftUI-Example-Info.plist"; sourceTree = "<group>"; };
+		EBBA57392865C01000997B50 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		EBC0288126354CAB00502C90 /* ExampleAttributesLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleAttributesLibrary.swift; sourceTree = "<group>"; };
 		EBF6BCE02831109100D68BD0 /* WeakObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakObject.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -59,6 +61,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB6595ED266B45C10021CC91 /* Down in Frameworks */,
+				EBBA573A2865C01000997B50 /* UIKit.framework in Frameworks */,
 				EBEC3E22263AC75B00131D60 /* Inspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -193,6 +196,7 @@
 		EBEC3E20263AC75B00131D60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EBBA57392865C01000997B50 /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -326,6 +330,7 @@
 		};
 		EBEDAB6626FB9B7300BB95FB /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

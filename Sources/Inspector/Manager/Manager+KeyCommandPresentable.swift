@@ -25,19 +25,53 @@ extension Manager: KeyCommandPresentable {
         if let cachedKeyCommands = keyCommandsStore.wrappedValue {
             return cachedKeyCommands
         }
-        let keyCommands = makeKeyCommands(withSelector: keyCommandAction)
+        let keyCommands = [presentInspectorKeyCommand] + makeKeyCommands(withSelector: keyCommandAction)
         keyCommandsStore.wrappedValue = keyCommands
         return keyCommands
     }
 
     var commandGroups: CommandsGroups {
+        makeCommandGroups(limit: .none)
+    }
+
+    var keyCommandAction: Selector {
+        #selector(UIViewController.inspectorKeyCommandHandler(_:))
+    }
+
+    private func makeKeyCommands(withSelector aSelector: Selector) -> [UIKeyCommand] {
+        let layerToggleInputRange = Inspector.sharedInstance.configuration.keyCommands.layerToggleInputRange
+        let limit = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
+        let commandGroups = makeCommandGroups(limit: limit)
+
+        return commandGroups
+            .map(\.commands)
+            .flatMap { $0 }
+            .compactMap { command in
+                guard let key = command.keyCommandOptions else { return nil }
+                return UIKeyCommand(.discoverabilityTitle(title: command.title, key: key), action: aSelector)
+            }
+            .sortedByInputKey()
+    }
+
+    private func makeCommandGroups(limit: Int?) -> CommandsGroups {
         var commandGroups = CommandsGroups()
         if let userCommandGroups = dependencies.customization?.commandGroups {
             commandGroups.append(contentsOf: userCommandGroups)
         }
-        commandGroups.append(contentsOf: viewHierarchyCoordinator.commandsGroups())
+        commandGroups.append(contentsOf: viewHierarchyCoordinator.commandsGroups(limit: limit))
         commandGroups.append(contentsOf: elementCommandGroups)
         return commandGroups
+    }
+
+    private var presentInspectorKeyCommand: UIKeyCommand {
+        let settings = Inspector.sharedInstance.configuration.keyCommands.presentationSettings
+        return .init(
+            title: Texts.presentInspector,
+            image: .init(systemName: "search"),
+            action: #selector(UIViewController.presentationKeyCommandHandler(_:)),
+            input: settings.input,
+            modifierFlags: settings.modifierFlags
+        )
     }
 
     private var elementCommandGroups: CommandsGroups {
