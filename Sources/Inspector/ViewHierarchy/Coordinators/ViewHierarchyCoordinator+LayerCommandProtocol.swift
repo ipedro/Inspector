@@ -34,7 +34,6 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
                     count: snapshot.populatedLayers[layer]
                 )
             }
-            .prefix(layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound)
             .sorted(by: <)
     }
 

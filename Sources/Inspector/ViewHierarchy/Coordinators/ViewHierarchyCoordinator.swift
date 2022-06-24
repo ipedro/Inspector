@@ -131,12 +131,12 @@ extension ViewHierarchyCoordinator {
         return snapshot
     }
 
-    func commandsGroups() -> CommandsGroups {
-        let snapshot = latestSnapshot()
-        let toggleAllHighlights = toggleAllLayersCommands(for: snapshot)
-        let highlights = availableLayerCommands(for: snapshot)
-        let wireframes = command(for: .wireframes, at: layerToggleInputRange.lowerBound)
+    private var wireframesCommand: Command? {
+        command(for: .wireframes, at: layerToggleInputRange.lowerBound)
+    }
 
+    private var slowAnimationsCommand: Command {
+        let snapshot = latestSnapshot()
         let totalSpeed = snapshot
             .root
             .windows
@@ -146,7 +146,7 @@ extension ViewHierarchyCoordinator {
             }
         let isSlowingAnimations = totalSpeed < Float(snapshot.root.windows.count)
 
-        let slowAnimations = Command(
+        return Command(
             title: "Slow Animations",
             icon: .systemIcon("tortoise"),
             keyCommandOptions: .none,
@@ -157,12 +157,24 @@ extension ViewHierarchyCoordinator {
                 .windows
                 .forEach { $0.layer.speed = isSlowingAnimations ? 1 : 1 / 5 }
         }
+    }
+
+    func commandsGroups(limit: Int?) -> CommandsGroups {
+        let snapshot = latestSnapshot()
+        let toggleAllHighlights = toggleAllLayersCommands(for: snapshot)
+        var highlights = availableLayerCommands(for: snapshot)
+
+        if let limit = limit {
+            highlights = Array(highlights.prefix(limit))
+        }
 
         return [
             .group(
                 title: "Commands",
-                commands:
-                [slowAnimations, wireframes].compactMap { $0 }
+                commands: [
+                    slowAnimationsCommand,
+                    wireframesCommand
+                ].compactMap { $0 }
                     + toggleAllHighlights
             ),
             .group(

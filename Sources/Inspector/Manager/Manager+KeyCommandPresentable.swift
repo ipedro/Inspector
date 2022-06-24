@@ -31,21 +31,19 @@ extension Manager: KeyCommandPresentable {
     }
 
     var commandGroups: CommandsGroups {
-        var commandGroups = CommandsGroups()
-        if let userCommandGroups = dependencies.customization?.commandGroups {
-            commandGroups.append(contentsOf: userCommandGroups)
-        }
-        commandGroups.append(contentsOf: viewHierarchyCoordinator.commandsGroups())
-        commandGroups.append(contentsOf: elementCommandGroups)
-        return commandGroups
+        makeCommandGroups(limit: .none)
     }
 
     var keyCommandAction: Selector {
         #selector(UIViewController.inspectorKeyCommandHandler(_:))
     }
 
-    func makeKeyCommands(withSelector aSelector: Selector) -> [UIKeyCommand] {
-        commandGroups
+    private func makeKeyCommands(withSelector aSelector: Selector) -> [UIKeyCommand] {
+        let layerToggleInputRange = Inspector.sharedInstance.configuration.keyCommands.layerToggleInputRange
+        let limit = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
+        let commandGroups = makeCommandGroups(limit: limit)
+
+        return commandGroups
             .map(\.commands)
             .flatMap { $0 }
             .compactMap { command in
@@ -53,6 +51,16 @@ extension Manager: KeyCommandPresentable {
                 return UIKeyCommand(.discoverabilityTitle(title: command.title, key: key), action: aSelector)
             }
             .sortedByInputKey()
+    }
+
+    private func makeCommandGroups(limit: Int?) -> CommandsGroups {
+        var commandGroups = CommandsGroups()
+        if let userCommandGroups = dependencies.customization?.commandGroups {
+            commandGroups.append(contentsOf: userCommandGroups)
+        }
+        commandGroups.append(contentsOf: viewHierarchyCoordinator.commandsGroups(limit: limit))
+        commandGroups.append(contentsOf: elementCommandGroups)
+        return commandGroups
     }
 
     private var presentInspectorKeyCommand: UIKeyCommand {

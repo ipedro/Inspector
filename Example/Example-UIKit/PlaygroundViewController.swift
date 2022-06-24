@@ -25,7 +25,7 @@ import UIKit
 final class PlaygroundViewController: BaseViewController {
     // MARK: - Stack Views
 
-    @IBOutlet var instructionsLabel: UILabel!
+    @IBOutlet var instructionsTextView: UITextView!
 
     @IBOutlet var sliderStackView: UIStackView! {
         didSet {
@@ -102,7 +102,7 @@ final class PlaygroundViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        instructionsLabel.text = "Long press any view below or shake the device"
+        instructionsTextView.text = "Long press any view below or shake the device"
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -75,7 +75,6 @@ public struct InspectorConfiguration {
         .images,
         .maps,
         .progressIndicators,
-        .progressIndicators,
         .scrollViews,
         .segmentedControls,
         .stackViews,
@@ -92,7 +91,7 @@ public struct InspectorConfiguration {
         "UITransitionView",
         "UIDropShadowView",
         "UILayoutContainerView",
-        // Navigaiton
+        // Navigation
         "UIViewControllerWrapperView",
         "UINavigationTransitionView",
         // Swift UI
