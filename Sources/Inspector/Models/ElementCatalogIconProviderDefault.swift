@@ -50,7 +50,6 @@ extension ViewHierarchyElementIconProvider {
 
         switch view {
         case let window as UIWindow where window.isKeyWindow:
-            // return .systemIcon("text.and.command.macwindow") //
             return .icon("Key-UIWindow-32_Normal")
 
         case let window as UIWindow where window._className.contains("Keyboard"):
@@ -89,17 +88,11 @@ extension ViewHierarchyElementIconProvider {
         case is UISegmentedControl:
             return .icon("UISegmentedControl_32_Normal")
 
-        case let stackView as UIStackView:
-            switch stackView.axis {
-            case .horizontal:
-                return .icon("HStack-32_Normal")
-
-            case .vertical:
-                return .icon("VStack-32_Normal")
-
-            @unknown default:
-                return .missingSymbol
-            }
+        case let stackView as UIStackView where stackView.axis == .horizontal:
+            return .icon("HStack-32_Normal")
+            
+        case is UIStackView:
+            return .icon("VStack-32_Normal")
 
         case is UILabel:
             return .systemIcon("textformat.abc", weight: .bold) // .icon("UILabel_32-Dark_Normal")
@@ -111,7 +104,7 @@ extension ViewHierarchyElementIconProvider {
             return .icon("TextView-32_Normal")
 
         case is WKWebView:
-            return .icon("Webview-32_Normal")
+            return .systemIcon("safari") // .icon("Webview-32_Normal")
 
         case is UICollectionView:
             return .systemIcon("square.grid.3x1.below.line.grid.1x2")
@@ -134,9 +127,6 @@ extension ViewHierarchyElementIconProvider {
         case is UIControl:
             return .systemIcon("dial.min.fill") // .icon("UIControl-32_Normal")
 
-        case let view where view.className.contains("VisualEffect"):
-            return .icon("VisualEffectsView-32_Normal")
-
         case let view where view.className.contains("TransitionView"):
             return .icon("UITransitionView-32_Normal")
 
@@ -145,9 +135,6 @@ extension ViewHierarchyElementIconProvider {
 
         case let view where view.className.contains("Background"):
             return .icon("BackgroundView-32_Normal")
-
-        case let view where view.className.contains("_UI"):
-            return .icon("keyboardShortcut-32_Normal")
 
         case let view where !view.children.isEmpty:
             return .icon("filled-view-32_Normal")

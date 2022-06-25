@@ -61,6 +61,6 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
 
         guard let imageView = imageView else { return }
         imageView.tintColor = colorStyle.textColor
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .center
     }
 }

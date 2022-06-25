@@ -44,7 +44,7 @@ extension UIImage {
 
     static let collectionViewController: UIImage = .systemIcon("square.grid.3x3")!
 
-    static let nsObject: UIImage = .systemIcon("shippingbox", weight: .ultraLight)!
+    static let nsObject: UIImage = .systemIcon("shippingbox")!
 
     static let applicationIcon: UIImage = .systemIcon("app.badge.fill")!
 }

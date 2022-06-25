@@ -148,7 +148,7 @@ extension ViewHierarchyCoordinator {
 
         return Command(
             title: "Slow Animations",
-            icon: .systemIcon("tortoise"),
+            icon: .systemIcon("tortoise", weight: .regular),
             keyCommandOptions: .none,
             isSelected: isSlowingAnimations
         ) {
