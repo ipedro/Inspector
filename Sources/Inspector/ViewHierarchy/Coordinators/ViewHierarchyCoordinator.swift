@@ -148,7 +148,7 @@ extension ViewHierarchyCoordinator {
 
         return Command(
             title: "Slow Animations",
-            icon: .systemIcon("tortoise", weight: .regular),
+            icon: .systemIcon("tortoise.fill", weight: .medium),
             keyCommandOptions: .none,
             isSelected: isSlowingAnimations
         ) {
@@ -171,11 +171,15 @@ extension ViewHierarchyCoordinator {
         return [
             .group(
                 title: "Commands",
-                commands: [
-                    slowAnimationsCommand,
-                    wireframesCommand
-                ].compactMap { $0 }
-                    + toggleAllHighlights
+                commands: {
+                    var array = [Command]()
+                    array.append(slowAnimationsCommand)
+                    if let wireframesCommand = wireframesCommand {
+                        array.append(wireframesCommand)
+                    }
+                    array.append(contentsOf: toggleAllHighlights)
+                    return array
+                }()
             ),
             .group(
                 title: "Highlights",

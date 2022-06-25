@@ -56,10 +56,10 @@ extension ViewHierarchyElementIconProvider {
             return .systemIcon("keyboard.macwindow", weight: .regular)
 
         case is UIWindow:
-            return .systemIcon("macwindow.on.rectangle", weight: .regular) // .icon("UIWindow-32_Normal")
+            return .systemIcon("macwindow", weight: .regular) // .icon("UIWindow-32_Normal")
 
         case is UIActivityIndicatorView:
-            return .icon("UIActivityIndicator_32_Dark_Normal")
+            return .systemIcon("rays", weight: .bold) // .icon("UIActivityIndicator_32_Dark_Normal")
 
         case is UISlider:
             return .icon("Slider-32_Normal")
@@ -90,7 +90,7 @@ extension ViewHierarchyElementIconProvider {
 
         case let stackView as UIStackView where stackView.axis == .horizontal:
             return .icon("HStack-32_Normal")
-            
+
         case is UIStackView:
             return .icon("VStack-32_Normal")
 

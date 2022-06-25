@@ -54,7 +54,7 @@ extension UIMenu {
         }
 
         self.init(
-            title: element.elementName,
+            title: element.displayName,
             image: nil,
             identifier: nil,
             options: options,

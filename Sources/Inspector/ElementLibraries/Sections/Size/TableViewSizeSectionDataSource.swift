@@ -35,16 +35,16 @@ extension DefaultElementSizeLibrary {
 
         private enum Properties: String, Swift.CaseIterable {
             case rowHeight = "Row Height"
-            case estimatedRowHeight = "Estimate"
+            case estimatedRowHeight = "Estimated Row Height"
             case separator0
             case sectionsGroup = "Sections"
             case sectionHeaderHeight = "Header Height"
-            case estimatedSectionHeaderHeight
-            case sectionFooterHeight
-            case estimatedSectionFooterHeight
+            case estimatedSectionHeaderHeight = "Estimated Header Height"
+            case sectionFooterHeight = "Footer Height"
+            case estimatedSectionFooterHeight = "Estimated Footer Height"
             case separator1
-            case contentViewGroup
-            case insetsContentViewsToSafeArea
+            case contentViewGroup = "Content View"
+            case insetsContentViewsToSafeArea = "Insets Content Views"
         }
 
         var properties: [InspectorElementProperty] {
@@ -89,7 +89,7 @@ extension DefaultElementSizeLibrary {
                     }
                 case .estimatedSectionHeaderHeight:
                     return .cgFloatStepper(
-                        title: "Estimate",
+                        title: property.rawValue,
                         value: { tableView.estimatedSectionHeaderHeight },
                         range: { UITableView.automaticDimension...Double.infinity },
                         stepValue: { 1 }
@@ -107,7 +107,7 @@ extension DefaultElementSizeLibrary {
                     }
                 case .estimatedSectionFooterHeight:
                     return .cgFloatStepper(
-                        title: "Estimate",
+                        title: property.rawValue,
                         value: { tableView.estimatedSectionFooterHeight },
                         range: { UITableView.automaticDimension...Double.infinity },
                         stepValue: { 1 }

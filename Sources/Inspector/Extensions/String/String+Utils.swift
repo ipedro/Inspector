@@ -35,16 +35,43 @@ extension String {
     }
 
     func camelCaseToWords() -> String {
-        unicodeScalars.reduce(String()) {
-            guard
-                CharacterSet.uppercaseLetters.contains($1),
-                let previous = $0.last?.unicodeScalars.last,
-                CharacterSet.uppercaseLetters.contains(previous) == false
-            else {
-                return $0 + String($1)
-            }
+        String(
+            unicodeScalars
+                .enumerated()
+                .reduce("") { string, item in
+                    let (offset, character) = item
+                    let isUppercase = CharacterSet.uppercaseLetters.contains(character)
+                    var nextCharacter: UnicodeScalarView.Element? {
+                        guard offset < unicodeScalars.count - 1 else { return .none }
+                        let nextIndex = index(startIndex, offsetBy: offset + 1)
+                        return unicodeScalars[nextIndex]
+                    }
+                    guard
+                        isUppercase,
+                        let nextCharacter = nextCharacter,
+                        CharacterSet.lowercaseLetters.contains(nextCharacter)
+                    else {
+                        return string + String(character)
+                    }
 
-            return "\($0) \($1)"
+                    return "\(string) \(character)"
+                }
+        )
+    }
+    
+    func removingRegexMatches(pattern: String, replaceWith: String = "") -> String {
+        do {
+            let regex = try NSRegularExpression(pattern: pattern, options: [])
+            let range = NSRange(location: .zero, length: count)
+            return regex
+                .stringByReplacingMatches(
+                    in: self,
+                    options: [],
+                    range: range,
+                    withTemplate: replaceWith
+                )
+        } catch {
+            return self
         }
     }
 }

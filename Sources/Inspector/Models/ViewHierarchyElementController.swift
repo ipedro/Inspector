@@ -305,11 +305,11 @@ extension ViewHierarchyElementController: ViewHierarchyElementReference {
     }
 
     var elementName: String {
-        store.latest.prettyClassNameWithoutQualifiers
+        classNameWithoutQualifiers
     }
 
     var displayName: String {
-        classNameWithoutQualifiers
+        store.latest.prettyClassNameWithoutQualifiers
     }
 
     var canPresentOnTop: Bool {

@@ -116,7 +116,7 @@ extension ElementChildrenPanelViewModel.CellViewModel: ElementChildrenPanelTable
 
     private var automaticallyAdjustIndentation: Bool { relativeDepth > .zero }
 
-    private var title: String? { relativeDepth > .zero ? element.elementName : nil }
+    private var title: String? { relativeDepth > .zero ? element.displayName : nil }
 
     private var subtitle: String? { relativeDepth > .zero ? element.shortElementDescription : element.elementDescription }
 

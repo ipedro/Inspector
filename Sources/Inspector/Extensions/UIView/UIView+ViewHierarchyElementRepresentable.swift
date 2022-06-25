@@ -154,7 +154,7 @@ extension UIView: ViewHierarchyElementRepresentable {
     }
 
     var elementName: String {
-        prettyAccessibilityIdentifier ?? _prettyClassNameWithoutQualifiers
+        prettyAccessibilityIdentifier ?? _classNameWithoutQualifiers
     }
 
     private var prettyAccessibilityIdentifier: String? {
@@ -163,20 +163,17 @@ extension UIView: ViewHierarchyElementRepresentable {
     }
 
     var displayName: String {
-        switch (self, prettyAccessibilityIdentifier) {
-        case let (textElement as TextElement, identifier):
-            let name = identifier ?? textElement._classNameWithoutQualifiers
-            if let textContent = textElement.content?.prefix(30) {
-                return "\"\(textContent)\" (\(name))"
-            }
-            return "\(name) (Empty)"
-
-        case let (anyView, identifier?):
-            return "\(anyView._classNameWithoutQualifiers) (\(identifier))"
-
-        case let (anyView, .none):
-            return anyView._classNameWithoutQualifiers
+        if let identifier = prettyAccessibilityIdentifier {
+            return identifier
         }
+
+        if
+            let textElement = self as? TextElement,
+            let textContent = textElement.content?.prefix(30)
+        {
+            return "\"\(textContent)\""
+        }
+        return _prettyClassNameWithoutQualifiers
     }
 
     var shortElementDescription: String {
@@ -291,10 +288,8 @@ extension NSObject {
     var _prettyClassNameWithoutQualifiers: String {
         _classNameWithoutQualifiers
             .replacingOccurrences(of: "_", with: "")
-            .replacingOccurrences(of: "UI", with: "")
-            .replacingOccurrences(of: "CG", with: "")
-            .replacingOccurrences(of: "CA", with: "")
             .camelCaseToWords()
+            .removingRegexMatches(pattern: "[A-Z]{2} ")
     }
 
     var _superclassName: String? {

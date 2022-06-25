@@ -51,7 +51,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     private static var defaultPanel: ElementInspectorPanel { Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel }
 
-    var title: String { element.elementName }
+    var title: String { element.displayName }
 
     var currentPanelIndex: Int {
         guard let index = availablePanels.firstIndex(of: currentPanel) else {
@@ -86,7 +86,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
             iconImage: element.iconImage,
             isContainer: false,
             subtitle: element.elementDescription,
-            title: element.elementName
+            title: element.displayName
         )
     }
 }

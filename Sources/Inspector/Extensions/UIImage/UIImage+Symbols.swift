@@ -50,12 +50,12 @@ extension UIImage {
 }
 
 extension UIImage {
-    static let chevronDownSymbol: UIImage = .systemIcon("chevron.down.circle")!
-    static let chevronRightSymbol: UIImage = .systemIcon("chevron.right.circle")!
-    static let closeSymbol: UIImage = .systemIcon("xmark.circle")!
-    static let copySymbol: UIImage = .systemIcon("doc.on.doc")!
-    static let emptyLayerAction: UIImage = .systemIcon("questionmark.diamond")!
-    static let layerAction: UIImage = .systemIcon("square.stack.3d.down.forward")!
-    static let wireframeAction: UIImage = .systemIcon("square.stack.3d.forward.dottedline")!
-    static let layerActionAll: UIImage = .systemIcon("square.stack.3d.up.badge.a")!
+    static let chevronDownSymbol: UIImage = .systemIcon("chevron.down.circle", weight: .regular)!
+    static let chevronRightSymbol: UIImage = .systemIcon("chevron.right.circle", weight: .regular)!
+    static let closeSymbol: UIImage = .systemIcon("xmark.circle", weight: .regular)!
+    static let copySymbol: UIImage = .systemIcon("doc.on.doc", weight: .regular)!
+    static let emptyLayerAction: UIImage = .systemIcon("questionmark.diamond", weight: .regular)!
+    static let layerAction: UIImage = .systemIcon("square.stack.3d.down.forward", weight: .regular)!
+    static let layerActionAll: UIImage = .systemIcon("square.stack.3d.down.forward.fill", weight: .regular)!
+    static let wireframeAction: UIImage = .systemIcon("square.2.stack.3d", weight: .regular)!
 }

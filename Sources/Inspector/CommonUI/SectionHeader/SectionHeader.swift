@@ -26,7 +26,7 @@ extension SectionHeader {
     static func formSectionTitle(title: String? = nil, subtitle: String? = nil) -> SectionHeader {
         SectionHeader(
             title: title,
-            titleFont: .init(.callout, .traitBold),
+            titleFont: .init(.body, .traitBold),
             subtitle: subtitle,
             subtitleFont: .caption1,
             margins: .init(vertical: elementInspectorAppearance.verticalMargins / 2)
@@ -40,11 +40,12 @@ extension SectionHeader {
             subtitle: subtitle,
             subtitleFont: .caption1,
             margins: .init(
-                top: elementInspectorAppearance.verticalMargins * 3,
+                top: elementInspectorAppearance.horizontalMargins,
                 bottom: elementInspectorAppearance.verticalMargins
             )
-        ).then {
-            $0.titleLabel.textColor = $0.colorStyle.tertiaryTextColor
+        )
+        .then {
+            $0.titleLabel.textColor = $0.colorStyle.secondaryTextColor
         }
     }
 }

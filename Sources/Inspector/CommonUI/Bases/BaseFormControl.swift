@@ -90,9 +90,10 @@ class BaseFormControl: BaseControl {
     }
 
     func applyTitleSectionStyle() {
-        titleLabel.font = .preferredFont(forTextStyle: .body)
-        titleLabel.textColor = colorStyle.tertiaryTextColor
-        contentContainerView.setCustomSpacing(elementInspectorAppearance.horizontalMargins, after: titleLabel)
+        titleLabel.font = .preferredFont(forTextStyle: .callout)
+        titleLabel.textColor = colorStyle.secondaryTextColor
+        contentContainerView.directionalLayoutMargins.update(top: elementInspectorAppearance.horizontalMargins)
+        contentContainerView.setCustomSpacing(elementInspectorAppearance.verticalMargins * 1.5, after: titleLabel)
     }
 
     override open func setup() {
