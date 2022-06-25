@@ -23,7 +23,7 @@ import Foundation
 enum Texts {
     static let `default` = "Default"
     static let actions = "Actions"
-    static let all = "All Views"
+    static let allHighlights = "All Highlights"
     static let cancel = "Cancel"
     static let children = "Children"
     static let clearImage = "Clear image"

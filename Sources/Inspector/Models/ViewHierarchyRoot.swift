@@ -20,10 +20,11 @@
 
 import UIKit
 
-final class ViewHierarchyElementRoot {
+final class ViewHierarchyRoot {
     weak var parent: ViewHierarchyElementReference?
 
     lazy var children = windows
+        .filter { !$0.isHidden }
         .sorted { $0.windowLevel < $1.windowLevel }
         .map { window -> ViewHierarchyElementReference in
             let windowReference = catalog.makeElement(from: window)
@@ -120,7 +121,7 @@ final class ViewHierarchyElementRoot {
     }
 }
 
-extension ViewHierarchyElementRoot: ViewHierarchyElementReference {
+extension ViewHierarchyRoot: ViewHierarchyElementReference {
     var viewHierarchy: [ViewHierarchyElementReference] { children.flatMap(\.viewHierarchy) }
 
     var underlyingObject: NSObject? { application }
@@ -182,16 +183,14 @@ extension ViewHierarchyElementRoot: ViewHierarchyElementReference {
             let build = bundleInfo?.build,
             let minimumOSVersion = bundleInfo?.minimumOSVersion
         else {
-            return ""
+            return String()
         }
 
-        return [
-            className,
-            "Identifier: \(identifier)",
-            "Version: \(version) (\(build))",
-            "Requirement: iOS \(minimumOSVersion)+"
-        ]
-        .joined(separator: "\n")
+        return [className,
+                "Identifier: \(identifier)",
+                "Version: \(version) (\(build))",
+                "Requirement: iOS \(minimumOSVersion)+"]
+            .joined(separator: .newLine)
     }
 
     var elementDescription: String { shortElementDescription }

@@ -48,7 +48,15 @@ extension Manager: KeyCommandPresentable {
             .flatMap { $0 }
             .compactMap { command in
                 guard let key = command.keyCommandOptions else { return nil }
-                return UIKeyCommand(.discoverabilityTitle(title: command.title, key: key), action: aSelector)
+                return .init(
+                    title: command.title,
+                    action: aSelector,
+                    input: key.input,
+                    modifierFlags: key.modifierFlags,
+                    discoverabilityTitle: command.title,
+                    attributes: command.isEnabled ? .init() : .disabled,
+                    state: command.isSelected ? .on : .off
+                )
             }
             .sortedByInputKey()
     }
@@ -67,7 +75,6 @@ extension Manager: KeyCommandPresentable {
         let settings = Inspector.sharedInstance.configuration.keyCommands.presentationSettings
         return .init(
             title: Texts.presentInspector,
-            image: .init(systemName: "search"),
             action: #selector(UIViewController.presentationKeyCommandHandler(_:)),
             input: settings.input,
             modifierFlags: settings.modifierFlags

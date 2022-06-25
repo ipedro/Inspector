@@ -73,7 +73,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
     }
 
     func installAllLayers() {
-        asyncOperation(name: Texts.enable(Texts.all)) {
+        asyncOperation(name: Texts.enable(Texts.allHighlights)) {
             let snapshot = self.latestSnapshot()
             for layer in self.populatedLayers {
                 self.make(layer: layer, for: snapshot)
@@ -88,7 +88,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
             return
         }
 
-        asyncOperation(name: Texts.disable(Texts.all)) {
+        asyncOperation(name: Texts.disable(Texts.allHighlights)) {
             self.destroyAllLayers()
         }
     }

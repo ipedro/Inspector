@@ -185,7 +185,7 @@ extension ViewHierarchyCoordinator {
     }
 
     private func makeSnapshot() -> ViewHierarchySnapshot {
-        let application = ViewHierarchyElementRoot(.shared, catalog: dependencies.catalog)
+        let application = ViewHierarchyRoot(.shared, catalog: dependencies.catalog)
         let snapshot = ViewHierarchySnapshot(layers: dependencies.layers, root: application)
         return snapshot
     }

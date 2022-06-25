@@ -50,10 +50,14 @@ extension ViewHierarchyElementIconProvider {
 
         switch view {
         case let window as UIWindow where window.isKeyWindow:
+            // return .systemIcon("text.and.command.macwindow") //
             return .icon("Key-UIWindow-32_Normal")
 
+        case let window as UIWindow where window._className.contains("Keyboard"):
+            return .systemIcon("keyboard.macwindow", weight: .regular)
+
         case is UIWindow:
-            return .icon("UIWindow-32_Normal")
+            return .systemIcon("macwindow.on.rectangle", weight: .regular) // .icon("UIWindow-32_Normal")
 
         case is UIActivityIndicatorView:
             return .icon("UIActivityIndicator_32_Dark_Normal")
@@ -69,11 +73,11 @@ extension ViewHierarchyElementIconProvider {
 
         case is UIButton,
              is UIControl where view.className.contains("Button"):
-            return .icon("Button-32_Normal")
+            return .systemIcon("hand.tap.fill") // .icon("Button-32_Normal")
 
         case let imageView as UIImageView:
             guard let image = imageView.isHighlighted ? imageView.highlightedImage : imageView.image else {
-                return .icon("ImageView-32_Normal")
+                return .systemIcon("photo.fill") // .icon("ImageView-32_Normal")
             }
 
             if image.renderingMode == .alwaysTemplate {
@@ -81,9 +85,6 @@ extension ViewHierarchyElementIconProvider {
             }
 
             return image
-
-        case is UILabel:
-            return .icon("UILabel_32-Dark_Normal")
 
         case is UISegmentedControl:
             return .icon("UISegmentedControl_32_Normal")
@@ -100,14 +101,23 @@ extension ViewHierarchyElementIconProvider {
                 return .missingSymbol
             }
 
+        case is UILabel:
+            return .systemIcon("textformat.abc", weight: .bold) // .icon("UILabel_32-Dark_Normal")
+
         case is UITextField:
-            return .icon("TextField-32_Normal")
+            return .systemIcon("textformat.abc.dottedunderline", weight: .bold) // .icon("TextField-32_Normal")
 
         case is UITextView:
             return .icon("TextView-32_Normal")
 
         case is WKWebView:
             return .icon("Webview-32_Normal")
+
+        case is UICollectionView:
+            return .systemIcon("square.grid.3x1.below.line.grid.1x2")
+
+        case is UITableView:
+            return .systemIcon("square.fill.text.grid.1x2")
 
         case is UIScrollView:
             return .icon("UIScrollView_32_Normal")
@@ -122,7 +132,7 @@ extension ViewHierarchyElementIconProvider {
             return .icon("UIToolbar-32_Normal")
 
         case is UIControl:
-            return .icon("UIControl-32_Normal")
+            return .systemIcon("dial.min.fill") // .icon("UIControl-32_Normal")
 
         case let view where view.className.contains("VisualEffect"):
             return .icon("VisualEffectsView-32_Normal")

@@ -114,10 +114,7 @@ extension DefaultElementAttributesLibrary {
 extension UIKeyCommand {
     var symbols: String? {
         let keys = (modifierFlags.symbols + [input?.localizedUppercase]).compactMap { $0 }
-
-        if keys.isEmpty { return nil }
-
-        return keys.joined(separator: " + ")
+        return keys.isEmpty ? nil : keys.joined(separator: " + ")
     }
 }
 
@@ -147,7 +144,7 @@ extension UIKeyModifierFlags {
                     case .shift:
                         return "⇧"
                     case .control:
-                        return "control"
+                        return "^"
                     case .alternate:
                         return "⌥"
                     case .command:
