@@ -160,7 +160,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
         tintColor = colorStyle.textColor
 
         contentView.axis = .vertical
-        contentView.spacing = elementInspectorAppearance.verticalMargins
+        contentView.spacing = elementInspectorAppearance.verticalMargins / 2
         contentView.addArrangedSubviews(elementNameLabel, elementIconAndDescriptionLabel)
 
         installView(indendationAdjustmentStackView, priority: .required)

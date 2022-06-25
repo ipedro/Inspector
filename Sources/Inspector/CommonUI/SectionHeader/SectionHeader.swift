@@ -36,7 +36,7 @@ extension SectionHeader {
     static func attributesInspectorGroup(title: String? = nil, subtitle: String? = nil) -> SectionHeader {
         SectionHeader(
             title: title,
-            titleFont: .body,
+            titleFont: .callout,
             subtitle: subtitle,
             subtitleFont: .caption1,
             margins: .init(
