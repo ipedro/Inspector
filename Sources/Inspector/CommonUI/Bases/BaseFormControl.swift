@@ -21,8 +21,10 @@
 import UIKit
 
 class BaseFormControl: BaseControl {
+    let titleFont: UIFont = .preferredFont(forTextStyle: .footnote)
+
     private(set) lazy var titleLabel = UILabel().then {
-        $0.font = .preferredFont(forTextStyle: .footnote)
+        $0.font = titleFont.withTraits(.traitBold)
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         $0.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         $0.textColor = colorStyle.textColor

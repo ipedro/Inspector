@@ -103,9 +103,9 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
 
             let firstSection = InspectorElementSection(
                 rows:
-                NavigationItemAttributesSectionDataSource(with: viewController),
                 ViewControllerAttributesSectionDataSource(with: viewController),
-                TabBarItemAttributesSectionDataSource(with: viewController)
+                TabBarItemAttributesSectionDataSource(with: viewController),
+                NavigationItemAttributesSectionDataSource(with: viewController)
             )
 
             guard
@@ -124,10 +124,12 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
             ]
 
         case .navigationBar:
-            var section = InspectorElementSection()
-            section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .standard))
-            section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .compact))
-            section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .scrollEdge))
+            var section = InspectorElementSection(
+                rows:
+                NavigationBarAppearanceAttributesSectionDataSource(with: object, .standard),
+                NavigationBarAppearanceAttributesSectionDataSource(with: object, .compact),
+                NavigationBarAppearanceAttributesSectionDataSource(with: object, .scrollEdge)
+            )
 
             if #available(iOS 15.0, *) {
                 section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .compactScrollEdge))

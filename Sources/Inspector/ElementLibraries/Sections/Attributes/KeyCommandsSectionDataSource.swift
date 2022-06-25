@@ -28,7 +28,7 @@ extension DefaultElementAttributesLibrary {
 
         var subtitle: String?
 
-        private let keyCommand: UIKeyCommand?
+        private weak var keyCommand: UIKeyCommand?
 
         var customClass: InspectorElementSectionView.Type? {
             InspectorElementKeyCommandSectionView.self
@@ -39,15 +39,24 @@ extension DefaultElementAttributesLibrary {
                 return nil
             }
 
-            subtitle = keyCommand.title
+            if keyCommand.title.isEmpty {
+                subtitle = keyCommand.discoverabilityTitle ?? keyCommand.action?.description
+            }
+            else {
+                subtitle = keyCommand.title
+            }
 
-            title = (keyCommand.symbols ?? keyCommand.action?.description) ?? "Key Command"
+            title = keyCommand.symbols ?? "Key Command"
 
             self.keyCommand = keyCommand
         }
 
         private enum Property: String, Swift.CaseIterable {
-            case key = "Key"
+            case title = "Title"
+            case discoverabilityTitle = "Discoverability Title"
+            case image = "Image"
+            case separator
+            case key = "Keys"
             case selector = "Selector"
         }
 
@@ -56,21 +65,45 @@ extension DefaultElementAttributesLibrary {
 
             return Property.allCases.compactMap { property in
                 switch property {
+                case .separator:
+                    return .separator
+                case .discoverabilityTitle:
+                    return .textField(
+                        title: property.rawValue,
+                        placeholder: .none,
+                        axis: .vertical,
+                        value: { keyCommand.discoverabilityTitle },
+                        handler: .none
+                    )
+                case .image:
+                    return .imagePicker(
+                        title: property.rawValue,
+                        image: { keyCommand.image },
+                        handler: .none
+                    )
                 case .key:
                     return .textField(
                         title: property.rawValue,
-                        placeholder: "Enter ⌘ Key",
-                        axis: .horizontal,
+                        placeholder: .none,
+                        axis: .vertical,
                         value: { keyCommand.symbols },
-                        handler: nil
+                        handler: .none
+                    )
+                case .title:
+                    return .textField(
+                        title: property.rawValue,
+                        placeholder: .none,
+                        axis: .vertical,
+                        value: { keyCommand.title },
+                        handler: .none
                     )
                 case .selector:
                     return .textField(
                         title: property.rawValue,
-                        placeholder: "action",
-                        axis: .horizontal,
+                        placeholder: .none,
+                        axis: .vertical,
                         value: { keyCommand.action?.description },
-                        handler: nil
+                        handler: .none
                     )
                 }
             }

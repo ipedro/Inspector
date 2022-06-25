@@ -160,7 +160,7 @@ extension MKPointOfInterestFilter: CaseIterable {
         .excludingAll
     ]
 
-    open var displayName: String {
+    public var displayName: String {
         switch self {
         case .includingAll:
             return "Including All"

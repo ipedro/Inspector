@@ -91,7 +91,7 @@ extension Manager: KeyCommandPresentable {
                         .inspectElement(window) { [weak self] in
                             guard let self = self else { return }
                             self.perform(
-                                action: .inspect(preferredPanel: .children),
+                                action: .inspect(preferredPanel: .attributes),
                                 with: window,
                                 from: keyWindow
                             )
@@ -102,7 +102,7 @@ extension Manager: KeyCommandPresentable {
                         contentsOf: forEach(
                             viewController: root.viewHierarchy
                                 .filter { $0.underlyingView?.window === window.underlyingView },
-                            .inspect(preferredPanel: .children),
+                            .inspect(preferredPanel: .attributes),
                             from: keyWindow
                         )
                     )

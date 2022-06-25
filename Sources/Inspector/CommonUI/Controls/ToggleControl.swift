@@ -95,7 +95,7 @@ final class ToggleControl: BaseFormControl {
     }
 
     func updateViews() {
-        titleLabel.alpha = isOn ? 1 : 0.5
+        titleLabel.font = isOn ? titleFont.withTraits(.traitBold) : titleFont
     }
 }
 

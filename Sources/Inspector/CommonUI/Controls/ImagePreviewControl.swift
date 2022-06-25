@@ -100,6 +100,8 @@ final class ImagePreviewControl: BaseFormControl {
     override func setup() {
         super.setup()
 
+        axis = .vertical
+
         titleLabel.setContentHuggingPriority(.fittingSizeLevel, for: .horizontal)
 
         contentView.addArrangedSubview(accessoryControl)
