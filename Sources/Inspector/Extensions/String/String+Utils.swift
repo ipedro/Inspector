@@ -58,19 +58,23 @@ extension String {
                 }
         )
     }
-    
-    func removingRegexMatches(pattern: String, replaceWith: String = "") -> String {
+
+    func removingRegexMatches(
+        pattern: String,
+        options: NSRegularExpression.MatchingOptions = [],
+        replaceWith: String = "") -> String {
         do {
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let range = NSRange(location: .zero, length: count)
             return regex
                 .stringByReplacingMatches(
                     in: self,
-                    options: [],
+                    options: options,
                     range: range,
                     withTemplate: replaceWith
                 )
-        } catch {
+        }
+        catch {
             return self
         }
     }

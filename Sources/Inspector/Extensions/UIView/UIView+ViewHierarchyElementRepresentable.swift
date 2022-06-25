@@ -289,7 +289,7 @@ extension NSObject {
         _classNameWithoutQualifiers
             .replacingOccurrences(of: "_", with: "")
             .camelCaseToWords()
-            .removingRegexMatches(pattern: "[A-Z]{2} ")
+            .removingRegexMatches(pattern: "[A-Z]{2} ", options: .anchored)
     }
 
     var _superclassName: String? {
