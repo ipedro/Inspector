@@ -52,9 +52,9 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
         let layerName: String = {
             switch layer {
             case .wireframes where isSelected:
-                return Texts.enable(layer.title)
-            case .wireframes:
                 return Texts.disable(layer.title)
+            case .wireframes:
+                return Texts.enable(layer.title)
             default:
                 return layer.title
             }
