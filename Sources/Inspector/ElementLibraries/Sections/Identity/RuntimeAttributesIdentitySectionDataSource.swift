@@ -45,11 +45,16 @@ extension DefaultElementIdentityLibrary {
                 !propertyNames.isEmpty
             else {
                 return [
-                    .infoNote(icon: .info, title: "No inspectable properties", text: .none)
+                    .infoNote(icon: .info, title: "No Inspectable Properties", text: .none)
                 ]
             }
 
             return propertyNames.compactMap { property in
+                let title = property
+                    .replacingOccurrences(of: "_", with: "")
+                    .camelCaseToWords()
+                    .localizedCapitalized
+
                 guard
                     object.responds(to: Selector(property)),
                     let result = object.safeValue(forKey: property)
@@ -58,8 +63,8 @@ extension DefaultElementIdentityLibrary {
                         return nil
                     }
                     return .textField(
-                        title: property,
-                        placeholder: "None",
+                        title: title,
+                        placeholder: .none,
                         axis: .horizontal,
                         value: { nil },
                         handler: nil
@@ -67,73 +72,73 @@ extension DefaultElementIdentityLibrary {
                 }
 
                 switch result {
-                case let boolValue as Bool:
-                    return .switch(
-                        title: property,
-                        isOn: { boolValue },
-                        handler: nil
-                    )
                 case let colorValue as UIColor:
                     return .colorPicker(
-                        title: property,
+                        title: title,
                         color: { colorValue },
                         handler: nil
                     )
                 case let imageValue as UIImage:
                     return .imagePicker(
-                        title: property,
+                        title: title,
                         image: { imageValue },
                         handler: nil
                     )
                 case let number as NSNumber:
                     return .stepper(
-                        title: property,
+                        title: title,
                         value: { number.doubleValue },
                         range: { 0...max(1, number.doubleValue) },
                         stepValue: { 1 },
                         isDecimalValue: Double(number.intValue) != number.doubleValue,
                         handler: nil
                     )
+                case let boolValue as Bool:
+                    return .switch(
+                        title: title,
+                        isOn: { boolValue },
+                        handler: nil
+                    )
                 case let size as CGSize:
                     return .cgSize(
-                        title: property,
+                        title: title,
                         size: { size },
                         handler: nil
                     )
                 case let point as CGPoint:
                     return .cgPoint(
-                        title: property,
+                        title: title,
                         point: { point },
                         handler: nil
                     )
                 case let rect as CGRect:
                     return .cgRect(
-                        title: property,
+                        title: title,
                         rect: { rect },
                         handler: nil
                     )
                 case let insets as NSDirectionalEdgeInsets:
                     return .directionalInsets(
-                        title: property,
+                        title: title,
                         insets: { insets },
                         handler: nil
                     )
                 case let insets as UIEdgeInsets:
                     return .edgeInsets(
-                        title: property,
+                        title: title,
                         insets: { insets },
                         handler: nil
                     )
                 case let view as UIView:
                     return .textView(
-                        title: property,
+                        title: title,
                         placeholder: nil,
                         value: { view.elementDescription },
                         handler: nil
                     )
                 case let aClass as AnyClass:
                     return .textField(
-                        title: property,
+                        title: title,
                         placeholder: nil,
                         axis: .horizontal,
                         value: { String(describing: aClass) },
@@ -141,14 +146,14 @@ extension DefaultElementIdentityLibrary {
                     )
                 case let object as NSObject:
                     return .textView(
-                        title: property,
+                        title: title,
                         placeholder: nil,
                         value: { object.debugDescription },
                         handler: nil
                     )
                 case let stringValue as String:
                     return .textView(
-                        title: property,
+                        title: title,
                         placeholder: nil,
                         value: { stringValue },
                         handler: nil
