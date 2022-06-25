@@ -21,7 +21,7 @@
 import Foundation
 
 extension NSObject {
-    var classesForCoder: [AnyClass] {
+    var _classesForCoder: [AnyClass] {
         var array = [classForCoder]
 
         var objectClass: AnyClass = classForCoder

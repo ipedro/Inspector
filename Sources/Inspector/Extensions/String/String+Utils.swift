@@ -23,13 +23,28 @@ import Foundation
 extension String {
     static let newLine = "\n"
 
+    public static let systemFontFamilyName = "System Font"
+
     var trimmed: String? {
         let trimmedString = trimmingCharacters(in: .whitespacesAndNewlines)
-
-        return trimmedString.isEmpty ? nil : trimmedString
+        return trimmedString.isEmpty ? .none : trimmedString
     }
 
-    func string(prepending: String? = nil, appending: String? = nil, separator: String = "") -> String {
+    func string(prepending: String? = .none, appending: String? = .none, separator: String = "") -> String {
         [prepending, self, appending].compactMap { $0 }.joined(separator: separator)
+    }
+
+    func camelCaseToWords() -> String {
+        unicodeScalars.reduce(String()) {
+            guard
+                CharacterSet.uppercaseLetters.contains($1),
+                let previous = $0.last?.unicodeScalars.last,
+                CharacterSet.uppercaseLetters.contains(previous) == false
+            else {
+                return $0 + String($1)
+            }
+
+            return "\($0) \($1)"
+        }
     }
 }

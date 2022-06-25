@@ -154,7 +154,7 @@ extension UIView: ViewHierarchyElementRepresentable {
     }
 
     var elementName: String {
-        prettyAccessibilityIdentifier ?? _classNameWithoutQualifiers
+        prettyAccessibilityIdentifier ?? _prettyClassNameWithoutQualifiers
     }
 
     private var prettyAccessibilityIdentifier: String? {
@@ -180,12 +180,10 @@ extension UIView: ViewHierarchyElementRepresentable {
     }
 
     var shortElementDescription: String {
-        [subviewsDescription,
-         constraintsDescription,
+        [classNameDescription,
+         subviewsDescription,
          positionDescrpition,
-         sizeDescription,
-         _superclassName,
-         _className]
+         sizeDescription]
             .compactMap { $0 }
             .prefix(3)
             .joined(separator: .newLine)
@@ -197,7 +195,8 @@ extension UIView: ViewHierarchyElementRepresentable {
          positionDescrpition,
          constraintsDescription,
          subviewsDescription,
-         issuesDescription?.string(prepending: .newLine)]
+         issuesDescription?
+             .string(prepending: .newLine)]
             .compactMap { $0 }
             .joined(separator: .newLine)
     }
@@ -287,6 +286,15 @@ extension NSObject {
 
     var _className: String {
         String(describing: classForCoder)
+    }
+
+    var _prettyClassNameWithoutQualifiers: String {
+        _classNameWithoutQualifiers
+            .replacingOccurrences(of: "_", with: "")
+            .replacingOccurrences(of: "UI", with: "")
+            .replacingOccurrences(of: "CG", with: "")
+            .replacingOccurrences(of: "CA", with: "")
+            .camelCaseToWords()
     }
 
     var _superclassName: String? {

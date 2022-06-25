@@ -77,24 +77,7 @@ struct FontReference: Hashable, CustomStringConvertible, CaseIterable {
             return nil
         }
 
-        return String(last).camelCaseToWords()
-    }
-}
-
-extension String {
-    public static let systemFontFamilyName = "System Font"
-
-    fileprivate func camelCaseToWords() -> String {
-        unicodeScalars.reduce(String()) {
-            guard
-                CharacterSet.uppercaseLetters.contains($1),
-                let previous = $0.last?.unicodeScalars.last,
-                CharacterSet.uppercaseLetters.contains(previous) == false
-            else {
-                return $0 + String($1)
-            }
-
-            return "\($0) \($1)"
-        }
+        return String(last)
+            .camelCaseToWords()
     }
 }

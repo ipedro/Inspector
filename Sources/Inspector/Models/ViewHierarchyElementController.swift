@@ -51,6 +51,7 @@ extension ViewHierarchyElementController {
         let depth: Int
         let title: String?
         var className: String
+        let prettyClassNameWithoutQualifiers: String
         var superclassName: String?
         var classNameWithoutQualifiers: String
         let expirationDate = Date().addingTimeInterval(Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval)
@@ -116,6 +117,7 @@ extension ViewHierarchyElementController {
 
             additionalSafeAreaInsets = viewController.additionalSafeAreaInsets
             className = viewController._className
+            prettyClassNameWithoutQualifiers = viewController._prettyClassNameWithoutQualifiers
             classNameWithoutQualifiers = viewController._classNameWithoutQualifiers
             definesPresentationContext = viewController.definesPresentationContext
             self.depth = depth
@@ -303,7 +305,7 @@ extension ViewHierarchyElementController: ViewHierarchyElementReference {
     }
 
     var elementName: String {
-        className
+        store.latest.prettyClassNameWithoutQualifiers
     }
 
     var displayName: String {
