@@ -131,7 +131,7 @@ extension ViewHierarchyCoordinator {
         return snapshot
     }
 
-    var toggleWireframesCommand: Command? {
+    var toggleWireframesCommand: Command {
         command(for: .wireframes, at: layerToggleInputRange.lowerBound)
     }
 
@@ -146,7 +146,10 @@ extension ViewHierarchyCoordinator {
 
         return [
             .group(
-                title: "Available Highlights",
+                title: {
+                    guard let displayName = snapshot.root.underlyingView?.displayName else { return "Highlight Views" }
+                    return "Highlight Views In \(displayName)" // "\(displayName) View Hierarchy"
+                }(),
                 commands: toggleAllHighlights + highlights
             )
         ]

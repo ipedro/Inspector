@@ -25,5 +25,5 @@ protocol LayerCommandProtocol {
 
     func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> [Command]
 
-    func command(for layer: ViewHierarchyLayer, at index: Int, count: Int?) -> Command?
+    func command(for layer: ViewHierarchyLayer, at index: Int, count: Int?) -> Command
 }

@@ -50,7 +50,7 @@ extension Manager: KeyCommandPresentable {
 
         return Command(
             title: "Slow Animations",
-            icon: .systemIcon("tortoise.fill", weight: .medium),
+            icon: .systemIcon("tortoise", weight: .regular),
             keyCommandOptions: .none,
             isSelected: isSlowingAnimations
         ) { [weak self] in
@@ -90,9 +90,7 @@ extension Manager: KeyCommandPresentable {
             commands: {
                 var array = [Command]()
                 array.append(slowAnimationsCommand)
-                if let toggleWireframesCommand = viewHierarchyCoordinator.toggleWireframesCommand {
-                    array.append(toggleWireframesCommand)
-                }
+                array.append(viewHierarchyCoordinator.toggleWireframesCommand)
                 return array
             }()
         )
@@ -142,7 +140,7 @@ extension Manager: KeyCommandPresentable {
 
         return windows.map { window in
             .group(
-                title: "\(window.underlyingView === keyWindow ? "Key " : "")\(window.displayName) Hierarchy",
+                title: "\(window.displayName) View Controllers",
                 commands: {
                     var commands = [Command]()
                     commands.append(
@@ -179,7 +177,7 @@ extension Manager: KeyCommandPresentable {
 
         return [
             .group(
-                title: "Key \(element.displayName) Hierarchy",
+                title: "\(element.displayName) Hierarchy",
                 commands: {
                     var commands = [Command]()
                     commands.append(
