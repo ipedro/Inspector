@@ -50,7 +50,7 @@ extension Manager: KeyCommandPresentable {
 
         return Command(
             title: "Slow Animations",
-            icon: .systemIcon("tortoise", weight: .regular),
+            icon: .systemIcon("tortoise.fill", weight: .regular),
             keyCommandOptions: .none,
             isSelected: isSlowingAnimations
         ) { [weak self] in
@@ -130,44 +130,44 @@ extension Manager: KeyCommandPresentable {
         )
     }
 
-    private var allWindowsHierarchies: CommandsGroups {
-        guard let keyWindow = keyWindow else { return [] }
-
-        let snapshot = viewHierarchyCoordinator.latestSnapshot()
-        let root = snapshot.root
-        let windows = root.children
-            .filter { ($0.underlyingView as? UIWindow)?.isKeyWindow == true }
-
-        return windows.map { window in
-            .group(
-                title: "\(window.displayName) View Controllers",
-                commands: {
-                    var commands = [Command]()
-                    commands.append(
-                        .inspectElement(window) { [weak self] in
-                            guard let self = self else { return }
-                            self.perform(
-                                action: .inspect(preferredPanel: .attributes),
-                                with: window,
-                                from: keyWindow
-                            )
-                        }
-                    )
-
-                    commands.append(
-                        contentsOf: forEach(
-                            viewController: root.viewHierarchy
-                                .filter { $0.underlyingView?.window === window.underlyingView },
-                            .inspect(preferredPanel: .attributes),
-                            from: keyWindow
-                        )
-                    )
-
-                    return commands
-                }()
-            )
-        }
-    }
+//    private var allWindowsHierarchies: CommandsGroups {
+//        guard let keyWindow = keyWindow else { return [] }
+//
+//        let snapshot = viewHierarchyCoordinator.latestSnapshot()
+//        let root = snapshot.root
+//        let windows = root.children
+//            .filter { ($0.underlyingView as? UIWindow)?.isKeyWindow == true }
+//
+//        return windows.map { window in
+//            .group(
+//                title: "\(window.displayName) View Controllers",
+//                commands: {
+//                    var commands = [Command]()
+//                    commands.append(
+//                        .inspectElement(window) { [weak self] in
+//                            guard let self = self else { return }
+//                            self.perform(
+//                                action: .inspect(preferredPanel: .attributes),
+//                                with: window,
+//                                from: keyWindow
+//                            )
+//                        }
+//                    )
+//
+//                    commands.append(
+//                        contentsOf: forEach(
+//                            viewController: root.viewHierarchy
+//                                .filter { $0.underlyingView?.window === window.underlyingView },
+//                            .inspect(preferredPanel: .attributes),
+//                            from: keyWindow
+//                        )
+//                    )
+//
+//                    return commands
+//                }()
+//            )
+//        }
+//    }
 
     private var keyWindowHierarchy: CommandsGroups {
         guard let keyWindow = keyWindow else { return [] }
