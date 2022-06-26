@@ -55,7 +55,8 @@ extension UIImage {
     static let closeSymbol: UIImage = .systemIcon("xmark.circle", weight: .regular)!
     static let copySymbol: UIImage = .systemIcon("doc.on.doc", weight: .regular)!
     static let emptyLayerAction: UIImage = .systemIcon("questionmark.diamond", weight: .regular)!
-    static let layerAction: UIImage = .systemIcon("square.stack.3d.down.forward", weight: .regular)!
-    static let layerActionAll: UIImage = .systemIcon("square.stack.3d.down.forward.fill", weight: .regular)!
+    static let layerAction: UIImage = .systemIcon("square.stack.3d.down.forward")!
+    static let layerActionHideAll: UIImage = .systemIcon("xmark.circle.fill", weight: .medium)!
+    static let layerActionShowAll: UIImage = .systemIcon("checkmark.circle.fill", weight: .medium)!
     static let wireframeAction: UIImage = .systemIcon("square.2.stack.3d", weight: .regular)!
 }

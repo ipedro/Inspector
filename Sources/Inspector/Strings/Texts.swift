@@ -75,6 +75,10 @@ enum Texts {
         "Enable \(something)"
     }
 
+    static func select(_ something: String) -> String {
+        "Select \(something)"
+    }
+
     static func disable(_ something: String) -> String {
         "Disable \(something)"
     }

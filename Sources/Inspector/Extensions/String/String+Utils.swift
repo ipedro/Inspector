@@ -62,7 +62,8 @@ extension String {
     func removingRegexMatches(
         pattern: String,
         options: NSRegularExpression.MatchingOptions = [],
-        replaceWith: String = "") -> String {
+        replaceWith: String = ""
+    ) -> String {
         do {
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let range = NSRange(location: .zero, length: count)

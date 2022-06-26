@@ -38,6 +38,30 @@ extension Manager: KeyCommandPresentable {
         #selector(UIViewController.inspectorKeyCommandHandler(_:))
     }
 
+    private var slowAnimationsCommand: Command {
+        let totalSpeed = snapshot
+            .root
+            .windows
+            .map(\.layer.speed)
+            .reduce(into: 0.0) { partialResult, speed in
+                partialResult += speed
+            }
+        let isSlowingAnimations = totalSpeed < Float(snapshot.root.windows.count)
+
+        return Command(
+            title: "Slow Animations",
+            icon: .systemIcon("tortoise.fill", weight: .medium),
+            keyCommandOptions: .none,
+            isSelected: isSlowingAnimations
+        ) { [weak self] in
+            guard let self = self else { return }
+            self.snapshot
+                .root
+                .windows
+                .forEach { $0.layer.speed = isSlowingAnimations ? 1 : 1 / 5 }
+        }
+    }
+
     private func makeKeyCommands(withSelector aSelector: Selector) -> [UIKeyCommand] {
         let layerToggleInputRange = Inspector.sharedInstance.configuration.keyCommands.layerToggleInputRange
         let limit = layerToggleInputRange.upperBound - layerToggleInputRange.lowerBound
@@ -61,13 +85,40 @@ extension Manager: KeyCommandPresentable {
             .sortedByInputKey()
     }
 
+    private var defaultActions: CommandsGroup {
+        .group(
+            commands: {
+                var array = [Command]()
+                array.append(slowAnimationsCommand)
+                if let toggleWireframesCommand = viewHierarchyCoordinator.toggleWireframesCommand {
+                    array.append(toggleWireframesCommand)
+                }
+                return array
+            }()
+        )
+    }
+
     private func makeCommandGroups(limit: Int?) -> CommandsGroups {
-        var commandGroups = CommandsGroups()
+        var commandGroups: CommandsGroups = []
         if let userCommandGroups = dependencies.customization?.commandGroups {
-            commandGroups.append(contentsOf: userCommandGroups)
+            if
+                userCommandGroups.count == 1,
+                var first = userCommandGroups.first,
+                first.title == defaultActions.title
+            {
+                first.commands.append(contentsOf: defaultActions.commands)
+                commandGroups.append(first)
+            }
+            else {
+                commandGroups.append(contentsOf: userCommandGroups)
+                commandGroups.append(defaultActions)
+            }
         }
+
+        commandGroups.append(contentsOf: keyWindowHierarchy)
+
         commandGroups.append(contentsOf: viewHierarchyCoordinator.commandsGroups(limit: limit))
-        commandGroups.append(contentsOf: elementCommandGroups)
+
         return commandGroups
     }
 
@@ -81,13 +132,13 @@ extension Manager: KeyCommandPresentable {
         )
     }
 
-    private var elementCommandGroups: CommandsGroups {
+    private var allWindowsHierarchies: CommandsGroups {
         guard let keyWindow = keyWindow else { return [] }
 
         let snapshot = viewHierarchyCoordinator.latestSnapshot()
         let root = snapshot.root
         let windows = root.children
-            .filter { $0.underlyingView is UIWindow }
+            .filter { ($0.underlyingView as? UIWindow)?.isKeyWindow == true }
 
         return windows.map { window in
             .group(
@@ -120,6 +171,43 @@ extension Manager: KeyCommandPresentable {
         }
     }
 
+    private var keyWindowHierarchy: CommandsGroups {
+        guard let keyWindow = keyWindow else { return [] }
+        let snapshot = viewHierarchyCoordinator.latestSnapshot()
+        let element = catalog.makeElement(from: keyWindow)
+        let root = snapshot.root
+
+        return [
+            .group(
+                title: "Key \(element.displayName) Hierarchy",
+                commands: {
+                    var commands = [Command]()
+                    commands.append(
+                        .inspectElement(element) { [weak self] in
+                            guard let self = self else { return }
+                            self.perform(
+                                action: .inspect(preferredPanel: .attributes),
+                                with: element,
+                                from: keyWindow
+                            )
+                        }
+                    )
+
+                    commands.append(
+                        contentsOf: forEach(
+                            viewController: root.viewHierarchy
+                                .filter { $0.underlyingView?.window === element.underlyingView },
+                            .inspect(preferredPanel: .attributes),
+                            from: keyWindow
+                        )
+                    )
+
+                    return commands
+                }()
+            )
+        ]
+    }
+
     private func forEach(
         viewController viewHierarchy: [ViewHierarchyElementReference],
         _ action: ViewHierarchyElementAction,
@@ -128,13 +216,12 @@ extension Manager: KeyCommandPresentable {
         viewHierarchy
             .compactMap { $0 as? ViewHierarchyElementController }
             .sorted { $0.depth < $1.depth }
-            .map { viewController in
-                .inspectElement(
+            .enumerated()
+            .map {
+                let (offset, viewController) = $0
+                return .inspectElement(
                     viewController,
-                    displayName: [
-                        Array(repeating: " ", count: viewController.depth).joined(),
-                        viewController.displayName
-                    ].joined()
+                    displayName: "\(Array(repeating: " ", count: offset).joined()) \(viewController.displayName)"
                 ) { [weak self] in
                     guard let self = self else { return }
                     self.perform(action: action, with: viewController, from: sourceView)

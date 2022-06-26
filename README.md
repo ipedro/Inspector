@@ -428,7 +428,6 @@ var commandGroups: [Inspector.CommandGroup]? {
     
     [
         .group(
-            title: "My custom commands",
             commands: [
                 .command(
                     title: "Reset",
