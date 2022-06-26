@@ -291,6 +291,7 @@ extension NSObject {
         _classNameWithoutQualifiers
             .replacingOccurrences(of: "_", with: "")
             .camelCaseToWords()
+            .replacingOccurrences(of: "UI Kit", with: "UIKit")
             .removingRegexMatches(pattern: "[A-Z]{2} ", options: .anchored)
     }
 
