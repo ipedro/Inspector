@@ -55,7 +55,7 @@ extension UIMenu {
 
         self.init(
             title: element.displayName,
-            image: nil,
+            image: Inspector.sharedInstance.manager?.catalog.iconProvider?.value(for: element.underlyingObject),
             identifier: nil,
             options: options,
             children: menus
