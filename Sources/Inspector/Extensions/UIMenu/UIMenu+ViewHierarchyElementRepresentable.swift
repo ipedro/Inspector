@@ -23,42 +23,44 @@ import UIKit
 typealias ViewHierarchyActionHandler = (ViewHierarchyElementReference, ViewHierarchyElementAction) -> Void
 
 extension UIMenu {
+    private static var iconProvider: ViewHierarchyElementIconProvider? {
+        Inspector.sharedInstance.manager?.catalog.iconProvider
+    }
+
     convenience init?(
         with element: ViewHierarchyElementReference,
         initialMenus: [UIMenuElement] = [],
         includeActions: Bool = true,
+        inlineFirst: Bool = false,
         options: UIMenu.Options = .init(),
         handler: @escaping (ViewHierarchyElementReference, ViewHierarchyElementAction) -> Void
     ) {
-        var menus: [UIMenuElement] = initialMenus
-
-        if includeActions, let actionsMenu = UIMenu.actionsMenu(element: element, options: .displayInline, handler: handler) {
-            menus.append(actionsMenu)
-        }
-
-        if element.isContainer {
-            if #available(iOS 14.0, *) {
-                let childrenMenu = UIDeferredMenuElement { completion in
-                    if let menu = Self.childrenMenu(element: element, handler: handler) {
-                        completion([menu])
-                    }
-                    else {
-                        completion([])
-                    }
-                }
-                menus.append(childrenMenu)
-            }
-            else if let childrenMenu = Self.childrenMenu(element: element, handler: handler) {
-                menus.append(childrenMenu)
-            }
-        }
-
         self.init(
             title: element.displayName,
-            image: Inspector.sharedInstance.manager?.catalog.iconProvider?.value(for: element.underlyingObject),
-            identifier: nil,
+            image: Self.iconProvider?.value(for: element.underlyingObject)?.resized(.init(24)),
             options: options,
-            children: menus
+            children: {
+                var menus: [UIMenuElement] = initialMenus
+
+                if includeActions {
+                    let actionMenus = UIMenu.actionMenus(
+                        element: element,
+                        inlineFirst: inlineFirst,
+                        options: .displayInline,
+                        handler: handler
+                    )
+                    menus.append(contentsOf: actionMenus)
+                }
+
+                if let childrenMenu = Self.childrenMenu(
+                    element: element,
+                    handler: handler
+                ) {
+                    menus.append(childrenMenu)
+                }
+
+                return menus
+            }()
         )
     }
 
@@ -70,45 +72,40 @@ extension UIMenu {
 
         return UIMenu(
             title: Texts.children.appending(" (\(element.children.count))"),
-            image: nil,
-            identifier: nil,
+            image: .elementChildrenPanel,
             options: options,
-            children: element.children.compactMap {
-                UIMenu(with: $0, handler: handler)
-            }
+            children: [UIDeferredMenuElement { completion in
+                completion(
+                    element.children.compactMap {
+                        UIMenu(with: $0, inlineFirst: true, handler: handler)
+                    }
+                )
+            }]
         )
     }
 
-    private static func actionsMenu(element: ViewHierarchyElementReference,
+    private static func actionMenus(element: ViewHierarchyElementReference,
+                                    inlineFirst: Bool,
                                     options: UIMenu.Options = .init(),
-                                    handler: @escaping ViewHierarchyActionHandler) -> UIMenu?
+                                    handler: @escaping ViewHierarchyActionHandler) -> [UIMenu]
     {
-        let groupedCases = ViewHierarchyElementAction.groupedCases(for: element)
-
-        guard !groupedCases.isEmpty else { return nil }
-
-        return UIMenu(
-            title: Texts.actions,
-            options: options,
-            children: groupedCases.compactMap { group in
-                guard group.isEmpty == false else { return nil }
-
-                return UIMenu(
-                    title: Texts.actions,
-                    image: nil,
-                    identifier: nil,
-                    options: .displayInline,
-                    children: group.map { action in
+        ViewHierarchyElementAction
+            .actionGroups(for: element, inlineFirst: inlineFirst)
+            .map { group in
+                UIMenu(
+                    title: group.title,
+                    image: group.image,
+                    options: group.inline ? .displayInline : .init(),
+                    children: group.actions.map { action in
                         UIAction(
                             title: action.title,
                             image: action.image,
                             state: action.isOn ? .on : .off
-                        ) {
-                            _ in handler(element, action)
+                        ) { _ in
+                            handler(element, action)
                         }
                     }
                 )
             }
-        )
     }
 }

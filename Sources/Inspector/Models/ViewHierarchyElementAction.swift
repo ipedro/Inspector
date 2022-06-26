@@ -79,11 +79,34 @@ enum ViewHierarchyElementAction: MenuContentProtocol {
         return actions
     }
 
-    static func groupedCases(for element: ViewHierarchyElementReference) -> [[ViewHierarchyElementAction]] {
+    struct ElementActionGroup {
+        let title: String
+        let image: UIImage?
+        let inline: Bool
+        let actions: [ViewHierarchyElementAction]
+    }
+
+    static func actionGroups(for element: ViewHierarchyElementReference, inlineFirst: Bool) -> [ElementActionGroup] {
         [
-            ViewHierarchyLayerAction.allCases(for: element).map { .layer(action: $0) },
-            ViewHierarchyInformation.allCases(for: element).map { .copy(info: $0) },
-            ElementInspectorPanel.allCases(for: element).map { .inspect(preferredPanel: $0) }
+            .init(
+                title: inlineFirst ? "" : element.displayName,
+                image: inlineFirst ? .none : Inspector.sharedInstance.manager?.catalog.iconProvider?.value(for: element.underlyingObject),
+                inline: inlineFirst,
+                actions: ElementInspectorPanel.allCases(for: element).map { .inspect(preferredPanel: $0) }
+            ),
+            .init(
+                title: "View",
+                image: .systemIcon("squareshape.controlhandles.on.squareshape.controlhandles"),
+                inline: false,
+                actions: ViewHierarchyLayerAction.allCases(for: element).map { .layer(action: $0) }
+            ),
+            .init(
+                title: "Copy",
+                image: .copySymbol,
+                inline: false,
+                actions: ViewHierarchyInformation.allCases(for: element).map { .copy(info: $0) }
+            )
         ]
+        .filter { !$0.actions.isEmpty }
     }
 }
