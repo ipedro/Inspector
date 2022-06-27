@@ -43,7 +43,7 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
             }
             if let newLink = displayLink {
                 newLink.preferredFramesPerSecond = 30
-                newLink.add(to: .current, forMode: .common)
+                newLink.add(to: .current, forMode: .default)
             }
         }
     }
