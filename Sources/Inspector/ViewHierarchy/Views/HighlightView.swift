@@ -116,18 +116,24 @@ final class HighlightView: LayerView {
 
     private lazy var elementNameView = ElementNameView()
 
-    private lazy var layoutMarginsShadeLayer = CAShapeLayer().then {
-        $0.fillRule = .evenOdd
-        layoutMarginsGuideView.layer.addSublayer($0)
-    }
+//    private lazy var layoutMarginsShadeLayer = CAShapeLayer().then {
+//        $0.fillRule = .evenOdd
+//        layoutMarginsGuideView.layer.addSublayer($0)
+//    }
+//
+//    private lazy var layoutMarginsGuideView = UIView().then {
+//        installView($0, .spacing(top: .zero, leading: .zero, bottom: .zero))
+//    }
 
-    private lazy var layoutMarginsGuideView = UIView().then {
-        installView($0, .spacing(top: .zero, leading: .zero, bottom: .zero))
-    }
+    private lazy var panGestureRecognizer = UIPanGestureRecognizer(
+        target: self,
+        action: #selector(move(with:))
+    )
 
-    private lazy var panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(move(with:)))
-
-    private(set) lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapLayerView))
+    private(set) lazy var tapGestureRecognizer = UITapGestureRecognizer(
+        target: self,
+        action: #selector(tapLayerView)
+    )
 
     // MARK: - Init
 
@@ -223,16 +229,19 @@ final class HighlightView: LayerView {
         latestElementSnapshot = element.latestSnapshotIdentifier
 
         updateElementName()
+        updateBorderColor()
+    }
 
+    private func updateBorderColor() {
         guard let superview = superview else { return }
 
-        let color = colorScheme.value(for: superview).darker(amount: round(CGFloat(depth) / 10) / 10)
+        let isDarkMode = colorStyle == .dark
 
-        layoutMarginsShadeLayer.fillColor = color.cgColor
+        let color = colorScheme
+            .value(for: superview)
+            .darker(amount: isDarkMode ? 0.3 : 0)
 
         borderColor = color
-
-        maskLayoutMarginsGuideView(with: superview)
     }
 
     enum Transition {
@@ -242,13 +251,24 @@ final class HighlightView: LayerView {
 
     private var pendingTransition: Transition? = .appear
 
-    private(set) lazy var initialTransformation = CGAffineTransform(
+    lazy var initialTransformation = CGAffineTransform(
         scaleX: 1.7 - cgFloatDepth / 50,
         y: 1.7 - cgFloatDepth / 50
     )
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else { return }
+
+        updateBorderColor()
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
+
+//        if let superview = superview {
+//            maskLayoutMarginsGuideView(with: superview)
+//        }
 
         perform(pendingTransition) { _ in
             self.pendingTransition = .none
@@ -289,32 +309,32 @@ final class HighlightView: LayerView {
         )
     }
 
-    private func maskLayoutMarginsGuideView(with view: UIView) {
-        let path: UIBezierPath = {
-            let pathBigRect = UIBezierPath(
-                roundedRect: view.bounds,
-                byRoundingCorners: view.layer.maskedCorners.rectCorner,
-                cornerRadii: CGSize(view.layer.cornerRadius)
-            )
-
-            let pathSmallRect = UIBezierPath(rect: view.layoutMarginsGuide.layoutFrame)
-
-            pathBigRect.append(pathSmallRect)
-
-            pathBigRect.usesEvenOddFillRule = true
-
-            return pathBigRect
-        }()
-
-        layoutMarginsShadeLayer.path = path.cgPath
-
-        switch colorStyle {
-        case .light:
-            layoutMarginsGuideView.alpha = 0.11
-        case .dark:
-            layoutMarginsGuideView.alpha = 0.07
-        }
-    }
+//    private func maskLayoutMarginsGuideView(with view: UIView) {
+//        let path: UIBezierPath = {
+//            let pathBigRect = UIBezierPath(
+//                roundedRect: view.bounds,
+//                byRoundingCorners: view.layer.maskedCorners.rectCorner,
+//                cornerRadii: CGSize(view.layer.cornerRadius)
+//            )
+//
+//            let pathSmallRect = UIBezierPath(rect: view.layoutMarginsGuide.layoutFrame)
+//
+//            pathBigRect.append(pathSmallRect)
+//
+//            pathBigRect.usesEvenOddFillRule = true
+//
+//            return pathBigRect
+//        }()
+//
+//        layoutMarginsShadeLayer.path = path.cgPath
+//
+//        switch colorStyle {
+//        case .light:
+//            layoutMarginsGuideView.alpha = 0.11
+//        case .dark:
+//            layoutMarginsGuideView.alpha = 0.07
+//        }
+//    }
 
     func updateElementName() {
         name = element.elementName
