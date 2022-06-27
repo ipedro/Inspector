@@ -62,7 +62,7 @@ extension ViewHierarchyElementIconProvider {
             return .systemIcon("rays", weight: .bold)
 
         case is UISlider:
-            return .icon("Slider-32_Normal")
+            return .icon("UISlider_32_Normal")
 
         case is UIDatePicker:
             return .icon("UIDatePicker_32_Normal")
