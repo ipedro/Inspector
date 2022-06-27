@@ -121,15 +121,8 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
     }
 
     private func registerKeyboardAnimations() {
-        animateWhenKeyboard(.willHide) { [weak self] _ in
+        animateWhenKeyboard(.willChangeFrame) { [weak self] info in
             guard let self = self else { return }
-            self.viewCode.keyboardFrame = nil
-            self.viewCode.layoutIfNeeded()
-        }
-
-        animateWhenKeyboard(.willShow) { [weak self] info in
-            guard let self = self else { return }
-            Logger.log(info)
             self.viewCode.keyboardFrame = info.keyboardFrame
             self.viewCode.layoutIfNeeded()
         }
@@ -333,7 +326,7 @@ extension InspectorViewController {
         if isViewLoaded {
             viewCode.tableView.removeObserver(self, forKeyPath: .contentSize)
             viewCode.endEditing(true)
-            stopAnimatingWhenKeyboard(.willHide, .willShow)
+            stopAnimatingWhenKeyboard(.willChangeFrame)
         }
         isFinishing = true
         delegate?.inspectorViewControllerDidFinish(self)
