@@ -44,7 +44,6 @@ final class LoaderView: LayerViewComponent {
         colorScheme: colorScheme,
         element: ViewHierarchyElement(with: self, iconProvider: .default)
     ).then {
-        $0.initialTransformation = .identity
         $0.displayMode = .text
         $0.verticalAlignmentOffset = activityIndicator.frame.height * 2 / 3
     }

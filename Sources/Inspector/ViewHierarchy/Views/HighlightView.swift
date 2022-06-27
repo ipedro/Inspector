@@ -72,7 +72,7 @@ final class HighlightView: LayerView {
                         )
                 case false:
                     self.elementNameView.resetShadow()
-                    self.elementNameView.transform = self.initialTransformation
+                    self.elementNameView.transform = .identity
                 }
 
                 self.updateViews()
@@ -242,7 +242,7 @@ final class HighlightView: LayerView {
 
     private var pendingTransition: Transition? = .appear
 
-    lazy var initialTransformation = CGAffineTransform(
+    private(set) lazy var initialTransformation = CGAffineTransform(
         scaleX: 1.7 - cgFloatDepth / 50,
         y: 1.7 - cgFloatDepth / 50
     )
