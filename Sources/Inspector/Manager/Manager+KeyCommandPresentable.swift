@@ -112,6 +112,9 @@ extension Manager: KeyCommandPresentable {
                 commandGroups.append(defaultActions)
             }
         }
+        else {
+            commandGroups.append(defaultActions)
+        }
 
         commandGroups.append(contentsOf: keyWindowHierarchy)
 
