@@ -52,9 +52,9 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost, In
         self.elementIconProvider = elementIconProvider
         self.didFinish = didFinish
     }
-    
+
     private(set) static var sharedInstance: InspectorUI?
-    
+
     static func shared(
         layers: [Inspector.ViewHierarchyLayer]?,
         colorScheme: Inspector.ElementColorProvider?,
@@ -105,10 +105,10 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost, In
 
         return alertController
     }
-    
+
     func makeUIViewController(context: Context) -> UIViewController {
         let inspector = Inspector.sharedInstance
-        
+
         if inspector.state == .idle {
             inspector.customization = self
             inspector.start(swiftUI: self)

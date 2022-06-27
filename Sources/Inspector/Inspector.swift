@@ -61,8 +61,8 @@ public final class Inspector {
 
     private(set) var contextMenuPresenter: ContextMenuPresenter?
 
-    weak private(set) var swiftUIHost: InspectorSwiftUIHost?
-    
+    private(set) weak var swiftUIHost: InspectorSwiftUIHost?
+
     func start(swiftUI swiftUIHost: InspectorSwiftUIHost) {
         self.swiftUIHost = swiftUIHost
         restart()

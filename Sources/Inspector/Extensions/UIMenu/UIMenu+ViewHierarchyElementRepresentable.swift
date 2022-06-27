@@ -31,8 +31,7 @@ extension UIMenu {
         with element: ViewHierarchyElementReference,
         initialMenus: [UIMenuElement] = [],
         includeActions: Bool = true,
-        inlineFirst: Bool = false,
-        options: UIMenu.Options = .init(),
+        options: UIMenu.Options = .displayInline,
         handler: @escaping (ViewHierarchyElementReference, ViewHierarchyElementAction) -> Void
     ) {
         self.init(
@@ -45,7 +44,6 @@ extension UIMenu {
                 if includeActions {
                     let actionMenus = UIMenu.actionMenus(
                         element: element,
-                        inlineFirst: inlineFirst,
                         options: .displayInline,
                         handler: handler
                     )
@@ -77,7 +75,7 @@ extension UIMenu {
             children: [UIDeferredMenuElement { completion in
                 completion(
                     element.children.compactMap {
-                        UIMenu(with: $0, inlineFirst: true, handler: handler)
+                        UIMenu(with: $0, options: .init(), handler: handler)
                     }
                 )
             }]
@@ -85,12 +83,11 @@ extension UIMenu {
     }
 
     private static func actionMenus(element: ViewHierarchyElementReference,
-                                    inlineFirst: Bool,
                                     options: UIMenu.Options = .init(),
                                     handler: @escaping ViewHierarchyActionHandler) -> [UIMenu]
     {
         ViewHierarchyElementAction
-            .actionGroups(for: element, inlineFirst: inlineFirst)
+            .actionGroups(for: element)
             .map { group in
                 UIMenu(
                     title: group.title,

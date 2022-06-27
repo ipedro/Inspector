@@ -86,12 +86,12 @@ enum ViewHierarchyElementAction: MenuContentProtocol {
         let actions: [ViewHierarchyElementAction]
     }
 
-    static func actionGroups(for element: ViewHierarchyElementReference, inlineFirst: Bool) -> [ElementActionGroup] {
+    static func actionGroups(for element: ViewHierarchyElementReference) -> [ElementActionGroup] {
         [
             .init(
-                title: inlineFirst ? "" : element.displayName,
-                image: inlineFirst ? .none : Inspector.sharedInstance.manager?.catalog.iconProvider?.value(for: element.underlyingObject),
-                inline: inlineFirst,
+                title: "",
+                image: .none,
+                inline: true,
                 actions: ElementInspectorPanel.allCases(for: element).map { .inspect(preferredPanel: $0) }
             ),
             .init(
