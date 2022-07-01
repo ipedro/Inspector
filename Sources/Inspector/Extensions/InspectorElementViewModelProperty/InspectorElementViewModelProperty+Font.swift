@@ -31,7 +31,7 @@ public extension InspectorElementProperty {
             title: title,
             emptyTitle: emptyTitle,
             axis: .vertical,
-            options: FontReference.allCases.map(\.description),
+            options: FontReference.allCases.map { (title: $0.description, icon: $0.icon) },
             selectedIndex: {
                 guard let fontName = fontProvider()?.fontName else { return nil }
                 return FontReference.firstIndex(of: fontName)

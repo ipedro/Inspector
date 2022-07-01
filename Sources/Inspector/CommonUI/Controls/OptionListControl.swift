@@ -62,7 +62,7 @@ final class OptionListControl: BaseFormControl {
 
     // MARK: - Init
 
-    let options: [Swift.CustomStringConvertible]
+    let options: [Option]
 
     let emptyTitle: String
 
@@ -72,9 +72,11 @@ final class OptionListControl: BaseFormControl {
         }
     }
 
+    typealias Option = (title: Swift.CustomStringConvertible, icon: UIImage?)
+
     init(
         title: String?,
-        options: [Swift.CustomStringConvertible],
+        options: [Option],
         emptyTitle: String,
         selectedIndex: Int? = nil
     ) {
@@ -116,7 +118,7 @@ final class OptionListControl: BaseFormControl {
             return
         }
 
-        valueLabel.text = options[selectedIndex].description
+        valueLabel.text = options[selectedIndex].title.description
     }
 
     // MARK: - Actions
@@ -145,23 +147,20 @@ final class OptionListControl: BaseFormControl {
 
     private func makeOptionSelectionMenu() -> UIMenu {
         UIMenu(
-            title: String(),
-            image: nil,
-            identifier: nil,
-            options: .displayInline,
-            children: options.enumerated().map { index, option in
-                UIAction(
-                    title: option.description,
-                    identifier: nil,
-                    discoverabilityTitle: option.description,
-                    state: index == self.selectedIndex ? .on : .off
-                ) { [weak self] _ in
-                    guard let self = self else { return }
-
-                    self.selectedIndex = index
-                    self.delegate?.optionListControlDidChangeSelectedIndex(self)
+            title: title ?? "",
+            children: options
+                .enumerated()
+                .map { index, option in
+                    UIAction(
+                        title: option.title.description,
+                        image: option.icon,
+                        state: index == self.selectedIndex ? .on : .off
+                    ) { [weak self] _ in
+                        guard let self = self else { return }
+                        self.selectedIndex = index
+                        self.delegate?.optionListControlDidChangeSelectedIndex(self)
+                    }
                 }
-            }
         )
     }
 }

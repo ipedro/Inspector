@@ -25,15 +25,37 @@ struct FontReference: Hashable, CustomStringConvertible, CaseIterable {
 
     let description: String
 
+    let icon: UIImage?
+
+    init(rawValue: String, description: String) {
+        self.rawValue = rawValue
+        self.description = description
+
+        guard let font = Self.font(rawValue: rawValue, size: 17) else {
+            icon = .none
+            return
+        }
+
+        icon = "ABC"
+            .image(withAttributes: [.font: font])?
+            .withRenderingMode(.alwaysTemplate)
+    }
+
     private func font(size: CGFloat) -> UIFont? {
+        Self.font(rawValue: rawValue, size: size)
+    }
+
+    private static func font(rawValue: String, size: CGFloat) -> UIFont? {
         if rawValue == .systemFontFamilyName {
             return .systemFont(ofSize: size)
         }
-
         return UIFont(name: rawValue, size: size)
     }
 
-    static let systemFontReference: FontReference = .init(rawValue: .systemFontFamilyName, description: .systemFontFamilyName)
+    static let systemFontReference: FontReference = .init(
+        rawValue: .systemFontFamilyName,
+        description: .systemFontFamilyName
+    )
 
     static func font(at index: Int, size: CGFloat) -> UIFont? {
         guard (0 ..< allCases.count).contains(index) else { return nil }

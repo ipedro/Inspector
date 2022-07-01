@@ -54,9 +54,26 @@ public enum InspectorElementProperty {
     case optionsList(title: String,
                      emptyTitle: String = "Unspecified",
                      axis: NSLayoutConstraint.Axis = .horizontal,
-                     options: [String],
+                     options: [(title: Swift.CustomStringConvertible, icon: UIImage?)],
                      selectedIndex: SelectionProvider,
                      handler: SelectionHandler? = .none)
+
+    static func optionsList(title: String,
+                            emptyTitle: String = "Unspecified",
+                            axis: NSLayoutConstraint.Axis = .horizontal,
+                            options: [String],
+                            selectedIndex: @escaping SelectionProvider,
+                            handler: SelectionHandler? = .none) -> InspectorElementProperty
+    {
+        .optionsList(
+            title: title,
+            emptyTitle: emptyTitle,
+            axis: axis,
+            options: options.map { (title: $0, icon: .none) },
+            selectedIndex: selectedIndex,
+            handler: handler
+        )
+    }
 
     case textButtonGroup(title: String,
                          axis: NSLayoutConstraint.Axis = .vertical,
