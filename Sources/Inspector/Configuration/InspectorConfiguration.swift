@@ -21,7 +21,7 @@
 import UIKit
 
 public struct InspectorConfiguration {
-    var elementInspectorConfiguration = ElementInspector.Configuration()
+    var elementInspectorConfiguration = ElementInspectorConfiguration()
 
     public var keyCommands: KeyCommandSettings = .init()
 

@@ -31,7 +31,7 @@ import UIKit
 
         let flattenedCommands = commandGroups.flatMap(\.commands)
 
-        for action in flattenedCommands where action.title == keyCommand.discoverabilityTitle {
+        for action in flattenedCommands where action.title == keyCommand.discoverabilityTitle ?? keyCommand.title {
             action.closure?()
             return
         }

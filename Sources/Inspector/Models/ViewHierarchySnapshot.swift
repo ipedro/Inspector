@@ -30,9 +30,9 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
             .filter { $0.value > .zero }
     }
 
-    let root: ViewHierarchyElementRoot
+    let root: ViewHierarchyRoot
 
-    init(layers: [ViewHierarchyLayer], root: ViewHierarchyElementRoot) {
+    init(layers: [ViewHierarchyLayer], root: ViewHierarchyRoot) {
         self.root = root
         availableLayers = layers
             .uniqueValues()

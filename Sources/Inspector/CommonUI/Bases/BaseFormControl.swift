@@ -21,8 +21,10 @@
 import UIKit
 
 class BaseFormControl: BaseControl {
+    let titleFont: UIFont = .preferredFont(forTextStyle: .footnote)
+
     private(set) lazy var titleLabel = UILabel().then {
-        $0.font = .preferredFont(forTextStyle: .footnote)
+        $0.font = titleFont.withTraits(.traitBold)
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         $0.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         $0.textColor = colorStyle.textColor
@@ -88,9 +90,10 @@ class BaseFormControl: BaseControl {
     }
 
     func applyTitleSectionStyle() {
-        titleLabel.font = .preferredFont(forTextStyle: .body)
-        titleLabel.textColor = colorStyle.tertiaryTextColor
-        contentContainerView.setCustomSpacing(elementInspectorAppearance.horizontalMargins, after: titleLabel)
+        titleLabel.font = .preferredFont(forTextStyle: .callout)
+        titleLabel.textColor = colorStyle.secondaryTextColor
+        contentContainerView.directionalLayoutMargins.update(top: elementInspectorAppearance.horizontalMargins)
+        contentContainerView.setCustomSpacing(elementInspectorAppearance.verticalMargins * 1.5, after: titleLabel)
     }
 
     override open func setup() {

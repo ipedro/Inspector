@@ -63,6 +63,10 @@ public extension InspectorElementSections {
     static let empty = InspectorElementSections()
 
     init(with dataSources: InspectorElementSectionDataSource?...) {
+        self.init(dataSources: dataSources)
+    }
+
+    init(dataSources: [InspectorElementSectionDataSource?]) {
         let rows = dataSources.compactMap { $0 }
 
         self = [InspectorElementSection(rows: rows)]

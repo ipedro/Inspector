@@ -73,7 +73,11 @@ enum InspectorColorStyle {
             case .light:
                 return .white
             }
-        }.withAlphaComponent(0.5)
+        }.withAlphaComponent(1 / 2)
+    }
+
+    var elementIconBackgroundColor: UIColor {
+        backgroundColor.withAlphaComponent(1 / 3)
     }
 
     var tintColor: UIColor {

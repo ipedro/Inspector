@@ -30,7 +30,6 @@ protocol ViewHierarchyControllerProtocol {
     var edgesForExtendedLayout: UIRectEdge { get }
     var editButtonItem: UIBarButtonItem { get }
     var extendedLayoutIncludesOpaqueBars: Bool { get }
-    var focusGroupIdentifier: String? { get }
     var isBeingPresented: Bool { get }
     var isEditing: Bool { get }
     var isModalInPresentation: Bool { get }

@@ -26,6 +26,8 @@ enum ElementInspectorPanel: Hashable, Swift.CaseIterable, MenuContentProtocol {
     case size
     case children
 
+    static var `default`: ElementInspectorPanel { Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel }
+
     var title: String {
         switch self {
         case .identity:
@@ -53,7 +55,7 @@ enum ElementInspectorPanel: Hashable, Swift.CaseIterable, MenuContentProtocol {
     }
 
     var isDefault: Bool {
-        Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel == self
+        self == .default
     }
 
     static func allCases(for element: ViewHierarchyElementReference) -> [ElementInspectorPanel] {

@@ -31,9 +31,8 @@ extension DefaultElementAttributesLibrary {
 
         init?(with object: NSObject) {
             guard let view = object as? UIView else { return nil }
-
             layer = view.layer
-            title = view.layer._className
+            title = view.layer._prettyClassNameWithoutQualifiers
         }
 
         private enum Property: String, Swift.CaseIterable {

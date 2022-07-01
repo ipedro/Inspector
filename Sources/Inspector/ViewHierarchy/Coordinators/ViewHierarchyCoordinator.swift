@@ -131,32 +131,8 @@ extension ViewHierarchyCoordinator {
         return snapshot
     }
 
-    private var wireframesCommand: Command? {
+    var toggleWireframesCommand: Command {
         command(for: .wireframes, at: layerToggleInputRange.lowerBound)
-    }
-
-    private var slowAnimationsCommand: Command {
-        let snapshot = latestSnapshot()
-        let totalSpeed = snapshot
-            .root
-            .windows
-            .map(\.layer.speed)
-            .reduce(into: 0.0) { partialResult, speed in
-                partialResult += speed
-            }
-        let isSlowingAnimations = totalSpeed < Float(snapshot.root.windows.count)
-
-        return Command(
-            title: "Slow Animations",
-            icon: .systemIcon("tortoise"),
-            keyCommandOptions: .none,
-            isSelected: isSlowingAnimations
-        ) {
-            snapshot
-                .root
-                .windows
-                .forEach { $0.layer.speed = isSlowingAnimations ? 1 : 1 / 5 }
-        }
     }
 
     func commandsGroups(limit: Int?) -> CommandsGroups {
@@ -170,22 +146,17 @@ extension ViewHierarchyCoordinator {
 
         return [
             .group(
-                title: "Commands",
-                commands: [
-                    slowAnimationsCommand,
-                    wireframesCommand
-                ].compactMap { $0 }
-                    + toggleAllHighlights
-            ),
-            .group(
-                title: "Highlights",
-                commands: highlights
+                title: {
+                    guard let displayName = snapshot.root.underlyingView?.displayName else { return "Highlight Views" }
+                    return "Highlight Views In \(displayName)" // "\(displayName) View Hierarchy"
+                }(),
+                commands: toggleAllHighlights + highlights
             )
         ]
     }
 
     private func makeSnapshot() -> ViewHierarchySnapshot {
-        let application = ViewHierarchyElementRoot(.shared, catalog: dependencies.catalog)
+        let application = ViewHierarchyRoot(.shared, catalog: dependencies.catalog)
         let snapshot = ViewHierarchySnapshot(layers: dependencies.layers, root: application)
         return snapshot
     }

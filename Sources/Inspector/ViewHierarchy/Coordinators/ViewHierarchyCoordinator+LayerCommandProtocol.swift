@@ -37,7 +37,7 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
             .sorted(by: <)
     }
 
-    func command(for layer: ViewHierarchyLayer, at index: Int, count: Int? = .none) -> Command? {
+    func command(for layer: ViewHierarchyLayer, at index: Int, count: Int? = .none) -> Command {
         let isSelected = isShowingLayer(layer)
 
         let icon: UIImage = {
@@ -52,9 +52,9 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
         let layerName: String = {
             switch layer {
             case .wireframes where isSelected:
-                return Texts.enable(layer.title)
+                return Texts.hide(layer.title)
             case .wireframes:
-                return Texts.disable(layer.title)
+                return Texts.show(layer.title)
             default:
                 return layer.title
             }
@@ -78,19 +78,19 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
 
     func toggleAllLayersCommands(for snapshot: ViewHierarchySnapshot) -> [Command] {
         var array = [Command]()
-        if activeLayers.count < populatedLayers.count {
-            array.append(
-                .showAllLayers { [weak self] in
-                    guard let self = self else { return }
-                    self.installAllLayers()
-                }
-            )
-        }
         if activeLayers.count > .zero {
             array.append(
                 .hideVisibleLayers { [weak self] in
                     guard let self = self else { return }
                     self.removeAllLayers()
+                }
+            )
+        }
+        if activeLayers.count < populatedLayers.count {
+            array.append(
+                .showAllLayers { [weak self] in
+                    guard let self = self else { return }
+                    self.installAllLayers()
                 }
             )
         }

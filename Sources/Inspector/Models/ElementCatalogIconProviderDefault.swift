@@ -52,14 +52,17 @@ extension ViewHierarchyElementIconProvider {
         case let window as UIWindow where window.isKeyWindow:
             return .icon("Key-UIWindow-32_Normal")
 
+        case let window as UIWindow where window._className.contains("Keyboard"):
+            return .systemIcon("keyboard.macwindow", weight: .regular)
+
         case is UIWindow:
-            return .icon("UIWindow-32_Normal")
+            return .systemIcon("macwindow", weight: .regular)
 
         case is UIActivityIndicatorView:
-            return .icon("UIActivityIndicator_32_Dark_Normal")
+            return .systemIcon("rays", weight: .bold)
 
         case is UISlider:
-            return .icon("Slider-32_Normal")
+            return .icon("UISlider_32_Normal")
 
         case is UIDatePicker:
             return .icon("UIDatePicker_32_Normal")
@@ -69,45 +72,42 @@ extension ViewHierarchyElementIconProvider {
 
         case is UIButton,
              is UIControl where view.className.contains("Button"):
-            return .icon("Button-32_Normal")
+            return .systemIcon("hand.tap.fill")
 
         case let imageView as UIImageView:
             guard let image = imageView.isHighlighted ? imageView.highlightedImage : imageView.image else {
-                return .icon("ImageView-32_Normal")
+                return .systemIcon("photo")
             }
-
-            if image.renderingMode == .alwaysTemplate {
-                return image.withTintColor(imageView.tintColor)
-            }
-
             return image
-
-        case is UILabel:
-            return .icon("UILabel_32-Dark_Normal")
 
         case is UISegmentedControl:
             return .icon("UISegmentedControl_32_Normal")
 
-        case let stackView as UIStackView:
-            switch stackView.axis {
-            case .horizontal:
-                return .icon("HStack-32_Normal")
+        case let stackView as UIStackView where stackView.axis == .horizontal:
+            return .icon("HStack-32_Normal")
 
-            case .vertical:
-                return .icon("VStack-32_Normal")
+        case is UIStackView:
+            return .icon("VStack-32_Normal")
 
-            @unknown default:
-                return .missingSymbol
-            }
+        case is UILabel:
+            return .systemIcon("textformat.abc", weight: .bold)
+        case let view where view.className.contains("Label"):
+            return .systemIcon("textformat.abc", weight: .bold)
 
         case is UITextField:
-            return .icon("TextField-32_Normal")
+            return .systemIcon("textformat.abc.dottedunderline", weight: .bold)
 
         case is UITextView:
             return .icon("TextView-32_Normal")
 
         case is WKWebView:
-            return .icon("Webview-32_Normal")
+            return .systemIcon("safari")
+
+        case is UICollectionView:
+            return .systemIcon("square.grid.3x1.below.line.grid.1x2")
+
+        case is UITableView:
+            return .systemIcon("square.fill.text.grid.1x2")
 
         case is UIScrollView:
             return .icon("UIScrollView_32_Normal")
@@ -122,10 +122,10 @@ extension ViewHierarchyElementIconProvider {
             return .icon("UIToolbar-32_Normal")
 
         case is UIControl:
-            return .icon("UIControl-32_Normal")
+            return .systemIcon("dial.min.fill")
 
-        case let view where view.className.contains("VisualEffect"):
-            return .icon("VisualEffectsView-32_Normal")
+        case is MKMapView:
+            return .systemIcon("map")
 
         case let view where view.className.contains("TransitionView"):
             return .icon("UITransitionView-32_Normal")
@@ -135,9 +135,6 @@ extension ViewHierarchyElementIconProvider {
 
         case let view where view.className.contains("Background"):
             return .icon("BackgroundView-32_Normal")
-
-        case let view where view.className.contains("_UI"):
-            return .icon("keyboardShortcut-32_Normal")
 
         case let view where !view.children.isEmpty:
             return .icon("filled-view-32_Normal")

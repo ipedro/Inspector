@@ -41,13 +41,13 @@ public final class Inspector {
 
     // MARK: - Private Properties
 
-    private enum State {
+    enum State {
         case idle, started
     }
 
     private(set) var manager: Manager?
 
-    private var state: State = .idle
+    private(set) var state: State = .idle
 
     // MARK: - Internal Properties
 
@@ -61,10 +61,11 @@ public final class Inspector {
 
     private(set) var contextMenuPresenter: ContextMenuPresenter?
 
-    var swiftUIHost: InspectorSwiftUIHost? {
-        didSet {
-            restartIfNeeded()
-        }
+    private(set) weak var swiftUIHost: InspectorSwiftUIHost?
+
+    func start(swiftUI swiftUIHost: InspectorSwiftUIHost) {
+        self.swiftUIHost = swiftUIHost
+        restart()
     }
 
     func start() {
@@ -96,7 +97,8 @@ public final class Inspector {
                 configuration: configuration,
                 coordinatorFactory: ViewHierarchyCoordinatorFactory.self,
                 customization: customization,
-                viewHierarchy: ViewHierarchy.shared
+                viewHierarchy: ViewHierarchy.shared,
+                swiftUIhost: swiftUIHost
             ),
             presentedBy: OperationQueue.main
         )

@@ -94,7 +94,7 @@ extension ElementChildrenPanelViewController: UITableViewDelegate {
 // MARK: - Helpers
 
 extension ElementChildrenPanelViewController {
-    func updateTableView(_ indexPath: IndexPath, with actions: [ElementInspector.ElementChildrenPanelAction]) {
+    func updateTableView(_ indexPath: IndexPath, with actions: [ElementChildrenPanelAction]) {
         guard actions.isEmpty == false else { return }
 
         let tableView = viewCode.tableView

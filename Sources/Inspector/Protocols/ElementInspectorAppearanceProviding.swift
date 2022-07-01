@@ -22,9 +22,9 @@ import Foundation
 import UIKit
 
 protocol ElementInspectorAppearanceProviding: InspectorAppearanceProviding {
-    var elementInspectorAppearance: ElementInspector.Appearance { get }
+    var elementInspectorAppearance: ElementInspectorAppearance { get }
 }
 
 extension ElementInspectorAppearanceProviding {
-    var elementInspectorAppearance: ElementInspector.Appearance { inspectorAppearance.elementInspector }
+    var elementInspectorAppearance: ElementInspectorAppearance { inspectorAppearance.elementInspector }
 }

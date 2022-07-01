@@ -26,7 +26,7 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
                                         with action: ViewHierarchyElementAction,
                                         from fromElement: ViewHierarchyElementReference)
     {
-        if element.objectIdentifier == fromElement.objectIdentifier, case let .inspect(preferredPanel: panel?) = action {
+        if element.objectIdentifier == fromElement.objectIdentifier, case let .inspect(preferredPanel: panel) = action {
             viewController.selectPanelIfAvailable(panel)
             return
         }

@@ -170,7 +170,7 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
         }
 
         animate(
-            withDuration: .veryLong,
+            withDuration: .long,
             delay: .veryShort,
             damping: isLargeList ? 0.93 : Animation.defaultDamping
         ) { [weak self] in

@@ -51,6 +51,7 @@ extension ViewHierarchyElementController {
         let depth: Int
         let title: String?
         var className: String
+        let prettyClassNameWithoutQualifiers: String
         var superclassName: String?
         var classNameWithoutQualifiers: String
         let expirationDate = Date().addingTimeInterval(Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval)
@@ -61,7 +62,6 @@ extension ViewHierarchyElementController {
         let edgesForExtendedLayout: UIRectEdge
         let editButtonItem: UIBarButtonItem
         let extendedLayoutIncludesOpaqueBars: Bool
-        let focusGroupIdentifier: String?
         let isBeingPresented: Bool
         let isEditing: Bool
         let isModalInPresentation: Bool
@@ -100,13 +100,6 @@ extension ViewHierarchyElementController {
                 prefersPointerLocked = false
             }
 
-            if #available(iOS 15.0, *) {
-                self.focusGroupIdentifier = viewController.focusGroupIdentifier
-            }
-            else {
-                focusGroupIdentifier = nil
-            }
-
             if let restorationClass = viewController.restorationClass {
                 restorationClassName = String(describing: restorationClass)
             }
@@ -116,6 +109,7 @@ extension ViewHierarchyElementController {
 
             additionalSafeAreaInsets = viewController.additionalSafeAreaInsets
             className = viewController._className
+            prettyClassNameWithoutQualifiers = viewController._prettyClassNameWithoutQualifiers
             classNameWithoutQualifiers = viewController._classNameWithoutQualifiers
             definesPresentationContext = viewController.definesPresentationContext
             self.depth = depth
@@ -303,11 +297,11 @@ extension ViewHierarchyElementController: ViewHierarchyElementReference {
     }
 
     var elementName: String {
-        className
+        classNameWithoutQualifiers
     }
 
     var displayName: String {
-        classNameWithoutQualifiers
+        store.latest.prettyClassNameWithoutQualifiers
     }
 
     var canPresentOnTop: Bool {
@@ -435,22 +429,6 @@ extension ViewHierarchyElementController: ViewHierarchyControllerProtocol {
         }
 
         return viewController.extendedLayoutIncludesOpaqueBars
-    }
-
-    var focusGroupIdentifier: String? {
-        guard
-            #available(iOS 15.0, *),
-            store.latest.isExpired,
-            let viewController = underlyingViewController
-        else {
-            return store.latest.focusGroupIdentifier
-        }
-
-        if viewController.focusGroupIdentifier != store.latest.focusGroupIdentifier {
-            scheduleSnapshot()
-        }
-
-        return viewController.focusGroupIdentifier
     }
 
     var isBeingPresented: Bool {

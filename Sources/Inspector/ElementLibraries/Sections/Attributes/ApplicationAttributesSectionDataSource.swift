@@ -25,8 +25,7 @@ extension DefaultElementAttributesLibrary {
         var state: InspectorElementSectionState = .collapsed
 
         let title = "Application"
-
-        let application: UIApplication
+        private let application: UIApplication
 
         init?(with object: NSObject) {
             guard let application = object as? UIApplication else { return nil }
@@ -40,17 +39,12 @@ extension DefaultElementAttributesLibrary {
             case applicationSupportsShakeToEdit = "Shake To Edit"
             case backgroundRefreshStatus
             case backgroundTimeRemaining
-            case connectedScenes
             case isIdleTimerEnabled = "Idle Timer"
             case isProtectedDataAvailable
             case isRegisteredForRemoteNotifications = "Remote Notifications"
-            case openSessions
-            case preferredContentSizeCategory
-            case shortcutItems
             case supportsAlternateIcons = "Alternate Icons"
             case supportsMultipleScenes = "Multiple Scenes"
             case userInterfaceLayoutDirection
-            case windows
         }
 
         var properties: [InspectorElementProperty] {
@@ -62,8 +56,6 @@ extension DefaultElementAttributesLibrary {
                         isOn: { !self.application.isIdleTimerDisabled },
                         handler: { self.application.isIdleTimerDisabled = !$0 }
                     )
-                case .windows:
-                    return .none
                 case .applicationIconBadgeNumber:
                     return .integerStepper(
                         title: property.rawValue,
@@ -81,14 +73,14 @@ extension DefaultElementAttributesLibrary {
                 case .applicationState:
                     return .textField(
                         title: property.rawValue,
-                        placeholder: property.rawValue,
+                        placeholder: .none,
                         axis: .horizontal,
                         value: {
                             switch self.application.applicationState {
                             case .active: return "Active"
                             case .inactive: return "Inactive"
                             case .background: return "Background"
-                            @unknown default: return "Default"
+                            @unknown default: return "Unknown"
                             }
                         }
                     )
@@ -100,12 +92,6 @@ extension DefaultElementAttributesLibrary {
                     return .none
                 case .userInterfaceLayoutDirection:
                     return .none
-                case .preferredContentSizeCategory:
-                    return .none
-                case .connectedScenes:
-                    return .none
-                case .openSessions:
-                    return .none
                 case .supportsMultipleScenes:
                     return .switch(
                         title: property.rawValue,
@@ -116,8 +102,6 @@ extension DefaultElementAttributesLibrary {
                         title: property.rawValue,
                         isOn: { self.application.isRegisteredForRemoteNotifications }
                     )
-                case .shortcutItems:
-                    return .none
                 case .supportsAlternateIcons:
                     return .switch(
                         title: property.rawValue,
@@ -126,7 +110,7 @@ extension DefaultElementAttributesLibrary {
                 case .alternateIconName:
                     return .textField(
                         title: property.rawValue,
-                        placeholder: property.rawValue,
+                        placeholder: .none,
                         value: { self.application.alternateIconName }
                     )
                 }

@@ -110,7 +110,6 @@ extension SceneDelegate: InspectorCustomizationProviding {
         guard let window = Weak(window) else { return nil }
         return [
             .group(
-                title: "My custom actions",
                 commands: [
                     Inspector.Command(
                         title: {

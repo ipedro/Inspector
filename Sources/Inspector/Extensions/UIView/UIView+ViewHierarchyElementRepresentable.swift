@@ -163,29 +163,26 @@ extension UIView: ViewHierarchyElementRepresentable {
     }
 
     var displayName: String {
-        switch (self, prettyAccessibilityIdentifier) {
-        case let (textElement as TextElement, identifier):
-            let name = identifier ?? textElement._classNameWithoutQualifiers
-            if let textContent = textElement.content?.prefix(30) {
-                return "\"\(textContent)\" (\(name))"
-            }
-            return "\(name) (Empty)"
-
-        case let (anyView, identifier?):
-            return "\(anyView._classNameWithoutQualifiers) (\(identifier))"
-
-        case let (anyView, .none):
-            return anyView._classNameWithoutQualifiers
+        if let identifier = prettyAccessibilityIdentifier {
+            return identifier
         }
+
+        if
+            let textElement = self as? TextElement,
+            let textContent = textElement.content?.prefix(30)
+        {
+            return "\"\(textContent)\""
+        }
+
+        guard let window = self as? UIWindow, window.isKeyWindow else { return _prettyClassNameWithoutQualifiers }
+        return "Key \(_prettyClassNameWithoutQualifiers)"
     }
 
     var shortElementDescription: String {
-        [subviewsDescription,
-         constraintsDescription,
+        [classNameDescription,
+         subviewsDescription,
          positionDescrpition,
-         sizeDescription,
-         _superclassName,
-         _className]
+         sizeDescription]
             .compactMap { $0 }
             .prefix(3)
             .joined(separator: .newLine)
@@ -197,7 +194,8 @@ extension UIView: ViewHierarchyElementRepresentable {
          positionDescrpition,
          constraintsDescription,
          subviewsDescription,
-         issuesDescription?.string(prepending: .newLine)]
+         issuesDescription?
+             .string(prepending: .newLine)]
             .compactMap { $0 }
             .joined(separator: .newLine)
     }
@@ -287,6 +285,14 @@ extension NSObject {
 
     var _className: String {
         String(describing: classForCoder)
+    }
+
+    var _prettyClassNameWithoutQualifiers: String {
+        _classNameWithoutQualifiers
+            .replacingOccurrences(of: "_", with: "")
+            .camelCaseToWords()
+            .replacingOccurrences(of: " Kit ", with: "Kit ")
+            .removingRegexMatches(pattern: "[A-Z]{2} ", options: .anchored)
     }
 
     var _superclassName: String? {

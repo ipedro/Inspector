@@ -63,7 +63,7 @@ struct InspectorModifier: ViewModifier {
             content
 
             if isPresented {
-                InspectorUI(
+                InspectorUI.shared(
                     layers: viewHierarchyLayers,
                     colorScheme: elementColorProvider,
                     commandGroups: commandGroups,

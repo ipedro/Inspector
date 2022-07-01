@@ -23,45 +23,41 @@ import UIKit
 import WebKit
 
 enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
-    case `switch`
     case activityIndicator
+    case application
     case button
+    case control
     case datePicker
     case imageView
     case label
     case mapView
     case navigationBar
+    case navigationController
+    case scrollView
     case segmentedControl
     case slider
     case stackView
+    case `switch`
     case tabBar
     case tableView
     case textField
     case textView
-    case webView
-    case application
-
-    // base classes
-    case control
-    case layer
-    case navigationController
-    case scrollView
     case view
     case viewController
+    case webView
     case window
 
     // MARK: - InspectorElementLibraryProtocol
 
     var targetClass: AnyClass {
         switch self {
-        case .application: return UIApplication.self
         case .activityIndicator: return UIActivityIndicatorView.self
+        case .application: return UIApplication.self
         case .button: return UIButton.self
         case .control: return UIControl.self
         case .datePicker: return UIDatePicker.self
         case .imageView: return UIImageView.self
         case .label: return UILabel.self
-        case .layer: return UIView.self
         case .mapView: return MKMapView.self
         case .navigationBar: return UINavigationBar.self
         case .navigationController: return UINavigationController.self
@@ -83,38 +79,57 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
 
     func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
-        case .application: return .init(with: ApplicationAttributesSectionDataSource(with: object))
+        case .application:
+            let firstSection = InspectorElementSection(rows: ApplicationAttributesSectionDataSource(with: object))
 
-        case .navigationController: return .init(with: NavigationControllerAttributesSectionDataSource(with: object))
+            guard
+                let application = object as? UIApplication,
+                let shortcutItems = application.shortcutItems,
+                !shortcutItems.isEmpty
+            else {
+                return [firstSection]
+            }
+
+            return [
+                firstSection,
+                InspectorElementSection(
+                    title: "Shortcut Items",
+                    rows: shortcutItems.map(ApplicationShortcutItemSectionDataSource.init(with:))
+                )
+            ]
 
         case .viewController:
             guard let viewController = object as? UIViewController else { return .empty }
 
+            let firstSection = InspectorElementSection(
+                rows:
+                ViewControllerAttributesSectionDataSource(with: viewController),
+                TabBarItemAttributesSectionDataSource(with: viewController),
+                NavigationItemAttributesSectionDataSource(with: viewController)
+            )
+
+            guard
+                let keyCommands = viewController.keyCommands,
+                !keyCommands.isEmpty
+            else {
+                return [firstSection]
+            }
+
             return [
-                InspectorElementSection(
-                    rows:
-                    NavigationItemAttributesSectionDataSource(with: viewController),
-                    ViewControllerAttributesSectionDataSource(with: viewController),
-                    TabBarItemAttributesSectionDataSource(with: viewController)
-                ),
+                firstSection,
                 InspectorElementSection(
                     title: "Key Commands",
-                    rows: (viewController.keyCommands ?? []).map {
-                        KeyCommandsSectionDataSource(with: $0)
-                    }
+                    rows: keyCommands.map(KeyCommandsSectionDataSource.init(with:))
                 )
             ]
-        case .tableView: return .init(with: TableViewAttributesSectionDataSource(with: object))
-
-        case .layer: return .init(with: LayerAttributesSectionDataSource(with: object))
-
-        case .window: return .init(with: WindowAttributesSectionDataSource(with: object))
 
         case .navigationBar:
-            var section = InspectorElementSection()
-            section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .standard))
-            section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .compact))
-            section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .scrollEdge))
+            var section = InspectorElementSection(
+                rows:
+                NavigationBarAppearanceAttributesSectionDataSource(with: object, .standard),
+                NavigationBarAppearanceAttributesSectionDataSource(with: object, .compact),
+                NavigationBarAppearanceAttributesSectionDataSource(with: object, .scrollEdge)
+            )
 
             if #available(iOS 15.0, *) {
                 section.append(NavigationBarAppearanceAttributesSectionDataSource(with: object, .compactScrollEdge))
@@ -123,6 +138,18 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
             section.append(NavigationBarAttributesSectionDataSource(with: object))
 
             return [section]
+
+        case .view: return .init(
+                with:
+                ViewAttributesSectionDataSource(with: object),
+                LayerAttributesSectionDataSource(with: object)
+            )
+
+        case .navigationController: return .init(with: NavigationControllerAttributesSectionDataSource(with: object))
+
+        case .tableView: return .init(with: TableViewAttributesSectionDataSource(with: object))
+
+        case .window: return .init(with: WindowAttributesSectionDataSource(with: object))
 
         case .activityIndicator: return .init(with: ActivityIndicatorViewAttributesSectionDataSource(with: object))
 
@@ -151,8 +178,6 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
         case .textField: return .init(with: TextFieldAttributesSectionDataSource(with: object))
 
         case .textView: return .init(with: TextViewAttributesSectionDataSource(with: object))
-
-        case .view: return .init(with: ViewAttributesSectionDataSource(with: object))
 
         case .tabBar: return .init(with: TabBarAttributesSectionDataSource(with: object))
 

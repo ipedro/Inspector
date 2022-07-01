@@ -31,13 +31,18 @@ extension UIContextMenuConfiguration {
         includeActions: Bool = true,
         handler: @escaping ViewHierarchyActionHandler
     ) -> UIContextMenuConfiguration? {
-        var children = initialMenus
+        var menus = initialMenus
 
-        if let menu = UIMenu(with: element, includeActions: includeActions, options: .displayInline, handler: handler) {
-            children.append(menu)
+        if let menu = UIMenu(
+            with: element,
+            includeActions: includeActions,
+            options: .displayInline,
+            handler: handler
+        ) {
+            menus.append(menu)
         }
 
-        guard children.isEmpty == false else { return nil }
+        guard menus.isEmpty == false else { return nil }
 
         return UIContextMenuConfiguration(
             identifier: nil,
@@ -46,11 +51,8 @@ extension UIContextMenuConfiguration {
             },
             actionProvider: { _ in
                 UIMenu(
-                    title: "",
-                    image: .none,
-                    identifier: .none,
                     options: .displayInline,
-                    children: children
+                    children: menus
                 )
             }
         )

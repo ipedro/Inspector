@@ -87,7 +87,10 @@ final class NoteControl: BaseControl {
 
         contentView.spacing = .zero
 
-        contentView.directionalLayoutMargins.update(bottom: elementInspectorAppearance.horizontalMargins)
+        contentView.directionalLayoutMargins.update(
+            leading: 5,
+            bottom: elementInspectorAppearance.horizontalMargins
+        )
 
         contentView.addArrangedSubviews(imageView, header)
 

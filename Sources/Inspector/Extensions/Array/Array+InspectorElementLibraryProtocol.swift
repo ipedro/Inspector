@@ -22,15 +22,14 @@ import Foundation
 import UIKit
 
 extension Array where Element == InspectorElementLibraryProtocol {
-    func libraries(targeting object: NSObject) -> [InspectorElementLibraryProtocol] {
-        object.classesForCoder.flatMap { aElementClass in
-            filter { $0.targetClass == aElementClass }
-        }
-    }
-
     func formItems(for object: NSObject?) -> InspectorElementSections {
         guard let object = object else { return [] }
 
-        return map { $0.sections(for: object) }.flatMap { $0 }
+        return object._classesForCoder
+            .flatMap { aClass in
+                self
+                    .filter { $0.targetClass == aClass }
+                    .flatMap { $0.sections(for: object) }
+            }
     }
 }

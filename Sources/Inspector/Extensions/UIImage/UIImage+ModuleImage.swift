@@ -30,10 +30,26 @@ extension UIImage {
     static func systemIcon(
         _ systemName: String,
         weight: UIImage.SymbolWeight = .light,
-        render renderingMode: UIImage.RenderingMode = .alwaysTemplate
+        render renderingMode: UIImage.RenderingMode = .alwaysTemplate,
+        prefersHierarchicalColor: Bool = true
     ) -> UIImage? {
-        .init(systemName: systemName)?
-            .applyingSymbolConfiguration(.init(weight: weight))?
+        let image = UIImage(systemName: systemName)?
             .withRenderingMode(renderingMode)
+
+        if #available(iOS 15.0, *), prefersHierarchicalColor {
+            return image?
+                .applyingSymbolConfiguration(
+                    .init(weight: weight)
+                )?
+                .applyingSymbolConfiguration(
+                    .init(hierarchicalColor: Inspector.sharedInstance.configuration.colorStyle.textColor)
+                )
+        }
+        else {
+            return image?
+                .applyingSymbolConfiguration(
+                    .init(weight: weight)
+                )
+        }
     }
 }

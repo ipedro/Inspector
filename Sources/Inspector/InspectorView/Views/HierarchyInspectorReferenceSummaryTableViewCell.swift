@@ -57,14 +57,10 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
 
         detailTextLabel?.numberOfLines = 4
 
-        imageView?.tintColor = colorStyle.textColor
-        imageView?.clipsToBounds = true
-        imageView?.backgroundColor = colorStyle.quaternaryTextColor
-        imageView?.contentMode = .center
-
-        imageView?.layer.cornerRadius = elementInspectorAppearance.verticalMargins / 2
-        imageView?.layer.cornerCurve = .continuous
-
         installView(contentView)
+
+        guard let imageView = imageView else { return }
+        imageView.tintColor = colorStyle.textColor
+        imageView.contentMode = .center
     }
 }

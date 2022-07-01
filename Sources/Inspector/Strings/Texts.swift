@@ -23,7 +23,7 @@ import Foundation
 enum Texts {
     static let `default` = "Default"
     static let actions = "Actions"
-    static let all = "All Views"
+    static let allHighlights = "All Highlights"
     static let cancel = "Cancel"
     static let children = "Children"
     static let clearImage = "Clear image"
@@ -73,6 +73,10 @@ enum Texts {
 
     static func enable(_ something: String) -> String {
         "Enable \(something)"
+    }
+
+    static func select(_ something: String) -> String {
+        "Select \(something)"
     }
 
     static func disable(_ something: String) -> String {

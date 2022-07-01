@@ -135,7 +135,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
     }
 
     private(set) lazy var iconContainerView = BaseView().then {
-        $0.backgroundColor = colorStyle.accessoryControlBackgroundColor
+        $0.backgroundColor = colorStyle.elementIconBackgroundColor
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
         $0.installView(iconImageView, .spacing(all: 3), priority: .required)
@@ -160,7 +160,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
         tintColor = colorStyle.textColor
 
         contentView.axis = .vertical
-        contentView.spacing = elementInspectorAppearance.verticalMargins
+        contentView.spacing = elementInspectorAppearance.verticalMargins / 2
         contentView.addArrangedSubviews(elementNameLabel, elementIconAndDescriptionLabel)
 
         installView(indendationAdjustmentStackView, priority: .required)

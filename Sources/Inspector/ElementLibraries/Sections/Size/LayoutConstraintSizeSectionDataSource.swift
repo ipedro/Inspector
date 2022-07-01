@@ -28,6 +28,10 @@ extension DefaultElementSizeLibrary {
 
         private let constraint: LayoutConstraintElement
 
+        init(constraint: LayoutConstraintElement) {
+            self.constraint = constraint
+        }
+
         var axis: Axis { constraint.axis }
 
         var title: String { constraint.type.description }
@@ -40,16 +44,11 @@ extension DefaultElementSizeLibrary {
 
         var titleAccessoryProperty: InspectorElementProperty? {
             guard let underlyingConstraint = constraint.underlyingConstraint else { return nil }
-
             return .switch(
                 title: "Installed",
                 isOn: { underlyingConstraint.isActive },
                 handler: { underlyingConstraint.isActive = $0 }
             )
-        }
-
-        init(constraint: LayoutConstraintElement) {
-            self.constraint = constraint
         }
 
         private enum Property: String, Swift.CaseIterable {
@@ -62,8 +61,6 @@ extension DefaultElementSizeLibrary {
             case multiplier = "Multiplier"
             case spacer1
             case identifier = "Identifier"
-//            case spacer2
-//            case isActive = "Installed"
         }
 
         var properties: [InspectorElementProperty] {
@@ -81,7 +78,6 @@ extension DefaultElementSizeLibrary {
                     )
                 case .spacer0,
                      .spacer1:
-//                     .spacer2:
                     return .separator
 
                 case .multiplier:
@@ -100,12 +96,6 @@ extension DefaultElementSizeLibrary {
                         value: { underlyingConstraint.safeIdentifier },
                         handler: { underlyingConstraint.identifier = $0 }
                     )
-//                case .isActive:
-//                    return .switch(
-//                        title: property.rawValue,
-//                        isOn: { underlyingConstraint.isActive },
-//                        handler: { underlyingConstraint.isActive = $0 }
-//                    )
                 case .priority:
                     return .floatStepper(
                         title: property.rawValue,

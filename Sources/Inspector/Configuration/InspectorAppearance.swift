@@ -34,7 +34,7 @@ struct InspectorAppearance: Hashable {
         )
     }
 
-    var elementInspector = ElementInspector.Appearance()
+    var elementInspector = ElementInspectorAppearance()
 
     var highlightLayerBorderWidth: CGFloat = 2 / UIScreen.main.scale
 

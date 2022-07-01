@@ -22,16 +22,12 @@ import UIKit
 
 enum DefaultElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryProtocol {
     case preview
+    case hierarchy
     case highlightView
     case runtimeAttributes
 
     var targetClass: AnyClass {
-        switch self {
-        case .preview,
-             .highlightView,
-             .runtimeAttributes:
-            return NSObject.self
-        }
+        NSObject.self
     }
 
     func sections(for object: NSObject) -> InspectorElementSections {
@@ -50,6 +46,9 @@ enum DefaultElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryP
 
         case (.runtimeAttributes, _):
             return .init(with: RuntimeAttributesIdentitySectionDataSource(with: object))
+
+        case (.hierarchy, _):
+            return .init(with: HierarchyIdentitySectionDataSource(with: object))
 
         default:
             return .empty

@@ -49,9 +49,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     var isFullHeightPresentation: Bool = true
 
-    private static var defaultPanel: ElementInspectorPanel { Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel }
-
-    var title: String { element.elementName }
+    var title: String { element.displayName }
 
     var currentPanelIndex: Int {
         guard let index = availablePanels.firstIndex(of: currentPanel) else {
@@ -75,7 +73,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
                 let preferredPanel = preferredPanel,
                 availablePanels.contains(preferredPanel)
             else {
-                return availablePanels.first ?? Self.defaultPanel
+                return availablePanels.first ?? .default
             }
             return preferredPanel
         }()
@@ -86,7 +84,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
             iconImage: element.iconImage,
             isContainer: false,
             subtitle: element.elementDescription,
-            title: element.elementName
+            title: element.displayName
         )
     }
 }
