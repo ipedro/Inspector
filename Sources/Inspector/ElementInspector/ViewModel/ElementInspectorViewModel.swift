@@ -49,8 +49,6 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     var isFullHeightPresentation: Bool = true
 
-    private static var defaultPanel: ElementInspectorPanel { Inspector.sharedInstance.configuration.elementInspectorConfiguration.defaultPanel }
-
     var title: String { element.displayName }
 
     var currentPanelIndex: Int {
@@ -75,7 +73,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
                 let preferredPanel = preferredPanel,
                 availablePanels.contains(preferredPanel)
             else {
-                return availablePanels.first ?? Self.defaultPanel
+                return availablePanels.first ?? .default
             }
             return preferredPanel
         }()

@@ -22,7 +22,7 @@ import UIKit
 
 enum ViewHierarchyElementAction: MenuContentProtocol {
     case layer(action: ViewHierarchyLayerAction)
-    case inspect(preferredPanel: ElementInspectorPanel?)
+    case inspect(preferredPanel: ElementInspectorPanel)
     case copy(info: ViewHierarchyInformation)
 
     var title: String {
@@ -31,7 +31,7 @@ enum ViewHierarchyElementAction: MenuContentProtocol {
             return action.title
 
         case let .inspect(preferredPanel):
-            return preferredPanel?.title ?? Texts.inspect("")
+            return preferredPanel.title
 
         case let .copy(content):
             return content.title
@@ -55,7 +55,7 @@ enum ViewHierarchyElementAction: MenuContentProtocol {
         case let .layer(action):
             return action.image
         case let .inspect(preferredPanel):
-            return preferredPanel?.image
+            return preferredPanel.image
         case let .copy(content):
             return content.image
         }

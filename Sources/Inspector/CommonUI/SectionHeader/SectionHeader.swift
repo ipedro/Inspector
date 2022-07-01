@@ -21,7 +21,7 @@
 import UIKit
 
 extension SectionHeader {
-    private static var elementInspectorAppearance: ElementInspector.Appearance { Inspector.sharedInstance.appearance.elementInspector }
+    private static var elementInspectorAppearance: ElementInspectorAppearance { Inspector.sharedInstance.appearance.elementInspector }
 
     static func formSectionTitle(title: String? = nil, subtitle: String? = nil) -> SectionHeader {
         SectionHeader(

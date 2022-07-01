@@ -34,7 +34,7 @@ protocol ElementChildrenPanelViewModelProtocol {
     /// Toggle if a container displays its subviews or hides them.
     /// - Parameter indexPath: index path
     /// - Returns: Actions related to affected index paths
-    func toggleContainer(at indexPath: IndexPath) -> [ElementInspector.ElementChildrenPanelAction]
+    func toggleContainer(at indexPath: IndexPath) -> [ElementChildrenPanelAction]
 
     func indexPath(for item: ElementChildrenPanelItemViewModelProtocol?) -> IndexPath?
 }
@@ -115,7 +115,7 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
         return IndexPath(row: row, section: .zero)
     }
 
-    func toggleContainer(at indexPath: IndexPath) -> [ElementInspector.ElementChildrenPanelAction] {
+    func toggleContainer(at indexPath: IndexPath) -> [ElementChildrenPanelAction] {
         guard indexPath.row < visibleChildren.count else { return [] }
 
         let container = visibleChildren[indexPath.row]
@@ -148,7 +148,7 @@ extension ElementChildrenPanelViewModel: ElementChildrenPanelViewModelProtocol {
             insertedIndexPaths.append(IndexPath(row: row, section: .zero))
         }
 
-        var actions = [ElementInspector.ElementChildrenPanelAction]()
+        var actions = [ElementChildrenPanelAction]()
 
         if insertedIndexPaths.isEmpty == false {
             actions.append(.inserted(insertedIndexPaths))

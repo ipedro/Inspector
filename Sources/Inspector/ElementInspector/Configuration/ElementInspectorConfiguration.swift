@@ -20,27 +20,45 @@
 
 import UIKit
 
-struct InspectorAppearance: Hashable {
-    // MARK: - Wireframe Style
+final class ElementInspectorConfiguration {
+    var isPresentingFromBottomSheet: Bool {
+        #if swift(>=5.5)
+        if #available(iOS 15.0, *) {
+            return isPhoneIdiom
+        }
+        #endif
+        return false
+    }
 
-    var regularIconSize = CGSize(width: 20, height: 20)
+    var isPhoneIdiom: Bool {
+        guard let userInterfaceIdiom = ViewHierarchy.shared.keyWindow?.traitCollection.userInterfaceIdiom else {
+            // assume true
+            return true
+        }
+        return userInterfaceIdiom == .phone
+    }
 
-    var actionIconSize = CGSize(width: 24, height: 24)
+    var defaultPanel: ElementInspectorPanel = .identity
 
-    var elementIconSize: CGSize {
+    var childrenListMaximumInteractiveDepth = 4
+
+    var animationDuration: TimeInterval = CATransaction.animationDuration()
+
+    var panelPreferredCompressedSize: CGSize {
         CGSize(
-            width: elementInspector.verticalMargins * 3,
-            height: elementInspector.verticalMargins * 3
+            width: min(UIScreen.main.bounds.width, 414),
+            height: .zero
         )
     }
 
-    var elementInspector = ElementInspectorAppearance()
+    let panelSidePresentationAvailable: Bool = true
 
-    var highlightLayerBorderWidth: CGFloat = 2 / UIScreen.main.scale
+    var panelSidePresentationMinimumContainerSize: CGSize {
+        CGSize(
+            width: 768,
+            height: 768
+        )
+    }
 
-    var wireframeLayerBorderWidth: CGFloat = 1 / UIScreen.main.scale
-
-    // MARK: - Empty Layer Style
-
-    var emptyLayerBorderWidth: CGFloat = 0
+    var thumbnailBackgroundStyle: ThumbnailBackgroundStyle = .systemBackground
 }
