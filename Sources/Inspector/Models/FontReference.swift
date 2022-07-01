@@ -31,7 +31,7 @@ struct FontReference: Hashable, CustomStringConvertible, CaseIterable {
         self.rawValue = rawValue
         self.description = description
 
-        guard let font = Self.font(rawValue: rawValue, size: 17) else {
+        guard let font = Self.font(rawValue: rawValue, size: 18) else {
             icon = .none
             return
         }
