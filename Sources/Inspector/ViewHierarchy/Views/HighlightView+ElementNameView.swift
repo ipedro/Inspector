@@ -28,37 +28,20 @@ final class ElementNameView: LayerViewComponent {
     // MARK: - Properties
 
     enum DisplayMode: Swift.CaseIterable, MenuContentProtocol {
+        case auto, iconAndText, text, icon
+
         var title: String {
             switch self {
-            case .auto:
-                return "Automatic"
-            case .iconAndText:
-                return "Icon And Text"
-            case .text:
-                return "Text"
-            case .icon:
-                return "Icon"
+            case .auto: return "Automatic"
+            case .iconAndText: return "Icon And Text"
+            case .text: return "Text"
+            case .icon: return "Icon"
             }
         }
 
-        var image: UIImage? {
-            switch self {
-            case .auto:
-                return nil
-            case .iconAndText:
-                return nil
-            case .text:
-                return nil
-            case .icon:
-                return nil
-            }
-        }
+        var image: UIImage? { .none }
 
-        static func allCases(for element: ViewHierarchyElementReference) -> [DisplayMode] {
-            allCases
-        }
-
-        case auto, iconAndText, text, icon
+        static func allCases(for element: ViewHierarchyElementReference) -> [DisplayMode] { allCases }
     }
 
     weak var displayer: ElementNameViewDisplayerProtocol?
@@ -85,31 +68,33 @@ final class ElementNameView: LayerViewComponent {
 
     private let cornerRadius: CGFloat = 8
 
+    private let contentColor: UIColor = .white
+
     // MARK: - Components
 
     private(set) lazy var label = UILabel().then {
         $0.font = UIFont(name: "MuktaMahee-Regular", size: 11)
-        $0.textColor = .white
+        $0.textColor = contentColor
         $0.textAlignment = .center
-        $0.setContentHuggingPriority(.required, for: .horizontal)
     }
 
     private(set) lazy var imageView = UIImageView().then {
-        $0.tintColor = .white
-        $0.clipsToBounds = true
+        $0.tintColor = contentColor
     }
 
     private(set) lazy var roundedPillView = LayerViewComponent().then {
         $0.clipsToBounds = true
+        $0.setContentHuggingPriority(.required, for: .horizontal)
+        $0.layer.borderWidth = 1 / UIScreen.main.scale
+
         $0.contentView.addArrangedSubviews(imageView, label)
         $0.contentView.alignment = .center
         $0.contentView.axis = .horizontal
+        $0.contentView.spacing = cornerRadius / 2
+
         $0.contentView.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.contentView.layer.shadowOpacity = 1
         $0.contentView.layer.shadowRadius = 1
-        $0.contentView.spacing = cornerRadius / 2
-        $0.layer.borderWidth = 1 / UIScreen.main.scale
-        $0.layer.cornerRadius = cornerRadius
 
         enableRasterization()
     }
@@ -128,8 +113,8 @@ final class ElementNameView: LayerViewComponent {
 
     func resetShadow() {
         layer.shadowOffset = .init(width: .zero, height: 1)
-        layer.shadowRadius = 1
         layer.shadowOpacity = Float(colorStyle.disabledAlpha * 2)
+        layer.shadowRadius = 1
     }
 
     @objc
@@ -142,6 +127,8 @@ final class ElementNameView: LayerViewComponent {
         roundedPillView.backgroundColor = tintColor
     }
 
+    private var displayerFrame: CGRect { displayer?.frame ?? bounds }
+
     @objc
     private func updateContent() {
         switch displayMode {
@@ -150,10 +137,10 @@ final class ElementNameView: LayerViewComponent {
             label.isHidden = false
             imageView.isHidden = imageView.image == nil
             roundedPillView.layoutIfNeeded()
-            let frame = displayer?.frame ?? bounds
-            let size = systemLayoutSizeFitting(frame.size)
-
-            label.isHidden = size.width > frame.width * 1.3
+            label.isHidden = {
+                let intrinsicSize = systemLayoutSizeFitting(displayerFrame.size)
+                return intrinsicSize.width > displayerFrame.width * 1.3
+            }()
 
         case .iconAndText:
             label.isHidden = false
@@ -170,7 +157,6 @@ final class ElementNameView: LayerViewComponent {
 
         label.alpha = label.isHidden ? 0 : 1
         imageView.alpha = imageView.isHidden ? 0 : 1
-
         roundedPillView.contentView.directionalLayoutMargins = .init(
             top: 1,
             leading: imageView.isHidden ? 6 : 3,
@@ -183,6 +169,8 @@ final class ElementNameView: LayerViewComponent {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+
+        roundedPillView.layer.cornerRadius = min(cornerRadius, roundedPillView.frame.height / 2)
 
         guard isFirstLayoutSubviews else {
             return
