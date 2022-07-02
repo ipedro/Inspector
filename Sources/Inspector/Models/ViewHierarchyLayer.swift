@@ -130,7 +130,7 @@ public extension ViewHierarchyLayer {
     /// Highlights all collection view cells
     static let collectionViewCells = Inspector.ViewHierarchyLayer(name: "Collection Cells") { $0 is UICollectionViewCell }
     /// Highlights all static texts
-    static let staticTexts = Inspector.ViewHierarchyLayer(name: "Static Texts", allowsInternalViews: true) { $0 is UILabel }
+    static let staticTexts = Inspector.ViewHierarchyLayer(name: "Static Texts", allowsInternalViews: true) { $0 is UILabel || $0._className == "CGDrawingView" }
     /// Highlights all switches
     static let switches = Inspector.ViewHierarchyLayer(name: "Switches") { $0 is UISwitch }
     /// Highlights all table views
