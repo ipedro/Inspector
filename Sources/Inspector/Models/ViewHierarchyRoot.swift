@@ -56,7 +56,7 @@ final class ViewHierarchyRoot {
 
     private let catalog: ViewHierarchyElementCatalog
 
-    private lazy var bundleInfo: BundleInfo? = {
+    private(set) lazy var bundleInfo: BundleInfo? = {
         guard
             let infoDictionary = Bundle.main.infoDictionary
         else {
@@ -186,11 +186,27 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
             return String()
         }
 
-        return [className,
-                "Identifier: \(identifier)",
-                "Version: \(version) (\(build))",
-                "Requirement: iOS \(minimumOSVersion)+"]
-            .joined(separator: .newLine)
+        return [
+            className,
+            "Identifier: \(identifier)",
+            "Version: \(version) (\(build))",
+            {
+                guard let bundleInfo = bundleInfo else {
+                    return .none
+                }
+                switch bundleInfo.interfaceStyle {
+                case .light:
+                    return "Appearance: Light"
+                case .dark:
+                    return "Appearance: Dark"
+                default:
+                    return "Appearance: Dark and Light"
+                }
+            }(),
+            "Requirement: iOS \(minimumOSVersion)+"
+        ]
+        .compactMap { $0 }
+        .joined(separator: .newLine)
     }
 
     var elementDescription: String { shortElementDescription }
@@ -201,6 +217,10 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
 
     private func allViewControllers(with rootViewController: UIViewController?) -> [UIViewController] {
         guard let rootViewController = rootViewController else { return [] }
-        return [rootViewController] + rootViewController.allChildren + rootViewController.allPresentedViewControllers.flatMap { [$0] + $0.allChildren }
+
+        let viewControllers = [rootViewController] + rootViewController.allChildren + rootViewController.allPresentedViewControllers
+
+        return viewControllers
+            .flatMap { [$0] + $0.allChildren }
     }
 }

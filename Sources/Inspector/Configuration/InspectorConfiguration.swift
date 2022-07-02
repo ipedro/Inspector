@@ -35,6 +35,8 @@ public struct InspectorConfiguration {
 
     public let enableLayoutSubviewsSwizzling: Bool
 
+    public var showFullApplicationHierarchy: Bool
+
     public var verbose: Bool
 
     public static func config(
@@ -42,6 +44,7 @@ public struct InspectorConfiguration {
         nonInspectableClassNames: [String] = [],
         showAllViewSearchQuery: String = ".",
         snapshotExpiration: TimeInterval = 1,
+        showFullApplicationHierarchy: Bool = false,
         verbose: Bool = false
     ) -> InspectorConfiguration {
         .init(
@@ -49,6 +52,7 @@ public struct InspectorConfiguration {
             showAllViewSearchQuery: showAllViewSearchQuery,
             nonInspectableClassNames: nonInspectableClassNames,
             enableLayoutSubviewsSwizzling: enableLayoutSubviewsSwizzling,
+            showFullApplicationHierarchy: showFullApplicationHierarchy,
             verbose: verbose
         )
     }

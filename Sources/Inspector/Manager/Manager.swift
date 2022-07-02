@@ -84,6 +84,8 @@ final class Manager: Coordinator<ManagerDependencies, OperationQueue, Void> {
     deinit {
         operationQueue.cancelAllOperations()
 
+        viewHierarchyCoordinator.removeAllLayers()
+
         children.forEach { child in
             (child as? DismissablePresentationProtocol)?.dismissPresentation(animated: true)
             child.removeFromParent()

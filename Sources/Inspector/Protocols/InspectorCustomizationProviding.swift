@@ -20,7 +20,7 @@
 
 import UIKit
 
-public protocol InspectorCustomizationProviding: AnyObject {
+public protocol InspectorCustomizationProviding {
     /// Command groups act as sections on the Inspector interface. You can have as many groups, with as many actions as you would like.
     var commandGroups: [Inspector.CommandsGroup]? { get }
 

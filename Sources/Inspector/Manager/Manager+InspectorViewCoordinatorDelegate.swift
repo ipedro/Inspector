@@ -74,8 +74,8 @@ extension Manager {
 
             let coordinator = self.makeInspectorViewCoordinator(presentedBy: presenter)
 
-            presenter.present(coordinator.start(), animated: animated) {
-                self.addChild(coordinator)
+            presenter.present(coordinator.start(), animated: animated) { [weak self] in
+                self?.addChild(coordinator)
             }
         }
     }

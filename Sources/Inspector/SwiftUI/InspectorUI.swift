@@ -20,7 +20,7 @@
 
 import SwiftUI
 
-final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost, InspectorCustomizationProviding {
+struct InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost, InspectorCustomizationProviding {
     // MARK: - InspectorSwiftUIHostable
 
     let viewHierarchyLayers: [Inspector.ViewHierarchyLayer]?

@@ -47,7 +47,7 @@ public final class Inspector {
 
     private(set) var manager: Manager?
 
-    private(set) var state: State = .idle
+    var state: State { manager == nil ? .idle : .started }
 
     // MARK: - Internal Properties
 
@@ -61,7 +61,7 @@ public final class Inspector {
 
     private(set) var contextMenuPresenter: ContextMenuPresenter?
 
-    private(set) weak var swiftUIHost: InspectorSwiftUIHost?
+    private(set) var swiftUIHost: InspectorSwiftUIHost?
 
     func start(swiftUI swiftUIHost: InspectorSwiftUIHost) {
         self.swiftUIHost = swiftUIHost
@@ -69,17 +69,13 @@ public final class Inspector {
     }
 
     func start() {
-        guard state == .idle else { return }
         setup()
         manager?.start()
-        state = .started
     }
 
     func stop() {
-        guard state == .started else { return }
         manager = .none
         contextMenuPresenter = .none
-        state = .idle
     }
 
     private func restartIfNeeded() {

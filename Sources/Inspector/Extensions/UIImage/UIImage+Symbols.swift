@@ -33,15 +33,11 @@ extension UIImage {
     static let applicationIcon: UIImage = .systemIcon("app.badge.fill")!
     static let collapseMirroredSymbol: UIImage = .icon("collapse-mirrored")!
     static let collapseSymbol: UIImage = .icon("collapse")!
-    static let collectionViewController: UIImage = .systemIcon("square.grid.3x3")!
-    static let emptyViewSymbol: UIImage = .icon("EmptyView-32_Normal")!
     static let expandSymbol: UIImage = .icon("expand")!
     static let hiddenViewSymbol: UIImage = .icon("Hidden-32_Normal")!
     static let infoOutlineSymbol: UIImage = .icon("info.circle")!
     static let infoSymbol: UIImage = IconKit.imageOfInfoCircleFill().withRenderingMode(.alwaysTemplate)
     static let missingSymbol: UIImage = .icon("missing-view-32_Normal")!
-    static let navigationController: UIImage = .systemIcon("chevron.left.square")!
-    static let nsObject: UIImage = .systemIcon("shippingbox", weight: .regular)!
     static let warningSymbol: UIImage = .icon("exclamationmark.triangle")!
 }
 

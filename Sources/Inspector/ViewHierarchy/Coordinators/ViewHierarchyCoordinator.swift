@@ -131,14 +131,11 @@ extension ViewHierarchyCoordinator {
         return snapshot
     }
 
-    var toggleWireframesCommand: Command {
-        command(for: .wireframes, at: layerToggleInputRange.lowerBound)
-    }
-
     func commandsGroups(limit: Int?) -> CommandsGroups {
         let snapshot = latestSnapshot()
-        let toggleAllHighlights = toggleAllLayersCommands(for: snapshot)
+        let allHighlights = toggleAllLayersCommands(for: snapshot)
         var highlights = availableLayerCommands(for: snapshot)
+        let wireframes = [toggleWireframes()]
 
         if let limit = limit {
             highlights = Array(highlights.prefix(limit))
@@ -146,13 +143,14 @@ extension ViewHierarchyCoordinator {
 
         return [
             .group(
-                title: {
-                    guard let displayName = snapshot.root.underlyingView?.displayName else { return "Highlight Views" }
-                    return "Highlight Views In \(displayName)" // "\(displayName) View Hierarchy"
-                }(),
-                commands: toggleAllHighlights + highlights
+                title: "Highlight Views",
+                commands: wireframes + allHighlights + highlights
             )
         ]
+    }
+
+    private func toggleWireframes() -> Command {
+        command(for: .wireframes, at: layerToggleInputRange.lowerBound)
     }
 
     private func makeSnapshot() -> ViewHierarchySnapshot {

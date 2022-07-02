@@ -19,6 +19,7 @@
 //  SOFTWARE.
 
 import Inspector
+import SafariServices
 import UIKit
 @_implementationOnly import UIKitOptions
 
@@ -113,14 +114,18 @@ extension SceneDelegate: InspectorCustomizationProviding {
                 commands: [
                     Inspector.Command(
                         title: "Open Repository...",
-                        icon: .hierarchical(systemName: "link"),
+                        icon: .hierarchical(systemName: "safari"),
                         keyCommandOptions: .control(.shift(.key("g"))),
                         closure: {
-                            UIApplication.shared.open(
-                                URL(string: "https://github.com/ipedro/Inspector")!,
-                                options: [:],
-                                completionHandler: nil
+                            let safariViewController = SFSafariViewController(
+                                url: .init(string: "https://github.com/ipedro/Inspector")!
                             )
+                            safariViewController.preferredBarTintColor = window.weakReference?.tintColor
+
+                            window
+                                .weakReference?
+                                .rootViewController?
+                                .present(safariViewController, animated: true)
                         }
                     ),
                     Inspector.Command(
@@ -135,35 +140,7 @@ extension SceneDelegate: InspectorCustomizationProviding {
                             Inspector.stop()
                             Inspector.start()
                         }
-                    ),
-                    {
-                        let keyCommands: UIKeyCommand.Options = .control(.shift(.key("i")))
-
-                        let action: () -> Void = {
-                            window.weakReference?.overrideUserInterfaceStyle = {
-                                switch window.weakReference?.traitCollection.userInterfaceStyle {
-                                case .dark: return .light
-                                case .light: return .dark
-                                default: return .unspecified
-                                }
-                            }()
-                        }
-
-                        guard window.weakReference?.traitCollection.userInterfaceStyle == .light else {
-                            return .init(
-                                title: "Enable Light Mode",
-                                icon: .hierarchical(systemName: "sun.max"),
-                                keyCommandOptions: keyCommands,
-                                closure: action
-                            )
-                        }
-                        return .init(
-                            title: "Enable Dark Mode",
-                            icon: .hierarchical(systemName: "moon.stars.fill"),
-                            keyCommandOptions: keyCommands,
-                            closure: action
-                        )
-                    }()
+                    )
                 ]
             )
         ]

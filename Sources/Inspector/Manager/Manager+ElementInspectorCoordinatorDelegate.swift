@@ -59,8 +59,8 @@ extension Manager {
         )
         coordinator.delegate = self
 
-        keyWindow.topPresentedViewController?.present(coordinator.start(), animated: animated) {
-            self.addChild(coordinator)
+        keyWindow.topPresentedViewController?.present(coordinator.start(), animated: animated) { [weak self] in
+            self?.addChild(coordinator)
         }
     }
 }

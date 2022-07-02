@@ -30,17 +30,23 @@ extension ViewHierarchyElementIconProvider {
         guard let view = object as? UIView else {
             switch object {
             case is UISearchController:
-                return .icon("UISearchController")
+                return .searchController
+
             case is UIPageViewController:
-                return .icon("UIPageViewController")
+                return .pageViewController
+
             case is UINavigationController:
                 return .navigationController
+
             case is UICollectionViewController:
                 return .collectionViewController
+
             case is UITableViewController:
-                return .icon("UITableViewController")
+                return .tableViewController
+
             case is UITabBarController:
-                return .icon("TabbedView-32_Normal")
+                return .tabBarController
+
             default:
                 return .nsObject
             }
@@ -49,98 +55,120 @@ extension ViewHierarchyElementIconProvider {
         guard view.isHidden == false else { return .hiddenViewSymbol }
 
         switch view {
-        case let window as UIWindow where window.isKeyWindow:
-            return .icon("Key-UIWindow-32_Normal")
-
-        case let window as UIWindow where window._className.contains("Keyboard"):
-            return .systemIcon("keyboard.macwindow", weight: .regular)
-
-        case is UIWindow:
-            return .systemIcon("macwindow", weight: .regular)
+        case let window as UIWindow:
+            if window._className.contains("Keyboard") { return .keyboardWindow }
+            if window.isKeyWindow { return .keyWindow }
+            return .window
 
         case is UIActivityIndicatorView:
-            return .systemIcon("rays", weight: .bold)
+            return .activityIndicatorView
 
         case is UISlider:
-            return .icon("UISlider_32_Normal")
+            return .slider
 
         case is UIDatePicker:
-            return .icon("UIDatePicker_32_Normal")
+            return .datePicker
 
         case is UISwitch:
-            return .icon("Toggle-32_Normal")
+            return .toggle
 
         case is UIButton,
              is UIControl where view.className.contains("Button"):
-            return .systemIcon("hand.tap.fill")
+            return .button
 
         case let imageView as UIImageView:
             guard let image = imageView.isHighlighted ? imageView.highlightedImage : imageView.image else {
-                return .systemIcon("photo")
+                return .imageView
             }
             return image
 
         case is UISegmentedControl:
-            return .icon("UISegmentedControl_32_Normal")
+            return .segmentedControl
 
-        case let stackView as UIStackView where stackView.axis == .horizontal:
-            return .icon("HStack-32_Normal")
-
-        case is UIStackView:
-            return .icon("VStack-32_Normal")
+        case let stackView as UIStackView:
+            return stackView.axis == .horizontal ? .horizontalStack : .verticalStack
 
         case is UILabel:
-            return .systemIcon("textformat.abc", weight: .bold)
-        case let view where view.className.contains("Label"):
-            return .systemIcon("textformat.abc", weight: .bold)
+            return .staticText
 
         case is UITextField:
-            return .systemIcon("textformat.abc.dottedunderline", weight: .bold)
+            return .textField
 
         case is UITextView:
-            return .icon("TextView-32_Normal")
+            return .textView
 
         case is WKWebView:
-            return .systemIcon("safari")
+            return .webView
 
         case is UICollectionView:
-            return .systemIcon("square.grid.3x1.below.line.grid.1x2")
+            return .collectionView
 
         case is UITableView:
-            return .systemIcon("square.fill.text.grid.1x2")
+            return .tableView
 
         case is UIScrollView:
-            return .icon("UIScrollView_32_Normal")
+            return .scrollView
 
         case is UINavigationBar:
-            return .icon("NavigationBar-32_Normal")
+            return .navigationBar
 
         case is UITabBar:
-            return .icon("TabbedView-32_Normal")
+            return .tabBar
 
         case is UIToolbar:
-            return .icon("UIToolbar-32_Normal")
+            return .toolbar
 
         case is UIControl:
-            return .systemIcon("dial.min.fill")
+            return .control
 
         case is MKMapView:
-            return .systemIcon("map")
+            return .mapView
 
-        case let view where view.className.contains("TransitionView"):
-            return .icon("UITransitionView-32_Normal")
-
-        case let view where view.className.contains("DropShadow"):
-            return .icon("DropShadow-32_Normal")
-
-        case let view where view.className.contains("Background"):
-            return .icon("BackgroundView-32_Normal")
-
-        case let view where !view.children.isEmpty:
-            return .icon("filled-view-32_Normal")
-
-        default:
-            return .emptyViewSymbol
+        case let view:
+            if view._className == "CGDrawingView" { return .staticText }
+            if view._className.contains("Effects") { return .systemIcon("wand.and.stars")! }
+            if view.children.isEmpty { return .emptyViewSymbol }
+            if view.className.contains("Background") { return .icon("BackgroundView-32_Normal") }
+            if view.className.contains("DropShadow") { return .icon("DropShadow-32_Normal") }
+            if view.className.contains("Label") { return .staticText }
+            if view.className.contains("TransitionView") { return .icon("UITransitionView-32_Normal") }
+            return .containerViewSymbol
         }
     }
+}
+
+private extension UIImage {
+    static let activityIndicatorView: UIImage = .systemIcon("rays", weight: .bold)!
+    static let button: UIImage = .systemIcon("hand.tap.fill")!
+    static let collectionView: UIImage = .systemIcon("square.grid.3x1.below.line.grid.1x2")!
+    static let collectionViewController: UIImage = .systemIcon("square.grid.3x3")!
+    static let containerViewSymbol: UIImage = .icon("filled-view-32_Normal")!
+    static let control: UIImage = .systemIcon("dial.min.fill")!
+    static let datePicker: UIImage = .icon("UIDatePicker_32_Normal")!
+    static let emptyViewSymbol: UIImage = .icon("EmptyView-32_Normal")!
+    static let horizontalStack: UIImage = .icon("HStack-32_Normal")!
+    static let imageView: UIImage = .systemIcon("photo")!
+    static let keyWindow: UIImage = .icon("Key-UIWindow-32_Normal")!
+    static let keyboardWindow: UIImage = .systemIcon("keyboard.macwindow", weight: .regular)!
+    static let mapView: UIImage = .systemIcon("map")!
+    static let navigationBar: UIImage = .icon("NavigationBar-32_Normal")!
+    static let navigationController: UIImage = .systemIcon("chevron.left.square")!
+    static let nsObject: UIImage = .systemIcon("shippingbox", weight: .regular)!
+    static let pageViewController: UIImage = .icon("UIPageViewController")!
+    static let scrollView: UIImage = .icon("UIScrollView_32_Normal")!
+    static let searchController: UIImage = .icon("UISearchController")!
+    static let segmentedControl: UIImage = .icon("UISegmentedControl_32_Normal")!
+    static let slider: UIImage = .icon("UISlider_32_Normal")!
+    static let staticText: UIImage = .systemIcon("textformat.abc", weight: .bold)!
+    static let tabBar: UIImage = .icon("TabbedView-32_Normal")!
+    static let tabBarController: UIImage = .icon("TabbedView-32_Normal")!
+    static let tableView: UIImage = .systemIcon("square.fill.text.grid.1x2")!
+    static let tableViewController: UIImage = .icon("UITableViewController")!
+    static let textField: UIImage = .systemIcon("character.textbox", weight: .bold)!
+    static let textView: UIImage = .systemIcon("textformat.abc.dottedunderline", weight: .bold)!
+    static let toggle: UIImage = .icon("Toggle-32_Normal")!
+    static let toolbar: UIImage = .icon("UIToolbar-32_Normal")!
+    static let verticalStack: UIImage = .icon("VStack-32_Normal")!
+    static let webView: UIImage = .systemIcon("safari")!
+    static let window: UIImage = .systemIcon("macwindow", weight: .regular)!
 }

@@ -90,7 +90,9 @@ extension Manager: KeyCommandPresentable {
             commands: {
                 var array = [Command]()
                 array.append(slowAnimationsCommand)
-                array.append(viewHierarchyCoordinator.toggleWireframesCommand)
+                if let toggleInterfaceStyle = toggleInterfaceStyleCommand {
+                    array.append(toggleInterfaceStyle)
+                }
                 return array
             }()
         )
@@ -116,7 +118,7 @@ extension Manager: KeyCommandPresentable {
             commandGroups.append(defaultActions)
         }
 
-        commandGroups.append(contentsOf: keyWindowHierarchy)
+        commandGroups.append(contentsOf: insectViewHierarchy)
 
         commandGroups.append(contentsOf: viewHierarchyCoordinator.commandsGroups(limit: limit))
 
@@ -133,80 +135,111 @@ extension Manager: KeyCommandPresentable {
         )
     }
 
-//    private var allWindowsHierarchies: CommandsGroups {
-//        guard let keyWindow = keyWindow else { return [] }
-//
-//        let snapshot = viewHierarchyCoordinator.latestSnapshot()
-//        let root = snapshot.root
-//        let windows = root.children
-//            .filter { ($0.underlyingView as? UIWindow)?.isKeyWindow == true }
-//
-//        return windows.map { window in
-//            .group(
-//                title: "\(window.displayName) View Controllers",
-//                commands: {
-//                    var commands = [Command]()
-//                    commands.append(
-//                        .inspectElement(window) { [weak self] in
-//                            guard let self = self else { return }
-//                            self.perform(
-//                                action: .inspect(preferredPanel: .attributes),
-//                                with: window,
-//                                from: keyWindow
-//                            )
-//                        }
-//                    )
-//
-//                    commands.append(
-//                        contentsOf: forEach(
-//                            viewController: root.viewHierarchy
-//                                .filter { $0.underlyingView?.window === window.underlyingView },
-//                            .inspect(preferredPanel: .attributes),
-//                            from: keyWindow
-//                        )
-//                    )
-//
-//                    return commands
-//                }()
-//            )
-//        }
-//    }
-
-    private var keyWindowHierarchy: CommandsGroups {
+    private var insectViewHierarchy: CommandsGroups {
         guard let keyWindow = keyWindow else { return [] }
-        let snapshot = viewHierarchyCoordinator.latestSnapshot()
-        let element = catalog.makeElement(from: keyWindow)
+
+        let showFullApplicationHierarchy = dependencies.configuration.showFullApplicationHierarchy
+
         let root = snapshot.root
 
-        return [
-            .group(
-                title: "\(element.displayName) Hierarchy",
-                commands: {
-                    var commands = [Command]()
-                    commands.append(
-                        .inspectElement(element) { [weak self] in
-                            guard let self = self else { return }
-                            self.perform(
-                                action: .inspect(preferredPanel: .default),
-                                with: element,
-                                from: keyWindow
-                            )
-                        }
-                    )
+        let allWindows = root
+            .children
+            .filter { $0.underlyingView is UIWindow }
 
-                    commands.append(
-                        contentsOf: forEach(
-                            viewController: root.viewHierarchy
-                                .filter { $0.underlyingView?.window === element.underlyingView },
-                            .inspect(preferredPanel: .default),
-                            from: keyWindow
+        let windows = allWindows.filter {
+            showFullApplicationHierarchy || ($0.underlyingView as? UIWindow)?.isKeyWindow == true
+        }
+
+        return windows
+            .map {
+                var group = inspectCommands(window: $0, from: keyWindow)
+
+                if allWindows.count > windows.count {
+                    group.commands.insert(
+                        .init(
+                            title: "Show Only Key Window",
+                            icon: .systemIcon("macwindow.on.rectangle"),
+                            keyCommandOptions: .none,
+                            isSelected: !Inspector.sharedInstance.configuration.showFullApplicationHierarchy,
+                            closure: {
+                                Inspector.sharedInstance.configuration.showFullApplicationHierarchy.toggle()
+
+                                if Inspector.sharedInstance.configuration.showFullApplicationHierarchy {
+                                    Inspector.present()
+                                }
+                            }
+                        ),
+                        at: .zero
+                    )
+                }
+
+                return group
+            }
+    }
+
+    private func inspectCommands(window element: ViewHierarchyElementReference, from presenter: UIView) -> CommandsGroup {
+        .group(
+            title: "\(element.displayName) Hierarchy",
+            commands: {
+                var commands = [Command]()
+                commands.append(
+                    .inspectElement(element) { [weak self] in
+                        guard let self = self else { return }
+                        self.perform(
+                            action: .inspect(preferredPanel: .default),
+                            with: element,
+                            from: presenter
                         )
-                    )
+                    }
+                )
 
-                    return commands
-                }()
+                commands.append(
+                    contentsOf: forEach(
+                        viewController: snapshot.root.viewHierarchy.filter { $0.underlyingView?.window === element.underlyingView },
+                        .inspect(preferredPanel: .default),
+                        from: presenter
+                    )
+                )
+
+                return commands
+            }()
+        )
+    }
+
+    private var toggleInterfaceStyleCommand: Command? {
+        guard
+            let keyWindow = keyWindow,
+            snapshot.root.bundleInfo?.interfaceStyle == nil
+        else {
+            return .none
+        }
+
+        let keyCommands: UIKeyCommand.Options = .control(.shift(.key("i")))
+
+        let closure: () -> Void = {
+            keyWindow.overrideUserInterfaceStyle = {
+                switch keyWindow.traitCollection.userInterfaceStyle {
+                case .dark: return .light
+                case .light: return .dark
+                default: return .unspecified
+                }
+            }()
+        }
+
+        guard keyWindow.traitCollection.userInterfaceStyle == .light else {
+            return .init(
+                title: "Light Mode",
+                icon: .systemIcon("sun.max"),
+                keyCommandOptions: keyCommands,
+                closure: closure
             )
-        ]
+        }
+        return .init(
+            title: "Dark Mode",
+            icon: .systemIcon("moon.stars.fill"),
+            keyCommandOptions: keyCommands,
+            closure: closure
+        )
     }
 
     private func forEach(
