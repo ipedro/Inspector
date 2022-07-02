@@ -29,7 +29,9 @@ extension InspectorViewController: UITableViewKeyCommandsDelegate {
     }
 
     func tableViewDidResignFirstResponder(_ tableView: UIKeyCommandTableView) {
-        tableView.indexPathsForSelectedRows?.forEach { tableView.deselectRow(at: $0, animated: false) }
+        tableView.indexPathsForSelectedRows?.forEach {
+            tableView.deselectRow(at: $0, animated: false)
+        }
         removeSearchKeyCommandListeners()
 
         guard isFinishing == false else { return }
@@ -38,10 +40,10 @@ extension InspectorViewController: UITableViewKeyCommandsDelegate {
     }
 
     func tableViewKeyCommandSelectionBelowBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior {
-        .wrapAround
+        .resignFirstResponder
     }
 
     func tableViewKeyCommandSelectionAboveBounds(_ tableView: UIKeyCommandTableView) -> UIKeyCommandTableView.OutOfBoundsBehavior {
-        .wrapAround
+        .resignFirstResponder
     }
 }

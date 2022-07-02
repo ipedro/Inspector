@@ -27,7 +27,7 @@ final class HierarchyInspectorSearchView: BaseView {
         size: CGSize(19)
     )
 
-    private(set) lazy var textField = DismissableTextField(
+    private(set) lazy var textField = KeyPressTextField(
         .clearButtonMode(.always),
         .textStyle(.title2),
         .textColor(colorStyle.textColor),
@@ -52,8 +52,7 @@ final class HierarchyInspectorSearchView: BaseView {
 
     @discardableResult
     override func becomeFirstResponder() -> Bool {
-        super.becomeFirstResponder() // must call super at one point
-        return textField.becomeFirstResponder()
+        textField.becomeFirstResponder()
     }
 
     override func setup() {
@@ -92,18 +91,19 @@ extension HierarchyInspectorSearchView {
 }
 
 extension HierarchyInspectorSearchView {
-    final class DismissableTextField: UITextField {
+    final class KeyPressTextField: UITextField {
+        var keyPressHandler: ((UIKey?) -> Bool)?
+
         override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-            for press in presses {
-                switch press.key?.keyCode {
-                case .keyboardUpArrow,
-                     .keyboardDownArrow,
-                     .keyboardTab:
-                    resignFirstResponder()
-                default:
-                    super.pressesBegan(presses, with: event)
-                }
+            guard let keyPressHandler = keyPressHandler else {
+                return super.pressesBegan(presses, with: event)
             }
+
+            for press in presses where keyPressHandler(press.key) == false {
+                resignFirstResponder()
+                return
+            }
+            super.pressesBegan(presses, with: event)
         }
     }
 }
