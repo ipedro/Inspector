@@ -112,28 +112,20 @@ extension SceneDelegate: InspectorCustomizationProviding {
             .group(
                 commands: [
                     Inspector.Command(
-                        title: {
-                            switch window.weakReference?.traitCollection.userInterfaceStyle {
-                            case .light: return "Switch to dark mode"
-                            case .dark: return "Switch to light mode"
-                            default: return "Stop forcing theme"
-                            }
-                        }(),
-                        icon: .exampleCommandIcon,
-                        keyCommandOptions: .control(.shift(.key("i"))),
+                        title: "Open Repository...",
+                        icon: .hierarchical(systemName: "link"),
+                        keyCommandOptions: .control(.shift(.key("g"))),
                         closure: {
-                            window.weakReference?.overrideUserInterfaceStyle = {
-                                switch window.weakReference?.traitCollection.userInterfaceStyle {
-                                case .dark: return .light
-                                case .light: return .dark
-                                default: return .unspecified
-                                }
-                            }()
+                            UIApplication.shared.open(
+                                URL(string: "https://github.com/ipedro/Inspector")!,
+                                options: [:],
+                                completionHandler: nil
+                            )
                         }
                     ),
                     Inspector.Command(
-                        title: "Reset",
-                        icon: .exampleCommandIcon,
+                        title: "Reset App",
+                        icon: .hierarchical(systemName: "arrow.3.trianglepath"),
                         keyCommandOptions: .control(.shift(.key("r"))),
                         closure: {
                             let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -144,21 +136,52 @@ extension SceneDelegate: InspectorCustomizationProviding {
                             Inspector.start()
                         }
                     ),
-                    Inspector.Command(
-                        title: "Open repository...",
-                        icon: .exampleCommandIcon,
-                        keyCommandOptions: .control(.shift(.key("g"))),
-                        closure: {
-                            UIApplication.shared.open(
-                                URL(string: "https://github.com/ipedro/Inspector")!,
-                                options: [:],
-                                completionHandler: nil
+                    {
+                        let keyCommands: UIKeyCommand.Options = .control(.shift(.key("i")))
+
+                        let action: () -> Void = {
+                            window.weakReference?.overrideUserInterfaceStyle = {
+                                switch window.weakReference?.traitCollection.userInterfaceStyle {
+                                case .dark: return .light
+                                case .light: return .dark
+                                default: return .unspecified
+                                }
+                            }()
+                        }
+
+                        guard window.weakReference?.traitCollection.userInterfaceStyle == .light else {
+                            return .init(
+                                title: "Enable Light Mode",
+                                icon: .hierarchical(systemName: "sun.max"),
+                                keyCommandOptions: keyCommands,
+                                closure: action
                             )
                         }
-                    )
+                        return .init(
+                            title: "Enable Dark Mode",
+                            icon: .hierarchical(systemName: "moon.stars.fill"),
+                            keyCommandOptions: keyCommands,
+                            closure: action
+                        )
+                    }()
                 ]
             )
         ]
+    }
+}
+
+private extension UIImage {
+    static func hierarchical(systemName: String) -> UIImage? {
+        if #available(iOS 15.0, *) {
+            return .init(systemName: systemName)?
+                .applyingSymbolConfiguration(.init(hierarchicalColor: UIColor.darkText))?
+                .withRenderingMode(.alwaysTemplate)
+        }
+        else {
+            // Fallback on earlier versions
+            return self.init(systemName: systemName)?
+                .withRenderingMode(.alwaysTemplate)
+        }
     }
 }
 
