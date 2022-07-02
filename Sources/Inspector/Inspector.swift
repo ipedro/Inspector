@@ -143,7 +143,12 @@ extension Inspector {
     }
 
     func inspect(_ view: UIView, animated: Bool = true) {
-        manager?.startElementInspectorCoordinator(for: view, panel: .none, from: view, animated: animated)
+        manager?.startElementInspectorCoordinator(
+            for: view,
+            panel: .default,
+            from: view,
+            animated: animated
+        )
     }
 }
 

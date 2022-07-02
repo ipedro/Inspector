@@ -32,7 +32,7 @@ extension Manager: ElementInspectorCoordinatorDelegate {
 
 extension Manager {
     func startElementInspectorCoordinator(for view: UIView,
-                                          panel: ElementInspectorPanel?,
+                                          panel: ElementInspectorPanel,
                                           from sourceView: UIView?,
                                           animated: Bool)
     {
@@ -41,7 +41,7 @@ extension Manager {
     }
 
     func startElementInspectorCoordinator(for element: ViewHierarchyElementReference,
-                                          panel: ElementInspectorPanel?,
+                                          panel: ElementInspectorPanel,
                                           from sourceView: UIView?,
                                           animated: Bool)
     {

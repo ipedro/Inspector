@@ -58,7 +58,7 @@ protocol ViewHierarchyLayerConstructorProtocol {
 }
 
 class ViewHierarchyElementKey: Hashable {
-    let reference: ViewHierarchyElementReference
+    private(set) weak var reference: ViewHierarchyElementReference?
     private let viewIdentifier: ObjectIdentifier
 
     init?(reference: ViewHierarchyElementReference) {

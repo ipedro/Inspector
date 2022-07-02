@@ -161,9 +161,8 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
         }
 
         newKeys.forEach { newKey in
-            let reference = newKey.reference
-
             guard
+                let reference = newKey.reference,
                 let inspectorView = newValue[newKey],
                 let underlyingView = reference.underlyingView
             else {
@@ -221,7 +220,8 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
     func addHighlightView(for key: ViewHierarchyElementKey, with colorScheme: ViewHierarchyColorScheme) {
         guard
             highlightViews[key] == nil,
-            let rootView = key.reference.underlyingView
+            let reference = key.reference,
+            let rootView = reference.underlyingView
         else {
             return
         }
@@ -230,7 +230,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
             frame: rootView.bounds,
             name: rootView.elementName,
             colorScheme: colorScheme,
-            element: key.reference
+            element: reference
         ).then {
             $0.delegate = self
         }
@@ -241,14 +241,15 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
     func addWireframeView(for key: ViewHierarchyElementKey, with colorScheme: ViewHierarchyColorScheme) {
         guard
             highlightViews[key] == nil,
-            let rootView = key.reference.underlyingView
+            let reference = key.reference,
+            let rootView = reference.underlyingView
         else {
             return
         }
 
         let wireframeView = WireframeView(
             frame: rootView.bounds,
-            element: key.reference
+            element: reference
         ).then {
             $0.delegate = self
         }
