@@ -212,21 +212,15 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        animateWhenKeyboard(.willChangeFrame) { [weak self] info in
-            guard let self = self else { return }
-            self.viewCode.keyboardHeight = info.keyboardFrame.height
-            self.viewCode.layoutIfNeeded()
-        }
-
         reloadData()
         configureNavigationItem()
     }
 
-    private func configureNavigationItem() {
-        navigationItem.rightBarButtonItems = [dismissBarButtonItem, .init(customView: toggleCollapseButton)]
-        navigationItem.titleView = segmentedControl
-        navigationItem.largeTitleDisplayMode = .always
-        navigationController?.navigationBar.prefersLargeTitles = true
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        stopAnimatingWhenKeyboard(.willChangeFrame)
+        currentPanelViewController?.viewDidDisappear(animated)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -309,7 +303,12 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         currentPanelViewController?.viewDidAppear(animated)
-        stopAnimatingWhenKeyboard(.willChangeFrame)
+
+        animateWhenKeyboard(.willChangeFrame) { [weak self] info in
+            guard let self = self else { return }
+            self.viewCode.keyboardHeight = info.keyboardFrame.height
+            self.viewCode.layoutIfNeeded()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -359,9 +358,11 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         }
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        currentPanelViewController?.viewDidDisappear(animated)
+    private func configureNavigationItem() {
+        navigationItem.rightBarButtonItems = [dismissBarButtonItem, .init(customView: toggleCollapseButton)]
+        navigationItem.titleView = segmentedControl
+        navigationItem.largeTitleDisplayMode = .always
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
 
     func updatePanelsSegmentedControl() {
