@@ -38,11 +38,18 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
     override var canBecomeFirstResponder: Bool { true }
 
     override func becomeFirstResponder() -> Bool {
+        if isFinishing { return false }
+
         if viewCode.searchView.isFirstResponder {
-            defer { viewCode.tableView.selectNextRow() }
+            defer {
+                if shouldToggleFirstResponderOnAppear { viewCode.tableView.selectNextRow() }
+            }
             return viewCode.tableView.becomeFirstResponder()
         }
-        return viewCode.searchView.becomeFirstResponder()
+        if shouldToggleFirstResponderOnAppear {
+            return viewCode.searchView.becomeFirstResponder()
+        }
+        return super.becomeFirstResponder()
     }
 
     private var shouldToggleFirstResponderOnAppear: Bool {
@@ -144,7 +151,7 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
 
     private func registerNavigationKeyCommands() {
         addKeyCommand(dismissModalKeyCommand(action: #selector(dismissKeyPressed)))
-        addKeyCommand(UIKeyCommand(.tab, action: #selector(setFirstResponderAndSelectFirstRow)))
+        addKeyCommand(UIKeyCommand(.tab, action: #selector(focusSearchField)))
         addKeyCommand(UIKeyCommand(.arrowDown, action: #selector(setFirstResponderAndSelectFirstRow)))
         addKeyCommand(UIKeyCommand(.arrowUp, action: #selector(setFirstResponderAndSelectPreviousRow)))
         addKeyCommand(
@@ -166,15 +173,6 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
         if animated {
             viewCode.transform = .init(scaleX: 0.8, y: 0.8)
             viewCode.animate(.out, duration: .average * 1.5)
-        }
-
-        DispatchQueue.main.async {
-            if self.shouldToggleFirstResponderOnAppear {
-                self.viewCode.searchView.becomeFirstResponder()
-            }
-            else {
-                _ = self.becomeFirstResponder()
-            }
         }
     }
 
@@ -250,23 +248,20 @@ extension InspectorViewController {
 
 // MARK: - First Responder
 
-extension InspectorViewController {
-    @objc
+@objc extension InspectorViewController {
     func setFirstResponderAndSelectPreviousRow() {
         viewCode.tableView.becomeFirstResponder()
         viewCode.tableView.selectPreviousRow()
     }
 
-//    @objc
-//    func setFirstResponderAndSelectLastRow() {
-//        viewCode.tableView.becomeFirstResponder()
-//        viewCode.tableView.selectRowIfPossible(at: viewCode.tableView.indexPathForLastRowInLastSection)
-//    }
-
-    @objc
     func setFirstResponderAndSelectFirstRow() {
         viewCode.tableView.becomeFirstResponder()
         viewCode.tableView.selectNextRow()
+    }
+
+    @discardableResult
+    func focusSearchField() -> Bool {
+        viewCode.searchView.becomeFirstResponder()
     }
 }
 
@@ -330,12 +325,12 @@ extension InspectorViewController {
 
     func finish() {
         guard !isFinishing else { return }
+        isFinishing = true
         if isViewLoaded {
             viewCode.tableView.removeObserver(self, forKeyPath: .contentSize)
             viewCode.endEditing(true)
             stopAnimatingWhenKeyboard(.willChangeFrame)
         }
-        isFinishing = true
         delegate?.inspectorViewControllerDidFinish(self)
     }
 }
