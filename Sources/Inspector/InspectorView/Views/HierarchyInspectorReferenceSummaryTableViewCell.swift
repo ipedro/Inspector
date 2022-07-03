@@ -52,6 +52,8 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
     override func setup() {
         super.setup()
 
+        tintColor = colorStyle.textColor
+        
         textLabel?.font = .preferredFont(forTextStyle: .footnote).bold()
         textLabel?.numberOfLines = 2
 
@@ -59,8 +61,6 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
 
         installView(contentView)
 
-        guard let imageView = imageView else { return }
-        imageView.tintColor = colorStyle.textColor
-        imageView.contentMode = .center
+        imageView?.contentMode = .center
     }
 }

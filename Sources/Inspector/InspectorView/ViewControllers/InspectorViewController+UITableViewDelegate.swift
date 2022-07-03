@@ -58,7 +58,7 @@ extension InspectorViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if viewModel.titleForHeader(in: section).isNilOrEmpty {
-            return section > .zero ? viewCode.elementInspectorAppearance.verticalMargins : .zero
+            return viewCode.elementInspectorAppearance.verticalMargins
         }
         return UITableView.automaticDimension
     }

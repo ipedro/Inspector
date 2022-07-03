@@ -172,8 +172,7 @@ extension UIView: ViewHierarchyElementRepresentable {
             return "\"\(textContent)\""
         }
 
-        guard let window = self as? UIWindow, window.isKeyWindow else { return _prettyClassNameWithoutQualifiers }
-        return "Key \(_prettyClassNameWithoutQualifiers)"
+        return _prettyClassNameWithoutQualifiers
     }
 
     var shortElementDescription: String {

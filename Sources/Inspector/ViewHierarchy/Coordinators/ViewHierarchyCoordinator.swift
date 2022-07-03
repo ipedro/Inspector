@@ -90,7 +90,14 @@ extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
 
         switch layerAction {
         case .showHighlight:
-            let elementKeys = element.inspectorHostableViewHierarchy.compactMap { ViewHierarchyElementKey(reference: $0) }
+            let snapshot = latestSnapshot()
+
+            // mudar para pegar as referencias somente das layers populadas ao inves de todas as views, ou criar outro comando especifico(?)
+            let elementKeys = snapshot.populatedLayers
+                .flatMap { layer, _ in
+                    layer.filter(viewHierarchy: element.inspectorHostableViewHierarchy)
+                }
+                .compactMap(ViewHierarchyElementKey.init(reference:))
 
             if var referenceKeys = visibleReferences[.highlightViews] {
                 referenceKeys.append(contentsOf: elementKeys)
@@ -165,7 +172,7 @@ extension ViewHierarchyCoordinator {
 
 private extension ViewHierarchyLayer {
     static let highlightViews: ViewHierarchyLayer = .layer(
-        name: String(describing: type(of: HighlightView.self))
+        name: "Highlight Elements"
     ) { _ in
         false
     }
