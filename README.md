@@ -270,7 +270,7 @@ open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEve
 
     guard motion == .motionShake else { return }
 
-    presentInspector(animated: true)
+    Inspector.present()
 }
 #endif
 ```
