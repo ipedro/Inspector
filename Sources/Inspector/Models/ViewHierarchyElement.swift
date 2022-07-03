@@ -234,17 +234,7 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     // MARK: - Cached properties
 
     var iconImage: UIImage? {
-        guard store.latest.isExpired, let rootView = underlyingView else {
-            return store.latest.iconImage
-        }
-
-        let currentIcon = iconProvider?.resizedIcon(for: rootView)
-
-        if currentIcon?.pngData() != store.latest.iconImage?.pngData() {
-            scheduleSnapshot()
-        }
-
-        return currentIcon
+        iconProvider?.resizedIcon(for: underlyingView) ?? store.latest.iconImage
     }
 
     var isContainer: Bool {
