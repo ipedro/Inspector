@@ -135,16 +135,17 @@ extension ViewHierarchyCoordinator {
         let snapshot = latestSnapshot()
         let allHighlights = toggleAllLayersCommands(for: snapshot)
         var highlights = availableLayerCommands(for: snapshot)
-        let wireframes = [toggleWireframes()]
+        let wireframes = toggleWireframes()
 
         if let limit = limit {
             highlights = Array(highlights.prefix(limit))
         }
 
         return [
+            .group(with: wireframes),
             .group(
-                title: "Highlight Views",
-                commands: wireframes + allHighlights + highlights
+                title: "Element Queries",
+                commands: allHighlights + highlights
             )
         ]
     }

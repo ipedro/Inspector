@@ -178,10 +178,9 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
 
     var shortElementDescription: String {
         guard
-            let identifier = bundleInfo?.identifier,
-            let version = bundleInfo?.version,
-            let build = bundleInfo?.build,
-            let minimumOSVersion = bundleInfo?.minimumOSVersion
+            let bundleInfo = bundleInfo,
+            let identifier = bundleInfo.identifier,
+            let minimumOSVersion = bundleInfo.minimumOSVersion
         else {
             return String()
         }
@@ -189,11 +188,8 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
         return [
             className,
             "Identifier: \(identifier)",
-            "Version: \(version) (\(build))",
+            "Version: \(bundleInfo.version) (\(bundleInfo.build))",
             {
-                guard let bundleInfo = bundleInfo else {
-                    return .none
-                }
                 switch bundleInfo.interfaceStyle {
                 case .light:
                     return "Appearance: Light"
@@ -205,7 +201,6 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
             }(),
             "Requirement: iOS \(minimumOSVersion)+"
         ]
-        .compactMap { $0 }
         .joined(separator: .newLine)
     }
 

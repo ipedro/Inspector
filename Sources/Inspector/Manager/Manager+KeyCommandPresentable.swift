@@ -157,7 +157,7 @@ extension Manager: KeyCommandPresentable {
                 if allWindows.count > windows.count {
                     group.commands.insert(
                         .init(
-                            title: "Show Only Key Window",
+                            title: "Hide System Windows",
                             icon: .systemIcon("macwindow.on.rectangle"),
                             keyCommandOptions: .none,
                             isSelected: !Inspector.sharedInstance.configuration.showFullApplicationHierarchy,

@@ -115,7 +115,7 @@ extension ViewHierarchyElementReference {
             iconImage: iconImage,
             isContainer: isContainer,
             subtitle: elementDescription,
-            title: elementName
+            title: displayName
         )
     }
 
