@@ -81,6 +81,18 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
 
     private(set) var viewModel: HierarchyInspectorViewModelProtocol!
 
+    private var isObservingTableViewContentSize = false {
+        didSet {
+            guard oldValue != isObservingTableViewContentSize else { return }
+            if isObservingTableViewContentSize {
+                viewCode.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
+            }
+            else {
+                viewCode.tableView.removeObserver(self, forKeyPath: .contentSize)
+            }
+        }
+    }
+
     private(set) lazy var viewCode = HierarchyInspectorViewCode().then {
         $0.delegate = self
         $0.searchView.textField.addTarget(self, action: #selector(search), for: .editingChanged)
@@ -99,7 +111,6 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
             }
         }
 
-        $0.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
         $0.tableView.register(HierarchyInspectorActionTableViewCell.self)
         $0.tableView.register(HierarchyInspectorReferenceSummaryTableViewCell.self)
         $0.tableView.registerHeaderFooter(HierarchyInspectorTableViewHeaderView.self)
@@ -134,6 +145,7 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
         super.viewDidLoad()
 
         reloadData()
+        isObservingTableViewContentSize = true
         registerNavigationKeyCommands()
 
         if viewModel.shouldAnimateKeyboard {
@@ -327,7 +339,7 @@ extension InspectorViewController {
         guard !isFinishing else { return }
         isFinishing = true
         if isViewLoaded {
-            viewCode.tableView.removeObserver(self, forKeyPath: .contentSize)
+            isObservingTableViewContentSize = false
             viewCode.endEditing(true)
             stopAnimatingWhenKeyboard(.willChangeFrame)
         }

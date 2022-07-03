@@ -250,13 +250,8 @@ extension Manager: KeyCommandPresentable {
         viewHierarchy
             .compactMap { $0 as? ViewHierarchyElementController }
             .sorted { $0.depth < $1.depth }
-            .enumerated()
-            .map {
-                let (offset, viewController) = $0
-                return .inspectElement(
-                    viewController,
-                    displayName: "\(Array(repeating: " ", count: offset).joined()) \(viewController.displayName)"
-                ) { [weak self] in
+            .map { viewController in
+                .inspectElement(viewController) { [weak self] in
                     guard let self = self else { return }
                     self.perform(action: action, with: viewController, from: sourceView)
                 }
