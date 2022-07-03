@@ -23,24 +23,22 @@ import UIKit
 final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, ElementInspectorAppearanceProviding {
     private(set) lazy var separatorView = SeparatorView(style: .hard)
 
-    private lazy var stackView = UIStackView.vertical(
-        .arrangedSubviews(
-            titleLabel
-        ),
-        .spacing(elementInspectorAppearance.verticalMargins),
-        .viewOptions(
-            .directionalLayoutMargins(.init(insets: 16))
-        )
-    )
+    private lazy var titleStackView = UIStackView(arrangedSubviews: [titleLabel]).then {
+        $0.axis = .vertical
+        $0.spacing = elementInspectorAppearance.verticalMargins
+        $0.isLayoutMarginsRelativeArrangement = true
+    }
 
     private(set) lazy var titleLabel = UILabel(
         .textStyle(.caption1, traits: .traitBold),
         .textColor(colorStyle.secondaryTextColor)
     )
 
-    var title: String = "" {
+    var title: String? {
         didSet {
             titleLabel.text = title
+            titleLabel.isHidden = title.isNilOrEmpty
+            titleStackView.directionalLayoutMargins = title.isNilOrEmpty ? .zero : .init(insets: 16)
         }
     }
 
@@ -62,7 +60,7 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
     func setup() {
         backgroundView = UIView()
 
-        contentView.installView(stackView)
+        contentView.installView(titleStackView)
 
         contentView.installView(
             separatorView,
