@@ -163,16 +163,16 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
         newKeys.forEach { newKey in
             guard
                 let reference = newKey.reference,
-                let inspectorView = newValue[newKey],
+                let layerView = newValue[newKey],
                 let underlyingView = reference.underlyingView
             else {
                 return
             }
 
             underlyingView.installView(
-                inspectorView,
+                layerView,
                 .autoResizingMask,
-                position: reference.canPresentOnTop && inspectorView.canPresentOnTop ? .inFront : .behind
+                position: reference.canPresentOnTop && layerView.shouldPresentOnTop ? .inFront : .behind
             )
         }
     }

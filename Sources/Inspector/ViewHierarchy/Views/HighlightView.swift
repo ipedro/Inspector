@@ -298,7 +298,7 @@ final class HighlightView: LayerView {
             start = (transform: elementNameView.transform, alpha: alpha)
         }
 
-        alpha = start.alpha
+        contentView.alpha = start.alpha
         elementNameView.transform = start.transform
 
         animate(
@@ -306,7 +306,7 @@ final class HighlightView: LayerView {
             delay: delay,
             damping: 0.7,
             animations: {
-                self.alpha = finish.alpha
+                self.contentView.alpha = finish.alpha
                 self.elementNameView.transform = finish.transform
             },
             completion: completion
@@ -371,7 +371,7 @@ private extension HighlightView {
     func setupViews(with hostView: UIView) {
         updateViews()
 
-        installView(elementNameView, .centerX)
+        contentView.installView(elementNameView, .centerX)
 
         verticalAlignmentConstraint.isActive = true
 

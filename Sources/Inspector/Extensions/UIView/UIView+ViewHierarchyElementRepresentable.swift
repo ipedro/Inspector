@@ -90,11 +90,6 @@ extension UIView: ViewHierarchyElementRepresentable {
     }
 
     var canPresentOnTop: Bool {
-        // Avoid breaking UINavigationController large title.
-        if let superViewClassName = superview?._className, superViewClassName == "UIViewControllerWrapperView" {
-            return true
-        }
-
         switch self {
         case is UITextView:
             return true
@@ -124,6 +119,9 @@ extension UIView: ViewHierarchyElementRepresentable {
             className != "UITextEffectsWindow",
             className != "UIEditingOverlayGestureView",
             className != "UIInputSetContainerView",
+
+            // Avoid breaking UINavigationController large title.
+            superViewClassName != "UIViewControllerWrapperView",
 
             // Adding subviews directly to a UIVisualEffectView throws runtime exception.
             self is UIVisualEffectView == false,

@@ -35,6 +35,10 @@ class LayerView: UIImageView, LayerViewProtocol {
 
     var allowsImages = false
 
+    private(set) lazy var contentView = UIStackView.vertical().then {
+        installView($0, priority: .required)
+    }
+
     // MARK: - Setters
 
     override var image: UIImage? {

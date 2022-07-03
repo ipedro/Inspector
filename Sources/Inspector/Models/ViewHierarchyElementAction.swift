@@ -95,9 +95,9 @@ enum ViewHierarchyElementAction: MenuContentProtocol {
                 actions: ElementInspectorPanel.allCases(for: element).map { .inspect(preferredPanel: $0) }
             ),
             .init(
-                title: "Highlight",
+                title: "",
                 image: .layerAction,
-                inline: false,
+                inline: true,
                 actions: ViewHierarchyLayerAction.allCases(for: element).map { .layer(action: $0) }
             ),
             .init(

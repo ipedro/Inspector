@@ -36,6 +36,8 @@ final class WireframeView: LayerView {
         border borderWidth: CGFloat = Inspector.sharedInstance.appearance.wireframeLayerBorderWidth
     ) {
         super.init(frame: frame, element: element, color: borderColor, border: borderWidth)
+
+        isUserInteractionEnabled = true
     }
 
     @available(*, unavailable)
@@ -58,7 +60,21 @@ final class WireframeView: LayerView {
             return
         }
 
-        installView(layoutGuideView)
+        contentView.installView(layoutGuideView)
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+
+        guard case .touches = event?.type else { return }
+
+        delegate?.layerView(
+            self,
+            didSelect: element,
+            withAction: .layer(
+                action: element.containsVisibleHighlightViews ? .hideHighlight : .showHighlight
+            )
+        )
     }
 
     override func layoutSubviews() {
