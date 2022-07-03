@@ -47,8 +47,8 @@ extension UIImage {
     static let closeSymbol: UIImage = .systemIcon("xmark.circle", weight: .regular)!
     static let copySymbol: UIImage = .systemIcon("doc.on.doc", weight: .regular)!
     static let emptyLayerAction: UIImage = .systemIcon("questionmark.diamond", weight: .regular)!
-    static let layerAction: UIImage = .systemIcon("square.stack.3d.up.fill", weight: .regular)!
-    static let layerActionHideAll: UIImage = .systemIcon("square.stack.3d.up.slash.fill", weight: .regular)!
-    static let layerActionShowAll: UIImage = .systemIcon("square.stack.3d.up.badge.a.fill", weight: .regular, prefersHierarchicalColor: false)!
-    static let wireframeAction: UIImage = .systemIcon("square.stack.3d.up", weight: .regular)!
+    static let layerAction: UIImage = .systemIcon("square.stack.3d.down.right.fill", weight: .regular)!
+    static let layerActionHideAll: UIImage = .systemIcon("xmark.circle.fill", weight: .bold)!
+    static let layerActionShowAll: UIImage = .systemIcon("checkmark.circle.fill", weight: .bold)!
+    static let wireframeAction: UIImage = .systemIcon("square.stack.3d.down.right", weight: .regular)!
 }

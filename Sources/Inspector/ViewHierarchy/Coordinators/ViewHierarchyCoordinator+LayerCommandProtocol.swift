@@ -49,20 +49,18 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
             }
         }()
 
-        let layerName: String = {
+        let layerTitle: String = {
             switch layer {
-            case .wireframes where isSelected:
-                return Texts.hide(layer.title)
             case .wireframes:
-                return Texts.show(layer.title)
+                return "Debug View Hierarchy"
             default:
                 return layer.title
             }
         }()
 
         let title: String = {
-            guard let count = count, count > .zero else { return layerName }
-            return "\(layerName) (\(count))"
+            guard let count = count, count > .zero else { return layerTitle }
+            return "\(layerTitle) (\(count))"
         }()
 
         return Command(

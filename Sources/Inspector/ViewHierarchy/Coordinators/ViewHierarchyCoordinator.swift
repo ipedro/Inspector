@@ -142,7 +142,9 @@ extension ViewHierarchyCoordinator {
         }
 
         return [
-            .group(with: wireframes),
+            .group(
+                commands: [wireframes]
+            ),
             .group(
                 title: "Element Queries",
                 commands: allHighlights + highlights

@@ -135,6 +135,22 @@ extension Manager: KeyCommandPresentable {
         )
     }
 
+    private var hideSystemWindows: Command {
+        Command(
+            title: "Show System Windows",
+            icon: .systemIcon("macwindow.on.rectangle"),
+            keyCommandOptions: .none,
+            isSelected: dependencies.configuration.showFullApplicationHierarchy,
+            closure: {
+                Inspector.sharedInstance.configuration.showFullApplicationHierarchy.toggle()
+
+                if Inspector.sharedInstance.configuration.showFullApplicationHierarchy {
+                    Inspector.present()
+                }
+            }
+        )
+    }
+
     private var insectViewHierarchy: CommandsGroups {
         guard let keyWindow = keyWindow else { return [] }
 
@@ -150,31 +166,15 @@ extension Manager: KeyCommandPresentable {
             showFullApplicationHierarchy || ($0.underlyingView as? UIWindow)?.isKeyWindow == true
         }
 
-        return windows
-            .map {
-                var group = inspectCommands(window: $0, from: keyWindow)
+        var commands = windows.map { inspectCommands(window: $0, from: keyWindow) }
 
-                if allWindows.count > windows.count {
-                    group.commands.insert(
-                        .init(
-                            title: "Hide System Windows",
-                            icon: .systemIcon("macwindow.on.rectangle"),
-                            keyCommandOptions: .none,
-                            isSelected: !Inspector.sharedInstance.configuration.showFullApplicationHierarchy,
-                            closure: {
-                                Inspector.sharedInstance.configuration.showFullApplicationHierarchy.toggle()
+        if allWindows.count > windows.count {
+            commands.append(
+                .group(with: hideSystemWindows)
+            )
+        }
 
-                                if Inspector.sharedInstance.configuration.showFullApplicationHierarchy {
-                                    Inspector.present()
-                                }
-                            }
-                        ),
-                        at: .zero
-                    )
-                }
-
-                return group
-            }
+        return commands
     }
 
     private func inspectCommands(window element: ViewHierarchyElementReference, from presenter: UIView) -> CommandsGroup {
