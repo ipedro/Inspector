@@ -57,7 +57,7 @@ final class ElementChildrenPanelViewModel: NSObject {
             element: element,
             parent: parent,
             rootDepth: rootDepth,
-            thumbnailImage: element.iconImage,
+            thumbnailImage: element.cachedIconImage,
             isCollapsed: element.depth > rootDepth
         )
 

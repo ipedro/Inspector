@@ -38,7 +38,7 @@ extension HierarchyInspectorViewModel {
                 subtitle = element.shortElementDescription
                 depth = element.depth
                 self.element = element
-                image = element.iconImage?
+                image = element.cachedIconImage?
                     .resized(Inspector.sharedInstance.appearance.actionIconSize)
             }
         }

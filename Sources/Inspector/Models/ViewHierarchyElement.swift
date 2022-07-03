@@ -230,13 +230,26 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
 
         return rootView.traitCollection
     }
-
-    // MARK: - Cached properties
-
+    
     var iconImage: UIImage? {
-        iconProvider?.resizedIcon(for: underlyingView) ?? store.latest.iconImage
+        iconProvider?.resizedIcon(for: underlyingView)
     }
 
+    // MARK: - Cached properties
+    
+    var cachedIconImage: UIImage? {
+        guard store.latest.isExpired, let rootView = underlyingView else {
+            return store.latest.iconImage
+        }
+
+        let currentIcon = iconProvider?.resizedIcon(for: rootView)
+
+        if currentIcon?.pngData() != store.latest.iconImage?.pngData() {
+            scheduleSnapshot()
+        }
+
+        return currentIcon
+    }
     var isContainer: Bool {
         guard store.latest.isExpired, let rootView = underlyingView else {
             return store.latest.isContainer

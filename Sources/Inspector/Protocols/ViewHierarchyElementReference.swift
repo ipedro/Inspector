@@ -32,6 +32,8 @@ protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyO
     var latestSnapshotIdentifier: UUID { get }
 
     var iconImage: UIImage? { get }
+    
+    var cachedIconImage: UIImage? { get }
 
     var parent: ViewHierarchyElementReference? { get set }
 

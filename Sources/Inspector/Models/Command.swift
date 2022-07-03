@@ -140,7 +140,7 @@ extension Command {
     ) -> Command {
         Command(
             title: displayName ?? element.displayName,
-            icon: icon ?? element.iconImage,
+            icon: icon ?? element.cachedIconImage,
             keyCommandOptions: keyCommandOptions,
             closure: closure
         )

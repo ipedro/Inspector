@@ -72,7 +72,7 @@ final class HierarchyInspectorViewCode: BaseView {
 
     private(set) lazy var tableView = UIKeyCommandTableView().then {
         $0.backgroundColor = .none
-        $0.keyboardDismissMode = .interactive
+        $0.keyboardDismissMode = .onDrag
         $0.rowHeight = UITableView.automaticDimension
         $0.separatorStyle = .none
         if #available(iOS 15.0, *) {

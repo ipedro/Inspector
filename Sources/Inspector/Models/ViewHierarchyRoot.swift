@@ -132,6 +132,8 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
 
     func hasChanges(inRelationTo identifier: UUID) -> Bool { false }
 
+    var cachedIconImage: UIImage? { iconImage }
+    
     var iconImage: UIImage? {
         guard
             let iconName = bundleInfo?.icons?.primaryIcon.files.last,
