@@ -393,11 +393,11 @@ private extension HighlightView {
 
         switch isHighlighted ?? isDragging {
         case true:
-            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha)
+            contentView.backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha)
             borderWidth = 4 / UIScreen.main.scale
 
         case false:
-            backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha * 0.08)
+            contentView.backgroundColor = borderColor?.withAlphaComponent(colorStyle.disabledAlpha * 0.08)
             borderWidth = 2 / UIScreen.main.scale
         }
     }

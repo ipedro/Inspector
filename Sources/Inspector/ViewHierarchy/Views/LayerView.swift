@@ -79,8 +79,8 @@ class LayerView: UIImageView, LayerViewProtocol {
     }
 
     private func updateBorder() {
-        layer.borderColor = borderColor?.cgColor
-        layer.borderWidth = borderWidth
+        contentView.layer.borderColor = borderColor?.cgColor
+        contentView.layer.borderWidth = borderWidth
     }
 
     @available(*, unavailable)
@@ -117,7 +117,7 @@ class LayerView: UIImageView, LayerViewProtocol {
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
 
-        matchCornerRadius(of: superview)
+        contentView.matchCornerRadius(of: superview)
     }
 }
 
