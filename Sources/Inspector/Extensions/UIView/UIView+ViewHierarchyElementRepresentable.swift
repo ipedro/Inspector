@@ -290,6 +290,7 @@ extension NSObject {
             .camelCaseToWords()
             .replacingOccurrences(of: " Kit ", with: "Kit ")
             .removingRegexMatches(pattern: "[A-Z]{2} ", options: .anchored)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     var _superclassName: String? {
