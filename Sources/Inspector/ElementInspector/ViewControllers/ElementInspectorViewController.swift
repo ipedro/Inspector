@@ -380,7 +380,8 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     }
 
     func reloadData() {
-        viewCode.elementDescriptionView.reloadData()
+        title = viewModel.element.summaryInfo.title
+        viewCode.elementDescriptionView.summaryInfo = viewModel.element.summaryInfo
     }
 
     // MARK: - Content Size
