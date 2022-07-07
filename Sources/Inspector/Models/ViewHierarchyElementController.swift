@@ -149,12 +149,12 @@ final class ViewHierarchyElementController: CustomDebugStringConvertible {
     var debugDescription: String {
         String(describing: store.latest)
     }
-    
+
     var cachedIconImage: UIImage? { iconImage }
 
     var iconImage: UIImage? {
         let defaultIcon = iconProvider?.value(for: underlyingViewController)
-        
+
         if underlyingViewController?.tabBarController?.selectedViewController === underlyingViewController {
             return underlyingViewController?.tabBarItem.selectedImage ?? defaultIcon
         }

@@ -53,7 +53,7 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
         super.setup()
 
         tintColor = colorStyle.textColor
-        
+
         textLabel?.font = .preferredFont(forTextStyle: .footnote).bold()
         textLabel?.numberOfLines = 2
 
