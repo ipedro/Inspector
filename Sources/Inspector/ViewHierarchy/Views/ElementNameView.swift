@@ -20,12 +20,21 @@
 
 import UIKit
 
-protocol ElementNameViewDisplayerProtocol: UIView {
-    var elementFrame: CGRect { get }
-}
-
 final class ElementNameView: LayerViewComponent {
     // MARK: - Properties
+
+    private var contentFrame: CGRect = .zero {
+        didSet {
+            guard oldValue != contentFrame else { return }
+            updateViews()
+        }
+    }
+
+    private var contentFrameObserver: NSKeyValueObservation? {
+        didSet {
+            oldValue?.invalidate()
+        }
+    }
 
     enum DisplayMode: Swift.CaseIterable, MenuContentProtocol {
         case auto, iconAndText, text, icon
@@ -44,14 +53,6 @@ final class ElementNameView: LayerViewComponent {
         static func allCases(for element: ViewHierarchyElementReference) -> [DisplayMode] { allCases }
     }
 
-    weak var displayer: ElementNameViewDisplayerProtocol?
-
-    override func willMove(toSuperview newSuperview: UIView?) {
-        super.willMove(toSuperview: newSuperview)
-
-        displayer = newSuperview as? ElementNameViewDisplayerProtocol
-    }
-
     override var tintColor: UIColor! {
         didSet {
             updateColors()
@@ -61,8 +62,24 @@ final class ElementNameView: LayerViewComponent {
     var displayMode: DisplayMode = .auto {
         didSet {
             animate {
-                self.updateContent()
+                self.updateViews()
             }
+        }
+    }
+
+    var name: String? {
+        get { label.text }
+        set {
+            label.text = newValue
+            debounce(#selector(updateViews), delay: .veryShort)
+        }
+    }
+
+    var image: UIImage? {
+        get { imageView.image }
+        set {
+            imageView.image = newValue
+            debounce(#selector(updateViews), delay: .veryShort)
         }
     }
 
@@ -78,7 +95,7 @@ final class ElementNameView: LayerViewComponent {
         $0.textAlignment = .center
     }
 
-    private(set) lazy var imageView = UIImageView().then {
+    private lazy var imageView = UIImageView().then {
         $0.tintColor = contentColor
     }
 
@@ -99,6 +116,17 @@ final class ElementNameView: LayerViewComponent {
         enableRasterization()
     }
 
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+
+        contentFrameObserver = superview?
+            .layer
+            .observe(\.bounds) { [weak self] layer, _ in
+                guard let self = self else { return }
+                self.contentFrame = layer.frame
+            }
+    }
+
     override func setup() {
         super.setup()
 
@@ -109,6 +137,10 @@ final class ElementNameView: LayerViewComponent {
         updateColors()
 
         enableRasterization()
+    }
+
+    deinit {
+        contentFrameObserver = nil
     }
 
     func resetShadow() {
@@ -127,21 +159,9 @@ final class ElementNameView: LayerViewComponent {
         roundedPillView.backgroundColor = tintColor
     }
 
-    private var displayerFrame: CGRect { displayer?.frame ?? bounds }
-
     @objc
-    private func updateContent() {
+    private func updateViews() {
         switch displayMode {
-        case .auto:
-            // ⚠️ important to unhide subviews before calculating layout size below
-            label.isHidden = false
-            imageView.isHidden = imageView.image == nil
-            roundedPillView.layoutIfNeeded()
-            label.isHidden = {
-                let intrinsicSize = systemLayoutSizeFitting(displayerFrame.size)
-                return intrinsicSize.width > displayerFrame.width * 1.3
-            }()
-
         case .iconAndText:
             label.isHidden = false
             imageView.isHidden = false
@@ -153,6 +173,9 @@ final class ElementNameView: LayerViewComponent {
         case .icon:
             label.isHidden = true
             imageView.isHidden = false
+
+        case .auto:
+            layoutIfNeededAndCalculateContentThatFits()
         }
 
         label.alpha = label.isHidden ? 0 : 1
@@ -165,19 +188,21 @@ final class ElementNameView: LayerViewComponent {
         )
     }
 
-    private var isFirstLayoutSubviews = true
+    private func layoutIfNeededAndCalculateContentThatFits() {
+        // 1. Un-hide subviews
+        label.isHidden = name.isNilOrEmpty
+        imageView.isHidden = image == nil
+
+        // 2. Calculate fitting size layout
+        roundedPillView.layoutIfNeeded()
+        let fittingSize = systemLayoutSizeFitting(contentFrame.size)
+
+        // 3. If there is enough space available show the label
+        label.isHidden = !label.text.isNilOrEmpty && fittingSize.width > contentFrame.width * 1.3
+    }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
         roundedPillView.layer.cornerRadius = min(cornerRadius, roundedPillView.frame.height / 2)
-
-        guard isFirstLayoutSubviews else {
-            return
-        }
-
-        isFirstLayoutSubviews = false
-
-        updateContent()
     }
 }

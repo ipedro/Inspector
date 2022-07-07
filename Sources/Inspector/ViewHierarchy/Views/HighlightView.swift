@@ -20,12 +20,6 @@
 
 import UIKit
 
-extension HighlightView: ElementNameViewDisplayerProtocol {
-    var elementFrame: CGRect {
-        superview?.frame ?? frame
-    }
-}
-
 extension HighlightView: DraggableViewProtocol {
     var draggableAreaAdjustedContentInset: UIEdgeInsets {
         (superview as? UIScrollView)?.adjustedContentInset ?? .zero
@@ -80,11 +74,9 @@ final class HighlightView: LayerView {
         }
     }
 
-    var name: String {
-        didSet {
-            elementNameView.label.isHidden = false
-            elementNameView.label.text = name
-        }
+    var name: String? {
+        get { elementNameView.name }
+        set { elementNameView.name = newValue }
     }
 
     let colorScheme: ViewHierarchyColorScheme
@@ -145,7 +137,6 @@ final class HighlightView: LayerView {
         border borderWidth: CGFloat = Inspector.sharedInstance.appearance.highlightLayerBorderWidth
     ) {
         self.colorScheme = colorScheme
-        self.name = name
 
         super.init(
             frame: frame,
@@ -159,6 +150,8 @@ final class HighlightView: LayerView {
         isUserInteractionEnabled = true
 
         shouldPresentOnTop = true
+
+        self.name = name
 
         draggableView.addGestureRecognizer(tapGestureRecognizer)
         draggableView.addGestureRecognizer(panGestureRecognizer)
@@ -341,18 +334,8 @@ final class HighlightView: LayerView {
 //    }
 
     func updateElementName() {
-        name = element.elementName
-
-        if let image = element.iconImage?.resized(CGSize(18)) {
-            if image != elementNameView.imageView.image {
-                elementNameView.imageView.image = image
-                elementNameView.imageView.isSafelyHidden = false
-            }
-        }
-        else {
-            elementNameView.imageView.image = nil
-            elementNameView.imageView.isSafelyHidden = true
-        }
+        elementNameView.name = element.elementName
+        elementNameView.image = element.iconImage?.resized(CGSize(18))
     }
 }
 
