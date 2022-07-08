@@ -135,7 +135,7 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
     }
 
     private(set) lazy var iconContainerView = BaseView().then {
-        $0.backgroundColor = colorStyle.elementIconBackgroundColor
+        $0.backgroundColor = colorStyle.highlightBackgroundColor
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
         $0.installView(iconImageView, .spacing(all: 3), priority: .required)

@@ -76,10 +76,6 @@ enum InspectorColorStyle {
         }.withAlphaComponent(1 / 2)
     }
 
-    var elementIconBackgroundColor: UIColor {
-        backgroundColor.withAlphaComponent(1 / 3)
-    }
-
     var tintColor: UIColor {
         UIColor(hex: 0xBF5AF2)
     }
