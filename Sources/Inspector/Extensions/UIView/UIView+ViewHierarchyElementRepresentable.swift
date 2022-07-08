@@ -161,18 +161,25 @@ extension UIView: ViewHierarchyElementRepresentable {
     }
 
     var displayName: String {
-        if let identifier = prettyAccessibilityIdentifier {
-            return identifier
-        }
+        let prettyName = prettyAccessibilityIdentifier ?? _prettyClassNameWithoutQualifiers
 
-        if
+        guard
             let textElement = self as? TextElement,
-            let textContent = textElement.content?.prefix(30)
-        {
-            return "\"\(textContent)\""
+            let textContent = textElement.content?.replacingOccurrences(of: "\n", with: "\\n")
+        else {
+            return prettyName
         }
 
-        return _prettyClassNameWithoutQualifiers
+        let limit = 20
+
+        let formattedText: String = {
+            guard textContent.count > limit else { return textContent }
+            return textContent
+                .prefix(limit)
+                .appending("...")
+        }()
+
+        return "\(prettyName) - \"\(formattedText)\""
     }
 
     var shortElementDescription: String {
