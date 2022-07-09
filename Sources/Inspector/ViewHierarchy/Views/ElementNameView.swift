@@ -198,7 +198,7 @@ final class ElementNameView: LayerViewComponent {
         let fittingSize = systemLayoutSizeFitting(contentFrame.size)
 
         // 3. If there is enough space available show the label
-        label.isHidden = !label.text.isNilOrEmpty && fittingSize.width > contentFrame.width * 1.3
+        label.isHidden = !label.text.isNilOrEmpty && fittingSize.width > contentFrame.width * 1.15
     }
 
     override func layoutSubviews() {

@@ -277,7 +277,6 @@ private extension UIView {
         case 1:
             return constraintElements.first?.displayName
         case let count:
-            guard let bla = constraintElements.map(\.second).count = 
             return "\(count) Constraints"
         }
     }

@@ -281,12 +281,12 @@ final class HighlightView: LayerView {
         case .none:
             return
         case .appear:
-            delay = TimeInterval(depth) / 10 + .random(in: -.veryShort ... .veryShort)
+            delay = TimeInterval(depth) / 20 + .random(in: -.veryShort ... .veryShort)
             finish = (transform: .identity, alpha: 1)
             start = (transform: initialTransformation, alpha: .zero)
 
         case .dismiss:
-            delay = 10 / TimeInterval(depth) + .random(in: -.short ... .veryShort)
+            delay = 2 / TimeInterval(depth) + .random(in: -.veryShort ... .veryShort)
             finish = (transform: initialTransformation, alpha: .zero)
             start = (transform: elementNameView.transform, alpha: alpha)
         }
@@ -372,7 +372,7 @@ private extension HighlightView {
     private var cgFloatDepth: CGFloat { element.depth.cgFloat }
 
     func updateViews(isHighlighted: Bool? = nil) {
-        elementNameView.tintColor = borderColor
+        elementNameView.tintColor = borderColor?.withAlphaComponent(0.85)
 
         switch isHighlighted ?? isDragging {
         case true:
