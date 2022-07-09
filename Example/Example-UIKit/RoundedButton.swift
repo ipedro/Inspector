@@ -21,7 +21,7 @@
 import Inspector
 import UIKit
 
-final class RoundedButton: UIButton, NonInspectableView {
+final class RoundedButton: UIButton /* , NonInspectableView */ {
     var animateOnTouch = true
 
     var roundCorners: Bool = true {

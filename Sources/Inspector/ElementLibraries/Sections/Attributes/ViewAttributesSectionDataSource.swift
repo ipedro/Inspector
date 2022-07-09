@@ -39,6 +39,9 @@ extension DefaultElementAttributesLibrary {
             case semanticContentAttribute = "Semantic Content"
             case tag = "Tag"
             case accessibilityIdentifier = "Accessibility Identifier"
+            case accessibilityIdentifierFooter
+            case accessibilityLabel = "Accessibility Label"
+            case accessibilityLabelFooter
             case groupInteraction = "Interaction"
             case isUserInteractionEnabled = "User Interaction Enabled"
             case isMultipleTouchEnabled = "Multiple Touch Enabled"
@@ -90,6 +93,18 @@ extension DefaultElementAttributesLibrary {
                     ) { newValue in
                         view.tag = newValue
                     }
+                case .accessibilityLabel:
+                    return .textView(
+                        title: property.rawValue,
+                        placeholder: view.accessibilityLabel?.trimmed ?? property.rawValue,
+                        value: { view.accessibilityLabel?.trimmed }
+                    ) { accessibilityLabel in
+                        view.accessibilityLabel = accessibilityLabel
+                    }
+                case .accessibilityIdentifierFooter:
+                    return .infoNote(icon: .none, text: "An identifier can be used to uniquely identify an element in the scripts you write using the UI Automation interfaces. Using an identifier allows you to avoid inappropriately setting or accessing an element’s accessibility label.")
+                case .accessibilityLabelFooter:
+                    return .infoNote(icon: .none, text: "A succinct label in a localized string that identifies the accessibility element to the user.")
                 case .accessibilityIdentifier:
                     return .textField(
                         title: property.rawValue,

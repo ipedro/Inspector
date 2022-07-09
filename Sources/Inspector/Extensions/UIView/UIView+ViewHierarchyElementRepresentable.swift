@@ -152,16 +152,11 @@ extension UIView: ViewHierarchyElementRepresentable {
     }
 
     var elementName: String {
-        prettyAccessibilityIdentifier ?? _classNameWithoutQualifiers
-    }
-
-    private var prettyAccessibilityIdentifier: String? {
-        guard let subSequence = accessibilityIdentifier?.split(separator: ".").last else { return nil }
-        return String(subSequence)
+        accessibilityIdentifier?.trimmed ?? _classNameWithoutQualifiers
     }
 
     var displayName: String {
-        let prettyName = prettyAccessibilityIdentifier ?? _prettyClassNameWithoutQualifiers
+        let prettyName = accessibilityIdentifier?.trimmed ?? _prettyClassNameWithoutQualifiers
 
         guard
             let textElement = self as? TextElement,
@@ -176,68 +171,85 @@ extension UIView: ViewHierarchyElementRepresentable {
             guard textContent.count > limit else { return textContent }
             return textContent
                 .prefix(limit)
-                .appending("...")
+                .appending("…")
         }()
 
         return "\(prettyName) - \"\(formattedText)\""
     }
 
     var shortElementDescription: String {
-        [classNameDescription,
-         subviewsDescription,
-         positionDescrpition,
-         sizeDescription]
+        ["Class Name: \(_className)",
+         frameDescription,
+         subviewsDescription]
             .compactMap { $0 }
-            .prefix(3)
             .joined(separator: .newLine)
     }
+    
+    var elementDescriptionComponents: [String: String?] { [
+        "Constraints": constraintsDescription,
+        "Issues": issuesDescription?.string(prepending: .newLine),
+        "Accessibility ID": {
+            guard let accessibilityIdentifier = accessibilityIdentifier else { return .none }
+            return "\"\(accessibilityIdentifier)\""
+        }()
+    ] }
 
     var elementDescription: String {
-        [classNameDescription,
-         sizeDescription,
-         positionDescrpition,
-         constraintsDescription,
-         subviewsDescription,
-         issuesDescription?
-             .string(prepending: .newLine)]
-            .compactMap { $0 }
-            .joined(separator: .newLine)
+        let fullDescription = elementDescriptionComponents
+            .keys
+            .sorted(by: <)
+            .reduce(shortElementDescription) { partialResult, key in
+                guard
+                    let value = elementDescriptionComponents[key],
+                    let value = value
+                else { return partialResult }
+                return partialResult
+                    .appending(String.newLine)
+                    .appending("\(key): \(value)")
+            }
+        
+        guard let accessibilityDescription = accessibilityLabel?.trimmed else {
+            return fullDescription
+        }
+        return "\"\(accessibilityDescription)\"\n\n\(fullDescription)"
     }
 }
 
 private extension UIView {
-    var positionDescrpition: String? {
-        let position = [
-            frame.origin.x.toString(prepending: "X:", separator: " "),
-            frame.origin.y.toString(prepending: "Y:", separator: " ")
-        ].joined(separator: " — ")
-        return "Position: \(position)"
-    }
-
     var subviewsDescription: String? {
-        guard isContainer else { return nil }
-
-        let children = children.count == 1 ? "1 Child" : "\(children.count) Children"
-        let subviews = allChildren.count == 1 ? "1 Subview" : "\(allChildren.count) Subviews"
-
-        return "\(children) (\(subviews))"
-    }
-
-    var sizeDescription: String? {
-        let size = [
-            frame.size.width.toString(prepending: "W:", separator: " "),
-            frame.size.height.toString(prepending: "H:", separator: " ")
-        ].joined(separator: " — ")
-
-        return "Size: \(size)"
-    }
-
-    var classNameDescription: String? {
-        guard let superclassName = _superclassName else {
-            return _className
+        guard isContainer else { return .none }
+        
+        let childrenCount = children.count
+        let allChildrenCount = allChildren.count
+        
+        let subviews: String = {
+            switch childrenCount {
+            case 1:
+                return "1 Subview"
+            case let count:
+                return "\(count) Subviews"
+            }
+        }()
+        
+        guard allChildrenCount > childrenCount else {
+            return subviews
         }
+        
+        return "\(subviews) (\(allChildrenCount) Total)"
+    }
 
-        return "\(_className) (\(superclassName))"
+    private static let frameFormatter = NumberFormatter().then {
+        $0.numberStyle = .decimal
+        $0.maximumFractionDigits = 1
+    }
+
+    var frameDescription: String? {
+        ["X: \(Self.frameFormatter.string(from: frame.origin.x)!)",
+         "Y: \(Self.frameFormatter.string(from: frame.origin.y)!)",
+         "—",
+         "W: \(Self.frameFormatter.string(from: frame.size.width)!)",
+         "H: \(Self.frameFormatter.string(from: frame.size.height)!)"]
+        .joined(separator: " ")
     }
 
     var issuesDescription: String? {
@@ -259,13 +271,14 @@ private extension UIView {
     }
 
     var constraintsDescription: String? {
-        let totalCount = constraintElements.count
-
-        if totalCount == .zero {
-            return nil
-        }
-        else {
-            return totalCount == 1 ? "1 Constraint" : "\(totalCount) Constraints"
+        switch constraintElements.count {
+        case .zero:
+            return .none
+        case 1:
+            return constraintElements.first?.displayName
+        case let count:
+            guard let bla = constraintElements.map(\.second).count = 
+            return "\(count) Constraints"
         }
     }
 }

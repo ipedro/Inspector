@@ -32,16 +32,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
         guard let _ = (scene as? UIWindowScene) else { return }
-        Inspector.setConfiguration(
-            .config(
-                // enableLayoutSubviewsSwizzling: true,
-                nonInspectableClassNames: [
-                    "UITabBarButton",
-                    "UITabBarButtonLabel",
-                    "UITabBarSwappableImageView"
-                ]
-            )
-        )
+//        Inspector.setConfiguration(
+//            .config(
+//                // enableLayoutSubviewsSwizzling: true,
+//                nonInspectableClassNames: [
+//                    "UITabBarButton",
+//                    "UITabBarButtonLabel",
+//                    "UITabBarSwappableImageView"
+//                ]
+//            )
+//        )
 
         Inspector.setCustomization(self)
 

@@ -72,18 +72,22 @@ public struct InspectorConfiguration {
     }
 
     let defaultLayers: [ViewHierarchyLayer] = [
-        .accessibile,
+        .accessibilityElements,
+        .accessibilityIdentifiers,
+        .accessibilityLabels,
         .activityIndicators,
         .collectionViewCells,
         .controls,
         .images,
         .maps,
+        .navigationBars,
         .progressIndicators,
         .scrollViews,
         .segmentedControls,
         .stackViews,
         .staticTexts,
         .switches,
+        .tabBars,
         .tableViewCells,
         .textInputs,
         .webViews

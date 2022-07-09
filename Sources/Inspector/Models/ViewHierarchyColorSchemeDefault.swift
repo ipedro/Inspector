@@ -22,28 +22,19 @@ import UIKit
 
 extension ViewHierarchyColorScheme {
     static let `default`: ViewHierarchyColorScheme = .init { view in
-        guard
-            let element = view._highlightView?.element,
-            element.isUserInteractionEnabled
-        else {
-            return .systemGray
-        }
-
         if view._layerView?.element is ViewHierarchyElementController {
-            return .darkGray
+            return .systemOrange
         }
 
-        if view.isSystemContainer {
-            return UIColor.systemGreen.darker()
-        }
+        if view.isSystemContainer {return .systemRed.darker() }
 
         switch view {
         case let control as UIControl:
-            return control.isEnabled ? .systemPurple : .systemGray
+            return .systemPurple
 
-        case is UIStackView:
-            return .systemBlue
-
+        case is UIImageView:
+            return .darkGray
+            
         case is UITableView,
              is UICollectionView:
             return .systemYellow
@@ -52,6 +43,9 @@ extension ViewHierarchyColorScheme {
              is UICollectionViewCell:
             return .systemYellow.darker()
 
+        case is UIStackView:
+            return .systemBlue
+            
         default:
             return .systemTeal
         }

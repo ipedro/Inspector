@@ -111,6 +111,12 @@ final class TextViewControl: BaseFormControl {
 
         updateViews()
     }
+    
+    override var tintColor: UIColor! {
+        didSet {
+            textView.tintColor = tintColor
+        }
+    }
 
     private let aspectRatio: CGFloat = 3 / 5
 
@@ -123,19 +129,15 @@ final class TextViewControl: BaseFormControl {
         }
     }
 
-    var hasLongText: Bool {
-        let trimmedString = String((value ?? "").filter { " \n\t\r".contains($0) == false })
-
-        return trimmedString.count > 320
-    }
-
     func updateViews() {
         placeholderLabel.text = placeholder
         placeholderLabel.isHidden = placeholder.isNilOrEmpty || !value.isNilOrEmpty
+        
         textView.text = value
+        textView.textContainer.maximumNumberOfLines = 10
 
-        isScrollEnabled = hasLongText
-        accessoryControl.directionalLayoutMargins = !hasLongText ? .zero : .init(horizontal: .zero, vertical: elementInspectorAppearance.verticalMargins)
+        isScrollEnabled = false // hasLongText
+        accessoryControl.directionalLayoutMargins = /*!hasLongText ? .zero : */ .init(horizontal: .zero, vertical: elementInspectorAppearance.verticalMargins)
     }
 
     override var canBecomeFirstResponder: Bool {
@@ -167,10 +169,10 @@ final class TextViewControl: BaseFormControl {
 
         if let range = textView.selectedTextRange {
             let copySelectionAction = UIAction(
-                title: "Copy selection",
+                title: "Copy Selection",
                 image: .copySymbol,
                 identifier: nil,
-                discoverabilityTitle: "Copy selection",
+                discoverabilityTitle: "Copy Selection",
                 handler: { [weak self] _ in
                     guard let self = self else { return }
                     UIPasteboard.general.string = self.textView.text(in: range)
@@ -180,10 +182,10 @@ final class TextViewControl: BaseFormControl {
         }
 
         let copyAllAction = UIAction(
-            title: "Copy all content",
+            title: "Copy All Content",
             image: .copySymbol,
             identifier: nil,
-            discoverabilityTitle: "Copy all content",
+            discoverabilityTitle: "Copy All Content",
             handler: { [weak self] _ in
                 guard let self = self else { return }
                 UIPasteboard.general.string = self.textView.text

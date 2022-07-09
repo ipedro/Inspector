@@ -339,11 +339,11 @@ extension ViewHierarchyElementController: ViewHierarchyElementReference {
 
     var elementDescription: String {
         [
-            className,
-            superclassName,
-            "\(underlyingView?.allChildren.count ?? .zero) Subviews"
+            "Class Name: \(className)",
+            "",
+            "View:",
+            underlyingView?.elementDescription ?? ""
         ]
-        .compactMap { $0 }
         .joined(separator: .newLine)
     }
 

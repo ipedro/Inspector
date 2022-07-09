@@ -57,11 +57,16 @@ final class NoteControl: BaseControl {
         super.init(frame: frame)
     }
 
-    private lazy var imageView = UIImageView(image: icon?.image).then {
-        $0.isHidden = icon == nil
-        $0.tintColor = icon?.color
+    private lazy var imageView = UIImageView(
+        image: icon?.image?.resized(.regularIconSize)
+    ).then {
+        guard let icon = icon else {
+            $0.isHidden = true
+            return
+        }
+
+        $0.tintColor = icon.color
         $0.widthAnchor.constraint(equalToConstant: CGSize.regularIconSize.width).isActive = true
-        $0.heightAnchor.constraint(equalToConstant: CGSize.regularIconSize.height).isActive = true
     }
 
     private lazy var header = SectionHeader(
@@ -85,10 +90,9 @@ final class NoteControl: BaseControl {
 
         contentView.alignment = .top
 
-        contentView.spacing = .zero
+        contentView.spacing = 5
 
         contentView.directionalLayoutMargins.update(
-            leading: 5,
             bottom: elementInspectorAppearance.horizontalMargins
         )
 
