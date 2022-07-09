@@ -42,7 +42,7 @@ extension DefaultElementAttributesLibrary {
         }
 
         var title: String {
-            kind.description.string(appending: "Appearance", separator: " ")
+            kind.description.string(appending: "Appearance")
         }
 
         private enum Property: String, Swift.CaseIterable {

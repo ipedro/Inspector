@@ -179,7 +179,7 @@ extension LayoutConstraintElement {
 
         return [
             type.description,
-            priority?.description.string(prepending: "(", appending: ")")
+            priority?.description.string(prepending: "(", appending: ")", separator: "")
         ]
         .compactMap { $0 }
         .joined(separator: " ")

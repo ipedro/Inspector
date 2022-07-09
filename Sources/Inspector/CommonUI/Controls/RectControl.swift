@@ -49,10 +49,10 @@ final class RectControl: BaseFormControl {
 
     override var title: String? {
         didSet {
-            xStepper.title = "X".string(prepending: title, separator: " ")
-            yStepper.title = "Y".string(prepending: title, separator: " ")
-            widthStepper.title = "Width".string(prepending: title, separator: " ")
-            heightStepper.title = "Height".string(prepending: title, separator: " ")
+            xStepper.title = "X".string(prepending: title)
+            yStepper.title = "Y".string(prepending: title)
+            widthStepper.title = "Width".string(prepending: title)
+            heightStepper.title = "Height".string(prepending: title)
         }
     }
 

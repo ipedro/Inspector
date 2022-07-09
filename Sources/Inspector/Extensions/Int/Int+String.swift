@@ -21,7 +21,7 @@
 import UIKit
 
 extension Int {
-    func toString(prepending: String? = nil, appending: String? = nil, separator: String = "") -> String {
-        String(self).string(prepending: prepending, appending: appending, separator: separator)
+    func toString() -> String {
+        String(self)
     }
 }

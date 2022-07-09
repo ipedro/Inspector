@@ -46,8 +46,8 @@ final class PointControl: StepperPairControl<CGFloat> {
 
     override var title: String? {
         didSet {
-            firstSubtitle = "X".string(prepending: title, separator: " ")
-            secondSubtitle = "Y".string(prepending: title, separator: " ")
+            firstSubtitle = "X".string(prepending: title)
+            secondSubtitle = "Y".string(prepending: title)
         }
     }
 

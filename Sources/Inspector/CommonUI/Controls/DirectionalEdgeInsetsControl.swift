@@ -49,10 +49,10 @@ final class DirectionalEdgeInsetsControl: BaseFormControl {
 
     override var title: String? {
         didSet {
-            topStepper.title = "Top".string(prepending: title, separator: " ")
-            leadingStepper.title = "Leading".string(prepending: title, separator: " ")
-            bottomStepper.title = "Bottom".string(prepending: title, separator: " ")
-            trailingStepper.title = "Trailing".string(prepending: title, separator: " ")
+            topStepper.title = "Top".string(prepending: title)
+            leadingStepper.title = "Leading".string(prepending: title)
+            bottomStepper.title = "Bottom".string(prepending: title)
+            trailingStepper.title = "Trailing".string(prepending: title)
         }
     }
 

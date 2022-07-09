@@ -49,10 +49,10 @@ final class EdgeInsetsControl: BaseFormControl {
 
     override var title: String? {
         didSet {
-            topStepper.title = "Top".string(prepending: title, separator: " ")
-            leftStepper.title = "Leading".string(prepending: title, separator: " ")
-            bottomStepper.title = "Bottom".string(prepending: title, separator: " ")
-            rightStepper.title = "Trailing".string(prepending: title, separator: " ")
+            topStepper.title = "Top".string(prepending: title)
+            leftStepper.title = "Leading".string(prepending: title)
+            bottomStepper.title = "Bottom".string(prepending: title)
+            rightStepper.title = "Trailing".string(prepending: title)
         }
     }
 

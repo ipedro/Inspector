@@ -46,8 +46,8 @@ final class OffsetControl: StepperPairControl<CGFloat> {
 
     override var title: String? {
         didSet {
-            firstSubtitle = "Horizontal".string(prepending: title, separator: " ")
-            secondSubtitle = "Vertical".string(prepending: title, separator: " ")
+            firstSubtitle = "Horizontal".string(prepending: title)
+            secondSubtitle = "Vertical".string(prepending: title)
         }
     }
 

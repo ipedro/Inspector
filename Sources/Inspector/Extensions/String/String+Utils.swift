@@ -22,6 +22,7 @@ import UIKit
 
 extension String {
     static let newLine = "\n"
+    static let singleSpace = " "
 
     public static let systemFontFamilyName = "System Font"
 
@@ -30,8 +31,14 @@ extension String {
         return trimmedString.isEmpty ? .none : trimmedString
     }
 
-    func string(prepending: String? = .none, appending: String? = .none, separator: String = "") -> String {
-        [prepending, self, appending].compactMap { $0 }.joined(separator: separator)
+    func string(prepending: String? = .none, appending: String? = .none, separator: String? = .singleSpace) -> String {
+        [prepending,
+         self,
+         appending]
+            .compactMap { $0 }
+            .joined(
+                separator: separator ?? .init()
+            )
     }
 
     func camelCaseToWords() -> String {

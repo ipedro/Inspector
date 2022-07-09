@@ -46,8 +46,8 @@ final class SizeControl: StepperPairControl<CGFloat> {
 
     override var title: String? {
         didSet {
-            firstSubtitle = "Width".string(prepending: title, separator: " ")
-            secondSubtitle = "Height".string(prepending: title, separator: " ")
+            firstSubtitle = "Width".string(prepending: title)
+            secondSubtitle = "Height".string(prepending: title)
         }
     }
 
