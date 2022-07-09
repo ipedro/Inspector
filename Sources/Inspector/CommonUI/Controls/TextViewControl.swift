@@ -46,7 +46,7 @@ final class TextViewControl: BaseFormControl {
     private lazy var placeholderLabel = UILabel(
         .font(textView.font!),
         .numberOfLines(.zero),
-        .textColor(colorStyle.secondaryTextColor)
+        .textColor(colorStyle.tertiaryTextColor)
     )
 
     private(set) lazy var accessoryControl = AccessoryControl().then {
@@ -111,7 +111,7 @@ final class TextViewControl: BaseFormControl {
 
         updateViews()
     }
-    
+
     override var tintColor: UIColor! {
         didSet {
             textView.tintColor = tintColor
