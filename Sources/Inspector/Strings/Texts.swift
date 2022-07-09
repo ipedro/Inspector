@@ -83,10 +83,6 @@ enum Texts {
         "Disable \(something)"
     }
 
-    static func show(_ something: String) -> String {
-        "Show \(something)"
-    }
-
     static func hide(_ something: String) -> String {
         "Hide \(something)"
     }

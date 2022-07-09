@@ -26,7 +26,7 @@ extension ViewHierarchyColorScheme {
             return .systemOrange
         }
 
-        if view.isSystemContainer {return .systemRed.darker() }
+        if view.isSystemContainer { return .systemRed.darker() }
 
         switch view {
         case let control as UIControl:
@@ -34,7 +34,7 @@ extension ViewHierarchyColorScheme {
 
         case is UIImageView:
             return .darkGray
-            
+
         case is UITableView,
              is UICollectionView:
             return .systemYellow
@@ -45,7 +45,7 @@ extension ViewHierarchyColorScheme {
 
         case is UIStackView:
             return .systemBlue
-            
+
         default:
             return .systemTeal
         }

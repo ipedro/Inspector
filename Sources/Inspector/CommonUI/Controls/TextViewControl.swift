@@ -132,12 +132,12 @@ final class TextViewControl: BaseFormControl {
     func updateViews() {
         placeholderLabel.text = placeholder
         placeholderLabel.isHidden = placeholder.isNilOrEmpty || !value.isNilOrEmpty
-        
+
         textView.text = value
         textView.textContainer.maximumNumberOfLines = 10
 
         isScrollEnabled = false // hasLongText
-        accessoryControl.directionalLayoutMargins = /*!hasLongText ? .zero : */ .init(horizontal: .zero, vertical: elementInspectorAppearance.verticalMargins)
+        accessoryControl.directionalLayoutMargins = /*! hasLongText ? .zero : */ .init(horizontal: .zero, vertical: elementInspectorAppearance.verticalMargins)
     }
 
     override var canBecomeFirstResponder: Bool {
