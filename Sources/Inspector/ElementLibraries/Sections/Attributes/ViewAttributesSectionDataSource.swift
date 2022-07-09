@@ -97,7 +97,7 @@ extension DefaultElementAttributesLibrary {
                     return .textView(
                         title: property.rawValue,
                         placeholder: view.accessibilityLabel?.trimmed ?? property.rawValue,
-                        value: { view.accessibilityLabel?.trimmed }
+                        value: { view.accessibilityLabel }
                     ) { accessibilityLabel in
                         view.accessibilityLabel = accessibilityLabel
                     }
@@ -109,9 +109,9 @@ extension DefaultElementAttributesLibrary {
                     return .textField(
                         title: property.rawValue,
                         placeholder: view.accessibilityIdentifier?.trimmed ?? property.rawValue,
-                        value: { view.accessibilityIdentifier?.trimmed }
+                        value: { view.accessibilityIdentifier }
                     ) { accessibilityIdentifier in
-                        view.accessibilityIdentifier = accessibilityIdentifier?.trimmed
+                        view.accessibilityIdentifier = accessibilityIdentifier
                         view._highlightView?.updateElementName()
                     }
                 case .groupInteraction:
