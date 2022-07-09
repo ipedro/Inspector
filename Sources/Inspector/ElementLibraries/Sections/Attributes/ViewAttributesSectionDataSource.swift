@@ -38,6 +38,7 @@ extension DefaultElementAttributesLibrary {
             case contentMode = "Content Mode"
             case semanticContentAttribute = "Semantic Content"
             case tag = "Tag"
+            case accessibilityGroup = "Accessibility"
             case accessibilityIdentifier = "Accessibility Identifier"
             case accessibilityIdentifierFooter
             case accessibilityLabel = "Accessibility Label"
@@ -114,7 +115,7 @@ extension DefaultElementAttributesLibrary {
                         view.accessibilityIdentifier = accessibilityIdentifier
                         view._highlightView?.updateElementName()
                     }
-                case .groupInteraction:
+                case .groupInteraction, .accessibilityGroup:
                     return .group(title: property.rawValue)
 
                 case .isUserInteractionEnabled:
