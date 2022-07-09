@@ -146,8 +146,8 @@ public extension ViewHierarchyLayer {
     /// Highlights all system containers
     static let systemContainers = Inspector.ViewHierarchyLayer(name: "System Containers", showLabels: true, allowsInternalViews: true, allowsSystemContainers: true) { $0._isSystemContainer }
     /// Highlights views with a valid UI Automation identifier
-    static let accessibilityIdentifiers = Inspector.ViewHierarchyLayer(name: "Contains Accessibility Identifier") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == false }
-    static let accessibilityLabels = Inspector.ViewHierarchyLayer(name: "Contains Accessibility Label") { $0.accessibilityLabel?.trimmed.isNilOrEmpty == false }
+    static let accessibilityIdentifiers = Inspector.ViewHierarchyLayer(name: "Accessibility Identifier") { $0.accessibilityIdentifier?.trimmed.isNilOrEmpty == false }
+    static let accessibilityLabels = Inspector.ViewHierarchyLayer(name: "Accessibility Label") { $0.accessibilityLabel?.trimmed.isNilOrEmpty == false }
     static let accessibilityElements = Inspector.ViewHierarchyLayer(name: "Accessibility Elements") { $0.isAccessibilityElement }
     static let navigationBars = Inspector.ViewHierarchyLayer(name: "Navigation Bars") { $0 is UINavigationBar }
     static let tabBars = Inspector.ViewHierarchyLayer(name: "Tab Bars") { $0 is UITabBar }
