@@ -29,12 +29,10 @@ public extension InspectorConfiguration {
 
         public var allLayersToggleInput = String(0)
 
-        private var presentationOptions: UIKeyCommand.Options {
-            .discoverabilityTitle(
-                title: Texts.presentInspector,
-                key: .control(.shift(.key("0")))
-            )
-        }
+        public var presentationOptions = KeyCommandOptions(
+            input: "0",
+            modifierFlags: [.control, .shift]
+        )
 
         public var presentationSettings = KeyCommandOptions(
             input: "1",
@@ -45,11 +43,12 @@ public extension InspectorConfiguration {
             public var input: String
             public var modifierFlags: UIKeyModifierFlags
 
-            var options: UIKeyCommand.Options {
-                .discoverabilityTitle(
-                    title: Texts.presentInspector,
-                    key: .init(input: input, modifierFlags: modifierFlags)
-                )
+            public init(
+                input: String,
+                modifierFlags: UIKeyModifierFlags
+            ) {
+                self.input = input
+                self.modifierFlags = modifierFlags
             }
         }
     }

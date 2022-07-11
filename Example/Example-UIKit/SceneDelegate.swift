@@ -21,7 +21,6 @@
 import Inspector
 import SafariServices
 import UIKit
-@_implementationOnly import UIKitOptions
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -115,7 +114,8 @@ extension SceneDelegate: InspectorCustomizationProviding {
                     Inspector.Command(
                         title: "Open Repository...",
                         icon: .hierarchical(systemName: "safari"),
-                        keyCommandOptions: .control(.shift(.key("g"))),
+                        keyInput: "g",
+                        modifierFlags: [.control, .shift],
                         closure: {
                             let safariViewController = SFSafariViewController(
                                 url: .init(string: "https://github.com/ipedro/Inspector")!
@@ -131,7 +131,8 @@ extension SceneDelegate: InspectorCustomizationProviding {
                     Inspector.Command(
                         title: "Reset App",
                         icon: .hierarchical(systemName: "arrow.3.trianglepath"),
-                        keyCommandOptions: .control(.shift(.key("r"))),
+                        keyInput: "r",
+                        modifierFlags: [.control, .shift],
                         closure: {
                             let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                             let initialViewController = mainStoryboard.instantiateInitialViewController()

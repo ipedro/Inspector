@@ -51,7 +51,6 @@ extension Manager: KeyCommandPresentable {
         return Command(
             title: "Slow Animations",
             icon: .systemIcon("tortoise.fill", weight: .regular),
-            keyCommandOptions: .none,
             isSelected: isSlowingAnimations
         ) { [weak self] in
             guard let self = self else { return }
@@ -68,21 +67,20 @@ extension Manager: KeyCommandPresentable {
         let commandGroups = makeCommandGroups(limit: limit)
 
         return commandGroups
-            .map(\.commands)
-            .flatMap { $0 }
+            .flatMap(\.commands)
             .compactMap { command in
-                guard let key = command.keyCommandOptions else { return nil }
+                guard let keyInput = command.keyInput else { return nil }
                 return .init(
                     title: command.title,
                     action: aSelector,
-                    input: key.input,
-                    modifierFlags: key.modifierFlags,
+                    input: keyInput,
+                    modifierFlags: command.modifierFlags,
                     discoverabilityTitle: command.title,
                     attributes: command.isEnabled ? .init() : .disabled,
                     state: command.isSelected ? .on : .off
                 )
             }
-            .sortedByInputKey()
+        // .sortedByInputKey()
     }
 
     private var defaultActions: CommandsGroup {
@@ -101,18 +99,8 @@ extension Manager: KeyCommandPresentable {
     private func makeCommandGroups(limit: Int?) -> CommandsGroups {
         var commandGroups: CommandsGroups = []
         if let userCommandGroups = dependencies.customization?.commandGroups {
-            if
-                userCommandGroups.count == 1,
-                var first = userCommandGroups.first,
-                first.title == defaultActions.title
-            {
-                first.commands.append(contentsOf: defaultActions.commands)
-                commandGroups.append(first)
-            }
-            else {
-                commandGroups.append(contentsOf: userCommandGroups)
-                commandGroups.append(defaultActions)
-            }
+            commandGroups.append(contentsOf: userCommandGroups)
+            commandGroups.append(defaultActions)
         }
         else {
             commandGroups.append(defaultActions)
@@ -139,7 +127,6 @@ extension Manager: KeyCommandPresentable {
         Command(
             title: "Show System Windows",
             icon: .systemIcon("macwindow.on.rectangle"),
-            keyCommandOptions: .none,
             isSelected: dependencies.configuration.showFullApplicationHierarchy,
             closure: {
                 Inspector.sharedInstance.configuration.showFullApplicationHierarchy.toggle()
@@ -214,7 +201,8 @@ extension Manager: KeyCommandPresentable {
             return .none
         }
 
-        let keyCommands: UIKeyCommand.Options = .control(.shift(.key("i")))
+        let keyInput = "i"
+        let modifierFlags: UIKeyModifierFlags = [.control, .shift]
 
         let closure: () -> Void = {
             keyWindow.overrideUserInterfaceStyle = {
@@ -230,14 +218,16 @@ extension Manager: KeyCommandPresentable {
             return .init(
                 title: "Light Mode",
                 icon: .systemIcon("sun.max"),
-                keyCommandOptions: keyCommands,
+                keyInput: keyInput,
+                modifierFlags: modifierFlags,
                 closure: closure
             )
         }
         return .init(
             title: "Dark Mode",
             icon: .systemIcon("moon.stars.fill"),
-            keyCommandOptions: keyCommands,
+            keyInput: keyInput,
+            modifierFlags: modifierFlags,
             closure: closure
         )
     }

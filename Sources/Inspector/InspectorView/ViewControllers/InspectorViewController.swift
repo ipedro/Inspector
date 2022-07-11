@@ -162,17 +162,19 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
     }
 
     private func registerNavigationKeyCommands() {
+        let presentationSettings = Inspector.sharedInstance.configuration.keyCommands.presentationSettings
+
         addKeyCommand(dismissModalKeyCommand(action: #selector(dismissKeyPressed)))
         addKeyCommand(UIKeyCommand(.tab, action: #selector(focusSearchField)))
         addKeyCommand(UIKeyCommand(.arrowDown, action: #selector(setFirstResponderAndSelectFirstRow)))
         addKeyCommand(UIKeyCommand(.arrowUp, action: #selector(setFirstResponderAndSelectPreviousRow)))
         addKeyCommand(
             UIKeyCommand(
-                .discoverabilityTitle(
-                    title: Texts.dismissView,
-                    key: Inspector.sharedInstance.configuration.keyCommands.presentationSettings.options
-                ),
-                action: #selector(finish)
+                title: Texts.dismissView,
+                action: #selector(finish),
+                input: presentationSettings.input,
+                modifierFlags: presentationSettings.modifierFlags,
+                discoverabilityTitle: Texts.dismissView
             )
         )
     }

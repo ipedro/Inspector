@@ -21,6 +21,10 @@
 import UIKit
 
 extension ViewHierarchyCoordinator: LayerCommandProtocol {
+    private var keyCommandSettings: InspectorConfiguration.KeyCommandSettings {
+        Inspector.sharedInstance.configuration.keyCommands
+    }
+
     func availableLayerCommands(for snapshot: ViewHierarchySnapshot) -> [Command] {
         snapshot
             .populatedLayers
@@ -67,7 +71,8 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
         return Command(
             title: title,
             icon: icon,
-            keyCommandOptions: Command.keyCommand(index: index),
+            keyInput: String(index),
+            modifierFlags: keyCommandSettings.layerToggleModifierFlags,
             isSelected: isSelected
         ) { [weak self] in
             guard let self = self else { return }

@@ -30,7 +30,9 @@ public extension Inspector {
 
         public var icon: UIImage?
 
-        public var keyCommandOptions: UIKeyCommand.Options?
+        public var keyInput: String?
+
+        public var modifierFlags: UIKeyModifierFlags
 
         public let isSelected: Bool
 
@@ -43,13 +45,15 @@ public extension Inspector {
         public init(
             title: String,
             icon: UIImage?,
-            keyCommandOptions: UIKeyCommand.Options?,
+            keyInput: String? = .none,
+            modifierFlags: UIKeyModifierFlags = [],
             isSelected: Bool = false,
             closure: Closure?
         ) {
             self.title = title
             self.icon = icon?.resized(.actionIconSize)
-            self.keyCommandOptions = keyCommandOptions
+            self.keyInput = keyInput
+            self.modifierFlags = modifierFlags
             self.isSelected = isSelected
             self.closure = closure
         }
@@ -72,28 +76,17 @@ extension Command {
     }
 
     static func emptyLayer(_ title: String) -> Command {
-        Command(
-            title: title,
-            icon: .emptyLayerAction,
-            keyCommandOptions: nil,
-            closure: nil
-        )
+        Command(title: title, icon: .emptyLayerAction, closure: .none)
     }
 
     static func layer(_ title: String, isSelected: Bool, at index: Int, closure: @escaping Closure) -> Command {
         .init(
             title: title,
             icon: .layerAction,
-            keyCommandOptions: keyCommand(index: index),
+            keyInput: String(index),
+            modifierFlags: keyCommandSettings.layerToggleModifierFlags,
             isSelected: isSelected,
             closure: closure
-        )
-    }
-
-    static func keyCommand(index: Int) -> UIKeyCommand.Options {
-        .init(
-            input: String(index),
-            modifierFlags: keyCommandSettings.layerToggleModifierFlags
         )
     }
 
@@ -101,10 +94,8 @@ extension Command {
         Command(
             title: Texts.select("All"),
             icon: .layerActionShowAll,
-            keyCommandOptions: UIKeyCommand.Options(
-                input: keyCommandSettings.allLayersToggleInput,
-                modifierFlags: keyCommandSettings.layerToggleModifierFlags
-            ),
+            keyInput: keyCommandSettings.allLayersToggleInput,
+            modifierFlags: keyCommandSettings.layerToggleModifierFlags,
             closure: closure
         )
     }
@@ -113,10 +104,8 @@ extension Command {
         Command(
             title: Texts.hide("All"),
             icon: .layerActionHideAll,
-            keyCommandOptions: UIKeyCommand.Options(
-                input: keyCommandSettings.allLayersToggleInput,
-                modifierFlags: keyCommandSettings.layerToggleModifierFlags
-            ),
+            keyInput: keyCommandSettings.allLayersToggleInput,
+            modifierFlags: keyCommandSettings.layerToggleModifierFlags,
             closure: closure
         )
     }
@@ -125,23 +114,25 @@ extension Command {
         Command(
             title: Texts.presentInspector.lowercased(),
             icon: nil,
-            keyCommandOptions: keyCommandSettings.presentationSettings.options
+            keyInput: keyCommandSettings.presentationOptions.input,
+            modifierFlags: keyCommandSettings.presentationOptions.modifierFlags
         ) {
             Inspector.present(animated: animated)
         }
     }
 
-    static func inspectElement(
-        _ element: ViewHierarchyElementReference,
-        displayName: String? = .none,
-        icon: UIImage? = .none,
-        keyCommandOptions: UIKeyCommand.Options? = .none,
-        with closure: @escaping Closure
-    ) -> Command {
+    static func inspectElement(_ element: ViewHierarchyElementReference,
+                               displayName: String? = .none,
+                               icon: UIImage? = .none,
+                               keyInput: String? = .none,
+                               modifierFlags: UIKeyModifierFlags = [],
+                               with closure: @escaping Closure) -> Command
+    {
         Command(
             title: displayName ?? element.displayName,
             icon: icon ?? element.cachedIconImage,
-            keyCommandOptions: keyCommandOptions,
+            keyInput: keyInput,
+            modifierFlags: modifierFlags,
             closure: closure
         )
     }
