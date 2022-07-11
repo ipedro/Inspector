@@ -43,24 +43,16 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
         let icon: UIImage = {
             switch layer {
             case .wireframes:
-                return .wireframeAction
+                let Wireframes = "Wireframes"
+                return isSelected ? Texts.hide("Wireframes") : Texts.show("Wireframes")
             default:
                 return .layerAction
             }
         }()
 
-        let layerTitle: String = {
-            switch layer {
-            case .wireframes:
-                return "Debug View Hierarchy"
-            default:
-                return layer.title
-            }
-        }()
-
         let title: String = {
-            guard let count = count, count > .zero else { return layerTitle }
-            return "\(layerTitle) (\(count))"
+            guard let count = count, count > .zero else { return layer.title }
+            return "\(layer.title) (\(count))"
         }()
 
         return Command(

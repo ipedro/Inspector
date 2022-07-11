@@ -86,6 +86,10 @@ enum Texts {
     static func hide(_ something: String) -> String {
         "Hide \(something)"
     }
+    
+    static func show(_ something: String) -> String {
+        "Show \(something)"
+    }
 
     static func highlighting(_ something: String) -> String {
         "Highlighting \(something)"
