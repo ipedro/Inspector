@@ -177,37 +177,25 @@ extension UIView: ViewHierarchyElementRepresentable {
         return "\(prettyName) - \"\(formattedText)\""
     }
 
-    var shortElementDescription: String {
-        ["Class Name: \(_className)",
-         frameDescription,
-         subviewsDescription]
-            .compactMap { $0 }
-            .joined(separator: .newLine)
+    var shortElementDescription: String { [
+        _className,
+        subviewsDescription,
+        frameDescription
+    ]
+    .compactMap { $0 }
+    .joined(separator: .newLine)
     }
-    
-    var elementDescriptionComponents: [String: String?] { [
-        "Constraints": constraintsDescription,
-        "Issues": issuesDescription?.string(prepending: .newLine),
-        "Accessibility ID": {
-            guard let accessibilityIdentifier = accessibilityIdentifier else { return .none }
-            return "\"\(accessibilityIdentifier)\""
-        }()
-    ] }
 
     var elementDescription: String {
-        let fullDescription = elementDescriptionComponents
-            .keys
-            .sorted(by: <)
-            .reduce(shortElementDescription) { partialResult, key in
-                guard
-                    let value = elementDescriptionComponents[key],
-                    let value = value
-                else { return partialResult }
-                return partialResult
-                    .appending(String.newLine)
-                    .appending("\(key): \(value)")
-            }
-        
+        let fullDescription = [
+            accessibilityIdentifier?.string(prepending: "Accessibility ID: \"", appending: "\""),
+            shortElementDescription,
+            constraintsDescription,
+            issuesDescription?.string(prepending: .newLine)
+        ]
+        .compactMap { $0 }
+        .joined(separator: .newLine)
+
         guard let accessibilityDescription = accessibilityLabel?.trimmed else {
             return fullDescription
         }
@@ -217,25 +205,18 @@ extension UIView: ViewHierarchyElementRepresentable {
 
 private extension UIView {
     var subviewsDescription: String? {
-        guard isContainer else { return .none }
-        
         let childrenCount = children.count
         let allChildrenCount = allChildren.count
-        
-        let subviews: String = {
-            switch childrenCount {
-            case 1:
-                return "1 Subview"
-            case let count:
-                return "\(count) Subviews"
-            }
-        }()
-        
+
+        let description = childrenCount == 1 ? children.first?._className.string(prepending: "Subview:") : "Subviews: \(childrenCount)"
+
+        guard let description = description else { return .none }
+
         guard allChildrenCount > childrenCount else {
-            return subviews
+            return description
         }
-        
-        return "\(subviews) (\(allChildrenCount) Total)"
+
+        return "\(description) (\(allChildrenCount) Total)"
     }
 
     private static let frameFormatter = NumberFormatter().then {
@@ -244,12 +225,9 @@ private extension UIView {
     }
 
     var frameDescription: String? {
-        ["X: \(Self.frameFormatter.string(from: frame.origin.x)!)",
-         "Y: \(Self.frameFormatter.string(from: frame.origin.y)!)",
-         "—",
-         "W: \(Self.frameFormatter.string(from: frame.size.width)!)",
-         "H: \(Self.frameFormatter.string(from: frame.size.height)!)"]
-        .joined(separator: " ")
+        ["Origin: (\(Self.frameFormatter.string(from: frame.origin.x)!), \(Self.frameFormatter.string(from: frame.origin.y)!))",
+         "Size: \(Self.frameFormatter.string(from: frame.size.width)!) x \(Self.frameFormatter.string(from: frame.size.height)!)"]
+            .joined(separator: "  –  ")
     }
 
     var issuesDescription: String? {
@@ -271,14 +249,8 @@ private extension UIView {
     }
 
     var constraintsDescription: String? {
-        switch constraintElements.count {
-        case .zero:
-            return .none
-        case 1:
-            return constraintElements.first?.displayName
-        case let count:
-            return "\(count) Constraints"
-        }
+        guard constraintElements.count > .zero else { return .none }
+        return "Constraints: \(constraintElements.count)"
     }
 }
 

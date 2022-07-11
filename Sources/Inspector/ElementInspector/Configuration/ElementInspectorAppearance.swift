@@ -49,7 +49,7 @@ struct ElementInspectorAppearance: Hashable {
             forTextStyle: {
                 switch relativeDepth {
                 case let depth where depth <= -5:
-                    return .title2
+                    return .title3
                 case -4:
                     return .headline
                 case -3:

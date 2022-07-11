@@ -308,7 +308,10 @@ extension ViewHierarchyElementController: ViewHierarchyElementReference {
     }
 
     var displayName: String {
-        store.latest.prettyClassNameWithoutQualifiers
+        store
+            .latest
+            .prettyClassNameWithoutQualifiers
+            .string(appending: title, separator: " - ")
     }
 
     var canPresentOnTop: Bool {
@@ -334,16 +337,47 @@ extension ViewHierarchyElementController: ViewHierarchyElementReference {
     }
 
     var shortElementDescription: String {
-        elementDescription
+        [
+            className,
+            {
+                guard let title = store.latest.title else {
+                    return .none
+                }
+                return title.string(prepending: "Title:")
+            }(),
+            {
+                guard let children = underlyingViewController?
+                    .children, children.count > .zero
+                else {
+                    return .none
+                }
+
+                if children.count == 1 {
+                    return children.first?._className.string(prepending: "Child:")
+                }
+
+                return children.count
+                    .toString()
+                    .string(prepending: "Children:")
+            }()
+        ]
+        .compactMap { $0 }
+        .joined(separator: .newLine)
     }
 
     var elementDescription: String {
         [
-            "Class Name: \(className)",
-            "",
-            "View:",
-            underlyingView?.elementDescription ?? ""
+            shortElementDescription,
+            {
+                guard let parent = underlyingViewController?.parent else {
+                    return .none
+                }
+                return parent._className.string(prepending: "Parent:")
+            }(),
+            "Presentation: \(store.latest.modalPresentationStyle.description)",
+            "Transition: \(store.latest.modalTransitionStyle.description)"
         ]
+        .compactMap { $0 }
         .joined(separator: .newLine)
     }
 
@@ -747,7 +781,7 @@ extension ViewHierarchyElementController: ViewHierarchyControllerProtocol {
             scheduleSnapshot()
         }
 
-        return viewController.title
+        return viewController.title ?? viewController.tabBarItem.title
     }
 
     var viewRespectsSystemMinimumLayoutMargins: Bool {
