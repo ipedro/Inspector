@@ -72,7 +72,18 @@ struct Content: View {
                 Inspector.toggleAllLayers()
             }
         }
-        .inspect(isPresented: $isInspecting)
+        .inspect(
+            isPresented: $isInspecting,
+            elementIconProvider: .init { view in
+                guard
+                    String(describing: view.classForCoder).contains("View")
+                else {
+                    return .none
+                }
+
+                return UIImage(named: "AppIcon")
+            }
+        )
     }
 }
 

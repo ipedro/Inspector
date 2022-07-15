@@ -57,7 +57,21 @@ enum ViewHierarchyCoordinatorFactory: ViewHierarchyCoordinatorFactoryProtocol {
             }
         }
 
-        var catalog: ViewHierarchyElementCatalog { .init(libraries: libraries, iconProvider: .default) }
+        var catalog: ViewHierarchyElementCatalog {
+            .init(
+                libraries: libraries,
+                iconProvider: .init() { object in
+                    if
+                        let elementIconProvider = customization?.elementIconProvider,
+                        let view = object as? UIView,
+                        let customIcon = elementIconProvider.value(for: view)
+                    {
+                        return customIcon
+                    }
+                    return ViewHierarchyElementIconProvider.default.value(for: object)
+                }
+            )
+        }
 
         var libraries: [ElementInspectorPanel: [InspectorElementLibraryProtocol]] {
             var dictionary: [ElementInspectorPanel: [InspectorElementLibraryProtocol]] = [:]
