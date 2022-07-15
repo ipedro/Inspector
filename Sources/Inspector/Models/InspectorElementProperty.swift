@@ -58,7 +58,7 @@ public enum InspectorElementProperty {
                      selectedIndex: SelectionProvider,
                      handler: SelectionHandler? = .none)
 
-    static func optionsList(title: String,
+    public static func optionsList(title: String,
                             emptyTitle: String = "Unspecified",
                             axis: NSLayoutConstraint.Axis = .horizontal,
                             options: [String],
