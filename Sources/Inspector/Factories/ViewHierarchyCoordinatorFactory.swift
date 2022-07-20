@@ -60,7 +60,7 @@ enum ViewHierarchyCoordinatorFactory: ViewHierarchyCoordinatorFactoryProtocol {
         var catalog: ViewHierarchyElementCatalog {
             .init(
                 libraries: libraries,
-                iconProvider: .init() { object in
+                iconProvider: .init { object in
                     if
                         let elementIconProvider = customization?.elementIconProvider,
                         let view = object as? UIView,

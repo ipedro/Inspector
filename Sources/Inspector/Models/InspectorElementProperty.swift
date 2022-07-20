@@ -48,6 +48,7 @@ public enum InspectorElementProperty {
     case separator
 
     case imagePicker(title: String,
+                     axis: NSLayoutConstraint.Axis = .vertical,
                      image: ImageProvider,
                      handler: ImageHandler? = .none)
 
@@ -163,7 +164,7 @@ extension InspectorElementProperty {
              .optionsList(_, _, _, _, _, .some),
              .textField(_, _, _, _, .some),
              .textView(_, _, _, .some),
-             .imagePicker(_, _, .some),
+             .imagePicker(_, _, _, .some),
              .cgRect(_, _, .some),
              .cgSize(_, _, .some),
              .uiOffset(_, _, .some),

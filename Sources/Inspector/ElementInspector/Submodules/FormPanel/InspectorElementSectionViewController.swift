@@ -207,8 +207,9 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
         case let .infoNote(icon: noteIcon, title: title, text: text):
             return NoteControl(icon: noteIcon, title: title, text: text)
 
-        case let .imagePicker(title: title, image: imageProvider, handler: _):
+        case let .imagePicker(title: title, axis: axis, image: imageProvider, handler: _):
             return ImagePreviewControl(title: title, image: imageProvider()).then {
+                $0.axis = axis
                 $0.delegate = self
             }
 
@@ -332,7 +333,7 @@ extension InspectorElementSectionViewController {
                 case let (.textView(_, _, _, handler), textViewControl as TextViewControl):
                     handler?(textViewControl.value)
 
-                case let (.imagePicker(_, _, handler), imagePicker as ImagePreviewControl):
+                case let (.imagePicker(_, _, _, handler), imagePicker as ImagePreviewControl):
                     handler?(imagePicker.image)
 
                 case let (.cgRect(_, _, handler: handler), cgRectControl as RectControl):
@@ -409,9 +410,10 @@ extension InspectorElementSectionViewController {
                 colorPicker.selectedColor = selectedColorProvider()
                 colorPicker.title = title
 
-            case let (.imagePicker(title: title, image: imageProvider, _), imagePicker as ImagePreviewControl):
+            case let (.imagePicker(title: title, axis: axis, image: imageProvider, _), imagePicker as ImagePreviewControl):
                 imagePicker.image = imageProvider()
                 imagePicker.title = title
+                imagePicker.axis = axis
 
             case let (.switch(title: title, isOn: isOnProvider, _), toggleControl as ToggleControl):
                 toggleControl.isOn = isOnProvider()
