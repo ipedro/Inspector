@@ -93,7 +93,9 @@ class LayerView: UIImageView, LayerViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        matchCornerRadius(of: superview)
+        if let superview = superview {
+            matchCornerRadius(of: superview)
+        }
 
         updateBorder()
     }
@@ -117,14 +119,29 @@ class LayerView: UIImageView, LayerViewProtocol {
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
 
+        guard let superview = superview else { return }
         contentView.matchCornerRadius(of: superview)
+        setContentHuggingPriority(
+            superview.contentHuggingPriority(for: .vertical),
+            for: .vertical
+        )
+        setContentHuggingPriority(
+            superview.contentHuggingPriority(for: .horizontal),
+            for: .horizontal
+        )
+        setContentCompressionResistancePriority(
+            superview.contentCompressionResistancePriority(for: .vertical),
+            for: .vertical
+        )
+        setContentCompressionResistancePriority(
+            superview.contentCompressionResistancePriority(for: .horizontal),
+            for: .horizontal
+        )
     }
 }
 
 extension UIView {
-    func matchCornerRadius(of otherView: UIView?) {
-        guard let otherView = otherView else { return }
-
+    func matchCornerRadius(of otherView: UIView) {
         layer.cornerCurve = otherView.layer.cornerCurve
         layer.maskedCorners = otherView.layer.maskedCorners
         layer.cornerRadius = otherView.layer.cornerRadius
