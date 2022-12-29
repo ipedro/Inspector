@@ -65,9 +65,11 @@ extension UIView: ViewHierarchyElementRepresentable {
         _isSystemContainer
     }
 
+    #if !targetEnvironment(macCatalyst)
     var className: String {
         _className
     }
+    #endif
 
     var classNameWithoutQualifiers: String {
         _classNameWithoutQualifiers
