@@ -19,8 +19,8 @@
 //  SOFTWARE.
 
 import GameController
-@_implementationOnly import UIKeyboardAnimatable
-@_implementationOnly import UIKeyCommandTableView
+internal import UIKeyboardAnimatable
+internal import UIKeyCommandTableView
 import UIKit
 
 protocol InspectorViewControllerDelegate: AnyObject {
@@ -85,10 +85,18 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
         didSet {
             guard oldValue != isObservingTableViewContentSize else { return }
             if isObservingTableViewContentSize {
-                viewCode.tableView.addObserver(self, forKeyPath: .contentSize, options: .new, context: nil)
+                viewCode.tableView.addObserver(
+                    self,
+                    forKeyPath: .contentSize,
+                    options: .new,
+                    context: nil
+                )
             }
             else {
-                viewCode.tableView.removeObserver(self, forKeyPath: .contentSize)
+                viewCode.tableView.removeObserver(
+                    self,
+                    forKeyPath: .contentSize
+                )
             }
         }
     }

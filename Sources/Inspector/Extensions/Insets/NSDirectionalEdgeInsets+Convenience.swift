@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2025 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -20,25 +20,46 @@
 
 import UIKit
 
-extension UIStackView {
+extension NSDirectionalEdgeInsets {
     @inlinable
-    func addArrangedSubviews(_ subviews: UIView...) {
-        subviews.forEach(addArrangedSubview(_:))
+    @_disfavoredOverload
+    init<T>(
+        top: T? = nil,
+        leading: T? = nil,
+        bottom: T? = nil,
+        trailing: T? = nil
+    ) where T: BinaryFloatingPoint {
+        self.init()
+        self.top = CGFloat(top ?? .zero)
+        self.leading = CGFloat(leading ?? .zero)
+        self.bottom = CGFloat(bottom ?? .zero)
+        self.trailing = CGFloat(trailing ?? .zero)
     }
 
     @inlinable
-    func addArrangedSubviews(_ subviews: [UIView]) {
-        subviews.forEach(addArrangedSubview(_:))
+    init<T>(_ insets: T) where T: BinaryFloatingPoint {
+        self.init(top: insets, leading: insets, bottom: insets, trailing: insets)
     }
 
     @inlinable
-    func removeAllArrangedSubviews() {
-        arrangedSubviews.forEach(removeArrangedSubview(_:))
+    @_disfavoredOverload
+    init<T>(horizontal: T? = nil, vertical: T? = nil) where T: BinaryFloatingPoint {
+        self.init(
+            top: vertical,
+            leading: horizontal,
+            bottom: vertical,
+            trailing: horizontal
+        )
     }
 
     @inlinable
-    func replaceArrangedSubviews(with subviews: [UIView]) {
-        removeAllArrangedSubviews()
-        addArrangedSubviews(subviews)
+    var verticalInsets: CGFloat { top + bottom }
+
+    @inlinable
+    var horizontalInsets: CGFloat { leading + trailing }
+
+    @inlinable
+    func edgeInsets() -> UIEdgeInsets {
+        UIEdgeInsets(top: top, left: leading, bottom: bottom, right: trailing)
     }
 }

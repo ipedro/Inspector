@@ -32,11 +32,12 @@ class BaseCardView: BaseView {
         $0.layer.cornerRadius = cornerRadius
     }
 
-    private lazy var stackView = UIStackView.vertical(
-        .arrangedSubviews(containerView),
-        .isLayoutMarginsRelativeArrangement(true),
-        .directionalLayoutMargins(margins)
-    )
+    private lazy var stackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.addArrangedSubview(containerView)
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.directionalLayoutMargins = margins
+    }
 
     var margins: NSDirectionalEdgeInsets = .zero {
         didSet {

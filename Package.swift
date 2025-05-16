@@ -1,4 +1,4 @@
-// swift-tools-version:5.4
+// swift-tools-version:5.10
 
 import PackageDescription
 
@@ -19,9 +19,8 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/ipedro/UIKeyCommandTableView.git", from: "0.3.3"),
+        .package(url: "https://github.com/ipedro/UIKeyCommandTableView.git", from: "1.0.0"),
         .package(url: "https://github.com/ipedro/UIKeyboardAnimatable.git", from: "1.0.0"),
-        .package(url: "https://github.com/ipedro/UIKitOptions.git", from: "0.3.3"),
         .package(url: "https://github.com/ipedro/Coordinator.git", from: "2.1.2")
     ],
     targets: [
@@ -30,7 +29,6 @@ let package = Package(
             dependencies: [
                 "UIKeyCommandTableView",
                 "UIKeyboardAnimatable",
-                "UIKitOptions",
                 "Coordinator"
             ],
             resources: [

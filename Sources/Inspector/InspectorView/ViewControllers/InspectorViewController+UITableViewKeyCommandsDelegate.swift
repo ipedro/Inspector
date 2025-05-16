@@ -18,7 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-@_implementationOnly import UIKeyCommandTableView
+internal import UIKeyCommandTableView
 import UIKit
 
 // MARK: - UITableViewKeyCommandsDelegate

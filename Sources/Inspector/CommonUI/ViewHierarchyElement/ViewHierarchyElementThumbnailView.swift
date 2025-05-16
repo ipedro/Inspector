@@ -71,20 +71,26 @@ class ViewHierarchyElementThumbnailView: BaseView {
 
     // MARK: - Componentns
 
-    private lazy var gridImageView = UIImageView(image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero))
-
-    private lazy var statusContentView = UIStackView.vertical(
-        .directionalLayoutMargins(contentView.directionalLayoutMargins),
-        .spacing(elementInspectorAppearance.verticalMargins / 2),
-        .verticalAlignment(.center)
+    private lazy var gridImageView = UIImageView(
+        image: IconKit.imageOfColorGrid().resizableImage(withCapInsets: .zero)
     )
+
+    private lazy var statusContentView = UIStackView().then {
+        $0.axis = .vertical
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.directionalLayoutMargins = contentView.directionalLayoutMargins
+        $0.spacing = elementInspectorAppearance.verticalMargins / 2
+        $0.alignment = .center
+    }
 
     private lazy var snapshotContainerView = BaseView().then {
         $0.layer.shadowOpacity = Float(colorStyle.disabledAlpha)
         $0.layer.shadowRadius = Self.contentMargins.leading
     }
 
-    static let contentMargins = NSDirectionalEdgeInsets(insets: Inspector.sharedInstance.appearance.elementInspector.horizontalMargins)
+    static let contentMargins = NSDirectionalEdgeInsets(
+        Inspector.sharedInstance.appearance.elementInspector.horizontalMargins
+    )
 
     // MARK: - View Lifecycle
 
@@ -190,12 +196,12 @@ class ViewHierarchyElementThumbnailView: BaseView {
             return
         }
 
-        let label = UILabel(
-            .textStyle(.footnote),
-            .text(message),
-            .textAlignment(.center),
-            .textColor(color)
-        )
+        let label = UILabel().then {
+            $0.font = .preferredFont(forTextStyle: .footnote)
+            $0.text = message
+            $0.textAlignment = .center
+            $0.textColor = color
+        }
 
         statusContentView.addArrangedSubview(label)
 

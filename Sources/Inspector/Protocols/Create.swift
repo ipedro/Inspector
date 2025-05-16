@@ -36,3 +36,5 @@ extension Create where Self: AnyObject {
         return self
     }
 }
+
+extension NSObject: Create {}

@@ -29,16 +29,16 @@ final class HierarchyInspectorTableViewHeaderView: UITableViewHeaderFooterView, 
         $0.isLayoutMarginsRelativeArrangement = true
     }
 
-    private(set) lazy var titleLabel = UILabel(
-        .textStyle(.caption1, traits: .traitBold),
-        .textColor(colorStyle.secondaryTextColor)
-    )
+    private(set) lazy var titleLabel = UILabel().then {
+        $0.font = .preferredFont(forTextStyle: .caption1).bold()
+        $0.textColor = colorStyle.secondaryTextColor
+    }
 
     var title: String? {
         didSet {
             titleLabel.text = title
             titleLabel.isHidden = title.isNilOrEmpty
-            titleStackView.directionalLayoutMargins = title.isNilOrEmpty ? .zero : .init(insets: 16)
+            titleStackView.directionalLayoutMargins = title.isNilOrEmpty ? .zero : .init(16)
         }
     }
 

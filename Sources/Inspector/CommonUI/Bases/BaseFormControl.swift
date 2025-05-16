@@ -24,27 +24,27 @@ class BaseFormControl: BaseControl {
     let titleFont: UIFont = .preferredFont(forTextStyle: .footnote)
 
     private(set) lazy var titleLabel = UILabel().then {
-        $0.font = titleFont.withTraits(.traitBold)
+        $0.font = titleFont.bold()
         $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         $0.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         $0.textColor = colorStyle.textColor
         $0.isHidden = true
     }
 
-    private(set) lazy var contentContainerView = UIStackView.horizontal().then {
+    private(set) lazy var contentContainerView = UIStackView().then {
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.axis = .horizontal
         $0.spacing = defaultSpacing
-        $0.addArrangedSubviews(
-            titleLabel,
-            contentView
-        )
+        $0.addArrangedSubviews(titleLabel, contentView)
     }
 
-    private(set) lazy var containerView = UIStackView.vertical(
-        .arrangedSubviews(contentContainerView),
-        .spacing(defaultSpacing),
-        .isLayoutMarginsRelativeArrangement(true),
-        .directionalLayoutMargins(vertical: defaultSpacing)
-    )
+    private(set) lazy var containerView = UIStackView().then {
+        $0.axis = .vertical
+        $0.addArrangedSubview(contentContainerView)
+        $0.spacing = defaultSpacing
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.directionalLayoutMargins = .init(vertical: defaultSpacing)
+    }
 
     private lazy var separator = SeparatorView(style: .soft)
 

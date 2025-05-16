@@ -27,18 +27,18 @@ final class HierarchyInspectorSearchView: BaseView {
         size: CGSize(19)
     )
 
-    private(set) lazy var textField = KeyPressTextField(
-        .clearButtonMode(.always),
-        .textStyle(.title2),
-        .textColor(colorStyle.textColor),
-        .attributedPlaceholder(
-            NSAttributedString(
-                Texts.searchViews,
-                .foregroundColor(colorStyle.secondaryTextColor),
-                .textStyle(.title2)
-            )
+    private(set) lazy var textField = KeyPressTextField().then {
+        $0.clearButtonMode = .always
+        $0.font = .preferredFont(forTextStyle: .title2)
+        $0.textColor = colorStyle.textColor
+        $0.attributedPlaceholder = NSAttributedString(
+            string: Texts.searchViews,
+            attributes: [
+                .foregroundColor: colorStyle.secondaryTextColor,
+                .font: UIFont.preferredFont(forTextStyle: .title2)
+            ]
         )
-    )
+    }
 
     private(set) lazy var separatorView = SeparatorView(style: .medium, thickness: UIScreen.main.scale)
 

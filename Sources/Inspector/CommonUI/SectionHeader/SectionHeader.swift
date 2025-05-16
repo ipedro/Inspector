@@ -56,9 +56,8 @@ final class SectionHeader: BaseView {
         set { titleLabel.textAlignment = newValue }
     }
 
-    private(set) lazy var titleLabel = UILabel(
-        .textColor(colorStyle.textColor)
-    ).then {
+    private(set) lazy var titleLabel = UILabel().then {
+        $0.textColor = colorStyle.textColor
         $0.numberOfLines = 2
         $0.font = titleFont.font()
         $0.isHidden = $0.text.isNilOrEmpty
@@ -69,9 +68,8 @@ final class SectionHeader: BaseView {
         set { subtitleLabel.textAlignment = newValue }
     }
 
-    private(set) lazy var subtitleLabel = UILabel(
-        .textColor(colorStyle.secondaryTextColor)
-    ).then {
+    private(set) lazy var subtitleLabel = UILabel().then {
+        $0.textColor = colorStyle.secondaryTextColor
         $0.font = subtitleFont.font()
         $0.numberOfLines = 2
         $0.isHidden = $0.text.isNilOrEmpty

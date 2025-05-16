@@ -66,9 +66,11 @@ final class TextFieldControl: BaseFormControl {
                 return
             }
             textField.attributedPlaceholder = NSAttributedString(
-                placeholder,
-                .font(textField.font ?? defaultFont),
-                .foregroundColor(colorStyle.tertiaryTextColor)
+                string: placeholder,
+                attributes: [
+                    .font: textField.font ?? defaultFont,
+                    .foregroundColor: colorStyle.tertiaryTextColor
+                ]
             )
         }
     }

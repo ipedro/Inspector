@@ -82,9 +82,10 @@ class BaseControl: UIControl, InternalViewProtocol, ElementInspectorAppearancePr
 
     open func setup() {}
 
-    private(set) lazy var contentView = UIStackView.horizontal(
-        .spacing(defaultSpacing)
-    ).then {
+    private(set) lazy var contentView = UIStackView().then {
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.axis = .horizontal
+        $0.spacing = defaultSpacing
         installView($0, priority: .required)
     }
 

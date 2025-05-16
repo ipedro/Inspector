@@ -19,7 +19,6 @@
 //  SOFTWARE.
 
 import UIKit
-@_implementationOnly import UIKitOptions
 
 final class StepperControl: BaseFormControl {
     // MARK: - Properties
@@ -69,10 +68,10 @@ final class StepperControl: BaseFormControl {
         $0.addTarget(self, action: #selector(step), for: .valueChanged)
     }
 
-    private lazy var counterLabel = UILabel(
-        .font(titleLabel.font!.withTraits(.traitMonoSpace)),
-        .huggingPriority(.required, for: .horizontal)
-    )
+    private lazy var counterLabel = UILabel().then {
+        $0.font = titleLabel.font!.withTraits(.traitMonoSpace)
+        $0.setContentHuggingPriority(.required, for: .horizontal)
+    }
 
     // MARK: - Init
 

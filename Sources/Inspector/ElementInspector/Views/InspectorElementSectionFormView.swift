@@ -65,7 +65,9 @@ class InspectorElementSectionFormView: BaseView {
 
     // MARK: - Views
 
-    private(set) lazy var formStackView = UIStackView.vertical().then {
+    private(set) lazy var formStackView = UIStackView().then {
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.axis = .vertical
         $0.clipsToBounds = true
     }
 
@@ -79,7 +81,8 @@ class InspectorElementSectionFormView: BaseView {
 
     var header: SectionHeader
 
-    private lazy var headerStackView = UIStackView.horizontal().then {
+    private lazy var headerStackView = UIStackView().then {
+        $0.axis = .horizontal
         $0.isLayoutMarginsRelativeArrangement = true
         $0.alignment = .center
         $0.addArrangedSubview(headerControl)
@@ -91,7 +94,8 @@ class InspectorElementSectionFormView: BaseView {
         set { headerControl.contentView.directionalLayoutMargins = newValue }
     }
 
-    private(set) lazy var headerControl = BaseControl(.translatesAutoresizingMaskIntoConstraints(false)).then {
+    private(set) lazy var headerControl = BaseControl().then {
+        $0.translatesAutoresizingMaskIntoConstraints = false
         $0.addTarget(self, action: #selector(changeState), for: .touchUpInside)
         $0.addTarget(self, action: #selector(headerControlDidChangeState), for: .stateChanged)
 

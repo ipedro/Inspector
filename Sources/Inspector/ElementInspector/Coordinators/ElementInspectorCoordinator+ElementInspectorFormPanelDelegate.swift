@@ -20,6 +20,7 @@
 
 import MobileCoreServices
 import UIKit
+import UniformTypeIdentifiers
 
 extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
@@ -103,15 +104,16 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
                         return
                     }
 
-                    let documentPicker = UIDocumentPickerViewController.forImporting(
-                        .documentTypes(.image),
-                        .asCopy(true),
-                        .documentPickerDelegate(self.documentPicker),
-                        .viewOptions(
-                            .tintColor(Inspector.sharedInstance.configuration.colorStyle.textColor)
-                        )
+                    let documentPicker = UIDocumentPickerViewController(
+                        forOpeningContentTypes: [.image],
+                        asCopy: true
                     ).then {
-                        self.setPopoverModalPresentationStyle(for: $0, from: imagePreviewControl.accessoryControl)
+                        $0.delegate = self.documentPicker
+                        $0.view.tintColor = Inspector.sharedInstance.configuration.colorStyle.textColor
+                        self.setPopoverModalPresentationStyle(
+                            for: $0,
+                            from: imagePreviewControl.accessoryControl
+                        )
                     }
 
                     formPanelViewController.present(documentPicker, animated: true)

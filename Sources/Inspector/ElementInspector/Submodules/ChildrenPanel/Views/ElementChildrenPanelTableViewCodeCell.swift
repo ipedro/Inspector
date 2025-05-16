@@ -19,7 +19,6 @@
 //  SOFTWARE.
 
 import UIKit
-@_implementationOnly import UIKitOptions
 
 protocol ElementChildrenPanelTableViewCodeCellDelegate: AnyObject {
     func elementChildrenPanelTableViewCodeCellDidToggleCollapse(_ cell: ElementChildrenPanelTableViewCodeCell)
@@ -117,9 +116,9 @@ final class ElementChildrenPanelTableViewCodeCell: UITableViewCell, ElementInspe
         elementDescriptionView.toggleCollapse(animated: animated)
     }
 
-    private lazy var customSelectedBackgroundView = UIView(
-        .backgroundColor(colorStyle.softTintColor)
-    )
+    private lazy var customSelectedBackgroundView = UIView().then {
+        $0.backgroundColor = colorStyle.softTintColor
+    }
 
     private func setup() {
         setContentHuggingPriority(.defaultHigh, for: .vertical)

@@ -19,7 +19,6 @@
 //  SOFTWARE.
 
 import UIKit
-@_implementationOnly import UIKitOptions
 
 public extension InspectorConfiguration {
     struct KeyCommandSettings: Hashable {

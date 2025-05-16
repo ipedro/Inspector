@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2025 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -18,27 +18,27 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import AVFoundation
 import UIKit
 
-extension UIStackView {
-    @inlinable
-    func addArrangedSubviews(_ subviews: UIView...) {
-        subviews.forEach(addArrangedSubview(_:))
-    }
+extension UIImage {
+    func resized(_ newSize: CGSize) -> UIImage {
+        guard newSize != size else {
+            return self
+        }
 
-    @inlinable
-    func addArrangedSubviews(_ subviews: [UIView]) {
-        subviews.forEach(addArrangedSubview(_:))
-    }
+        let aspectRect = AVMakeRect(
+            aspectRatio: size,
+            insideRect: CGRect(
+                origin: .zero,
+                size: newSize
+            )
+        )
 
-    @inlinable
-    func removeAllArrangedSubviews() {
-        arrangedSubviews.forEach(removeArrangedSubview(_:))
-    }
+        let renderer = UIGraphicsImageRenderer(size: aspectRect.size)
 
-    @inlinable
-    func replaceArrangedSubviews(with subviews: [UIView]) {
-        removeAllArrangedSubviews()
-        addArrangedSubviews(subviews)
+        return renderer.image { _ in
+            draw(in: CGRect(origin: .zero, size: aspectRect.size))
+        }.withRenderingMode(renderingMode)
     }
 }

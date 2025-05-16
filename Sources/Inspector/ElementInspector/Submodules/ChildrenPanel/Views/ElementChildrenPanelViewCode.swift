@@ -18,21 +18,20 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-@_implementationOnly import UIKeyCommandTableView
+internal import UIKeyCommandTableView
 import UIKit
 
 final class ElementChildrenPanelViewCode: BaseView {
-    private(set) lazy var tableView = UIKeyCommandTableView(
-        .backgroundColor(backgroundColor),
-        .viewOptions(.isOpaque(true)),
-        .tableFooterView(UIView()),
-        .separatorStyle(.none),
-        .contentInset(bottom: elementInspectorAppearance.horizontalMargins)
-    )
+    private(set) lazy var tableView = UIKeyCommandTableView().then {
+        $0.backgroundColor = backgroundColor
+        $0.isOpaque = true
+        $0.tableFooterView = UIView()
+        $0.separatorStyle = .none
+        $0.contentInset = .init(bottom: elementInspectorAppearance.horizontalMargins)
+    }
 
     override func setup() {
         super.setup()
-
         installView(tableView)
     }
 }

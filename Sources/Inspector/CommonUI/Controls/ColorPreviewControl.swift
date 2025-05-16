@@ -48,7 +48,10 @@ final class ColorPreviewControl: BaseFormControl {
         }
     }
 
-    private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapColor))
+    private lazy var tapGestureRecognizer = UITapGestureRecognizer(
+        target: self,
+        action: #selector(tapColor)
+    )
 
     private lazy var colorDisplayControl = ColorDisplayControl().then {
         $0.color = selectedColor
@@ -57,11 +60,11 @@ final class ColorPreviewControl: BaseFormControl {
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor, multiplier: 2).isActive = true
     }
 
-    private lazy var colorDisplayLabel = UILabel(
-        .textStyle(.footnote),
-        .textColor(colorStyle.textColor),
-        .huggingPriority(.defaultHigh, for: .horizontal)
-    )
+    private lazy var colorDisplayLabel = UILabel().then {
+        $0.font = .preferredFont(forTextStyle: .footnote)
+        $0.textColor = colorStyle.textColor
+        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+    }
 
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.addGestureRecognizer(tapGestureRecognizer)
@@ -118,9 +121,10 @@ final class ColorPreviewControl: BaseFormControl {
         delegate?.colorPreviewControlDidTap(self)
     }
 
-    override func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
-                                         configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration?
-    {
+    override func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        configurationForMenuAtLocation location: CGPoint
+    ) -> UIContextMenuConfiguration? {
         let localPoint = convert(location, to: colorDisplayControl)
 
         guard colorDisplayControl.point(inside: localPoint, with: .none) else { return nil }
@@ -158,10 +162,9 @@ extension ColorPreviewControl {
             }
         }
 
-        private lazy var colorBackgroundView = UIView(
-            .backgroundColor(nil),
-            .isUserInteractionEnabled(false)
-        )
+        private lazy var colorBackgroundView = UIView().then {
+            $0.isUserInteractionEnabled = false
+        }
 
         override func setup() {
             super.setup()

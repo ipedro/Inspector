@@ -80,7 +80,11 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
                 guard context.isCancelled else { return }
 
                 indexPathsForSelectedRows.forEach {
-                    self.viewCode.tableView.selectRow(at: $0, animated: false, scrollPosition: .none)
+                    self.viewCode.tableView.selectRow(
+                        at: $0,
+                        animated: false,
+                        scrollPosition: .none
+                    )
                 }
             }
         }

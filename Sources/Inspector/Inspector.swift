@@ -18,8 +18,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-@_implementationOnly import Coordinator
-@_implementationOnly import CoordinatorAPI
+internal import Coordinator
+internal import CoordinatorAPI
 import UIKit
 
 typealias Closure = () -> Void

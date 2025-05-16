@@ -50,7 +50,12 @@ final class NoteControl: BaseControl {
 
     let icon: InspectorElemenPropertyNoteIcon?
 
-    init(icon: InspectorElemenPropertyNoteIcon?, title: String?, text: String?, frame: CGRect = .zero) {
+    init(
+        icon: InspectorElemenPropertyNoteIcon?,
+        title: String?,
+        text: String?,
+        frame: CGRect = .zero
+    ) {
         self.title = title
         self.text = text
         self.icon = icon
@@ -66,7 +71,9 @@ final class NoteControl: BaseControl {
         }
 
         $0.tintColor = icon.color
-        $0.widthAnchor.constraint(equalToConstant: CGSize.regularIconSize.width).isActive = true
+        $0.widthAnchor.constraint(
+            equalToConstant: CGSize.regularIconSize.width
+        ).isActive = true
     }
 
     private lazy var header = SectionHeader(
@@ -98,6 +105,8 @@ final class NoteControl: BaseControl {
 
         contentView.addArrangedSubviews(imageView, header)
 
-        header.heightAnchor.constraint(greaterThanOrEqualTo: imageView.heightAnchor).isActive = true
+        header.heightAnchor.constraint(
+            greaterThanOrEqualTo: imageView.heightAnchor
+        ).isActive = true
     }
 }

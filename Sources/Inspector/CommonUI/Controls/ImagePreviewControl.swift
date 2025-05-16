@@ -68,11 +68,11 @@ final class ImagePreviewControl: BaseFormControl {
         $0.contentMode = .scaleAspectFit
     }
 
-    private lazy var imageNameLabel = UILabel(
-        .textStyle(.footnote),
-        .textColor(colorStyle.textColor),
-        .huggingPriority(.defaultHigh, for: .horizontal)
-    )
+    private lazy var imageNameLabel = UILabel().then {
+        $0.font = .preferredFont(forTextStyle: .footnote)
+        $0.textColor = colorStyle.textColor
+        $0.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+    }
 
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.addGestureRecognizer(tapGestureRecognizer)

@@ -40,13 +40,11 @@ class HierarchyInspectorTableViewCell: UITableViewCell, ElementInspectorAppearan
         detailTextLabel?.textColor = colorStyle.secondaryTextColor
 
         selectedBackgroundView = UIView().then {
-            let colorView = BaseView(
-                .clipsToBounds(true),
-                .backgroundColor(colorStyle.softTintColor),
-                .layerOptions(
-                    .cornerRadius(elementInspectorAppearance.verticalMargins / 2)
-                )
-            )
+            let colorView = BaseView().then {
+                $0.clipsToBounds = true
+                $0.backgroundColor = colorStyle.softTintColor
+                $0.layer.cornerRadius = elementInspectorAppearance.verticalMargins / 2
+            }
 
             $0.installView(
                 colorView,

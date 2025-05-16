@@ -32,19 +32,19 @@ final class LengthMeasurementView: BaseView {
         }
     }
 
-    private lazy var valueLabel = UILabel(
-        .textStyle(.caption2),
-        .textAlignment(.center),
-        .textColor(color)
-    )
+    private lazy var valueLabel = UILabel().then {
+        $0.font = .preferredFont(forTextStyle: .caption2)
+        $0.textAlignment = .center
+        $0.textColor = color
+    }
 
-    private lazy var nameLabel = UILabel(
-        .text(measurementName),
-        .textStyle(.caption2),
-        .textAlignment(.center),
-        .textColor(color),
-        .viewOptions(.isHidden(measurementName.isNilOrEmpty))
-    )
+    private lazy var nameLabel = UILabel().then {
+        $0.text = measurementName
+        $0.font = .preferredFont(forTextStyle: .caption2)
+        $0.textAlignment = .center
+        $0.textColor = color
+        $0.isHidden = measurementName.isNilOrEmpty
+    }
 
     private lazy var arrowView = ArrowView(
         axis: axis,
@@ -52,11 +52,20 @@ final class LengthMeasurementView: BaseView {
         frame: bounds
     )
 
-    private lazy var topAnchorConstraint = contentView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor)
+    private lazy var topConstraint = contentView.topAnchor.constraint(
+        greaterThanOrEqualTo: topAnchor
+    )
 
-    private lazy var leadingAnchorConstraint = contentView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor)
+    private lazy var leadingConstraint = contentView.leadingAnchor.constraint(
+        greaterThanOrEqualTo: leadingAnchor
+    )
 
-    init(axis: NSLayoutConstraint.Axis, color: UIColor, name: String? = nil, frame: CGRect = .zero) {
+    init(
+        axis: NSLayoutConstraint.Axis,
+        color: UIColor,
+        name: String? = nil,
+        frame: CGRect = .zero
+    ) {
         self.axis = axis
         self.color = color
         measurementName = name
@@ -74,7 +83,7 @@ final class LengthMeasurementView: BaseView {
 
         contentView.alignment = .center
 
-        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(insets: 2)
+        contentView.directionalLayoutMargins = .init(2)
 
         contentView.spacing = elementInspectorAppearance.verticalMargins
 
@@ -90,9 +99,9 @@ final class LengthMeasurementView: BaseView {
 
         installView(contentView, .centerXY)
 
-        topAnchorConstraint.isActive = true
+        topConstraint.isActive = true
 
-        leadingAnchorConstraint.isActive = true
+        leadingConstraint.isActive = true
     }
 
     override func layoutSubviews() {
@@ -121,9 +130,9 @@ final class LengthMeasurementView: BaseView {
 }
 
 private extension CGFloat {
-    private static let numberFormatter = NumberFormatter(
-        .numberStyle(.decimal)
-    )
+    private static let numberFormatter = NumberFormatter().then {
+        $0.numberStyle = .decimal
+    }
 
     var formattedString: String? {
         Self.numberFormatter.string(from: NSNumber(value: Float(self)))

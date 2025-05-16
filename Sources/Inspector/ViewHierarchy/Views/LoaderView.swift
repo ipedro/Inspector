@@ -29,14 +29,14 @@ final class LoaderView: LayerViewComponent {
         $0.startAnimating()
     }
 
-    private lazy var checkmarkLabel = UILabel(
-        .text("✓"),
-        .adjustsFontSizeToFitWidth(true),
-        .font(.systemFont(ofSize: 32, weight: .semibold)),
-        .textColor(.white),
-        .textAlignment(.center),
-        .viewOptions(.isHidden(true))
-    )
+    private lazy var checkmarkLabel = UILabel().then {
+        $0.text = "✓"
+        $0.adjustsFontSizeToFitWidth = true
+        $0.font = .systemFont(ofSize: 32, weight: .semibold)
+        $0.textColor = .white
+        $0.textAlignment = .center
+        $0.isHidden = true
+    }
 
     private(set) lazy var highlightView = HighlightView(
         frame: bounds,

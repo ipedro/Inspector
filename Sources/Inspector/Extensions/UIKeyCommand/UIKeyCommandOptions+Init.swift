@@ -19,7 +19,6 @@
 //  SOFTWARE.
 
 import UIKit
-@_implementationOnly import UIKitOptions
 
 extension UIKeyCommand.Options {
     init(input: String, modifierFlags: UIKeyModifierFlags) {

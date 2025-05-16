@@ -23,14 +23,13 @@ import UIKit
 final class TextViewControl: BaseFormControl {
     // MARK: - Properties
 
-    private lazy var textView = UITextView(
-        .backgroundColor(nil),
-        .isScrollEnabled(false),
-        .textColor(colorStyle.textColor),
-        .textStyle(.footnote),
-        .tintColor(colorStyle.tintColor),
-        .delegate(self)
-    ).then {
+    private lazy var textView = UITextView().then {
+        $0.backgroundColor = nil
+        $0.isScrollEnabled = false
+        $0.textColor = colorStyle.textColor
+        $0.font = .preferredFont(forTextStyle: .footnote)
+        $0.tintColor = colorStyle.tintColor
+        $0.delegate = self
         $0.isSelectable = true
 
         let padding = $0.textContainer.lineFragmentPadding
@@ -43,11 +42,11 @@ final class TextViewControl: BaseFormControl {
         )
     }
 
-    private lazy var placeholderLabel = UILabel(
-        .font(textView.font!),
-        .numberOfLines(.zero),
-        .textColor(colorStyle.tertiaryTextColor)
-    )
+    private lazy var placeholderLabel = UILabel().then {
+        $0.font = textView.font!
+        $0.numberOfLines = .zero
+        $0.textColor = colorStyle.tertiaryTextColor
+    }
 
     private(set) lazy var accessoryControl = AccessoryControl().then {
         $0.animateOnTouch = false

@@ -43,10 +43,9 @@ final class OptionListControl: BaseFormControl {
         isEnabled ? colorStyle.textColor : colorStyle.secondaryTextColor
     }
 
-    private lazy var valueLabel = UILabel(
-        .textStyle(.footnote),
-        .textColor(textColor)
-    ).then {
+    private lazy var valueLabel = UILabel().then {
+        $0.font = .preferredFont(forTextStyle: .footnote)
+        $0.textColor = textColor
         $0.allowsDefaultTighteningForTruncation = true
         $0.lineBreakMode = .byTruncatingMiddle
         $0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
@@ -57,7 +56,10 @@ final class OptionListControl: BaseFormControl {
         $0.contentView.addArrangedSubviews(valueLabel, icon)
         $0.contentView.alignment = .center
         $0.contentView.spacing = elementInspectorAppearance.verticalMargins
-        $0.contentView.directionalLayoutMargins.update(top: elementInspectorAppearance.verticalMargins, bottom: elementInspectorAppearance.verticalMargins)
+        $0.contentView.directionalLayoutMargins.update(
+            top: elementInspectorAppearance.verticalMargins,
+            bottom: elementInspectorAppearance.verticalMargins
+        )
     }
 
     // MARK: - Init

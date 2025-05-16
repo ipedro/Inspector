@@ -21,13 +21,14 @@
 import UIKit
 
 class BaseView: UIView, InternalViewProtocol, InspectorAppearanceProviding, ElementInspectorAppearanceProviding {
-    private(set) lazy var contentView = UIStackView.vertical().then {
+    private(set) lazy var contentView = UIStackView().then {
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.axis = .vertical
         installView($0, priority: .required)
     }
 
     override init(frame: CGRect = .zero) {
         super.init(frame: frame)
-
         setup()
     }
 

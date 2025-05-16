@@ -18,7 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-@_implementationOnly import UIKeyCommandTableView
+internal import UIKeyCommandTableView
 import UIKit
 
 protocol HierarchyInspectorViewCodeDelegate: AnyObject {
@@ -99,12 +99,14 @@ final class HierarchyInspectorViewCode: BaseView {
         return blurView
     }()
 
-    private lazy var stackView = UIStackView.vertical(
-        .arrangedSubviews(
+    private lazy var stackView = UIStackView().then {
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.axis = .vertical
+        $0.addArrangedSubviews(
             searchView,
             tableView
         )
-    )
+    }
 
     override func didMoveToWindow() {
         super.didMoveToWindow()

@@ -148,7 +148,9 @@ final class ViewHierarchyElementDescriptionView: BaseView, DataReloadingProtocol
         $0.widthAnchor.constraint(equalTo: $0.heightAnchor).isActive = true
     }
 
-    private(set) lazy var elementIconAndDescriptionLabel = UIStackView.horizontal().then {
+    private(set) lazy var elementIconAndDescriptionLabel = UIStackView().then {
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.axis = .horizontal
         $0.spacing = elementInspectorAppearance.verticalMargins
         $0.addArrangedSubviews(summaryInfoLabel, iconContainerView)
         $0.alignment = .top

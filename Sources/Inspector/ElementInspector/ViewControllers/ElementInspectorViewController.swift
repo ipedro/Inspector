@@ -18,7 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-@_implementationOnly import UIKeyboardAnimatable
+internal import UIKeyboardAnimatable
 import UIKit
 
 enum ElementInspectorDismissReason: Swift.CaseIterable {

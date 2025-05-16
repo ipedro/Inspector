@@ -21,9 +21,11 @@
 import UIKit
 
 protocol LayerViewDelegate: AnyObject {
-    func layerView(_ layerView: LayerViewProtocol,
-                   didSelect element: ViewHierarchyElementReference,
-                   withAction action: ViewHierarchyElementAction)
+    func layerView(
+        _ layerView: LayerViewProtocol,
+        didSelect element: ViewHierarchyElementReference,
+        withAction action: ViewHierarchyElementAction
+    )
 }
 
 class LayerView: UIImageView, LayerViewProtocol {
@@ -35,7 +37,9 @@ class LayerView: UIImageView, LayerViewProtocol {
 
     var allowsImages = false
 
-    private(set) lazy var contentView = UIStackView.vertical().then {
+    private(set) lazy var contentView = UIStackView().then {
+        $0.isLayoutMarginsRelativeArrangement = true
+        $0.axis = .vertical
         installView($0, priority: .required)
     }
 

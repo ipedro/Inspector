@@ -37,7 +37,7 @@ final class IconButton: BaseControl {
         }
 
         fileprivate var layoutMargins: NSDirectionalEdgeInsets {
-            .init(insets: elementInspectorAppearance.verticalMargins / 3)
+            .init(elementInspectorAppearance.verticalMargins / 3)
         }
     }
 
