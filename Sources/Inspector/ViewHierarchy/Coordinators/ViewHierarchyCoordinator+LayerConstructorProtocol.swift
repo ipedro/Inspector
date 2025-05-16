@@ -164,7 +164,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
             guard
                 let reference = newKey.reference,
                 let layerView = newValue[newKey],
-                let underlyingView = reference.underlyingView
+                let underlyingView = reference._underlyingView
             else {
                 return
             }
@@ -172,7 +172,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
             underlyingView.installView(
                 layerView,
                 .autoResizingMask,
-                position: reference.canPresentOnTop && layerView.shouldPresentOnTop ? .inFront : .behind
+                position: reference._canPresentOnTop && layerView.shouldPresentOnTop ? .inFront : .behind
             )
         }
     }
@@ -221,14 +221,14 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
         guard
             highlightViews[key] == nil,
             let reference = key.reference,
-            let rootView = reference.underlyingView
+            let rootView = reference._underlyingView
         else {
             return
         }
 
         let highlightView = HighlightView(
             frame: rootView.bounds,
-            name: rootView.elementName,
+            name: rootView._elementName,
             colorScheme: colorScheme,
             element: reference
         ).then {
@@ -242,7 +242,7 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
         guard
             highlightViews[key] == nil,
             let reference = key.reference,
-            let rootView = reference.underlyingView
+            let rootView = reference._underlyingView
         else {
             return
         }

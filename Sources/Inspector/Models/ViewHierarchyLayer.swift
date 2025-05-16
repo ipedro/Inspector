@@ -38,12 +38,14 @@ public extension Inspector {
 
         var allowsSystemContainers: Bool = false
 
-        @HashableValue public var filter: Filter
+        public var filter: Filter { __filter.wrappedValue }
+
+        @HashableBox var _filter: Filter
 
         // MARK: - Init
 
         public static func layer(name: String, filter: @escaping Filter) -> ViewHierarchyLayer {
-            ViewHierarchyLayer(name: name, filter: filter)
+            ViewHierarchyLayer(name: name, _filter: filter)
         }
 
         // MARK: - Metods
@@ -55,18 +57,18 @@ public extension Inspector {
         func filter(viewHierarchy: [ViewHierarchyElementReference]) -> [ViewHierarchyElementReference] {
             let filteredViews = viewHierarchy.filter {
                 guard
-                    let rootView = $0.underlyingView,
+                    let rootView = $0._underlyingView,
                     rootView.isHidden == false,
                     rootView is NonInspectableView == false
                 else {
                     return false
                 }
 
-                if !allowsInternalViews, $0.isInternalView {
+                if !allowsInternalViews, $0._isInternalView {
                     return false
                 }
 
-                if !allowsSystemContainers, $0.isSystemContainer {
+                if !allowsSystemContainers, $0._isSystemContainer {
                     return false
                 }
 
@@ -80,7 +82,7 @@ public extension Inspector {
                 return filteredViews
 
             case false:
-                return filteredViews.filter { $0.isInternalView == false }
+                return filteredViews.filter { $0._isInternalView == false }
             }
         }
     }
@@ -104,7 +106,7 @@ public extension ViewHierarchyLayer {
     /// Highlights collection views
     static let collectionViews = Inspector.ViewHierarchyLayer(name: "Collection Views") { $0 is UICollectionView }
     /// Highlights all container views
-    static let containerViews = Inspector.ViewHierarchyLayer(name: "Containers", allowsInternalViews: true) { $0.className == "UIView" && $0.children.isEmpty == false }
+    static let containerViews = Inspector.ViewHierarchyLayer(name: "Containers", allowsInternalViews: true) { $0._className == "UIView" && $0.children.isEmpty == false }
     /// Highlights all controls
     static let controls = Inspector.ViewHierarchyLayer(name: "Controls", allowsInternalViews: true) { $0 is UIControl }
     /// Highlights all image views
@@ -120,7 +122,7 @@ public extension ViewHierarchyLayer {
     /// Highlights all segmented controls
     static let segmentedControls = Inspector.ViewHierarchyLayer(name: "Segmented Controls") { $0 is UISegmentedControl }
     /// Highlights all spacer views
-    static let spacerViews = Inspector.ViewHierarchyLayer(name: "Spacers") { $0.className == "UIView" && $0.children.isEmpty }
+    static let spacerViews = Inspector.ViewHierarchyLayer(name: "Spacers") { $0._className == "UIView" && $0.children.isEmpty }
     /// Highlights all stack views
     static let stackViews = Inspector.ViewHierarchyLayer(name: "Stacks", allowsInternalViews: true) { $0 is UIStackView }
     /// Highlights all table view cells
@@ -130,7 +132,7 @@ public extension ViewHierarchyLayer {
     /// Highlights all collection view cells
     static let collectionViewCells = Inspector.ViewHierarchyLayer(name: "Collection Cells") { $0 is UICollectionViewCell }
     /// Highlights all static texts
-    static let staticTexts = Inspector.ViewHierarchyLayer(name: "Static Texts", allowsInternalViews: true) { $0 is UILabel || $0._className == "CGDrawingView" }
+    static let staticTexts = Inspector.ViewHierarchyLayer(name: "Static Texts", allowsInternalViews: true) { $0 is UILabel || $0.__className == "CGDrawingView" }
     /// Highlights all switches
     static let switches = Inspector.ViewHierarchyLayer(name: "Switches") { $0 is UISwitch }
     /// Highlights all table views

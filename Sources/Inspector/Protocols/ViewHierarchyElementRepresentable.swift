@@ -22,49 +22,49 @@ import UIKit
 
 /// A protocol that represents the public interface of a UIView.
 protocol ViewHierarchyElementRepresentable {
-    var canHostContextMenuInteraction: Bool { get }
+    var _canHostContextMenuInteraction: Bool { get }
 
-    var objectIdentifier: ObjectIdentifier { get }
+    var _objectIdentifier: ObjectIdentifier { get }
 
     /// Determines if a view can host an inspector view.
-    var canHostInspectorView: Bool { get }
+    var _canHostInspectorView: Bool { get }
 
-    var isInternalView: Bool { get }
+    var _isInternalView: Bool { get }
 
-    var isSystemContainer: Bool { get }
+    var _isSystemContainer: Bool { get }
 
     /// String representation of the class name.
-    var className: String { get }
+    var _className: String { get }
 
     /// /// String representation of the class name without Generics signature.
-    var classNameWithoutQualifiers: String { get }
+    var _classNameWithoutQualifiers: String { get }
 
     /// If a view has accessibility identifiers the last component will be shown, otherwise shows the class name.
-    var elementName: String { get }
+    var _elementName: String { get }
 
-    var displayName: String { get }
+    var _displayName: String { get }
 
-    var canPresentOnTop: Bool { get }
+    var _canPresentOnTop: Bool { get }
 
     var isUserInteractionEnabled: Bool { get }
 
-    var frame: CGRect { get }
+    var _frame: HashableBox<CGRect> { get }
 
     var accessibilityIdentifier: String? { get }
 
     // MARK: - Issues
 
-    var issues: [ViewHierarchyIssue] { get }
+    var _issues: [ViewHierarchyIssue] { get }
 
     // MARK: - Constraints
 
-    var constraintElements: [LayoutConstraintElement] { get }
+    var _constraintElements: [LayoutConstraintElement] { get }
 
     // MARK: - Description
 
-    var shortElementDescription: String { get }
+    var _shortElementDescription: String { get }
 
-    var elementDescription: String { get }
+    var _elementDescription: String { get }
 
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle { get }
 
@@ -74,5 +74,5 @@ protocol ViewHierarchyElementRepresentable {
 }
 
 extension ViewHierarchyElementRepresentable {
-    var hasIssues: Bool { !issues.isEmpty }
+    var _hasIssues: Bool { !_issues.isEmpty }
 }

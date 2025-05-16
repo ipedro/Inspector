@@ -272,7 +272,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                 return
             }
 
-            transitionContext.containerView.subviews.first(where: { $0.className.contains("DimmingView") })?.isHidden = true
+            transitionContext.containerView.subviews.first(where: { $0._className.contains("DimmingView") })?.isHidden = true
 
             if toView === self.view {
                 // Apply a white UIView as mask to the SOURCE view:

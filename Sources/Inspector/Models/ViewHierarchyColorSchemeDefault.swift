@@ -26,7 +26,7 @@ extension ViewHierarchyColorScheme {
             return .systemOrange
         }
 
-        if view.isSystemContainer { return .systemRed.darker() }
+        if view._isSystemContainer { return .systemRed.darker() }
 
         switch view {
         case let control as UIControl:

@@ -104,7 +104,7 @@ public final class Inspector {
                 let self = self,
                 let sourceView = interaction.view,
                 let viewHierarchy = self.manager?.snapshot.root.viewHierarchy,
-                let element = viewHierarchy.first(where: { $0.underlyingView === interaction.view })
+                let element = viewHierarchy.first(where: { $0._underlyingView === interaction.view })
             else {
                 return .none
             }

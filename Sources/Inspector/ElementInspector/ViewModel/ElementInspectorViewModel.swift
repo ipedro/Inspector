@@ -49,7 +49,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
     var isFullHeightPresentation: Bool = true
 
-    var title: String { element.displayName }
+    var title: String { element._displayName }
 
     var currentPanelIndex: Int {
         guard let index = availablePanels.firstIndex(of: currentPanel) else {
@@ -83,8 +83,8 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
         ViewHierarchyElementSummary(
             iconImage: element.iconImage,
             isContainer: false,
-            subtitle: element.elementDescription,
-            title: element.displayName
+            subtitle: element._elementDescription,
+            title: element._displayName
         )
     }
 }

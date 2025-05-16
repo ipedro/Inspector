@@ -58,7 +58,7 @@ final class ElementChildrenPanelViewModel: NSObject {
             parent: parent,
             rootDepth: rootDepth,
             thumbnailImage: element.cachedIconImage,
-            isCollapsed: element.depth > rootDepth
+            isCollapsed: element._depth > rootDepth
         )
 
         let childrenViewModels: [CellViewModel] = element.children.flatMap { childElement in
@@ -82,7 +82,7 @@ final class ElementChildrenPanelViewModel: NSObject {
 
         children = Self.makeChildViewModels(
             element: rootElement,
-            rootDepth: rootElement.depth
+            rootDepth: rootElement._depth
         )
 
         super.init()

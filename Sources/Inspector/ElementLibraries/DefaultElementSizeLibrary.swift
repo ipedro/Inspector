@@ -82,7 +82,7 @@ enum DefaultElementSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseItera
 
             let element = ViewHierarchyElement(with: referenceView, iconProvider: .default)
 
-            let dataSources = element.constraintElements.map {
+            let dataSources = element._constraintElements.map {
                 LayoutConstraintSizeSectionDataSource(constraint: $0)
             }
 

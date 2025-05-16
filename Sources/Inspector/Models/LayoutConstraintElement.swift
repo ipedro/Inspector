@@ -289,7 +289,7 @@ extension LayoutConstraintElement {
         private var _displayName: String? {
             switch self {
             case let .view(view):
-                return view.weakReference?.elementName
+                return view.weakReference?._elementName
 
             case let .layoutGuide(layoutGuide):
                 if
@@ -297,7 +297,7 @@ extension LayoutConstraintElement {
                     let owningView = reference.owningView
                 {
                     return String(describing: reference.classForCoder)
-                        .replacingOccurrences(of: "UILayoutGuide", with: "\(owningView.elementName) Margins")
+                        .replacingOccurrences(of: "UILayoutGuide", with: "\(owningView._elementName) Margins")
                 }
                 return .none
 

@@ -49,7 +49,7 @@ final class Icon: BaseView {
     }
 
     override var description: String {
-        "\(className) '\(glpyh)'\nsize: \(size) \ncolor: \(String(describing: tintColor))"
+        "\(_className) '\(glpyh)'\nsize: \(size) \ncolor: \(String(describing: tintColor))"
     }
 
     override func setup() {

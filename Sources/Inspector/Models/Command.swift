@@ -23,7 +23,7 @@ import UIKit
 typealias Command = Inspector.Command
 
 public extension Inspector {
-    struct Command: Hashable {
+    struct Command {
         public typealias Closure = () -> Void
 
         public var title: String
@@ -36,7 +36,8 @@ public extension Inspector {
 
         public let isSelected: Bool
 
-        @HashableValue var closure: Closure?
+        @HashableBox
+        var closure: Closure?
 
         var isEnabled: Bool {
             closure != nil
@@ -55,7 +56,7 @@ public extension Inspector {
             self.keyInput = keyInput
             self.modifierFlags = modifierFlags
             self.isSelected = isSelected
-            self.closure = closure
+            _closure = .init(wrappedValue: closure)
         }
     }
 }
@@ -129,7 +130,7 @@ extension Command {
                                with closure: @escaping Closure) -> Command
     {
         Command(
-            title: displayName ?? element.displayName,
+            title: displayName ?? element._displayName,
             icon: icon ?? element.cachedIconImage,
             keyInput: keyInput,
             modifierFlags: modifierFlags,

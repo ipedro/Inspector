@@ -22,39 +22,39 @@ import UIKit
 
 /// A protocol that maps the public properties of a UIViewController.
 protocol ViewHierarchyControllerProtocol {
-    var className: String { get }
-    var classNameWithoutQualifiers: String { get }
-    var additionalSafeAreaInsets: UIEdgeInsets { get }
-    var definesPresentationContext: Bool { get }
-    var disablesAutomaticKeyboardDismissal: Bool { get }
-    var edgesForExtendedLayout: UIRectEdge { get }
-    var editButtonItem: UIBarButtonItem { get }
-    var extendedLayoutIncludesOpaqueBars: Bool { get }
-    var isBeingPresented: Bool { get }
-    var isEditing: Bool { get }
-    var isModalInPresentation: Bool { get }
-    var isSystemContainer: Bool { get }
-    var isViewLoaded: Bool { get }
-    var modalPresentationStyle: UIModalPresentationStyle { get }
-    var modalTransitionStyle: UIModalTransitionStyle { get }
-    var navigationItem: UINavigationItem { get }
-    var nibName: String? { get }
+    var _additionalSafeAreaInsets: HashableBox<UIEdgeInsets> { get }
+    var _className: String { get }
+    var _classNameWithoutQualifiers: String { get }
+    var _definesPresentationContext: Bool { get }
+    var _disablesAutomaticKeyboardDismissal: Bool { get }
+    var _edgesForExtendedLayout: HashableBox<UIRectEdge> { get }
+    var _editButtonItem: UIBarButtonItem { get }
+    var _extendedLayoutIncludesOpaqueBars: Bool { get }
+    var _isBeingPresented: Bool { get }
+    var _isEditing: Bool { get }
+    var _isModalInPresentation: Bool { get }
+    var _isSystemContainer: Bool { get }
+    var _isViewLoaded: Bool { get }
+    var _modalPresentationStyle: UIModalPresentationStyle { get }
+    var _modalTransitionStyle: UIModalTransitionStyle { get }
+    var _navigationItem: UINavigationItem { get }
+    var _nibName: String? { get }
+    var _performsActionsWhilePresentingModally: Bool { get }
+    var _preferredContentSize: HashableBox<CGSize> { get }
+    var _preferredScreenEdgesDeferringSystemGestures: HashableBox<UIRectEdge> { get }
+    var _preferredStatusBarStyle: UIStatusBarStyle { get }
+    var _preferredStatusBarUpdateAnimation: UIStatusBarAnimation { get }
+    var _prefersHomeIndicatorAutoHidden: Bool { get }
+    var _prefersPointerLocked: Bool { get }
+    var _prefersStatusBarHidden: Bool { get }
+    var _providesPresentationContextTransitionStyle: Bool { get }
+    var _restorationClassName: String? { get }
+    var _restorationIdentifier: String? { get }
+    var _restoresFocusAfterTransition: Bool { get }
+    var _shouldAutomaticallyForwardAppearanceMethods: Bool { get }
+    var _systemMinimumLayoutMargins: HashableBox<NSDirectionalEdgeInsets> { get }
+    var _title: String? { get }
+    var _viewRespectsSystemMinimumLayoutMargins: Bool { get }
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle { get }
-    var performsActionsWhilePresentingModally: Bool { get }
-    var preferredContentSize: CGSize { get }
-    var preferredScreenEdgesDeferringSystemGestures: UIRectEdge { get }
-    var preferredStatusBarStyle: UIStatusBarStyle { get }
-    var preferredStatusBarUpdateAnimation: UIStatusBarAnimation { get }
-    var prefersHomeIndicatorAutoHidden: Bool { get }
-    var prefersPointerLocked: Bool { get }
-    var prefersStatusBarHidden: Bool { get }
-    var providesPresentationContextTransitionStyle: Bool { get }
-    var restorationClassName: String? { get }
-    var restorationIdentifier: String? { get }
-    var restoresFocusAfterTransition: Bool { get }
-    var shouldAutomaticallyForwardAppearanceMethods: Bool { get }
-    var systemMinimumLayoutMargins: NSDirectionalEdgeInsets { get }
-    var title: String? { get }
     var traitCollection: UITraitCollection { get }
-    var viewRespectsSystemMinimumLayoutMargins: Bool { get }
 }

@@ -62,7 +62,7 @@ class ViewHierarchyElementKey: Hashable {
     private let viewIdentifier: ObjectIdentifier
 
     init?(reference: ViewHierarchyElementReference) {
-        guard let viewIdentifier = reference.underlyingView?.objectIdentifier else {
+        guard let viewIdentifier = reference._underlyingView?._objectIdentifier else {
             return nil
         }
 

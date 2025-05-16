@@ -21,15 +21,15 @@
 import UIKit
 
 protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyObject {
-    var underlyingObject: NSObject? { get }
+    var _underlyingObject: NSObject? { get }
 
-    var underlyingView: UIView? { get }
+    var _underlyingView: UIView? { get }
 
     var underlyingViewController: UIViewController? { get }
 
     func hasChanges(inRelationTo identifier: UUID) -> Bool
 
-    var latestSnapshotIdentifier: UUID { get }
+    var _latestSnapshotIdentifier: UUID { get }
 
     var iconImage: UIImage? { get }
 
@@ -37,7 +37,7 @@ protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyO
 
     var parent: ViewHierarchyElementReference? { get set }
 
-    var depth: Int { get set }
+    var _depth: Int { get set }
 
     var isCollapsed: Bool { get set }
 
@@ -48,7 +48,7 @@ protocol ViewHierarchyElementReference: ViewHierarchyElementRepresentable & AnyO
 
 extension ViewHierarchyElementReference {
     var inspectorHostableViewHierarchy: [ViewHierarchyElementReference] {
-        viewHierarchy.filter(\.canHostInspectorView)
+        viewHierarchy.filter(\._canHostInspectorView)
     }
 
     var viewHierarchyDescription: String {
@@ -56,10 +56,10 @@ extension ViewHierarchyElementReference {
 
         var components: [String] = [
             "",
-            elementName,
-            String(repeating: "=", count: elementName.count),
+            _elementName,
+            String(repeating: "=", count: _elementName.count),
             "",
-            elementDescription
+            _elementDescription
         ]
 
         guard viewHierarchy.count > 1 else {
@@ -73,16 +73,16 @@ extension ViewHierarchyElementReference {
         components.append("")
 
         for child in viewHierarchy {
-            let indentation = String(repeating: "﹒", count: child.depth - depth)
+            let indentation = String(repeating: "﹒", count: child._depth - _depth)
             let symbol = child.isContainer ? "▾" : "▸"
 
             var childComponents: [String] = [symbol]
 
             if let accessibilityIdentifier = child.accessibilityIdentifier {
-                childComponents.append("\(accessibilityIdentifier) (\(child.className))")
+                childComponents.append("\(accessibilityIdentifier) (\(child._className))")
             }
             else {
-                childComponents.append(child.className)
+                childComponents.append(child._className)
             }
 
             let childDescription = childComponents.joined(separator: " ")
@@ -116,26 +116,26 @@ extension ViewHierarchyElementReference {
         ViewHierarchyElementSummary(
             iconImage: iconImage,
             isContainer: isContainer,
-            subtitle: elementDescription,
-            title: displayName
+            subtitle: _elementDescription,
+            title: _displayName
         )
     }
 
     // MARK: - Layer Views Convenience Methods
 
     var isShowingLayerWireframeView: Bool {
-        underlyingView?.allSubviews.contains { $0 is WireframeView } ?? false
+        _underlyingView?.allSubviews.contains { $0 is WireframeView } ?? false
     }
 
     var isHostingAnyLayerHighlightView: Bool {
-        underlyingView?.allSubviews.contains { $0 is HighlightView } ?? false
+        _underlyingView?.allSubviews.contains { $0 is HighlightView } ?? false
     }
 
     var containsVisibleHighlightViews: Bool {
-        underlyingView?.allSubviews.contains { ($0 as? HighlightView)?.isHidden == false } ?? false
+        _underlyingView?.allSubviews.contains { ($0 as? HighlightView)?.isHidden == false } ?? false
     }
 
     var highlightView: HighlightView? {
-        underlyingView?._highlightView
+        _underlyingView?._highlightView
     }
 }

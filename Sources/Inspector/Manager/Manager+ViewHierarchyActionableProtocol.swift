@@ -35,10 +35,10 @@ extension Manager: ViewHierarchyActionableProtocol {
             startElementInspectorCoordinator(for: element, panel: preferredPanel, from: sourceView, animated: true)
 
         case .copy(.className):
-            UIPasteboard.general.string = element.className
+            UIPasteboard.general.string = element._className
 
         case .copy(.description):
-            UIPasteboard.general.string = element.elementDescription
+            UIPasteboard.general.string = element._elementDescription
 
         case .copy(.report):
             UIPasteboard.general.string = element.viewHierarchyDescription

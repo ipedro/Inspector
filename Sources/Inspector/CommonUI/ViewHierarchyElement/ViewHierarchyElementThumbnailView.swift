@@ -120,7 +120,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
         super.layoutSubviews()
         backgroundColor = backgroundStyle.color
 
-        let proportionalFrame = calculateFrame(with: element.frame.size)
+        let proportionalFrame = calculateFrame(with: element._frame.wrappedValue.size)
 
         guard
             !proportionalFrame.height.isNaN,
@@ -233,7 +233,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
     }
 
     func updateViews(afterScreenUpdates: Bool) {
-        guard let referenceView = element.underlyingView else {
+        guard let referenceView = element._underlyingView else {
             state = .lostConnection
             return
         }

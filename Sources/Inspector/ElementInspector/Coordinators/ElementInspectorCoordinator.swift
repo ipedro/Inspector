@@ -192,7 +192,7 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
             let dataSource = DefaultFormPanelDataSource(
                 sections: {
                     guard let libraries = dependencies.catalog.libraries[panel] else { return [] }
-                    return libraries.formItems(for: element.underlyingObject)
+                    return libraries.formItems(for: element._underlyingObject)
                 }()
             )
 
@@ -256,14 +256,14 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
             return
         }
 
-        if element.objectIdentifier == topElementInspectorViewController?.viewModel.element.objectIdentifier {
+        if element._objectIdentifier == topElementInspectorViewController?.viewModel.element._objectIdentifier {
             topElementInspectorViewController?.selectPanelIfAvailable(preferredPanel)
             return
         }
 
         operationQueue.cancelAllOperations()
 
-        let pushOperation = MainThreadOperation(name: "Push \(element.displayName)") { [weak self] in
+        let pushOperation = MainThreadOperation(name: "Push \(element._displayName)") { [weak self] in
             guard let self = self else { return }
 
             let elementInspectorViewController = Self.makeElementInspectorViewController(
@@ -300,7 +300,7 @@ private extension ElementInspectorCoordinator {
     ) {
         let allElements = [dependencies.snapshot.root] + dependencies.snapshot.root.viewHierarchy
 
-        let populatedElements = allElements.filter { $0.underlyingObject === dependencies.rootElement.underlyingObject }
+        let populatedElements = allElements.filter { $0._underlyingObject === dependencies.rootElement._underlyingObject }
 
         guard let populatedElement = populatedElements.first else {
             let rootViewController = Self.makeElementInspectorViewController(

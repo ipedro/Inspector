@@ -116,9 +116,9 @@ extension ElementChildrenPanelViewModel.CellViewModel: ElementChildrenPanelTable
 
     private var automaticallyAdjustIndentation: Bool { relativeDepth > .zero }
 
-    private var title: String? { relativeDepth > .zero ? element.displayName : nil }
+    private var title: String? { relativeDepth > .zero ? element._displayName : nil }
 
-    private var subtitle: String? { relativeDepth > .zero ? element.shortElementDescription : element.elementDescription }
+    private var subtitle: String? { relativeDepth > .zero ? element._shortElementDescription : element._elementDescription }
 
     private var titleFont: UIFont { elementInspectorAppearance.titleFont(forRelativeDepth: relativeDepth) }
 
@@ -135,18 +135,18 @@ extension ElementChildrenPanelViewModel.CellViewModel: ElementChildrenPanelTable
 
     var isContainer: Bool { element.isContainer }
 
-    private var relativeDepth: Int { element.depth - rootDepth }
+    private var relativeDepth: Int { element._depth - rootDepth }
 }
 
 // MARK: - Hashable
 
 extension ElementChildrenPanelViewModel.CellViewModel: Hashable {
     static func == (lhs: ElementChildrenPanelViewModel.CellViewModel, rhs: ElementChildrenPanelViewModel.CellViewModel) -> Bool {
-        lhs.element.objectIdentifier == rhs.element.objectIdentifier
+        lhs.element._objectIdentifier == rhs.element._objectIdentifier
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(element.objectIdentifier)
+        hasher.combine(element._objectIdentifier)
     }
 }
 

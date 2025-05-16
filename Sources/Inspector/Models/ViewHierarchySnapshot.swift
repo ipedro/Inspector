@@ -43,6 +43,6 @@ struct ViewHierarchySnapshot: ExpirableProtocol {
     }
 
     func containsReference(for object: NSObject?) -> ViewHierarchyElementReference? {
-        root.viewHierarchy.first { $0.underlyingObject === object }
+        root.viewHierarchy.first { $0._underlyingObject === object }
     }
 }

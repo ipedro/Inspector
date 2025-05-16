@@ -65,7 +65,7 @@ enum ElementInspectorPanel: Hashable, Swift.CaseIterable, MenuContentProtocol {
                 return element.isContainer
 
             case .size:
-                return element.underlyingObject is UIView
+                return element._underlyingObject is UIView
 
             case .identity, .attributes:
                 return true

@@ -33,10 +33,10 @@ extension HierarchyInspectorViewModel {
             let element: ViewHierarchyElementReference
 
             init(with element: ViewHierarchyElementReference, isEnabled: Bool) {
-                title = element.displayName
+                title = element._displayName
                 self.isEnabled = isEnabled
-                subtitle = element.shortElementDescription
-                depth = element.depth
+                subtitle = element._shortElementDescription
+                depth = element._depth
                 self.element = element
                 image = element.cachedIconImage?
                     .resized(Inspector.sharedInstance.appearance.actionIconSize)
@@ -89,7 +89,7 @@ extension HierarchyInspectorViewModel {
         }
 
         func titleForHeader(in section: Int) -> String? {
-            Texts.allResults(count: currentSearchResults.count, in: snapshot.root.displayName)
+            Texts.allResults(count: currentSearchResults.count, in: snapshot.root._displayName)
         }
 
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
@@ -122,7 +122,7 @@ extension HierarchyInspectorViewModel {
                 }
 
                 let results: [Details] = snapshot.root.viewHierarchy.compactMap { element in
-                    guard (element.displayName + element.className).localizedCaseInsensitiveContains(key) else { return nil }
+                    guard (element._displayName + element._className).localizedCaseInsensitiveContains(key) else { return nil }
                     return Details(with: element, isEnabled: true)
                 }
 

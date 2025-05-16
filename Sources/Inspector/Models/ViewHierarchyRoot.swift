@@ -44,13 +44,13 @@ final class ViewHierarchyRoot {
             return windowReference
         }
 
-    var depth: Int = -1
+    var _depth: Int = -1
 
     var isHidden: Bool = false
 
     var isCollapsed: Bool = true
 
-    let latestSnapshotIdentifier: UUID = .init()
+    let _latestSnapshotIdentifier: UUID = .init()
 
     let windows: [UIWindow]
 
@@ -94,13 +94,13 @@ final class ViewHierarchyRoot {
             viewHierarchy.insert(element, at: .zero)
 
             guard
-                let viewController = viewControllers.first(where: { $0.underlyingView === element.underlyingView }),
+                let viewController = viewControllers.first(where: { $0._underlyingView === element._underlyingView }),
                 let element = element as? ViewHierarchyElement
             else {
                 return
             }
 
-            let depth = element.depth
+            let depth = element._depth
             let parent = element.parent
 
             element.parent = viewController
@@ -113,7 +113,7 @@ final class ViewHierarchyRoot {
             viewController.rootElement = element
             viewController.children = [element]
             // must set depth as last step
-            viewController.depth = depth
+            viewController._depth = depth
 
             viewHierarchy.insert(viewController, at: .zero)
         }
@@ -124,9 +124,9 @@ final class ViewHierarchyRoot {
 extension ViewHierarchyRoot: ViewHierarchyElementReference {
     var viewHierarchy: [ViewHierarchyElementReference] { children.flatMap(\.viewHierarchy) }
 
-    var underlyingObject: NSObject? { application }
+    var _underlyingObject: NSObject? { application }
 
-    var underlyingView: UIView? { windows.first(where: \.isKeyWindow) }
+    var _underlyingView: UIView? { windows.first(where: \.isKeyWindow) }
 
     var underlyingViewController: UIViewController? { windows.first(where: \.isKeyWindow)?.rootViewController }
 
@@ -146,39 +146,39 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
         return appIcon.maskImage(with: appIconTemplate)
     }
 
-    var canHostContextMenuInteraction: Bool { false }
+    var _canHostContextMenuInteraction: Bool { false }
 
-    var objectIdentifier: ObjectIdentifier { ObjectIdentifier(application) }
+    var _objectIdentifier: ObjectIdentifier { ObjectIdentifier(application) }
 
-    var canHostInspectorView: Bool { false }
+    var _canHostInspectorView: Bool { false }
 
-    var isInternalView: Bool { false }
+    var _isInternalView: Bool { false }
 
-    var isSystemContainer: Bool { false }
+    var _isSystemContainer: Bool { false }
 
-    var className: String { application._className }
+    var _className: String { application.__className }
 
-    var classNameWithoutQualifiers: String { className }
+    var _classNameWithoutQualifiers: String { _className }
 
-    var elementName: String {
-        bundleInfo?.displayName ?? bundleInfo?.executableName ?? className
+    var _elementName: String {
+        bundleInfo?.displayName ?? bundleInfo?.executableName ?? _className
     }
 
-    var displayName: String { elementName }
+    var _displayName: String { _elementName }
 
-    var canPresentOnTop: Bool { false }
+    var _canPresentOnTop: Bool { false }
 
     var isUserInteractionEnabled: Bool { false }
 
-    var frame: CGRect { UIScreen.main.bounds }
+    var _frame: HashableBox<CGRect> { .init(wrappedValue: UIScreen.main.bounds) }
 
     var accessibilityIdentifier: String? { nil }
 
-    var issues: [ViewHierarchyIssue] { [] }
+    var _issues: [ViewHierarchyIssue] { [] }
 
-    var constraintElements: [LayoutConstraintElement] { [] }
+    var _constraintElements: [LayoutConstraintElement] { [] }
 
-    var shortElementDescription: String {
+    var _shortElementDescription: String {
         guard
             let bundleInfo = bundleInfo,
             let identifier = bundleInfo.identifier,
@@ -188,7 +188,7 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
         }
 
         return [
-            className,
+            _className,
             "Identifier: \(identifier)",
             "Version: \(bundleInfo.version) (\(bundleInfo.build))",
             {
@@ -206,7 +206,7 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
         .joined(separator: .newLine)
     }
 
-    var elementDescription: String { shortElementDescription }
+    var _elementDescription: String { _shortElementDescription }
 
     var overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle { .unspecified }
 

@@ -29,10 +29,10 @@ final class ContextMenuPresenter: NSObject, UIContextMenuInteractionDelegate {
     }
 
     func addInteraction(to view: UIView) {
-        let key = view.objectIdentifier
+        let key = view._objectIdentifier
 
         guard
-            view.canHostContextMenuInteraction,
+            view._canHostContextMenuInteraction,
             view.allSuperviews.filter({ $0 is InternalViewProtocol }).isEmpty,
             store[key] == nil
         else {
@@ -45,7 +45,7 @@ final class ContextMenuPresenter: NSObject, UIContextMenuInteractionDelegate {
     }
 
     func removeInteraction(from view: UIView) {
-        let key = view.objectIdentifier
+        let key = view._objectIdentifier
         guard let interaction = store[key] else { return }
         view.removeInteraction(interaction)
         store[key] = nil

@@ -43,7 +43,7 @@ extension DefaultElementIdentityLibrary {
             Property.allCases.compactMap { property in
                 switch property {
                 case .preview:
-                    guard let view = element.underlyingView else { return nil }
+                    guard let view = element._underlyingView else { return nil }
                     return .preview(target: .init(view: view))
 
                 case .backgroundColor:

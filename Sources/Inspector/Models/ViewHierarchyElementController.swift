@@ -21,126 +21,101 @@
 import UIKit
 import UniformTypeIdentifiers
 
-extension UIEdgeInsets: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(String(describing: self))
-    }
-}
-
-extension UIRectEdge: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(String(describing: self))
-    }
-}
-
-extension CGSize: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(String(describing: self))
-    }
-}
-
-extension NSDirectionalEdgeInsets: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(String(describing: self))
-    }
-}
-
 extension ViewHierarchyElementController {
     struct Snapshot: ViewHierarchyControllerProtocol, ExpirableProtocol, Hashable {
-        let identifier = UUID()
-        let depth: Int
-        let title: String?
-        var className: String
-        let prettyClassNameWithoutQualifiers: String
-        var superclassName: String?
-        var classNameWithoutQualifiers: String
+        let _additionalSafeAreaInsets: HashableBox<UIEdgeInsets>
+        let _definesPresentationContext: Bool
+        let _disablesAutomaticKeyboardDismissal: Bool
+        let _edgesForExtendedLayout: HashableBox<UIRectEdge>
+        let _editButtonItem: UIBarButtonItem
+        let _extendedLayoutIncludesOpaqueBars: Bool
+        let _isBeingPresented: Bool
+        let _isEditing: Bool
+        let _isModalInPresentation: Bool
+        let _isSystemContainer: Bool
+        let _isViewLoaded: Bool
+        let _modalPresentationStyle: UIModalPresentationStyle
+        let _modalTransitionStyle: UIModalTransitionStyle
+        let _navigationItem: UINavigationItem
+        let _nibName: String?
+        let _performsActionsWhilePresentingModally: Bool
+        let _preferredContentSize: HashableBox<CGSize>
+        let _preferredScreenEdgesDeferringSystemGestures: HashableBox<UIRectEdge>
+        let _preferredStatusBarStyle: UIStatusBarStyle
+        let _preferredStatusBarUpdateAnimation: UIStatusBarAnimation
+        let _prefersHomeIndicatorAutoHidden: Bool
+        let _prefersPointerLocked: Bool
+        let _prefersStatusBarHidden: Bool
+        let _providesPresentationContextTransitionStyle: Bool
+        let _restorationClassName: String?
+        let _restorationIdentifier: String?
+        let _restoresFocusAfterTransition: Bool
+        let _shouldAutomaticallyForwardAppearanceMethods: Bool
+        let _systemMinimumLayoutMargins: HashableBox<NSDirectionalEdgeInsets>
+        let _title: String?
+        let _viewRespectsSystemMinimumLayoutMargins: Bool
+        let _depth: Int
         let expirationDate = Date().addingTimeInterval(Inspector.sharedInstance.configuration.snapshotExpirationTimeInterval)
-
-        let additionalSafeAreaInsets: UIEdgeInsets
-        let definesPresentationContext: Bool
-        let disablesAutomaticKeyboardDismissal: Bool
-        let edgesForExtendedLayout: UIRectEdge
-        let editButtonItem: UIBarButtonItem
-        let extendedLayoutIncludesOpaqueBars: Bool
-        let isBeingPresented: Bool
-        let isEditing: Bool
-        let isModalInPresentation: Bool
-        let isSystemContainer: Bool
-        let isViewLoaded: Bool
-        let modalPresentationStyle: UIModalPresentationStyle
-        let modalTransitionStyle: UIModalTransitionStyle
-        let navigationItem: UINavigationItem
-        let nibName: String?
+        let identifier = UUID()
         let overrideViewHierarchyInterfaceStyle: ViewHierarchyInterfaceStyle
-        let performsActionsWhilePresentingModally: Bool
-        let preferredContentSize: CGSize
-        let preferredScreenEdgesDeferringSystemGestures: UIRectEdge
-        let preferredStatusBarStyle: UIStatusBarStyle
-        let preferredStatusBarUpdateAnimation: UIStatusBarAnimation
-        let prefersHomeIndicatorAutoHidden: Bool
-        let prefersPointerLocked: Bool
-        let prefersStatusBarHidden: Bool
-        let providesPresentationContextTransitionStyle: Bool
-        let restorationClassName: String?
-        let restorationIdentifier: String?
-        let restoresFocusAfterTransition: Bool
-        let shouldAutomaticallyForwardAppearanceMethods: Bool
-        let systemMinimumLayoutMargins: NSDirectionalEdgeInsets
+        let prettyClassNameWithoutQualifiers: String
         let traitCollection: UITraitCollection
-        let viewRespectsSystemMinimumLayoutMargins: Bool
+        var _className: String
+        var _classNameWithoutQualifiers: String
+        var superclassName: String?
 
         init(viewController: UIViewController, depth: Int) {
-            isModalInPresentation = viewController.isModalInPresentation
-            performsActionsWhilePresentingModally = viewController.performsActionsWhilePresentingModally
+            _isModalInPresentation = viewController.isModalInPresentation
+            _performsActionsWhilePresentingModally = viewController.performsActionsWhilePresentingModally
 
             if #available(iOS 14.0, *) {
-                self.prefersPointerLocked = viewController.prefersPointerLocked
+                self._prefersPointerLocked = viewController.prefersPointerLocked
             }
             else {
-                prefersPointerLocked = false
+                _prefersPointerLocked = false
             }
 
             if let restorationClass = viewController.restorationClass {
-                restorationClassName = String(describing: restorationClass)
+                _restorationClassName = String(describing: restorationClass)
             }
             else {
-                restorationClassName = nil
+                _restorationClassName = nil
             }
 
-            additionalSafeAreaInsets = viewController.additionalSafeAreaInsets
-            className = viewController._className
+            _additionalSafeAreaInsets = .init(wrappedValue: viewController.additionalSafeAreaInsets)
+            _className = viewController.__className
             prettyClassNameWithoutQualifiers = viewController._prettyClassNameWithoutQualifiers
-            classNameWithoutQualifiers = viewController._classNameWithoutQualifiers
-            definesPresentationContext = viewController.definesPresentationContext
-            self.depth = depth
-            disablesAutomaticKeyboardDismissal = viewController.disablesAutomaticKeyboardDismissal
-            edgesForExtendedLayout = viewController.edgesForExtendedLayout
-            editButtonItem = viewController.editButtonItem
-            extendedLayoutIncludesOpaqueBars = viewController.extendedLayoutIncludesOpaqueBars
-            isBeingPresented = viewController.isBeingPresented
-            isEditing = viewController.isEditing
-            isSystemContainer = viewController._isSystemContainer
-            isViewLoaded = viewController.isViewLoaded
-            modalPresentationStyle = viewController.modalPresentationStyle
-            modalTransitionStyle = viewController.modalTransitionStyle
-            navigationItem = viewController.navigationItem
-            nibName = viewController.nibName
+            _classNameWithoutQualifiers = viewController.__classNameWithoutQualifiers
+            _definesPresentationContext = viewController.definesPresentationContext
+            _depth = depth
+            _disablesAutomaticKeyboardDismissal = viewController.disablesAutomaticKeyboardDismissal
+            _edgesForExtendedLayout = .init(wrappedValue: viewController.edgesForExtendedLayout)
+            _editButtonItem = viewController.editButtonItem
+            _extendedLayoutIncludesOpaqueBars = viewController.extendedLayoutIncludesOpaqueBars
+            _isBeingPresented = viewController.isBeingPresented
+            _isEditing = viewController.isEditing
+            _isSystemContainer = viewController._isSystemContainer
+            _isViewLoaded = viewController.isViewLoaded
+            _modalPresentationStyle = viewController.modalPresentationStyle
+            _modalTransitionStyle = viewController.modalTransitionStyle
+            _navigationItem = viewController.navigationItem
+            _nibName = viewController.nibName
             overrideViewHierarchyInterfaceStyle = viewController.overrideViewHierarchyInterfaceStyle
-            preferredContentSize = viewController.preferredContentSize
-            preferredScreenEdgesDeferringSystemGestures = viewController.preferredScreenEdgesDeferringSystemGestures
-            preferredStatusBarStyle = viewController.preferredStatusBarStyle
-            preferredStatusBarUpdateAnimation = viewController.preferredStatusBarUpdateAnimation
-            prefersHomeIndicatorAutoHidden = viewController.prefersHomeIndicatorAutoHidden
-            prefersStatusBarHidden = viewController.prefersStatusBarHidden
-            providesPresentationContextTransitionStyle = viewController.providesPresentationContextTransitionStyle
-            restorationIdentifier = viewController.restorationIdentifier
-            restoresFocusAfterTransition = viewController.restoresFocusAfterTransition
-            shouldAutomaticallyForwardAppearanceMethods = viewController.shouldAutomaticallyForwardAppearanceMethods
+            _preferredContentSize = .init(wrappedValue: viewController.preferredContentSize)
+            _preferredScreenEdgesDeferringSystemGestures = .init(wrappedValue: viewController.preferredScreenEdgesDeferringSystemGestures)
+            _preferredStatusBarStyle = viewController.preferredStatusBarStyle
+            _preferredStatusBarUpdateAnimation = viewController.preferredStatusBarUpdateAnimation
+            _prefersHomeIndicatorAutoHidden = viewController.prefersHomeIndicatorAutoHidden
+            _prefersStatusBarHidden = viewController.prefersStatusBarHidden
+            _providesPresentationContextTransitionStyle = viewController.providesPresentationContextTransitionStyle
+            _restorationIdentifier = viewController.restorationIdentifier
+            _restoresFocusAfterTransition = viewController.restoresFocusAfterTransition
+            _shouldAutomaticallyForwardAppearanceMethods = viewController.shouldAutomaticallyForwardAppearanceMethods
             superclassName = viewController._superclassName
-            systemMinimumLayoutMargins = viewController.systemMinimumLayoutMargins
-            title = viewController.title
+            _systemMinimumLayoutMargins = .init(wrappedValue: viewController.systemMinimumLayoutMargins)
+            _title = viewController.title
             traitCollection = viewController.traitCollection
-            viewRespectsSystemMinimumLayoutMargins = viewController.viewRespectsSystemMinimumLayoutMargins
+            _viewRespectsSystemMinimumLayoutMargins = viewController.viewRespectsSystemMinimumLayoutMargins
         }
     }
 }
@@ -173,15 +148,15 @@ final class ViewHierarchyElementController: CustomDebugStringConvertible {
 
     var isCollapsed: Bool
 
-    var depth: Int {
+    var _depth: Int {
         didSet {
-            children.forEach { $0.depth = depth + 1 }
+            children.forEach { $0._depth = _depth + 1 }
         }
     }
 
     var rootElement: ViewHierarchyElementReference
 
-    private(set) lazy var deepestAbsoulteLevel: Int = children.map(\.depth).max() ?? depth
+    private(set) lazy var deepestAbsoulteLevel: Int = children.map(\._depth).max() ?? _depth
 
     lazy var children: [ViewHierarchyElementReference] = makeChildren()
 
@@ -203,10 +178,10 @@ final class ViewHierarchyElementController: CustomDebugStringConvertible {
     }
 
     var deepestRelativeLevel: Int {
-        deepestAbsoulteLevel - depth
+        deepestAbsoulteLevel - _depth
     }
 
-    let objectIdentifier: ObjectIdentifier
+    let _objectIdentifier: ObjectIdentifier
 
     // MARK: - Init
 
@@ -217,10 +192,10 @@ final class ViewHierarchyElementController: CustomDebugStringConvertible {
         isCollapsed: Bool = false,
         parent: ViewHierarchyElementController? = nil
     ) {
-        objectIdentifier = ObjectIdentifier(viewController)
+        _objectIdentifier = ObjectIdentifier(viewController)
         self.isCollapsed = isCollapsed
         underlyingViewController = viewController
-        self.depth = depth
+        _depth = depth
         self.parent = parent
         self.iconProvider = iconProvider
         rootElement = ViewHierarchyElement(
@@ -243,7 +218,7 @@ final class ViewHierarchyElementController: CustomDebugStringConvertible {
         ViewHierarchyElementController(
             childViewController,
             iconProvider: iconProvider,
-            depth: depth + 1,
+            depth: _depth + 1,
             isCollapsed: isCollapsed,
             parent: self
         )
@@ -265,7 +240,7 @@ final class ViewHierarchyElementController: CustomDebugStringConvertible {
 
                 return Snapshot(
                     viewController: rootViewController,
-                    depth: self.depth
+                    depth: self._depth
                 )
             })
         )
@@ -273,74 +248,74 @@ final class ViewHierarchyElementController: CustomDebugStringConvertible {
 }
 
 extension ViewHierarchyElementController: ViewHierarchyElementReference {
-    var canHostContextMenuInteraction: Bool {
-        rootElement.canHostContextMenuInteraction
+    var _canHostContextMenuInteraction: Bool {
+        rootElement._canHostContextMenuInteraction
     }
 
-    var isSystemContainer: Bool {
-        store.first.isSystemContainer
+    var _isSystemContainer: Bool {
+        store.first._isSystemContainer
     }
 
-    var underlyingView: UIView? {
+    var _underlyingView: UIView? {
         underlyingViewController?.viewIfLoaded
     }
 
-    var underlyingObject: NSObject? {
+    var _underlyingObject: NSObject? {
         underlyingViewController
     }
 
     func hasChanges(inRelationTo identifier: UUID) -> Bool {
-        latestSnapshotIdentifier != identifier
+        _latestSnapshotIdentifier != identifier
     }
 
-    var latestSnapshotIdentifier: UUID {
+    var _latestSnapshotIdentifier: UUID {
         store.latest.identifier
     }
 
-    var canHostInspectorView: Bool { false }
+    var _canHostInspectorView: Bool { false }
 
-    var isInternalView: Bool {
-        rootElement.isInternalView
+    var _isInternalView: Bool {
+        rootElement._isInternalView
     }
 
-    var elementName: String {
-        classNameWithoutQualifiers
+    var _elementName: String {
+        _classNameWithoutQualifiers
     }
 
-    var displayName: String {
+    var _displayName: String {
         store
             .latest
             .prettyClassNameWithoutQualifiers
-            .string(appending: title, separator: " - ")
+            .string(appending: _title, separator: " - ")
     }
 
-    var canPresentOnTop: Bool {
-        rootElement.canPresentOnTop
+    var _canPresentOnTop: Bool {
+        rootElement._canPresentOnTop
     }
 
     var isUserInteractionEnabled: Bool {
         rootElement.isUserInteractionEnabled
     }
 
-    var frame: CGRect {
-        rootElement.frame
+    var _frame: HashableBox<CGRect> {
+        rootElement._frame
     }
 
     var accessibilityIdentifier: String? { nil }
 
-    var issues: [ViewHierarchyIssue] {
-        rootElement.issues
+    var _issues: [ViewHierarchyIssue] {
+        rootElement._issues
     }
 
-    var constraintElements: [LayoutConstraintElement] {
-        rootElement.constraintElements
+    var _constraintElements: [LayoutConstraintElement] {
+        rootElement._constraintElements
     }
 
-    var shortElementDescription: String {
+    var _shortElementDescription: String {
         [
-            className,
+            _className,
             {
-                guard let title = store.latest.title else {
+                guard let title = store.latest._title else {
                     return .none
                 }
                 return title.string(prepending: "Title:")
@@ -353,7 +328,7 @@ extension ViewHierarchyElementController: ViewHierarchyElementReference {
                 }
 
                 if children.count == 1 {
-                    return children.first?._className.string(prepending: "Child:")
+                    return children.first?.__className.string(prepending: "Child:")
                 }
 
                 return children.count
@@ -365,17 +340,17 @@ extension ViewHierarchyElementController: ViewHierarchyElementReference {
         .joined(separator: .newLine)
     }
 
-    var elementDescription: String {
+    var _elementDescription: String {
         [
-            shortElementDescription,
+            _shortElementDescription,
             {
                 guard let parent = underlyingViewController?.parent else {
                     return .none
                 }
-                return parent._className.string(prepending: "Parent:")
+                return parent.__className.string(prepending: "Parent:")
             }(),
-            "Presentation: \(store.latest.modalPresentationStyle.description)",
-            "Transition: \(store.latest.modalTransitionStyle.description)"
+            "Presentation: \(store.latest._modalPresentationStyle.description)",
+            "Transition: \(store.latest._modalTransitionStyle.description)"
         ]
         .compactMap { $0 }
         .joined(separator: .newLine)
@@ -388,184 +363,184 @@ extension ViewHierarchyElementController: ViewHierarchyElementReference {
 }
 
 extension ViewHierarchyElementController: ViewHierarchyControllerProtocol {
-    var className: String {
-        store.first.className
+    var _className: String {
+        store.first._className
     }
 
     var superclassName: String? {
         store.first.superclassName
     }
 
-    var classNameWithoutQualifiers: String {
-        store.first.classNameWithoutQualifiers
+    var _classNameWithoutQualifiers: String {
+        store.first._classNameWithoutQualifiers
     }
 
-    var additionalSafeAreaInsets: UIEdgeInsets {
+    var _additionalSafeAreaInsets: HashableBox<UIEdgeInsets> {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.additionalSafeAreaInsets
+            return store.latest._additionalSafeAreaInsets
         }
 
-        if viewController.additionalSafeAreaInsets != store.latest.additionalSafeAreaInsets {
+        if viewController.additionalSafeAreaInsets != store.latest._additionalSafeAreaInsets.wrappedValue {
             scheduleSnapshot()
         }
 
-        return viewController.additionalSafeAreaInsets
+        return .init(wrappedValue: viewController.additionalSafeAreaInsets)
     }
 
-    var definesPresentationContext: Bool {
+    var _definesPresentationContext: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.definesPresentationContext
+            return store.latest._definesPresentationContext
         }
 
-        if viewController.definesPresentationContext != store.latest.definesPresentationContext {
+        if viewController.definesPresentationContext != store.latest._definesPresentationContext {
             scheduleSnapshot()
         }
 
         return viewController.definesPresentationContext
     }
 
-    var disablesAutomaticKeyboardDismissal: Bool {
+    var _disablesAutomaticKeyboardDismissal: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.disablesAutomaticKeyboardDismissal
+            return store.latest._disablesAutomaticKeyboardDismissal
         }
 
-        if viewController.disablesAutomaticKeyboardDismissal != store.latest.disablesAutomaticKeyboardDismissal {
+        if viewController.disablesAutomaticKeyboardDismissal != store.latest._disablesAutomaticKeyboardDismissal {
             scheduleSnapshot()
         }
 
         return viewController.disablesAutomaticKeyboardDismissal
     }
 
-    var edgesForExtendedLayout: UIRectEdge {
+    var _edgesForExtendedLayout: HashableBox<UIRectEdge> {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.edgesForExtendedLayout
+            return store.latest._edgesForExtendedLayout
         }
 
-        if viewController.edgesForExtendedLayout != store.latest.edgesForExtendedLayout {
+        if viewController.edgesForExtendedLayout != store.latest._edgesForExtendedLayout.wrappedValue {
             scheduleSnapshot()
         }
 
-        return viewController.edgesForExtendedLayout
+        return .init(wrappedValue: viewController.edgesForExtendedLayout)
     }
 
-    var editButtonItem: UIBarButtonItem {
+    var _editButtonItem: UIBarButtonItem {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.editButtonItem
+            return store.latest._editButtonItem
         }
 
-        if viewController.editButtonItem != store.latest.editButtonItem {
+        if viewController.editButtonItem != store.latest._editButtonItem {
             scheduleSnapshot()
         }
 
         return viewController.editButtonItem
     }
 
-    var extendedLayoutIncludesOpaqueBars: Bool {
+    var _extendedLayoutIncludesOpaqueBars: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.extendedLayoutIncludesOpaqueBars
+            return store.latest._extendedLayoutIncludesOpaqueBars
         }
 
-        if viewController.extendedLayoutIncludesOpaqueBars != store.latest.extendedLayoutIncludesOpaqueBars {
+        if viewController.extendedLayoutIncludesOpaqueBars != store.latest._extendedLayoutIncludesOpaqueBars {
             scheduleSnapshot()
         }
 
         return viewController.extendedLayoutIncludesOpaqueBars
     }
 
-    var isBeingPresented: Bool {
+    var _isBeingPresented: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.isBeingPresented
+            return store.latest._isBeingPresented
         }
 
-        if viewController.isBeingPresented != store.latest.isBeingPresented {
+        if viewController.isBeingPresented != store.latest._isBeingPresented {
             scheduleSnapshot()
         }
 
         return viewController.isBeingPresented
     }
 
-    var isEditing: Bool {
+    var _isEditing: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.isEditing
+            return store.latest._isEditing
         }
 
-        if viewController.isEditing != store.latest.isEditing {
+        if viewController.isEditing != store.latest._isEditing {
             scheduleSnapshot()
         }
 
         return viewController.isEditing
     }
 
-    var isModalInPresentation: Bool {
+    var _isModalInPresentation: Bool {
         guard
             #available(iOS 13.0, *),
             store.latest.isExpired,
             let viewController = underlyingViewController
         else {
-            return store.latest.isModalInPresentation
+            return store.latest._isModalInPresentation
         }
 
-        if viewController.isModalInPresentation != store.latest.isModalInPresentation {
+        if viewController.isModalInPresentation != store.latest._isModalInPresentation {
             scheduleSnapshot()
         }
 
         return viewController.isModalInPresentation
     }
 
-    var isViewLoaded: Bool {
+    var _isViewLoaded: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.isViewLoaded
+            return store.latest._isViewLoaded
         }
 
-        if viewController.isViewLoaded != store.latest.isViewLoaded {
+        if viewController.isViewLoaded != store.latest._isViewLoaded {
             scheduleSnapshot()
         }
 
         return viewController.isViewLoaded
     }
 
-    var modalPresentationStyle: UIModalPresentationStyle {
+    var _modalPresentationStyle: UIModalPresentationStyle {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.modalPresentationStyle
+            return store.latest._modalPresentationStyle
         }
 
-        if viewController.modalPresentationStyle != store.latest.modalPresentationStyle {
+        if viewController.modalPresentationStyle != store.latest._modalPresentationStyle {
             scheduleSnapshot()
         }
 
         return viewController.modalPresentationStyle
     }
 
-    var modalTransitionStyle: UIModalTransitionStyle {
+    var _modalTransitionStyle: UIModalTransitionStyle {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.modalTransitionStyle
+            return store.latest._modalTransitionStyle
         }
 
-        if viewController.modalTransitionStyle != store.latest.modalTransitionStyle {
+        if viewController.modalTransitionStyle != store.latest._modalTransitionStyle {
             scheduleSnapshot()
         }
 
         return viewController.modalTransitionStyle
     }
 
-    var navigationItem: UINavigationItem {
+    var _navigationItem: UINavigationItem {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.navigationItem
+            return store.latest._navigationItem
         }
 
-        if viewController.navigationItem != store.latest.navigationItem {
+        if viewController.navigationItem != store.latest._navigationItem {
             scheduleSnapshot()
         }
 
         return viewController.navigationItem
     }
 
-    var nibName: String? {
+    var _nibName: String? {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.nibName
+            return store.latest._nibName
         }
 
-        if viewController.nibName != store.latest.nibName {
+        if viewController.nibName != store.latest._nibName {
             scheduleSnapshot()
         }
 
@@ -596,200 +571,200 @@ extension ViewHierarchyElementController: ViewHierarchyControllerProtocol {
         return viewController.traitCollection
     }
 
-    var performsActionsWhilePresentingModally: Bool {
+    var _performsActionsWhilePresentingModally: Bool {
         guard
             #available(iOS 13.0, *),
             store.latest.isExpired,
             let viewController = underlyingViewController
         else {
-            return store.latest.performsActionsWhilePresentingModally
+            return store.latest._performsActionsWhilePresentingModally
         }
 
-        if viewController.performsActionsWhilePresentingModally != store.latest.performsActionsWhilePresentingModally {
+        if viewController.performsActionsWhilePresentingModally != store.latest._performsActionsWhilePresentingModally {
             scheduleSnapshot()
         }
 
         return viewController.performsActionsWhilePresentingModally
     }
 
-    var preferredContentSize: CGSize {
+    var _preferredContentSize: HashableBox<CGSize> {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.preferredContentSize
+            return store.latest._preferredContentSize
         }
 
-        if viewController.preferredContentSize != store.latest.preferredContentSize {
+        if viewController.preferredContentSize != store.latest._preferredContentSize.wrappedValue {
             scheduleSnapshot()
         }
 
-        return viewController.preferredContentSize
+        return .init(wrappedValue: viewController.preferredContentSize)
     }
 
-    var preferredScreenEdgesDeferringSystemGestures: UIRectEdge {
+    var _preferredScreenEdgesDeferringSystemGestures: HashableBox<UIRectEdge> {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.preferredScreenEdgesDeferringSystemGestures
+            return store.latest._preferredScreenEdgesDeferringSystemGestures
         }
 
-        if viewController.preferredScreenEdgesDeferringSystemGestures != store.latest.preferredScreenEdgesDeferringSystemGestures {
+        if viewController.preferredScreenEdgesDeferringSystemGestures != store.latest._preferredScreenEdgesDeferringSystemGestures.wrappedValue {
             scheduleSnapshot()
         }
 
-        return viewController.preferredScreenEdgesDeferringSystemGestures
+        return .init(wrappedValue: viewController.preferredScreenEdgesDeferringSystemGestures)
     }
 
-    var preferredStatusBarStyle: UIStatusBarStyle {
+    var _preferredStatusBarStyle: UIStatusBarStyle {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.preferredStatusBarStyle
+            return store.latest._preferredStatusBarStyle
         }
 
-        if viewController.preferredStatusBarStyle != store.latest.preferredStatusBarStyle {
+        if viewController.preferredStatusBarStyle != store.latest._preferredStatusBarStyle {
             scheduleSnapshot()
         }
 
         return viewController.preferredStatusBarStyle
     }
 
-    var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+    var _preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.preferredStatusBarUpdateAnimation
+            return store.latest._preferredStatusBarUpdateAnimation
         }
 
-        if viewController.preferredStatusBarUpdateAnimation != store.latest.preferredStatusBarUpdateAnimation {
+        if viewController.preferredStatusBarUpdateAnimation != store.latest._preferredStatusBarUpdateAnimation {
             scheduleSnapshot()
         }
 
         return viewController.preferredStatusBarUpdateAnimation
     }
 
-    var prefersHomeIndicatorAutoHidden: Bool {
+    var _prefersHomeIndicatorAutoHidden: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.prefersHomeIndicatorAutoHidden
+            return store.latest._prefersHomeIndicatorAutoHidden
         }
 
-        if viewController.prefersHomeIndicatorAutoHidden != store.latest.prefersHomeIndicatorAutoHidden {
+        if viewController.prefersHomeIndicatorAutoHidden != store.latest._prefersHomeIndicatorAutoHidden {
             scheduleSnapshot()
         }
 
         return viewController.prefersHomeIndicatorAutoHidden
     }
 
-    var prefersPointerLocked: Bool {
+    var _prefersPointerLocked: Bool {
         guard
             #available(iOS 14.0, *),
             store.latest.isExpired,
             let viewController = underlyingViewController
         else {
-            return store.latest.prefersPointerLocked
+            return store.latest._prefersPointerLocked
         }
 
-        if viewController.prefersPointerLocked != store.latest.prefersPointerLocked {
+        if viewController.prefersPointerLocked != store.latest._prefersPointerLocked {
             scheduleSnapshot()
         }
 
         return viewController.prefersPointerLocked
     }
 
-    var prefersStatusBarHidden: Bool {
+    var _prefersStatusBarHidden: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.prefersStatusBarHidden
+            return store.latest._prefersStatusBarHidden
         }
 
-        if viewController.prefersStatusBarHidden != store.latest.prefersStatusBarHidden {
+        if viewController.prefersStatusBarHidden != store.latest._prefersStatusBarHidden {
             scheduleSnapshot()
         }
 
         return viewController.prefersStatusBarHidden
     }
 
-    var providesPresentationContextTransitionStyle: Bool {
+    var _providesPresentationContextTransitionStyle: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.providesPresentationContextTransitionStyle
+            return store.latest._providesPresentationContextTransitionStyle
         }
 
-        if viewController.providesPresentationContextTransitionStyle != store.latest.providesPresentationContextTransitionStyle {
+        if viewController.providesPresentationContextTransitionStyle != store.latest._providesPresentationContextTransitionStyle {
             scheduleSnapshot()
         }
 
         return viewController.providesPresentationContextTransitionStyle
     }
 
-    var restorationClassName: String? {
+    var _restorationClassName: String? {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.restorationClassName
+            return store.latest._restorationClassName
         }
 
-        if viewController.restorationClassName != store.latest.restorationClassName {
+        if viewController.restorationClassName != store.latest._restorationClassName {
             scheduleSnapshot()
         }
 
         return viewController.restorationClassName
     }
 
-    var restorationIdentifier: String? {
+    var _restorationIdentifier: String? {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.restorationIdentifier
+            return store.latest._restorationIdentifier
         }
 
-        if viewController.restorationIdentifier != store.latest.restorationIdentifier {
+        if viewController.restorationIdentifier != store.latest._restorationIdentifier {
             scheduleSnapshot()
         }
 
         return viewController.restorationIdentifier
     }
 
-    var restoresFocusAfterTransition: Bool {
+    var _restoresFocusAfterTransition: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.restoresFocusAfterTransition
+            return store.latest._restoresFocusAfterTransition
         }
 
-        if viewController.restoresFocusAfterTransition != store.latest.restoresFocusAfterTransition {
+        if viewController.restoresFocusAfterTransition != store.latest._restoresFocusAfterTransition {
             scheduleSnapshot()
         }
 
         return viewController.restoresFocusAfterTransition
     }
 
-    var shouldAutomaticallyForwardAppearanceMethods: Bool {
+    var _shouldAutomaticallyForwardAppearanceMethods: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.shouldAutomaticallyForwardAppearanceMethods
+            return store.latest._shouldAutomaticallyForwardAppearanceMethods
         }
 
-        if viewController.shouldAutomaticallyForwardAppearanceMethods != store.latest.shouldAutomaticallyForwardAppearanceMethods {
+        if viewController.shouldAutomaticallyForwardAppearanceMethods != store.latest._shouldAutomaticallyForwardAppearanceMethods {
             scheduleSnapshot()
         }
 
         return viewController.shouldAutomaticallyForwardAppearanceMethods
     }
 
-    var systemMinimumLayoutMargins: NSDirectionalEdgeInsets {
+    var _systemMinimumLayoutMargins: HashableBox<NSDirectionalEdgeInsets> {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.systemMinimumLayoutMargins
+            return store.latest._systemMinimumLayoutMargins
         }
 
-        if viewController.systemMinimumLayoutMargins != store.latest.systemMinimumLayoutMargins {
+        if viewController.systemMinimumLayoutMargins != store.latest._systemMinimumLayoutMargins.wrappedValue {
             scheduleSnapshot()
         }
 
-        return viewController.systemMinimumLayoutMargins
+        return .init(wrappedValue: viewController.systemMinimumLayoutMargins)
     }
 
-    var title: String? {
+    var _title: String? {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.title
+            return store.latest._title
         }
 
-        if viewController.title != store.latest.title {
+        if viewController.title != store.latest._title {
             scheduleSnapshot()
         }
 
         return viewController.title ?? viewController.tabBarItem.title
     }
 
-    var viewRespectsSystemMinimumLayoutMargins: Bool {
+    var _viewRespectsSystemMinimumLayoutMargins: Bool {
         guard store.latest.isExpired, let viewController = underlyingViewController else {
-            return store.latest.viewRespectsSystemMinimumLayoutMargins
+            return store.latest._viewRespectsSystemMinimumLayoutMargins
         }
 
-        if viewController.viewRespectsSystemMinimumLayoutMargins != store.latest.viewRespectsSystemMinimumLayoutMargins {
+        if viewController.viewRespectsSystemMinimumLayoutMargins != store.latest._viewRespectsSystemMinimumLayoutMargins {
             scheduleSnapshot()
         }
 

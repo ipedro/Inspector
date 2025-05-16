@@ -27,13 +27,13 @@ extension ElementInspectorCoordinator: ElementInspectorViewControllerDelegate {
                                         from fromElement: ViewHierarchyElementReference)
     {
         if
-            element.objectIdentifier == fromElement.objectIdentifier,
+            element._objectIdentifier == fromElement._objectIdentifier,
             case let .inspect(preferredPanel: panel) = action
         {
             viewController.selectPanelIfAvailable(panel)
             return
         }
-        guard let sourceView = fromElement.underlyingView else { return }
+        guard let sourceView = fromElement._underlyingView else { return }
 
         guard canPerform(action: action) else {
             delegate?.perform(action: action, with: element, from: sourceView)

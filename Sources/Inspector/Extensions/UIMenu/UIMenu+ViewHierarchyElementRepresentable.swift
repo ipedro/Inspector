@@ -35,8 +35,8 @@ extension UIMenu {
         handler: @escaping (ViewHierarchyElementReference, ViewHierarchyElementAction) -> Void
     ) {
         self.init(
-            title: options == .displayInline ? "" : element.displayName,
-            image: Self.iconProvider?.value(for: element.underlyingObject)?.resized(.init(24)),
+            title: options == .displayInline ? "" : element._displayName,
+            image: Self.iconProvider?.value(for: element._underlyingObject)?.resized(.init(24)),
             options: options,
             children: {
                 var menus: [UIMenuElement] = initialMenus

@@ -40,7 +40,7 @@ final class LoaderView: LayerViewComponent {
 
     private(set) lazy var highlightView = HighlightView(
         frame: bounds,
-        name: elementName,
+        name: _elementName,
         colorScheme: colorScheme,
         element: ViewHierarchyElement(with: self, iconProvider: .default)
     ).then {

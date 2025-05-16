@@ -1,4 +1,4 @@
-//  Copyright (c) 2021 Pedro Almeida
+//  Copyright (c) 2025 Pedro Almeida
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -18,10 +18,33 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import CoreGraphics
+import Foundation
 
-extension CGRect: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(String(describing: self))
+@dynamicMemberLookup @propertyWrapper
+struct HashableBox<T>: CustomStringConvertible, Hashable {
+    let wrappedValue: T
+
+    init(wrappedValue value: T) {
+        wrappedValue = value
+    }
+
+    subscript<V>(dynamicMember keyPath: ReferenceWritableKeyPath<T, V>) -> V {
+        get {
+            wrappedValue[keyPath: keyPath]
+        } set {
+            wrappedValue[keyPath: keyPath] = newValue
+        }
+    }
+
+    var description: String {
+        String(describing: wrappedValue)
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(description)
+    }
+
+    static func == (lhs: HashableBox<T>, rhs: HashableBox<T>) -> Bool {
+        lhs.description == rhs.description
     }
 }

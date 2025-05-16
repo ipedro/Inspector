@@ -21,6 +21,10 @@
 import UIKit
 
 extension UIView: ViewHierarchyElementRepresentable {
+    var _frame: HashableBox<CGRect> {
+        .init(wrappedValue: frame)
+    }
+
     var depth: Int {
         allParents.count
     }
@@ -57,25 +61,15 @@ extension UIView: ViewHierarchyElementRepresentable {
         .init(rawValue: overrideUserInterfaceStyle) ?? .unspecified
     }
 
-    var isInternalView: Bool {
-        _isInternalView
+    var _className: String {
+        __className
     }
 
-    var isSystemContainer: Bool {
-        _isSystemContainer
+    var _classNameWithoutQualifiers: String {
+        __classNameWithoutQualifiers
     }
 
-    #if !targetEnvironment(macCatalyst)
-    var className: String {
-        _className
-    }
-    #endif
-
-    var classNameWithoutQualifiers: String {
-        _classNameWithoutQualifiers
-    }
-
-    var objectIdentifier: ObjectIdentifier {
+    var _objectIdentifier: ObjectIdentifier {
         ObjectIdentifier(self)
     }
 
@@ -83,15 +77,15 @@ extension UIView: ViewHierarchyElementRepresentable {
         window != nil || self is UIWindow
     }
 
-    var issues: [ViewHierarchyIssue] { ViewHierarchyIssue.issues(for: self) }
+    var _issues: [ViewHierarchyIssue] { ViewHierarchyIssue.issues(for: self) }
 
-    var constraintElements: [LayoutConstraintElement] {
+    var _constraintElements: [LayoutConstraintElement] {
         constraints
             .compactMap { LayoutConstraintElement(with: $0, in: self) }
             .uniqueValues()
     }
 
-    var canPresentOnTop: Bool {
+    var _canPresentOnTop: Bool {
         switch self {
         case is UITextView:
             return true
@@ -104,17 +98,17 @@ extension UIView: ViewHierarchyElementRepresentable {
         }
     }
 
-    var canHostContextMenuInteraction: Bool {
-        canHostInspectorView &&
+    var _canHostContextMenuInteraction: Bool {
+        _canHostInspectorView &&
             self is UIWindow == false &&
-            className != "UITransitionView" &&
-            className != "UIDropShadowView" &&
-            className != "_UIModernBarButton"
+            _className != "UITransitionView" &&
+            _className != "UIDropShadowView" &&
+            _className != "_UIModernBarButton"
     }
 
-    var canHostInspectorView: Bool {
-        let className = _className
-        let superViewClassName = superview?._className ?? ""
+    var _canHostInspectorView: Bool {
+        let className = __className
+        let superViewClassName = superview?.__className ?? ""
 
         guard
             className != "UIRemoteKeyboardWindow",
@@ -130,7 +124,7 @@ extension UIView: ViewHierarchyElementRepresentable {
 
             // Adding subviews to UIPageViewController containers throws runtime exception.
             className != "_UIPageViewControllerContentView",
-            subviews.map(\._className).contains("_UIPageViewControllerContentView") == false,
+            subviews.map(\.__className).contains("_UIPageViewControllerContentView") == false,
             className != "_UIQueuingScrollView",
             superViewClassName != "_UIQueuingScrollView",
 
@@ -153,11 +147,11 @@ extension UIView: ViewHierarchyElementRepresentable {
         return true
     }
 
-    var elementName: String {
-        accessibilityIdentifier?.trimmed ?? _classNameWithoutQualifiers
+    var _elementName: String {
+        accessibilityIdentifier?.trimmed ?? __classNameWithoutQualifiers
     }
 
-    var displayName: String {
+    var _displayName: String {
         let prettyName = accessibilityIdentifier?.trimmed ?? _prettyClassNameWithoutQualifiers
 
         guard
@@ -179,8 +173,8 @@ extension UIView: ViewHierarchyElementRepresentable {
         return "\(prettyName) - \"\(formattedText)\""
     }
 
-    var shortElementDescription: String { [
-        _className,
+    var _shortElementDescription: String { [
+        __className,
         subviewsDescription,
         frameDescription
     ]
@@ -188,10 +182,10 @@ extension UIView: ViewHierarchyElementRepresentable {
     .joined(separator: .newLine)
     }
 
-    var elementDescription: String {
+    var _elementDescription: String {
         let fullDescription = [
             accessibilityIdentifier?.string(prepending: "Accessibility ID: \"", appending: "\""),
-            shortElementDescription,
+            _shortElementDescription,
             constraintsDescription,
             issuesDescription?.string(prepending: .newLine)
         ]
@@ -210,7 +204,7 @@ private extension UIView {
         let childrenCount = children.count
         let allChildrenCount = allChildren.count
 
-        let description = childrenCount == 1 ? children.first?._className.string(prepending: "Subview:") : "Subviews: \(childrenCount)"
+        let description = childrenCount == 1 ? children.first?.__className.string(prepending: "Subview:") : "Subviews: \(childrenCount)"
 
         guard let description = description else { return .none }
 
@@ -233,15 +227,15 @@ private extension UIView {
     }
 
     var issuesDescription: String? {
-        guard !issues.isEmpty else { return nil }
+        guard !_issues.isEmpty else { return nil }
 
-        if issues.count == 1, let issue = issues.first {
+        if _issues.count == 1, let issue = _issues.first {
             return "⚠️ \(issue.description)"
         }
 
-        return issues.reduce(into: "") { multipleIssuesDescription, issue in
+        return _issues.reduce(into: "") { multipleIssuesDescription, issue in
             if multipleIssuesDescription?.isEmpty == true {
-                multipleIssuesDescription = "⚠️ \(issues.count) Issues"
+                multipleIssuesDescription = "⚠️ \(_issues.count) Issues"
             }
             else {
                 multipleIssuesDescription?.append(.newLine)
@@ -251,18 +245,18 @@ private extension UIView {
     }
 
     var constraintsDescription: String? {
-        guard constraintElements.count > .zero else { return .none }
-        return "Constraints: \(constraintElements.count)"
+        guard _constraintElements.count > .zero else { return .none }
+        return "Constraints: \(_constraintElements.count)"
     }
 }
 
 extension NSObject {
     var _isInternalView: Bool {
-        _className.starts(with: "_")
+        __className.starts(with: "_")
     }
 
     var _isSystemContainer: Bool {
-        let className = _classNameWithoutQualifiers
+        let className = __classNameWithoutQualifiers
 
         for systemContainer in Inspector.sharedInstance.configuration.knownSystemContainers {
             if className == systemContainer || className.starts(with: "_UI") {
@@ -273,12 +267,12 @@ extension NSObject {
         return false
     }
 
-    var _className: String {
+    var __className: String {
         String(describing: classForCoder)
     }
 
     var _prettyClassNameWithoutQualifiers: String {
-        _classNameWithoutQualifiers
+        __classNameWithoutQualifiers
             .replacingOccurrences(of: "_", with: "")
             .camelCaseToWords()
             .replacingOccurrences(of: " Kit ", with: "Kit ")
@@ -291,9 +285,9 @@ extension NSObject {
         return String(describing: superclass)
     }
 
-    var _classNameWithoutQualifiers: String {
-        guard let nameWithoutQualifiers = _className.split(separator: "<").first else {
-            return _className
+    var __classNameWithoutQualifiers: String {
+        guard let nameWithoutQualifiers = __className.split(separator: "<").first else {
+            return __className
         }
 
         return String(nameWithoutQualifiers)

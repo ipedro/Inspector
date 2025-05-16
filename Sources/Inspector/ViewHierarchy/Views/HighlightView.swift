@@ -223,7 +223,7 @@ final class HighlightView: LayerView {
             return
         }
 
-        latestElementSnapshot = element.latestSnapshotIdentifier
+        latestElementSnapshot = element._latestSnapshotIdentifier
 
         updateElementName()
         updateBorderColor()
@@ -334,7 +334,7 @@ final class HighlightView: LayerView {
 //    }
 
     func updateElementName() {
-        elementNameView.name = element.elementName
+        elementNameView.name = element._elementName
         elementNameView.image = element.iconImage?.resized(CGSize(18))
     }
 }
@@ -369,7 +369,7 @@ private extension HighlightView {
         hostView.isUserInteractionEnabled = true
     }
 
-    private var cgFloatDepth: CGFloat { element.depth.cgFloat }
+    private var cgFloatDepth: CGFloat { element._depth.cgFloat }
 
     func updateViews(isHighlighted: Bool? = nil) {
         elementNameView.tintColor = borderColor?.withAlphaComponent(0.85)

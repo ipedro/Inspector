@@ -56,7 +56,7 @@ extension ViewHierarchyElementIconProvider {
 
         switch view {
         case let window as UIWindow:
-            if window._className.contains("Keyboard") { return .keyboardWindow }
+            if window.__className.contains("Keyboard") { return .keyboardWindow }
             if window.isKeyWindow { return .keyWindow }
             return .window
 
@@ -73,7 +73,7 @@ extension ViewHierarchyElementIconProvider {
             return .toggle
 
         case is UIButton,
-             is UIControl where view.className.contains("Button"):
+             is UIControl where view._className.contains("Button"):
             return .button
 
         case let imageView as UIImageView:
@@ -125,13 +125,13 @@ extension ViewHierarchyElementIconProvider {
             return .mapView
 
         case let view:
-            if view._className == "CGDrawingView" { return .staticText }
-            if view._className.contains("Effects") { return .systemIcon("wand.and.stars")! }
+            if view.__className == "CGDrawingView" { return .staticText }
+            if view.__className.contains("Effects") { return .systemIcon("wand.and.stars")! }
             if view.children.isEmpty { return .emptyViewSymbol }
-            if view.className.contains("Background") { return .icon("BackgroundView-32_Normal") }
-            if view.className.contains("DropShadow") { return .icon("DropShadow-32_Normal") }
-            if view.className.contains("Label") { return .staticText }
-            if view.className.contains("TransitionView") { return .icon("UITransitionView-32_Normal") }
+            if view._className.contains("Background") { return .icon("BackgroundView-32_Normal") }
+            if view._className.contains("DropShadow") { return .icon("DropShadow-32_Normal") }
+            if view._className.contains("Label") { return .staticText }
+            if view._className.contains("TransitionView") { return .icon("UITransitionView-32_Normal") }
             return .containerViewSymbol
         }
     }

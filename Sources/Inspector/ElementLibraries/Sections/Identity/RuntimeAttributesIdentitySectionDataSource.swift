@@ -133,7 +133,7 @@ extension DefaultElementIdentityLibrary {
                     return .textView(
                         title: title,
                         placeholder: nil,
-                        value: { view.elementDescription },
+                        value: { view._elementDescription },
                         handler: nil
                     )
                 case let aClass as AnyClass:

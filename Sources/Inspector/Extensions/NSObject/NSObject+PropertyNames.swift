@@ -122,7 +122,7 @@ extension NSObject {
     }
 
     func safeValue(forKey key: String) -> Any? {
-        let fullName = "\(_classNameWithoutQualifiers).\(key)"
+        let fullName = "\(__classNameWithoutQualifiers).\(key)"
 
         if Self.propertyNamesDenyList.contains(fullName) {
             return nil

@@ -147,10 +147,10 @@ extension Manager: KeyCommandPresentable {
 
         let allWindows = root
             .children
-            .filter { $0.underlyingView is UIWindow }
+            .filter { $0._underlyingView is UIWindow }
 
         let windows = allWindows.filter {
-            showFullApplicationHierarchy || ($0.underlyingView as? UIWindow)?.isKeyWindow == true
+            showFullApplicationHierarchy || ($0._underlyingView as? UIWindow)?.isKeyWindow == true
         }
 
         var commands = windows.map { inspectCommands(window: $0, from: keyWindow) }
@@ -166,7 +166,7 @@ extension Manager: KeyCommandPresentable {
 
     private func inspectCommands(window element: ViewHierarchyElementReference, from presenter: UIView) -> CommandsGroup {
         .group(
-            title: "\(element.displayName) Hierarchy",
+            title: "\(element._displayName) Hierarchy",
             commands: {
                 var commands = [Command]()
                 commands.append(
@@ -182,7 +182,7 @@ extension Manager: KeyCommandPresentable {
 
                 commands.append(
                     contentsOf: forEach(
-                        viewController: snapshot.root.viewHierarchy.filter { $0.underlyingView?.window === element.underlyingView },
+                        viewController: snapshot.root.viewHierarchy.filter { $0._underlyingView?.window === element._underlyingView },
                         .inspect(preferredPanel: .default),
                         from: presenter
                     )
@@ -239,7 +239,7 @@ extension Manager: KeyCommandPresentable {
     ) -> [Command] {
         viewHierarchy
             .compactMap { $0 as? ViewHierarchyElementController }
-            .sorted { $0.depth < $1.depth }
+            .sorted { $0._depth < $1._depth }
             .map { viewController in
                 .inspectElement(viewController) { [weak self] in
                     guard let self = self else { return }
