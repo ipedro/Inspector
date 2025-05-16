@@ -20,7 +20,7 @@
 
 import Foundation
 
-class MainThreadOperation: Operation {
+class MainThreadOperation: Operation, @unchecked Sendable {
     let closure: Closure
 
     init(name: String, closure: @escaping Closure) {

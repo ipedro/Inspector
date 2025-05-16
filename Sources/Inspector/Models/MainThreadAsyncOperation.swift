@@ -20,7 +20,7 @@
 
 import Foundation
 
-final class MainThreadAsyncOperation: MainThreadOperation {
+final class MainThreadAsyncOperation: MainThreadOperation, @unchecked Sendable {
     override func main() {
         DispatchQueue.main.async {
             self.closure()
