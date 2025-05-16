@@ -22,10 +22,8 @@ import UIKit
 
 // MARK: - CaseIterable
 
-extension UIDatePickerStyle: CaseIterable {
-    public typealias AllCases = [UIDatePickerStyle]
-
-    public static let allCases: [UIDatePickerStyle] = [
+extension UIDatePickerStyle {
+    static let allCases: [UIDatePickerStyle] = [
         .automatic,
         .wheels,
         .compact,
@@ -35,8 +33,8 @@ extension UIDatePickerStyle: CaseIterable {
 
 // MARK: - CustomStringConvertible
 
-extension UIDatePickerStyle: CustomStringConvertible {
-    public var description: String {
+extension UIDatePickerStyle {
+    var description: String {
         switch self {
         case .automatic:
             return "Automatic"

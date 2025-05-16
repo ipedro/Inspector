@@ -154,7 +154,7 @@ extension DefaultElementAttributesLibrary {
     }
 }
 
-extension MKPointOfInterestFilter: CaseIterable {
+extension MKPointOfInterestFilter {
     static let allCases: [MKPointOfInterestFilter] = [
         .includingAll,
         .excludingAll
