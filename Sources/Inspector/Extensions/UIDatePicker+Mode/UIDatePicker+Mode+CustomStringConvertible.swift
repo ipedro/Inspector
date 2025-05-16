@@ -24,19 +24,20 @@ extension UIDatePicker.Mode: CustomStringConvertible {
     var description: String {
         switch self {
         case .time:
-            return "Time"
-
+            "Time"
         case .date:
-            return "Date"
-
+            "Date"
         case .dateAndTime:
-            return "Date And Time"
-
+            "Date And Time"
         case .countDownTimer:
-            return "Count Down Timer"
-
+            "Count Down Timer"
         @unknown default:
-            return "Unknown"
+            if #available(iOS 17.4, *), self == .yearAndMonth {
+                "Year And Month"
+            }
+            else {
+                "Unknown"
+            }
         }
     }
 }

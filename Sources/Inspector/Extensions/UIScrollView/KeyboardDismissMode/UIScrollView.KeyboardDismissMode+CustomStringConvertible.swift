@@ -24,24 +24,17 @@ extension UIScrollView.KeyboardDismissMode: CustomStringConvertible {
     var description: String {
         switch self {
         case .none:
-            return "Do Not Dismiss"
-
+            "Do Not Dismiss"
         case .onDrag:
-            return "Dismiss On Drag"
-
+            "Dismiss On Drag"
         case .interactive:
-            return "Dismiss Interactively"
-
-        #if swift(>=6)
+            "Dismiss Interactively"
         case .onDragWithAccessory:
-            return "Dismiss On Drag With Accessory"
-
+            "Dismiss On Drag With Accessory"
         case .interactiveWithAccessory:
-            return "Dismiss Interactively With Accessory"
-        #endif
-
+            "Dismiss Interactively With Accessory"
         @unknown default:
-            return "Unknown"
+            "Unknown"
         }
     }
 }

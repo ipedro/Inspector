@@ -112,13 +112,18 @@ extension UINavigationItem.LargeTitleDisplayMode: CustomStringConvertible {
     var description: String {
         switch self {
         case .automatic:
-            return "Automatic"
+            "Automatic"
         case .always:
-            return "Always"
+            "Always"
         case .never:
-            return "Never"
+            "Never"
         @unknown default:
-            return "Unknown"
+            if #available(iOS 17.0, *), self == .inline {
+                "Inline"
+            }
+            else {
+                "Unknown"
+            }
         }
     }
 }
