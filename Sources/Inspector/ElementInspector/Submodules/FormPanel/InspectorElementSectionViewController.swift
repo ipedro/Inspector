@@ -85,10 +85,8 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
 
         guard let dataSource else { return }
 
-        if
-            let titleAccessoryProperty = dataSource.titleAccessoryProperty,
+        if let titleAccessoryProperty = dataSource.titleAccessoryProperty {
             let titleAccessoryView = makeView(for: titleAccessoryProperty)
-        {
             if let baseForm = titleAccessoryView as? BaseFormControl {
                 baseForm.titleLabel.removeFromSuperview()
             }
@@ -118,7 +116,7 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
         hasAddedFormViews = true
 
         for (index, property) in dataSource.properties.enumerated() {
-            guard let propertyView = makeView(for: property) else { continue }
+            let propertyView = makeView(for: property)
 
             let operation = MainThreadAsyncOperation(name: String(index)) { [weak self] in
                 guard let self else { return }
@@ -191,7 +189,7 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
 
     private var formViews: [InspectorElementProperty: UIView] = [:]
 
-    private func makeView(for property: InspectorElementProperty) -> UIView? {
+    private func makeView(for property: InspectorElementProperty) -> UIView {
         switch property {
         case let .preview(target: container):
             LiveViewHierarchyElementThumbnailView(with: container.reference).then {

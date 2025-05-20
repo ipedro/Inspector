@@ -208,7 +208,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EB5E1FEE261A48EC002301F5 /* Build configuration list for PBXNativeTarget "Example" */;
 			buildPhases = (
-				EBEDAB6626FB9B7300BB95FB /* SwiftFormat */,
 				EB5E1FD6261A48EB002301F5 /* Sources */,
 				EB5E1FD7261A48EB002301F5 /* Frameworks */,
 				EB5E1FD8261A48EB002301F5 /* Resources */,
@@ -327,25 +326,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftformat >/dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
-		};
-		EBEDAB6626FB9B7300BB95FB /* SwiftFormat */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftFormat;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "SDKROOT=(xcrun --sdk macosx --show-sdk-path)\n\ncd \"$SRCROOT\"\ncd ..\n\nswift run -c release --package-path BuildTools swiftformat .\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
