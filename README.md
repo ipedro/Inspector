@@ -156,53 +156,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 ```
 
-### SwiftUI (Beta)
-
-**Please note that SwiftUI support is in early stages and any feedback is welcome.**
-
-
-```swift
-// Add to your main view, or another view of your choosing
-
-import Inspector
-import SwiftUI
-
-struct ContentView: View {
-    @State var text = "Hello, world!"
-    @State var date = Date()
-    @State var isInspecting = false
-
-    var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 15) {
-                    DatePicker("Date", selection: $date)
-                        .datePickerStyle(GraphicalDatePickerStyle())
-
-                    TextField("text field", text: $text)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding()
-
-                    Button("Inspect") {
-                        isInspecting.toggle()
-                    }
-                    .padding()
-                }
-                .padding(20)
-            }
-            .inspect(
-                isPresented: $isInspecting,
-                viewHierarchyLayers: nil,
-                elementColorProvider: nil,
-                commandGroups: nil,
-                elementLibraries: nil
-            )
-            .navigationTitle("SwiftUI Inspector")
-        }
-    }
-}
-```
-
 ### Enable Key Commands *(Recommended)*
 
 Extend the root view controller class to enable `Inspector` key commands.

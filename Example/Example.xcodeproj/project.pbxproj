@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		EB04BCF0266B052C00F106C2 /* PlaygroundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB04BCEF266B052C00F106C2 /* PlaygroundViewController.swift */; };
-		EB090A8426C82AA800CA938E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB5E1FE6261A48EC002301F5 /* Assets.xcassets */; };
 		EB210C7B2624E4D00032B9AE /* RoundedButtonAttributesSectionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB210C7A2624E4D00032B9AE /* RoundedButtonAttributesSectionDataSource.swift */; };
 		EB210C862624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB210C852624E5DF0032B9AE /* UIDatePickerStyle+Extensions.swift */; };
 		EB5E1FDE261A48EB002301F5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E1FDD261A48EB002301F5 /* AppDelegate.swift */; };
@@ -21,9 +20,6 @@
 		EB5E95F62850B54100CF09EC /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5E95F52850B54100CF09EC /* BaseViewController.swift */; };
 		EB6595ED266B45C10021CC91 /* Down in Frameworks */ = {isa = PBXBuildFile; productRef = EB6595EC266B45C10021CC91 /* Down */; };
 		EB6595F0266BE2BA0021CC91 /* UIView+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6595EF266BE2BA0021CC91 /* UIView+Animations.swift */; };
-		EB76A4FE26C7A7A40088E571 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */; };
-		EB76A50526C7A7A50088E571 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB76A50426C7A7A50088E571 /* Preview Assets.xcassets */; };
-		EB76A50B26C7AAE10088E571 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EB76A50A26C7AAE10088E571 /* Inspector */; };
 		EBBA573A2865C01000997B50 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBA57392865C01000997B50 /* UIKit.framework */; };
 		EBC0288226354CAB00502C90 /* ExampleAttributesLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC0288126354CAB00502C90 /* ExampleAttributesLibrary.swift */; };
 		EBEC3E22263AC75B00131D60 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EBEC3E21263AC75B00131D60 /* Inspector */; };
@@ -46,10 +42,6 @@
 		EB5E2003261A4EC9002301F5 /* RoundedButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
 		EB5E95F52850B54100CF09EC /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		EB6595EF266BE2BA0021CC91 /* UIView+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Animations.swift"; sourceTree = "<group>"; };
-		EB76A4FB26C7A7A40088E571 /* SwiftUI-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftUI-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
-		EB76A50426C7A7A50088E571 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		EB76A50626C7A7A50088E571 /* SwiftUI-Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SwiftUI-Example-Info.plist"; sourceTree = "<group>"; };
 		EBBA57392865C01000997B50 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		EBC0288126354CAB00502C90 /* ExampleAttributesLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleAttributesLibrary.swift; sourceTree = "<group>"; };
 		EBF6BCE02831109100D68BD0 /* WeakObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakObject.swift; sourceTree = "<group>"; };
@@ -63,14 +55,6 @@
 				EB6595ED266B45C10021CC91 /* Down in Frameworks */,
 				EBBA573A2865C01000997B50 /* UIKit.framework in Frameworks */,
 				EBEC3E22263AC75B00131D60 /* Inspector in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EB76A4F826C7A7A40088E571 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EB76A50B26C7AAE10088E571 /* Inspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,8 +80,7 @@
 		EB5E1FD1261A48EB002301F5 = {
 			isa = PBXGroup;
 			children = (
-				EB5E1FDC261A48EB002301F5 /* Example-UIKit */,
-				EB76A4FC26C7A7A40088E571 /* Example-SwiftUI */,
+				EB5E1FDC261A48EB002301F5 /* Example */,
 				EB1D6D2D26FCA2A80063EB60 /* Configuration */,
 				EBEC3E20263AC75B00131D60 /* Frameworks */,
 				EB5E1FDB261A48EB002301F5 /* Products */,
@@ -109,12 +92,11 @@
 			isa = PBXGroup;
 			children = (
 				EB5E1FDA261A48EB002301F5 /* Example.app */,
-				EB76A4FB26C7A7A40088E571 /* SwiftUI-Example.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		EB5E1FDC261A48EB002301F5 /* Example-UIKit */ = {
+		EB5E1FDC261A48EB002301F5 /* Example */ = {
 			isa = PBXGroup;
 			children = (
 				EB5E95F52850B54100CF09EC /* BaseViewController.swift */,
@@ -127,15 +109,7 @@
 				EB5E95F42850B3B100CF09EC /* Storyboards */,
 				EB5E6EFB26FC88C8000D13CD /* Support Files */,
 			);
-			path = "Example-UIKit";
-			sourceTree = "<group>";
-		};
-		EB5E6EFA26FC88B5000D13CD /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				EB76A50626C7A7A50088E571 /* SwiftUI-Example-Info.plist */,
-			);
-			name = "Support Files";
+			path = Example;
 			sourceTree = "<group>";
 		};
 		EB5E6EFB26FC88C8000D13CD /* Support Files */ = {
@@ -175,24 +149,6 @@
 			path = Storyboards;
 			sourceTree = "<group>";
 		};
-		EB76A4FC26C7A7A40088E571 /* Example-SwiftUI */ = {
-			isa = PBXGroup;
-			children = (
-				EB76A4FD26C7A7A40088E571 /* ExampleApp.swift */,
-				EB5E6EFA26FC88B5000D13CD /* Support Files */,
-				EB76A50326C7A7A50088E571 /* Preview Content */,
-			);
-			path = "Example-SwiftUI";
-			sourceTree = "<group>";
-		};
-		EB76A50326C7A7A50088E571 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				EB76A50426C7A7A50088E571 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
 		EBEC3E20263AC75B00131D60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -225,27 +181,6 @@
 			productReference = EB5E1FDA261A48EB002301F5 /* Example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		EB76A4FA26C7A7A40088E571 /* SwiftUI-Example */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = EB76A50926C7A7A50088E571 /* Build configuration list for PBXNativeTarget "SwiftUI-Example" */;
-			buildPhases = (
-				EB93B61C26F89F1D00FBD7AC /* SwiftFormat */,
-				EB76A4F726C7A7A40088E571 /* Sources */,
-				EB76A4F826C7A7A40088E571 /* Frameworks */,
-				EB76A4F926C7A7A40088E571 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "SwiftUI-Example";
-			packageProductDependencies = (
-				EB76A50A26C7AAE10088E571 /* Inspector */,
-			);
-			productName = "SwiftUI Example";
-			productReference = EB76A4FB26C7A7A40088E571 /* SwiftUI-Example.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -257,9 +192,6 @@
 				TargetAttributes = {
 					EB5E1FD9261A48EB002301F5 = {
 						CreatedOnToolsVersion = 12.4;
-					};
-					EB76A4FA26C7A7A40088E571 = {
-						CreatedOnToolsVersion = 12.5.1;
 					};
 				};
 			};
@@ -280,7 +212,6 @@
 			projectRoot = "";
 			targets = (
 				EB5E1FD9261A48EB002301F5 /* Example */,
-				EB76A4FA26C7A7A40088E571 /* SwiftUI-Example */,
 			);
 		};
 /* End PBXProject section */
@@ -296,38 +227,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EB76A4F926C7A7A40088E571 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EB76A50526C7A7A50088E571 /* Preview Assets.xcassets in Resources */,
-				EB090A8426C82AA800CA938E /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		EB93B61C26F89F1D00FBD7AC /* SwiftFormat */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftFormat;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftformat >/dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		EB5E1FD6261A48EB002301F5 /* Sources */ = {
@@ -345,14 +245,6 @@
 				EB6595F0266BE2BA0021CC91 /* UIView+Animations.swift in Sources */,
 				EB5E1FDE261A48EB002301F5 /* AppDelegate.swift in Sources */,
 				EB5E1FE0261A48EB002301F5 /* SceneDelegate.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EB76A4F726C7A7A40088E571 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EB76A4FE26C7A7A40088E571 /* ExampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -547,57 +439,6 @@
 			};
 			name = Release;
 		};
-		EB76A50726C7A7A50088E571 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"Example-SwiftUI/Preview Content\"";
-				DEVELOPMENT_TEAM = 9U37VDVBP4;
-				ENABLE_PREVIEWS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"VERBOSE=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "Example-SwiftUI/SwiftUI-Example-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "am.pedro.Inspector.${PRODUCT_NAME:bundleIdentifier}${SAMPLE_CODE_DISAMBIGUATOR}";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		EB76A50826C7A7A50088E571 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"Example-SwiftUI/Preview Content\"";
-				DEVELOPMENT_TEAM = 9U37VDVBP4;
-				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "Example-SwiftUI/SwiftUI-Example-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "am.pedro.Inspector.${PRODUCT_NAME:bundleIdentifier}${SAMPLE_CODE_DISAMBIGUATOR}";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -615,15 +456,6 @@
 			buildConfigurations = (
 				EB5E1FEF261A48EC002301F5 /* Debug */,
 				EB5E1FF0261A48EC002301F5 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		EB76A50926C7A7A50088E571 /* Build configuration list for PBXNativeTarget "SwiftUI-Example" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EB76A50726C7A7A50088E571 /* Debug */,
-				EB76A50826C7A7A50088E571 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -646,10 +478,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EB6595EB266B45C10021CC91 /* XCRemoteSwiftPackageReference "Down" */;
 			productName = Down;
-		};
-		EB76A50A26C7AAE10088E571 /* Inspector */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Inspector;
 		};
 		EBEC3E21263AC75B00131D60 /* Inspector */ = {
 			isa = XCSwiftPackageProductDependency;
