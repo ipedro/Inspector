@@ -172,7 +172,7 @@ private extension UIView {
             return control.isEnabled
         }
 
-        if let gestureRecognizers = gestureRecognizers, !gestureRecognizers.isEmpty {
+        if let gestureRecognizers, !gestureRecognizers.isEmpty {
             return true
         }
 

@@ -136,10 +136,10 @@ class ViewHierarchyElementThumbnailView: BaseView {
     var aspectRatio: CGFloat {
         switch state {
         case let .snapshot(view):
-            return view.frame.width / view.frame.height
+            view.frame.width / view.frame.height
 
         default:
-            return 3
+            3
         }
     }
 

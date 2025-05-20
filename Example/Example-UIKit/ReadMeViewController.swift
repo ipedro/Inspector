@@ -57,23 +57,23 @@ final class ReadMeViewController: BaseViewController {
         configuration: nil,
         options: .smart,
         didLoadSuccessfully: { [weak self] in
-            guard let self = self else { return }
-            self.activityIndicatorView.stopAnimating()
+            guard let self else { return }
+            activityIndicatorView.stopAnimating()
 
-            self.markdownView.translatesAutoresizingMaskIntoConstraints = false
-            self.markdownView.alpha = 0
-            self.markdownView.pageZoom = 1.5
-            self.markdownView.navigationDelegate = self
-            self.markdownView.backgroundColor = .clear
-            self.markdownView.scrollView.backgroundColor = .clear
+            markdownView.translatesAutoresizingMaskIntoConstraints = false
+            markdownView.alpha = 0
+            markdownView.pageZoom = 1.5
+            markdownView.navigationDelegate = self
+            markdownView.backgroundColor = .clear
+            markdownView.scrollView.backgroundColor = .clear
 
-            self.view.insertSubview(self.markdownView, at: 0)
+            view.insertSubview(markdownView, at: 0)
 
-            [self.markdownView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-             self.markdownView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-             self.markdownView.topAnchor.constraint(equalTo: self.view.topAnchor),
-             self.markdownView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
-             self.markdownView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)].forEach {
+            [markdownView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+             markdownView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+             markdownView.topAnchor.constraint(equalTo: view.topAnchor),
+             markdownView.widthAnchor.constraint(equalTo: view.widthAnchor),
+             markdownView.trailingAnchor.constraint(equalTo: view.trailingAnchor)].forEach {
                 $0.isActive = true
             }
 
@@ -87,7 +87,7 @@ final class ReadMeViewController: BaseViewController {
         didSet {
             guard let markdownString = markdown?.markdownString else { return }
 
-            try? self.markdownView.update(markdownString: markdownString, options: .smart)
+            try? markdownView.update(markdownString: markdownString, options: .smart)
         }
     }
 
@@ -118,20 +118,20 @@ final class ReadMeViewController: BaseViewController {
         let url = URL(string: "https://raw.githubusercontent.com/ipedro/Inspector/develop/README.md")!
 
         let task = session.dataTask(with: url) { [weak self] data, _, _ in
-            guard let self = self else { return }
+            guard let self else { return }
 
             guard
-                let data = data,
+                let data,
                 let markdownString = String(data: data, encoding: String.Encoding.utf8)?.replacingOccurrences(of: "# 🕵🏽‍♂️ Inspector\n", with: "")
             else {
-                self.activityIndicatorView.stopAnimating()
+                activityIndicatorView.stopAnimating()
                 return
             }
 
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
 
-                self.markdown = Down(markdownString: markdownString)
+                markdown = Down(markdownString: markdownString)
             }
         }
 
@@ -161,7 +161,7 @@ extension ReadMeViewController: WKNavigationDelegate {
     }
 
     private func openInSafariViewController(_ url: URL?) {
-        guard let url = url else { return }
+        guard let url else { return }
 
         let configuration = SFSafariViewController.Configuration()
         configuration.barCollapsingEnabled = false

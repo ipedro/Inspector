@@ -61,14 +61,14 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let keyCommand = keyCommand else { return [] }
+            guard let keyCommand else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .separator:
-                    return .separator
+                    .separator
                 case .discoverabilityTitle:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: .none,
                         axis: .vertical,
@@ -76,13 +76,13 @@ extension DefaultElementAttributesLibrary {
                         handler: .none
                     )
                 case .image:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { keyCommand.image },
                         handler: .none
                     )
                 case .key:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: .none,
                         axis: .vertical,
@@ -90,7 +90,7 @@ extension DefaultElementAttributesLibrary {
                         handler: .none
                     )
                 case .title:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: .none,
                         axis: .vertical,
@@ -98,7 +98,7 @@ extension DefaultElementAttributesLibrary {
                         handler: .none
                     )
                 case .selector:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: .none,
                         axis: .vertical,
@@ -135,22 +135,22 @@ extension UIKeyModifierFlags {
     var symbols: [String?] {
         var symbols = [String?]()
 
-        Self.allCases.forEach { flag in
+        for flag in Self.allCases {
             if contains(flag) {
                 symbols.append({
                     switch flag {
                     case .alphaShift:
-                        return "⇪"
+                        "⇪"
                     case .shift:
-                        return "⇧"
+                        "⇧"
                     case .control:
-                        return "^"
+                        "^"
                     case .alternate:
-                        return "⌥"
+                        "⌥"
                     case .command:
-                        return "⌘"
+                        "⌘"
                     default:
-                        return nil
+                        nil
                     }
                 }())
             }

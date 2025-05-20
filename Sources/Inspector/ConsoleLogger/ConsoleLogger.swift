@@ -40,9 +40,9 @@ struct ConsoleLogger {
 
         var description: String {
             switch self {
-            case .snapshotUnavailable: return "Couldn't capture the view hierarchy. Make sure Inspector.start() was called"
-            case .couldNotFindObject: return "Couldn't find the object in the view hierarchy"
-            case .objectIsNil: return "The object is nil"
+            case .snapshotUnavailable: "Couldn't capture the view hierarchy. Make sure Inspector.start() was called"
+            case .couldNotFindObject: "Couldn't find the object in the view hierarchy"
+            case .objectIsNil: "The object is nil"
             }
         }
     }
@@ -59,7 +59,7 @@ struct ConsoleLogger {
     func printViewHierarchyDescription(of object: NSObject?) {
         switch takeSnapshot() {
         case let .success(snapshot):
-            guard let object = object else { return print(Error.objectIsNil) }
+            guard let object else { return print(Error.objectIsNil) }
             guard let reference = snapshot.containsReference(for: object) else { return print(Error.couldNotFindObject) }
             print(reference.viewHierarchyDescription)
         case let .failure(error):

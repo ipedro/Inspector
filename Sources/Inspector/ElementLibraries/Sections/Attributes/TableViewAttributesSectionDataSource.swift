@@ -45,19 +45,19 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let tableView = tableView else { return [] }
+            guard let tableView else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .style:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UITableView.Style.allCases.map(\.description),
                         selectedIndex: { UITableView.Style.allCases.firstIndex(of: tableView.style) },
                         handler: nil
                     )
                 case .separatorStyle:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UITableViewCell.SeparatorStyle.allCases.map(\.description),
                         selectedIndex: { UITableViewCell.SeparatorStyle.allCases.firstIndex(of: tableView.separatorStyle) },
@@ -69,7 +69,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .separatorColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         emptyTitle: "Default",
                         color: { tableView.separatorColor },
@@ -78,10 +78,9 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .divider:
-                    return .separator
-
+                    .separator
                 case .separatorInset:
-                    return .edgeInsets(
+                    .edgeInsets(
                         title: property.rawValue,
                         insets: { tableView.separatorInset },
                         handler: { separatorInset in
@@ -89,7 +88,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .selection:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         emptyTitle: property.rawValue,
                         axis: .vertical,
@@ -115,7 +114,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     }
                 case .editingSelection:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         emptyTitle: property.rawValue,
                         axis: .vertical,
@@ -141,7 +140,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     }
                 case .isSpringLoaded:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { tableView.isSpringLoaded },
                         handler: { isSpringLoaded in

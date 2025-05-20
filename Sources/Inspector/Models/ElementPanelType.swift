@@ -27,9 +27,9 @@ public extension Inspector {
         var rawValue: ElementInspectorPanel {
             switch self {
             case .attributes:
-                return .attributes
+                .attributes
             case .size:
-                return .size
+                .size
             }
         }
     }

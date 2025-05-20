@@ -24,21 +24,21 @@ extension UILayoutPriority: CustomStringConvertible {
     var name: String {
         switch self {
         case .defaultHigh:
-            return "High"
+            "High"
         case .defaultLow:
-            return "Low"
+            "Low"
         case .fittingSizeLevel:
-            return "Fitting Size"
+            "Fitting Size"
         case .required:
-            return "Required"
+            "Required"
         case .dragThatCanResizeScene:
-            return "Drag That Can Resize Scene"
+            "Drag That Can Resize Scene"
         case .sceneSizeStayPut:
-            return "Scene Size Stay Put"
+            "Scene Size Stay Put"
         case .dragThatCannotResizeScene:
-            return "Drag That Can't Resize Scene"
+            "Drag That Can't Resize Scene"
         default:
-            return rawValue.toString()
+            rawValue.toString()
         }
     }
 

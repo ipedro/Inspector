@@ -45,7 +45,7 @@ final class RoundedButtonAttributesSectionDataSource: InspectorElementSectionDat
         Properties.allCases.map { property in
             switch property {
             case .animateOnTouch:
-                return .switch(
+                .switch(
                     title: property.rawValue,
                     isOn: { self.button.animateOnTouch }
                 ) { animateOnTouch in
@@ -53,7 +53,7 @@ final class RoundedButtonAttributesSectionDataSource: InspectorElementSectionDat
                 }
 
             case .cornerRadius:
-                return .switch(
+                .switch(
                     title: property.rawValue,
                     isOn: { self.button.roundCorners }
                 ) { roundCorners in
@@ -61,7 +61,7 @@ final class RoundedButtonAttributesSectionDataSource: InspectorElementSectionDat
                 }
 
             case .backgroundColor:
-                return .colorPicker(
+                .colorPicker(
                     title: property.rawValue,
                     color: { self.button.backgroundColor }
                 ) { newBackgroundColor in

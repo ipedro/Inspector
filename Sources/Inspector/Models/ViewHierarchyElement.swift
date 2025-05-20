@@ -378,20 +378,20 @@ extension ViewHierarchyElement: ViewHierarchyElementReference {
     private func scheduleSnapshot(_ handler: ((Result<Snapshot, SnapshotSchedulingError>) -> Void)? = nil) {
         store.scheduleSnapshot(
             .init(closure: { [weak self] in
-                guard let self = self else {
+                guard let self else {
                     handler?(.failure(.dealocatedSelf))
                     return nil
                 }
 
-                guard let rootView = self._underlyingView else {
+                guard let rootView = _underlyingView else {
                     handler?(.failure(.lostConnectionToView))
                     return nil
                 }
 
                 let snapshot = Snapshot(
                     view: rootView,
-                    icon: self.iconProvider?.resizedIcon(for: rootView),
-                    depth: self._depth
+                    icon: iconProvider?.resizedIcon(for: rootView),
+                    depth: _depth
                 )
 
                 handler?(.success(snapshot))

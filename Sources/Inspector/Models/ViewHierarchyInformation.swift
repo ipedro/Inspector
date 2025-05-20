@@ -32,11 +32,11 @@ enum ViewHierarchyInformation: Swift.CaseIterable, MenuContentProtocol {
     var title: String {
         switch self {
         case .className:
-            return Texts.copy("Class Name")
+            Texts.copy("Class Name")
         case .description:
-            return Texts.copy("Description")
+            Texts.copy("Description")
         case .report:
-            return Texts.copy("View Report")
+            Texts.copy("View Report")
         }
     }
 

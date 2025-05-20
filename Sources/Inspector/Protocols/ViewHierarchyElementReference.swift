@@ -104,7 +104,7 @@ extension ViewHierarchyElementReference {
     var allParents: [ViewHierarchyElementReference] {
         var array = [ViewHierarchyElementReference]()
 
-        if let parent = parent {
+        if let parent {
             array.append(parent)
             array.append(contentsOf: parent.allParents)
         }

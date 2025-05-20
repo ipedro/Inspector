@@ -49,12 +49,12 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let tabBarItem = tabBarItem else { return [] }
+            guard let tabBarItem else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .badgeValue:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: "Value",
                         axis: .vertical,
@@ -62,29 +62,28 @@ extension DefaultElementAttributesLibrary {
                         handler: { tabBarItem.badgeValue = $0 }
                     )
                 case .badgeColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         emptyTitle: "Default",
                         color: { tabBarItem.badgeColor },
                         handler: { tabBarItem.badgeColor = $0 }
                     )
                 case .selectedImage:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { tabBarItem.selectedImage },
                         handler: { tabBarItem.selectedImage = $0 }
                     )
                 case .titlePositionAdjustment:
-                    return .uiOffset(
+                    .uiOffset(
                         title: property.rawValue,
                         offset: { tabBarItem.titlePositionAdjustment },
                         handler: { tabBarItem.titlePositionAdjustment = $0 }
                     )
                 case .groupDragAndDrop:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .isSpringLoaded:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { tabBarItem.isSpringLoaded },
                         handler: { tabBarItem.isSpringLoaded = $0 }

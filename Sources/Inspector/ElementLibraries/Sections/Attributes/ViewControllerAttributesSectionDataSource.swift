@@ -30,7 +30,7 @@ extension DefaultElementAttributesLibrary {
 
         private lazy var isInitialViewController: Bool? = {
             guard
-                let viewController = viewController,
+                let viewController,
                 let initialViewController = viewController.storyboard?.instantiateInitialViewController()
             else {
                 return nil
@@ -66,16 +66,14 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let viewController = viewController else { return [] }
+            guard let viewController else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .separator0, .separator1:
                     return .separator
-
                 case .groupLayout, .groupExtendEdges:
                     return .group(title: property.rawValue)
-
                 case .title:
                     return .textField(
                         title: property.rawValue,
@@ -85,14 +83,13 @@ extension DefaultElementAttributesLibrary {
                         handler: { viewController.title = $0 }
                     )
                 case .initialViewController:
-                    guard let isInitialViewController = isInitialViewController else { return nil }
+                    guard let isInitialViewController else { return nil }
 
                     return .switch(
                         title: property.rawValue,
                         isOn: { isInitialViewController },
                         handler: nil
                     )
-
                 case .hidesBottomBarWhenPushed:
                     return .switch(
                         title: property.rawValue,

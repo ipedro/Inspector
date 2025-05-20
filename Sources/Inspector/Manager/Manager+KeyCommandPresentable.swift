@@ -53,8 +53,8 @@ extension Manager: KeyCommandPresentable {
             icon: .systemIcon("tortoise.fill", weight: .regular),
             isSelected: isSlowingAnimations
         ) { [weak self] in
-            guard let self = self else { return }
-            self.snapshot
+            guard let self else { return }
+            snapshot
                 .root
                 .windows
                 .forEach { $0.layer.speed = isSlowingAnimations ? 1 : 1 / 5 }
@@ -139,7 +139,7 @@ extension Manager: KeyCommandPresentable {
     }
 
     private var insectViewHierarchy: CommandsGroups {
-        guard let keyWindow = keyWindow else { return [] }
+        guard let keyWindow else { return [] }
 
         let showFullApplicationHierarchy = dependencies.configuration.showFullApplicationHierarchy
 
@@ -171,8 +171,8 @@ extension Manager: KeyCommandPresentable {
                 var commands = [Command]()
                 commands.append(
                     .inspectElement(element) { [weak self] in
-                        guard let self = self else { return }
-                        self.perform(
+                        guard let self else { return }
+                        perform(
                             action: .inspect(preferredPanel: .default),
                             with: element,
                             from: presenter
@@ -195,7 +195,7 @@ extension Manager: KeyCommandPresentable {
 
     private var toggleInterfaceStyleCommand: Command? {
         guard
-            let keyWindow = keyWindow,
+            let keyWindow,
             snapshot.root.bundleInfo?.interfaceStyle == nil
         else {
             return .none
@@ -205,13 +205,11 @@ extension Manager: KeyCommandPresentable {
         let modifierFlags: UIKeyModifierFlags = [.control, .shift]
 
         let closure: () -> Void = {
-            keyWindow.overrideUserInterfaceStyle = {
-                switch keyWindow.traitCollection.userInterfaceStyle {
-                case .dark: return .light
-                case .light: return .dark
-                default: return .unspecified
-                }
-            }()
+            keyWindow.overrideUserInterfaceStyle = switch keyWindow.traitCollection.userInterfaceStyle {
+            case .dark: .light
+            case .light: .dark
+            default: .unspecified
+            }
         }
 
         guard keyWindow.traitCollection.userInterfaceStyle == .light else {
@@ -242,8 +240,8 @@ extension Manager: KeyCommandPresentable {
             .sorted { $0._depth < $1._depth }
             .map { viewController in
                 .inspectElement(viewController) { [weak self] in
-                    guard let self = self else { return }
-                    self.perform(action: action, with: viewController, from: sourceView)
+                    guard let self else { return }
+                    perform(action: action, with: viewController, from: sourceView)
                 }
             }
     }

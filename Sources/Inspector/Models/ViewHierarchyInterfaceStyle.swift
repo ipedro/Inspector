@@ -46,11 +46,11 @@ extension ViewHierarchyInterfaceStyle: RawRepresentable {
     var rawValue: UIUserInterfaceStyle {
         switch self {
         case .unspecified:
-            return .unspecified
+            .unspecified
         case .light:
-            return .light
+            .light
         case .dark:
-            return .dark
+            .dark
         }
     }
 }

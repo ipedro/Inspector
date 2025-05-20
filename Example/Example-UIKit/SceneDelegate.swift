@@ -83,9 +83,9 @@ extension SceneDelegate: InspectorCustomizationProviding {
         .init { view in
             switch view {
             case is RoundedButton:
-                return #imageLiteral(resourceName: "RoundedButton_32")
+                #imageLiteral(resourceName: "RoundedButton_32")
             default:
-                return nil
+                nil
             }
         }
     }
@@ -151,13 +151,13 @@ extension SceneDelegate: InspectorCustomizationProviding {
 private extension UIImage {
     static func hierarchical(systemName: String) -> UIImage? {
         if #available(iOS 15.0, *) {
-            return .init(systemName: systemName)?
+            .init(systemName: systemName)?
                 .applyingSymbolConfiguration(.init(hierarchicalColor: UIColor.darkText))?
                 .withRenderingMode(.alwaysTemplate)
         }
         else {
             // Fallback on earlier versions
-            return self.init(systemName: systemName)?
+            self.init(systemName: systemName)?
                 .withRenderingMode(.alwaysTemplate)
         }
     }

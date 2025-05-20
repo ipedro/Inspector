@@ -37,7 +37,7 @@ extension UIEdgeInsets {
     }
 
     @inlinable
-    init<T>(_ insets: T) where T: BinaryFloatingPoint {
+    init(_ insets: some BinaryFloatingPoint) {
         self.init(top: insets, left: insets, bottom: insets, right: insets)
     }
 

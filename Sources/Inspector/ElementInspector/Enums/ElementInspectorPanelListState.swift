@@ -26,24 +26,24 @@ enum ElementInspectorPanelListState: Swift.CaseIterable, MenuContentProtocol {
     func next() -> Self? {
         switch self {
         case .allCollapsed:
-            return .firstExpanded
+            .firstExpanded
         case .mixed, .firstExpanded:
-            return .allExpanded
+            .allExpanded
         case .allExpanded:
-            return .none
+            .none
         }
     }
 
     func previous() -> Self? {
         switch self {
         case .allCollapsed:
-            return .none
+            .none
         case .firstExpanded:
-            return .allCollapsed
+            .allCollapsed
         case .mixed:
-            return .allCollapsed
+            .allCollapsed
         case .allExpanded:
-            return .firstExpanded
+            .firstExpanded
         }
     }
 
@@ -54,26 +54,26 @@ enum ElementInspectorPanelListState: Swift.CaseIterable, MenuContentProtocol {
     var title: String {
         switch self {
         case .allCollapsed:
-            return "Collapse All"
+            "Collapse All"
         case .firstExpanded:
-            return "Expand First"
+            "Expand First"
         case .mixed:
-            return "Mixed selection"
+            "Mixed selection"
         case .allExpanded:
-            return "Expand All"
+            "Expand All"
         }
     }
 
     var image: UIImage? {
         switch self {
         case .allCollapsed:
-            return .collapseMirroredSymbol
+            .collapseMirroredSymbol
         case .firstExpanded:
-            return .expandSymbol
+            .expandSymbol
         case .mixed:
-            return nil
+            nil
         case .allExpanded:
-            return .expandSymbol
+            .expandSymbol
         }
     }
 }

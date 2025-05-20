@@ -44,12 +44,12 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let stackView = stackView else { return [] }
+            guard let stackView else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .axis:
-                    return .textButtonGroup(
+                    .textButtonGroup(
                         title: property.rawValue,
                         texts: NSLayoutConstraint.Axis.allCases.map(\.description),
                         selectedIndex: { NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis) }
@@ -61,7 +61,7 @@ extension DefaultElementAttributesLibrary {
                         stackView.axis = axis
                     }
                 case .alignment:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIStackView.Alignment.allCases.map(\.description),
                         selectedIndex: { UIStackView.Alignment.allCases.firstIndex(of: stackView.alignment) }
@@ -73,7 +73,7 @@ extension DefaultElementAttributesLibrary {
                         stackView.alignment = alignment
                     }
                 case .distribution:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIStackView.Distribution.allCases.map(\.description),
                         selectedIndex: { UIStackView.Distribution.allCases.firstIndex(of: stackView.distribution) }
@@ -85,7 +85,7 @@ extension DefaultElementAttributesLibrary {
                         stackView.distribution = distribution
                     }
                 case .spacing:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { stackView.spacing },
                         range: { 0 ... .infinity },
@@ -94,14 +94,14 @@ extension DefaultElementAttributesLibrary {
                         stackView.spacing = spacing
                     }
                 case .isBaselineRelativeArrangement:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { stackView.isBaselineRelativeArrangement }
                     ) { isBaselineRelativeArrangement in
                         stackView.isBaselineRelativeArrangement = isBaselineRelativeArrangement
                     }
                 case .isLayoutMarginsRelativeArrangement:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { stackView.isLayoutMarginsRelativeArrangement }
                     ) { isLayoutMarginsRelativeArrangement in

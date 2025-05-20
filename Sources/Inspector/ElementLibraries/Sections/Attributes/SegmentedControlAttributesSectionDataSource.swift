@@ -51,7 +51,7 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let segmentedControl = segmentedControl else { return [] }
+            guard let segmentedControl else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
@@ -78,10 +78,8 @@ extension DefaultElementAttributesLibrary {
                     ) { isSpringLoaded in
                         segmentedControl.isSpringLoaded = isSpringLoaded
                     }
-
                 case .groupSegment:
                     return .separator
-
                 case .segmentPicker:
                     return .segmentPicker(for: segmentedControl) { [weak self] selectedSegment in
                         self?.selectedSegment = selectedSegment
@@ -91,7 +89,6 @@ extension DefaultElementAttributesLibrary {
                         title: property.rawValue,
                         placeholder: property.rawValue,
                         value: { [weak self] in
-
                             guard let selectedSegment = self?.selectedSegment else {
                                 return nil
                             }
@@ -99,7 +96,6 @@ extension DefaultElementAttributesLibrary {
                             return segmentedControl.titleForSegment(at: selectedSegment)
                         }
                     ) { [weak self] segmentTitle in
-
                         guard let selectedSegment = self?.selectedSegment else {
                             return
                         }
@@ -110,7 +106,6 @@ extension DefaultElementAttributesLibrary {
                     return .imagePicker(
                         title: property.rawValue,
                         image: { [weak self] in
-
                             guard let selectedSegment = self?.selectedSegment else {
                                 return nil
                             }
@@ -118,7 +113,6 @@ extension DefaultElementAttributesLibrary {
                             return segmentedControl.imageForSegment(at: selectedSegment)
                         }
                     ) { [weak self] segmentImage in
-
                         guard let selectedSegment = self?.selectedSegment else {
                             return
                         }
@@ -129,7 +123,6 @@ extension DefaultElementAttributesLibrary {
                     return .switch(
                         title: property.rawValue,
                         isOn: { [weak self] in
-
                             guard let selectedSegment = self?.selectedSegment else {
                                 return false
                             }
@@ -137,7 +130,6 @@ extension DefaultElementAttributesLibrary {
                             return segmentedControl.isEnabledForSegment(at: selectedSegment)
                         }
                     ) { [weak self] isEnabled in
-
                         guard let selectedSegment = self?.selectedSegment else {
                             return
                         }
@@ -149,7 +141,6 @@ extension DefaultElementAttributesLibrary {
                         title: property.rawValue,
                         isOn: { [weak self] in self?.selectedSegment == segmentedControl.selectedSegmentIndex }
                     ) { [weak self] isSelected in
-
                         guard let selectedSegment = self?.selectedSegment else {
                             return
                         }

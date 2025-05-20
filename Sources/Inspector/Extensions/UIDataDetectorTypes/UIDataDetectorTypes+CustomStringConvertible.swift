@@ -24,31 +24,31 @@ extension UIDataDetectorTypes: CustomStringConvertible {
     var description: String {
         switch self {
         case .phoneNumber:
-            return "Phone Number"
+            "Phone Number"
 
         case .link:
-            return "Link"
+            "Link"
 
         case .address:
-            return "Address"
+            "Address"
 
         case .calendarEvent:
-            return "Calendar Event"
+            "Calendar Event"
 
         case .shipmentTrackingNumber:
-            return "Shipment Tracking Number"
+            "Shipment Tracking Number"
 
         case .flightNumber:
-            return "Flight Number"
+            "Flight Number"
 
         case .lookupSuggestion:
-            return "Lookup Suggestion"
+            "Lookup Suggestion"
 
         case .all:
-            return "All"
+            "All"
 
         default:
-            return "\(self) (unsupported)"
+            "\(self) (unsupported)"
         }
     }
 }

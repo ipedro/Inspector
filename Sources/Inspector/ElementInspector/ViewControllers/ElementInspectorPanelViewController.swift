@@ -65,7 +65,7 @@ class ElementInspectorPanelViewController: UIViewController, ElementInspectorApp
 
     @objc
     private func updateVerticalPresentationState() {
-        guard let parent = parent else { return }
+        guard let parent else { return }
 
         let newValue: Bool = {
             if let popover = parent.popoverPresentationController {
@@ -95,14 +95,14 @@ class ElementInspectorPanelViewController: UIViewController, ElementInspectorApp
 
     func calculatePreferredContentSize() -> CGSize {
         if isViewLoaded {
-            return view.systemLayoutSizeFitting(
+            view.systemLayoutSizeFitting(
                 Inspector.sharedInstance.configuration.elementInspectorConfiguration.panelPreferredCompressedSize,
                 withHorizontalFittingPriority: .defaultHigh,
                 verticalFittingPriority: .fittingSizeLevel
             )
         }
         else {
-            return .zero
+            .zero
         }
     }
 }

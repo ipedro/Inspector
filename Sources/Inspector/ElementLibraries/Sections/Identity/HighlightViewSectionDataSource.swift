@@ -43,14 +43,14 @@ extension DefaultElementIdentityLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let highlightView = highlightView else {
+            guard let highlightView else {
                 return []
             }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .highlightView:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { !highlightView.isHidden },
                         handler: { isOn in
@@ -58,7 +58,7 @@ extension DefaultElementIdentityLibrary {
                         }
                     )
                 case .nameDisplayMode:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: ElementNameView.DisplayMode.allCases.map(\.title),
                         selectedIndex: { ElementNameView.DisplayMode.allCases.firstIndex(of: highlightView.displayMode) },

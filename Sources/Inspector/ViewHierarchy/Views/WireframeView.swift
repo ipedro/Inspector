@@ -80,7 +80,7 @@ final class WireframeView: LayerView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        guard let superview = superview else {
+        guard let superview else {
             layoutGuideView.removeFromSuperview()
             return
         }

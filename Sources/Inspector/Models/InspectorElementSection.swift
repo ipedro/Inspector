@@ -49,7 +49,7 @@ public struct InspectorElementSection {
     }
 
     public mutating func append(_ dataSource: InspectorElementSectionDataSource?) {
-        guard let dataSource = dataSource else {
+        guard let dataSource else {
             return
         }
 

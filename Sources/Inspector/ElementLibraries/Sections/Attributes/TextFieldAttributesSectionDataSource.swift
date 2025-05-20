@@ -67,7 +67,7 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let textField = textField else { return [] }
+            guard let textField else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
@@ -91,7 +91,7 @@ extension DefaultElementAttributesLibrary {
                         title: property.rawValue,
                         fontProvider: { textField.font }
                     ) { font in
-                        guard let font = font else {
+                        guard let font else {
                             return
                         }
 
@@ -102,7 +102,7 @@ extension DefaultElementAttributesLibrary {
                         title: property.rawValue,
                         fontProvider: { textField.font }
                     ) { font in
-                        guard let font = font else {
+                        guard let font else {
                             return
                         }
 
@@ -132,7 +132,6 @@ extension DefaultElementAttributesLibrary {
                     }
                 case .groupImages:
                     return .group(title: property.rawValue)
-
                 case .background:
                     return .imagePicker(
                         title: property.rawValue,
@@ -149,7 +148,6 @@ extension DefaultElementAttributesLibrary {
                     }
                 case .groupBorder:
                     return .separator
-
                 case .borderStyle:
                     let allCases = UITextField.BorderStyle.allCases.withImages
 
@@ -167,7 +165,6 @@ extension DefaultElementAttributesLibrary {
                     }
                 case .groupClearButton:
                     return .separator
-
                 case .clearButton:
                     return .optionsList(
                         title: property.rawValue,
@@ -189,7 +186,6 @@ extension DefaultElementAttributesLibrary {
                     }
                 case .groupAdditionalFontOptions:
                     return .separator
-
                 case .minFontSize:
                     return .cgFloatStepper(
                         title: property.rawValue,
@@ -206,10 +202,8 @@ extension DefaultElementAttributesLibrary {
                     ) { adjustsFontSizeToFitWidth in
                         textField.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
                     }
-
                 case .groupTextInputTraits:
                     return .group(title: property.rawValue)
-
                 case .textContentType:
                     return .optionsList(
                         title: property.rawValue,

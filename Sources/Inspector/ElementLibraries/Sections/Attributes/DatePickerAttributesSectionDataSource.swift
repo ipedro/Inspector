@@ -46,12 +46,12 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let datePicker = datePicker else { return [] }
+            guard let datePicker else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .datePickerStyle:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIDatePickerStyle.allCases.map(\.description),
                         selectedIndex: { UIDatePickerStyle.allCases.firstIndex(of: datePicker.datePickerStyle) }
@@ -75,7 +75,7 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .datePickerMode:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIDatePicker.Mode.allCases.map(\.description),
                         selectedIndex: { UIDatePicker.Mode.allCases.firstIndex(of: datePicker.datePickerMode) }
@@ -97,10 +97,10 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .locale:
-                    return nil
+                    nil
 
                 case .minuteInterval:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: validMinuteIntervals.map { "\($0) \($0 == 1 ? "minute" : "minutes")" },
                         selectedIndex: { self.validMinuteIntervals.firstIndex(of: datePicker.minuteInterval) }

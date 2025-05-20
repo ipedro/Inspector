@@ -45,12 +45,12 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let navigationItem = navigationItem else { return [] }
+            guard let navigationItem else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .title:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: navigationItem.title,
                         axis: .vertical,
@@ -58,7 +58,7 @@ extension DefaultElementAttributesLibrary {
                         handler: { navigationItem.title = $0.isNilOrEmpty ? nil : $0 }
                     )
                 case .prompt:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: navigationItem.prompt,
                         axis: .vertical,
@@ -66,7 +66,7 @@ extension DefaultElementAttributesLibrary {
                         handler: { navigationItem.prompt = $0.isNilOrEmpty ? nil : $0 }
                     )
                 case .backButtonTitle:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: navigationItem.backButtonTitle,
                         axis: .vertical,
@@ -74,13 +74,13 @@ extension DefaultElementAttributesLibrary {
                         handler: { navigationItem.backButtonTitle = $0.isNilOrEmpty ? nil : $0 }
                     )
                 case .leftItemsSupplementBackButton:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { navigationItem.leftItemsSupplementBackButton },
                         handler: { navigationItem.leftItemsSupplementBackButton = $0 }
                     )
                 case .LargeTitle:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         axis: .vertical,
                         options: UINavigationItem.LargeTitleDisplayMode.allCases.map(\.description),

@@ -95,7 +95,7 @@ extension HierarchyInspectorSearchView {
         var keyPressHandler: ((UIKey?) -> Bool)?
 
         override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-            guard let keyPressHandler = keyPressHandler else {
+            guard let keyPressHandler else {
                 return super.pressesBegan(presses, with: event)
             }
 

@@ -70,7 +70,7 @@ final class ElementInspectorViewModel: ElementInspectorViewModelProtocol {
 
         currentPanel = {
             guard
-                let preferredPanel = preferredPanel,
+                let preferredPanel,
                 availablePanels.contains(preferredPanel)
             else {
                 return availablePanels.first ?? .default

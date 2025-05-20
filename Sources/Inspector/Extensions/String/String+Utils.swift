@@ -55,7 +55,7 @@ extension String {
                     }
                     guard
                         isUppercase,
-                        let nextCharacter = nextCharacter,
+                        let nextCharacter,
                         CharacterSet.lowercaseLetters.contains(nextCharacter)
                     else {
                         return string + String(character)

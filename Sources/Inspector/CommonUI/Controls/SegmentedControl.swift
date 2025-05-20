@@ -19,6 +19,7 @@
 //  SOFTWARE.
 
 import UIKit
+
 extension UISegmentedControl {
     static func segmentedControlStyle(items: [Any]? = nil) -> UISegmentedControl {
         let segmentedControl = UISegmentedControl(items: items)

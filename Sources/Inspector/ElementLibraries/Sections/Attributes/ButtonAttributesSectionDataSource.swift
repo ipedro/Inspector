@@ -59,19 +59,19 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let button = button else { return [] }
+            guard let button else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .type:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIButton.ButtonType.allCases.map(\.description),
                         selectedIndex: { UIButton.ButtonType.allCases.firstIndex(of: button.buttonType) },
                         handler: nil
                     )
                 case .fontName:
-                    return .fontNamePicker(
+                    .fontNamePicker(
                         title: property.rawValue,
                         fontProvider: {
                             button.titleLabel?.font
@@ -81,7 +81,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .fontPointSize:
-                    return .fontSizeStepper(
+                    .fontSizeStepper(
                         title: property.rawValue,
                         fontProvider: {
                             button.titleLabel?.font
@@ -91,15 +91,13 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .groupState, .groupDrawing:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .stateConfig:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIControl.State.configurableButtonStates.map(\.description),
                         selectedIndex: { UIControl.State.configurableButtonStates.firstIndex(of: self.selectedControlState) }
                     ) { [weak self] in
-
                         guard let newIndex = $0 else { return }
 
                         let selectedStateConfig = UIControl.State.configurableButtonStates[newIndex]
@@ -107,7 +105,7 @@ extension DefaultElementAttributesLibrary {
                         self?.selectedControlState = selectedStateConfig
                     }
                 case .titleText:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: button.title(for: self.selectedControlState) ?? property.rawValue,
                         value: { button.title(for: self.selectedControlState) }
@@ -115,71 +113,70 @@ extension DefaultElementAttributesLibrary {
                         button.setTitle(title, for: self.selectedControlState)
                     }
                 case .currentTitleColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { button.titleColor(for: self.selectedControlState) }
                     ) { currentTitleColor in
                         button.setTitleColor(currentTitleColor, for: self.selectedControlState)
                     }
                 case .currentTitleShadowColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { button.titleShadowColor(for: self.selectedControlState) }
                     ) { currentTitleShadowColor in
                         button.setTitleShadowColor(currentTitleShadowColor, for: self.selectedControlState)
                     }
                 case .image:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { button.image(for: self.selectedControlState) }
                     ) { image in
                         button.setImage(image, for: self.selectedControlState)
                     }
-
                 case .backgroundImage:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { button.backgroundImage(for: self.selectedControlState) }
                     ) { backgroundImage in
                         button.setBackgroundImage(backgroundImage, for: self.selectedControlState)
                     }
                 case .isPointerInteractionEnabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { button.isPointerInteractionEnabled }
                     ) { isPointerInteractionEnabled in
                         button.isPointerInteractionEnabled = isPointerInteractionEnabled
                     }
                 case .adjustsImageSizeForAccessibilityContentSizeCategory:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { button.adjustsImageSizeForAccessibilityContentSizeCategory }
                     ) { adjustsImageSizeForAccessibilityContentSizeCategory in
                         button.adjustsImageSizeForAccessibilityContentSizeCategory = adjustsImageSizeForAccessibilityContentSizeCategory
                     }
                 case .reversesTitleShadowWhenHighlighted:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { button.reversesTitleShadowWhenHighlighted }
                     ) { reversesTitleShadowWhenHighlighted in
                         button.reversesTitleShadowWhenHighlighted = reversesTitleShadowWhenHighlighted
                     }
                 case .showsTouchWhenHighlighted:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { button.showsTouchWhenHighlighted }
                     ) { showsTouchWhenHighlighted in
                         button.showsTouchWhenHighlighted = showsTouchWhenHighlighted
                     }
                 case .adjustsImageWhenHighlighted:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { button.adjustsImageWhenHighlighted }
                     ) { adjustsImageWhenHighlighted in
                         button.adjustsImageWhenHighlighted = adjustsImageWhenHighlighted
                     }
                 case .adjustsImageWhenDisabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { button.adjustsImageWhenDisabled }
                     ) { adjustsImageWhenDisabled in

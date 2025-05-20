@@ -29,7 +29,6 @@ public extension InspectorElementProperty {
             title: dataDetectorType.description,
             isOn: { textView.dataDetectorTypes.contains(dataDetectorType) }
         ) { isOn in
-
             var dataDetectorTypes: UIDataDetectorTypes? {
                 var dataDetectors = textView.dataDetectorTypes
 

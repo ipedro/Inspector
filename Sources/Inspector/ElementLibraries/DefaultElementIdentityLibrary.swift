@@ -33,25 +33,25 @@ enum DefaultElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryP
     func sections(for object: NSObject) -> InspectorElementSections {
         switch (self, object) {
         case let (.preview, view as UIView):
-            return .init(with: PreviewIdentitySectionDataSource(with: view))
+            .init(with: PreviewIdentitySectionDataSource(with: view))
 
         case let (.preview, viewController as UIViewController):
-            return .init(with: PreviewIdentitySectionDataSource(with: viewController.view))
+            .init(with: PreviewIdentitySectionDataSource(with: viewController.view))
 
         case let (.highlightView, view as UIView):
-            return .init(with: HighlightViewSectionDataSource(with: view))
+            .init(with: HighlightViewSectionDataSource(with: view))
 
         case let (.highlightView, viewController as UIViewController):
-            return .init(with: HighlightViewSectionDataSource(with: viewController.view))
+            .init(with: HighlightViewSectionDataSource(with: viewController.view))
 
         case (.runtimeAttributes, _):
-            return .init(with: RuntimeAttributesIdentitySectionDataSource(with: object))
+            .init(with: RuntimeAttributesIdentitySectionDataSource(with: object))
 
         case (.hierarchy, _):
-            return .init(with: HierarchyIdentitySectionDataSource(with: object))
+            .init(with: HierarchyIdentitySectionDataSource(with: object))
 
         default:
-            return .empty
+            .empty
         }
     }
 }

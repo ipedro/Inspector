@@ -61,7 +61,6 @@ public extension InspectorElementProperty {
             range: { 0...256 },
             stepValue: { 1 }
         ) { fontSize in
-
             let newFont = fontProvider()?.withSize(fontSize)
 
             handler(newFont)

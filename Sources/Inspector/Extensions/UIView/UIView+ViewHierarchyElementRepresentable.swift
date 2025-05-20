@@ -42,7 +42,7 @@ extension UIView: ViewHierarchyElementRepresentable {
 
     var allSuperviews: [UIView] {
         var superviews = [UIView]()
-        if let superview = superview {
+        if let superview {
             superviews.append(superview)
             superviews.append(contentsOf: superview.allSuperviews)
         }
@@ -88,13 +88,13 @@ extension UIView: ViewHierarchyElementRepresentable {
     var _canPresentOnTop: Bool {
         switch self {
         case is UITextView:
-            return true
+            true
 
         case is UIScrollView:
-            return false
+            false
 
         default:
-            return true
+            true
         }
     }
 
@@ -206,7 +206,7 @@ private extension UIView {
 
         let description = childrenCount == 1 ? children.first?.__className.string(prepending: "Subview:") : "Subviews: \(childrenCount)"
 
-        guard let description = description else { return .none }
+        guard let description else { return .none }
 
         guard allChildrenCount > childrenCount else {
             return description
@@ -281,7 +281,7 @@ extension NSObject {
     }
 
     var _superclassName: String? {
-        guard let superclass = superclass else { return nil }
+        guard let superclass else { return nil }
         return String(describing: superclass)
     }
 

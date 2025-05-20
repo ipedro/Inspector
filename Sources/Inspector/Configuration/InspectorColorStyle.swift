@@ -36,9 +36,9 @@ enum InspectorColorStyle {
         dynamicColor { colorStyle in
             switch colorStyle {
             case .light:
-                return .darkText
+                .darkText
             case .dark:
-                return .white
+                .white
             }
         }
     }
@@ -47,9 +47,9 @@ enum InspectorColorStyle {
         dynamicColor { colorStyle in
             switch colorStyle {
             case .dark:
-                return .black
+                .black
             case .light:
-                return .init(white: 0, alpha: disabledAlpha * 2)
+                .init(white: 0, alpha: disabledAlpha * 2)
             }
         }
     }
@@ -58,9 +58,9 @@ enum InspectorColorStyle {
         dynamicColor { colorStyle in
             switch colorStyle {
             case .dark:
-                return UIColor(hex: 0x2C2C2E)
+                UIColor(hex: 0x2C2C2E)
             case .light:
-                return UIColor(hex: 0xF5F5F5)
+                UIColor(hex: 0xF5F5F5)
             }
         }
     }
@@ -69,9 +69,9 @@ enum InspectorColorStyle {
         dynamicColor { colorStyle in
             switch colorStyle {
             case .dark:
-                return UIColor(hex: 0x3A3A3C)
+                UIColor(hex: 0x3A3A3C)
             case .light:
-                return .white
+                .white
             }
         }.withAlphaComponent(1 / 2)
     }
@@ -87,9 +87,9 @@ enum InspectorColorStyle {
     var blurStyle: UIBlurEffect.Style {
         switch self {
         case .dark:
-            return .systemMaterial
+            .systemMaterial
         case .light:
-            return .systemThinMaterial
+            .systemThinMaterial
         }
     }
 
@@ -97,9 +97,9 @@ enum InspectorColorStyle {
         dynamicColor { colorStyle in
             switch colorStyle {
             case .dark:
-                return textColor
+                textColor
             case .light:
-                return backgroundColor
+                backgroundColor
             }
         }
     }
@@ -112,9 +112,9 @@ enum InspectorColorStyle {
         dynamicColor { colorStyle in
             switch colorStyle {
             case .light:
-                return .white.withAlphaComponent(disabledAlpha)
+                .white.withAlphaComponent(disabledAlpha)
             case .dark:
-                return .white.withAlphaComponent(disabledAlpha / 7)
+                .white.withAlphaComponent(disabledAlpha / 7)
             }
         }
     }
@@ -123,9 +123,9 @@ enum InspectorColorStyle {
         dynamicColor { colorStyle in
             switch colorStyle {
             case .light:
-                return .white.withAlphaComponent(disabledAlpha * 3)
+                .white.withAlphaComponent(disabledAlpha * 3)
             case .dark:
-                return softTintColor
+                softTintColor
             }
         }
     }
@@ -157,9 +157,9 @@ enum InspectorColorStyle {
     var disabledAlpha: CGFloat {
         switch self {
         case .dark:
-            return 1 / 3
+            1 / 3
         case .light:
-            return 0.2
+            0.2
         }
     }
 

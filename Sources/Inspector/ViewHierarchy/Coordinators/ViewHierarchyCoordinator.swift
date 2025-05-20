@@ -21,7 +21,7 @@
 internal import Coordinator
 import UIKit
 
-typealias ViewHierarchyCoordinatorDelegate = ViewHierarchyActionableProtocol & AnyObject
+typealias ViewHierarchyCoordinatorDelegate = AnyObject & ViewHierarchyActionableProtocol
 
 struct ViewHierarchyDependencies {
     var catalog: ViewHierarchyElementCatalog
@@ -74,8 +74,8 @@ extension ViewHierarchyCoordinator: DismissablePresentationProtocol {
 extension ViewHierarchyCoordinator: ViewHierarchyActionableProtocol {
     func canPerform(action: ViewHierarchyElementAction) -> Bool {
         switch action {
-        case .layer: return true
-        case .inspect, .copy: return false
+        case .layer: true
+        case .inspect, .copy: false
         }
     }
 
@@ -132,7 +132,7 @@ extension ViewHierarchyCoordinator {
     }
 
     func latestSnapshot() -> ViewHierarchySnapshot {
-        if let cachedSnapshot = cachedSnapshot, cachedSnapshot.isValid { return cachedSnapshot }
+        if let cachedSnapshot, cachedSnapshot.isValid { return cachedSnapshot }
         let snapshot = makeSnapshot()
         cachedSnapshot = snapshot
         return snapshot
@@ -144,7 +144,7 @@ extension ViewHierarchyCoordinator {
         var highlights = availableLayerCommands(for: snapshot)
         let wireframes = toggleWireframes()
 
-        if let limit = limit {
+        if let limit {
             highlights = Array(highlights.prefix(limit))
         }
 

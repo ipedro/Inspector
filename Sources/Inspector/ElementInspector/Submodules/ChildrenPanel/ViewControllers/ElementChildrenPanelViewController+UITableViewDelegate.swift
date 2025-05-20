@@ -104,18 +104,18 @@ extension ElementChildrenPanelViewController {
         }
 
         tableView.performBatchUpdates {
-            actions.forEach { action in
+            for action in actions {
                 switch action {
                 case let .inserted(insertedIndexPaths):
-                    insertedIndexPaths.forEach { insertedIndexPath in
+                    for insertedIndexPath in insertedIndexPaths {
                         self.viewModel.cellViewModel(at: insertedIndexPath)?.animatedDisplay = true
                     }
                     tableView.insertRows(at: insertedIndexPaths, with: .top)
 
                 case let .deleted(deletedIndexPaths):
                     tableView.animate {
-                        deletedIndexPaths.forEach { deletedIndexPath in
-                            guard let cell = tableView.cellForRow(at: deletedIndexPath) else { return }
+                        for deletedIndexPath in deletedIndexPaths {
+                            guard let cell = tableView.cellForRow(at: deletedIndexPath) else { continue }
 
                             cell.contentView.alpha = 0
                             cell.transform = self.elementInspectorAppearance.panelInitialTransform
@@ -134,7 +134,6 @@ extension ElementChildrenPanelViewController {
         UIView.animate(
             withDuration: .average,
             animations: { [weak self] in
-
                 self?.viewCode.tableView.indexPathsForVisibleRows?.forEach { indexPath in
                     guard let cell = self?.viewCode.tableView.cellForRow(at: indexPath) as? ElementChildrenPanelTableViewCodeCell else {
                         return

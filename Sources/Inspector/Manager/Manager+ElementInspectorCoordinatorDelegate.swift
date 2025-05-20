@@ -45,7 +45,7 @@ extension Manager {
                                           from sourceView: UIView?,
                                           animated: Bool)
     {
-        guard let keyWindow = keyWindow else { return }
+        guard let keyWindow else { return }
 
         let coordinator = ElementInspectorCoordinator(
             .init(

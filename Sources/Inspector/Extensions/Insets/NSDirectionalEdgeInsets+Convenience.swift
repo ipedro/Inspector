@@ -37,7 +37,7 @@ extension NSDirectionalEdgeInsets {
     }
 
     @inlinable
-    init<T>(_ insets: T) where T: BinaryFloatingPoint {
+    init(_ insets: some BinaryFloatingPoint) {
         self.init(top: insets, leading: insets, bottom: insets, trailing: insets)
     }
 

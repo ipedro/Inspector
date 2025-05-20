@@ -25,8 +25,8 @@ extension UIView {
         let swizzledMethod = class_getInstanceMethod(aClass, otherSelector)
 
         guard
-            let originalMethod = originalMethod,
-            let swizzledMethod = swizzledMethod
+            let originalMethod,
+            let swizzledMethod
         else {
             return
         }

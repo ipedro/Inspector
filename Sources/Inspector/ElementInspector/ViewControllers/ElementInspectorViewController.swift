@@ -27,14 +27,14 @@ enum ElementInspectorDismissReason: Swift.CaseIterable {
     var title: String {
         switch self {
         case .dismiss:
-            return "Dismiss"
+            "Dismiss"
         }
     }
 
     var icon: UIImage? {
         switch self {
         case .dismiss:
-            return .closeSymbol
+            .closeSymbol
         }
     }
 }
@@ -134,14 +134,14 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
             segmentedControl.isUserInteractionEnabled = false
 
             let operation = MainThreadAsyncOperation(name: "install panel") { [weak self] in
-                guard let self = self else {
+                guard let self else {
                     oldValue?.removeFromParent()
                     return
                 }
 
-                guard let panelViewController = self.currentPanelViewController else {
-                    self.viewCode.content = .empty(withMessage: "Lost connection to element")
-                    self.segmentedControl.isUserInteractionEnabled = true
+                guard let panelViewController = currentPanelViewController else {
+                    viewCode.content = .empty(withMessage: "Lost connection to element")
+                    segmentedControl.isUserInteractionEnabled = true
                     return
                 }
 
@@ -152,9 +152,9 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                     return .panelView(panelViewController.view)
                 }()
 
-                self.addChild(panelViewController)
+                addChild(panelViewController)
 
-                self.viewCode.setContentAnimated(content) { [weak self] in
+                viewCode.setContentAnimated(content) { [weak self] in
                     self?.configureNavigationItem()
 
                     if let formPanel = self?.currentFormPanelViewController {
@@ -173,12 +173,12 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
                     oldValue?.didMove(toParent: nil)
                     oldValue?.removeFromParent()
 
-                    guard let self = self else { return }
+                    guard let self else { return }
 
-                    self.segmentedControl.isUserInteractionEnabled = true
+                    segmentedControl.isUserInteractionEnabled = true
                     panelViewController.didMove(toParent: self)
 
-                    self.animate(withDuration: .veryLong) { [weak self] in
+                    animate(withDuration: .veryLong) { [weak self] in
                         self?.updatePreferredContentSize()
                     }
                 }
@@ -229,9 +229,9 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         coordinator.animate { _ in
             //
         } completion: { [weak self] _ in
-            guard let self = self else { return }
-            self.reloadData()
-            (self.currentPanelViewController as? DataReloadingProtocol)?.reloadData()
+            guard let self else { return }
+            reloadData()
+            (currentPanelViewController as? DataReloadingProtocol)?.reloadData()
         }
     }
 
@@ -246,7 +246,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
 
         guard
             animated,
-            let transitionCoordinator = transitionCoordinator
+            let transitionCoordinator
         else {
             return
         }
@@ -305,9 +305,9 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         currentPanelViewController?.viewDidAppear(animated)
 
         animateWhenKeyboard(.willChangeFrame) { [weak self] info in
-            guard let self = self else { return }
-            self.viewCode.keyboardHeight = info.keyboardFrame.height
-            self.viewCode.layoutIfNeeded()
+            guard let self else { return }
+            viewCode.keyboardHeight = info.keyboardFrame.height
+            viewCode.layoutIfNeeded()
         }
     }
 
@@ -368,9 +368,9 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     func updatePanelsSegmentedControl() {
         segmentedControl.removeAllSegments()
 
-        viewModel.availablePanels.reversed().forEach {
+        for availablePanel in viewModel.availablePanels.reversed() {
             segmentedControl.insertSegment(
-                with: $0.image?.withRenderingMode(.alwaysTemplate),
+                with: availablePanel.image?.withRenderingMode(.alwaysTemplate),
                 at: .zero,
                 animated: false
             )
@@ -413,7 +413,7 @@ extension ElementInspectorViewController {
     @discardableResult
     func selectPanelIfAvailable(_ panel: ElementInspectorPanel?) -> Bool {
         guard
-            let panel = panel,
+            let panel,
             let index = viewModel.availablePanels.firstIndex(of: panel)
         else {
             return false
@@ -475,23 +475,23 @@ extension ElementInspectorViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         switch interaction.view {
         case segmentedControl:
-            return .init { _ in .defaultElementInspectorPanelMenu() }
+            .init { _ in .defaultElementInspectorPanelMenu() }
 
         case toggleCollapseButton:
-            return .init { [weak self] _ in
-                guard let self = self else { return nil }
+            .init { [weak self] _ in
+                guard let self else { return nil }
 
                 return UIMenu(
                     title: "",
                     image: nil,
                     identifier: nil,
                     options: .displayInline,
-                    children: self.nextActions(for: self.toggleCollapseButton.collapseState)
+                    children: nextActions(for: toggleCollapseButton.collapseState)
                 )
             }
 
         default:
-            return nil
+            nil
         }
     }
 

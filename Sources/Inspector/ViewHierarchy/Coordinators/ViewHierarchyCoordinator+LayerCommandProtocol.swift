@@ -44,14 +44,12 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
     func command(for layer: ViewHierarchyLayer, at index: Int, count: Int? = .none) -> Command {
         let isSelected = isShowingLayer(layer)
 
-        let icon: UIImage = {
-            switch layer {
-            case .wireframes:
-                return .wireframeAction
-            default:
-                return .layerAction
-            }
-        }()
+        let icon: UIImage = switch layer {
+        case .wireframes:
+            .wireframeAction
+        default:
+            .layerAction
+        }
 
         let layerTitle: String = {
             switch layer {
@@ -64,7 +62,7 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
         }()
 
         let title: String = {
-            guard let count = count, count > .zero else { return layerTitle }
+            guard let count, count > .zero else { return layerTitle }
             return "\(layerTitle) (\(count))"
         }()
 
@@ -75,8 +73,8 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
             modifierFlags: keyCommandSettings.layerToggleModifierFlags,
             isSelected: isSelected
         ) { [weak self] in
-            guard let self = self else { return }
-            isSelected ? self.removeLayer(layer) : self.installLayer(layer)
+            guard let self else { return }
+            isSelected ? removeLayer(layer) : installLayer(layer)
         }
     }
 
@@ -85,16 +83,16 @@ extension ViewHierarchyCoordinator: LayerCommandProtocol {
         if activeLayers.count > .zero {
             array.append(
                 .hideVisibleLayers { [weak self] in
-                    guard let self = self else { return }
-                    self.removeAllLayers()
+                    guard let self else { return }
+                    removeAllLayers()
                 }
             )
         }
         if activeLayers.count < populatedLayers.count {
             array.append(
                 .showAllLayers { [weak self] in
-                    guard let self = self else { return }
-                    self.installAllLayers()
+                    guard let self else { return }
+                    installAllLayers()
                 }
             )
         }

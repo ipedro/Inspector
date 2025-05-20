@@ -169,7 +169,7 @@ final class ViewHierarchyElementController: CustomDebugStringConvertible {
     var allParents: [ViewHierarchyElementReference] {
         var array = [ViewHierarchyElementReference]()
 
-        if let parent = parent {
+        if let parent {
             array.append(parent)
             array.append(contentsOf: parent.allParents)
         }
@@ -232,15 +232,15 @@ final class ViewHierarchyElementController: CustomDebugStringConvertible {
         store.scheduleSnapshot(
             .init(closure: { [weak self] in
                 guard
-                    let self = self,
-                    let rootViewController = self.underlyingViewController
+                    let self,
+                    let rootViewController = underlyingViewController
                 else {
                     return nil
                 }
 
                 return Snapshot(
                     viewController: rootViewController,
-                    depth: self._depth
+                    depth: _depth
                 )
             })
         )
@@ -778,7 +778,7 @@ private extension UIViewController {
     }
 
     var restorationClassName: String? {
-        guard let restorationClass = restorationClass else { return nil }
+        guard let restorationClass else { return nil }
 
         return String(describing: restorationClass)
     }

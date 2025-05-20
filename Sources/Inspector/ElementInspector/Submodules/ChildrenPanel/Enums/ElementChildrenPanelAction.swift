@@ -28,7 +28,7 @@ enum ElementChildrenPanelAction {
         switch self {
         case let .inserted(indexPaths),
              let .deleted(indexPaths):
-            return indexPaths.last
+            indexPaths.last
         }
     }
 }

@@ -31,17 +31,17 @@ enum ViewHierarchyIssue: CustomStringConvertible, Hashable {
     var description: String {
         switch self {
         case .lostConnection:
-            return Texts.lostConnectionToView
+            Texts.lostConnectionToView
         case .emptyFrame:
-            return "Frame is empty"
+            "Frame is empty"
         case .parentHasEmptyFrame:
-            return "Parent has empty frame"
+            "Parent has empty frame"
         case .controlDisabled:
-            return "Control disabled"
+            "Control disabled"
         case .interactionDisabled:
-            return " User interaction disabled"
+            " User interaction disabled"
         case .iOS15_emptyNavigationBarScrollEdgeAppearance:
-            return "Starting in iOS 15 the default behavior produces a transparent background when not scrolled.\n\nSet UINavigationBar.scrollEdgeAppearance to get the legacy behavior."
+            "Starting in iOS 15 the default behavior produces a transparent background when not scrolled.\n\nSet UINavigationBar.scrollEdgeAppearance to get the legacy behavior."
         }
     }
 

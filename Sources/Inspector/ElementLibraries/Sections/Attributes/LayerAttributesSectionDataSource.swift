@@ -60,7 +60,7 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let layer = layer else { return [] }
+            guard let layer else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
@@ -209,6 +209,7 @@ extension DefaultElementAttributesLibrary {
                     ) { allowsGroupOpacity in
                         layer.allowsGroupOpacity = allowsGroupOpacity
                     }
+
                 case .separatorMask,
                      .separatorCornerRadius:
                     return .separator

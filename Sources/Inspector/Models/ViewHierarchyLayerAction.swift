@@ -27,10 +27,10 @@ enum ViewHierarchyLayerAction: Swift.CaseIterable, MenuContentProtocol {
         allCases.filter { layerAction in
             switch layerAction {
             case .showHighlight:
-                return !element.containsVisibleHighlightViews
+                !element.containsVisibleHighlightViews
 
             case .hideHighlight:
-                return element.containsVisibleHighlightViews
+                element.containsVisibleHighlightViews
             }
         }
     }
@@ -38,9 +38,9 @@ enum ViewHierarchyLayerAction: Swift.CaseIterable, MenuContentProtocol {
     var title: String {
         switch self {
         case .showHighlight:
-            return Texts.highlight("Views")
+            Texts.highlight("Views")
         case .hideHighlight:
-            return Texts.highlighting("Views")
+            Texts.highlighting("Views")
         }
     }
 

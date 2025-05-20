@@ -44,10 +44,10 @@ enum Animation {
     var transform: CGAffineTransform {
         switch self {
         case .in:
-            return CGAffineTransform(scaleX: 0.9, y: 0.96)
+            CGAffineTransform(scaleX: 0.9, y: 0.96)
 
         case .out:
-            return .identity
+            .identity
         }
     }
 }

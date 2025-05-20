@@ -43,12 +43,12 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let activityIndicatorView = activityIndicatorView else { return [] }
+            guard let activityIndicatorView else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .style:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIActivityIndicatorView.Style.allCases.map(\.description),
                         selectedIndex: { UIActivityIndicatorView.Style.allCases.firstIndex(of: activityIndicatorView.style) }
@@ -59,8 +59,9 @@ extension DefaultElementAttributesLibrary {
 
                         activityIndicatorView.style = style
                     }
+
                 case .color:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { activityIndicatorView.color }
                     ) {
@@ -72,14 +73,13 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .groupBehavior:
-                    return .group(title: property.rawValue)
+                    .group(title: property.rawValue)
 
                 case .isAnimating:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { activityIndicatorView.isAnimating }
                     ) { isAnimating in
-
                         switch isAnimating {
                         case true:
                             activityIndicatorView.startAnimating()
@@ -90,7 +90,7 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .hidesWhenStopped:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { activityIndicatorView.hidesWhenStopped }
                     ) { hidesWhenStopped in

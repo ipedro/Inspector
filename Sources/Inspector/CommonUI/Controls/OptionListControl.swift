@@ -115,7 +115,7 @@ final class OptionListControl: BaseFormControl {
     }
 
     private func updateViews() {
-        guard let selectedIndex = selectedIndex else {
+        guard let selectedIndex else {
             valueLabel.text = emptyTitle
             return
         }
@@ -158,9 +158,9 @@ final class OptionListControl: BaseFormControl {
                         image: option.icon,
                         state: index == self.selectedIndex ? .on : .off
                     ) { [weak self] _ in
-                        guard let self = self else { return }
-                        self.selectedIndex = index
-                        self.delegate?.optionListControlDidChangeSelectedIndex(self)
+                        guard let self else { return }
+                        selectedIndex = index
+                        delegate?.optionListControlDidChangeSelectedIndex(self)
                     }
                 }
         )

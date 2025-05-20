@@ -24,21 +24,21 @@ extension UIView.AutoresizingMask: CustomStringConvertible {
     var name: String {
         switch self {
         case .flexibleWidth:
-            return "Width"
+            "Width"
         case .flexibleLeftMargin:
-            return "Left Margin"
+            "Left Margin"
         case .flexibleWidth:
-            return "Width"
+            "Width"
         case .flexibleRightMargin:
-            return "Right Margin"
+            "Right Margin"
         case .flexibleTopMargin:
-            return "Top Margin"
+            "Top Margin"
         case .flexibleHeight:
-            return "Height"
+            "Height"
         case .flexibleBottomMargin:
-            return "Bottom Margin"
+            "Bottom Margin"
         default:
-            return String(describing: rawValue)
+            String(describing: rawValue)
         }
     }
 

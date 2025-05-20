@@ -106,7 +106,7 @@ extension HierarchyInspectorViewModel {
         }
 
         func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
-            let action = self.action(at: indexPath)
+            let action = action(at: indexPath)
 
             return .action(
                 Details(

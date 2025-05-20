@@ -48,12 +48,12 @@ extension DefaultElementSizeLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let tableView = tableView else { return [] }
+            guard let tableView else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .rowHeight:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { tableView.rowHeight },
                         range: { UITableView.automaticDimension...Double.infinity },
@@ -62,7 +62,7 @@ extension DefaultElementSizeLibrary {
                         tableView.rowHeight = rowHeight
                     }
                 case .estimatedRowHeight:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { tableView.estimatedRowHeight },
                         range: { UITableView.automaticDimension...Double.infinity },
@@ -72,14 +72,12 @@ extension DefaultElementSizeLibrary {
                     }
                 case .separator0,
                      .separator1:
-                    return .separator
-
+                    .separator
                 case .sectionsGroup,
                      .contentViewGroup:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .sectionHeaderHeight:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { tableView.sectionHeaderHeight },
                         range: { UITableView.automaticDimension...Double.infinity },
@@ -88,7 +86,7 @@ extension DefaultElementSizeLibrary {
                         tableView.sectionHeaderHeight = sectionHeaderHeight
                     }
                 case .estimatedSectionHeaderHeight:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { tableView.estimatedSectionHeaderHeight },
                         range: { UITableView.automaticDimension...Double.infinity },
@@ -97,7 +95,7 @@ extension DefaultElementSizeLibrary {
                         tableView.estimatedSectionHeaderHeight = estimatedSectionHeaderHeight
                     }
                 case .sectionFooterHeight:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { tableView.sectionFooterHeight },
                         range: { UITableView.automaticDimension...Double.infinity },
@@ -106,7 +104,7 @@ extension DefaultElementSizeLibrary {
                         tableView.sectionFooterHeight = sectionFooterHeight
                     }
                 case .estimatedSectionFooterHeight:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { tableView.estimatedSectionFooterHeight },
                         range: { UITableView.automaticDimension...Double.infinity },
@@ -115,7 +113,7 @@ extension DefaultElementSizeLibrary {
                         tableView.estimatedSectionFooterHeight = estimatedSectionFooterHeight
                     }
                 case .insetsContentViewsToSafeArea:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { tableView.insetsContentViewsToSafeArea }
                     ) { insetsContentViewsToSafeArea in

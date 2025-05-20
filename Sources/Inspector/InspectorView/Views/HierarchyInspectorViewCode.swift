@@ -33,7 +33,7 @@ final class HierarchyInspectorViewCode: BaseView {
     var keyboardFrame: CGRect? {
         didSet {
             let visibleHeight: CGFloat = {
-                guard let keyboardFrame = keyboardFrame else {
+                guard let keyboardFrame else {
                     return .zero
                 }
 
@@ -89,12 +89,10 @@ final class HierarchyInspectorViewCode: BaseView {
         blurView.layer.cornerRadius = elementInspectorAppearance.verticalMargins
         blurView.layer.borderWidth = 1
         blurView.layer.cornerCurve = .continuous
-        blurView.layer.borderColor = {
-            switch colorStyle {
-            case .dark: return colorStyle.tertiaryTextColor.cgColor
-            case .light: return colorStyle.quaternaryTextColor.cgColor
-            }
-        }()
+        blurView.layer.borderColor = switch colorStyle {
+        case .dark: colorStyle.tertiaryTextColor.cgColor
+        case .light: colorStyle.quaternaryTextColor.cgColor
+        }
 
         return blurView
     }()
@@ -162,9 +160,9 @@ final class HierarchyInspectorViewCode: BaseView {
 
         contentView.addSubview(blurView)
 
-        customConstraints.forEach {
-            $0.priority = .defaultHigh
-            $0.isActive = true
+        for customConstraint in customConstraints {
+            customConstraint.priority = .defaultHigh
+            customConstraint.isActive = true
         }
     }
 

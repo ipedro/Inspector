@@ -37,10 +37,10 @@ extension ViewHierarchyCoordinator: AsyncOperationProtocol {
         let hideLoaderTask = hideLoaderTask(loaderView)
 
         let showLoaderTask = showLoaderTask(loaderView, in: keyWindow) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
 
-            self.operationQueue.addOperation(mainTask)
-            self.operationQueue.addOperation(hideLoaderTask)
+            operationQueue.addOperation(mainTask)
+            operationQueue.addOperation(hideLoaderTask)
         }
 
         operationQueue.addOperation(showLoaderTask)

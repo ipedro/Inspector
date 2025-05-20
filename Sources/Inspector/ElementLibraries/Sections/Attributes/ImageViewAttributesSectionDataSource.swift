@@ -56,7 +56,7 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let imageView = imageView else { return [] }
+            guard let imageView else { return [] }
 
             return Property.allCases
                 .flatMap { property -> [InspectorElementProperty] in

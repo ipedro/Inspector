@@ -62,7 +62,7 @@ final class LiveViewHierarchyElementThumbnailView: ViewHierarchyElementThumbnail
     override func didMoveToWindow() {
         super.didMoveToWindow()
 
-        guard let window = window else {
+        guard let window else {
             hoverGestureRecognizer.isEnabled = false
             return
         }

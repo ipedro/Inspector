@@ -49,17 +49,17 @@ struct ElementInspectorAppearance: Hashable {
             forTextStyle: {
                 switch relativeDepth {
                 case let depth where depth <= -5:
-                    return .title3
+                    .title3
                 case -4:
-                    return .headline
+                    .headline
                 case -3:
-                    return .subheadline
+                    .subheadline
                 case -2:
-                    return .body
+                    .body
                 case -1:
-                    return .callout
+                    .callout
                 default:
-                    return .footnote
+                    .footnote
                 }
             }()
         )

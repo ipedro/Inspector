@@ -41,12 +41,12 @@ extension DefaultElementSizeLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let view = view else { return [] }
+            guard let view else { return [] }
 
             return Properties.allCases.compactMap { property in
                 switch property {
                 case .frame:
-                    return .cgRect(
+                    .cgRect(
                         title: property.rawValue,
                         rect: { view.frame },
                         handler: {
@@ -56,7 +56,7 @@ extension DefaultElementSizeLibrary {
                     )
 
                 case .autoresizingMask:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIView.AutoresizingMask.allCases.map(\.description),
                         selectedIndex: { UIView.AutoresizingMask.allCases.firstIndex(of: view.autoresizingMask) },
@@ -69,7 +69,7 @@ extension DefaultElementSizeLibrary {
                     )
 
                 case .directionalLayoutsMargins:
-                    return .directionalInsets(
+                    .directionalInsets(
                         title: property.rawValue,
                         insets: { view.directionalLayoutMargins },
                         handler: { directionalLayoutMargins in

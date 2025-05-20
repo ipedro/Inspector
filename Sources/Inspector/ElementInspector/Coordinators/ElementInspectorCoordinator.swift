@@ -69,13 +69,13 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
             }
         },
         onChangeSelectedDetent: { [weak self] detent in
-            guard let self = self else { return }
-            self.formPanelController?.isFullHeightPresentation = detent == .large
+            guard let self else { return }
+            formPanelController?.isFullHeightPresentation = detent == .large
         },
         onDismiss: { [weak self] presentationController in
-            guard let self = self else { return }
-            if self.navigationController === presentationController.presentedViewController {
-                self.finish(with: .dismiss)
+            guard let self else { return }
+            if navigationController === presentationController.presentedViewController {
+                finish(with: .dismiss)
             }
         }
     )
@@ -83,22 +83,22 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
     @available(iOS 14.0, *)
     private(set) lazy var colorPicker = ColorPickerPresenter(
         onColorSelected: { [weak self] selectedColor in
-            guard let self = self else { return }
-            self.formPanelController?.selectColor(selectedColor)
+            guard let self else { return }
+            formPanelController?.selectColor(selectedColor)
         },
         onDimiss: { [weak self] in
-            guard let self = self else { return }
-            self.formPanelController?.finishColorSelection()
+            guard let self else { return }
+            formPanelController?.finishColorSelection()
         }
     )
 
     private(set) lazy var documentPicker = DocumentPickerPresenter { [weak self] urls in
-        guard let self = self else { return }
+        guard let self else { return }
 
         for url in urls {
             guard let data = try? Data(contentsOf: url) else { continue }
             let image = UIImage(data: data)
-            self.formPanelController?.selectImage(image)
+            formPanelController?.selectImage(image)
             break
         }
     }
@@ -112,9 +112,9 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
     func transitionDelegate(for viewController: UIViewController) -> UIViewControllerTransitioningDelegate? {
         switch viewController {
         case is ElementInspectorNavigationController where isCapableOfSidePresentation:
-            return transitionPresenter
+            transitionPresenter
         default:
-            return nil
+            nil
         }
     }
 
@@ -165,13 +165,11 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
     ) -> ElementInspectorViewController {
         let availablePanels = ElementInspectorPanel.allCases(for: element)
 
-        let selectedPanel: ElementInspectorPanel?
-
-        if let preferredPanel = preferredPanel, availablePanels.contains(preferredPanel) {
-            selectedPanel = preferredPanel
+        let selectedPanel: ElementInspectorPanel? = if let preferredPanel, availablePanels.contains(preferredPanel) {
+            preferredPanel
         }
         else {
-            selectedPanel = initialPanel
+            initialPanel
         }
 
         return ElementInspectorViewController(
@@ -239,9 +237,9 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
     func canPerform(action: ViewHierarchyElementAction) -> Bool {
         switch action {
         case .inspect:
-            return true
+            true
         case .copy, .layer:
-            return false
+            false
         }
     }
 
@@ -264,17 +262,17 @@ extension ElementInspectorCoordinator: ViewHierarchyActionableProtocol {
         operationQueue.cancelAllOperations()
 
         let pushOperation = MainThreadOperation(name: "Push \(element._displayName)") { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let elementInspectorViewController = Self.makeElementInspectorViewController(
                 element: element,
                 preferredPanel: preferredPanel,
-                initialPanel: self.dependencies.initialPanel,
+                initialPanel: dependencies.initialPanel,
                 delegate: self,
-                catalog: self.dependencies.catalog
+                catalog: dependencies.catalog
             )
 
-            self.navigationController.pushViewController(elementInspectorViewController, animated: true)
+            navigationController.pushViewController(elementInspectorViewController, animated: true)
         }
 
         addOperationToQueue(pushOperation)

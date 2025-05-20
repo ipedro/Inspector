@@ -103,9 +103,9 @@ extension NSLayoutConstraint.Attribute {
              .trailingMargin,
              .centerXWithinMargins,
              .centerYWithinMargins:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 }

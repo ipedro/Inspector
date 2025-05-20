@@ -45,19 +45,19 @@ extension DefaultElementAttributesLibrary {
             Property.allCases.compactMap { property in
                 switch property {
                 case .type:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: property.rawValue,
                         value: { self.shortcutItem.type }
                     )
                 case .localizedTitle:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: .none,
                         value: { self.shortcutItem.localizedTitle }
                     )
                 case .localizedSubtitle:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: property.rawValue,
                         value: { self.shortcutItem.localizedSubtitle }

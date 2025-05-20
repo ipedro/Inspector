@@ -31,26 +31,26 @@ extension ViewHierarchyLayer: CustomStringConvertible {
         var additions = [String]()
         var exclusions = [String]()
 
-        components.forEach {
-            if $0 == components.first {
-                additions.append($0)
+        for component in components {
+            if component == components.first {
+                additions.append(component)
             }
 
-            if $0.first == "+" {
-                additions.append(String($0.dropFirst()))
+            if component.first == "+" {
+                additions.append(String(component.dropFirst()))
             }
 
-            if $0.first == "-" {
-                exclusions.append(String($0.dropFirst()))
+            if component.first == "-" {
+                exclusions.append(String(component.dropFirst()))
             }
         }
 
         var displayName = String()
 
-        additions.enumerated().forEach { index, name in
+        for (index, name) in additions.enumerated() {
             if index == 0 {
                 displayName = name
-                return
+                continue
             }
 
             if index == additions.count - 1 {
@@ -65,10 +65,10 @@ extension ViewHierarchyLayer: CustomStringConvertible {
             return displayName
         }
 
-        exclusions.enumerated().forEach { index, name in
+        for (index, name) in exclusions.enumerated() {
             if index == 0 {
                 displayName += " excl․ \(name)"
-                return
+                continue
             }
 
             if index == additions.count - 1 {

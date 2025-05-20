@@ -90,14 +90,14 @@ final class ViewHierarchyRoot {
     ) -> [ViewHierarchyElementReference] {
         var viewHierarchy = [ViewHierarchyElementReference]()
 
-        window.viewHierarchy.reversed().enumerated().forEach { _, element in
+        for (_, element) in window.viewHierarchy.reversed().enumerated() {
             viewHierarchy.insert(element, at: .zero)
 
             guard
                 let viewController = viewControllers.first(where: { $0._underlyingView === element._underlyingView }),
                 let element = element as? ViewHierarchyElement
             else {
-                return
+                continue
             }
 
             let depth = element._depth
@@ -180,7 +180,7 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
 
     var _shortElementDescription: String {
         guard
-            let bundleInfo = bundleInfo,
+            let bundleInfo,
             let identifier = bundleInfo.identifier,
             let minimumOSVersion = bundleInfo.minimumOSVersion
         else {
@@ -194,11 +194,11 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
             {
                 switch bundleInfo.interfaceStyle {
                 case .light:
-                    return "Appearance: Light"
+                    "Appearance: Light"
                 case .dark:
-                    return "Appearance: Dark"
+                    "Appearance: Dark"
                 default:
-                    return "Appearance: Dark and Light"
+                    "Appearance: Dark and Light"
                 }
             }(),
             "Requirement: iOS \(minimumOSVersion)+"
@@ -213,7 +213,7 @@ extension ViewHierarchyRoot: ViewHierarchyElementReference {
     var traitCollection: UITraitCollection { UITraitCollection() }
 
     private func allViewControllers(with rootViewController: UIViewController?) -> [UIViewController] {
-        guard let rootViewController = rootViewController else { return [] }
+        guard let rootViewController else { return [] }
 
         let viewControllers = [rootViewController] + rootViewController.allChildren + rootViewController.allPresentedViewControllers
 

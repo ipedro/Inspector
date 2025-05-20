@@ -30,13 +30,13 @@ final class SeparatorView: BaseView {
         fileprivate var color: UIColor {
             switch self {
             case .soft:
-                return colorStyle.textColor.withAlphaComponent(0.09)
+                colorStyle.textColor.withAlphaComponent(0.09)
             case .medium:
-                return colorStyle.textColor.withAlphaComponent(0.18)
+                colorStyle.textColor.withAlphaComponent(0.18)
             case .hard:
-                return colorStyle.textColor.withAlphaComponent(0.27)
+                colorStyle.textColor.withAlphaComponent(0.27)
             case let .color(color):
-                return color
+                color
             }
         }
     }

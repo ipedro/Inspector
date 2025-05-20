@@ -41,10 +41,10 @@ final class ElementNameView: LayerViewComponent {
 
         var title: String {
             switch self {
-            case .auto: return "Automatic"
-            case .iconAndText: return "Icon And Text"
-            case .text: return "Text"
-            case .icon: return "Icon"
+            case .auto: "Automatic"
+            case .iconAndText: "Icon And Text"
+            case .text: "Text"
+            case .icon: "Icon"
             }
         }
 
@@ -122,8 +122,8 @@ final class ElementNameView: LayerViewComponent {
         contentFrameObserver = superview?
             .layer
             .observe(\.bounds) { [weak self] layer, _ in
-                guard let self = self else { return }
-                self.contentFrame = layer.frame
+                guard let self else { return }
+                contentFrame = layer.frame
             }
     }
 

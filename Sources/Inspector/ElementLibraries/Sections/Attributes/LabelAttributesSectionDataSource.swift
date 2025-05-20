@@ -56,7 +56,7 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let label = label else { return [] }
+            guard let label else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
@@ -80,7 +80,7 @@ extension DefaultElementAttributesLibrary {
                         title: property.rawValue,
                         fontProvider: { label.font }
                     ) { font in
-                        guard let font = font else {
+                        guard let font else {
                             return
                         }
 
@@ -91,7 +91,7 @@ extension DefaultElementAttributesLibrary {
                         title: property.rawValue,
                         fontProvider: { label.font }
                     ) { font in
-                        guard let font = font else {
+                        guard let font else {
                             return
                         }
 
@@ -129,7 +129,6 @@ extension DefaultElementAttributesLibrary {
                     }
                 case .groupBehavior:
                     return .group(title: property.rawValue)
-
                 case .isEnabled:
                     return .switch(
                         title: property.rawValue,
@@ -147,12 +146,10 @@ extension DefaultElementAttributesLibrary {
                 case .separator0,
                      .separator1:
                     return .separator
-
                 case .baseline,
                      .lineBreak,
                      .autoShrink:
                     return nil
-
                 case .allowsDefaultTighteningForTruncation:
                     return .switch(
                         title: property.rawValue,

@@ -26,19 +26,19 @@ public enum InspectorElemenPropertyNoteIcon: ColorStylable {
     var image: UIImage? {
         switch self {
         case .info:
-            return .infoOutlineSymbol
+            .infoOutlineSymbol
 
         case .warning:
-            return .warningSymbol
+            .warningSymbol
         }
     }
 
     var color: UIColor {
         switch self {
         case .info:
-            return colorStyle.tertiaryTextColor
+            colorStyle.tertiaryTextColor
         case .warning:
-            return UIColor(hex: 0xDA7A3A)
+            UIColor(hex: 0xDA7A3A)
         }
     }
 }
@@ -65,7 +65,7 @@ final class NoteControl: BaseControl {
     private lazy var imageView = UIImageView(
         image: icon?.image?.resized(.regularIconSize)
     ).then {
-        guard let icon = icon else {
+        guard let icon else {
             $0.isHidden = true
             return
         }

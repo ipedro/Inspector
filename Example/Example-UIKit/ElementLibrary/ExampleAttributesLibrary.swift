@@ -27,14 +27,14 @@ enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
     var targetClass: AnyClass {
         switch self {
         case .roundedButton:
-            return RoundedButton.self
+            RoundedButton.self
         }
     }
 
     func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
         case .roundedButton:
-            return .init(with: RoundedButtonAttributesSectionDataSource(with: object))
+            .init(with: RoundedButtonAttributesSectionDataSource(with: object))
         }
     }
 }

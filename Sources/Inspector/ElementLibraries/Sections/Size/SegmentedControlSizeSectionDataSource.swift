@@ -48,16 +48,16 @@ extension DefaultElementSizeLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let segmentedControl = segmentedControl else { return [] }
+            guard let segmentedControl else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .segmentPicker:
-                    return .segmentPicker(for: segmentedControl) { [weak self] selectedSegment in
+                    .segmentPicker(for: segmentedControl) { [weak self] selectedSegment in
                         self?.selectedSegment = selectedSegment
                     }
                 case .segmentWidth:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { [weak self] in
                             guard let index = self?.selectedSegment else {
@@ -75,7 +75,7 @@ extension DefaultElementSizeLibrary {
                         }
                     )
                 case .apportionsSegmentWidthsByContent:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: ["Equal Widths", "Proportional to Content"],
                         selectedIndex: { segmentedControl.apportionsSegmentWidthsByContent ? 1 : 0 },
@@ -84,7 +84,7 @@ extension DefaultElementSizeLibrary {
                         }
                     )
                 case .separator:
-                    return .separator
+                    .separator
                 }
             }
         }

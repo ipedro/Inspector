@@ -44,7 +44,7 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let control = control else { return [] }
+            guard let control else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
@@ -78,7 +78,6 @@ extension DefaultElementAttributesLibrary {
                     }
                 case .groupState:
                     return .group(title: property.rawValue)
-
                 case .isSelected:
                     return .switch(
                         title: property.rawValue,

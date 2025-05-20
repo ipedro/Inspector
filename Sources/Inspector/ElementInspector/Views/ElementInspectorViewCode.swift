@@ -148,6 +148,7 @@ final class ElementInspectorViewCode: BaseView {
         case .panelView:
             content.view.alpha = 0
             content.view.transform = elementInspectorAppearance.panelInitialTransform
+
         case .backgroundView:
             content.view.alpha = 0
 

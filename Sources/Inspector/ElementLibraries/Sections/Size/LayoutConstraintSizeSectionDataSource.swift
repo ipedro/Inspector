@@ -79,7 +79,6 @@ extension DefaultElementSizeLibrary {
                 case .spacer0,
                      .spacer1:
                     return .separator
-
                 case .multiplier:
                     return .cgFloatStepper(
                         title: property.rawValue,

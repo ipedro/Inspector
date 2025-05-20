@@ -22,7 +22,7 @@ import UIKit
 
 extension UIBlurEffect {
     var style: Style? {
-        let description = self.description
+        let description = description
 
         if description.contains("UIBlurEffectStyleExtraLight") {
             return .extraLight

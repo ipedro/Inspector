@@ -91,80 +91,80 @@ extension HierarchyInspectorViewModel: HierarchyInspectorViewModelProtocol {
     func isRowEnabled(at indexPath: IndexPath) -> Bool {
         switch isSearching {
         case true:
-            return snapshotViewModel.isRowEnabled(at: indexPath)
+            snapshotViewModel.isRowEnabled(at: indexPath)
 
         case false:
-            return commandGroupsViewModel.isRowEnabled(at: indexPath)
+            commandGroupsViewModel.isRowEnabled(at: indexPath)
         }
     }
 
     var isEmpty: Bool {
         switch isSearching {
         case true:
-            return snapshotViewModel.isEmpty
+            snapshotViewModel.isEmpty
 
         case false:
-            return commandGroupsViewModel.isEmpty
+            commandGroupsViewModel.isEmpty
         }
     }
 
     func loadData() {
         switch isSearching {
         case true:
-            return snapshotViewModel.loadData()
+            snapshotViewModel.loadData()
 
         case false:
-            return commandGroupsViewModel.loadData()
+            commandGroupsViewModel.loadData()
         }
     }
 
     func selectRow(at indexPath: IndexPath) -> InspectorCommand? {
         switch isSearching {
         case true:
-            return snapshotViewModel.selectRow(at: indexPath)
+            snapshotViewModel.selectRow(at: indexPath)
 
         case false:
-            return commandGroupsViewModel.selectRow(at: indexPath)
+            commandGroupsViewModel.selectRow(at: indexPath)
         }
     }
 
     var numberOfSections: Int {
         switch isSearching {
         case true:
-            return snapshotViewModel.numberOfSections
+            snapshotViewModel.numberOfSections
 
         case false:
-            return commandGroupsViewModel.numberOfSections
+            commandGroupsViewModel.numberOfSections
         }
     }
 
     func numberOfRows(in section: Int) -> Int {
         switch isSearching {
         case true:
-            return snapshotViewModel.numberOfRows(in: section)
+            snapshotViewModel.numberOfRows(in: section)
 
         case false:
-            return commandGroupsViewModel.numberOfRows(in: section)
+            commandGroupsViewModel.numberOfRows(in: section)
         }
     }
 
     func titleForHeader(in section: Int) -> String? {
         switch isSearching {
         case true:
-            return snapshotViewModel.titleForHeader(in: section)
+            snapshotViewModel.titleForHeader(in: section)
 
         case false:
-            return commandGroupsViewModel.titleForHeader(in: section)
+            commandGroupsViewModel.titleForHeader(in: section)
         }
     }
 
     func cellViewModelForRow(at indexPath: IndexPath) -> HierarchyInspectorCellViewModel {
         switch isSearching {
         case true:
-            return snapshotViewModel.cellViewModelForRow(at: indexPath)
+            snapshotViewModel.cellViewModelForRow(at: indexPath)
 
         case false:
-            return commandGroupsViewModel.cellViewModelForRow(at: indexPath)
+            commandGroupsViewModel.cellViewModelForRow(at: indexPath)
         }
     }
 }

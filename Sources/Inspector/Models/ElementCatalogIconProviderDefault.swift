@@ -24,8 +24,7 @@ import WebKit
 
 extension ViewHierarchyElementIconProvider {
     static let `default` = ViewHierarchyElementIconProvider { object in
-
-        guard let object = object else { return .missingSymbol }
+        guard let object else { return .missingSymbol }
 
         guard let view = object as? UIView else {
             switch object {

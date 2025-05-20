@@ -23,10 +23,10 @@ import UIKit
 extension NSLayoutConstraint {
     var safeIdentifier: String? {
         if identifier != nil {
-            return identifier!
+            identifier!
         }
         else {
-            return nil
+            nil
         }
     }
 }

@@ -101,9 +101,9 @@ public final class Inspector {
 
         contextMenuPresenter = ContextMenuPresenter { [weak self] interaction in
             guard
-                let self = self,
+                let self,
                 let sourceView = interaction.view,
-                let viewHierarchy = self.manager?.snapshot.root.viewHierarchy,
+                let viewHierarchy = manager?.snapshot.root.viewHierarchy,
                 let element = viewHierarchy.first(where: { $0._underlyingView === interaction.view })
             else {
                 return .none
@@ -112,8 +112,8 @@ public final class Inspector {
                 with: element,
                 includeActions: true
             ) { [weak self] reference, action in
-                guard let self = self else { return }
-                self.manager?.perform(
+                guard let self else { return }
+                manager?.perform(
                     action: action,
                     with: reference,
                     from: sourceView

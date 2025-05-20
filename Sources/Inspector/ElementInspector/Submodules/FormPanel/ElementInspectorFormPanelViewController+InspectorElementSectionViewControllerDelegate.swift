@@ -29,15 +29,15 @@ extension ElementInspectorFormPanelViewController: InspectorElementSectionViewCo
     {
         let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
             guard
-                let self = self,
-                let item = self.sections[sectionViewController]
+                let self,
+                let item = sections[sectionViewController]
             else {
                 return
             }
 
-            self.formPanels.forEach { $0.reloadData() }
+            formPanels.forEach { $0.reloadData() }
 
-            self.formDelegate?.elementInspectorFormPanel(self, didUpdateProperty: property, in: item)
+            formDelegate?.elementInspectorFormPanel(self, didUpdateProperty: property, in: item)
         }
 
         formDelegate?.addOperationToQueue(updateOperation)

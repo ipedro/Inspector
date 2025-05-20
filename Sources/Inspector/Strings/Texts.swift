@@ -46,20 +46,20 @@ enum Texts {
     static func inspectableViews(_ viewCount: Int, in className: String) -> String {
         switch viewCount {
         case 1:
-            return "\(viewCount) inspectable view in \(className)"
+            "\(viewCount) inspectable view in \(className)"
 
         default:
-            return "\(viewCount) inspectable views in \(className)"
+            "\(viewCount) inspectable views in \(className)"
         }
     }
 
     static func allResults(count: Int, in elementName: String) -> String {
         switch count {
         case 1:
-            return "\(count) Search result in \(elementName)"
+            "\(count) Search result in \(elementName)"
 
         default:
-            return "\(count) Search results in \(elementName)"
+            "\(count) Search results in \(elementName)"
         }
     }
 

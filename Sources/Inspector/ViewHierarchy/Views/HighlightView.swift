@@ -205,7 +205,7 @@ final class HighlightView: LayerView {
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
 
-        guard let superview = superview else {
+        guard let superview else {
             elementNameView.removeFromSuperview()
             return
         }
@@ -217,7 +217,7 @@ final class HighlightView: LayerView {
 
     func updateViewsIfNeeded() {
         if
-            let latestElementSnapshot = latestElementSnapshot,
+            let latestElementSnapshot,
             element.hasChanges(inRelationTo: latestElementSnapshot) == false
         {
             return
@@ -230,7 +230,7 @@ final class HighlightView: LayerView {
     }
 
     private func updateBorderColor() {
-        guard let superview = superview else { return }
+        guard let superview else { return }
 
         let isDarkMode = colorStyle == .dark
 
@@ -280,6 +280,7 @@ final class HighlightView: LayerView {
         switch transition {
         case .none:
             return
+
         case .appear:
             delay = TimeInterval(depth) / 20 + .random(in: -.veryShort ... .veryShort)
             finish = (transform: .identity, alpha: 1)

@@ -27,16 +27,16 @@ extension NSDirectionalEdgeInsets {
         bottom: CGFloat? = nil,
         trailing: CGFloat? = nil
     ) {
-        if let top = top {
+        if let top {
             self.top = top
         }
-        if let leading = leading {
+        if let leading {
             self.leading = leading
         }
-        if let bottom = bottom {
+        if let bottom {
             self.bottom = bottom
         }
-        if let trailing = trailing {
+        if let trailing {
             self.trailing = trailing
         }
     }
@@ -49,16 +49,16 @@ extension NSDirectionalEdgeInsets {
     ) -> NSDirectionalEdgeInsets {
         var copy = self
 
-        if let top = top {
+        if let top {
             copy.top = top
         }
-        if let leading = leading {
+        if let leading {
             copy.leading = leading
         }
-        if let bottom = bottom {
+        if let bottom {
             copy.bottom = bottom
         }
-        if let trailing = trailing {
+        if let trailing {
             copy.trailing = trailing
         }
 

@@ -37,11 +37,11 @@ struct BundleInfo: Codable {
     var interfaceStyle: UIUserInterfaceStyle? {
         switch appearance {
         case .none:
-            return .none
+            .none
         case "Dark":
-            return .dark
+            .dark
         default:
-            return .light
+            .light
         }
     }
 

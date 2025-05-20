@@ -76,16 +76,16 @@ extension DefaultElementAttributesLibrary {
         private(set) lazy var properties = makeProperties(for: appearance)
 
         private func makeProperties(for appearance: UINavigationBarAppearance?) -> [InspectorElementProperty] {
-            guard let appearance = appearance else { return [] }
+            guard let appearance else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
-                case .information: return kind.infoNote
+                case .information: kind.infoNote
 
-                case .iOS15_behaviorWarning: return kind.warning
+                case .iOS15_behaviorWarning: kind.warning
 
                 case .backgroundEffect:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         emptyTitle: "None",
                         options: UIBlurEffect.Style.allCases.map(\.description),
@@ -105,121 +105,124 @@ extension DefaultElementAttributesLibrary {
                     )
 
                 case .backgroundColor:
-                    return
-                        .colorPicker(
-                            title: property.rawValue,
-                            emptyTitle: Texts.default,
-                            color: { appearance.backgroundColor },
-                            handler: { appearance.backgroundColor = $0 }
-                        )
+                    .colorPicker(
+                        title: property.rawValue,
+                        emptyTitle: Texts.default,
+                        color: { appearance.backgroundColor },
+                        handler: { appearance.backgroundColor = $0 }
+                    )
 
                 case .backgroundImage:
-                    return
-                        .imagePicker(
-                            title: property.rawValue,
-                            image: { appearance.backgroundImage },
-                            handler: { appearance.backgroundImage = $0 }
-                        )
+                    .imagePicker(
+                        title: property.rawValue,
+                        image: { appearance.backgroundImage },
+                        handler: { appearance.backgroundImage = $0 }
+                    )
 
                 case .backgroundImageContentMode:
-                    return
-                        .optionsList(
-                            title: property.rawValue,
-                            options: UIView.ContentMode.allCases.map(\.description),
-                            selectedIndex: { UIView.ContentMode.allCases.firstIndex(of: appearance.backgroundImageContentMode) }
-                        ) {
-                            guard let newIndex = $0 else { return }
-                            let backgroundImageContentMode = UIView.ContentMode.allCases[newIndex]
-                            appearance.backgroundImageContentMode = backgroundImageContentMode
-                        }
+                    .optionsList(
+                        title: property.rawValue,
+                        options: UIView.ContentMode.allCases.map(\.description),
+                        selectedIndex: { UIView.ContentMode.allCases.firstIndex(of: appearance.backgroundImageContentMode) }
+                    ) {
+                        guard let newIndex = $0 else { return }
+                        let backgroundImageContentMode = UIView.ContentMode.allCases[newIndex]
+                        appearance.backgroundImageContentMode = backgroundImageContentMode
+                    }
 
                 case .shadowColor:
-                    return
-                        .colorPicker(
-                            title: property.rawValue,
-                            emptyTitle: Texts.default,
-                            color: { appearance.shadowColor },
-                            handler: { appearance.shadowColor = $0 }
-                        )
+                    .colorPicker(
+                        title: property.rawValue,
+                        emptyTitle: Texts.default,
+                        color: { appearance.shadowColor },
+                        handler: { appearance.shadowColor = $0 }
+                    )
 
                 case .shadowImage:
-                    return
-                        .imagePicker(
-                            title: property.rawValue,
-                            image: { appearance.shadowImage },
-                            handler: { appearance.shadowImage = $0 }
-                        )
+                    .imagePicker(
+                        title: property.rawValue,
+                        image: { appearance.shadowImage },
+                        handler: { appearance.shadowImage = $0 }
+                    )
 
                 case .separator0, .separator1:
-                    return .separator
+                    .separator
 
                 case .titleOffset:
-                    return nil
+                    nil
 
                 case .titleGroup, .largeTitleGroup:
-                    return .group(title: property.rawValue)
+                    .group(title: property.rawValue)
 
                 case .titleFontName:
-                    return .fontNamePicker(
+                    .fontNamePicker(
                         title: property.rawValue,
                         fontProvider: { appearance.titleTextAttributes[.font] as? UIFont },
                         handler: { appearance.titleTextAttributes[.font] = $0 }
                     )
+
                 case .titleFontSize:
-                    return .fontSizeStepper(
+                    .fontSizeStepper(
                         title: property.rawValue,
                         fontProvider: { appearance.titleTextAttributes[.font] as? UIFont },
                         handler: { appearance.titleTextAttributes[.font] = $0 }
                     )
+
                 case .titleColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         emptyTitle: Texts.default,
                         color: { appearance.titleTextAttributes[.foregroundColor] as? UIColor },
                         handler: { appearance.titleTextAttributes[.foregroundColor] = $0 }
                     )
+
                 case .titleShadow:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         emptyTitle: Texts.default,
                         color: { (appearance.titleTextAttributes[.shadow] as? NSShadow)?.shadowColor as? UIColor },
                         handler: { (appearance.titleTextAttributes[.shadow] as? NSShadow)?.shadowColor = $0 }
                     )
+
                 case .titleShadowOffset:
-                    return .cgSize(
+                    .cgSize(
                         title: property.rawValue,
                         size: { (appearance.titleTextAttributes[.shadow] as? NSShadow)?.shadowOffset ?? .zero },
                         handler: { (appearance.titleTextAttributes[.shadow] as? NSShadow)?.shadowOffset = $0 ?? .zero }
                     )
 
                 case .largeTitleFontName:
-                    return .fontNamePicker(
+                    .fontNamePicker(
                         title: property.rawValue,
                         fontProvider: { appearance.largeTitleTextAttributes[.font] as? UIFont },
                         handler: { appearance.largeTitleTextAttributes[.font] = $0 }
                     )
+
                 case .largeTitleFontSize:
-                    return .fontSizeStepper(
+                    .fontSizeStepper(
                         title: property.rawValue,
                         fontProvider: { appearance.largeTitleTextAttributes[.font] as? UIFont },
                         handler: { appearance.largeTitleTextAttributes[.font] = $0 }
                     )
+
                 case .largeTitleColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         emptyTitle: Texts.default,
                         color: { appearance.largeTitleTextAttributes[.foregroundColor] as? UIColor },
                         handler: { appearance.largeTitleTextAttributes[.foregroundColor] = $0 }
                     )
+
                 case .largeTitleShadow:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         emptyTitle: Texts.default,
                         color: { (appearance.titleTextAttributes[.shadow] as? NSShadow)?.shadowColor as? UIColor },
                         handler: { (appearance.titleTextAttributes[.shadow] as? NSShadow)?.shadowColor = $0 }
                     )
+
                 case .largeTitleShadowOffset:
-                    return .cgSize(
+                    .cgSize(
                         title: property.rawValue,
                         size: { (appearance.titleTextAttributes[.shadow] as? NSShadow)?.shadowOffset ?? .zero },
                         handler: { (appearance.titleTextAttributes[.shadow] as? NSShadow)?.shadowOffset = $0 ?? .zero }
@@ -270,26 +273,26 @@ extension DefaultElementAttributesLibrary.NavigationBarAppearanceAttributesSecti
         var description: String {
             switch self {
             case .standard:
-                return "Standard"
+                "Standard"
             case .compact:
-                return "Compact"
+                "Compact"
             case .scrollEdge:
-                return "Scroll Edge"
+                "Scroll Edge"
             case .compactScrollEdge:
-                return "Compact Scroll Edge"
+                "Compact Scroll Edge"
             }
         }
 
         var message: String {
             switch self {
             case .standard:
-                return "The appearance settings for a standard height navigation bar."
+                "The appearance settings for a standard height navigation bar."
             case .compact:
-                return "The appearance settings for a compact height navigation bar."
+                "The appearance settings for a compact height navigation bar."
             case .scrollEdge:
-                return "The appearance settings for the navigation bar when content is scrolled to the top."
+                "The appearance settings for the navigation bar when content is scrolled to the top."
             case .compactScrollEdge:
-                return "The appearance settings for a compact-height navigation bar when content is scrolled to the top."
+                "The appearance settings for a compact-height navigation bar when content is scrolled to the top."
             }
         }
 

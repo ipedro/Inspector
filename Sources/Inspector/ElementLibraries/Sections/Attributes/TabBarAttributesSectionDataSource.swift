@@ -44,12 +44,12 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let tabBar = tabBar else { return [] }
+            guard let tabBar else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .style:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIBarStyle.allCases.map(\.description),
                         selectedIndex: { UIBarStyle.allCases.firstIndex(of: tabBar.barStyle) },
@@ -61,34 +61,33 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .translucent:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { tabBar.isTranslucent },
                         handler: { tabBar.isTranslucent = $0 }
                     )
                 case .barTintColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { tabBar.barTintColor },
                         handler: { tabBar.barTintColor = $0 }
                     )
                 case .shadowImage:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { tabBar.shadowImage },
                         handler: { tabBar.shadowImage = $0 }
                     )
                 case .backgroundImage:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { tabBar.backgroundImage },
                         handler: { tabBar.backgroundImage = $0 }
                     )
                 case .separator:
-                    return .separator
-
+                    .separator
                 case .selectionIndicatorImage:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { tabBar.selectionIndicatorImage },
                         handler: { tabBar.selectionIndicatorImage = $0 }

@@ -173,8 +173,8 @@ final class TextViewControl: BaseFormControl {
                 identifier: nil,
                 discoverabilityTitle: "Copy Selection",
                 handler: { [weak self] _ in
-                    guard let self = self else { return }
-                    UIPasteboard.general.string = self.textView.text(in: range)
+                    guard let self else { return }
+                    UIPasteboard.general.string = textView.text(in: range)
                 }
             )
             actions.append(copySelectionAction)
@@ -186,8 +186,8 @@ final class TextViewControl: BaseFormControl {
             identifier: nil,
             discoverabilityTitle: "Copy All Content",
             handler: { [weak self] _ in
-                guard let self = self else { return }
-                UIPasteboard.general.string = self.textView.text
+                guard let self else { return }
+                UIPasteboard.general.string = textView.text
             }
         )
 

@@ -106,7 +106,7 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
         $0.searchView.textField.addTarget(self, action: #selector(search), for: .editingChanged)
         $0.searchView.textField.delegate = self
         $0.searchView.textField.keyPressHandler = { [weak self] key in
-            guard let self = self else { return true }
+            guard let self else { return true }
             switch key?.keyCode {
             case .keyboardUpArrow:
                 defer { self.setFirstResponderAndSelectPreviousRow() }
@@ -163,9 +163,9 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
 
     private func registerKeyboardAnimations() {
         animateWhenKeyboard(.willChangeFrame) { [weak self] info in
-            guard let self = self else { return }
-            self.viewCode.keyboardFrame = info.keyboardFrame
-            self.viewCode.layoutIfNeeded()
+            guard let self else { return }
+            viewCode.keyboardFrame = info.keyboardFrame
+            viewCode.layoutIfNeeded()
         }
     }
 
@@ -298,15 +298,13 @@ extension InspectorViewController {
             return
         }
 
-        let character: String = {
-            switch keyCommand.modifierFlags {
-            case .alphaShift:
-                return keyCommandInput
+        let character: String = switch keyCommand.modifierFlags {
+        case .alphaShift:
+            keyCommandInput
 
-            default:
-                return keyCommandInput.lowercased()
-            }
-        }()
+        default:
+            keyCommandInput.lowercased()
+        }
 
         viewCode.searchView.insertText(character)
         debounce(#selector(search), delay: .veryLong)

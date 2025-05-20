@@ -128,8 +128,8 @@ final class TextFieldControl: BaseFormControl {
                         identifier: nil,
                         discoverabilityTitle: "Copy",
                         handler: { [weak self] _ in
-                            guard let self = self else { return }
-                            UIPasteboard.general.string = self.textField.text
+                            guard let self else { return }
+                            UIPasteboard.general.string = textField.text
                         }
                     )
                 ]

@@ -22,7 +22,7 @@ import UIKit
 
 extension UIColor {
     convenience init?(cgColor: CGColor?) {
-        guard let cgColor = cgColor else {
+        guard let cgColor else {
             return nil
         }
 

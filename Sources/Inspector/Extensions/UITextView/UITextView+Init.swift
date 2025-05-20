@@ -40,7 +40,7 @@ extension UITextView {
         self.isEditable = isEditable
         backgroundColor = nil
 
-        if let textColor = textColor {
+        if let textColor {
             self.textColor = textColor
         }
 

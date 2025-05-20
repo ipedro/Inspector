@@ -51,13 +51,13 @@ extension DefaultElementAttributesLibrary {
             Property.allCases.compactMap { property in
                 switch property {
                 case .isIdleTimerEnabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { !self.application.isIdleTimerDisabled },
                         handler: { self.application.isIdleTimerDisabled = !$0 }
                     )
                 case .applicationIconBadgeNumber:
-                    return .integerStepper(
+                    .integerStepper(
                         title: property.rawValue,
                         value: { self.application.applicationIconBadgeNumber },
                         range: { 0...1000 },
@@ -65,13 +65,13 @@ extension DefaultElementAttributesLibrary {
                         handler: { self.application.applicationIconBadgeNumber = $0 }
                     )
                 case .applicationSupportsShakeToEdit:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { self.application.applicationSupportsShakeToEdit },
                         handler: { self.application.applicationSupportsShakeToEdit = $0 }
                     )
                 case .applicationState:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: .none,
                         axis: .horizontal,
@@ -85,30 +85,30 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .backgroundTimeRemaining:
-                    return .none
+                    .none
                 case .backgroundRefreshStatus:
-                    return .none
+                    .none
                 case .isProtectedDataAvailable:
-                    return .none
+                    .none
                 case .userInterfaceLayoutDirection:
-                    return .none
+                    .none
                 case .supportsMultipleScenes:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { self.application.supportsMultipleScenes }
                     )
                 case .isRegisteredForRemoteNotifications:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { self.application.isRegisteredForRemoteNotifications }
                     )
                 case .supportsAlternateIcons:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { self.application.supportsAlternateIcons }
                     )
                 case .alternateIconName:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: .none,
                         value: { self.application.alternateIconName }

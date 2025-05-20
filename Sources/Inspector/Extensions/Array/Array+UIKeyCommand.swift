@@ -20,7 +20,7 @@
 
 import UIKit
 
-extension Array where Element == UIKeyCommand {
+extension [UIKeyCommand] {
     func sortedByInputKey() -> Self {
         var copy = self
         copy.sort { lhs, rhs -> Bool in

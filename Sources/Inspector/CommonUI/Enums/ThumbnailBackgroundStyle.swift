@@ -52,67 +52,64 @@ enum ThumbnailBackgroundStyle: Hashable, CaseIterable, RawRepresentable {
     var rawValue: Int {
         switch self {
         case .strong:
-            return 0
+            0
         case .medium:
-            return 1
+            1
         case .systemBackground:
-            return 2
+            2
         case .custom:
-            return -1
+            -1
         }
     }
 
     var color: UIColor {
         switch (self, Inspector.sharedInstance.configuration.colorStyle) {
         case (.strong, .dark):
-            return UIColor(white: 0.40, alpha: 1)
+            UIColor(white: 0.40, alpha: 1)
         case (.medium, .dark):
-            return UIColor(white: 0.80, alpha: 1)
+            UIColor(white: 0.80, alpha: 1)
         case (.systemBackground, .dark):
-            return UIColor(white: 0, alpha: 1)
-
+            UIColor(white: 0, alpha: 1)
         case (.strong, .light):
-            return UIColor(white: 0.40, alpha: 1)
+            UIColor(white: 0.40, alpha: 1)
         case (.medium, .light):
-            return UIColor(white: 0.80, alpha: 1)
+            UIColor(white: 0.80, alpha: 1)
         case (.systemBackground, .light):
-            return UIColor(white: 1, alpha: 1)
+            UIColor(white: 1, alpha: 1)
         case let (.custom(color), _):
-            return color
+            color
         }
     }
 
     var contrastingColor: UIColor {
         switch (self, Inspector.sharedInstance.configuration.colorStyle) {
         case (.strong, .dark):
-            return .darkText
+            .darkText
         case (.medium, .dark):
-            return .white
+            .white
         case (.systemBackground, .dark):
-            return .lightGray
-
+            .lightGray
         case (.strong, .light):
-            return .white
+            .white
         case (.medium, .light):
-            return .darkText
+            .darkText
         case (.systemBackground, .light):
-            return .darkText
-
+            .darkText
         case let (.custom(color), _):
-            return color.contrasting
+            color.contrasting
         }
     }
 
     var image: UIImage {
         switch self {
         case .strong:
-            return IconKit.imageOfAppearanceLight().withRenderingMode(.alwaysTemplate)
+            IconKit.imageOfAppearanceLight().withRenderingMode(.alwaysTemplate)
 
         case .custom, .medium:
-            return IconKit.imageOfAppearanceMedium().withRenderingMode(.alwaysTemplate)
+            IconKit.imageOfAppearanceMedium().withRenderingMode(.alwaysTemplate)
 
         case .systemBackground:
-            return IconKit.imageOfAppearanceDark().withRenderingMode(.alwaysTemplate)
+            IconKit.imageOfAppearanceDark().withRenderingMode(.alwaysTemplate)
         }
     }
 }

@@ -21,9 +21,9 @@
 import Foundation
 import UIKit
 
-extension Array where Element == InspectorElementLibraryProtocol {
+extension [InspectorElementLibraryProtocol] {
     func formItems(for object: NSObject?) -> InspectorElementSections {
-        guard let object = object else { return [] }
+        guard let object else { return [] }
 
         return object._classesForCoder
             .flatMap { aClass in

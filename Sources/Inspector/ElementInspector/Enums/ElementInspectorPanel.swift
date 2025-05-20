@@ -31,26 +31,26 @@ enum ElementInspectorPanel: Hashable, Swift.CaseIterable, MenuContentProtocol {
     var title: String {
         switch self {
         case .identity:
-            return Texts.inspect("Identity")
+            Texts.inspect("Identity")
         case .attributes:
-            return Texts.inspect("Attributes")
+            Texts.inspect("Attributes")
         case .children:
-            return Texts.inspect("Children")
+            Texts.inspect("Children")
         case .size:
-            return Texts.inspect("Size")
+            Texts.inspect("Size")
         }
     }
 
     var image: UIImage? {
         switch self {
         case .identity:
-            return .elementIdentityPanel
+            .elementIdentityPanel
         case .attributes:
-            return .elementAttributesPanel
+            .elementAttributesPanel
         case .children:
-            return .elementChildrenPanel
+            .elementChildrenPanel
         case .size:
-            return .elementSizePanel
+            .elementSizePanel
         }
     }
 
@@ -62,13 +62,13 @@ enum ElementInspectorPanel: Hashable, Swift.CaseIterable, MenuContentProtocol {
         allCases.filter { panel in
             switch panel {
             case .children:
-                return element.isContainer
+                element.isContainer
 
             case .size:
-                return element._underlyingObject is UIView
+                element._underlyingObject is UIView
 
             case .identity, .attributes:
-                return true
+                true
             }
         }
     }

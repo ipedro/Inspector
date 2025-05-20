@@ -59,12 +59,12 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let view = view else { return [] }
+            guard let view else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .contentMode:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIView.ContentMode.allCases.map(\.description),
                         selectedIndex: { UIView.ContentMode.allCases.firstIndex(of: view.contentMode) }
@@ -75,7 +75,7 @@ extension DefaultElementAttributesLibrary {
                         view.contentMode = contentMode
                     }
                 case .semanticContentAttribute:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UISemanticContentAttribute.allCases.map(\.description),
                         selectedIndex: { UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute) }
@@ -86,7 +86,7 @@ extension DefaultElementAttributesLibrary {
                         view.semanticContentAttribute = semanticContentAttribute
                     }
                 case .tag:
-                    return .integerStepper(
+                    .integerStepper(
                         title: property.rawValue,
                         value: { view.tag },
                         range: { 0...100 },
@@ -95,7 +95,7 @@ extension DefaultElementAttributesLibrary {
                         view.tag = newValue
                     }
                 case .accessibilityLabel:
-                    return .textView(
+                    .textView(
                         title: property.rawValue,
                         placeholder: view.accessibilityLabel?.trimmed ?? property.rawValue,
                         value: { view.accessibilityLabel }
@@ -103,11 +103,11 @@ extension DefaultElementAttributesLibrary {
                         view.accessibilityLabel = accessibilityLabel
                     }
                 case .accessibilityIdentifierFooter:
-                    return .infoNote(icon: .none, text: "An identifier can be used to uniquely identify an element in the scripts you write using the UI Automation interfaces. Using an identifier allows you to avoid inappropriately setting or accessing an element’s accessibility label.")
+                    .infoNote(icon: .none, text: "An identifier can be used to uniquely identify an element in the scripts you write using the UI Automation interfaces. Using an identifier allows you to avoid inappropriately setting or accessing an element’s accessibility label.")
                 case .accessibilityLabelFooter:
-                    return .infoNote(icon: .none, text: "A succinct label in a localized string that identifies the accessibility element to the user.")
+                    .infoNote(icon: .none, text: "A succinct label in a localized string that identifies the accessibility element to the user.")
                 case .accessibilityIdentifier:
-                    return .textField(
+                    .textField(
                         title: property.rawValue,
                         placeholder: view.accessibilityIdentifier?.trimmed ?? property.rawValue,
                         value: { view.accessibilityIdentifier }
@@ -116,10 +116,9 @@ extension DefaultElementAttributesLibrary {
                         view._highlightView?.updateElementName()
                     }
                 case .groupInteraction, .accessibilityGroup:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .isUserInteractionEnabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: {
                             guard let element = view._highlightView?.element as? ViewHierarchyElement else {
@@ -135,17 +134,16 @@ extension DefaultElementAttributesLibrary {
                         element.isUnderlyingViewUserInteractionEnabled = isUserInteractionEnabled
                     }
                 case .isMultipleTouchEnabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { view.isMultipleTouchEnabled }
                     ) { isMultipleTouchEnabled in
                         view.isMultipleTouchEnabled = isMultipleTouchEnabled
                     }
                 case .groupAlphaAndColors:
-                    return .separator
-
+                    .separator
                 case .alpha:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { view.alpha },
                         range: { 0...1 },
@@ -154,52 +152,51 @@ extension DefaultElementAttributesLibrary {
                         view.alpha = alpha
                     }
                 case .backgroundColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { view.backgroundColor }
                     ) { backgroundColor in
                         view.backgroundColor = backgroundColor
                     }
                 case .tintColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { view.tintColor }
                     ) { tintColor in
                         view.tintColor = tintColor
                     }
                 case .groupDrawing:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .isOpaque:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { view.isOpaque }
                     ) { isOpaque in
                         view.isOpaque = isOpaque
                     }
                 case .isHidden:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { view.isHidden }
                     ) { isHidden in
                         view.isHidden = isHidden
                     }
                 case .clearsContextBeforeDrawing:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { view.clearsContextBeforeDrawing }
                     ) { clearsContextBeforeDrawing in
                         view.clearsContextBeforeDrawing = clearsContextBeforeDrawing
                     }
                 case .clipsToBounds:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { view.clipsToBounds }
                     ) { clipsToBounds in
                         view.clipsToBounds = clipsToBounds
                     }
                 case .autoresizesSubviews:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { view.autoresizesSubviews }
                     ) { autoresizesSubviews in

@@ -28,13 +28,13 @@ enum ViewHierarchyElementAction: MenuContentProtocol {
     var title: String {
         switch self {
         case let .layer(action):
-            return action.title
+            action.title
 
         case let .inspect(preferredPanel):
-            return preferredPanel.title
+            preferredPanel.title
 
         case let .copy(content):
-            return content.title
+            content.title
         }
     }
 
@@ -42,22 +42,22 @@ enum ViewHierarchyElementAction: MenuContentProtocol {
         switch self {
         case let .layer(action):
             switch action {
-            case .hideHighlight: return true
-            case .showHighlight: return false
+            case .hideHighlight: true
+            case .showHighlight: false
             }
-        case .inspect: return false
-        case .copy: return false
+        case .inspect: false
+        case .copy: false
         }
     }
 
     var image: UIImage? {
         switch self {
         case let .layer(action):
-            return action.image
+            action.image
         case let .inspect(preferredPanel):
-            return preferredPanel.image
+            preferredPanel.image
         case let .copy(content):
-            return content.image
+            content.image
         }
     }
 

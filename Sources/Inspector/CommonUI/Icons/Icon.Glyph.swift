@@ -35,6 +35,7 @@ extension Icon {
             switch self {
             case .sliderHorizontal:
                 IconKit.drawSliderHorizontal(color: color, frame: frame, resizing: resizing)
+
             case .chevronDown:
                 IconKit.drawChevronDown(color: color, frame: frame, resizing: resizing)
 

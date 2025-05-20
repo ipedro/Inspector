@@ -80,7 +80,7 @@ enum ViewHierarchyCoordinatorFactory: ViewHierarchyCoordinatorFactoryProtocol {
                 dictionary[customPanel.rawValue] = customization?.elementLibraries?[customPanel]
             }
 
-            ElementInspectorPanel.allCases.forEach { panel in
+            for panel in ElementInspectorPanel.allCases {
                 var libraries = dictionary[panel] ?? []
                 libraries.append(contentsOf: panel.defaultLibraries)
                 dictionary[panel] = libraries
@@ -105,10 +105,10 @@ enum ViewHierarchyCoordinatorFactory: ViewHierarchyCoordinatorFactoryProtocol {
 private extension ElementInspectorPanel {
     var defaultLibraries: [InspectorElementLibraryProtocol] {
         switch self {
-        case .identity: return DefaultElementIdentityLibrary.allCases
-        case .attributes: return DefaultElementAttributesLibrary.allCases
-        case .size: return DefaultElementSizeLibrary.allCases
-        case .children: return []
+        case .identity: DefaultElementIdentityLibrary.allCases
+        case .attributes: DefaultElementAttributesLibrary.allCases
+        case .size: DefaultElementSizeLibrary.allCases
+        case .children: []
         }
     }
 }

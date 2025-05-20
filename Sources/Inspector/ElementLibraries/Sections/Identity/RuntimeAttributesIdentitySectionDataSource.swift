@@ -41,7 +41,7 @@ extension DefaultElementIdentityLibrary {
 
         var properties: [InspectorElementProperty] {
             guard
-                let object = object,
+                let object,
                 !propertyNames.isEmpty
             else {
                 return [

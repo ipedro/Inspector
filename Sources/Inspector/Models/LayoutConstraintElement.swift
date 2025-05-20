@@ -48,19 +48,17 @@ final class LayoutConstraintElement {
             anchor: constraint.firstAnchor
         )
 
-        let second: Binding?
-
-        if let secondAnchor = constraint.secondAnchor,
-           let secondItem = Item(with: constraint.secondItem)
+        let second: Binding? = if let secondAnchor = constraint.secondAnchor,
+                                  let secondItem = Item(with: constraint.secondItem)
         {
-            second = Binding(
+            Binding(
                 item: secondItem,
                 attribute: constraint.secondAttribute,
                 anchor: secondAnchor
             )
         }
         else {
-            second = nil
+            nil
         }
 
         let myBindings = Self.find(.mine, bindings: first, second, inRelationTo: view)
@@ -118,8 +116,8 @@ final class LayoutConstraintElement {
     private static func find(_ ownership: Ownership, bindings: Binding?..., inRelationTo view: UIView?) -> [Binding] {
         bindings.compactMap { binding in
             guard
-                let view = view,
-                let binding = binding,
+                let view,
+                let binding,
                 binding.ownership(to: view) == ownership
             else {
                 return nil
@@ -243,26 +241,26 @@ extension LayoutConstraintElement {
         var targetView: UIView? {
             switch self {
             case let .layoutGuide(layoutGuide):
-                return layoutGuide.weakReference?.owningView
+                layoutGuide.weakReference?.owningView
 
             case let .view(view):
-                return view.weakReference
+                view.weakReference
 
             case .other:
-                return nil
+                nil
             }
         }
 
         var target: NSObject? {
             switch self {
             case let .layoutGuide(layoutGuide):
-                return layoutGuide.weakReference?.owningView ?? layoutGuide.weakReference
+                layoutGuide.weakReference?.owningView ?? layoutGuide.weakReference
 
             case let .view(view):
-                return view.weakReference
+                view.weakReference
 
             case let .other(object):
-                return object.weakReference
+                object.weakReference
             }
         }
 
@@ -323,22 +321,22 @@ extension LayoutConstraintElement {
         var description: String {
             switch self {
             case let .aspectRatio(multiplier: multiplier):
-                return "Aspect Ratio \(multiplier)"
+                "Aspect Ratio \(multiplier)"
 
             case let .proportional(attribute: attributeString?, to: toString):
-                return "Proportional \(attributeString) to: \(toString)"
+                "Proportional \(attributeString) to: \(toString)"
 
             case let .proportional(attribute: .none, to: toString):
-                return "Proportional to: \(toString)"
+                "Proportional to: \(toString)"
 
             case let .relative(from: fromString?, to: toString):
-                return "\(fromString) to: \(toString)"
+                "\(fromString) to: \(toString)"
 
             case let .relative(from: .none, to: toString):
-                return "To: \(toString)"
+                "To: \(toString)"
 
             case let .constant(attributeName: attribute, relation: relation, constant: constant):
-                return "\(attribute) \(relation.description): \(constant.toString())"
+                "\(attribute) \(relation.description): \(constant.toString())"
             }
         }
     }

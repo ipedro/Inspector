@@ -30,9 +30,9 @@ final class IconButton: BaseControl {
         fileprivate func cornerRadius(for view: UIView) -> CGFloat {
             switch self {
             case .rounded:
-                return view.frame.height / 2
+                view.frame.height / 2
             case .plain:
-                return .zero
+                .zero
             }
         }
 

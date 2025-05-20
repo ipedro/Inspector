@@ -49,12 +49,12 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let mapView = mapView else { return [] }
+            guard let mapView else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .type:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: MKMapType.allCases.map(\.description),
                         selectedIndex: { MKMapType.allCases.firstIndex(of: mapView.mapType) }
@@ -66,52 +66,51 @@ extension DefaultElementAttributesLibrary {
                         mapView.mapType = mapType
                     }
                 case .groupAllows, .groupShows:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .isZoomEnabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { mapView.isZoomEnabled }
                     ) { isZoomEnabled in
                         mapView.isZoomEnabled = isZoomEnabled
                     }
                 case .isRotateEnabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { mapView.isRotateEnabled }
                     ) { isRotateEnabled in
                         mapView.isRotateEnabled = isRotateEnabled
                     }
                 case .isScrollEnabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { mapView.isScrollEnabled }
                     ) { isScrollEnabled in
                         mapView.isScrollEnabled = isScrollEnabled
                     }
                 case .isPitchEnabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { mapView.isPitchEnabled }
                     ) { isPitchEnabled in
                         mapView.isPitchEnabled = isPitchEnabled
                     }
                 case .buildings:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { mapView.showsBuildings }
                     ) { showsBuildings in
                         mapView.showsBuildings = showsBuildings
                     }
                 case .showsScale:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { mapView.showsScale }
                     ) { showsScale in
                         mapView.showsScale = showsScale
                     }
                 case .pointOfInterestFilter:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: ["None"] + MKPointOfInterestFilter.allCases.map(\.displayName),
                         selectedIndex: {
@@ -135,14 +134,14 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .showsUserLocation:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { mapView.showsUserLocation }
                     ) { showsUserLocation in
                         mapView.showsUserLocation = showsUserLocation
                     }
                 case .showsTraffic:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { mapView.showsTraffic }
                     ) { showsTraffic in
@@ -163,11 +162,11 @@ extension MKPointOfInterestFilter {
     public var displayName: String {
         switch self {
         case .includingAll:
-            return "Including All"
+            "Including All"
         case .excludingAll:
-            return "Excluding All"
+            "Excluding All"
         default:
-            return MKPointOfInterestCategory.allCases
+            MKPointOfInterestCategory.allCases
                 .compactMap { includes($0) ? $0.description : .none }
                 .joined(separator: ", ")
         }
@@ -220,47 +219,47 @@ extension MKPointOfInterestCategory: CaseIterable, CustomStringConvertible {
 
     var description: String {
         switch self {
-        case .airport: return "Airport"
-        case .amusementPark: return "Amusement Park"
-        case .aquarium: return "Aquarium"
-        case .atm: return "Atm"
-        case .bakery: return "Bakery"
-        case .bank: return "Bank"
-        case .beach: return "Beach"
-        case .brewery: return "Brewery"
-        case .cafe: return "Cafe"
-        case .campground: return "Campground"
-        case .carRental: return "Car Rental"
-        case .evCharger: return "EV Charger"
-        case .fireStation: return "Fire Station"
-        case .fitnessCenter: return "Fitness Center"
-        case .foodMarket: return "Food Market"
-        case .gasStation: return "Gas Station"
-        case .hospital: return "Hospital"
-        case .hotel: return "Hotel"
-        case .laundry: return "Laundry"
-        case .library: return "Library"
-        case .marina: return "Marina"
-        case .movieTheater: return "Movie Theater"
-        case .museum: return "Museum"
-        case .nationalPark: return "National Park"
-        case .nightlife: return "Nightlife"
-        case .park: return "Park"
-        case .parking: return "Parking"
-        case .pharmacy: return "Pharmacy"
-        case .police: return "Police"
-        case .postOffice: return "Post Office"
-        case .publicTransport: return "Public Transport"
-        case .restaurant: return "Restaurant"
-        case .restroom: return "Restroom"
-        case .school: return "School"
-        case .stadium: return "Stadium"
-        case .store: return "Store"
-        case .theater: return "Theater"
-        case .university: return "University"
-        case .winery: return "Winery"
-        case .zoo: return "Zoo"
-        default: return "Unknown"
+        case .airport: "Airport"
+        case .amusementPark: "Amusement Park"
+        case .aquarium: "Aquarium"
+        case .atm: "Atm"
+        case .bakery: "Bakery"
+        case .bank: "Bank"
+        case .beach: "Beach"
+        case .brewery: "Brewery"
+        case .cafe: "Cafe"
+        case .campground: "Campground"
+        case .carRental: "Car Rental"
+        case .evCharger: "EV Charger"
+        case .fireStation: "Fire Station"
+        case .fitnessCenter: "Fitness Center"
+        case .foodMarket: "Food Market"
+        case .gasStation: "Gas Station"
+        case .hospital: "Hospital"
+        case .hotel: "Hotel"
+        case .laundry: "Laundry"
+        case .library: "Library"
+        case .marina: "Marina"
+        case .movieTheater: "Movie Theater"
+        case .museum: "Museum"
+        case .nationalPark: "National Park"
+        case .nightlife: "Nightlife"
+        case .park: "Park"
+        case .parking: "Parking"
+        case .pharmacy: "Pharmacy"
+        case .police: "Police"
+        case .postOffice: "Post Office"
+        case .publicTransport: "Public Transport"
+        case .restaurant: "Restaurant"
+        case .restroom: "Restroom"
+        case .school: "School"
+        case .stadium: "Stadium"
+        case .store: "Store"
+        case .theater: "Theater"
+        case .university: "University"
+        case .winery: "Winery"
+        case .zoo: "Zoo"
+        default: "Unknown"
         }
     }
 }

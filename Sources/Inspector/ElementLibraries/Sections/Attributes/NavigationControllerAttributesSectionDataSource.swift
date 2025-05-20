@@ -48,45 +48,44 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let navigationController = navigationController else { return [] }
+            guard let navigationController else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .groupHideBars, .groupBarVisiblity:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .isNavigationBarHidden:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { !navigationController.isNavigationBarHidden },
                         handler: { navigationController.setNavigationBarHidden(!$0, animated: true) }
                     )
                 case .isToolbarHidden:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { !navigationController.isToolbarHidden },
                         handler: { navigationController.setToolbarHidden(!$0, animated: true) }
                     )
                 case .hidesBarsOnSwipe:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { navigationController.hidesBarsOnSwipe },
                         handler: { navigationController.hidesBarsOnSwipe = $0 }
                     )
                 case .hidesBarsOnTap:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { navigationController.hidesBarsOnTap },
                         handler: { navigationController.hidesBarsOnTap = $0 }
                     )
                 case .hidesBarsWhenKeyboardAppears:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { navigationController.hidesBarsWhenKeyboardAppears },
                         handler: { navigationController.hidesBarsWhenKeyboardAppears = $0 }
                     )
                 case .hidesBarsWhenVerticallyCompact:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { navigationController.hidesBarsWhenVerticallyCompact },
                         handler: { navigationController.hidesBarsWhenVerticallyCompact = $0 }

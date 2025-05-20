@@ -38,12 +38,12 @@ extension DefaultElementSizeLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let label = label else { return [] }
+            guard let label else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .preferredMaxLayoutWidth:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { label.preferredMaxLayoutWidth },
                         range: { 0...Double.infinity },

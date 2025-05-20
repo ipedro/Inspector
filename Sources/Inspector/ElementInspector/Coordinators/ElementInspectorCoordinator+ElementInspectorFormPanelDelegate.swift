@@ -100,7 +100,7 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
                 title: Texts.importImage,
                 style: .default,
                 handler: { [weak self] _ in
-                    guard let self = self else {
+                    guard let self else {
                         return
                     }
 

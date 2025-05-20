@@ -100,7 +100,7 @@ extension ElementChildrenPanelViewModel.CellViewModel: ElementChildrenPanelTable
     }
 
     var isHidden: Bool {
-        guard let parent = parent else { return isCollapsed }
+        guard let parent else { return isCollapsed }
         return parent.isCollapsed == true || parent.isHidden == true
     }
 

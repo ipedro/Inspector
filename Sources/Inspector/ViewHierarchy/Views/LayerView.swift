@@ -97,7 +97,7 @@ class LayerView: UIImageView, LayerViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        if let superview = superview {
+        if let superview {
             matchCornerRadius(of: superview)
         }
 
@@ -123,7 +123,7 @@ class LayerView: UIImageView, LayerViewProtocol {
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
 
-        guard let superview = superview else { return }
+        guard let superview else { return }
         contentView.matchCornerRadius(of: superview)
         setContentHuggingPriority(
             superview.contentHuggingPriority(for: .vertical),
@@ -157,9 +157,9 @@ extension LayerView: UIContextMenuInteractionDelegate {
                                 configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration?
     {
         .contextMenuConfiguration(with: element) { [weak self] element, action in
-            guard let self = self else { return }
+            guard let self else { return }
 
-            self.delegate?.layerView(self, didSelect: element, withAction: action)
+            delegate?.layerView(self, didSelect: element, withAction: action)
         }
     }
 }

@@ -22,7 +22,7 @@ import UIKit
 
 extension UIViewController {
     func setPopoverModalPresentationStyle(delegate: Any, transitionDelegate: UIViewControllerTransitioningDelegate?, from sourceView: UIView) {
-        if let transitionDelegate = transitionDelegate {
+        if let transitionDelegate {
             modalPresentationStyle = .custom
             transitioningDelegate = transitionDelegate
             return
@@ -32,7 +32,7 @@ extension UIViewController {
         if #available(iOS 15.0, *) {
             modalPresentationStyle = .popover
 
-            guard let popoverPresentationController = popoverPresentationController else { return }
+            guard let popoverPresentationController else { return }
 
             popoverPresentationController.sourceView = sourceView
             popoverPresentationController.delegate = delegate as? UIPopoverPresentationControllerDelegate

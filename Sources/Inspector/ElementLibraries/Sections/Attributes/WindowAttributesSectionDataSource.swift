@@ -46,7 +46,7 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let window = window else { return [] }
+            guard let window else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {

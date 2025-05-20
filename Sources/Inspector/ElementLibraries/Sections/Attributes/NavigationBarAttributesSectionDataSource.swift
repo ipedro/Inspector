@@ -55,12 +55,12 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let navigationBar = navigationBar else { return [] }
+            guard let navigationBar else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .style:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIBarStyle.allCases.map(\.description),
                         selectedIndex: { UIBarStyle.allCases.firstIndex(of: navigationBar.barStyle) },
@@ -72,16 +72,15 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .translucent:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { [weak self] in self?.navigationBar?.isTranslucent ?? false },
                         handler: { [weak self] isTranslucent in
                             self?.navigationBar?.isTranslucent = isTranslucent
                         }
                     )
-
                 case .prefersLargeTitltes:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { [weak self] in self?.navigationBar?.prefersLargeTitles ?? false },
                         handler: { [weak self] prefersLargeTitles in
@@ -89,7 +88,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .barTintColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { [weak self] in self?.navigationBar?.barTintColor },
                         handler: { [weak self] barTintColor in
@@ -97,7 +96,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .shadowImage:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { [weak self] in self?.navigationBar?.shadowImage },
                         handler: { [weak self] in
@@ -106,7 +105,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .backIndicatorImage:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { [weak self] in self?.navigationBar?.backIndicatorImage },
                         handler: { [weak self] in
@@ -115,7 +114,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .backIndicatorTransitionMaskImage:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { [weak self] in self?.navigationBar?.backIndicatorTransitionMaskImage },
                         handler: { [weak self] in
@@ -124,7 +123,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .titleFontName:
-                    return .fontNamePicker(
+                    .fontNamePicker(
                         title: property.rawValue,
                         fontProvider: { [weak self] in self?.navigationBar?.titleTextAttributes?[.font] as? UIFont },
                         handler: { [weak self] newValue in
@@ -132,7 +131,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .titleFontSize:
-                    return .fontSizeStepper(
+                    .fontSizeStepper(
                         title: property.rawValue,
                         fontProvider: { [weak self] in self?.navigationBar?.titleTextAttributes?[.font] as? UIFont },
                         handler: { [weak self] font in
@@ -140,7 +139,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .titleColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { [weak self] in self?.navigationBar?.titleTextAttributes?[.foregroundColor] as? UIColor },
                         handler: { [weak self] foregroundColor in
@@ -149,14 +148,12 @@ extension DefaultElementAttributesLibrary {
                     )
                 case .separator0,
                      .separator1:
-                    return .separator
-
+                    .separator
                 case .groupTitleTextAttributes,
                      .groupLargeTitleTextAttributes:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .largeTitleFontName:
-                    return .fontNamePicker(
+                    .fontNamePicker(
                         title: property.rawValue,
                         fontProvider: { [weak self] in self?.navigationBar?.largeTitleTextAttributes?[.font] as? UIFont },
                         handler: { [weak self] newValue in
@@ -164,7 +161,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .largeTitleFontSize:
-                    return .fontSizeStepper(
+                    .fontSizeStepper(
                         title: property.rawValue,
                         fontProvider: { [weak self] in self?.navigationBar?.largeTitleTextAttributes?[.font] as? UIFont },
                         handler: { [weak self] font in
@@ -172,7 +169,7 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .largeTitleColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { [weak self] in self?.navigationBar?.largeTitleTextAttributes?[.foregroundColor] as? UIColor },
                         handler: { [weak self] foregroundColor in

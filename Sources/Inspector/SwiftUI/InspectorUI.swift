@@ -63,7 +63,7 @@ final class InspectorUI: UIViewControllerRepresentable, InspectorSwiftUIHost {
         elementIconProvider: Inspector.ElementIconProvider?,
         didFinish: (() -> Void)?
     ) -> InspectorUI {
-        if let sharedInstance = sharedInstance {
+        if let sharedInstance {
             return sharedInstance
         }
         let instance = self.init(

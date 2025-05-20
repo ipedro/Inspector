@@ -112,7 +112,7 @@ final class ImagePreviewControl: BaseFormControl {
     private func didUpdateImage() {
         imageView.image = image
 
-        guard let image = image else {
+        guard let image else {
             imageNameLabel.text = "None"
             return
         }

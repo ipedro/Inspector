@@ -169,7 +169,7 @@ extension InspectorElementSectionFormView: InspectorElementSectionView {
     func addTitleAccessoryView(_ titleAccessoryView: UIView?) {
         var headerSubviews: [UIView] = [headerControl]
 
-        if let titleAccessoryView = titleAccessoryView {
+        if let titleAccessoryView {
             headerSubviews.append(titleAccessoryView)
             headerStackView.directionalLayoutMargins.update(trailing: elementInspectorAppearance.horizontalMargins)
         }
@@ -246,7 +246,7 @@ extension InspectorElementSectionFormView: UIContextMenuInteractionDelegate {
             identifier: nil,
             previewProvider: nil,
             actionProvider: { [weak self] _ in
-                guard let self = self else { return nil }
+                guard let self else { return nil }
 
                 return UIMenu(
                     title: String(),
@@ -254,7 +254,7 @@ extension InspectorElementSectionFormView: UIContextMenuInteractionDelegate {
                     identifier: nil,
                     options: .displayInline,
                     children: [
-                        UIAction.collapseAction(self.state == .collapsed) { [weak self] _ in
+                        UIAction.collapseAction(state == .collapsed) { [weak self] _ in
                             self?.changeState()
                         }
                     ]

@@ -105,9 +105,9 @@ extension UIView {
 
             view.translatesAutoresizingMaskIntoConstraints = false
 
-            constraints.forEach {
-                $0.priority = priority
-                $0.isActive = true
+            for constraint in constraints {
+                constraint.priority = priority
+                constraint.isActive = true
             }
         }
     }
@@ -151,16 +151,16 @@ private extension ViewBinding {
         case let .spacing(top, leading, bottom, trailing):
             var constraints = [NSLayoutConstraint]()
 
-            if let top = top {
+            if let top {
                 constraints.append(view.topAnchor.constraint(equalTo: superview.topAnchor, constant: top))
             }
-            if let leading = leading {
+            if let leading {
                 constraints.append(view.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: leading))
             }
-            if let bottom = bottom {
+            if let bottom {
                 constraints.append(view.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -bottom))
             }
-            if let trailing = trailing {
+            if let trailing {
                 constraints.append(view.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -trailing))
             }
 

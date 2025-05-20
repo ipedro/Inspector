@@ -142,12 +142,12 @@ final class SizeInspectorView: BaseView {
     }
 
     private func activateConstraints(_ constraints: NSLayoutConstraint...) {
-        constraints.forEach {
-            if let view = $0.firstItem as? UIView {
+        for constraint in constraints {
+            if let view = constraint.firstItem as? UIView {
                 view.translatesAutoresizingMaskIntoConstraints = false
             }
-            $0.priority = .defaultHigh
-            $0.isActive = true
+            constraint.priority = .defaultHigh
+            constraint.isActive = true
         }
     }
 

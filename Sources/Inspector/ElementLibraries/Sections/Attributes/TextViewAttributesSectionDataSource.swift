@@ -67,7 +67,7 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let textView = textView else { return [] }
+            guard let textView else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
@@ -79,6 +79,7 @@ extension DefaultElementAttributesLibrary {
                     ) { text in
                         textView.text = text
                     }
+
                 case .textColor:
                     return .colorPicker(
                         title: property.rawValue,
@@ -86,24 +87,27 @@ extension DefaultElementAttributesLibrary {
                     ) { textColor in
                         textView.textColor = textColor
                     }
+
                 case .fontName:
                     return .fontNamePicker(
                         title: property.rawValue,
                         fontProvider: { textView.font }
                     ) { font in
-                        guard let font = font else { return }
+                        guard let font else { return }
 
                         textView.font = font
                     }
+
                 case .fontSize:
                     return .fontSizeStepper(
                         title: property.rawValue,
                         fontProvider: { textView.font }
                     ) { font in
-                        guard let font = font else { return }
+                        guard let font else { return }
 
                         textView.font = font
                     }
+
                 case .adjustsFontForContentSizeCategory:
                     return .switch(
                         title: property.rawValue,
@@ -125,6 +129,7 @@ extension DefaultElementAttributesLibrary {
                         let textAlignment = allCases[newIndex]
                         textView.textAlignment = textAlignment
                     }
+
                 case .groupBehavior:
                     return .group(title: property.rawValue)
 
@@ -135,6 +140,7 @@ extension DefaultElementAttributesLibrary {
                     ) { isEditable in
                         textView.isEditable = isEditable
                     }
+
                 case .isSelectable:
                     return .switch(
                         title: property.rawValue,
@@ -271,6 +277,7 @@ extension DefaultElementAttributesLibrary {
                         let keyboardAppearance = UIKeyboardAppearance.allCases[newIndex]
                         textView.keyboardAppearance = keyboardAppearance
                     }
+
                 case .returnKey:
                     return .optionsList(
                         title: property.rawValue,
@@ -282,6 +289,7 @@ extension DefaultElementAttributesLibrary {
                         let returnKeyType = UIReturnKeyType.allCases[newIndex]
                         textView.returnKeyType = returnKeyType
                     }
+
                 case .enablesReturnKeyAutomatically:
                     return .switch(
                         title: property.rawValue,
@@ -289,6 +297,7 @@ extension DefaultElementAttributesLibrary {
                     ) { enablesReturnKeyAutomatically in
                         textView.enablesReturnKeyAutomatically = enablesReturnKeyAutomatically
                     }
+
                 case .isSecureTextEntry:
                     return .switch(
                         title: property.rawValue,

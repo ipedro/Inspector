@@ -24,28 +24,28 @@ extension UIControl.State: CustomStringConvertible {
     var description: String {
         switch self {
         case .normal:
-            return Texts.default
+            Texts.default
 
         case .highlighted:
-            return "Highlighted"
+            "Highlighted"
 
         case .disabled:
-            return "Disabled"
+            "Disabled"
 
         case .selected:
-            return "Selected"
+            "Selected"
 
         case .focused:
-            return "Focused"
+            "Focused"
 
         case .application:
-            return "Application"
+            "Application"
 
         case .reserved:
-            return "Reserved"
+            "Reserved"
 
         default:
-            return "Unknown"
+            "Unknown"
         }
     }
 }

@@ -43,24 +43,24 @@ extension DefaultElementSizeLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let scrollView = scrollView else { return [] }
+            guard let scrollView else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .verticalScrollIndicatorInsets:
-                    return .edgeInsets(
+                    .edgeInsets(
                         title: property.rawValue,
                         insets: { scrollView.verticalScrollIndicatorInsets },
                         handler: { scrollView.verticalScrollIndicatorInsets = $0 }
                     )
                 case .horizontalScrollIndicatorInsets:
-                    return .edgeInsets(
+                    .edgeInsets(
                         title: property.rawValue,
                         insets: { scrollView.horizontalScrollIndicatorInsets },
                         handler: { scrollView.horizontalScrollIndicatorInsets = $0 }
                     )
                 case .contentInsetsAdjustmentBehavior:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         axis: .vertical,
                         options: UIScrollView.ContentInsetAdjustmentBehavior.allCases.map(\.description),
@@ -72,16 +72,15 @@ extension DefaultElementSizeLibrary {
                         }
                     )
                 case .contentInset:
-                    return .edgeInsets(
+                    .edgeInsets(
                         title: property.rawValue,
                         insets: { scrollView.contentInset },
                         handler: { scrollView.contentInset = $0 }
                     )
                 case .separator:
-                    return .separator
-
+                    .separator
                 case .adjustedContentInset:
-                    return .edgeInsets(
+                    .edgeInsets(
                         title: property.rawValue,
                         insets: { scrollView.adjustedContentInset },
                         handler: nil

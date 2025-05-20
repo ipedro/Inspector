@@ -67,7 +67,7 @@ final class InspectorViewCoordinator: Coordinator<InspectorViewDependencies, UIV
     func finish(command: InspectorCommand?) {
         removeFromParent()
 
-        if let swiftUIDelegate = swiftUIDelegate {
+        if let swiftUIDelegate {
             swiftUIDelegate.inspectorViewCoordinator(self, willFinishWith: command)
             return
         }

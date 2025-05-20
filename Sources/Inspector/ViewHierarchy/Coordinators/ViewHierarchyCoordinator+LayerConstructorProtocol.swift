@@ -145,9 +145,9 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
 
         let newKeys = viewReferences.subtracting(oldViewReferences)
 
-        removedKeys.forEach { oldKey in
+        for oldKey in removedKeys {
             guard let layerView = oldValue[oldKey] else {
-                return
+                continue
             }
 
             if let highlightView = layerView as? HighlightView {
@@ -160,13 +160,13 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
             }
         }
 
-        newKeys.forEach { newKey in
+        for newKey in newKeys {
             guard
                 let reference = newKey.reference,
                 let layerView = newValue[newKey],
                 let underlyingView = reference._underlyingView
             else {
-                return
+                continue
             }
 
             underlyingView.installView(
@@ -184,21 +184,21 @@ extension ViewHierarchyCoordinator: ViewHierarchyLayerConstructorProtocol {
     {
         var removedReferences = [ViewHierarchyElementKey]()
 
-        removedLayers.forEach { layer in
+        for layer in removedLayers {
             oldValue[layer]?.forEach {
                 removedReferences.append($0)
             }
         }
 
         for (layer, elements) in visibleReferences where layer != .wireframes {
-            elements.forEach {
-                if let index = removedReferences.firstIndex(of: $0) {
+            for element in elements {
+                if let index = removedReferences.firstIndex(of: element) {
                     removedReferences.remove(at: index)
                 }
             }
         }
 
-        removedReferences.forEach { removedReference in
+        for removedReference in removedReferences {
             highlightViews.removeValue(forKey: removedReference)
         }
 

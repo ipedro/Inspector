@@ -23,7 +23,7 @@ import UIKit
 
 extension UIImage {
     func maskImage(with mask: UIImage) -> UIImage? {
-        guard let cgImage = cgImage else { return .none }
+        guard let cgImage else { return .none }
         let bounds = CGRect(origin: .zero, size: size)
 
         UIGraphicsBeginImageContextWithOptions(size, false, 0)

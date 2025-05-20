@@ -50,13 +50,13 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let slider = slider else { return [] }
+            guard let slider else { return [] }
             let stepValueProvider = { max(0.01, (slider.maximumValue - slider.minimumValue) / 100) }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .value:
-                    return .floatStepper(
+                    .floatStepper(
                         title: property.rawValue,
                         value: { slider.value },
                         range: { min(slider.minimumValue, slider.maximumValue)...max(slider.minimumValue, slider.maximumValue) },
@@ -67,7 +67,7 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .minimumValue:
-                    return .floatStepper(
+                    .floatStepper(
                         title: property.rawValue,
                         value: { slider.minimumValue },
                         range: { 0...max(0, slider.maximumValue) },
@@ -77,7 +77,7 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .maximumValue:
-                    return .floatStepper(
+                    .floatStepper(
                         title: property.rawValue,
                         value: { slider.maximumValue },
                         range: { slider.minimumValue...Float.infinity },
@@ -87,10 +87,10 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .groupImages:
-                    return .separator
+                    .separator
 
                 case .minimumValueImage:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { slider.minimumValueImage }
                     ) { minimumValueImage in
@@ -98,7 +98,7 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .maximumValueImage:
-                    return .imagePicker(
+                    .imagePicker(
                         title: property.rawValue,
                         image: { slider.maximumValueImage }
                     ) { maximumValueImage in
@@ -106,10 +106,10 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .groupColors:
-                    return .separator
+                    .separator
 
                 case .minimumTrackTintColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { slider.minimumTrackTintColor }
                     ) { minimumTrackTintColor in
@@ -117,7 +117,7 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .maxTrack:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { slider.maximumTrackTintColor }
                     ) { maximumTrackTintColor in
@@ -125,7 +125,7 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .thumbTintColor:
-                    return .colorPicker(
+                    .colorPicker(
                         title: property.rawValue,
                         color: { slider.thumbTintColor }
                     ) { thumbTintColor in
@@ -133,10 +133,10 @@ extension DefaultElementAttributesLibrary {
                     }
 
                 case .groupEvent:
-                    return .group(title: property.rawValue)
+                    .group(title: property.rawValue)
 
                 case .isContinuous:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { slider.isContinuous }
                     ) { isContinuous in

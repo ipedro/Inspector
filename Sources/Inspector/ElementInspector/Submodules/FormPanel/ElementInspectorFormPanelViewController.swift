@@ -101,11 +101,11 @@ class ElementInspectorFormPanelViewController: ElementInspectorPanelViewControll
                     state: {
                         switch listState {
                         case .allCollapsed, .firstExpanded:
-                            return initialListStateForCurrentHeight
+                            initialListStateForCurrentHeight
                         case .mixed:
-                            return .mixed
+                            .mixed
                         case .allExpanded:
-                            return .allExpanded
+                            .allExpanded
                         }
                     }(),
                     animated: true
@@ -142,13 +142,13 @@ extension ElementInspectorFormPanelViewController: DataReloadingProtocol {
     func reloadData() {
         viewCode.contentView.removeAllArrangedSubviews()
 
-        children.forEach { child in
+        for child in children {
             child.view.removeFromSuperview()
             child.willMove(toParent: nil)
             child.removeFromParent()
         }
 
-        guard let dataSource = dataSource else { return }
+        guard let dataSource else { return }
 
         for sectionIndex in 0 ..< dataSource.numberOfSections {
             let section = dataSource.section(at: sectionIndex)
@@ -215,8 +215,8 @@ extension ElementInspectorFormPanelViewController {
         } completion: { [weak self] finished in
             completion?(finished)
 
-            if let self = self {
-                self.itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
+            if let self {
+                itemStateDelegate?.elementInspectorFormPanelItemDidChangeState(self)
             }
         }
     }
@@ -241,7 +241,7 @@ extension ElementInspectorFormPanelViewController {
     }
 
     private func expandFirstSection(animated: Bool) {
-        formPanels.enumerated().forEach { index, form in
+        for (index, form) in formPanels.enumerated() {
             form.setState(index == .zero ? .expanded : .collapsed, animated: animated)
         }
     }

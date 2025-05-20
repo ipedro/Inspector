@@ -33,24 +33,24 @@ enum DefaultElementSizeLibrary: InspectorElementLibraryProtocol, Swift.CaseItera
     var targetClass: AnyClass {
         switch self {
         case .tableView:
-            return UITableView.self
+            UITableView.self
 
         case .button:
-            return UIButton.self
+            UIButton.self
 
         case .segmentedControl:
-            return UISegmentedControl.self
+            UISegmentedControl.self
 
         case .scrollView:
-            return UIScrollView.self
+            UIScrollView.self
 
         case .label:
-            return UILabel.self
+            UILabel.self
 
         case .contentLayoutPriority,
              .viewFrame,
              .layoutConstraints:
-            return UIView.self
+            UIView.self
         }
     }
 

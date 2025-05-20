@@ -51,29 +51,29 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
 
     var targetClass: AnyClass {
         switch self {
-        case .activityIndicator: return UIActivityIndicatorView.self
-        case .application: return UIApplication.self
-        case .button: return UIButton.self
-        case .control: return UIControl.self
-        case .datePicker: return UIDatePicker.self
-        case .imageView: return UIImageView.self
-        case .label: return UILabel.self
-        case .mapView: return MKMapView.self
-        case .navigationBar: return UINavigationBar.self
-        case .navigationController: return UINavigationController.self
-        case .scrollView: return UIScrollView.self
-        case .segmentedControl: return UISegmentedControl.self
-        case .slider: return UISlider.self
-        case .stackView: return UIStackView.self
-        case .switch: return UISwitch.self
-        case .tabBar: return UITabBar.self
-        case .tableView: return UITableView.self
-        case .textField: return UITextField.self
-        case .textView: return UITextView.self
-        case .view: return UIView.self
-        case .viewController: return UIViewController.self
-        case .webView: return WKWebView.self
-        case .window: return UIWindow.self
+        case .activityIndicator: UIActivityIndicatorView.self
+        case .application: UIApplication.self
+        case .button: UIButton.self
+        case .control: UIControl.self
+        case .datePicker: UIDatePicker.self
+        case .imageView: UIImageView.self
+        case .label: UILabel.self
+        case .mapView: MKMapView.self
+        case .navigationBar: UINavigationBar.self
+        case .navigationController: UINavigationController.self
+        case .scrollView: UIScrollView.self
+        case .segmentedControl: UISegmentedControl.self
+        case .slider: UISlider.self
+        case .stackView: UIStackView.self
+        case .switch: UISwitch.self
+        case .tabBar: UITabBar.self
+        case .tableView: UITableView.self
+        case .textField: UITextField.self
+        case .textView: UITextView.self
+        case .view: UIView.self
+        case .viewController: UIViewController.self
+        case .webView: WKWebView.self
+        case .window: UIWindow.self
         }
     }
 

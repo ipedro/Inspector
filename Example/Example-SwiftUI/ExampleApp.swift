@@ -62,7 +62,7 @@ struct Content: View {
             Inspector.removeAllLayers()
         }
         .onAppear {
-            UIApplication.shared.windows.forEach { window in
+            for window in UIApplication.shared.windows {
                 window.setNeedsLayout()
                 window.layoutSubviews()
             }

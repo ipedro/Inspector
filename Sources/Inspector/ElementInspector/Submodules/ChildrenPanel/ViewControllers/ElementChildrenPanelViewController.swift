@@ -73,15 +73,15 @@ final class ElementChildrenPanelViewController: ElementInspectorPanelViewControl
 
         if let indexPathsForSelectedRows = viewCode.tableView.indexPathsForSelectedRows {
             transitionCoordinator?.animate { _ in
-                indexPathsForSelectedRows.forEach {
-                    self.viewCode.tableView.deselectRow(at: $0, animated: animated)
+                for indexPathsForSelectedRow in indexPathsForSelectedRows {
+                    self.viewCode.tableView.deselectRow(at: indexPathsForSelectedRow, animated: animated)
                 }
             } completion: { context in
                 guard context.isCancelled else { return }
 
-                indexPathsForSelectedRows.forEach {
+                for indexPathsForSelectedRow in indexPathsForSelectedRows {
                     self.viewCode.tableView.selectRow(
-                        at: $0,
+                        at: indexPathsForSelectedRow,
                         animated: false,
                         scrollPosition: .none
                     )

@@ -25,47 +25,67 @@ public typealias InspectorElementViewModelProperty = InspectorElementProperty
 
 public enum InspectorElementProperty {
     public struct PreviewTarget {
-        internal let reference: ViewHierarchyElement
+        let reference: ViewHierarchyElement
 
         public init(view: UIView) {
-            reference = ViewHierarchyElement(with: view, iconProvider: .default)
+            reference = ViewHierarchyElement(
+                with: view,
+                iconProvider: .default
+            )
         }
     }
 
-    case preview(target: PreviewTarget)
+    case preview(
+        target: PreviewTarget
+    )
 
-    case colorPicker(title: String,
-                     emptyTitle: String = "No color",
-                     color: ColorProvider,
-                     handler: ColorHandler? = .none)
+    case colorPicker(
+        title: String,
+        emptyTitle: String = "No color",
+        color: ColorProvider,
+        handler: ColorHandler? = .none
+    )
 
-    case group(title: String, subtitle: String? = nil)
+    case group(
+        title: String,
+        subtitle: String? = nil
+    )
 
-    case infoNote(icon: InspectorElemenPropertyNoteIcon? = .info,
-                  title: String? = nil,
-                  text: String? = nil)
+    case infoNote(
+        icon: InspectorElemenPropertyNoteIcon? = .info,
+        title: String? = nil,
+        text: String? = nil
+    )
 
     case separator
 
-    case imagePicker(title: String,
-                     axis: NSLayoutConstraint.Axis = .vertical,
-                     image: ImageProvider,
-                     handler: ImageHandler? = .none)
+    case imagePicker(
+        title: String,
+        axis: NSLayoutConstraint.Axis = .vertical,
+        image: ImageProvider,
+        handler: ImageHandler? = .none
+    )
 
-    case optionsList(title: String,
-                     emptyTitle: String = "Unspecified",
-                     axis: NSLayoutConstraint.Axis = .horizontal,
-                     options: [(title: Swift.CustomStringConvertible, icon: UIImage?)],
-                     selectedIndex: SelectionProvider,
-                     handler: SelectionHandler? = .none)
+    case optionsList(
+        title: String,
+        emptyTitle: String = "Unspecified",
+        axis: NSLayoutConstraint.Axis = .horizontal,
+        options: [(
+            title: Swift.CustomStringConvertible,
+            icon: UIImage?
+        )],
+        selectedIndex: SelectionProvider,
+        handler: SelectionHandler? = .none
+    )
 
-    public static func optionsList(title: String,
-                                   emptyTitle: String = "Unspecified",
-                                   axis: NSLayoutConstraint.Axis = .horizontal,
-                                   options: [String],
-                                   selectedIndex: @escaping SelectionProvider,
-                                   handler: SelectionHandler? = .none) -> InspectorElementProperty
-    {
+    public static func optionsList(
+        title: String,
+        emptyTitle: String = "Unspecified",
+        axis: NSLayoutConstraint.Axis = .horizontal,
+        options: [String],
+        selectedIndex: @escaping SelectionProvider,
+        handler: SelectionHandler? = .none
+    ) -> InspectorElementProperty {
         .optionsList(
             title: title,
             emptyTitle: emptyTitle,
@@ -76,70 +96,99 @@ public enum InspectorElementProperty {
         )
     }
 
-    case textButtonGroup(title: String,
-                         axis: NSLayoutConstraint.Axis = .vertical,
-                         texts: [String],
-                         selectedIndex: SelectionProvider,
-                         handler: SelectionHandler? = .none)
+    case textButtonGroup(
+        title: String,
+        axis: NSLayoutConstraint.Axis = .vertical,
+        texts: [String],
+        selectedIndex: SelectionProvider,
+        handler: SelectionHandler? = .none
+    )
 
-    case imageButtonGroup(title: String,
-                          axis: NSLayoutConstraint.Axis = .vertical,
-                          images: [UIImage],
-                          selectedIndex: SelectionProvider,
-                          handler: SelectionHandler? = .none)
+    case imageButtonGroup(
+        title: String,
+        axis: NSLayoutConstraint.Axis = .vertical,
+        images: [UIImage],
+        selectedIndex: SelectionProvider,
+        handler: SelectionHandler? = .none
+    )
 
-    case stepper(title: String,
-                 value: DoubleProvider,
-                 range: DoubleClosedRangeProvider,
-                 stepValue: DoubleProvider,
-                 isDecimalValue: Bool,
-                 handler: DoubleHandler? = .none)
+    case stepper(
+        title: String,
+        value: DoubleProvider,
+        range: DoubleClosedRangeProvider,
+        stepValue: DoubleProvider,
+        isDecimalValue: Bool,
+        handler: DoubleHandler? = .none
+    )
 
-    case textField(title: String,
-                   placeholder: String?,
-                   axis: NSLayoutConstraint.Axis = .vertical,
-                   value: StringProvider,
-                   handler: StringHandler? = .none)
+    case textField(
+        title: String,
+        placeholder: String?,
+        axis: NSLayoutConstraint.Axis = .vertical,
+        value: StringProvider,
+        handler: StringHandler? = .none
+    )
 
-    case textView(title: String,
-                  placeholder: String?,
-                  value: StringProvider,
-                  handler: StringHandler? = .none)
+    case textView(
+        title: String,
+        placeholder: String?,
+        value: StringProvider,
+        handler: StringHandler? = .none
+    )
 
-    case `switch`(title: String,
-                  isOn: BoolProvider,
-                  handler: BoolHandler? = .none)
+    case `switch`(
+        title: String,
+        isOn: BoolProvider,
+        handler: BoolHandler? = .none
+    )
 
-    case cgRect(title: String,
-                rect: CGRectProvider,
-                handler: CGRectHandler? = .none)
+    case cgRect(
+        title: String,
+        rect: CGRectProvider,
+        handler: CGRectHandler? = .none
+    )
 
-    case cgPoint(title: String,
-                 point: CGPointProvider,
-                 handler: CGPointHandler? = .none)
+    case cgPoint(
+        title: String,
+        point: CGPointProvider,
+        handler: CGPointHandler? = .none
+    )
 
-    case cgSize(title: String,
-                size: CGSizeProvider,
-                handler: CGSizeHandler? = .none)
+    case cgSize(
+        title: String,
+        size: CGSizeProvider,
+        handler: CGSizeHandler? = .none
+    )
 
-    case uiOffset(title: String,
-                  offset: UIOffsetProvider,
-                  handler: UIOffsetHandler? = .none)
+    case uiOffset(
+        title: String,
+        offset: UIOffsetProvider,
+        handler: UIOffsetHandler? = .none
+    )
 
-    case directionalInsets(title: String,
-                           insets: NSDirectionalEdgeInsetsProvider,
-                           handler: NSDirectionalEdgeInsetsHandler? = .none)
+    case directionalInsets(
+        title: String,
+        insets: NSDirectionalEdgeInsetsProvider,
+        handler: NSDirectionalEdgeInsetsHandler? = .none
+    )
 
-    case edgeInsets(title: String,
-                    insets: UIEdgeInsetsProvider,
-                    handler: UIEdgeInsetsHandler? = .none)
+    case edgeInsets(
+        title: String,
+        insets: UIEdgeInsetsProvider,
+        handler: UIEdgeInsetsHandler? = .none
+    )
 
     @available(*, deprecated, renamed: "switch(title:isOn:handler:)")
-    public static func toggleControl(title: String,
-                                     isOn: @escaping BoolProvider,
-                                     handler: BoolHandler? = .none) -> Self
-    {
-        .switch(title: title, isOn: isOn, handler: handler)
+    public static func toggleControl(
+        title: String,
+        isOn: @escaping BoolProvider,
+        handler: BoolHandler? = .none
+    ) -> Self {
+        .switch(
+            title: title,
+            isOn: isOn,
+            handler: handler
+        )
     }
 }
 
@@ -147,10 +196,10 @@ extension InspectorElementProperty {
     var isControl: Bool {
         switch self {
         case .group, .separator, .infoNote:
-            return false
+            false
 
         default:
-            return true
+            true
         }
     }
 
@@ -171,7 +220,7 @@ extension InspectorElementProperty {
              .cgPoint(_, _, .some),
              .edgeInsets(_, _, .some),
              .directionalInsets(_, _, .some):
-            return true
+            true
 
         case .stepper,
              .colorPicker,
@@ -192,7 +241,7 @@ extension InspectorElementProperty {
              .edgeInsets,
              .infoNote,
              .preview:
-            return false
+            false
         }
     }
 }

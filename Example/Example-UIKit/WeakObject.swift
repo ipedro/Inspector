@@ -30,7 +30,7 @@ final class Weak<Object: AnyObject>: Hashable {
     }
 
     convenience init?(_ object: Object?) {
-        guard let object = object else { return nil }
+        guard let object else { return nil }
         self.init(object)
     }
 

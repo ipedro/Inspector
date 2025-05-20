@@ -47,16 +47,16 @@ extension DefaultElementSizeLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let view = view else { return [] }
+            guard let view else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .groupHuggingPriority,
                      .groupCompressionResistancePriority:
-                    return .group(title: property.rawValue)
+                    .group(title: property.rawValue)
 
                 case .horizontalHugging:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UILayoutPriority.allCases.map(\.description),
                         selectedIndex: { UILayoutPriority.allCases.firstIndex(of: view.contentHuggingPriority(for: .horizontal)) },
@@ -68,7 +68,7 @@ extension DefaultElementSizeLibrary {
                     )
 
                 case .verticalHugging:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UILayoutPriority.allCases.map(\.description),
                         selectedIndex: { UILayoutPriority.allCases.firstIndex(of: view.contentHuggingPriority(for: .vertical)) },
@@ -78,8 +78,9 @@ extension DefaultElementSizeLibrary {
                             view.setContentHuggingPriority(priority, for: .vertical)
                         }
                     )
+
                 case .horizontalCompressionResistance:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UILayoutPriority.allCases.map(\.description),
                         selectedIndex: { UILayoutPriority.allCases.firstIndex(of: view.contentCompressionResistancePriority(for: .horizontal)) },
@@ -89,8 +90,9 @@ extension DefaultElementSizeLibrary {
                             view.setContentCompressionResistancePriority(priority, for: .horizontal)
                         }
                     )
+
                 case .verticalCompressionResistance:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UILayoutPriority.allCases.map(\.description),
                         selectedIndex: { UILayoutPriority.allCases.firstIndex(of: view.contentCompressionResistancePriority(for: .vertical)) },
@@ -100,12 +102,13 @@ extension DefaultElementSizeLibrary {
                             view.setContentCompressionResistancePriority(priority, for: .vertical)
                         }
                     )
+
                 case .separator0,
                      .separator1:
-                    return .separator
+                    .separator
 
                 case .instrinsicContentSize:
-                    return .cgSize(
+                    .cgSize(
                         title: property.rawValue,
                         size: { view.intrinsicContentSize },
                         handler: nil

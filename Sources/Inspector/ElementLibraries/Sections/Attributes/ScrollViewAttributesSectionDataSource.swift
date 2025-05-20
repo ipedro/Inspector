@@ -59,15 +59,14 @@ extension DefaultElementAttributesLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let scrollView = scrollView else { return [] }
+            guard let scrollView else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .groupIndicators:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .indicatorStyle:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIScrollView.IndicatorStyle.allCases.map(\.description),
                         selectedIndex: { UIScrollView.IndicatorStyle.allCases.firstIndex(of: scrollView.indicatorStyle) }
@@ -79,79 +78,76 @@ extension DefaultElementAttributesLibrary {
                         scrollView.indicatorStyle = indicatorStyle
                     }
                 case .showsHorizontalScrollIndicator:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { scrollView.showsHorizontalScrollIndicator }
                     ) { showsHorizontalScrollIndicator in
                         scrollView.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
                     }
                 case .showsVerticalScrollIndicator:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { scrollView.showsVerticalScrollIndicator }
                     ) { showsVerticalScrollIndicator in
                         scrollView.showsVerticalScrollIndicator = showsVerticalScrollIndicator
                     }
                 case .groupScrolling:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .isScrollEnabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { scrollView.isScrollEnabled }
                     ) { isScrollEnabled in
                         scrollView.isScrollEnabled = isScrollEnabled
                     }
                 case .pagingEnabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { scrollView.isPagingEnabled }
                     ) { isPagingEnabled in
                         scrollView.isPagingEnabled = isPagingEnabled
                     }
                 case .isDirectionalLockEnabled:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { scrollView.isDirectionalLockEnabled }
                     ) { isDirectionalLockEnabled in
                         scrollView.isDirectionalLockEnabled = isDirectionalLockEnabled
                     }
                 case .groupBounce:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .bounces:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { scrollView.bounces }
                     ) { bounces in
                         scrollView.bounces = bounces
                     }
                 case .bouncesZoom:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { scrollView.bouncesZoom }
                     ) { bouncesZoom in
                         scrollView.bouncesZoom = bouncesZoom
                     }
                 case .alwaysBounceHorizontal:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { scrollView.alwaysBounceHorizontal }
                     ) { alwaysBounceHorizontal in
                         scrollView.alwaysBounceHorizontal = alwaysBounceHorizontal
                     }
                 case .bounceVertically:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { scrollView.alwaysBounceVertical }
                     ) { alwaysBounceVertical in
                         scrollView.alwaysBounceVertical = alwaysBounceVertical
                     }
                 case .groupZoom:
-                    return .separator
-
+                    .separator
                 case .zoomScale:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { scrollView.zoomScale },
                         range: { min(scrollView.minimumZoomScale, scrollView.maximumZoomScale)...max(scrollView.minimumZoomScale, scrollView.maximumZoomScale) },
@@ -160,7 +156,7 @@ extension DefaultElementAttributesLibrary {
                         scrollView.zoomScale = zoomScale
                     }
                 case .minimumZoomScale:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { scrollView.minimumZoomScale },
                         range: { 0...max(0, scrollView.maximumZoomScale) },
@@ -169,7 +165,7 @@ extension DefaultElementAttributesLibrary {
                         scrollView.minimumZoomScale = minimumZoomScale
                     }
                 case .maximumZoomScale:
-                    return .cgFloatStepper(
+                    .cgFloatStepper(
                         title: property.rawValue,
                         value: { scrollView.maximumZoomScale },
                         range: { scrollView.minimumZoomScale...CGFloat.infinity },
@@ -178,24 +174,23 @@ extension DefaultElementAttributesLibrary {
                         scrollView.maximumZoomScale = maximumZoomScale
                     }
                 case .groupContentTouch:
-                    return .group(title: property.rawValue)
-
+                    .group(title: property.rawValue)
                 case .delaysContentTouches:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { scrollView.delaysContentTouches }
                     ) { delaysContentTouches in
                         scrollView.delaysContentTouches = delaysContentTouches
                     }
                 case .canCancelContentTouches:
-                    return .switch(
+                    .switch(
                         title: property.rawValue,
                         isOn: { scrollView.canCancelContentTouches }
                     ) { canCancelContentTouches in
                         scrollView.canCancelContentTouches = canCancelContentTouches
                     }
                 case .keyboardDismissMode:
-                    return .optionsList(
+                    .optionsList(
                         title: property.rawValue,
                         options: UIScrollView.KeyboardDismissMode.allCases.map(\.description),
                         selectedIndex: { UIScrollView.KeyboardDismissMode.allCases.firstIndex(of: scrollView.keyboardDismissMode) }

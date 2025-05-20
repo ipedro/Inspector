@@ -116,7 +116,7 @@ final class PlaygroundViewController: BaseViewController {
     private func setupSegmentedControl() {
         datePickerSegmentedControl.removeAllSegments()
 
-        UIDatePickerStyle.allCases.forEach { style in
+        for style in UIDatePickerStyle.allCases {
             datePickerSegmentedControl.insertSegment(
                 withTitle: style.description,
                 at: datePickerSegmentedControl.numberOfSegments,

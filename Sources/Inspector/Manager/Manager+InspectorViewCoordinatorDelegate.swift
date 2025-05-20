@@ -23,8 +23,8 @@ import UIKit
 extension Manager: InspectorViewCoordinatorDelegate {
     func inspectorViewCoordinator(_ coordinator: InspectorViewCoordinator, execute command: InspectorCommand?) {
         coordinator.start().dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
-            self.execute(command)
+            guard let self else { return }
+            execute(command)
         }
     }
 }
@@ -40,7 +40,7 @@ extension Manager: InspectorViewCoordinatorSwiftUIDelegate {
 
 extension Manager {
     private func execute(_ command: InspectorCommand?) {
-        guard let command = command else { return }
+        guard let command else { return }
 
         asyncOperation { [weak self] in
             switch command {
@@ -49,11 +49,11 @@ extension Manager {
 
             case let .inspect(reference):
                 guard
-                    let self = self,
+                    let self,
                     let sourceView = reference._underlyingView
                 else { return }
 
-                self.startElementInspectorCoordinator(
+                startElementInspectorCoordinator(
                     for: reference,
                     panel: .default,
                     from: sourceView,
@@ -70,9 +70,9 @@ extension Manager {
 
     func presentInspector(animated: Bool, from presenter: UIViewController) {
         dismissInspectorViewIfNeeded { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
-            let coordinator = self.makeInspectorViewCoordinator(presentedBy: presenter)
+            let coordinator = makeInspectorViewCoordinator(presentedBy: presenter)
 
             presenter.present(coordinator.start(), animated: animated) { [weak self] in
                 self?.addChild(coordinator)
@@ -86,8 +86,8 @@ extension Manager {
                 snapshot: snapshot,
                 shouldAnimateKeyboard: dependencies.swiftUIhost == nil,
                 commandGroupsProvider: { [weak self] in
-                    guard let self = self else { return .none }
-                    return self.commandGroups
+                    guard let self else { return .none }
+                    return commandGroups
                 }
             ),
             presentedBy: presenter

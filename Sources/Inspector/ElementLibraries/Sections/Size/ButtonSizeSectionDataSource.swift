@@ -40,24 +40,24 @@ extension DefaultElementSizeLibrary {
         }
 
         var properties: [InspectorElementProperty] {
-            guard let button = button else { return [] }
+            guard let button else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .contentEdgeInsets:
-                    return .edgeInsets(
+                    .edgeInsets(
                         title: property.rawValue,
                         insets: { button.contentEdgeInsets },
                         handler: { button.contentEdgeInsets = $0 }
                     )
                 case .imageEdgeInsets:
-                    return .edgeInsets(
+                    .edgeInsets(
                         title: property.rawValue,
                         insets: { button.imageEdgeInsets },
                         handler: { button.imageEdgeInsets = $0 }
                     )
                 case .titleEdgeInsets:
-                    return .edgeInsets(
+                    .edgeInsets(
                         title: property.rawValue,
                         insets: { button.titleEdgeInsets },
                         handler: { button.titleEdgeInsets = $0 }
