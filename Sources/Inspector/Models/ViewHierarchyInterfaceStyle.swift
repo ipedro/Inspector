@@ -26,7 +26,6 @@ enum ViewHierarchyInterfaceStyle {
     case dark
 }
 
-@available(iOS 12.0, *)
 extension ViewHierarchyInterfaceStyle: RawRepresentable {
     typealias RawValue = UIUserInterfaceStyle
 

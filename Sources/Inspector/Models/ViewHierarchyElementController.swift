@@ -68,12 +68,7 @@ extension ViewHierarchyElementController {
             _isModalInPresentation = viewController.isModalInPresentation
             _performsActionsWhilePresentingModally = viewController.performsActionsWhilePresentingModally
 
-            if #available(iOS 14.0, *) {
-                self._prefersPointerLocked = viewController.prefersPointerLocked
-            }
-            else {
-                _prefersPointerLocked = false
-            }
+            self._prefersPointerLocked = viewController.prefersPointerLocked
 
             if let restorationClass = viewController.restorationClass {
                 _restorationClassName = String(describing: restorationClass)
@@ -473,7 +468,6 @@ extension ViewHierarchyElementController: ViewHierarchyControllerProtocol {
 
     var _isModalInPresentation: Bool {
         guard
-            #available(iOS 13.0, *),
             store.latest.isExpired,
             let viewController = underlyingViewController
         else {
@@ -573,7 +567,6 @@ extension ViewHierarchyElementController: ViewHierarchyControllerProtocol {
 
     var _performsActionsWhilePresentingModally: Bool {
         guard
-            #available(iOS 13.0, *),
             store.latest.isExpired,
             let viewController = underlyingViewController
         else {
@@ -649,7 +642,6 @@ extension ViewHierarchyElementController: ViewHierarchyControllerProtocol {
 
     var _prefersPointerLocked: Bool {
         guard
-            #available(iOS 14.0, *),
             store.latest.isExpired,
             let viewController = underlyingViewController
         else {

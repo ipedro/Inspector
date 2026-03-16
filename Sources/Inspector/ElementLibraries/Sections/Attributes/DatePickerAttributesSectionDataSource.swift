@@ -62,13 +62,11 @@ extension DefaultElementAttributesLibrary {
 
                         let datePickerStyle = UIDatePickerStyle.allCases[newIndex]
 
-                        if #available(iOS 14.0, *) {
-                            if
-                                datePicker.datePickerMode == .countDownTimer,
-                                datePickerStyle == .inline || datePickerStyle == .compact
-                            {
-                                datePicker.datePickerMode = .dateAndTime
-                            }
+                        if
+                            datePicker.datePickerMode == .countDownTimer,
+                            datePickerStyle == .inline || datePickerStyle == .compact
+                        {
+                            datePicker.datePickerMode = .dateAndTime
                         }
 
                         datePicker.preferredDatePickerStyle = datePickerStyle
@@ -84,13 +82,11 @@ extension DefaultElementAttributesLibrary {
 
                         let datePickerMode = UIDatePicker.Mode.allCases[newIndex]
 
-                        if #available(iOS 14.0, *) {
-                            if
-                                datePickerMode == .countDownTimer,
-                                datePicker.datePickerStyle == .inline || datePicker.datePickerStyle == .compact
-                            {
-                                return
-                            }
+                        if
+                            datePickerMode == .countDownTimer,
+                            datePicker.datePickerStyle == .inline || datePicker.datePickerStyle == .compact
+                        {
+                            return
                         }
 
                         datePicker.datePickerMode = datePickerMode

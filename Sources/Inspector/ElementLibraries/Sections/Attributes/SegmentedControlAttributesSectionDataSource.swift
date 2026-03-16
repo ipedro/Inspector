@@ -56,8 +56,6 @@ extension DefaultElementAttributesLibrary {
             return Property.allCases.compactMap { property in
                 switch property {
                 case .selectedSegmentTintColor:
-                    guard #available(iOS 13.0, *) else { return nil }
-
                     return .colorPicker(
                         title: property.rawValue,
                         color: { segmentedControl.selectedSegmentTintColor }

@@ -75,9 +75,7 @@ final class HierarchyInspectorViewCode: BaseView {
         $0.keyboardDismissMode = .onDrag
         $0.rowHeight = UITableView.automaticDimension
         $0.separatorStyle = .none
-        if #available(iOS 15.0, *) {
-            $0.sectionHeaderTopPadding = 0
-        }
+        $0.sectionHeaderTopPadding = 0
     }
 
     private lazy var blurView: UIVisualEffectView = {

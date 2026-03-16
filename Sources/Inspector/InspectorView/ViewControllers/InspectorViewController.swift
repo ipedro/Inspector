@@ -57,11 +57,7 @@ final class InspectorViewController: UIViewController, InternalViewProtocol, Key
         return true
         #else
 
-        if #available(iOS 14.0, *) {
-            return GCKeyboard.coalesced != nil
-        }
-
-        return false
+        return GCKeyboard.coalesced != nil
         #endif
     }
 
