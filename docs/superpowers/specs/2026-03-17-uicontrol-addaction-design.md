@@ -14,14 +14,14 @@ iOS 14 introduced `UIControl.addAction(_:for:)`, which lets you wire control eve
 
 ## 2. The Transform
 
-Every affected file follows the same mechanical change:
+Most affected files follow this mechanical change:
 
 **Before:**
 ```swift
 childControl.addTarget(self, action: #selector(methodName), for: .someEvent)
 
 @objc private func methodName() {
-    // body — always just: sendActions(for: .valueChanged)
+    sendActions(for: .valueChanged)
 }
 ```
 
@@ -33,10 +33,19 @@ childControl.addAction(UIAction { [weak self] _ in
 ```
 
 Rules:
-- `[weak self]` capture on every closure to prevent retain cycles
+- `[weak self]` capture on every closure to prevent retain cycles (child control owns the UIAction closure; without weak self this creates a cycle: self → child → action → self)
 - The `@objc` selector method is deleted entirely
 - No other code in the file changes
 - Public API (what consumers see via `UIControl` observation) is unchanged
+
+**Exception — `StepperControl`:** Its `step()` selector body is NOT trivial. It calls `updateCounterLabel()` before `sendActions(for:)` to sync the displayed label. The closure must preserve both calls:
+
+```swift
+stepper.addAction(UIAction { [weak self] _ in
+    self?.updateCounterLabel()
+    self?.sendActions(for: .valueChanged)
+}, for: .valueChanged)
+```
 
 ---
 
@@ -44,20 +53,21 @@ Rules:
 
 All 7 files are in `Sources/Inspector/CommonUI/Controls/`:
 
-| File | Selector removed | Event |
-|------|-----------------|-------|
-| `StepperControl.swift` | `step()` | `.valueChanged` |
-| `SegmentedControl.swift` | `changeSegment()` | `.valueChanged` |
-| `TextFieldControl.swift` | `editText()` | `.editingChanged` |
-| `RectControl.swift` | `valueChanged()` | `.valueChanged` (×4 steppers) |
-| `EdgeInsetsControl.swift` | `valueChanged()` | `.valueChanged` (×4 steppers) |
-| `DirectionalEdgeInsetsControl.swift` | `valueChanged()` | `.valueChanged` (×4 steppers) |
-| `StepperPairControl.swift` | `valueChanged()` | `.valueChanged` (×2 steppers) |
+| File | Selector removed | Event | Notes |
+|------|-----------------|-------|-------|
+| `StepperControl.swift` | `step()` | `.valueChanged` | Non-trivial — see Section 2 exception |
+| `SegmentedControl.swift` | `changeSegment()` | `.valueChanged` | |
+| `TextFieldControl.swift` | `editText()` | `.editingChanged` | |
+| `RectControl.swift` | `valueChanged()` | `.valueChanged` (×4 steppers) | |
+| `EdgeInsetsControl.swift` | `valueChanged()` | `.valueChanged` (×4 steppers) | |
+| `DirectionalEdgeInsetsControl.swift` | `valueChanged()` | `.valueChanged` (×4 steppers) | |
+| `StepperPairControl.swift` | `valueChanged()` | `.valueChanged` (×2 steppers) | |
 
 **Out of scope:**
-- `ToggleControl.swift` — selector body is non-trivial; left as-is
+- `ToggleControl.swift` — non-trivial selector (`toggleOn()` updates views + notifies delegate); also contains a nested `StyledSwitch` class with its own `addTarget` — both left as-is
 - `ColorPreviewControl.swift` — uses gesture recognizer, not `addTarget`
 - `ImagePreviewControl.swift` — uses gesture recognizer, not `addTarget`
+- `TextViewControl.swift` — has a `@objc func editText()` but it is called via `UITextViewDelegate`, not `addTarget`; left as-is
 
 ---
 
@@ -66,7 +76,7 @@ All 7 files are in `Sources/Inspector/CommonUI/Controls/`:
 ```bash
 grep -r 'addTarget\|@objc' Sources/Inspector/CommonUI/Controls/
 ```
-Expected: no results (excluding `ToggleControl.swift` which is explicitly out of scope).
+Expected: results only from `ToggleControl.swift` (two `addTarget` lines + two `@objc` methods) and `TextViewControl.swift` (one `@objc` delegate method). No results from any other file.
 
 Build check:
 ```bash
