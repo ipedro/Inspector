@@ -20,7 +20,6 @@
 
 import UIKit
 
-@available(iOS 14.0, *)
 extension UISwitch.Style: CaseIterable {
     typealias AllCases = [UISwitch.Style]
 

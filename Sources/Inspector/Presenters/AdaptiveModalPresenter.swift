@@ -56,8 +56,6 @@ extension AdaptiveModalPresenter: UIPopoverPresentationControllerDelegate {
     }
 }
 
-#if swift(>=5.5)
-@available(iOS 15.0, *)
 extension AdaptiveModalPresenter: UISheetPresentationControllerDelegate {
     func sheetPresentationControllerDidChangeSelectedDetentIdentifier(_ sheetPresentationController: UISheetPresentationController) {
         onChangeSelectedDetentHandler(
@@ -65,4 +63,3 @@ extension AdaptiveModalPresenter: UISheetPresentationControllerDelegate {
         )
     }
 }
-#endif

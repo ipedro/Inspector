@@ -23,74 +23,38 @@ import UIKit
 extension UITextContentType: CaseIterable {
     typealias AllCases = [UITextContentType]
 
-    static let allCases: [UITextContentType] = {
-        if #available(iOS 12.0, *) {
-            return [
-                .name,
-                .namePrefix,
-                .givenName,
-                .middleName,
-                .familyName,
-                .nameSuffix,
-                .nickname,
-                // --
-                .jobTitle,
-                .organizationName,
-                // --
-                .location,
-                .fullStreetAddress,
-                .streetAddressLine1,
-                .streetAddressLine2,
-                .addressCity,
-                .addressState,
-                .addressCityAndState,
-                .sublocality,
-                .countryName,
-                .postalCode,
-                // --
-                .telephoneNumber,
-                .emailAddress,
-                // --
-                .URL,
-                .creditCardNumber,
-                // --
-                .username,
-                .password,
-                .newPassword,
-                .oneTimeCode
-            ]
-        }
-        return [
-            .name,
-            .namePrefix,
-            .givenName,
-            .middleName,
-            .familyName,
-            .nameSuffix,
-            .nickname,
-            // --
-            .jobTitle,
-            .organizationName,
-            // --
-            .location,
-            .fullStreetAddress,
-            .streetAddressLine1,
-            .streetAddressLine2,
-            .addressCity,
-            .addressState,
-            .addressCityAndState,
-            .sublocality,
-            .countryName,
-            .postalCode,
-            // --
-            .telephoneNumber,
-            .emailAddress,
-            // --
-            .URL,
-            .creditCardNumber,
-            // --
-            .username,
-            .password
-        ]
-    }()
+    static let allCases: [UITextContentType] = [
+        .name,
+        .namePrefix,
+        .givenName,
+        .middleName,
+        .familyName,
+        .nameSuffix,
+        .nickname,
+        // --
+        .jobTitle,
+        .organizationName,
+        // --
+        .location,
+        .fullStreetAddress,
+        .streetAddressLine1,
+        .streetAddressLine2,
+        .addressCity,
+        .addressState,
+        .addressCityAndState,
+        .sublocality,
+        .countryName,
+        .postalCode,
+        // --
+        .telephoneNumber,
+        .emailAddress,
+        // --
+        .URL,
+        .creditCardNumber,
+        // --
+        .username,
+        .password,
+        .newPassword,
+        .oneTimeCode
+    ]
 }

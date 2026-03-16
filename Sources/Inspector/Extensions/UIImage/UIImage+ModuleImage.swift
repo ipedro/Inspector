@@ -36,7 +36,7 @@ extension UIImage {
         let image = UIImage(systemName: systemName)?
             .withRenderingMode(renderingMode)
 
-        if #available(iOS 15.0, *), prefersHierarchicalColor {
+        if prefersHierarchicalColor {
             return image?
                 .applyingSymbolConfiguration(
                     .init(weight: weight)

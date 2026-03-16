@@ -24,19 +24,11 @@ extension UIDatePickerStyle: CaseIterable {
     typealias AllCases = [UIDatePickerStyle]
 
     static var allCases: [UIDatePickerStyle] {
-        if #available(iOS 14.0, *) {
-            return [
-                .automatic,
-                .wheels,
-                .compact,
-                .inline
-            ]
-        }
-
         return [
             .automatic,
             .wheels,
-            .compact
+            .compact,
+            .inline
         ]
     }
 }

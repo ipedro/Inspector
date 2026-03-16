@@ -40,8 +40,6 @@ extension UIBlurEffect {
             return .prominent
         }
 
-        guard #available(iOS 13.0, *) else { return nil }
-
         if description.contains("UIBlurEffectStyleSystemUltraThinMaterialLight") {
             return .systemUltraThinMaterialLight
         }

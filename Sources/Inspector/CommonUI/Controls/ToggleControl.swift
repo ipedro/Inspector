@@ -142,7 +142,6 @@ extension ToggleControl {
             super.traitCollectionDidChange(previousTraitCollection)
 
             guard
-                #available(iOS 13.0, *),
                 traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection)
             else {
                 return

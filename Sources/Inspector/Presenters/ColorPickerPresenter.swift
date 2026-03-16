@@ -20,7 +20,6 @@
 
 import UIKit
 
-@available(iOS 14.0, *)
 final class ColorPickerPresenter: NSObject, UIColorPickerViewControllerDelegate {
     let onColorSelectedHandler: (UIColor) -> Void
     let onDimissHandler: () -> Void

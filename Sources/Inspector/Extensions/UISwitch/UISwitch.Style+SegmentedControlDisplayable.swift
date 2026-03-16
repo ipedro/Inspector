@@ -20,7 +20,6 @@
 
 import UIKit
 
-@available(iOS 14.0, *)
 extension UISwitch.Style: CustomStringConvertible {
     var description: String {
         switch self {

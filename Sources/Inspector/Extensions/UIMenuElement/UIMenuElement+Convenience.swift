@@ -31,19 +31,10 @@ extension UIMenuElement {
 
     var safeSubtitle: String? {
         get {
-            #if swift(>=5.5)
-            if #available(iOS 15.0, *) {
-                return subtitle
-            }
-            #endif
-            return nil
+            return subtitle
         }
         set {
-            #if swift(>=5.5)
-            if #available(iOS 15.0, *) {
-                subtitle = newValue
-            }
-            #endif
+            subtitle = newValue
         }
     }
 }

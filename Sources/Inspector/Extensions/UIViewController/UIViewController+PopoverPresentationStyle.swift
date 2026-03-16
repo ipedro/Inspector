@@ -28,33 +28,19 @@ extension UIViewController {
             return
         }
 
-        #if swift(>=5.5)
-        if #available(iOS 15.0, *) {
-            modalPresentationStyle = .popover
+        modalPresentationStyle = .popover
 
-            guard let popoverPresentationController else { return }
+        guard let popoverPresentationController else { return }
 
-            popoverPresentationController.sourceView = sourceView
-            popoverPresentationController.delegate = delegate as? UIPopoverPresentationControllerDelegate
+        popoverPresentationController.sourceView = sourceView
+        popoverPresentationController.delegate = delegate as? UIPopoverPresentationControllerDelegate
 
-            let sheet = popoverPresentationController.adaptiveSheetPresentationController
-            sheet.delegate = delegate as? UISheetPresentationControllerDelegate
-            sheet.detents = [.medium(), .large()]
-            sheet.largestUndimmedDetentIdentifier = .medium
-            sheet.preferredCornerRadius = Inspector.sharedInstance.appearance.elementInspector.horizontalMargins
-            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
-            sheet.sourceView = sourceView
-        }
-        #else
-        if sourceView?.traitCollection.userInterfaceIdiom == .phone {
-            modalPresentationStyle = .pageSheet
-            presentationController?.delegate = delegate as? UIAdaptivePresentationControllerDelegate
-        }
-        else {
-            modalPresentationStyle = .popover
-            popoverPresentationController?.sourceView = sourceView
-            popoverPresentationController?.delegate = delegate as? UIPopoverPresentationControllerDelegate
-        }
-        #endif
+        let sheet = popoverPresentationController.adaptiveSheetPresentationController
+        sheet.delegate = delegate as? UISheetPresentationControllerDelegate
+        sheet.detents = [.medium(), .large()]
+        sheet.largestUndimmedDetentIdentifier = .medium
+        sheet.preferredCornerRadius = Inspector.sharedInstance.appearance.elementInspector.horizontalMargins
+        sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+        sheet.sourceView = sourceView
     }
 }
