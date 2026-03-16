@@ -38,29 +38,24 @@ extension ElementInspectorCoordinator: ElementInspectorFormPanelDelegate {
     }
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController, didTap colorPreviewControl: ColorPreviewControl) {
-        if #available(iOS 14.0, *) {
-            let colorPickerViewController = UIColorPickerViewController().then {
-                $0.delegate = colorPicker
+        let colorPickerViewController = UIColorPickerViewController().then {
+            $0.delegate = colorPicker
 
-                if let selectedColor = colorPreviewControl.selectedColor {
-                    $0.selectedColor = selectedColor
-                }
-
-                #if swift(>=5.5)
-                if #available(iOS 15.0, *),
-                   let sheet = $0.sheetPresentationController
-                {
-                    sheet.detents = [.medium(), .large()]
-                    sheet.selectedDetentIdentifier = .medium
-                    sheet.prefersGrabberVisible = true
-                    sheet.sourceView = colorPreviewControl
-                    sheet.preferredCornerRadius = Inspector.sharedInstance.appearance.elementInspector.horizontalMargins
-                }
-                #endif
+            if let selectedColor = colorPreviewControl.selectedColor {
+                $0.selectedColor = selectedColor
             }
 
-            formPanelViewController.present(colorPickerViewController, animated: true)
+            if let sheet = $0.sheetPresentationController
+            {
+                sheet.detents = [.medium(), .large()]
+                sheet.selectedDetentIdentifier = .medium
+                sheet.prefersGrabberVisible = true
+                sheet.sourceView = colorPreviewControl
+                sheet.preferredCornerRadius = Inspector.sharedInstance.appearance.elementInspector.horizontalMargins
+            }
         }
+
+        formPanelViewController.present(colorPickerViewController, animated: true)
     }
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,

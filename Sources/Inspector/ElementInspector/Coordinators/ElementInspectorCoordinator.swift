@@ -58,13 +58,9 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
             case let navigationController as ElementInspectorNavigationController where navigationController.shouldAdaptModalPresentation == false:
                 return .none
             default:
-                #if swift(>=5.5)
-                if #available(iOS 15.0, *) {
-                    if presentationController is UIPopoverPresentationController {
-                        return presentationController.presentationStyle
-                    }
+                if presentationController is UIPopoverPresentationController {
+                    return presentationController.presentationStyle
                 }
-                #endif
                 return .formSheet
             }
         },
@@ -80,7 +76,6 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
         }
     )
 
-    @available(iOS 14.0, *)
     private(set) lazy var colorPicker = ColorPickerPresenter(
         onColorSelected: { [weak self] selectedColor in
             guard let self else { return }
@@ -140,20 +135,11 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
     }
 
     func setPopoverModalPresentationStyle(for viewController: UIViewController, from sourceView: UIView) {
-        if #available(iOS 15.0, *) {
-            viewController.setPopoverModalPresentationStyle(
-                delegate: adaptiveModalPresenter,
-                transitionDelegate: transitionDelegate(for: viewController),
-                from: sourceView
-            )
-        }
-        else {
-            viewController.setPopoverModalPresentationStyle(
-                delegate: adaptiveModalPresenter,
-                transitionDelegate: transitionDelegate(for: viewController),
-                from: sourceView
-            )
-        }
+        viewController.setPopoverModalPresentationStyle(
+            delegate: adaptiveModalPresenter,
+            transitionDelegate: transitionDelegate(for: viewController),
+            from: sourceView
+        )
     }
 
     static func makeElementInspectorViewController(
