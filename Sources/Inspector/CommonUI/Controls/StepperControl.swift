@@ -65,7 +65,10 @@ final class StepperControl: BaseFormControl {
     // MARK: - Components
 
     private lazy var stepperControl = UIStepper().then {
-        $0.addTarget(self, action: #selector(step), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.updateCounterLabel()
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     private lazy var counterLabel = UILabel().then {
@@ -96,13 +99,6 @@ final class StepperControl: BaseFormControl {
 
         updateState()
         contentView.addArrangedSubviews(counterLabel, stepperControl)
-    }
-
-    @objc
-    func step() {
-        updateCounterLabel()
-
-        sendActions(for: .valueChanged)
     }
 
     private func updateCounterLabel() {
