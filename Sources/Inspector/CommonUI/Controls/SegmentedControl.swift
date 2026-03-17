@@ -48,7 +48,9 @@ final class SegmentedControl: BaseFormControl {
     }
 
     private lazy var segmentedControl = UISegmentedControl.segmentedControlStyle(items: options).then {
-        $0.addTarget(self, action: #selector(changeSegment), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     // MARK: - Init
@@ -82,8 +84,4 @@ final class SegmentedControl: BaseFormControl {
         contentView.installView(segmentedControl)
     }
 
-    @objc
-    func changeSegment() {
-        sendActions(for: .valueChanged)
-    }
 }
