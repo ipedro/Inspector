@@ -67,7 +67,9 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
     ).then {
         $0.containerView.directionalLayoutMargins.update(bottom: .zero)
         $0.isShowingSeparator = false
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     private lazy var secondStepper = StepperControl(
@@ -79,7 +81,9 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
     ).then {
         $0.containerView.directionalLayoutMargins.update(top: .zero, bottom: .zero)
         $0.isShowingSeparator = false
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     init(
@@ -115,8 +119,4 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
         contentView.addArrangedSubviews(firstStepper, secondStepper)
     }
 
-    @objc
-    private func valueChanged() {
-        sendActions(for: .valueChanged)
-    }
 }
