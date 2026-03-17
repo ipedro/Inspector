@@ -23,6 +23,7 @@ enum ResolvedDescriptor: Equatable {
     case group(title: String)
     case separator
     case infoNote(text: String)
+    case subpanel
 }
 
 // MARK: - PropertyDescriptorParser
@@ -93,6 +94,7 @@ enum PropertyDescriptorParser {
         case "edgeInsets":       return .edgeInsets
         case "directionalInsets": return .directionalInsets
         case "separator":        return .separator
+        case "subpanel":         return .subpanel
         case "auto":             return nil // caller handles auto
         default:                 return nil
         }

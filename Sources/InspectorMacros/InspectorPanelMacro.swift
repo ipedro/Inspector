@@ -160,7 +160,7 @@ public struct InspectorPanelMacro: MemberMacro {
             }
             var properties: [InspectorElementProperty] {
                 guard let element else { return [] }
-                return Property.allCases.compactMap { property in
+                return Property.allCases.flatMap { property -> [InspectorElementProperty] in
                     switch property {
         \(switchCases)
                     }
@@ -193,33 +193,36 @@ public struct InspectorPanelMacro: MemberMacro {
         let name = prop.name
         let displayName = "property.rawValue"
 
+        let n = name
+        let dn = displayName
+
         switch prop.descriptor {
         case .switch:
             return """
-                            .switch(
-                                title: \(displayName),
-                                isOn: { element.\(name) },
-                                handler: { element.\(name) = $0 }
-                            )
+            return [.switch(
+                title: \(dn),
+                isOn: { element.\(n) },
+                handler: { element.\(n) = $0 }
+            )]
             """
         case .colorPicker:
             if prop.isOptional {
                 return """
-                                .colorPicker(
-                                    title: \(displayName),
-                                    color: { element.\(name) },
-                                    handler: { element.\(name) = $0 }
-                                )
+                return [.colorPicker(
+                    title: \(dn),
+                    color: { element.\(n) },
+                    handler: { element.\(n) = $0 }
+                )]
                 """
             } else {
                 return """
-                                .colorPicker(
-                                    title: \(displayName),
-                                    color: { element.\(name) },
-                                    handler: { newColor in
-                                        if let newColor { element.\(name) = newColor }
-                                    }
-                                )
+                return [.colorPicker(
+                    title: \(dn),
+                    color: { element.\(n) },
+                    handler: { newColor in
+                        if let newColor { element.\(n) = newColor }
+                    }
+                )]
                 """
             }
         case .stepper(let range, let step):
@@ -227,125 +230,123 @@ public struct InspectorPanelMacro: MemberMacro {
             let hi = range.upperBound == Double.infinity ? "Double.infinity" : "\(range.upperBound)"
             let stepStr = step == 1.0 ? "1.0" : "\(step)"
             let isDecimal = (prop.typeName == "CGFloat" || prop.typeName == "Double" || prop.typeName == "Float")
-            let valueExpr = prop.typeName == "CGFloat" ? "Double(element.\(name))" : "element.\(name)"
-            let handlerExpr = prop.typeName == "CGFloat"
-                ? "element.\(name) = CGFloat($0)"
-                : "element.\(name) = $0"
+            let valueExpr = prop.typeName == "CGFloat" ? "Double(element.\(n))" : "element.\(n)"
+            let handlerExpr = prop.typeName == "CGFloat" ? "element.\(n) = CGFloat($0)" : "element.\(n) = $0"
             return """
-                            .stepper(
-                                title: \(displayName),
-                                value: { \(valueExpr) },
-                                range: { \(lo)...\(hi) },
-                                stepValue: { \(stepStr) },
-                                isDecimalValue: \(isDecimal),
-                                handler: { \(handlerExpr) }
-                            )
+            return [.stepper(
+                title: \(dn),
+                value: { \(valueExpr) },
+                range: { \(lo)...\(hi) },
+                stepValue: { \(stepStr) },
+                isDecimalValue: \(isDecimal),
+                handler: { \(handlerExpr) }
+            )]
             """
         case .textField:
             return """
-                            .textField(
-                                title: \(displayName),
-                                placeholder: nil,
-                                value: { element.\(name) },
-                                handler: { element.\(name) = $0 ?? "" }
-                            )
+            return [.textField(
+                title: \(dn),
+                placeholder: nil,
+                value: { element.\(n) },
+                handler: { element.\(n) = $0 ?? "" }
+            )]
             """
         case .textView:
             return """
-                            .textView(
-                                title: \(displayName),
-                                placeholder: nil,
-                                value: { element.\(name) },
-                                handler: { element.\(name) = $0 ?? "" }
-                            )
+            return [.textView(
+                title: \(dn),
+                placeholder: nil,
+                value: { element.\(n) },
+                handler: { element.\(n) = $0 ?? "" }
+            )]
             """
         case .cgRect:
             return """
-                            .cgRect(
-                                title: \(displayName),
-                                rect: { element.\(name) },
-                                handler: { element.\(name) = $0 ?? .zero }
-                            )
+            return [.cgRect(
+                title: \(dn),
+                rect: { element.\(n) },
+                handler: { element.\(n) = $0 ?? .zero }
+            )]
             """
         case .cgPoint:
             return """
-                            .cgPoint(
-                                title: \(displayName),
-                                point: { element.\(name) },
-                                handler: { element.\(name) = $0 ?? .zero }
-                            )
+            return [.cgPoint(
+                title: \(dn),
+                point: { element.\(n) },
+                handler: { element.\(n) = $0 ?? .zero }
+            )]
             """
         case .cgSize:
             return """
-                            .cgSize(
-                                title: \(displayName),
-                                size: { element.\(name) },
-                                handler: { element.\(name) = $0 ?? .zero }
-                            )
+            return [.cgSize(
+                title: \(dn),
+                size: { element.\(n) },
+                handler: { element.\(n) = $0 ?? .zero }
+            )]
             """
         case .uiOffset:
             return """
-                            .uiOffset(
-                                title: \(displayName),
-                                offset: { element.\(name) },
-                                handler: { element.\(name) = $0 }
-                            )
+            return [.uiOffset(
+                title: \(dn),
+                offset: { element.\(n) },
+                handler: { element.\(n) = $0 }
+            )]
             """
         case .edgeInsets:
             return """
-                            .edgeInsets(
-                                title: \(displayName),
-                                insets: { element.\(name) },
-                                handler: { element.\(name) = $0 }
-                            )
+            return [.edgeInsets(
+                title: \(dn),
+                insets: { element.\(n) },
+                handler: { element.\(n) = $0 }
+            )]
             """
         case .directionalInsets:
             return """
-                            .directionalInsets(
-                                title: \(displayName),
-                                insets: { element.\(name) },
-                                handler: { element.\(name) = $0 }
-                            )
+            return [.directionalInsets(
+                title: \(dn),
+                insets: { element.\(n) },
+                handler: { element.\(n) = $0 }
+            )]
             """
         case .optionsList(let options):
             let optionsList = options.map { "\"\(escapedStringLiteral($0))\"" }.joined(separator: ", ")
             return """
-                            .optionsList(
-                                title: \(displayName),
-                                options: [\(optionsList)],
-                                selectedIndex: { element.\(name) },
-                                handler: { element.\(name) = $0 }
-                            )
+            return [.optionsList(
+                title: \(dn),
+                options: [\(optionsList)],
+                selectedIndex: { element.\(n) },
+                handler: { element.\(n) = $0 }
+            )]
             """
         case .textButtonGroup(let texts):
             let textsList = texts.map { "\"\(escapedStringLiteral($0))\"" }.joined(separator: ", ")
             return """
-                            .textButtonGroup(
-                                title: \(displayName),
-                                texts: [\(textsList)],
-                                selectedIndex: { element.\(name) },
-                                handler: { element.\(name) = $0 }
-                            )
+            return [.textButtonGroup(
+                title: \(dn),
+                texts: [\(textsList)],
+                selectedIndex: { element.\(n) },
+                handler: { element.\(n) = $0 }
+            )]
             """
         case .group(let groupTitle):
-            return """
-                            .group(title: "\(escapedStringLiteral(groupTitle))")
-            """
+            return "return [.group(title: \"\(escapedStringLiteral(groupTitle))\")]"
         case .separator:
-            return """
-                            .separator
-            """
+            return "return [.separator]"
         case .infoNote(let text):
-            return """
-                            .infoNote(text: "\(escapedStringLiteral(text))")
-            """
+            return "return [.infoNote(text: \"\(escapedStringLiteral(text))\")]"
         case .imagePicker:
             return """
-                            .imagePicker(
-                                title: \(displayName),
-                                image: { element.\(name) },
-                                handler: { element.\(name) = $0 }
-                            )
+            return [.imagePicker(
+                title: \(dn),
+                image: { element.\(n) },
+                handler: { element.\(n) = $0 }
+            )]
+            """
+        case .subpanel:
+            let baseType = prop.typeName.trimmingCharacters(in: .init(charactersIn: "!?"))
+            return """
+            guard let child = element.\(n) else { return [] }
+            return [.group(title: \(dn))] + (\(baseType).SectionDataSource(with: child)?.properties ?? [])
             """
         }
     }

@@ -43,20 +43,20 @@ final class InspectorPanelMacroTests: XCTestCase {
                         guard let element else {
                             return []
                         }
-                        return Property.allCases.compactMap { property in
+                        return Property.allCases.flatMap { property -> [InspectorElementProperty] in
                             switch property {
                             case .borderColor:
-                                .colorPicker(
+                                return [.colorPicker(
                                     title: property.rawValue,
                                     color: {
-                                        element.borderColor
-                                    },
+                                            element.borderColor
+                                        },
                                     handler: { newColor in
                                         if let newColor {
-                                            element.borderColor = newColor
-                                        }
+                                                element.borderColor = newColor
+                                            }
                                     }
-                                )
+                                    )]
                             }
                         }
                     }
@@ -64,6 +64,63 @@ final class InspectorPanelMacroTests: XCTestCase {
                 struct InspectorLibrary: InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
                         MyCardView.self
+                    }
+                    func sections(for object: NSObject) -> InspectorElementSections {
+                        .init(with: SectionDataSource(with: object))
+                    }
+                }
+                #endif
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
+    func testSubpanelExpansion() {
+        assertMacroExpansion(
+            """
+            @InspectorPanel(title: "Playground")
+            class PlaygroundViewController: BaseViewController {
+                @InspectorProperty(.subpanel)
+                var inspectBarButton: RoundedButton!
+            }
+            """,
+            expandedSource: """
+            class PlaygroundViewController: BaseViewController {
+                var inspectBarButton: RoundedButton!
+
+                #if INSPECTOR_ENABLED
+                final class SectionDataSource: InspectorElementSectionDataSource {
+                    var state: InspectorElementSectionState = .collapsed
+                    let title = "Playground"
+                    private weak var element: PlaygroundViewController?
+                    init?(with object: NSObject) {
+                        guard let element = object as? PlaygroundViewController else {
+                            return nil
+                        }
+                        self.element = element
+                    }
+                    private enum Property: String, Swift.CaseIterable {
+                        case inspectBarButton = "Inspect Bar Button"
+                    }
+                    var properties: [InspectorElementProperty] {
+                        guard let element else {
+                            return []
+                        }
+                        return Property.allCases.flatMap { property -> [InspectorElementProperty] in
+                            switch property {
+                            case .inspectBarButton:
+                                guard let child = element.inspectBarButton else {
+                                    return []
+                                }
+                                return [.group(title: property.rawValue)] + (RoundedButton.SectionDataSource(with: child)?.properties ?? [])
+                            }
+                        }
+                    }
+                }
+                struct InspectorLibrary: InspectorElementLibraryProtocol {
+                    var targetClass: AnyClass {
+                        PlaygroundViewController.self
                     }
                     func sections(for object: NSObject) -> InspectorElementSections {
                         .init(with: SectionDataSource(with: object))
@@ -132,7 +189,7 @@ final class InspectorPanelMacroTests: XCTestCase {
                         guard let element else {
                             return []
                         }
-                        return Property.allCases.compactMap { property in
+                        return Property.allCases.flatMap { property -> [InspectorElementProperty] in
                             switch property {
 
                             }

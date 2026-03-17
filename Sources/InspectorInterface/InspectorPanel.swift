@@ -57,6 +57,10 @@ public enum InspectorPropertyDescriptor {
     case separator
     case infoNote(text: String)
 
+    /// Inlines the properties of a nested component's inspector panel.
+    /// The property's type must be annotated with @InspectorPanel.
+    case subpanel
+
     /// Type-inferred: the macro chooses the control based on the property's declared type.
     case auto
 }
