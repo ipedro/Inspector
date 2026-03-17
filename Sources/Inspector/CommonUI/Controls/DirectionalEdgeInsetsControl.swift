@@ -57,19 +57,27 @@ final class DirectionalEdgeInsetsControl: BaseFormControl {
     }
 
     private lazy var topStepper = Self.makeStepper().then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     private lazy var leadingStepper = Self.makeStepper().then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     private lazy var bottomStepper = Self.makeStepper().then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     private lazy var trailingStepper = Self.makeStepper().then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     convenience init(title: String?, insets: NSDirectionalEdgeInsets) {
@@ -93,11 +101,6 @@ final class DirectionalEdgeInsetsControl: BaseFormControl {
             bottomStepper,
             trailingStepper
         )
-    }
-
-    @objc
-    private func valueChanged() {
-        sendActions(for: .valueChanged)
     }
 
     private static func makeStepper() -> StepperControl {
