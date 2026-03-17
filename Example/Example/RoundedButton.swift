@@ -25,7 +25,7 @@ import UIKit
 @InspectorPanel(title: "Rounded Button")
 final class RoundedButton: UIButton, NonInspectableView {
     @InspectorProperty(.switch)
-    var animateOnTouch = true
+    var animateOnTouch: Bool = true
 
     var roundCorners: Bool = true {
         didSet {

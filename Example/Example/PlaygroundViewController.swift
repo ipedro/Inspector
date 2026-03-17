@@ -27,24 +27,24 @@ import UIKit
 final class PlaygroundViewController: BaseViewController {
     // MARK: - Stack Views
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet
     var instructionsTextView: UITextView!
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet
     var sliderStackView: UIStackView! {
         didSet {
             sliderStackView.accessibilityIdentifier = "Slider Stack View"
         }
     }
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet
     var datePickerStackView: UIStackView! {
         didSet {
             datePickerStackView.accessibilityIdentifier = "Date Picker Stack View"
         }
     }
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet
     var contentStackView: UIStackView! {
         didSet {
             contentStackView.accessibilityIdentifier = "Content Stack View"
@@ -58,14 +58,14 @@ final class PlaygroundViewController: BaseViewController {
         }
     }
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet
     var textViewStack: UIStackView! {
         didSet {
             textViewStack.accessibilityIdentifier = "Text Stack View"
         }
     }
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet
     var mapStackView: UIStackView! {
         didSet {
             mapStackView.accessibilityIdentifier = "Map Stack View"
@@ -74,7 +74,7 @@ final class PlaygroundViewController: BaseViewController {
 
     // MARK: - Components
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet
     var activityIndicator: UIActivityIndicatorView! {
         didSet {
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(toggleActivityIndicator))
@@ -93,23 +93,23 @@ final class PlaygroundViewController: BaseViewController {
         }
     }
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet @InspectorProperty(.subpanel)
     var inspectBarButton: RoundedButton!
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet
     var datePickerSegmentedControl: UISegmentedControl!
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet
     var datePicker: UIDatePicker!
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet
     var mapView: MKMapView!
 
-    @IBOutlet @InspectorProperty
+    @IBOutlet
     var scrollView: UIScrollView!
 
     @InspectorProperty(.switch)
-    var hasAppeared = false
+    var hasAppeared: Bool = false
 
     override var keyCommands: [UIKeyCommand]? { Inspector.keyCommands }
 
