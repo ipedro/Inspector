@@ -6,7 +6,8 @@ import CompilerPluginSupport
 let package = Package(
     name: "Inspector",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v15),
+        .macOS(.v10_15)
     ],
     products: [
         .library(
