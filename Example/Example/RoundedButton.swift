@@ -18,10 +18,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Inspector
-#if INSPECTOR_ENABLED
 import InspectorInterface
-#endif
+import Inspector
 import UIKit
 
 #if INSPECTOR_ENABLED

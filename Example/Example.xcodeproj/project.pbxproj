@@ -10,6 +10,7 @@
 		EB6595ED266B45C10021CC91 /* Down in Frameworks */ = {isa = PBXBuildFile; productRef = EB6595EC266B45C10021CC91 /* Down */; };
 		EBD185372DDD2D6C00D213C8 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EBD185362DDD2D6C00D213C8 /* Inspector */; };
 		EBEC3E22263AC75B00131D60 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EBEC3E21263AC75B00131D60 /* Inspector */; };
+		0E33D12382E749B786AB0E4B /* InspectorInterface in Frameworks */ = {isa = PBXBuildFile; productRef = 451B1E26BF8543E482810D80 /* InspectorInterface */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 				EBD185372DDD2D6C00D213C8 /* Inspector in Frameworks */,
 				EB6595ED266B45C10021CC91 /* Down in Frameworks */,
 				EBEC3E22263AC75B00131D60 /* Inspector in Frameworks */,
+				0E33D12382E749B786AB0E4B /* InspectorInterface in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +95,7 @@
 				EBEC3E21263AC75B00131D60 /* Inspector */,
 				EB6595EC266B45C10021CC91 /* Down */,
 				EBD185362DDD2D6C00D213C8 /* Inspector */,
+				451B1E26BF8543E482810D80 /* InspectorInterface */,
 			);
 			productName = HierarchyInspectorExample;
 			productReference = EB5E1FDA261A48EB002301F5 /* Example.app */;
@@ -378,6 +381,10 @@
 		EBEC3E21263AC75B00131D60 /* Inspector */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Inspector;
+		};
+		451B1E26BF8543E482810D80 /* InspectorInterface */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = InspectorInterface;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
