@@ -57,19 +57,27 @@ final class RectControl: BaseFormControl {
     }
 
     private lazy var xStepper = Self.makeStepper(range: -Double.infinity...Double.infinity).then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     private lazy var yStepper = Self.makeStepper(range: -Double.infinity...Double.infinity).then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     private lazy var widthStepper = Self.makeStepper(range: 0...Double.infinity).then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     private lazy var heightStepper = Self.makeStepper(range: 0...Double.infinity).then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     convenience init(title: String?, rect: CGRect) {
@@ -93,11 +101,6 @@ final class RectControl: BaseFormControl {
             widthStepper,
             heightStepper
         )
-    }
-
-    @objc
-    private func valueChanged() {
-        sendActions(for: .valueChanged)
     }
 
     private static func makeStepper(range: ClosedRange<Double>) -> StepperControl {
