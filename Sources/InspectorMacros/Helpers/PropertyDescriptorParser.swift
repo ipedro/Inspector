@@ -132,9 +132,15 @@ enum PropertyDescriptorParser {
     // MARK: Literal extractors
 
     private static func extractDouble(from args: LabeledExprListSyntax, label: String) -> Double? {
-        guard let arg = args.first(where: { $0.label?.text == label }),
-              let floatLit = arg.expression.as(FloatLiteralExprSyntax.self) else { return nil }
-        return Double(floatLit.literal.text)
+        guard let arg = args.first(where: { $0.label?.text == label }) else { return nil }
+        let expr = arg.expression
+        if let floatLit = expr.as(FloatLiteralExprSyntax.self) {
+            return Double(floatLit.literal.text)
+        }
+        if let intLit = expr.as(IntegerLiteralExprSyntax.self) {
+            return Double(intLit.literal.text)
+        }
+        return nil
     }
 
     private static func extractDoubleClosedRange(

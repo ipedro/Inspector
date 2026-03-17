@@ -5,6 +5,15 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
+// MARK: - String escaping
+
+/// Escapes a user-supplied string for safe interpolation into a Swift string literal.
+/// Without this, a title like `He said "Hello"` would produce malformed Swift.
+private func escapedStringLiteral(_ s: String) -> String {
+    s.replacingOccurrences(of: "\\", with: "\\\\")
+     .replacingOccurrences(of: "\"", with: "\\\"")
+}
+
 // MARK: - Supporting types
 
 struct InspectableProperty {
@@ -130,7 +139,7 @@ public struct InspectorPanelMacro: MemberMacro {
         properties: [InspectableProperty]
     ) -> String {
         let enumCases = properties.map { prop in
-            "        case \(prop.name) = \"\(prop.displayName)\""
+            "        case \(prop.name) = \"\(escapedStringLiteral(prop.displayName))\""
         }.joined(separator: "\n")
 
         let switchCases = properties.map { prop in
@@ -140,7 +149,7 @@ public struct InspectorPanelMacro: MemberMacro {
         return """
         final class SectionDataSource: InspectorElementSectionDataSource {
             var state: InspectorElementSectionState = .collapsed
-            let title = "\(title)"
+            let title = "\(escapedStringLiteral(title))"
             private weak var element: \(className)?
             init?(with object: NSObject) {
                 guard let element = object as? \(className) else { return nil }
@@ -299,7 +308,7 @@ public struct InspectorPanelMacro: MemberMacro {
                             )
             """
         case .optionsList(let options):
-            let optionsList = options.map { "\"\($0)\"" }.joined(separator: ", ")
+            let optionsList = options.map { "\"\(escapedStringLiteral($0))\"" }.joined(separator: ", ")
             return """
                             .optionsList(
                                 title: \(displayName),
@@ -309,7 +318,7 @@ public struct InspectorPanelMacro: MemberMacro {
                             )
             """
         case .textButtonGroup(let texts):
-            let textsList = texts.map { "\"\($0)\"" }.joined(separator: ", ")
+            let textsList = texts.map { "\"\(escapedStringLiteral($0))\"" }.joined(separator: ", ")
             return """
                             .textButtonGroup(
                                 title: \(displayName),
@@ -320,7 +329,7 @@ public struct InspectorPanelMacro: MemberMacro {
             """
         case .group(let groupTitle):
             return """
-                            .group(title: "\(groupTitle)")
+                            .group(title: "\(escapedStringLiteral(groupTitle))")
             """
         case .separator:
             return """
@@ -328,7 +337,7 @@ public struct InspectorPanelMacro: MemberMacro {
             """
         case .infoNote(let text):
             return """
-                            .infoNote(text: "\(text)")
+                            .infoNote(text: "\(escapedStringLiteral(text))")
             """
         case .imagePicker:
             return """
