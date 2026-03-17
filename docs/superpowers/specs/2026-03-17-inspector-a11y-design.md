@@ -64,7 +64,7 @@ No change to accessibility traits — UIKit marks selectable table cells appropr
 ## Section 3: Form Controls
 
 **Files touched:**
-- `Sources/Inspector/CommonUI/Controls/BaseFormControl.swift`
+- `Sources/Inspector/CommonUI/Bases/BaseFormControl.swift`
 - `Sources/Inspector/CommonUI/Controls/ToggleControl.swift`
 - `Sources/Inspector/CommonUI/Controls/StepperControl.swift`
 - `Sources/Inspector/CommonUI/Controls/StepperPairControl.swift`
@@ -74,7 +74,11 @@ No change to accessibility traits — UIKit marks selectable table cells appropr
 ```swift
 // set in init or when title changes
 accessibilityLabel = title
-isAccessibilityElement = true
+// Do NOT set isAccessibilityElement = true here — composite controls
+// (StepperPairControl, PointControl, SizeControl, etc.) contain interactive
+// subviews that must remain individually accessible. UIKit walks children
+// automatically. accessibilityLabel on the container is still readable by
+// AXe via accessibilityIdentifier traversal.
 ```
 
 **ToggleControl — value updated in `updateViews()`:**
