@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 @testable import Inspector
 import XCTest
 
@@ -13,3 +14,4 @@ final class InspectorTests: XCTestCase {
         ("testExample", testExample)
     ]
 }
+#endif

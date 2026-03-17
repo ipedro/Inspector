@@ -3,22 +3,50 @@
 import PackageDescription
 import CompilerPluginSupport
 
+// Inspector and its tests are UIKit-only. On macOS (the macro-testing host),
+// we exclude them so swift test can reach InspectorMacrosTests without
+// linking UIKit dependencies that don't exist on macOS.
+#if os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
+let uiKitTargets: [Target] = [
+    .target(
+        name: "Inspector",
+        dependencies: [
+            .product(name: "UIKeyCommandTableView", package: "UIKeyCommandTableView", condition: .when(platforms: [.iOS])),
+            .product(name: "UIKeyboardAnimatable", package: "UIKeyboardAnimatable", condition: .when(platforms: [.iOS])),
+            .product(name: "Coordinator", package: "Coordinator", condition: .when(platforms: [.iOS]))
+        ],
+        resources: [
+            .process("Resources")
+        ]
+    ),
+    .testTarget(
+        name: "InspectorTests",
+        dependencies: ["Inspector"]
+    )
+]
+let uiKitProducts: [Product] = [
+    .library(name: "Inspector", targets: ["Inspector"]),
+    .library(name: "InspectorDynamic", type: .dynamic, targets: ["Inspector"])
+]
+let inspectorInterfaceDeps: [Target.Dependency] = [
+    .target(name: "InspectorMacros", condition: .when(traits: ["Debugging"])),
+    .target(name: "Inspector", condition: .when(traits: ["Debugging"]))
+]
+#else
+let uiKitTargets: [Target] = []
+let uiKitProducts: [Product] = []
+let inspectorInterfaceDeps: [Target.Dependency] = [
+    .target(name: "InspectorMacros", condition: .when(traits: ["Debugging"]))
+]
+#endif
+
 let package = Package(
     name: "Inspector",
     platforms: [
         .iOS(.v15),
         .macOS(.v10_15)
     ],
-    products: [
-        .library(
-            name: "Inspector",
-            targets: ["Inspector"]
-        ),
-        .library(
-            name: "InspectorDynamic",
-            type: .dynamic,
-            targets: ["Inspector"]
-        ),
+    products: uiKitProducts + [
         .library(
             name: "InspectorInterface",
             targets: ["InspectorInterface"]
@@ -36,25 +64,7 @@ let package = Package(
         .package(url: "https://github.com/ipedro/Coordinator.git", from: "2.1.2"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0")
     ],
-    targets: [
-        // MARK: - Existing
-
-        .target(
-            name: "Inspector",
-            dependencies: [
-                "UIKeyCommandTableView",
-                "UIKeyboardAnimatable",
-                "Coordinator"
-            ],
-            resources: [
-                .process("Resources")
-            ]
-        ),
-        .testTarget(
-            name: "InspectorTests",
-            dependencies: ["Inspector"]
-        ),
-
+    targets: uiKitTargets + [
         // MARK: - New: Macro executable
 
         .macro(
@@ -70,16 +80,7 @@ let package = Package(
 
         .target(
             name: "InspectorInterface",
-            dependencies: [
-                .target(
-                    name: "InspectorMacros",
-                    condition: .when(traits: ["Debugging"])
-                ),
-                .target(
-                    name: "Inspector",
-                    condition: .when(traits: ["Debugging"])
-                )
-            ],
+            dependencies: inspectorInterfaceDeps,
             swiftSettings: [
                 .define("INSPECTOR_ENABLED", .when(traits: ["Debugging"]))
             ]

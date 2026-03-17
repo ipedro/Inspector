@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+#if canImport(UIKit)
 @testable import Inspector
 import XCTest
 
@@ -82,3 +83,4 @@ final class InspectorConfigurationTests: XCTestCase {
         XCTAssertTrue(config.verbose)
     }
 }
+#endif

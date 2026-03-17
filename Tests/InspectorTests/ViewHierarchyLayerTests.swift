@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+#if canImport(UIKit)
 @testable import Inspector
 import UIKit
 import XCTest
@@ -188,3 +189,4 @@ final class ViewHierarchyLayerTests: XCTestCase {
         XCTAssertFalse(layer.filter(UIButton()))
     }
 }
+#endif

@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+#if canImport(UIKit)
 @testable import Inspector
 import XCTest
 
@@ -111,3 +112,4 @@ final class SnapshotCachingTests: XCTestCase {
         XCTAssertEqual(store.delay, 1.5, accuracy: 0.001)
     }
 }
+#endif
