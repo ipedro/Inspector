@@ -18,10 +18,14 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorInterface
 import Inspector
 import MapKit
 import UIKit
 
+#if INSPECTOR_ENABLED
+@InspectorPanel(title: "Playground")
+#endif
 final class PlaygroundViewController: BaseViewController {
     // MARK: - Stack Views
 
@@ -94,7 +98,10 @@ final class PlaygroundViewController: BaseViewController {
 
     @IBOutlet var scrollView: UIScrollView!
 
-    private var hasAppeared = false
+    #if INSPECTOR_ENABLED
+    @InspectorProperty(.switch)
+    #endif
+    var hasAppeared = false
 
     override var keyCommands: [UIKeyCommand]? { Inspector.keyCommands }
 

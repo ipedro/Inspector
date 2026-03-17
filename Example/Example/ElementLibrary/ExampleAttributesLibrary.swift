@@ -24,11 +24,14 @@ import UIKit
 
 enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
     case roundedButton
+    case playgroundViewController
 
     var targetClass: AnyClass {
         switch self {
         case .roundedButton:
             RoundedButton.self
+        case .playgroundViewController:
+            PlaygroundViewController.self
         }
     }
 
@@ -39,6 +42,12 @@ enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
             .init(with: RoundedButton.SectionDataSource(with: object))
             #else
             .init(with: RoundedButtonAttributesSectionDataSource(with: object))
+            #endif
+        case .playgroundViewController:
+            #if INSPECTOR_ENABLED
+            .init(with: PlaygroundViewController.SectionDataSource(with: object))
+            #else
+            .init()
             #endif
         }
     }
