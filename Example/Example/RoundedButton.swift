@@ -19,7 +19,9 @@
 //  SOFTWARE.
 
 import Inspector
+#if INSPECTOR_ENABLED
 import InspectorInterface
+#endif
 import UIKit
 
 #if INSPECTOR_ENABLED
