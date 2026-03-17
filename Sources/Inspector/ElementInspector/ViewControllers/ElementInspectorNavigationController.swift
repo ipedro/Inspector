@@ -51,6 +51,8 @@ class ElementInspectorNavigationController: UINavigationController, InternalView
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        delegate = self
+
         view.tintColor = colorStyle.textColor
 
         view.installView(blurView, position: .behind)
@@ -96,4 +98,39 @@ class ElementInspectorNavigationController: UINavigationController, InternalView
 
 extension ElementInspectorNavigationController: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle { .none }
+}
+
+// MARK: - UINavigationControllerDelegate
+
+extension ElementInspectorNavigationController: UINavigationControllerDelegate {
+    func navigationController(
+        _ navigationController: UINavigationController,
+        willShow viewController: UIViewController,
+        animated: Bool
+    ) {
+        guard
+            animated,
+            let transitionCoordinator,
+            viewController is ElementInspectorViewController
+        else {
+            return
+        }
+
+        // The blur is owned by the navigation controller (behind its view),
+        // but each VC's view is transparent. During the standard push/pop,
+        // both VCs are visible simultaneously — causing a double-layer mess.
+        // Fix: snapshot the blur into a temporary opaque background on the
+        // incoming VC for the duration of the transition.
+        let snapshot = blurView.snapshotView(afterScreenUpdates: false)
+
+        if let snapshot {
+            snapshot.frame = viewController.view.bounds
+            snapshot.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            viewController.view.insertSubview(snapshot, at: 0)
+        }
+
+        transitionCoordinator.animate(alongsideTransition: nil) { _ in
+            snapshot?.removeFromSuperview()
+        }
+    }
 }

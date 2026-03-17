@@ -27,21 +27,25 @@ import UIKit
 final class PlaygroundViewController: BaseViewController {
     // MARK: - Stack Views
 
-    @IBOutlet var instructionsTextView: UITextView!
+    @IBOutlet @InspectorProperty
+    var instructionsTextView: UITextView!
 
-    @IBOutlet var sliderStackView: UIStackView! {
+    @IBOutlet @InspectorProperty
+    var sliderStackView: UIStackView! {
         didSet {
             sliderStackView.accessibilityIdentifier = "Slider Stack View"
         }
     }
 
-    @IBOutlet var datePickerStackView: UIStackView! {
+    @IBOutlet @InspectorProperty
+    var datePickerStackView: UIStackView! {
         didSet {
             datePickerStackView.accessibilityIdentifier = "Date Picker Stack View"
         }
     }
 
-    @IBOutlet var contentStackView: UIStackView! {
+    @IBOutlet @InspectorProperty
+    var contentStackView: UIStackView! {
         didSet {
             contentStackView.accessibilityIdentifier = "Content Stack View"
             contentStackView.isLayoutMarginsRelativeArrangement = true
@@ -54,13 +58,15 @@ final class PlaygroundViewController: BaseViewController {
         }
     }
 
-    @IBOutlet var textViewStack: UIStackView! {
+    @IBOutlet @InspectorProperty
+    var textViewStack: UIStackView! {
         didSet {
             textViewStack.accessibilityIdentifier = "Text Stack View"
         }
     }
 
-    @IBOutlet var mapStackView: UIStackView! {
+    @IBOutlet @InspectorProperty
+    var mapStackView: UIStackView! {
         didSet {
             mapStackView.accessibilityIdentifier = "Map Stack View"
         }
@@ -68,7 +74,8 @@ final class PlaygroundViewController: BaseViewController {
 
     // MARK: - Components
 
-    @IBOutlet var activityIndicator: UIActivityIndicatorView! {
+    @IBOutlet @InspectorProperty
+    var activityIndicator: UIActivityIndicatorView! {
         didSet {
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(toggleActivityIndicator))
 
@@ -86,15 +93,20 @@ final class PlaygroundViewController: BaseViewController {
         }
     }
 
-    @IBOutlet var inspectBarButton: RoundedButton!
+    @IBOutlet @InspectorProperty
+    var inspectBarButton: RoundedButton!
 
-    @IBOutlet var datePickerSegmentedControl: UISegmentedControl!
+    @IBOutlet @InspectorProperty
+    var datePickerSegmentedControl: UISegmentedControl!
 
-    @IBOutlet var datePicker: UIDatePicker!
+    @IBOutlet @InspectorProperty
+    var datePicker: UIDatePicker!
 
-    @IBOutlet var mapView: MKMapView!
+    @IBOutlet @InspectorProperty
+    var mapView: MKMapView!
 
-    @IBOutlet var scrollView: UIScrollView!
+    @IBOutlet @InspectorProperty
+    var scrollView: UIScrollView!
 
     @InspectorProperty(.switch)
     var hasAppeared = false
