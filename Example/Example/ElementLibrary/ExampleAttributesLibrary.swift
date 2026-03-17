@@ -19,6 +19,7 @@
 //  SOFTWARE.
 
 import Inspector
+import InspectorInterface
 import UIKit
 
 enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
@@ -34,7 +35,11 @@ enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
     func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
         case .roundedButton:
+            #if INSPECTOR_ENABLED
+            .init(with: RoundedButton.SectionDataSource(with: object))
+            #else
             .init(with: RoundedButtonAttributesSectionDataSource(with: object))
+            #endif
         }
     }
 }
