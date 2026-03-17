@@ -57,19 +57,27 @@ final class EdgeInsetsControl: BaseFormControl {
     }
 
     private lazy var topStepper = Self.makeStepper().then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     private lazy var leftStepper = Self.makeStepper().then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     private lazy var bottomStepper = Self.makeStepper().then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     private lazy var rightStepper = Self.makeStepper().then {
-        $0.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .valueChanged)
     }
 
     convenience init(title: String?, insets: UIEdgeInsets) {
@@ -93,11 +101,6 @@ final class EdgeInsetsControl: BaseFormControl {
             bottomStepper,
             rightStepper
         )
-    }
-
-    @objc
-    private func valueChanged() {
-        sendActions(for: .valueChanged)
     }
 
     private static func makeStepper() -> StepperControl {
