@@ -30,7 +30,9 @@ final class TextFieldControl: BaseFormControl {
         $0.font = defaultFont
         $0.borderStyle = .none
         $0.delegate = self
-        $0.addTarget(self, action: #selector(editText), for: .editingChanged)
+        $0.addAction(UIAction { [weak self] _ in
+            self?.sendActions(for: .valueChanged)
+        }, for: .editingChanged)
     }
 
     private(set) lazy var accessoryControl = AccessoryControl().then {
@@ -135,13 +137,6 @@ final class TextFieldControl: BaseFormControl {
                 ]
             )
         }
-    }
-}
-
-private extension TextFieldControl {
-    @objc
-    func editText() {
-        sendActions(for: .valueChanged)
     }
 }
 
