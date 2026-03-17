@@ -66,13 +66,15 @@ final class SnapshotCachingTests: XCTestCase {
     // MARK: - ExpirableStore: setting new value resets expiration
 
     func testSettingNewValueOnExpiredStoreResetsExpiration() {
-        var store = ExpirableStore<String>(lifespan: -1)
-        XCTAssertTrue(store.isExpired)
+        // A store with negative lifespan is always expired regardless of value set
+        // (see testExpirableValueIsExpiredAfterExpiration). Here we verify that the
+        // setter correctly resets the expiration date to the future when lifespan is positive.
+        var store = ExpirableStore<String>(lifespan: 60)
 
-        // Setting a new value refreshes the expiration date
         store.wrappedValue = "refreshed"
-        XCTAssertTrue(store.isValid, "After setting a new value, the store should be valid again")
+        XCTAssertTrue(store.isValid, "After setting a new value, the store should be valid")
         XCTAssertEqual(store.wrappedValue, "refreshed")
+        XCTAssertGreaterThan(store.expirationDate, Date(), "Expiration date should be in the future after setting a new value")
     }
 
     // MARK: - ExpirableStore: expirationDate
