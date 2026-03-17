@@ -23,9 +23,7 @@ import Inspector
 import MapKit
 import UIKit
 
-#if INSPECTOR_ENABLED
 @InspectorPanel(title: "Playground")
-#endif
 final class PlaygroundViewController: BaseViewController {
     // MARK: - Stack Views
 
@@ -98,9 +96,7 @@ final class PlaygroundViewController: BaseViewController {
 
     @IBOutlet var scrollView: UIScrollView!
 
-    #if INSPECTOR_ENABLED
     @InspectorProperty(.switch)
-    #endif
     var hasAppeared = false
 
     override var keyCommands: [UIKeyCommand]? { Inspector.keyCommands }

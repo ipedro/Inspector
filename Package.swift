@@ -76,7 +76,7 @@ let package = Package(
         .target(
             name: "InspectorInterface",
             dependencies: [
-                .target(name: "InspectorMacros", condition: .when(traits: ["Debugging"])),
+                .target(name: "InspectorMacros"),
                 .target(name: "Inspector", condition: .when(traits: ["Debugging"]))
             ],
             swiftSettings: [

@@ -22,13 +22,9 @@ import InspectorInterface
 import Inspector
 import UIKit
 
-#if INSPECTOR_ENABLED
 @InspectorPanel(title: "Rounded Button")
-#endif
 final class RoundedButton: UIButton, NonInspectableView {
-    #if INSPECTOR_ENABLED
     @InspectorProperty(.switch)
-    #endif
     var animateOnTouch = true
 
     var roundCorners: Bool = true {

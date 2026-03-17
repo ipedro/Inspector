@@ -1,7 +1,5 @@
 // Sources/InspectorInterface/InspectorPanel.swift
 
-#if INSPECTOR_ENABLED
-
 // MARK: - @InspectorPanel
 
 /// Attach to a UIView subclass to generate an InspectorElementSectionDataSource
@@ -62,5 +60,3 @@ public enum InspectorPropertyDescriptor {
     /// Type-inferred: the macro chooses the control based on the property's declared type.
     case auto
 }
-
-#endif
