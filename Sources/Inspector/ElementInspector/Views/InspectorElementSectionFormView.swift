@@ -23,7 +23,10 @@ import UIKit
 class InspectorElementSectionFormView: BaseView {
     var title: String? {
         get { header.title }
-        set { header.title = newValue }
+        set {
+            header.title = newValue
+            headerControl.accessibilityLabel = newValue
+        }
     }
 
     var subtitle: String? {
@@ -95,6 +98,8 @@ class InspectorElementSectionFormView: BaseView {
     }
 
     private(set) lazy var headerControl = BaseControl().then {
+        $0.accessibilityIdentifier = "inspector.section-header"
+        $0.accessibilityHint = "Double-tap to toggle"
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.addTarget(self, action: #selector(changeState), for: .touchUpInside)
         $0.addTarget(self, action: #selector(headerControlDidChangeState), for: .stateChanged)
