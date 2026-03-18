@@ -31,6 +31,7 @@ final class HierarchyInspectorActionTableViewCell: HierarchyInspectorTableViewCe
     var viewModel: HierarchyInspectorActionTableViewCellViewModelProtocol? {
         didSet {
             textLabel?.text = viewModel?.title
+            accessibilityLabel = viewModel?.title
 
             imageView?.image = viewModel?.icon
 

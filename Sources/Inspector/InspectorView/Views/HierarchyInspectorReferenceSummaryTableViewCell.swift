@@ -34,6 +34,10 @@ final class HierarchyInspectorReferenceSummaryTableViewCell: HierarchyInspectorT
         didSet {
             textLabel?.text = viewModel?.title
             detailTextLabel?.text = viewModel?.subtitle
+            // accessibility
+            accessibilityLabel = [viewModel?.title, viewModel?.subtitle]
+                .compactMap { $0.flatMap { $0.isEmpty ? nil : $0 } }
+                .joined(separator: ", ")
             imageView?.image = viewModel?.image
 
             let defaultLayoutMargins = directionalLayoutMargins
