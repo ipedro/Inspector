@@ -25,7 +25,7 @@ final class TextFieldControl: BaseFormControl {
 
     // MARK: - Properties
 
-    private lazy var textField = UITextField().then {
+    private(set) lazy var textField = UITextField().then {
         $0.textColor = colorStyle.textColor
         $0.font = defaultFont
         $0.borderStyle = .none
@@ -82,6 +82,7 @@ final class TextFieldControl: BaseFormControl {
 
         self.value = value
         self.placeholder = placeholder
+        textField.accessibilityLabel = title
     }
 
     @available(*, unavailable)

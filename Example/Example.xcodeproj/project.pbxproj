@@ -11,10 +11,26 @@
 		EBD185372DDD2D6C00D213C8 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EBD185362DDD2D6C00D213C8 /* Inspector */; };
 		EBEC3E22263AC75B00131D60 /* Inspector in Frameworks */ = {isa = PBXBuildFile; productRef = EBEC3E21263AC75B00131D60 /* Inspector */; };
 		0E33D12382E749B786AB0E4B /* InspectorInterface in Frameworks */ = {isa = PBXBuildFile; productRef = 451B1E26BF8543E482810D80 /* InspectorInterface */; };
+		A1B2C3D4E5F60020A1B2C3D4 /* Inspector in Frameworks (Tests) */ = {isa = PBXBuildFile; productRef = A1B2C3D4E5F60019A1B2C3D4 /* Inspector */; };
+		A1B2C3D4E5F60011A1B2C3D4 /* AccessibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000AA1B2C3D4 /* AccessibilityTests.swift */; };
+		A1B2C3D4E5F60012A1B2C3D4 /* InspectorConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000BA1B2C3D4 /* InspectorConfigurationTests.swift */; };
+		A1B2C3D4E5F60013A1B2C3D4 /* InspectorStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000CA1B2C3D4 /* InspectorStateTests.swift */; };
+		A1B2C3D4E5F60014A1B2C3D4 /* InspectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000DA1B2C3D4 /* InspectorTests.swift */; };
+		A1B2C3D4E5F60015A1B2C3D4 /* SnapshotCachingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000EA1B2C3D4 /* SnapshotCachingTests.swift */; };
+		A1B2C3D4E5F60016A1B2C3D4 /* ViewHierarchyLayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000FA1B2C3D4 /* ViewHierarchyLayerTests.swift */; };
+		A1B2C3D4E5F60017A1B2C3D4 /* XCTestManifests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60010A1B2C3D4 /* XCTestManifests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		EB5E1FDA261A48EB002301F5 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F60003A1B2C3D4 /* InspectorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InspectorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F6000AA1B2C3D4 /* AccessibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000BA1B2C3D4 /* InspectorConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorConfigurationTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000CA1B2C3D4 /* InspectorStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorStateTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000DA1B2C3D4 /* InspectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000EA1B2C3D4 /* SnapshotCachingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotCachingTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000FA1B2C3D4 /* ViewHierarchyLayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyLayerTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60010A1B2C3D4 /* XCTestManifests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTestManifests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +61,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A1B2C3D4E5F60004A1B2C3D4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F60020A1B2C3D4 /* Inspector in Frameworks (Tests) */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -52,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				EB21E3362DDD2CD700D621D0 /* Example */,
+				A1B2C3D4E5F60018A1B2C3D4 /* InspectorTests */,
 				EBEC3E20263AC75B00131D60 /* Frameworks */,
 				EB5E1FDB261A48EB002301F5 /* Products */,
 			);
@@ -61,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				EB5E1FDA261A48EB002301F5 /* Example.app */,
+				A1B2C3D4E5F60003A1B2C3D4 /* InspectorTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +96,21 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F60018A1B2C3D4 /* InspectorTests */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6000AA1B2C3D4 /* AccessibilityTests.swift */,
+				A1B2C3D4E5F6000BA1B2C3D4 /* InspectorConfigurationTests.swift */,
+				A1B2C3D4E5F6000CA1B2C3D4 /* InspectorStateTests.swift */,
+				A1B2C3D4E5F6000DA1B2C3D4 /* InspectorTests.swift */,
+				A1B2C3D4E5F6000EA1B2C3D4 /* SnapshotCachingTests.swift */,
+				A1B2C3D4E5F6000FA1B2C3D4 /* ViewHierarchyLayerTests.swift */,
+				A1B2C3D4E5F60010A1B2C3D4 /* XCTestManifests.swift */,
+			);
+			name = InspectorTests;
+			path = ../Tests/InspectorTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -101,6 +142,25 @@
 			productReference = EB5E1FDA261A48EB002301F5 /* Example.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A1B2C3D4E5F60005A1B2C3D4 /* InspectorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1B2C3D4E5F60006A1B2C3D4 /* Build configuration list for PBXNativeTarget "InspectorTests" */;
+			buildPhases = (
+				A1B2C3D4E5F60004A1B2C3D4 /* Frameworks */,
+				A1B2C3D4E5F60007A1B2C3D4 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = InspectorTests;
+			packageProductDependencies = (
+				A1B2C3D4E5F60019A1B2C3D4 /* Inspector */,
+			);
+			productName = InspectorTests;
+			productReference = A1B2C3D4E5F60003A1B2C3D4 /* InspectorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -112,6 +172,10 @@
 				TargetAttributes = {
 					EB5E1FD9261A48EB002301F5 = {
 						CreatedOnToolsVersion = 12.4;
+					};
+					A1B2C3D4E5F60005A1B2C3D4 = {
+						CreatedOnToolsVersion = 12.4;
+						TestTargetID = EB5E1FD9261A48EB002301F5;
 					};
 				};
 			};
@@ -133,9 +197,27 @@
 			projectRoot = "";
 			targets = (
 				EB5E1FD9261A48EB002301F5 /* Example */,
+				A1B2C3D4E5F60005A1B2C3D4 /* InspectorTests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase (InspectorTests) section */
+		A1B2C3D4E5F60007A1B2C3D4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F60011A1B2C3D4 /* AccessibilityTests.swift in Sources */,
+				A1B2C3D4E5F60012A1B2C3D4 /* InspectorConfigurationTests.swift in Sources */,
+				A1B2C3D4E5F60013A1B2C3D4 /* InspectorStateTests.swift in Sources */,
+				A1B2C3D4E5F60014A1B2C3D4 /* InspectorTests.swift in Sources */,
+				A1B2C3D4E5F60015A1B2C3D4 /* SnapshotCachingTests.swift in Sources */,
+				A1B2C3D4E5F60016A1B2C3D4 /* ViewHierarchyLayerTests.swift in Sources */,
+				A1B2C3D4E5F60017A1B2C3D4 /* XCTestManifests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase (InspectorTests) section */
 
 /* Begin PBXResourcesBuildPhase section */
 		EB5E1FD8261A48EB002301F5 /* Resources */ = {
@@ -327,6 +409,34 @@
 			};
 			name = Release;
 		};
+		A1B2C3D4E5F60008A1B2C3D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "am.pedro.InspectorTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)";
+			};
+			name = Debug;
+		};
+		A1B2C3D4E5F60009A1B2C3D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "am.pedro.InspectorTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -344,6 +454,15 @@
 			buildConfigurations = (
 				EB5E1FEF261A48EC002301F5 /* Debug */,
 				EB5E1FF0261A48EC002301F5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1B2C3D4E5F60006A1B2C3D4 /* Build configuration list for PBXNativeTarget "InspectorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1B2C3D4E5F60008A1B2C3D4 /* Debug */,
+				A1B2C3D4E5F60009A1B2C3D4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -386,6 +505,12 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = InspectorInterface;
 		};
+		A1B2C3D4E5F60019A1B2C3D4 /* Inspector */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EBD185352DDD2D6C00D213C8 /* XCLocalSwiftPackageReference "../../Inspector" */;
+			productName = Inspector;
+		};
+
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EB5E1FD2261A48EB002301F5 /* Project object */;

@@ -61,6 +61,7 @@ final class SegmentedControl: BaseFormControl {
         super.init(title: title)
 
         self.selectedIndex = selectedIndex
+        segmentedControl.accessibilityLabel = title
     }
 
     init(title: String?, texts: [String], selectedIndex: Int?) {
@@ -69,6 +70,7 @@ final class SegmentedControl: BaseFormControl {
         super.init(title: title)
 
         self.selectedIndex = selectedIndex
+        segmentedControl.accessibilityLabel = title
     }
 
     @available(*, unavailable)

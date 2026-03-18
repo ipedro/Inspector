@@ -66,6 +66,7 @@ final class ToggleControl: BaseFormControl {
         super.init(title: title)
 
         self.isOn = isOn
+        switchControl.accessibilityLabel = title
     }
 
     @available(*, unavailable)
