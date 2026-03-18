@@ -71,6 +71,19 @@ final class StepperControl: BaseFormControl {
         }, for: .valueChanged)
     }
 
+    // Proxy accessibilityLabel/Value to the inner UIStepper so callers
+    // (including StepperPairControl) can set these and have them reach
+    // the actual accessibility element.
+    override var accessibilityLabel: String? {
+        get { stepperControl.accessibilityLabel }
+        set { stepperControl.accessibilityLabel = newValue }
+    }
+
+    override var accessibilityValue: String? {
+        get { stepperControl.accessibilityValue }
+        set { stepperControl.accessibilityValue = newValue }
+    }
+
     private lazy var counterLabel = UILabel().then {
         $0.font = titleLabel.font!.withTraits(.traitMonoSpace)
         $0.setContentHuggingPriority(.required, for: .horizontal)
@@ -83,6 +96,7 @@ final class StepperControl: BaseFormControl {
 
         super.init(title: title)
 
+        stepperControl.accessibilityLabel = title
         stepperControl.maximumValue = range.upperBound
         stepperControl.minimumValue = range.lowerBound
         stepperControl.stepValue = stepValue
@@ -103,6 +117,7 @@ final class StepperControl: BaseFormControl {
 
     private func updateCounterLabel() {
         counterLabel.text = stepperControl.value.toString()
+        stepperControl.accessibilityValue = stepperControl.value.toString()
     }
 
     private func updateState() {
