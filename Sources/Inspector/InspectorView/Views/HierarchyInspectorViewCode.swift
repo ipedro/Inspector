@@ -71,6 +71,7 @@ final class HierarchyInspectorViewCode: BaseView {
     private(set) lazy var searchView = HierarchyInspectorSearchView()
 
     private(set) lazy var tableView = UIKeyCommandTableView().then {
+        $0.accessibilityIdentifier = "inspector.hierarchy-list"
         $0.backgroundColor = .none
         $0.keyboardDismissMode = .onDrag
         $0.rowHeight = UITableView.automaticDimension

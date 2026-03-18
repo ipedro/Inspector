@@ -28,6 +28,8 @@ final class HierarchyInspectorSearchView: BaseView {
     )
 
     private(set) lazy var textField = KeyPressTextField().then {
+        $0.accessibilityIdentifier = "inspector.search-field"
+        $0.accessibilityLabel = "Search views"
         $0.clearButtonMode = .always
         $0.font = .preferredFont(forTextStyle: .title2)
         $0.textColor = colorStyle.textColor

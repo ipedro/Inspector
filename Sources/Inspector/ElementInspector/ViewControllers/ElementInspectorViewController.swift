@@ -70,6 +70,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
     }
 
     private lazy var segmentedControl = UISegmentedControl.segmentedControlStyle().then {
+        $0.accessibilityIdentifier = "inspector.panel-picker"
         $0.addTarget(self, action: #selector(didChangeSelectedSegmentIndex), for: .valueChanged)
         $0.addInteraction(UIContextMenuInteraction(delegate: self))
     }
@@ -85,7 +86,7 @@ final class ElementInspectorViewController: ElementInspectorPanelViewController,
         barButtonSystemItem: dismissItem,
         target: self,
         action: #selector(dismiss(_:))
-    )
+    ).then { $0.accessibilityIdentifier = "inspector.dismiss-button" }
 
     private lazy var viewCode = ElementInspectorViewCode(
         frame: CGRect(
