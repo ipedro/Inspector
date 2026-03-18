@@ -35,7 +35,10 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
 
     var firstValue: FloatingPoint {
         get { FloatingPoint(firstStepper.value) }
-        set { firstStepper.value = Double(newValue) }
+        set {
+            firstStepper.value = Double(newValue)
+            firstStepper.accessibilityValue = newValue.toString()
+        }
     }
 
     var secondSubtitle: String? {
@@ -45,7 +48,10 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
 
     var secondValue: FloatingPoint {
         get { FloatingPoint(secondStepper.value) }
-        set { secondStepper.value = Double(newValue) }
+        set {
+            secondStepper.value = Double(newValue)
+            secondStepper.accessibilityValue = newValue.toString()
+        }
     }
 
     var firstRange: ClosedRange<FloatingPoint> {
@@ -56,6 +62,25 @@ class StepperPairControl<FloatingPoint: BinaryFloatingPoint>: BaseFormControl {
     var secondRange: ClosedRange<FloatingPoint> {
         get { FloatingPoint(secondStepper.range.lowerBound)...FloatingPoint(secondStepper.range.upperBound) }
         set { secondStepper.range = Double(newValue.lowerBound)...Double(newValue.upperBound) }
+    }
+
+    // Override title to propagate accessibility labels to child steppers.
+    // BaseFormControl.title is a computed property, so use get/set (not didSet).
+    override var title: String? {
+        get { super.title }
+        set {
+            super.title = newValue
+            updateStepperAccessibilityLabels()
+        }
+    }
+
+    private func updateStepperAccessibilityLabels() {
+        firstStepper.accessibilityLabel = [title, "(first)"]
+            .compactMap { $0.flatMap { $0.isEmpty ? nil : $0 } }
+            .joined(separator: " ")
+        secondStepper.accessibilityLabel = [title, "(second)"]
+            .compactMap { $0.flatMap { $0.isEmpty ? nil : $0 } }
+            .joined(separator: " ")
     }
 
     private lazy var firstStepper = StepperControl(
