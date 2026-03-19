@@ -40,45 +40,43 @@ class ElementInspectorNavigationController: UINavigationController, InternalView
         }
     }
 
-    override func loadView() {
-        super.loadView()
-        let container = BaseView()
-        container.installView(view)
-        container.frame = view.frame
-        view = container
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         delegate = self
 
         view.tintColor = colorStyle.textColor
+        navigationBar.tintColor = colorStyle.textColor
 
-        view.installView(blurView, position: .behind)
+        let textAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: colorStyle.textColor]
+        let largeTitleAttributes: [NSAttributedString.Key: Any] = [
+            .font: elementInspectorAppearance.titleFont(forRelativeDepth: .zero),
+            .foregroundColor: colorStyle.textColor
+        ]
 
-        navigationBar.barTintColor = colorStyle.highlightBackgroundColor
+        let scrollEdgeAppearance = UINavigationBarAppearance()
+        scrollEdgeAppearance.configureWithTransparentBackground()
+        scrollEdgeAppearance.titleTextAttributes = textAttributes
+        scrollEdgeAppearance.largeTitleTextAttributes = largeTitleAttributes
 
-        navigationBar.tintColor = view.tintColor
+        let standardAppearance = UINavigationBarAppearance()
+        standardAppearance.configureWithDefaultBackground()
+        standardAppearance.titleTextAttributes = textAttributes
+        standardAppearance.largeTitleTextAttributes = largeTitleAttributes
+
+        navigationBar.scrollEdgeAppearance = scrollEdgeAppearance
+        navigationBar.standardAppearance = standardAppearance
+        navigationBar.compactAppearance = standardAppearance
 
         navigationBar.directionalLayoutMargins.update(
             leading: elementInspectorAppearance.horizontalMargins,
             trailing: elementInspectorAppearance.horizontalMargins
         )
 
-        navigationBar.largeTitleTextAttributes = [
-            .font: elementInspectorAppearance.titleFont(forRelativeDepth: .zero),
-            .foregroundColor: colorStyle.textColor
-        ]
-
         addKeyCommand(dismissModalKeyCommand(action: #selector(finish)))
 
         becomeFirstResponder()
     }
-
-    private(set) lazy var blurView = UIVisualEffectView(
-        effect: UIBlurEffect(style: colorStyle.blurStyle)
-    )
 
     override var canBecomeFirstResponder: Bool { true }
 
@@ -102,35 +100,4 @@ extension ElementInspectorNavigationController: UIPopoverPresentationControllerD
 
 // MARK: - UINavigationControllerDelegate
 
-extension ElementInspectorNavigationController: UINavigationControllerDelegate {
-    func navigationController(
-        _ navigationController: UINavigationController,
-        willShow viewController: UIViewController,
-        animated: Bool
-    ) {
-        guard
-            animated,
-            let transitionCoordinator,
-            viewController is ElementInspectorViewController
-        else {
-            return
-        }
-
-        // The blur is owned by the navigation controller (behind its view),
-        // but each VC's view is transparent. During the standard push/pop,
-        // both VCs are visible simultaneously — causing a double-layer mess.
-        // Fix: snapshot the blur into a temporary opaque background on the
-        // incoming VC for the duration of the transition.
-        let snapshot = blurView.snapshotView(afterScreenUpdates: false)
-
-        if let snapshot {
-            snapshot.frame = viewController.view.bounds
-            snapshot.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            viewController.view.insertSubview(snapshot, at: 0)
-        }
-
-        transitionCoordinator.animate(alongsideTransition: nil) { _ in
-            snapshot?.removeFromSuperview()
-        }
-    }
-}
+extension ElementInspectorNavigationController: UINavigationControllerDelegate {}

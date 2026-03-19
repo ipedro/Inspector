@@ -23,6 +23,21 @@ import UIKit
 // MARK: - ElementInspectorViewCode
 
 final class ElementInspectorViewCode: BaseView {
+    private lazy var blurView = UIVisualEffectView(
+        effect: UIBlurEffect(style: colorStyle.blurStyle)
+    )
+
+    override func setup() {
+        super.setup()
+        installView(blurView, position: .behind)
+    }
+
+    override func didAddSubview(_ subview: UIView) {
+        super.didAddSubview(subview)
+        guard subview !== blurView else { return }
+        sendSubviewToBack(blurView)
+    }
+
     var keyboardHeight: CGFloat = .zero {
         didSet {
             scrollView.contentInset = UIEdgeInsets(bottom: keyboardHeight)
