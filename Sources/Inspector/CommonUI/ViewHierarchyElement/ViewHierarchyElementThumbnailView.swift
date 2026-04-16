@@ -28,6 +28,7 @@ class ViewHierarchyElementThumbnailView: BaseView {
         case isHidden
         case lostConnection
         case noWindow
+        case captureFailed
     }
 
     // MARK: - Properties
@@ -179,6 +180,9 @@ class ViewHierarchyElementThumbnailView: BaseView {
 
             case .noWindow:
                 showEmptyStatus(icon: .wifiExlusionMark, message: "Not in the view hierarchy")
+
+            case .captureFailed:
+                showEmptyStatus(icon: .wifiExlusionMark, message: Texts.lostConnectionToView)
             }
         }
     }
@@ -233,34 +237,25 @@ class ViewHierarchyElementThumbnailView: BaseView {
     }
 
     func updateViews(afterScreenUpdates: Bool) {
-        guard let referenceView = element._underlyingView else {
-            state = .lostConnection
-            return
+        switch InspectorSnapshotCapture.snapshotView(
+            for: element,
+            afterScreenUpdates: afterScreenUpdates
+        ) {
+        case let .success(snapshotView):
+            state = .snapshot(snapshotView)
+        case let .failure(reason):
+            switch reason {
+            case .lostConnection:
+                state = .lostConnection
+            case .noWindow:
+                state = .noWindow
+            case let .frameIsEmpty(frame):
+                state = .frameIsEmpty(frame)
+            case .isHidden:
+                state = .isHidden
+            case .captureFailed:
+                state = .captureFailed
+            }
         }
-
-        if referenceView.isAssociatedToWindow == false {
-            state = .noWindow
-            return
-        }
-
-        guard
-            referenceView.frame.isEmpty == false,
-            referenceView.frame != .zero
-        else {
-            state = .frameIsEmpty(referenceView.frame)
-            return
-        }
-
-        guard referenceView.isHidden == false else {
-            state = .isHidden
-            return
-        }
-
-        guard let snapshotView = referenceView.snapshotView(afterScreenUpdates: afterScreenUpdates) else {
-            state = .lostConnection
-            return
-        }
-
-        state = .snapshot(snapshotView)
     }
 }

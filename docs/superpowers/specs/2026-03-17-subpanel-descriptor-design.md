@@ -37,7 +37,7 @@ class PlaygroundViewController: BaseViewController {
 The macro emits:
 
 ```swift
-#if INSPECTOR_ENABLED
+#if INSPECTOR_DEBUGGING
 final class SectionDataSource: InspectorElementSectionDataSource {
     var state: InspectorElementSectionState = .collapsed
     let title = "Playground"

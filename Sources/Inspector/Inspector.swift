@@ -76,6 +76,9 @@ public final class Inspector {
     func stop() {
         manager = .none
         contextMenuPresenter = .none
+#if INSPECTOR_DEBUGGING && targetEnvironment(simulator)
+        resetInspectorBridgeState()
+#endif
     }
 
     private func restartIfNeeded() {

@@ -38,13 +38,13 @@ enum ExampleAttributesLibrary: InspectorElementLibraryProtocol, CaseIterable {
     func sections(for object: NSObject) -> InspectorElementSections {
         switch self {
         case .roundedButton:
-            #if INSPECTOR_ENABLED
+            #if INSPECTOR_DEBUGGING
             .init(with: RoundedButton.SectionDataSource(with: object))
             #else
             .init(with: RoundedButtonAttributesSectionDataSource(with: object))
             #endif
         case .playgroundViewController:
-            #if INSPECTOR_ENABLED
+            #if INSPECTOR_DEBUGGING
             .init(with: PlaygroundViewController.SectionDataSource(with: object))
             #else
             .init()

@@ -1,0 +1,104 @@
+#if INSPECTOR_DEBUGGING && canImport(UIKit) && targetEnvironment(simulator)
+import Foundation
+import UIKit
+
+public enum InspectorBridgeNodeKind: String, Codable {
+    case window
+    case viewController
+    case view
+}
+
+public struct InspectorBridgeHandle: Hashable, Codable {
+    public let rawValue: String
+
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+}
+
+public struct InspectorBridgeQueryRequest: Hashable, Codable {
+    public var nodeKind: InspectorBridgeNodeKind?
+    public var classNameContains: String?
+    public var displayNameContains: String?
+    public var elementNameContains: String?
+    public var accessibilityIdentifierEquals: String?
+
+    public init(
+        nodeKind: InspectorBridgeNodeKind? = nil,
+        classNameContains: String? = nil,
+        displayNameContains: String? = nil,
+        elementNameContains: String? = nil,
+        accessibilityIdentifierEquals: String? = nil
+    ) {
+        self.nodeKind = nodeKind
+        self.classNameContains = classNameContains
+        self.displayNameContains = displayNameContains
+        self.elementNameContains = elementNameContains
+        self.accessibilityIdentifierEquals = accessibilityIdentifierEquals
+    }
+}
+
+public struct InspectorBridgeNode: Hashable, Codable {
+    public let handle: InspectorBridgeHandle
+    public let nodeKind: InspectorBridgeNodeKind
+    public let backingObjectType: String
+    public let className: String
+    public let displayName: String
+    public let elementName: String
+    public let accessibilityIdentifier: String?
+    public let frame: CGRect
+    public let isHidden: Bool
+    public let isUserInteractionEnabled: Bool
+    public let depth: Int
+    public let parentHandle: InspectorBridgeHandle?
+    public let childHandles: [InspectorBridgeHandle]
+    public let childCount: Int
+}
+
+public struct InspectorBridgeQueryResponse: Hashable, Codable {
+    public let expiresAt: Date
+    public let nodes: [InspectorBridgeNode]
+
+    public init(expiresAt: Date, nodes: [InspectorBridgeNode]) {
+        self.expiresAt = expiresAt
+        self.nodes = nodes
+    }
+}
+
+public struct InspectorBridgeSnapshotArtifact: Hashable, Codable {
+    public let handle: InspectorBridgeHandle
+    public let pngData: Data
+    public let size: CGSize
+    public let scale: CGFloat
+
+    public init(
+        handle: InspectorBridgeHandle,
+        pngData: Data,
+        size: CGSize,
+        scale: CGFloat
+    ) {
+        self.handle = handle
+        self.pngData = pngData
+        self.size = size
+        self.scale = scale
+    }
+}
+
+public enum InspectorBridgeSnapshotUnavailableReason: String, Codable {
+    case lostConnection
+    case noWindow
+    case frameIsEmpty
+    case isHidden
+    case captureFailed
+    case runtimeSnapshotUnavailable
+}
+
+public enum InspectorBridgeError: Error, Hashable, Codable {
+    case disabled
+    case notStarted
+    case staleHandle
+    case snapshotUnavailable(InspectorBridgeSnapshotUnavailableReason)
+    case unsupportedTarget
+    case internalFailure(String)
+}
+#endif

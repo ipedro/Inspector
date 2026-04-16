@@ -50,6 +50,7 @@ let package = Package(
                 .process("Resources")
             ],
             swiftSettings: [
+                .define("INSPECTOR_DEBUGGING", .when(traits: ["Debugging"])),
                 .swiftLanguageMode(.v5)
             ]
         ),
@@ -57,6 +58,9 @@ let package = Package(
             name: "InspectorTests",
             dependencies: [
                 .target(name: "Inspector", condition: .when(platforms: [.iOS]))
+            ],
+            swiftSettings: [
+                .define("INSPECTOR_DEBUGGING", .when(traits: ["Debugging"]))
             ]
         ),
 
@@ -77,10 +81,10 @@ let package = Package(
             name: "InspectorInterface",
             dependencies: [
                 .target(name: "InspectorMacros"),
-                .target(name: "Inspector", condition: .when(traits: ["Debugging"]))
+                .target(name: "Inspector")
             ],
             swiftSettings: [
-                .define("INSPECTOR_ENABLED", .when(traits: ["Debugging"]))
+                .define("INSPECTOR_DEBUGGING", .when(traits: ["Debugging"]))
             ]
         ),
 

@@ -25,7 +25,7 @@ final class InspectorPanelMacroTests: XCTestCase {
             class MyCardView: UIView {
                 var borderColor: UIColor = .clear
 
-                #if INSPECTOR_ENABLED
+                #if INSPECTOR_DEBUGGING
                 final class SectionDataSource: InspectorElementSectionDataSource {
                     var state: InspectorElementSectionState = .collapsed
                     let title = "My Card View"
@@ -89,7 +89,7 @@ final class InspectorPanelMacroTests: XCTestCase {
             class PlaygroundViewController: BaseViewController {
                 var inspectBarButton: RoundedButton!
 
-                #if INSPECTOR_ENABLED
+                #if INSPECTOR_DEBUGGING
                 final class SectionDataSource: InspectorElementSectionDataSource {
                     var state: InspectorElementSectionState = .collapsed
                     let title = "Playground"
@@ -171,7 +171,7 @@ final class InspectorPanelMacroTests: XCTestCase {
             class TestView: UIView {
                 var customEnum: MyEnum = .default
 
-                #if INSPECTOR_ENABLED
+                #if INSPECTOR_DEBUGGING
                 final class SectionDataSource: InspectorElementSectionDataSource {
                     var state: InspectorElementSectionState = .collapsed
                     let title = "Test"

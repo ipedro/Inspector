@@ -53,6 +53,11 @@ final class InspectorConfigurationTests: XCTestCase {
         XCTAssertFalse(config.verbose, "verbose should default to false")
     }
 
+    func testEnableMCPBridgeDefaultsToFalse() {
+        let config = InspectorConfiguration.default
+        XCTAssertFalse(config.enableMCPBridge, "enableMCPBridge should default to false")
+    }
+
     func testEnableLayoutSubviewsSwizzlingDefaultsToFalse() {
         let config = InspectorConfiguration.default
         XCTAssertFalse(config.enableLayoutSubviewsSwizzling,
@@ -67,6 +72,7 @@ final class InspectorConfigurationTests: XCTestCase {
         let searchQuery = "myQuery"
 
         let config = InspectorConfiguration.config(
+            enableMCPBridge: true,
             enableLayoutSubviewsSwizzling: true,
             nonInspectableClassNames: nonInspectable,
             showAllViewSearchQuery: searchQuery,
@@ -75,6 +81,7 @@ final class InspectorConfigurationTests: XCTestCase {
             verbose: true
         )
 
+        XCTAssertTrue(config.enableMCPBridge)
         XCTAssertTrue(config.enableLayoutSubviewsSwizzling)
         XCTAssertEqual(config.nonInspectableClassNames, nonInspectable)
         XCTAssertEqual(config.showAllViewSearchQuery, searchQuery)

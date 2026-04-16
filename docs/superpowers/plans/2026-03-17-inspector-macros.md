@@ -125,7 +125,7 @@ let package = Package(
                 )
             ],
             swiftSettings: [
-                .define("INSPECTOR_ENABLED", .when(traits: ["Debugging"]))
+                .define("INSPECTOR_DEBUGGING", .when(traits: ["Debugging"]))
             ]
         ),
 
@@ -142,7 +142,7 @@ let package = Package(
 )
 ```
 
-⚠️ **Package Traits API note:** The `.when(traits:)` condition on target-level dependencies (`Target.Dependency.Condition`) and `swiftSettings` was introduced in SE-0450 (swift-tools-version 6.0). Verify the API compiles in your toolchain by running `swift build` first. If `.when(traits:)` is not available on `Target.Dependency.Condition` (i.e. only supported on package-level dependency conditions), use this fallback: remove the `condition:` parameters from the `InspectorInterface` target dependencies (always link both), and rely solely on `swiftSettings: [.define("INSPECTOR_ENABLED", .when(traits: ["Debugging"]))]` for the compilation gate. The `#if INSPECTOR_ENABLED` guards in source files will still prevent the generated code from compiling in release. The only downside is that `Inspector` and `InspectorMacros` are always compiled even in release — the generated code just stays dead.
+⚠️ **Package Traits API note:** The `.when(traits:)` condition on target-level dependencies (`Target.Dependency.Condition`) and `swiftSettings` was introduced in SE-0450 (swift-tools-version 6.0). Verify the API compiles in your toolchain by running `swift build` first. If `.when(traits:)` is not available on `Target.Dependency.Condition` (i.e. only supported on package-level dependency conditions), use this fallback: remove the `condition:` parameters from the `InspectorInterface` target dependencies (always link both), and rely solely on `swiftSettings: [.define("INSPECTOR_DEBUGGING", .when(traits: ["Debugging"]))]` for the compilation gate. The `#if INSPECTOR_DEBUGGING` guards in source files will still prevent the generated code from compiling in release. The only downside is that `Inspector` and `InspectorMacros` are always compiled even in release — the generated code just stays dead.
 
 - [ ] **Step 2: Resolve packages and verify it builds**
 
@@ -181,14 +181,14 @@ git commit -m "chore: add swift-syntax dep, Debugging trait, InspectorInterface 
 **Files:**
 - Create: `Sources/InspectorInterface/InspectorPanel.swift`
 
-All declarations in this file are gated behind `#if INSPECTOR_ENABLED`. When the `Debugging` trait is off, this file compiles to nothing — the macro attributes simply don't exist.
+All declarations in this file are gated behind `#if INSPECTOR_DEBUGGING`. When the `Debugging` trait is off, this file compiles to nothing — the macro attributes simply don't exist.
 
 - [ ] **Step 1: Create the file**
 
 ```swift
 // Sources/InspectorInterface/InspectorPanel.swift
 
-#if INSPECTOR_ENABLED
+#if INSPECTOR_DEBUGGING
 
 // MARK: - @InspectorPanel
 
@@ -204,7 +204,7 @@ All declarations in this file are gated behind `#if INSPECTOR_ENABLED`. When the
 /// }
 /// ```
 /// Generates `MyCardView.SectionDataSource` and `MyCardView.InspectorLibrary`
-/// inside `#if INSPECTOR_ENABLED` guards.
+/// inside `#if INSPECTOR_DEBUGGING` guards.
 @attached(member, names: named(SectionDataSource), named(InspectorLibrary))
 public macro InspectorPanel(title: String) =
     #externalMacro(module: "InspectorMacros", type: "InspectorPanelMacro")
@@ -260,7 +260,7 @@ public enum InspectorPropertyDescriptor {
 swift build --target InspectorInterface
 ```
 
-Expected: builds successfully (the `#if INSPECTOR_ENABLED` block compiles to nothing since the trait is off by default in local builds without explicit trait activation).
+Expected: builds successfully (the `#if INSPECTOR_DEBUGGING` block compiles to nothing since the trait is off by default in local builds without explicit trait activation).
 
 - [ ] **Step 3: Commit**
 
@@ -815,7 +815,7 @@ Replace the stub `InspectorPanelMacro.swift` with the complete implementation.
 **Files:**
 - Modify: `Sources/InspectorMacros/InspectorPanelMacro.swift`
 
-The macro collects `@InspectorProperty`-annotated stored properties, builds a `SectionDataSource` and `InspectorLibrary`, and emits them wrapped in `#if INSPECTOR_ENABLED` using `IfConfigDeclSyntax`.
+The macro collects `@InspectorProperty`-annotated stored properties, builds a `SectionDataSource` and `InspectorLibrary`, and emits them wrapped in `#if INSPECTOR_DEBUGGING` using `IfConfigDeclSyntax`.
 
 **Key SwiftSyntax construction note:** `IfConfigDeclSyntax` is a valid `DeclSyntax` that can be returned from an `@attached(member)` macro (confirmed in swift-spyable). Use `.poundIfToken()` for the `poundKeyword` — not a string literal.
 
@@ -850,7 +850,7 @@ final class InspectorPanelMacroTests: XCTestCase {
             expandedSource: """
             class MyCardView: UIView {
                 var borderColor: UIColor = .clear
-                #if INSPECTOR_ENABLED
+                #if INSPECTOR_DEBUGGING
                 final class SectionDataSource: InspectorElementSectionDataSource {
                     var state: InspectorElementSectionState = .collapsed
                     let title = "My Card View"
@@ -1008,7 +1008,7 @@ public struct InspectorPanelMacro: MemberMacro {
         )
         let inspectorLibrary = generateInspectorLibrary(className: className)
 
-        // 5. Wrap both in #if INSPECTOR_ENABLED
+        // 5. Wrap both in #if INSPECTOR_DEBUGGING
         // IfConfigDeclSyntax wraps them so they only compile when the Debugging trait is on.
         // NOTE: use .poundIfToken() — string literal will crash the compiler.
         let ifConfigDecl = IfConfigDeclSyntax(
@@ -1016,7 +1016,7 @@ public struct InspectorPanelMacro: MemberMacro {
                 IfConfigClauseSyntax(
                     poundKeyword: .poundIfToken(trailingTrivia: .space),
                     condition: ExprSyntax(
-                        DeclReferenceExprSyntax(baseName: .identifier("INSPECTOR_ENABLED"))
+                        DeclReferenceExprSyntax(baseName: .identifier("INSPECTOR_DEBUGGING"))
                     ),
                     elements: .decls(MemberBlockItemListSyntax([
                         MemberBlockItemSyntax(decl: sectionDataSource),
@@ -1306,7 +1306,7 @@ func testMultiplePropertiesExpansion() {
         class MyView: UIView {
             var isEnabled: Bool = true
             var alpha: CGFloat = 1.0
-            #if INSPECTOR_ENABLED
+            #if INSPECTOR_DEBUGGING
             final class SectionDataSource: InspectorElementSectionDataSource {
                 // ... (copy actual output on first run)
             }
@@ -1338,7 +1338,7 @@ func testTypeInferenceForBool() {
         expandedSource: """
         class TestView: UIView {
             var isHidden: Bool = false
-            #if INSPECTOR_ENABLED
+            #if INSPECTOR_DEBUGGING
             final class SectionDataSource: InspectorElementSectionDataSource {
                 // ... generates .switch case for Bool
             }

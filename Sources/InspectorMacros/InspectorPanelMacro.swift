@@ -111,14 +111,14 @@ public struct InspectorPanelMacro: MemberMacro {
         )
         let inspectorLibrarySource = generateInspectorLibrarySource(className: className)
 
-        // 5. Wrap both in #if INSPECTOR_ENABLED using IfConfigDeclSyntax
+        // 5. Wrap both in #if INSPECTOR_DEBUGGING using IfConfigDeclSyntax
         // NOTE: use .poundIfToken() — string literal will crash the compiler.
         let ifConfigDecl = IfConfigDeclSyntax(
             clauses: IfConfigClauseListSyntax([
                 IfConfigClauseSyntax(
                     poundKeyword: .poundIfToken(trailingTrivia: .space),
                     condition: ExprSyntax(
-                        DeclReferenceExprSyntax(baseName: .identifier("INSPECTOR_ENABLED"))
+                        DeclReferenceExprSyntax(baseName: .identifier("INSPECTOR_DEBUGGING"))
                     ),
                     elements: .decls(MemberBlockItemListSyntax([
                         MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: sectionDataSourceSource)),

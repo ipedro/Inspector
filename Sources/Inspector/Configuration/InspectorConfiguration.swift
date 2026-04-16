@@ -25,6 +25,8 @@ public struct InspectorConfiguration {
 
     public var keyCommands: KeyCommandSettings = .init()
 
+    public var enableMCPBridge: Bool
+
     public var snapshotExpirationTimeInterval: TimeInterval
 
     public var snapshotMaxCount: Int = 1
@@ -40,6 +42,7 @@ public struct InspectorConfiguration {
     public var verbose: Bool
 
     public static func config(
+        enableMCPBridge: Bool = false,
         enableLayoutSubviewsSwizzling: Bool = false,
         nonInspectableClassNames: [String] = [],
         showAllViewSearchQuery: String = ".",
@@ -48,6 +51,7 @@ public struct InspectorConfiguration {
         verbose: Bool = false
     ) -> InspectorConfiguration {
         .init(
+            enableMCPBridge: enableMCPBridge,
             snapshotExpirationTimeInterval: snapshotExpiration,
             showAllViewSearchQuery: showAllViewSearchQuery,
             nonInspectableClassNames: nonInspectableClassNames,
