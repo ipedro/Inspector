@@ -1,6 +1,7 @@
 #if INSPECTOR_DEBUGGING && canImport(UIKit) && targetEnvironment(simulator)
 import Foundation
 import UIKit
+import os.log
 
 protocol InspectorBridgeSnapshotProtocol: ExpirableProtocol {
     var viewHierarchy: [ViewHierarchyElementReference] { get }
@@ -31,6 +32,17 @@ enum InspectorBridgeOperation {
 }
 
 struct InspectorBridgeSnapshotRenderer: InspectorBridgeSnapshotRendering {
+    let artifactLimitProvider: () -> Int
+    let dateProvider: () -> Date
+
+    init(
+        artifactLimitProvider: @escaping () -> Int = { 32 },
+        dateProvider: @escaping () -> Date = Date.init
+    ) {
+        self.artifactLimitProvider = artifactLimitProvider
+        self.dateProvider = dateProvider
+    }
+
     func snapshot(
         for reference: ViewHierarchyElementReference,
         handle: InspectorBridgeHandle,
@@ -58,17 +70,61 @@ struct InspectorBridgeSnapshotRenderer: InspectorBridgeSnapshotRendering {
             throw InspectorBridgeError.snapshotUnavailable(.captureFailed)
         }
 
-        let fileName = "\(handle.rawValue).png"
-        let pngURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-        try pngData.write(to: pngURL)
+        let directory = inspectorSnapshotsDirectoryURL()
+        do {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        } catch {
+            os_log(.error, "inspector: failed to create snapshots directory at %{public}@: %{public}@",
+                   directory.path, String(describing: error))
+            throw InspectorBridgeError.snapshotUnavailable(.captureFailed)
+        }
+
+        let url = directory.appendingPathComponent("\(UUID().uuidString).png")
+        do {
+            try pngData.write(to: url, options: .atomic)
+        } catch {
+            os_log(.error, "inspector: failed to write snapshot PNG to %{public}@: %{public}@",
+                   url.path, String(describing: error))
+            throw InspectorBridgeError.snapshotUnavailable(.captureFailed)
+        }
+
+        pruneInspectorSnapshotsDirectory(limit: artifactLimitProvider())
 
         return InspectorBridgeSnapshotArtifact(
             handle: handle,
-            pngURL: pngURL,
+            pngURL: url,
             size: image.size,
             deviceScale: image.scale,
-            createdAt: Date()
+            createdAt: dateProvider()
         )
+    }
+}
+
+func pruneInspectorSnapshotsDirectory(limit: Int) {
+    let directory = inspectorSnapshotsDirectoryURL()
+    let fileManager = FileManager.default
+
+    guard
+        let entries = try? fileManager.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: [.contentModificationDateKey],
+            options: [.skipsHiddenFiles]
+        )
+    else {
+        return
+    }
+
+    let cap = max(limit, 0)
+    guard entries.count > cap else { return }
+
+    let sorted = entries.sorted { lhs, rhs in
+        let lhsDate = (try? lhs.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
+        let rhsDate = (try? rhs.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
+        return lhsDate < rhsDate
+    }
+
+    for url in sorted.prefix(sorted.count - cap) {
+        try? fileManager.removeItem(at: url)
     }
 }
 
@@ -434,7 +490,12 @@ private let sharedInspectorMCPBridgeService = InspectorMCPBridgeService(
     },
     snapshotLimitProvider: {
         Inspector.sharedInstance.configuration.snapshotMaxCount
-    }
+    },
+    snapshotRenderer: InspectorBridgeSnapshotRenderer(
+        artifactLimitProvider: {
+            Inspector.sharedInstance.configuration.snapshotArtifactMaxCount
+        }
+    )
 )
 
 let inspectorSnapshotsDirectoryName = "inspector-snapshots"

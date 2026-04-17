@@ -159,7 +159,6 @@ final class InspectorBridgeServiceTests: XCTestCase {
     }
 
     func testSnapshotReturnsRuntimeSnapshotArtifact() throws {
-        try XCTSkipIf(true, "pending Task 6: renderer writes PNG to disk")
         let window = UIWindow(frame: UIScreen.main.bounds)
         let viewController = UIViewController()
         window.rootViewController = viewController
@@ -408,7 +407,53 @@ final class InspectorBridgeServiceTests: XCTestCase {
         }
     }
 
+    func testSnapshotRendererPrunesOldestPNGs() throws {
+        let fileManager = FileManager.default
+        let directory = inspectorSnapshotsDirectoryURL()
+        try? fileManager.removeItem(at: directory)
+
+        let renderer = InspectorBridgeSnapshotRenderer(
+            artifactLimitProvider: { 3 },
+            dateProvider: Date.init
+        )
+        let reference = try makeLiveReference()
+
+        var urls: [URL] = []
+        for _ in 0..<4 {
+            let artifact = try renderer.snapshot(
+                for: reference,
+                handle: InspectorBridgeHandle(rawValue: UUID().uuidString),
+                afterScreenUpdates: true
+            )
+            urls.append(artifact.pngURL)
+            // Spread mtimes so ring buffer ordering is deterministic
+            Thread.sleep(forTimeInterval: 0.05)
+        }
+
+        let remaining = try fileManager.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: nil
+        )
+        XCTAssertEqual(remaining.count, 3, "ring buffer must cap at 3 files")
+        XCTAssertFalse(fileManager.fileExists(atPath: urls[0].path),
+                       "oldest file should have been pruned")
+        XCTAssertTrue(fileManager.fileExists(atPath: urls[3].path),
+                      "newest file must remain")
+
+        addTeardownBlock {
+            try? fileManager.removeItem(at: directory)
+        }
+    }
+
     // MARK: - Helpers
+
+    private func makeLiveReference() throws -> ViewHierarchyElementReference {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        window.makeKeyAndVisible()
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        window.addSubview(view)
+        return ViewHierarchyElement(with: view)
+    }
 
     private func makeService(
         availability: InspectorBridgeRuntimeAvailability = .active,
