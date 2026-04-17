@@ -1,11 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Dogfooding wrapper for this repo. Launches InspectorMCPServer against the
+# bundled Example app so Claude/Codex can drive the local MCP bridge.
+# Referenced by ./.mcp.json at the repo root.
+
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 XCODEPROJ="${REPO_ROOT}/Example/Example.xcodeproj"
 SCHEME="Example"
-CODEX_HOME_DIR="${CODEX_HOME:-$HOME/.codex}"
-INSPECTOR_HELPER="${CODEX_HOME_DIR}/skills/inspector-mcp/scripts/find_inspector_package.py"
+
+# Primary helper ships with the in-repo plugin. Fall back to the Codex install
+# when running without the plugin checked out alongside.
+PLUGIN_HELPER="${REPO_ROOT}/Plugins/inspector-mcp/skills/inspector-mcp/scripts/find_inspector_package.py"
+CODEX_HELPER="${CODEX_HOME:-$HOME/.codex}/skills/inspector-mcp/scripts/find_inspector_package.py"
+
+if [[ -f "${PLUGIN_HELPER}" ]]; then
+  INSPECTOR_HELPER="${PLUGIN_HELPER}"
+else
+  INSPECTOR_HELPER="${CODEX_HELPER}"
+fi
 
 # In this repo the Example app uses a local package reference, so the fallback
 # is the repo root. If a DerivedData checkout exists, prefer that.

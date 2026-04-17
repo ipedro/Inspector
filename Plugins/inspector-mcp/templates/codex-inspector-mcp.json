@@ -13,7 +13,7 @@
         "--bundle-id",
         "am.pedro.Inspector"
       ],
-      "cwd": "/ABSOLUTE/PATH/TO/Inspector"
+      "cwd": "/ABSOLUTE/PATH/TO/CONSUMER/APP"
     }
   }
 }
