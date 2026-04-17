@@ -19,7 +19,7 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(health["status"] as? String, "active")
         XCTAssertEqual(health["bridgeEnabled"] as? Bool, true)
         XCTAssertEqual(health["inspectorStarted"] as? Bool, true)
-        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect"])
+        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect", "layers", "toggleLayer"])
         XCTAssertEqual(health["apiVersion"] as? Int, 2)
     }
 
@@ -40,7 +40,7 @@ final class InspectorMCPTransportTests: XCTestCase {
         let nodes = payload["nodes"] as? [[String: Any]]
 
         XCTAssertFalse((expiresAt ?? "").isEmpty)
-        XCTAssertEqual(nodes?.count, 1)
+        XCTAssertEqual(nodes?.count, 1, "unexpected nodes: \(String(describing: nodes))")
 
         let node = try XCTUnwrap(nodes?.first)
         XCTAssertEqual(node["nodeKind"] as? String, "view")
@@ -171,17 +171,31 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(result["presented"] as? Bool, true)
 
         // The bridge actually presents the Inspector UI as a modal over
-        // the key window. Subsequent tests that query the hierarchy pick
-        // up the extra windows Inspector adds (UITextEffectsWindow when
-        // the search field raises the keyboard, the modal's own window,
-        // etc.), which breaks assertions like `nodes?.count == 1` and
-        // stale-handle ring-buffer tests. Tear the Inspector down and
-        // restart it so the next test starts against a clean key window.
+        // the key window. Inspector.stop() releases the manager but does
+        // not dismiss modals UIKit still owns, so the Inspector UI's
+        // navigation bar (whose accessibility identifier mirrors the
+        // inspected element) survives into subsequent tests and breaks
+        // `nodes?.count == 1` assertions. The `inspect` dispatch itself
+        // is async, so we wait briefly for UIKit to finish presenting
+        // before walking the presented-VC chain and dismissing it.
         addTeardownBlock {
+            try? await Task.sleep(nanoseconds: 300_000_000)
             await MainActor.run {
+                for window in UIApplication.shared
+                    .connectedScenes
+                    .compactMap({ $0 as? UIWindowScene })
+                    .flatMap(\.windows)
+                {
+                    var top = window.rootViewController
+                    while let next = top?.presentedViewController {
+                        top = next
+                    }
+                    top?.dismiss(animated: false)
+                }
                 Inspector.sharedInstance.stop()
                 Inspector.sharedInstance.start()
             }
+            try? await Task.sleep(nanoseconds: 500_000_000)
         }
     }
 
@@ -228,6 +242,89 @@ final class InspectorMCPTransportTests: XCTestCase {
 
         XCTAssertEqual(freshResponse.statusCode, 200)
         XCTAssertEqual(freshPayload["accessibilityIdentifier"] as? String, "Content Stack View")
+    }
+
+    func testHealthAdvertisesLayerOperations() async throws {
+        let health = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+        let operations = try XCTUnwrap(health["operations"] as? [String])
+        XCTAssertTrue(operations.contains("layers"),
+                      "/health must advertise the layers operation")
+        XCTAssertTrue(operations.contains("toggleLayer"),
+                      "/health must advertise the toggleLayer operation")
+    }
+
+    func testLayersReturnsPopulatedLayerEnvelope() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let response = try await postJSON(path: "/layers", body: [:])
+        XCTAssertEqual(response.statusCode, 200)
+
+        let payload = try unpackSuccessEnvelope(from: response.body)
+        let layers = try XCTUnwrap(payload["layers"] as? [[String: Any]])
+        XCTAssertFalse(layers.isEmpty, "Example hierarchy must populate at least one built-in layer")
+
+        let first = try XCTUnwrap(layers.first)
+        XCTAssertEqual(Set(first.keys), Set(["name", "displayName", "active"]))
+        XCTAssertFalse((first["name"] as? String ?? "").isEmpty)
+        XCTAssertNotNil(first["active"] as? Bool)
+    }
+
+    func testToggleLayerFlipsActiveState() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let layersResponse = try await postJSON(path: "/layers", body: [:])
+        let layersPayload = try unpackSuccessEnvelope(from: layersResponse.body)
+        let layers = try XCTUnwrap(layersPayload["layers"] as? [[String: Any]])
+        let target = try XCTUnwrap(layers.first)
+        let name = try XCTUnwrap(target["name"] as? String)
+        let wasActive = try XCTUnwrap(target["active"] as? Bool)
+
+        let toggleResponse = try await postJSON(path: "/toggle-layer", body: ["name": name])
+        XCTAssertEqual(toggleResponse.statusCode, 200)
+        let togglePayload = try unpackSuccessEnvelope(from: toggleResponse.body)
+        XCTAssertEqual(togglePayload["name"] as? String, name)
+        XCTAssertEqual(togglePayload["active"] as? Bool, !wasActive,
+                       "toggle should flip the active state")
+
+        addTeardownBlock {
+            _ = try? await self.postJSON(path: "/toggle-layer", body: ["name": name])
+        }
+    }
+
+    func testToggleLayerRejectsUnknownName() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let response = try await postJSON(
+            path: "/toggle-layer",
+            body: ["name": "not-a-real-layer-name"]
+        )
+        XCTAssertEqual(response.statusCode, 200)
+
+        let payload = try jsonObject(from: response.body)
+        XCTAssertEqual(payload["ok"] as? Bool, false)
+        let error = try XCTUnwrap(payload["error"] as? [String: Any])
+        XCTAssertEqual(error["code"] as? String, "internalFailure")
+        let details = try XCTUnwrap(error["details"] as? [String: Any])
+        let message = try XCTUnwrap(details["message"] as? String)
+        XCTAssertTrue(message.contains("not-a-real-layer-name"),
+                      "error message should surface the unknown layer name, got: \(message)")
+    }
+
+    func testToggleLayerRejectsMalformedBody() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let response = try await postJSON(path: "/toggle-layer", body: ["not_name": "x"])
+        XCTAssertEqual(response.statusCode, 400)
     }
 
     func testSnapshotRejectsMissingAfterScreenUpdatesWithBadRequest() async throws {

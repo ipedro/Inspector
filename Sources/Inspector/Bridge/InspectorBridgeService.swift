@@ -299,11 +299,12 @@ final class InspectorMCPBridgeService {
                 throw InspectorBridgeError.internalFailure("unknown layer: \(name)")
             }
 
+            let wasActive = self.layerActiveProvider(layer)
             self.layerToggler(layer)
             return InspectorBridgeLayerState(
                 name: layer.name,
                 displayName: layer.description,
-                active: self.layerActiveProvider(layer)
+                active: !wasActive
             )
         }
     }

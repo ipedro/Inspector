@@ -747,7 +747,7 @@ extension InspectorBridgeServiceTests {
         }
     }
 
-    func testBridgeToggleLayerInvokesTogglerAndReportsActiveState() throws {
+    func testBridgeToggleLayerInvokesTogglerAndReportsIntendedState() throws {
         let wireframes = ViewHierarchyLayer.wireframes
         var active = false
         var toggleCount = 0
@@ -766,12 +766,27 @@ extension InspectorBridgeServiceTests {
         let firstState = try service.toggleLayer(name: wireframes.name)
         XCTAssertEqual(firstState.name, wireframes.name)
         XCTAssertEqual(firstState.displayName, wireframes.description)
-        XCTAssertTrue(firstState.active)
+        XCTAssertTrue(firstState.active, "expect intended state after first toggle to be active=true")
         XCTAssertEqual(toggleCount, 1)
 
         let secondState = try service.toggleLayer(name: wireframes.name)
-        XCTAssertFalse(secondState.active)
+        XCTAssertFalse(secondState.active, "expect intended state after second toggle to be active=false")
         XCTAssertEqual(toggleCount, 2)
+    }
+
+    func testBridgeToggleLayerReportsIntendedStateEvenWhenTogglerIsAsync() throws {
+        let wireframes = ViewHierarchyLayer.wireframes
+
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { MockSnapshot(nodes: [], availableLayers: [wireframes: 5]) },
+            layerToggler: { _ in /* simulate async — do nothing synchronously */ },
+            layerActiveProvider: { _ in false } // still false when queried synchronously after
+        )
+
+        let state = try service.toggleLayer(name: wireframes.name)
+        XCTAssertTrue(state.active,
+                      "intended state must be reported regardless of async toggler latency")
     }
 
     func testBridgeToggleLayerRejectsUnknownName() {
