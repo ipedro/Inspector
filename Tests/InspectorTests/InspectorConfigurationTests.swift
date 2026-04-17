@@ -54,6 +54,12 @@ final class InspectorConfigurationTests: XCTestCase {
                        "snapshotArtifactMaxCount should default to 32")
     }
 
+    func testFiltersSystemKeyboardWindowsDefaultsToTrue() {
+        let config = InspectorConfiguration.default
+        XCTAssertTrue(config.filtersSystemKeyboardWindows,
+                      "filtersSystemKeyboardWindows must default to true to preserve legacy Inspector UI behavior")
+    }
+
     func testVerboseDefaultsToFalse() {
         let config = InspectorConfiguration.default
         XCTAssertFalse(config.verbose, "verbose should default to false")

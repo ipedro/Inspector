@@ -110,12 +110,18 @@ extension UIView: ViewHierarchyElementRepresentable {
         let className = __className
         let superViewClassName = superview?.__className ?? ""
 
-        guard
-            className != "UIRemoteKeyboardWindow",
-            className != "UITextEffectsWindow",
-            className != "UIEditingOverlayGestureView",
-            className != "UIInputSetContainerView",
+        if Inspector.sharedInstance.configuration.filtersSystemKeyboardWindows {
+            guard
+                className != "UIRemoteKeyboardWindow",
+                className != "UITextEffectsWindow",
+                className != "UIEditingOverlayGestureView",
+                className != "UIInputSetContainerView"
+            else {
+                return false
+            }
+        }
 
+        guard
             // Avoid breaking UINavigationController large title.
             superViewClassName != "UIViewControllerWrapperView",
 

@@ -33,6 +33,18 @@ public struct InspectorConfiguration {
 
     public var snapshotArtifactMaxCount: Int = 32
 
+    /// When `true` (default), the view hierarchy skips iOS-internal keyboard
+    /// windows (`UIRemoteKeyboardWindow`, `UITextEffectsWindow`,
+    /// `UIEditingOverlayGestureView`, `UIInputSetContainerView`). The filter
+    /// exists to protect the Inspector UI from layering bugs when overlaying
+    /// windows owned by the software keyboard.
+    ///
+    /// Set this to `false` to expose those windows — useful for MCP bridge
+    /// inspection of live keyboard hierarchy. Be aware that disabling the
+    /// filter may reintroduce the original layering artifacts in the
+    /// Inspector UI; reserve it for read-only inspection sessions.
+    public var filtersSystemKeyboardWindows: Bool = true
+
     public var showAllViewSearchQuery: String
 
     public var nonInspectableClassNames: [String]
