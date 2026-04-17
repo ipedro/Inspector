@@ -277,4 +277,8 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     func snapshot(_ request: InspectorMCPSnapshotRequest) async throws -> Result<InspectorMCPSnapshotResult, InspectorMCPTransportError> {
         snapshotResult
     }
+
+    func inspect(_ request: InspectorMCPInspectRequest) async throws -> Result<InspectorMCPInspectResult, InspectorMCPTransportError> {
+        fatalError("not yet implemented — Task 6 fills this in")
+    }
 }

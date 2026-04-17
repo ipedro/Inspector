@@ -6,6 +6,7 @@ protocol InspectorMCPBridgeClient {
     func query(_ request: InspectorMCPQueryRequest) async throws -> Result<InspectorMCPQueryResult, InspectorMCPTransportError>
     func resolve(_ request: InspectorMCPResolveRequest) async throws -> Result<InspectorMCPNode, InspectorMCPTransportError>
     func snapshot(_ request: InspectorMCPSnapshotRequest) async throws -> Result<InspectorMCPSnapshotResult, InspectorMCPTransportError>
+    func inspect(_ request: InspectorMCPInspectRequest) async throws -> Result<InspectorMCPInspectResult, InspectorMCPTransportError>
 }
 
 enum InspectorMCPServerError: Error, LocalizedError {
@@ -93,6 +94,13 @@ final class InspectorMCPHTTPBridgeClient: InspectorMCPBridgeClient {
     func snapshot(_ request: InspectorMCPSnapshotRequest) async throws -> Result<InspectorMCPSnapshotResult, InspectorMCPTransportError> {
         try await sendToolRequest(
             path: InspectorMCPBridgeEndpoint.snapshotPath,
+            body: request
+        )
+    }
+
+    func inspect(_ request: InspectorMCPInspectRequest) async throws -> Result<InspectorMCPInspectResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.inspectPath,
             body: request
         )
     }
