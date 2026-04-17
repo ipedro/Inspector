@@ -48,34 +48,36 @@
 
 ## Test Command Reference
 
-Wire + server tests (platform-agnostic):
+**All test runs go through `xcodebuild test` against the `Example` scheme.** `swift test` is not usable in this repo today: `Tests/InspectorMCPServerTests/InspectorMCPServerTests.swift` does `@testable import InspectorMCPServer`, which Swift Package Manager rejects for an executable target, and the fallback compile of `Sources/Inspector/**` pulls in UIKit on the host where no UIKit module exists. The Example Xcode project wires every package test target together and runs them on the simulator, where both problems are solved.
 
-```bash
-swift test --filter <TestClass>.<testMethod>
-```
-
-Bridge + transport + config tests (simulator-gated):
+Canonical runner:
 
 ```bash
 xcodebuild test \
   -project Example/Example.xcodeproj \
   -scheme Example \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.4' \
-  -only-testing:<Suite>/<TestClass>/<testMethod>
+  -only-testing:<TestBundle>/<TestClass>/<testMethod>
 ```
 
-Build-only sanity check of the full library target (iOS):
+The `<TestBundle>` is the Swift package test target name as bundled into the Example scheme. For this plan the relevant bundles are:
+
+- `InspectorMCPWireTests`
+- `InspectorMCPServerTests`
+- `InspectorTests` (hosts `InspectorBridgeServiceTests`, `InspectorConfigurationTests`, `InspectorMCPTransportTests`)
+
+Build-only sanity checks:
 
 ```bash
+# iOS-simulator target build of the Inspector library
 SDK=$(xcrun --sdk iphonesimulator --show-sdk-path)
 swift build --target Inspector --sdk "$SDK" --triple arm64-apple-ios26.4-simulator
-```
 
-Host executable build:
-
-```bash
+# Host executable build (fast compile check for the MCP server CLI)
 swift build --product InspectorMCPServer
 ```
+
+**Follow-up (tracked after this plan):** restructure the package so `swift test` works again — most likely by splitting `InspectorMCPServer` into a testable library target plus a thin executable shim. Out of scope for this plan; noted in post-plan verification below.
 
 ---
 
@@ -173,8 +175,12 @@ func testHealthResponseDecodesWithoutApiVersionField() throws {
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-swift test --filter InspectorMCPWireTests.testHealthResponseRoundTripsApiVersion
-swift test --filter InspectorMCPWireTests.testHealthResponseDecodesWithoutApiVersionField
+xcodebuild test \
+  -project Example/Example.xcodeproj \
+  -scheme Example \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.4' \
+  -only-testing:InspectorMCPWireTests/InspectorMCPWireTests/testHealthResponseRoundTripsApiVersion \
+  -only-testing:InspectorMCPWireTests/InspectorMCPWireTests/testHealthResponseDecodesWithoutApiVersionField
 ```
 
 Expected: compile error on the init call — "extra argument 'apiVersion'".
@@ -266,7 +272,11 @@ func testSnapshotResultRoundTripsNewShape() throws {
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-swift test --filter InspectorMCPWireTests.testSnapshotResultRoundTripsNewShape
+xcodebuild test \
+  -project Example/Example.xcodeproj \
+  -scheme Example \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.4' \
+  -only-testing:InspectorMCPWireTests/InspectorMCPWireTests/testSnapshotResultRoundTripsNewShape
 ```
 
 Expected: compile error — no member `pngPath` / `deviceScale` / `createdAt`.
@@ -322,8 +332,12 @@ Adjust values to match each test site's existing inputs; the important change is
 - [ ] **Step 5: Run the new test and the server tests**
 
 ```bash
-swift test --filter InspectorMCPWireTests.testSnapshotResultRoundTripsNewShape
-swift test --filter InspectorMCPServerTests
+xcodebuild test \
+  -project Example/Example.xcodeproj \
+  -scheme Example \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.4' \
+  -only-testing:InspectorMCPWireTests/InspectorMCPWireTests/testSnapshotResultRoundTripsNewShape \
+  -only-testing:InspectorMCPServerTests/InspectorMCPServerTests
 ```
 
 Expected: PASS all.
@@ -998,8 +1012,12 @@ func testSnapshotToolDescriptionMentionsPngPath() throws {
 - [ ] **Step 2: Run tests to verify they fail**
 
 ```bash
-swift test --filter InspectorMCPServerTests.testInitializeResponseAdvertisesV2
-swift test --filter InspectorMCPServerTests.testSnapshotToolDescriptionMentionsPngPath
+xcodebuild test \
+  -project Example/Example.xcodeproj \
+  -scheme Example \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.4' \
+  -only-testing:InspectorMCPServerTests/InspectorMCPServerTests/testInitializeResponseAdvertisesV2 \
+  -only-testing:InspectorMCPServerTests/InspectorMCPServerTests/testSnapshotToolDescriptionMentionsPngPath
 ```
 
 Expected: FAIL — version is `1.0.0`; description omits `pngPath`; properties have no `description`.
@@ -1163,15 +1181,17 @@ swift build --product InspectorMCPServer
 - [ ] Run the full affected test surface end-to-end:
 
 ```bash
-swift test --filter InspectorMCPWireTests
-swift test --filter InspectorMCPServerTests
 xcodebuild test \
   -project Example/Example.xcodeproj \
   -scheme Example \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.4' \
+  -only-testing:InspectorMCPWireTests \
+  -only-testing:InspectorMCPServerTests \
   -only-testing:InspectorTests/InspectorBridgeServiceTests \
   -only-testing:InspectorTests/InspectorMCPTransportTests \
   -only-testing:InspectorTests/InspectorConfigurationTests
 ```
 
 - [ ] Live dogfooding: restart Claude Code's MCP connection (`/mcp` reconnect). Call `snapshot` on a live handle and verify the returned `pngPath` renders inline via `Read`.
+
+- [ ] Follow-up issue: restore `swift test` compatibility. Today `Tests/InspectorMCPServerTests` does `@testable import InspectorMCPServer`, which is not permitted on a SwiftPM executable target; the fallback cascade also fails to build `Sources/Inspector/**` on the host because UIKit is iOS-only. The clean fix is to split `InspectorMCPServer` into a testable library target plus a thin `@main` executable shim, and guard any host-only tests explicitly. Tracked as out of scope for this plan; raise a separate issue before merging.
