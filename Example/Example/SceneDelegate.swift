@@ -44,9 +44,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         var configuration = InspectorConfiguration.config(
             enableMCPBridge: true,
-            snapshotExpiration: 300
+            snapshotExpiration: 1
         )
         configuration.snapshotMaxCount = 8
+        configuration.filtersSystemKeyboardWindows = false
         Inspector.setConfiguration(configuration)
         Inspector.setCustomization(self)
 
