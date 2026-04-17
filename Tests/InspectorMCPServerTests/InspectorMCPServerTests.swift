@@ -105,7 +105,8 @@ final class InspectorMCPServerTests: XCTestCase {
         let structuredContent = try XCTUnwrap(result["structuredContent"] as? [String: Any])
 
         XCTAssertEqual(result["isError"] as? Bool, false)
-        XCTAssertTrue((content.first?["text"] as? String ?? "").contains("Content Stack View"))
+        XCTAssertTrue((content.first?["text"] as? String ?? "").contains("Query matched"),
+                      "text summary should describe the query outcome")
         XCTAssertNotNil(structuredContent["nodes"])
     }
 
