@@ -162,6 +162,36 @@ final class InspectorMCPServerSession {
                     "idempotentHint": false,
                     "openWorldHint": true
                 ]
+            ),
+            toolDefinition(
+                name: "list_layers",
+                description: "List built-in Inspector view-hierarchy layers populated in the live app, with each layer's current active (highlighted) state.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [:]
+                ]
+            ),
+            toolDefinition(
+                name: "toggle_layer",
+                description: "Toggle a view-hierarchy layer on or off by its `name` (as returned by list_layers). Flipping is fire-and-forget; the reported active state reflects the intended post-toggle state.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "name": [
+                            "type": "string",
+                            "description": "Layer name returned by list_layers — e.g. Wireframes, Controls, Text Views."
+                        ]
+                    ],
+                    "required": ["name"]
+                ],
+                annotations: [
+                    "readOnlyHint": false,
+                    "destructiveHint": false,
+                    "idempotentHint": false,
+                    "openWorldHint": true
+                ]
             )
         ]
     }
@@ -236,6 +266,26 @@ final class InspectorMCPServerSession {
                 for: result,
                 successText: { inspectResult in
                     "Presented Inspector UI for handle \(inspectResult.handle)."
+                }
+            )
+        case "list_layers":
+            let result = try await bridgeClient.layers()
+            return try toolResult(
+                for: result,
+                successText: { layersResult in
+                    "Listed \(layersResult.layers.count) populated layer(s)."
+                }
+            )
+        case "toggle_layer":
+            let request = try JSONObject.decode(
+                InspectorMCPToggleLayerRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.toggleLayer(request)
+            return try toolResult(
+                for: result,
+                successText: { toggleResult in
+                    "Layer \(toggleResult.name) is now \(toggleResult.active ? "active" : "inactive")."
                 }
             )
         default:

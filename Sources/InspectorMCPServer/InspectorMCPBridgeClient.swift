@@ -7,6 +7,8 @@ protocol InspectorMCPBridgeClient {
     func resolve(_ request: InspectorMCPResolveRequest) async throws -> Result<InspectorMCPNode, InspectorMCPTransportError>
     func snapshot(_ request: InspectorMCPSnapshotRequest) async throws -> Result<InspectorMCPSnapshotResult, InspectorMCPTransportError>
     func inspect(_ request: InspectorMCPInspectRequest) async throws -> Result<InspectorMCPInspectResult, InspectorMCPTransportError>
+    func layers() async throws -> Result<InspectorMCPLayersResult, InspectorMCPTransportError>
+    func toggleLayer(_ request: InspectorMCPToggleLayerRequest) async throws -> Result<InspectorMCPToggleLayerResult, InspectorMCPTransportError>
 }
 
 enum InspectorMCPServerError: Error, LocalizedError {
@@ -105,6 +107,20 @@ final class InspectorMCPHTTPBridgeClient: InspectorMCPBridgeClient {
         )
     }
 
+    func layers() async throws -> Result<InspectorMCPLayersResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.layersPath,
+            body: EmptyRequestBody()
+        )
+    }
+
+    func toggleLayer(_ request: InspectorMCPToggleLayerRequest) async throws -> Result<InspectorMCPToggleLayerResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.toggleLayerPath,
+            body: request
+        )
+    }
+
     private func sendToolRequest<Body: Encodable, Success: Codable & Equatable>(
         path: String,
         body: Body
@@ -144,4 +160,13 @@ final class InspectorMCPHTTPBridgeClient: InspectorMCPBridgeClient {
 
         return (httpResponse.statusCode, responseBody)
     }
+}
+
+private struct EmptyRequestBody: Encodable {
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: EmptyCodingKey.self)
+        _ = container
+    }
+
+    private enum EmptyCodingKey: CodingKey {}
 }

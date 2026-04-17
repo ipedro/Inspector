@@ -51,7 +51,7 @@ final class InspectorMCPServerTests: XCTestCase {
         let result = try XCTUnwrap(response["result"] as? [String: Any])
         let tools = try XCTUnwrap(result["tools"] as? [[String: Any]])
 
-        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "snapshot", "inspect"])
+        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "snapshot", "inspect", "list_layers", "toggle_layer"])
     }
 
     func testToolsCallQueryReturnsStructuredContentFromBridgeResult() async throws {
@@ -263,6 +263,114 @@ final class InspectorMCPServerTests: XCTestCase {
         XCTAssertEqual(structured["code"] as? String, "staleHandle")
     }
 
+    func testToolsListAdvertisesLayerTools() async throws {
+        let mock = MockBridgeClient()
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":5,"method":"tools/list"}"#
+
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+        let tools = try XCTUnwrap(result["tools"] as? [[String: Any]])
+
+        let listLayers = try XCTUnwrap(tools.first { $0["name"] as? String == "list_layers" })
+        let listAnnotations = try XCTUnwrap(listLayers["annotations"] as? [String: Any])
+        XCTAssertEqual(listAnnotations["readOnlyHint"] as? Bool, true,
+                       "list_layers must be read-only — no state mutation")
+
+        let listSchema = try XCTUnwrap(listLayers["inputSchema"] as? [String: Any])
+        let listProperties = try XCTUnwrap(listSchema["properties"] as? [String: Any])
+        XCTAssertTrue(listProperties.isEmpty,
+                      "list_layers takes no arguments")
+
+        let toggle = try XCTUnwrap(tools.first { $0["name"] as? String == "toggle_layer" })
+        let toggleAnnotations = try XCTUnwrap(toggle["annotations"] as? [String: Any])
+        XCTAssertEqual(toggleAnnotations["readOnlyHint"] as? Bool, false,
+                       "toggle_layer mutates Inspector UI state")
+        XCTAssertEqual(toggleAnnotations["idempotentHint"] as? Bool, false,
+                       "consecutive toggles flip the layer, not idempotent")
+
+        let toggleSchema = try XCTUnwrap(toggle["inputSchema"] as? [String: Any])
+        let toggleProperties = try XCTUnwrap(toggleSchema["properties"] as? [String: Any])
+        XCTAssertNotNil(toggleProperties["name"])
+        XCTAssertEqual(toggleSchema["required"] as? [String], ["name"])
+    }
+
+    func testToolsCallListLayersForwardsToBridgeClient() async throws {
+        let mock = MockBridgeClient(
+            layersResult: .success(
+                InspectorMCPLayersResult(layers: [
+                    .init(name: "Wireframes", displayName: "Wireframes", active: true),
+                    .init(name: "Controls", displayName: "Controls", active: false),
+                ])
+            )
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"list_layers","arguments":{}}}"#
+
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+
+        XCTAssertEqual(result["isError"] as? Bool, false)
+        let structured = try XCTUnwrap(result["structuredContent"] as? [String: Any])
+        let layers = try XCTUnwrap(structured["layers"] as? [[String: Any]])
+        XCTAssertEqual(layers.count, 2)
+        XCTAssertEqual(layers.first?["name"] as? String, "Wireframes")
+        XCTAssertEqual(layers.first?["active"] as? Bool, true)
+
+        let content = try XCTUnwrap(result["content"] as? [[String: Any]])
+        let text = try XCTUnwrap(content.first?["text"] as? String)
+        XCTAssertTrue(text.contains("Listed 2"))
+    }
+
+    func testToolsCallToggleLayerForwardsNameToBridgeClient() async throws {
+        let mock = MockBridgeClient(
+            toggleLayerResult: .success(
+                InspectorMCPToggleLayerResult(name: "Wireframes", active: true)
+            )
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"toggle_layer","arguments":{"name":"Wireframes"}}}"#
+
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+
+        XCTAssertEqual(result["isError"] as? Bool, false)
+        XCTAssertEqual(mock.lastToggleLayerRequest?.name, "Wireframes")
+
+        let structured = try XCTUnwrap(result["structuredContent"] as? [String: Any])
+        XCTAssertEqual(structured["name"] as? String, "Wireframes")
+        XCTAssertEqual(structured["active"] as? Bool, true)
+    }
+
+    func testToolsCallToggleLayerSurfacesUnknownLayerError() async throws {
+        let mock = MockBridgeClient(
+            toggleLayerResult: .failure(
+                .init(
+                    code: .internalFailure,
+                    message: "Inspector bridge failed internally",
+                    details: .internalFailure(message: "unknown layer: nope")
+                )
+            )
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":8,"method":"tools/call","params":{"name":"toggle_layer","arguments":{"name":"nope"}}}"#
+
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+
+        XCTAssertEqual(result["isError"] as? Bool, true)
+        let structured = try XCTUnwrap(result["structuredContent"] as? [String: Any])
+        XCTAssertEqual(structured["code"] as? String, "internalFailure")
+    }
+
     private func jsonData(_ object: [String: Any]) -> Data {
         try! JSONSerialization.data(withJSONObject: object)
     }
@@ -279,6 +387,9 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     var resolveResult: Result<InspectorMCPNode, InspectorMCPTransportError>
     var snapshotResult: Result<InspectorMCPSnapshotResult, InspectorMCPTransportError>
     var inspectResult: Result<InspectorMCPInspectResult, InspectorMCPTransportError>
+    var layersResult: Result<InspectorMCPLayersResult, InspectorMCPTransportError>
+    var toggleLayerResult: Result<InspectorMCPToggleLayerResult, InspectorMCPTransportError>
+    private(set) var lastToggleLayerRequest: InspectorMCPToggleLayerRequest?
 
     init(
         healthResult: InspectorMCPHealthResponse = .init(
@@ -321,6 +432,12 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         ),
         inspectResult: Result<InspectorMCPInspectResult, InspectorMCPTransportError> = .success(
             .init(handle: "MOCK-HANDLE", presented: true)
+        ),
+        layersResult: Result<InspectorMCPLayersResult, InspectorMCPTransportError> = .success(
+            .init(layers: [])
+        ),
+        toggleLayerResult: Result<InspectorMCPToggleLayerResult, InspectorMCPTransportError> = .success(
+            .init(name: "Wireframes", active: true)
         )
     ) {
         self.healthResult = healthResult
@@ -328,6 +445,8 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         self.resolveResult = resolveResult
         self.snapshotResult = snapshotResult
         self.inspectResult = inspectResult
+        self.layersResult = layersResult
+        self.toggleLayerResult = toggleLayerResult
     }
 
     func health() async throws -> InspectorMCPHealthResponse {
@@ -348,5 +467,14 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
 
     func inspect(_ request: InspectorMCPInspectRequest) async throws -> Result<InspectorMCPInspectResult, InspectorMCPTransportError> {
         inspectResult
+    }
+
+    func layers() async throws -> Result<InspectorMCPLayersResult, InspectorMCPTransportError> {
+        layersResult
+    }
+
+    func toggleLayer(_ request: InspectorMCPToggleLayerRequest) async throws -> Result<InspectorMCPToggleLayerResult, InspectorMCPTransportError> {
+        lastToggleLayerRequest = request
+        return toggleLayerResult
     }
 }
