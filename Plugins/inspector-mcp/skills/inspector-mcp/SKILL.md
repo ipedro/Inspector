@@ -126,6 +126,31 @@ For interactive sessions, chain `query → inspect` to open the Inspector UI foc
 
 Response: `{"handle":"...", "presented": true}`. `presented: true` means the Inspector UI dispatch was accepted — the modal animates in asynchronously. Consecutive `inspect` calls stack modals; Inspector's native back affordance dismisses them.
 
+### 5a. Controlling view-hierarchy layers (v2.2)
+
+Call `list_layers` to see which built-in highlight layers are populated on the current screen, along with their active state:
+
+```json
+{}
+```
+
+Response (success envelope):
+
+```json
+{"layers":[
+  {"name":"Wireframes","displayName":"Wireframes","active":false},
+  {"name":"Controls","displayName":"Controls","active":true}
+]}
+```
+
+Flip a layer on or off by name — `toggle_layer` returns the intended post-toggle state immediately (install/remove is async on the UI thread):
+
+```json
+{"name":"Wireframes"}
+```
+
+Response: `{"name":"Wireframes","active":true}`. If the name does not match any populated layer, the response is an `internalFailure` envelope whose `details.message` names the offending input — call `list_layers` first to copy the exact name.
+
 ### 6. Reading snapshot results (v2)
 
 Snapshot request:
@@ -161,7 +186,8 @@ Current constraints:
 - single app on that port at a time
 - launcher rejects attach if the process on the port does not match the requested bundle id
 - v1: read-only (query, resolve, snapshot only)
-- v2.1+: `inspect` adds write-side dispatch (presents Inspector UI); all other tools remain non-mutating
+- v2.1: `inspect` adds write-side dispatch (presents Inspector UI); all other tools remain non-mutating
+- v2.2+: `list_layers` (read-only) and `toggle_layer` (write-side) add layer-highlight control
 
 If startup says the endpoint is occupied by the wrong app:
 - shut down the simulator or other app
@@ -203,3 +229,4 @@ Read these only when needed:
 
 - **v2 (2026-04-17)** — The `snapshot` tool response no longer carries `pngBase64`. It now returns `pngPath` (absolute host path) and `createdAt`; `scale` was renamed to `deviceScale`. Restart your MCP clients (Codex, Claude Code) after upgrading Inspector — in-flight sessions keep the old schema until reconnected.
 - **v2.1 (2026-04-17)** — New `inspect` tool. No breaking changes; additive over v2. Reconnect clients to pick up the refreshed `tools/list`.
+- **v2.2 (2026-04-17)** — New `list_layers` and `toggle_layer` tools. Additive over v2.1. Reconnect clients to refresh `tools/list`. `/health.operations` now includes `layers` and `toggleLayer`.
