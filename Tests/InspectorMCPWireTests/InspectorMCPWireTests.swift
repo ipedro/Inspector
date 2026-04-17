@@ -152,6 +152,64 @@ final class InspectorMCPWireTests: XCTestCase {
         XCTAssertEqual(InspectorMCPBridgeEndpoint.inspectPath, "/inspect")
     }
 
+    func testLayersOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.layers),
+                      "InspectorMCPOperation.layers must be a declared case")
+    }
+
+    func testToggleLayerOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.toggleLayer),
+                      "InspectorMCPOperation.toggleLayer must be a declared case")
+    }
+
+    func testLayersPathMatchesRouteConstant() {
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.layersPath, "/layers")
+    }
+
+    func testToggleLayerPathMatchesRouteConstant() {
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.toggleLayerPath, "/toggle-layer")
+    }
+
+    func testLayerStateRoundTrips() throws {
+        let state = InspectorMCPLayerState(name: "wireframes", displayName: "Wireframes", active: true)
+
+        let decoded = try roundTrip(state)
+
+        XCTAssertEqual(decoded.name, "wireframes")
+        XCTAssertEqual(decoded.displayName, "Wireframes")
+        XCTAssertTrue(decoded.active)
+    }
+
+    func testLayersResultRoundTrips() throws {
+        let result = InspectorMCPLayersResult(layers: [
+            .init(name: "wireframes", displayName: "Wireframes", active: false),
+            .init(name: "controls", displayName: "Controls", active: true),
+        ])
+
+        let decoded = try roundTrip(result)
+
+        XCTAssertEqual(decoded.layers.count, 2)
+        XCTAssertEqual(decoded.layers[0].name, "wireframes")
+        XCTAssertTrue(decoded.layers[1].active)
+    }
+
+    func testToggleLayerRequestRoundTrips() throws {
+        let request = InspectorMCPToggleLayerRequest(name: "wireframes")
+
+        let decoded = try roundTrip(request)
+
+        XCTAssertEqual(decoded.name, "wireframes")
+    }
+
+    func testToggleLayerResultRoundTrips() throws {
+        let result = InspectorMCPToggleLayerResult(name: "wireframes", active: true)
+
+        let decoded = try roundTrip(result)
+
+        XCTAssertEqual(decoded.name, "wireframes")
+        XCTAssertTrue(decoded.active)
+    }
+
     private func roundTrip<T: Codable & Equatable>(_ value: T) throws -> T {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601

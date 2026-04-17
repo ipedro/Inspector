@@ -8,6 +8,8 @@ public enum InspectorMCPBridgeEndpoint {
     public static let resolvePath = "/resolve"
     public static let snapshotPath = "/snapshot"
     public static let inspectPath = "/inspect"
+    public static let layersPath = "/layers"
+    public static let toggleLayerPath = "/toggle-layer"
     public static let baseURL = URL(string: "http://\(host):\(port)")!
 }
 
@@ -16,6 +18,8 @@ public enum InspectorMCPOperation: String, Codable, CaseIterable {
     case resolve
     case snapshot
     case inspect
+    case layers
+    case toggleLayer
 }
 
 public enum InspectorMCPHealthStatus: String, Codable {
@@ -218,6 +222,44 @@ public struct InspectorMCPInspectResult: Codable, Equatable {
     public init(handle: String, presented: Bool) {
         self.handle = handle
         self.presented = presented
+    }
+}
+
+public struct InspectorMCPLayerState: Codable, Equatable {
+    public let name: String
+    public let displayName: String
+    public let active: Bool
+
+    public init(name: String, displayName: String, active: Bool) {
+        self.name = name
+        self.displayName = displayName
+        self.active = active
+    }
+}
+
+public struct InspectorMCPLayersResult: Codable, Equatable {
+    public let layers: [InspectorMCPLayerState]
+
+    public init(layers: [InspectorMCPLayerState]) {
+        self.layers = layers
+    }
+}
+
+public struct InspectorMCPToggleLayerRequest: Codable, Equatable {
+    public let name: String
+
+    public init(name: String) {
+        self.name = name
+    }
+}
+
+public struct InspectorMCPToggleLayerResult: Codable, Equatable {
+    public let name: String
+    public let active: Bool
+
+    public init(name: String, active: Bool) {
+        self.name = name
+        self.active = active
     }
 }
 
