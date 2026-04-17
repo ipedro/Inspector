@@ -36,7 +36,9 @@ Validated empirically (G35): Claude Code `Read` accepts simulator sandbox paths 
 - **Directory:** `NSTemporaryDirectory()/inspector-snapshots/`, created lazily on first snapshot. This resolves to a real macOS host path inside the simulator's Core Simulator data dir (readable by the host).
 - **Filename:** `<UUID>.png`, one file per snapshot call. No reuse, no race on concurrent calls.
 - **Rotation:** ring buffer by file modification time. New config setting `InspectorConfiguration.snapshotArtifactMaxCount: Int = 32` (independent of the existing `snapshotMaxCount`, which caches pinned hierarchy snapshots and has no interaction with render artifacts — see G11 below). On each snapshot call, if the directory count exceeds the limit, oldest files are removed best-effort.
-- **Shutdown cleanup:** `Inspector.stop()` removes the whole `inspector-snapshots/` directory.
+- **First call after a previous run:** the directory persists across process restarts (it lives under the simulator app sandbox, which survives app relaunch). The first snapshot call after relaunch prunes any leftover files above the limit as part of the normal rotation pass — no dedicated boot-time sweep.
+- **Shutdown and reset cleanup:** `Inspector.stop()` removes the whole `inspector-snapshots/` directory. Note `Inspector.stop()` is also invoked from the Example app's "Reset App" command (`Inspector.stop(); Inspector.start()`), so any mid-session handle/path a client cached becomes invalid after reset. Clients consume paths immediately.
+- **Directory path constant:** the subdirectory name `"inspector-snapshots"` is a module-private constant shared between the renderer (for write) and the cleanup helper (for removal). Resolution of the parent uses `NSTemporaryDirectory()` at call time; no path caching.
 - **Crash / system wipe:** acceptable data loss. Paths are ephemeral and documented as such.
 
 ### Per-layer changes
@@ -69,9 +71,13 @@ Type is `public`. Source-level break is acceptable because the bridge is v1, sim
 
 On write failure, log via `os_log(.error, "…", url, error)` and throw `InspectorBridgeError.snapshotUnavailable(.captureFailed)`.
 
+**Concurrency note:** the renderer runs on the main thread via the existing `performOnMain(.snapshot)` serialization in `InspectorMCPBridgeService`. Disk I/O (`image.pngData()` + `Data.write(to:)` + directory listing for prune) happens on the main thread. Writes of a 370 KB PNG typically complete in tens of milliseconds on simulator; this is intentional — the synchronous path keeps error ordering deterministic and avoids introducing a dispatch hop that would complicate `throws` semantics. The bridge is simulator-only dev tooling, so brief main-thread blocks during a snapshot are acceptable.
+
+**Config injection:** the renderer reads `snapshotArtifactMaxCount` via the same pattern `InspectorMCPBridgeService` uses for `snapshotMaxCount` (see `InspectorBridgeService.swift:431`): `Inspector.sharedInstance.configuration.snapshotArtifactMaxCount`, wrapped in a closure provider for testability — mirror the existing `snapshotLimitProvider` injection so tests can override the limit.
+
 `InspectorMCPBridgeService.snapshot(_:afterScreenUpdates:)` signature unchanged; it still delegates to the renderer.
 
-Add a new static helper `InspectorMCPBridgeService.cleanupArtifactsDirectory()` called from `Inspector.stop()` to remove the whole directory.
+Add a new static helper `InspectorMCPBridgeService.cleanupArtifactsDirectory()` called from `Inspector.stop()` to remove the whole directory. Implementation reads the same module-private directory constant the renderer writes to.
 
 #### `Sources/Inspector/Inspector.swift`
 
@@ -100,7 +106,7 @@ No changes to `allowedKeys` for the `/snapshot` request (no new request fields).
 
 Per-field descriptions on the response object are not part of the MCP tool schema (that's the input schema); documentation of the response shape lives in the tool description and skill docs.
 
-Add `apiVersion: 2` to `InspectorMCPHealthResponse` (wire addition). Purely diagnostic — no dispatch logic keys on it.
+Add `apiVersion: Int = 2` to `InspectorMCPHealthResponse` (wire addition). Purely diagnostic — no dispatch logic keys on it. Additive wire change: `JSONDecoder` ignores unknown keys by default, so older client decoders of the old `InspectorMCPHealthResponse` type continue to decode successfully against the new JSON. New clients get the value automatically.
 
 #### `Sources/Inspector/Bridge/InspectorMCPHTTPTransport.swift` (`/health` endpoint)
 
@@ -117,17 +123,40 @@ Same PR updates these so the consumer-visible contract matches the runtime:
 
 ## Testing
 
-Test-driven. One PR, no split. Actual churn is narrower than initially feared: `InspectorMCPWireTests` has no snapshot-field assertions; `InspectorMCPServerTests` has one mock-default to update; `InspectorMCPTransportTests` has one live assertion to rewrite.
+Test-driven. One PR, no split. Full inventory of affected test files (all under `Tests/`):
+
+| File | Lines | Impact |
+|---|---|---|
+| `InspectorMCPWireTests/InspectorMCPWireTests.swift` | 81 | Add 2 new tests; no existing snapshot asserts. |
+| `InspectorMCPServerTests/InspectorMCPServerTests.swift` | 225 | Update 1 `MockBridgeClient` default; no existing `pngBase64` assertions. |
+| `InspectorTests/InspectorMCPTransportTests.swift` | 242 | Rewrite 1 test (`testSnapshotReturnsBase64PNGEnvelope`); add 2 new tests. |
+| `InspectorTests/InspectorBridgeServiceTests.swift` | 613 | Update 2 sites: assertion at `:181` (`XCTAssertFalse(artifact.pngData.isEmpty)`) and fixture at `:607` (`pngData: Data([0x1])` in `InspectorBridgeSnapshotArtifact` init). |
+| `InspectorTests/InspectorConfigurationTests.swift` | 93 | Add default assertion for `snapshotArtifactMaxCount`. |
+| `InspectorTests/SnapshotCachingTests.swift` | 115 | **Not affected.** Tests `ExpirableStore` / `SnapshotStore` generic value types (verified by `grep pngData` — zero hits). |
+
+### Test isolation
+
+Tests that mutate singleton state (`Inspector.sharedInstance`, the artifact directory on disk) use `setUp`/`tearDown`:
+- `setUp`: force a clean `inspector-snapshots/` directory (remove + recreate) to isolate file counts from prior tests.
+- `tearDown`: remove the directory. If the test called `Inspector.stop()`, also restart to restore sharedInstance state for subsequent tests in the run.
 
 ### New and changed tests
 
 **`InspectorMCPWireTests.swift`**
 - `testSnapshotResultDecodesAndEncodesPngPath` — round-trip `{pngPath, deviceScale, createdAt, size, handle, mimeType}`.
-- `testHealthResponseDecodesApiVersion` — verify `apiVersion: 2` decode.
+- `testHealthResponseDecodesApiVersion` — verify `apiVersion: 2` decode; verify older JSON without `apiVersion` still decodes when the field is optional-with-default.
 
 **`InspectorMCPServerTests.swift`**
 - Update `MockBridgeClient` default snapshot response to set `pngPath` to a fixture path.
 - Existing tests that construct `InspectorMCPSnapshotResult` stop setting `pngBase64`.
+
+**`InspectorBridgeServiceTests.swift`**
+- Line 181 assertion: replace `XCTAssertFalse(artifact.pngData.isEmpty)` with `XCTAssertTrue(FileManager.default.fileExists(atPath: artifact.pngURL.path))` + PNG magic-bytes check.
+- Line 607 fixture: the `InspectorBridgeSnapshotArtifact` init moves from `pngData: Data([0x1])` to `pngURL: URL(fileURLWithPath: "/tmp/fixture.png")` (the test doesn't read the file; the URL is just a plausible placeholder).
+- If existing tests construct real artifacts through the renderer, ensure `tearDown` cleans the artifacts directory.
+
+**`InspectorConfigurationTests.swift`**
+- `testSnapshotArtifactMaxCountDefault` — assert `InspectorConfiguration.config().snapshotArtifactMaxCount == 32` (or at least `>= 1`, mirroring the existing `snapshotMaxCount` test at `:47`).
 
 **`InspectorMCPTransportTests.swift`**
 - Replace `testSnapshotReturnsBase64PNGEnvelope` with `testSnapshotReturnsPNGFilePathEnvelope`:
@@ -145,6 +174,7 @@ Test-driven. One PR, no split. Actual churn is narrower than initially feared: `
   - Take 2 snapshots, assert directory populated.
   - Call `Inspector.stop()`.
   - Assert directory is empty (or absent).
+  - `tearDown` calls `Inspector.start()` to restore singleton state.
 
 ## Breaking changes and migration
 
