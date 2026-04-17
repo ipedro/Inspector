@@ -141,6 +141,27 @@ final class InspectorMCPServerSession {
                     ],
                     "required": ["handle", "afterScreenUpdates"]
                 ]
+            ),
+            toolDefinition(
+                name: "inspect",
+                description: "Open the Inspector UI focused on the given handle. Stacks on top of any currently-presented Inspector session.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "handle": [
+                            "type": "string",
+                            "description": "Opaque handle returned by query or resolve."
+                        ]
+                    ],
+                    "required": ["handle"]
+                ],
+                annotations: [
+                    "readOnlyHint": false,
+                    "destructiveHint": false,
+                    "idempotentHint": false,
+                    "openWorldHint": true
+                ]
             )
         ]
     }
@@ -148,18 +169,19 @@ final class InspectorMCPServerSession {
     private func toolDefinition(
         name: String,
         description: String,
-        schema: [String: Any]
+        schema: [String: Any],
+        annotations: [String: Any] = [
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "idempotentHint": true,
+            "openWorldHint": true
+        ]
     ) -> [String: Any] {
         [
             "name": name,
             "description": description,
             "inputSchema": schema,
-            "annotations": [
-                "readOnlyHint": true,
-                "destructiveHint": false,
-                "idempotentHint": true,
-                "openWorldHint": true
-            ]
+            "annotations": annotations
         ]
     }
 
@@ -202,6 +224,18 @@ final class InspectorMCPServerSession {
                 for: result,
                 successText: { snapshot in
                     "Captured \(snapshot.mimeType) snapshot for handle \(snapshot.handle)."
+                }
+            )
+        case "inspect":
+            let request = try JSONObject.decode(
+                InspectorMCPInspectRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.inspect(request)
+            return try toolResult(
+                for: result,
+                successText: { inspectResult in
+                    "Presented Inspector UI for handle \(inspectResult.handle)."
                 }
             )
         default:

@@ -51,7 +51,7 @@ final class InspectorMCPServerTests: XCTestCase {
         let result = try XCTUnwrap(response["result"] as? [String: Any])
         let tools = try XCTUnwrap(result["tools"] as? [[String: Any]])
 
-        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "snapshot"])
+        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "snapshot", "inspect"])
     }
 
     func testToolsCallQueryReturnsStructuredContentFromBridgeResult() async throws {
@@ -200,6 +200,69 @@ final class InspectorMCPServerTests: XCTestCase {
         XCTAssertNotNil(afterScreenUpdates["description"], "afterScreenUpdates must have a description")
     }
 
+    func testToolsListIncludesInspectToolWithNonReadOnlyAnnotations() async throws {
+        let session = InspectorMCPServerSession(bridgeClient: MockBridgeClient())
+        let request = #"{"jsonrpc":"2.0","id":1,"method":"tools/list"}"#
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+        let tools = try XCTUnwrap(result["tools"] as? [[String: Any]])
+        let inspectTool = try XCTUnwrap(tools.first { ($0["name"] as? String) == "inspect" })
+
+        let description = try XCTUnwrap(inspectTool["description"] as? String)
+        XCTAssertTrue(description.contains("Inspector UI"),
+                      "description should explain the tool drives Inspector UI")
+
+        let annotations = try XCTUnwrap(inspectTool["annotations"] as? [String: Any])
+        XCTAssertEqual(annotations["readOnlyHint"] as? Bool, false,
+                       "inspect drives UI state, must not claim readOnly")
+        XCTAssertEqual(annotations["idempotentHint"] as? Bool, false,
+                       "consecutive inspect calls stack modals, must not claim idempotent")
+        XCTAssertEqual(annotations["destructiveHint"] as? Bool, false)
+
+        let schema = try XCTUnwrap(inspectTool["inputSchema"] as? [String: Any])
+        let properties = try XCTUnwrap(schema["properties"] as? [String: Any])
+        XCTAssertNotNil(properties["handle"])
+        let required = try XCTUnwrap(schema["required"] as? [String])
+        XCTAssertEqual(required, ["handle"])
+    }
+
+    func testToolsCallInspectForwardsToBridgeClient() async throws {
+        let mock = MockBridgeClient(
+            inspectResult: .success(InspectorMCPInspectResult(handle: "HANDLE", presented: true))
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"inspect","arguments":{"handle":"HANDLE"}}}"#
+
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+
+        XCTAssertEqual(result["isError"] as? Bool, false)
+        let structured = try XCTUnwrap(result["structuredContent"] as? [String: Any])
+        XCTAssertEqual(structured["handle"] as? String, "HANDLE")
+        XCTAssertEqual(structured["presented"] as? Bool, true)
+    }
+
+    func testToolsCallInspectSurfacesStaleHandleError() async throws {
+        let mock = MockBridgeClient(
+            inspectResult: .failure(.init(code: .staleHandle, message: "Handle has expired", details: .empty))
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"inspect","arguments":{"handle":"STALE"}}}"#
+
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+
+        XCTAssertEqual(result["isError"] as? Bool, true)
+        let structured = try XCTUnwrap(result["structuredContent"] as? [String: Any])
+        XCTAssertEqual(structured["code"] as? String, "staleHandle")
+    }
+
     private func jsonData(_ object: [String: Any]) -> Data {
         try! JSONSerialization.data(withJSONObject: object)
     }
@@ -215,6 +278,7 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     var queryResult: Result<InspectorMCPQueryResult, InspectorMCPTransportError>
     var resolveResult: Result<InspectorMCPNode, InspectorMCPTransportError>
     var snapshotResult: Result<InspectorMCPSnapshotResult, InspectorMCPTransportError>
+    var inspectResult: Result<InspectorMCPInspectResult, InspectorMCPTransportError>
 
     init(
         healthResult: InspectorMCPHealthResponse = .init(
@@ -254,12 +318,16 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
                 deviceScale: 2,
                 createdAt: Date(timeIntervalSince1970: 0)
             )
+        ),
+        inspectResult: Result<InspectorMCPInspectResult, InspectorMCPTransportError> = .success(
+            .init(handle: "MOCK-HANDLE", presented: true)
         )
     ) {
         self.healthResult = healthResult
         self.queryResult = queryResult
         self.resolveResult = resolveResult
         self.snapshotResult = snapshotResult
+        self.inspectResult = inspectResult
     }
 
     func health() async throws -> InspectorMCPHealthResponse {
@@ -279,6 +347,6 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     }
 
     func inspect(_ request: InspectorMCPInspectRequest) async throws -> Result<InspectorMCPInspectResult, InspectorMCPTransportError> {
-        fatalError("not yet implemented — Task 6 fills this in")
+        inspectResult
     }
 }
