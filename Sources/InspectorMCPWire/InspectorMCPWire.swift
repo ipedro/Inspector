@@ -7,6 +7,7 @@ public enum InspectorMCPBridgeEndpoint {
     public static let queryPath = "/query"
     public static let resolvePath = "/resolve"
     public static let snapshotPath = "/snapshot"
+    public static let inspectPath = "/inspect"
     public static let baseURL = URL(string: "http://\(host):\(port)")!
 }
 
@@ -14,6 +15,7 @@ public enum InspectorMCPOperation: String, Codable, CaseIterable {
     case query
     case resolve
     case snapshot
+    case inspect
 }
 
 public enum InspectorMCPHealthStatus: String, Codable {
@@ -117,6 +119,14 @@ public struct InspectorMCPSnapshotRequest: Codable, Equatable {
     }
 }
 
+public struct InspectorMCPInspectRequest: Codable, Equatable {
+    public let handle: String
+
+    public init(handle: String) {
+        self.handle = handle
+    }
+}
+
 public struct InspectorMCPNode: Codable, Equatable {
     public let handle: String
     public let nodeKind: InspectorMCPNodeKind
@@ -198,6 +208,16 @@ public struct InspectorMCPSnapshotResult: Codable, Equatable {
         self.size = size
         self.deviceScale = deviceScale
         self.createdAt = createdAt
+    }
+}
+
+public struct InspectorMCPInspectResult: Codable, Equatable {
+    public let handle: String
+    public let presented: Bool
+
+    public init(handle: String, presented: Bool) {
+        self.handle = handle
+        self.presented = presented
     }
 }
 

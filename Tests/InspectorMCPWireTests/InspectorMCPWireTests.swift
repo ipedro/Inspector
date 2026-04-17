@@ -120,6 +120,38 @@ final class InspectorMCPWireTests: XCTestCase {
         XCTAssertEqual(decoded.mimeType, "image/png")
     }
 
+    func testInspectOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.inspect),
+                      "InspectorMCPOperation.inspect must be a declared case")
+    }
+
+    func testInspectRequestRoundTrips() throws {
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+        let request = InspectorMCPInspectRequest(handle: "HANDLE-1")
+
+        let data = try encoder.encode(request)
+        let decoded = try decoder.decode(InspectorMCPInspectRequest.self, from: data)
+
+        XCTAssertEqual(decoded.handle, "HANDLE-1")
+    }
+
+    func testInspectResultRoundTrips() throws {
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+        let result = InspectorMCPInspectResult(handle: "HANDLE-2", presented: true)
+
+        let data = try encoder.encode(result)
+        let decoded = try decoder.decode(InspectorMCPInspectResult.self, from: data)
+
+        XCTAssertEqual(decoded.handle, "HANDLE-2")
+        XCTAssertTrue(decoded.presented)
+    }
+
+    func testInspectPathMatchesRouteConstant() {
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.inspectPath, "/inspect")
+    }
+
     private func roundTrip<T: Codable & Equatable>(_ value: T) throws -> T {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
