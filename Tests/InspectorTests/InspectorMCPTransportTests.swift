@@ -169,6 +169,20 @@ final class InspectorMCPTransportTests: XCTestCase {
         let result = try XCTUnwrap(rawPayload["result"] as? [String: Any])
         XCTAssertEqual(result["handle"] as? String, handle)
         XCTAssertEqual(result["presented"] as? Bool, true)
+
+        // The bridge actually presents the Inspector UI as a modal over
+        // the key window. Subsequent tests that query the hierarchy pick
+        // up the extra windows Inspector adds (UITextEffectsWindow when
+        // the search field raises the keyboard, the modal's own window,
+        // etc.), which breaks assertions like `nodes?.count == 1` and
+        // stale-handle ring-buffer tests. Tear the Inspector down and
+        // restart it so the next test starts against a clean key window.
+        addTeardownBlock {
+            await MainActor.run {
+                Inspector.sharedInstance.stop()
+                Inspector.sharedInstance.start()
+            }
+        }
     }
 
     func testOldestHandleBecomesStaleAfterNinthQuery() async throws {
