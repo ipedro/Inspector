@@ -471,7 +471,7 @@
 /* Begin XCLocalSwiftPackageReference section */
 		EBD185352DDD2D6C00D213C8 /* XCLocalSwiftPackageReference "../../Inspector" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../Inspector;
+			relativePath = ..;
 			traits = (
 				Debugging,
 			);
