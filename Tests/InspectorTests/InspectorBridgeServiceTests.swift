@@ -644,6 +644,27 @@ private final class NilSnapshotView: UIView {
     }
 }
 
+// MARK: - Inspector.stop() clears snapshots directory
+
+extension InspectorBridgeServiceTests {
+    func testInspectorStopClearsSnapshotsDirectory() throws {
+        let fileManager = FileManager.default
+        let directory = inspectorSnapshotsDirectoryURL()
+        try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
+        let sentinel = directory.appendingPathComponent("sentinel.png")
+        try Data([0x89]).write(to: sentinel)
+
+        Inspector.sharedInstance.stop()
+
+        XCTAssertFalse(fileManager.fileExists(atPath: directory.path),
+                       "Inspector.stop() must remove the snapshots directory")
+
+        addTeardownBlock {
+            Inspector.sharedInstance.start()
+        }
+    }
+}
+
 // MARK: - cleanupInspectorSnapshotsDirectory
 
 extension InspectorBridgeServiceTests {

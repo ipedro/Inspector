@@ -84,6 +84,7 @@ public final class Inspector {
         contextMenuPresenter = .none
 #if INSPECTOR_DEBUGGING && targetEnvironment(simulator)
         resetInspectorBridgeState()
+        cleanupInspectorSnapshotsDirectory()
 #endif
     }
 
