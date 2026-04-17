@@ -69,6 +69,32 @@ final class InspectorMCPWireTests: XCTestCase {
         XCTAssertEqual(decoded, envelope)
     }
 
+    func testHealthResponseRoundTripsApiVersion() throws {
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+        let response = InspectorMCPHealthResponse(
+            status: .active,
+            bridgeEnabled: true,
+            inspectorStarted: true,
+            bundleIdentifier: "com.example",
+            operations: [.query, .resolve, .snapshot],
+            apiVersion: 2
+        )
+
+        let data = try encoder.encode(response)
+        let decoded = try decoder.decode(InspectorMCPHealthResponse.self, from: data)
+
+        XCTAssertEqual(decoded.apiVersion, 2)
+    }
+
+    func testHealthResponseDecodesWithoutApiVersionField() throws {
+        let legacy = #"{"status":"active","bridgeEnabled":true,"inspectorStarted":true,"bundleIdentifier":"com.example","operations":["query","resolve","snapshot"]}"#
+        let decoder = JSONDecoder()
+        let decoded = try decoder.decode(InspectorMCPHealthResponse.self, from: Data(legacy.utf8))
+
+        XCTAssertNil(decoded.apiVersion)
+    }
+
     private func roundTrip<T: Codable & Equatable>(_ value: T) throws -> T {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601

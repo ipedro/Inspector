@@ -28,19 +28,22 @@ public struct InspectorMCPHealthResponse: Codable, Equatable {
     public let inspectorStarted: Bool
     public let bundleIdentifier: String?
     public let operations: [InspectorMCPOperation]
+    public let apiVersion: Int?
 
     public init(
         status: InspectorMCPHealthStatus,
         bridgeEnabled: Bool,
         inspectorStarted: Bool,
         bundleIdentifier: String?,
-        operations: [InspectorMCPOperation]
+        operations: [InspectorMCPOperation],
+        apiVersion: Int? = nil
     ) {
         self.status = status
         self.bridgeEnabled = bridgeEnabled
         self.inspectorStarted = inspectorStarted
         self.bundleIdentifier = bundleIdentifier
         self.operations = operations
+        self.apiVersion = apiVersion
     }
 }
 
