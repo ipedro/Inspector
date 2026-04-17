@@ -29,6 +29,7 @@ enum InspectorBridgeOperation {
     case query
     case resolve
     case snapshot
+    case inspect
 }
 
 struct InspectorBridgeSnapshotRenderer: InspectorBridgeSnapshotRendering {
