@@ -118,6 +118,14 @@ Good first query:
 
 Avoid broad snapshots first. First get a stable handle with `query`, confirm the node with `resolve`, then call `snapshot`.
 
+For interactive sessions, chain `query → inspect` to open the Inspector UI focused on a view:
+
+```json
+{"handle":"<handle returned by query>"}
+```
+
+Response: `{"handle":"...", "presented": true}`. `presented: true` means the Inspector UI dispatch was accepted — the modal animates in asynchronously. Consecutive `inspect` calls stack modals; Inspector's native back affordance dismisses them.
+
 ### 6. Reading snapshot results (v2)
 
 Snapshot request:
@@ -147,12 +155,13 @@ Do not retry the stale handle repeatedly.
 
 ### 8. Respect runtime constraints
 
-Current v1 constraints:
-- read-only only
+Current constraints:
 - exactly one booted simulator
 - fixed localhost endpoint `127.0.0.1:49321`
 - single app on that port at a time
 - launcher rejects attach if the process on the port does not match the requested bundle id
+- v1: read-only (query, resolve, snapshot only)
+- v2.1+: `inspect` adds write-side dispatch (presents Inspector UI); all other tools remain non-mutating
 
 If startup says the endpoint is occupied by the wrong app:
 - shut down the simulator or other app
@@ -193,3 +202,4 @@ Read these only when needed:
 ## Breaking changes
 
 - **v2 (2026-04-17)** — The `snapshot` tool response no longer carries `pngBase64`. It now returns `pngPath` (absolute host path) and `createdAt`; `scale` was renamed to `deviceScale`. Restart your MCP clients (Codex, Claude Code) after upgrading Inspector — in-flight sessions keep the old schema until reconnected.
+- **v2.1 (2026-04-17)** — New `inspect` tool. No breaking changes; additive over v2. Reconnect clients to pick up the refreshed `tools/list`.

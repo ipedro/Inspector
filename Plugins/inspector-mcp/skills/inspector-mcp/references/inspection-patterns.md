@@ -89,10 +89,26 @@ Do not:
 
 ## Runtime Constraints
 
-Current v1 model:
-- read-only
+Current model:
 - one booted simulator
 - one app on the fixed localhost port
 - attach guard validates bundle identity
+- v1: read-only (query, resolve, snapshot only)
+- v2.1+: `inspect` adds write-side dispatch (presents Inspector UI)
 
 If startup fails with an endpoint-occupied message, clear the conflicting app or simulator state first.
+
+## Driving the Inspector UI
+
+Call `inspect` to open the Inspector UI focused on a specific view. Typical recipe:
+
+1. `query` → pick a handle
+2. (optional) `resolve` to confirm the node is still the one you want
+3. `inspect(handle)` → Inspector presents the element panel for that view
+
+`inspect` semantics:
+- Returns `{handle, presented:true}` as soon as the dispatch hits the main thread.
+- Does NOT wait for the modal animation to finish; follow with `query`/`snapshot` if the next action depends on UI-settled state.
+- Consecutive calls stack modals. Use Inspector's native back affordance to unwind.
+- Stale handles → `staleHandle` error. Re-query before retrying.
+- Non-UIView references → `unsupportedTarget`. Resolve to a concrete view first.

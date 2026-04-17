@@ -4,6 +4,7 @@ Skills and helpers for driving the Inspector MCP bridge from Claude Code.
 
 ## Versions
 
+- **v2.1 (2026-04-17)** — Adds `inspect` tool. Open the Inspector UI focused on a handle. Additive, no breaking changes.
 - **v2 (2026-04-17)** — snapshot returns `pngPath` (disk file) instead of `pngBase64`. Requires restarting MCP clients after upgrading Inspector. See `docs/superpowers/specs/2026-04-17-snapshot-disk-path-design.md`.
 - **v1** — initial release.
 
