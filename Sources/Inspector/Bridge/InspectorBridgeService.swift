@@ -58,11 +58,16 @@ struct InspectorBridgeSnapshotRenderer: InspectorBridgeSnapshotRendering {
             throw InspectorBridgeError.snapshotUnavailable(.captureFailed)
         }
 
+        let fileName = "\(handle.rawValue).png"
+        let pngURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        try pngData.write(to: pngURL)
+
         return InspectorBridgeSnapshotArtifact(
             handle: handle,
-            pngData: pngData,
+            pngURL: pngURL,
             size: image.size,
-            scale: image.scale
+            deviceScale: image.scale,
+            createdAt: Date()
         )
     }
 }

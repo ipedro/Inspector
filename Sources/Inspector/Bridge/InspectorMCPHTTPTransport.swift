@@ -291,7 +291,8 @@ private final class InspectorMCPHTTPServer {
             bridgeEnabled: bridgeEnabled,
             inspectorStarted: inspectorStarted,
             bundleIdentifier: Bundle.main.bundleIdentifier,
-            operations: [.query, .resolve, .snapshot]
+            operations: [.query, .resolve, .snapshot],
+            apiVersion: 2
         )
     }
 
@@ -325,9 +326,10 @@ private final class InspectorMCPHTTPServer {
         return InspectorMCPSnapshotResult(
             handle: artifact.handle.rawValue,
             mimeType: "image/png",
-            pngBase64: artifact.pngData.base64EncodedString(),
+            pngPath: artifact.pngURL.path,
             size: .init(width: artifact.size.width.doubleValue, height: artifact.size.height.doubleValue),
-            scale: artifact.scale.doubleValue
+            deviceScale: artifact.deviceScale.doubleValue,
+            createdAt: artifact.createdAt
         )
     }
 
