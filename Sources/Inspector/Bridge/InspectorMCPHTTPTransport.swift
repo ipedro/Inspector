@@ -246,6 +246,19 @@ private final class InspectorMCPHTTPServer {
             } catch let error as InspectorBridgeError {
                 return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
             }
+        case ("POST", InspectorMCPBridgeEndpoint.inspectPath):
+            let payload: InspectorMCPInspectRequest = try decode(
+                request.body,
+                allowedKeys: ["handle"]
+            )
+
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeInspectResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
         default:
             return transportFailureResponse(statusCode: 404, message: "Unknown route")
         }
@@ -291,7 +304,7 @@ private final class InspectorMCPHTTPServer {
             bridgeEnabled: bridgeEnabled,
             inspectorStarted: inspectorStarted,
             bundleIdentifier: Bundle.main.bundleIdentifier,
-            operations: [.query, .resolve, .snapshot],
+            operations: [.query, .resolve, .snapshot, .inspect],
             apiVersion: 2
         )
     }
@@ -331,6 +344,11 @@ private final class InspectorMCPHTTPServer {
             deviceScale: artifact.deviceScale.doubleValue,
             createdAt: artifact.createdAt
         )
+    }
+
+    private func bridgeInspectResult(for request: InspectorMCPInspectRequest) throws -> InspectorMCPInspectResult {
+        _ = try Inspector.bridgeInspect(.init(rawValue: request.handle))
+        return InspectorMCPInspectResult(handle: request.handle, presented: true)
     }
 
     private func bridgeNodeKind(from value: InspectorMCPNodeKind) -> InspectorBridgeNodeKind {

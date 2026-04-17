@@ -19,7 +19,7 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(health["status"] as? String, "active")
         XCTAssertEqual(health["bridgeEnabled"] as? Bool, true)
         XCTAssertEqual(health["inspectorStarted"] as? Bool, true)
-        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot"])
+        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect"])
         XCTAssertEqual(health["apiVersion"] as? Int, 2)
     }
 
@@ -136,6 +136,39 @@ final class InspectorMCPTransportTests: XCTestCase {
         addTeardownBlock {
             Inspector.sharedInstance.start()
         }
+    }
+
+    func testHealthAdvertisesInspectOperation() async throws {
+        let health = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+        let operations = try XCTUnwrap(health["operations"] as? [String])
+        XCTAssertTrue(operations.contains("inspect"),
+                      "/health must advertise the inspect operation")
+    }
+
+    func testInspectReturnsPresentedEnvelopeForLiveHandle() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let queryResponse = try await postJSON(
+            path: "/query",
+            body: ["accessibilityIdentifierEquals": "Content Stack View"]
+        )
+        let queryPayload = try unpackSuccessEnvelope(from: queryResponse.body)
+        let nodes = try XCTUnwrap(queryPayload["nodes"] as? [[String: Any]])
+        let handle = try XCTUnwrap(nodes.first?["handle"] as? String)
+
+        let inspectResponse = try await postJSON(path: "/inspect", body: ["handle": handle])
+        XCTAssertEqual(inspectResponse.statusCode, 200)
+        let rawPayload = try jsonObject(from: inspectResponse.body)
+        XCTAssertEqual(rawPayload["ok"] as? Bool, true,
+                       "inspect failed: \(rawPayload)")
+
+        let result = try XCTUnwrap(rawPayload["result"] as? [String: Any])
+        XCTAssertEqual(result["handle"] as? String, handle)
+        XCTAssertEqual(result["presented"] as? Bool, true)
     }
 
     func testOldestHandleBecomesStaleAfterNinthQuery() async throws {
