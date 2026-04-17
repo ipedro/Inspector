@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "inspector": {
-      "command": "./Examples/MCP/run-inspector-mcp.sh"
+      "command": "./Tools/mcp/run-inspector-mcp.sh"
     }
   }
 }
