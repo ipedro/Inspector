@@ -48,6 +48,12 @@ final class InspectorConfigurationTests: XCTestCase {
                                    "snapshotMaxCount should be >= 1")
     }
 
+    func testDefaultConfigurationSnapshotArtifactMaxCountHasSensibleDefault() {
+        let config = InspectorConfiguration.default
+        XCTAssertEqual(config.snapshotArtifactMaxCount, 32,
+                       "snapshotArtifactMaxCount should default to 32")
+    }
+
     func testVerboseDefaultsToFalse() {
         let config = InspectorConfiguration.default
         XCTAssertFalse(config.verbose, "verbose should default to false")

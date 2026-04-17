@@ -31,6 +31,8 @@ public struct InspectorConfiguration {
 
     public var snapshotMaxCount: Int = 1
 
+    public var snapshotArtifactMaxCount: Int = 32
+
     public var showAllViewSearchQuery: String
 
     public var nonInspectableClassNames: [String]
