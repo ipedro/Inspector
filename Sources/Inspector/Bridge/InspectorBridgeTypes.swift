@@ -67,20 +67,23 @@ public struct InspectorBridgeQueryResponse: Hashable, Codable {
 
 public struct InspectorBridgeSnapshotArtifact: Hashable, Codable {
     public let handle: InspectorBridgeHandle
-    public let pngData: Data
+    public let pngURL: URL
     public let size: CGSize
-    public let scale: CGFloat
+    public let deviceScale: CGFloat
+    public let createdAt: Date
 
     public init(
         handle: InspectorBridgeHandle,
-        pngData: Data,
+        pngURL: URL,
         size: CGSize,
-        scale: CGFloat
+        deviceScale: CGFloat,
+        createdAt: Date
     ) {
         self.handle = handle
-        self.pngData = pngData
+        self.pngURL = pngURL
         self.size = size
-        self.scale = scale
+        self.deviceScale = deviceScale
+        self.createdAt = createdAt
     }
 }
 

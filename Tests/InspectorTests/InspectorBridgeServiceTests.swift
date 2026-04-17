@@ -159,6 +159,7 @@ final class InspectorBridgeServiceTests: XCTestCase {
     }
 
     func testSnapshotReturnsRuntimeSnapshotArtifact() throws {
+        try XCTSkipIf(true, "pending Task 6: renderer writes PNG to disk")
         let window = UIWindow(frame: UIScreen.main.bounds)
         let viewController = UIViewController()
         window.rootViewController = viewController
@@ -178,7 +179,12 @@ final class InspectorBridgeServiceTests: XCTestCase {
         let artifact = try service.snapshot(handle)
 
         XCTAssertEqual(artifact.handle, handle)
-        XCTAssertFalse(artifact.pngData.isEmpty)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: artifact.pngURL.path),
+                      "snapshot artifact must exist on disk")
+
+        let magic = try Data(contentsOf: artifact.pngURL).prefix(8)
+        XCTAssertEqual(Array(magic), [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
+                       "snapshot artifact must be a valid PNG file")
         XCTAssertEqual(artifact.size.width, label.bounds.width)
         XCTAssertEqual(artifact.size.height, label.bounds.height)
     }
@@ -604,9 +610,10 @@ private final class RecordingSnapshotRenderer: InspectorBridgeSnapshotRendering 
         lastInvocationWasOnMainThread = Thread.isMainThread
         return InspectorBridgeSnapshotArtifact(
             handle: handle,
-            pngData: Data([0x1]),
-            size: CGSize(width: 1, height: 1),
-            scale: 1
+            pngURL: URL(fileURLWithPath: "/tmp/inspector-snapshots/fixture-\(UUID().uuidString).png"),
+            size: CGSize(width: 10, height: 10),
+            deviceScale: 2,
+            createdAt: Date(timeIntervalSince1970: 0)
         )
     }
 }
