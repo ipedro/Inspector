@@ -241,6 +241,7 @@
 		A1B2C3D4E5F60008A1B2C3D4 /* Debug configuration for PBXNativeTarget "InspectorTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -250,12 +251,14 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) INSPECTOR_DEBUGGING";
 				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)";
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/Example";
 			};
 			name = Debug;
 		};
 		A1B2C3D4E5F60009A1B2C3D4 /* Release configuration for PBXNativeTarget "InspectorTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -265,6 +268,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) INSPECTOR_DEBUGGING";
 				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)";
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/Example";
 			};
 			name = Release;
 		};

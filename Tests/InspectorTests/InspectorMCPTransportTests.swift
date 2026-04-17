@@ -1,6 +1,7 @@
 #if INSPECTOR_DEBUGGING && canImport(UIKit) && targetEnvironment(simulator)
 import Foundation
 import XCTest
+@testable import Inspector
 
 final class InspectorMCPTransportTests: XCTestCase {
     private let baseURL = URL(string: "http://127.0.0.1:49321")!
@@ -19,6 +20,7 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(health["bridgeEnabled"] as? Bool, true)
         XCTAssertEqual(health["inspectorStarted"] as? Bool, true)
         XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot"])
+        XCTAssertEqual(health["apiVersion"] as? Int, 2)
     }
 
     func testQueryReturnsFrozenNodeShapeForExampleHierarchy() async throws {
@@ -65,38 +67,75 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(Set(node.keys), Set(expectedKeys))
     }
 
-    func testSnapshotReturnsBase64PNGEnvelope() async throws {
-        _ = try await pollHealth(timeout: 5) { payload in
-            payload["status"] as? String == "active"
+    func testSnapshotReturnsPNGFilePathEnvelope() async throws {
+        let result = try await snapshotResult()
+
+        let path = try XCTUnwrap(result["pngPath"] as? String)
+        XCTAssertTrue(path.hasPrefix("/"), "pngPath must be absolute")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: path),
+                      "pngPath must resolve to an existing file")
+
+        let magic = try Data(contentsOf: URL(fileURLWithPath: path)).prefix(8)
+        XCTAssertEqual(Array(magic), [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
+                       "artifact must be a valid PNG")
+
+        XCTAssertEqual(result["mimeType"] as? String, "image/png")
+        XCTAssertEqual(result["deviceScale"] as? Double, Double(UIScreen.main.scale))
+
+        let createdAtString = try XCTUnwrap(result["createdAt"] as? String)
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let createdAtWithFractional = formatter.date(from: createdAtString)
+        let createdAtPlain = ISO8601DateFormatter().date(from: createdAtString)
+        let createdAt = try XCTUnwrap(createdAtWithFractional ?? createdAtPlain)
+        XCTAssertLessThan(Date().timeIntervalSince(createdAt), 10,
+                          "createdAt must be recent")
+    }
+
+    func testSnapshotRingBufferEvictsOldestViaTransport() async throws {
+        Inspector.sharedInstance.configuration.snapshotArtifactMaxCount = 3
+
+        let fileManager = FileManager.default
+        let directory = inspectorSnapshotsDirectoryURL()
+        try? fileManager.removeItem(at: directory)
+
+        var paths: [String] = []
+        for _ in 0..<4 {
+            let result = try await snapshotResult()
+            let path = try XCTUnwrap(result["pngPath"] as? String)
+            paths.append(path)
+            try await Task.sleep(nanoseconds: 50_000_000)
         }
 
-        let queryResponse = try await postJSON(
-            path: "/query",
-            body: ["accessibilityIdentifierEquals": "Content Stack View"]
+        let remaining = try fileManager.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: nil
         )
-        let queryPayload = try unpackSuccessEnvelope(from: queryResponse.body)
-        let nodes = try XCTUnwrap(queryPayload["nodes"] as? [[String: Any]])
-        let handle = try XCTUnwrap(nodes.first?["handle"] as? String)
+        XCTAssertEqual(remaining.count, 3)
+        XCTAssertFalse(fileManager.fileExists(atPath: paths[0]),
+                       "oldest snapshot must have been pruned")
 
-        let snapshotResponse = try await postJSON(
-            path: "/snapshot",
-            body: [
-                "handle": handle,
-                "afterScreenUpdates": true
-            ]
-        )
+        addTeardownBlock {
+            Inspector.sharedInstance.configuration.snapshotArtifactMaxCount = 32
+            try? fileManager.removeItem(at: directory)
+        }
+    }
 
-        XCTAssertEqual(snapshotResponse.statusCode, 200)
+    func testSnapshotCleanupOnInspectorStop() async throws {
+        _ = try await snapshotResult()
+        _ = try await snapshotResult()
 
-        let snapshotPayload = try unpackSuccessEnvelope(from: snapshotResponse.body)
-        XCTAssertEqual(snapshotPayload["handle"] as? String, handle)
-        XCTAssertEqual(snapshotPayload["mimeType"] as? String, "image/png")
-        XCTAssertFalse((snapshotPayload["pngBase64"] as? String ?? "").isEmpty)
+        let directory = inspectorSnapshotsDirectoryURL()
+        XCTAssertTrue(FileManager.default.fileExists(atPath: directory.path))
 
-        let size = try XCTUnwrap(snapshotPayload["size"] as? [String: Any])
-        XCTAssertGreaterThan((size["width"] as? Double) ?? 0, 0)
-        XCTAssertGreaterThan((size["height"] as? Double) ?? 0, 0)
-        XCTAssertGreaterThan((snapshotPayload["scale"] as? Double) ?? 0, 0)
+        Inspector.sharedInstance.stop()
+
+        XCTAssertFalse(FileManager.default.fileExists(atPath: directory.path),
+                       "snapshots directory must be gone after Inspector.stop()")
+
+        addTeardownBlock {
+            Inspector.sharedInstance.start()
+        }
     }
 
     func testOldestHandleBecomesStaleAfterNinthQuery() async throws {
@@ -163,6 +202,29 @@ final class InspectorMCPTransportTests: XCTestCase {
         )
 
         XCTAssertEqual(response.statusCode, 400)
+    }
+
+    // Returns the `result` dictionary from a /snapshot call against
+    // the "Content Stack View" node — reusable by all snapshot tests.
+    private func snapshotResult() async throws -> [String: Any] {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let queryResponse = try await postJSON(
+            path: "/query",
+            body: ["accessibilityIdentifierEquals": "Content Stack View"]
+        )
+        let queryPayload = try unpackSuccessEnvelope(from: queryResponse.body)
+        let nodes = try XCTUnwrap(queryPayload["nodes"] as? [[String: Any]])
+        let handle = try XCTUnwrap(nodes.first?["handle"] as? String)
+
+        let snapshotResponse = try await postJSON(
+            path: "/snapshot",
+            body: ["handle": handle, "afterScreenUpdates": true]
+        )
+        XCTAssertEqual(snapshotResponse.statusCode, 200)
+        return try unpackSuccessEnvelope(from: snapshotResponse.body)
     }
 
     private func pollHealth(
