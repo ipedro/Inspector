@@ -480,13 +480,16 @@ final class InspectorBridgeServiceTests: XCTestCase {
 private final class MockSnapshot: InspectorBridgeSnapshotProtocol {
     let expirationDate: Date
     let viewHierarchy: [ViewHierarchyElementReference]
+    let availableLayers: [ViewHierarchyLayer: Int]
 
     init(
         expirationDate: Date = Date().addingTimeInterval(60),
-        nodes: [ViewHierarchyElementReference]
+        nodes: [ViewHierarchyElementReference],
+        availableLayers: [ViewHierarchyLayer: Int] = [:]
     ) {
         self.expirationDate = expirationDate
         viewHierarchy = nodes
+        self.availableLayers = availableLayers
     }
 }
 
@@ -693,6 +696,121 @@ extension InspectorBridgeServiceTests {
 
         XCTAssertThrowsError(try service.inspect(handle)) { error in
             XCTAssertEqual(error as? InspectorBridgeError, .staleHandle)
+        }
+    }
+
+    func testBridgeLayersReturnsOnlyPopulatedLayersSortedByTitle() throws {
+        let wireframes = ViewHierarchyLayer.wireframes
+        let controls = ViewHierarchyLayer.controls
+        let emptyTables = ViewHierarchyLayer.tables
+
+        var toggledFlags: [String: Bool] = [wireframes.name: true, controls.name: false]
+
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: {
+                MockSnapshot(
+                    nodes: [],
+                    availableLayers: [wireframes: 3, controls: 2, emptyTables: 0]
+                )
+            },
+            layerToggler: { _ in },
+            layerActiveProvider: { toggledFlags[$0.name] ?? false }
+        )
+
+        let layers = try service.layers()
+
+        XCTAssertEqual(layers.map(\.name), [controls.name, wireframes.name],
+                       "expect only populated layers sorted by localized title")
+        XCTAssertEqual(layers.first(where: { $0.name == wireframes.name })?.active, true)
+        XCTAssertEqual(layers.first(where: { $0.name == controls.name })?.active, false)
+        XCTAssertEqual(layers.first?.displayName, controls.description)
+    }
+
+    func testBridgeLayersReturnsEmptyWhenSnapshotProviderReturnsNil() throws {
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { nil }
+        )
+
+        XCTAssertTrue(try service.layers().isEmpty)
+    }
+
+    func testBridgeLayersRejectsDisabledAvailability() {
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .disabled },
+            snapshotProvider: { MockSnapshot(nodes: []) }
+        )
+
+        XCTAssertThrowsError(try service.layers()) { error in
+            XCTAssertEqual(error as? InspectorBridgeError, .disabled)
+        }
+    }
+
+    func testBridgeToggleLayerInvokesTogglerAndReportsActiveState() throws {
+        let wireframes = ViewHierarchyLayer.wireframes
+        var active = false
+        var toggleCount = 0
+
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { MockSnapshot(nodes: [], availableLayers: [wireframes: 5]) },
+            layerToggler: { layer in
+                XCTAssertEqual(layer.name, wireframes.name)
+                active.toggle()
+                toggleCount += 1
+            },
+            layerActiveProvider: { _ in active }
+        )
+
+        let firstState = try service.toggleLayer(name: wireframes.name)
+        XCTAssertEqual(firstState.name, wireframes.name)
+        XCTAssertEqual(firstState.displayName, wireframes.description)
+        XCTAssertTrue(firstState.active)
+        XCTAssertEqual(toggleCount, 1)
+
+        let secondState = try service.toggleLayer(name: wireframes.name)
+        XCTAssertFalse(secondState.active)
+        XCTAssertEqual(toggleCount, 2)
+    }
+
+    func testBridgeToggleLayerRejectsUnknownName() {
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { MockSnapshot(nodes: [], availableLayers: [.wireframes: 1]) }
+        )
+
+        XCTAssertThrowsError(try service.toggleLayer(name: "not-a-layer")) { error in
+            guard case let .internalFailure(message) = error as? InspectorBridgeError else {
+                XCTFail("expected internalFailure, got \(error)")
+                return
+            }
+            XCTAssertTrue(message.contains("not-a-layer"))
+        }
+    }
+
+    func testBridgeToggleLayerRejectsMissingSnapshot() {
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { nil }
+        )
+
+        XCTAssertThrowsError(try service.toggleLayer(name: "wireframes")) { error in
+            guard case .internalFailure = error as? InspectorBridgeError else {
+                XCTFail("expected internalFailure, got \(error)")
+                return
+            }
+        }
+    }
+
+    func testBridgeToggleLayerRejectsNotStartedAvailability() {
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .notStarted },
+            snapshotProvider: { MockSnapshot(nodes: []) }
+        )
+
+        XCTAssertThrowsError(try service.toggleLayer(name: "wireframes")) { error in
+            XCTAssertEqual(error as? InspectorBridgeError, .notStarted)
         }
     }
 

@@ -65,6 +65,18 @@ public struct InspectorBridgeQueryResponse: Hashable, Codable {
     }
 }
 
+public struct InspectorBridgeLayerState: Hashable, Codable {
+    public let name: String
+    public let displayName: String
+    public let active: Bool
+
+    public init(name: String, displayName: String, active: Bool) {
+        self.name = name
+        self.displayName = displayName
+        self.active = active
+    }
+}
+
 public struct InspectorBridgeSnapshotArtifact: Hashable, Codable {
     public let handle: InspectorBridgeHandle
     public let pngURL: URL

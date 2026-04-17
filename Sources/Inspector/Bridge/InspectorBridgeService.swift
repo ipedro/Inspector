@@ -5,6 +5,11 @@ import os.log
 
 protocol InspectorBridgeSnapshotProtocol: ExpirableProtocol {
     var viewHierarchy: [ViewHierarchyElementReference] { get }
+    var availableLayers: [ViewHierarchyLayer: Int] { get }
+}
+
+extension InspectorBridgeSnapshotProtocol {
+    var availableLayers: [ViewHierarchyLayer: Int] { [:] }
 }
 
 extension ViewHierarchySnapshot: InspectorBridgeSnapshotProtocol {
@@ -30,6 +35,8 @@ enum InspectorBridgeOperation {
     case resolve
     case snapshot
     case inspect
+    case layers
+    case toggleLayer
 }
 
 struct InspectorBridgeSnapshotRenderer: InspectorBridgeSnapshotRendering {
@@ -134,6 +141,8 @@ final class InspectorMCPBridgeService {
     typealias SnapshotProvider = () -> (any InspectorBridgeSnapshotProtocol)?
     typealias SnapshotLimitProvider = () -> Int
     typealias DateProvider = () -> Date
+    typealias LayerToggler = (ViewHierarchyLayer) -> Void
+    typealias LayerActiveProvider = (ViewHierarchyLayer) -> Bool
 
     private struct HandleRecord {
         let reference: ViewHierarchyElementReference
@@ -153,6 +162,8 @@ final class InspectorMCPBridgeService {
     private let snapshotLimitProvider: SnapshotLimitProvider
     private let snapshotRenderer: InspectorBridgeSnapshotRendering
     private let dateProvider: DateProvider
+    private let layerToggler: LayerToggler
+    private let layerActiveProvider: LayerActiveProvider
 
     private var pinnedSnapshots: [UUID: PinnedSnapshot] = [:]
     private var handleIndex: [String: UUID] = [:]
@@ -165,13 +176,17 @@ final class InspectorMCPBridgeService {
         snapshotProvider: @escaping SnapshotProvider,
         snapshotLimitProvider: @escaping SnapshotLimitProvider = { 1 },
         snapshotRenderer: InspectorBridgeSnapshotRendering = InspectorBridgeSnapshotRenderer(),
-        dateProvider: @escaping DateProvider = Date.init
+        dateProvider: @escaping DateProvider = Date.init,
+        layerToggler: @escaping LayerToggler = { Inspector.sharedInstance.toggle($0) },
+        layerActiveProvider: @escaping LayerActiveProvider = { Inspector.sharedInstance.isInspecting($0) }
     ) {
         self.availabilityProvider = availabilityProvider
         self.snapshotProvider = snapshotProvider
         self.snapshotLimitProvider = snapshotLimitProvider
         self.snapshotRenderer = snapshotRenderer
         self.dateProvider = dateProvider
+        self.layerToggler = layerToggler
+        self.layerActiveProvider = layerActiveProvider
     }
 
     func reset() {
@@ -247,6 +262,49 @@ final class InspectorMCPBridgeService {
 
             Inspector.sharedInstance.inspect(view)
             return handle
+        }
+    }
+
+    func layers() throws -> [InspectorBridgeLayerState] {
+        try performOnMain(.layers) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            guard let snapshot = self.snapshotProvider() else { return [] }
+
+            return snapshot.availableLayers
+                .filter { $0.value > 0 }
+                .keys
+                .sorted()
+                .map { layer in
+                    InspectorBridgeLayerState(
+                        name: layer.name,
+                        displayName: layer.description,
+                        active: self.layerActiveProvider(layer)
+                    )
+                }
+        }
+    }
+
+    func toggleLayer(name: String) throws -> InspectorBridgeLayerState {
+        try performOnMain(.toggleLayer) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            guard let snapshot = self.snapshotProvider() else {
+                throw InspectorBridgeError.internalFailure("no active snapshot")
+            }
+
+            guard let layer = snapshot.availableLayers.keys.first(where: { $0.name == name }) else {
+                throw InspectorBridgeError.internalFailure("unknown layer: \(name)")
+            }
+
+            self.layerToggler(layer)
+            return InspectorBridgeLayerState(
+                name: layer.name,
+                displayName: layer.description,
+                active: self.layerActiveProvider(layer)
+            )
         }
     }
 
@@ -549,6 +607,14 @@ package extension Inspector {
 
     static func bridgeInspect(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeHandle {
         try sharedInspectorMCPBridgeService.inspect(handle)
+    }
+
+    static func bridgeLayers() throws -> [InspectorBridgeLayerState] {
+        try sharedInspectorMCPBridgeService.layers()
+    }
+
+    static func bridgeToggleLayer(name: String) throws -> InspectorBridgeLayerState {
+        try sharedInspectorMCPBridgeService.toggleLayer(name: name)
     }
 }
 
