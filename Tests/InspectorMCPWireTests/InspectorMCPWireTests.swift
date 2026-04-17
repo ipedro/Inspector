@@ -11,6 +11,7 @@ final class InspectorMCPWireTests: XCTestCase {
         XCTAssertEqual(InspectorMCPBridgeEndpoint.queryPath, "/query")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.resolvePath, "/resolve")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.snapshotPath, "/snapshot")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.tapPath, "/tap")
     }
 
     func testHealthResponseRoundTripsThroughJSON() throws {
@@ -150,6 +151,32 @@ final class InspectorMCPWireTests: XCTestCase {
 
     func testInspectPathMatchesRouteConstant() {
         XCTAssertEqual(InspectorMCPBridgeEndpoint.inspectPath, "/inspect")
+    }
+
+    func testTapOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.tap),
+                      "InspectorMCPOperation.tap must be a declared case")
+    }
+
+    func testTapRequestRoundTrips() throws {
+        let request = InspectorMCPTapRequest(handle: "HANDLE-3")
+
+        let decoded = try roundTrip(request)
+
+        XCTAssertEqual(decoded.handle, "HANDLE-3")
+    }
+
+    func testTapResultRoundTrips() throws {
+        let result = InspectorMCPTapResult(handle: "HANDLE-4", dispatched: true)
+
+        let decoded = try roundTrip(result)
+
+        XCTAssertEqual(decoded.handle, "HANDLE-4")
+        XCTAssertTrue(decoded.dispatched)
+    }
+
+    func testTapPathMatchesRouteConstant() {
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.tapPath, "/tap")
     }
 
     func testLayersOperationIsInAllCases() {

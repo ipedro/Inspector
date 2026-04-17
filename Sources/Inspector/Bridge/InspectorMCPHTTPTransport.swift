@@ -259,6 +259,19 @@ private final class InspectorMCPHTTPServer {
             } catch let error as InspectorBridgeError {
                 return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
             }
+        case ("POST", InspectorMCPBridgeEndpoint.tapPath):
+            let payload: InspectorMCPTapRequest = try decode(
+                request.body,
+                allowedKeys: ["handle"]
+            )
+
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeTapResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
         case ("POST", InspectorMCPBridgeEndpoint.layersPath):
             do {
                 return try jsonResponse(
@@ -325,7 +338,7 @@ private final class InspectorMCPHTTPServer {
             bridgeEnabled: bridgeEnabled,
             inspectorStarted: inspectorStarted,
             bundleIdentifier: Bundle.main.bundleIdentifier,
-            operations: [.query, .resolve, .snapshot, .inspect, .layers, .toggleLayer],
+            operations: [.query, .resolve, .snapshot, .inspect, .tap, .layers, .toggleLayer],
             apiVersion: 2
         )
     }
@@ -370,6 +383,11 @@ private final class InspectorMCPHTTPServer {
     private func bridgeInspectResult(for request: InspectorMCPInspectRequest) throws -> InspectorMCPInspectResult {
         _ = try Inspector.bridgeInspect(.init(rawValue: request.handle))
         return InspectorMCPInspectResult(handle: request.handle, presented: true)
+    }
+
+    private func bridgeTapResult(for request: InspectorMCPTapRequest) throws -> InspectorMCPTapResult {
+        _ = try Inspector.bridgeTap(.init(rawValue: request.handle))
+        return InspectorMCPTapResult(handle: request.handle, dispatched: true)
     }
 
     private func bridgeLayersResult() throws -> InspectorMCPLayersResult {

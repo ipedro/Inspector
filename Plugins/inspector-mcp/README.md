@@ -4,13 +4,14 @@ Skills and helpers for driving the Inspector MCP bridge from Claude Code.
 
 ## Versions
 
+- **v2.3 (2026-04-18)** — Adds `tap` tool. Semantic activation for exact-handle, button-like `UIControl`s. Additive, no breaking changes.
 - **v2.1 (2026-04-17)** — Adds `inspect` tool. Open the Inspector UI focused on a handle. Additive, no breaking changes.
 - **v2 (2026-04-17)** — snapshot returns `pngPath` (disk file) instead of `pngBase64`. Requires restarting MCP clients after upgrading Inspector. See `docs/superpowers/specs/2026-04-17-snapshot-disk-path-design.md`.
 - **v1** — initial release.
 
 ## What's in it
 
-- **`inspector-mcp` skill** — register `InspectorMCPServer` for a consumer Xcode project, then use `query` / `resolve` / `snapshot` on the live UIKit hierarchy. Includes `scripts/find_inspector_package.py` to locate the Inspector Swift package under DerivedData.
+- **`inspector-mcp` skill** — register `InspectorMCPServer` for a consumer Xcode project, then use `query` / `resolve` / `snapshot` / `inspect` / `tap` on the live UIKit hierarchy. Includes `scripts/find_inspector_package.py` to locate the Inspector Swift package under DerivedData.
 - **`inspector-mcp-consumer` skill** — patch a consumer iOS app so it exposes the bridge: pick the right lifecycle entry point, set `enableMCPBridge = true` with `snapshotExpiration = 300` / `snapshotMaxCount = 8` before `Inspector.start()`.
 - **`templates/`** — drop-in shell wrapper and Codex MCP config for consumer apps. See [`templates/README.md`](templates/README.md).
 

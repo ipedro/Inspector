@@ -8,6 +8,7 @@ public enum InspectorMCPBridgeEndpoint {
     public static let resolvePath = "/resolve"
     public static let snapshotPath = "/snapshot"
     public static let inspectPath = "/inspect"
+    public static let tapPath = "/tap"
     public static let layersPath = "/layers"
     public static let toggleLayerPath = "/toggle-layer"
     public static let baseURL = URL(string: "http://\(host):\(port)")!
@@ -18,6 +19,7 @@ public enum InspectorMCPOperation: String, Codable, CaseIterable {
     case resolve
     case snapshot
     case inspect
+    case tap
     case layers
     case toggleLayer
 }
@@ -131,6 +133,14 @@ public struct InspectorMCPInspectRequest: Codable, Equatable {
     }
 }
 
+public struct InspectorMCPTapRequest: Codable, Equatable {
+    public let handle: String
+
+    public init(handle: String) {
+        self.handle = handle
+    }
+}
+
 public struct InspectorMCPNode: Codable, Equatable {
     public let handle: String
     public let nodeKind: InspectorMCPNodeKind
@@ -222,6 +232,16 @@ public struct InspectorMCPInspectResult: Codable, Equatable {
     public init(handle: String, presented: Bool) {
         self.handle = handle
         self.presented = presented
+    }
+}
+
+public struct InspectorMCPTapResult: Codable, Equatable {
+    public let handle: String
+    public let dispatched: Bool
+
+    public init(handle: String, dispatched: Bool) {
+        self.handle = handle
+        self.dispatched = dispatched
     }
 }
 

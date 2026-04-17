@@ -19,7 +19,7 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(health["status"] as? String, "active")
         XCTAssertEqual(health["bridgeEnabled"] as? Bool, true)
         XCTAssertEqual(health["inspectorStarted"] as? Bool, true)
-        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect", "layers", "toggleLayer"])
+        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect", "tap", "layers", "toggleLayer"])
         XCTAssertEqual(health["apiVersion"] as? Int, 2)
     }
 
@@ -199,6 +199,40 @@ final class InspectorMCPTransportTests: XCTestCase {
         }
     }
 
+    func testHealthAdvertisesTapOperation() async throws {
+        let health = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+        let operations = try XCTUnwrap(health["operations"] as? [String])
+        XCTAssertTrue(operations.contains("tap"),
+                      "/health must advertise the tap operation")
+    }
+
+    func testTapReturnsDispatchedEnvelopeForLiveButtonHandle() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let queryResponse = try await postJSON(
+            path: "/query",
+            body: ["accessibilityIdentifierEquals": "MCP Tap Smoke Button"]
+        )
+        let queryPayload = try unpackSuccessEnvelope(from: queryResponse.body)
+        let nodes = try XCTUnwrap(queryPayload["nodes"] as? [[String: Any]])
+        let handle = try XCTUnwrap(nodes.first?["handle"] as? String)
+
+        let tapResponse = try await postJSON(path: "/tap", body: ["handle": handle])
+        XCTAssertEqual(tapResponse.statusCode, 200)
+        let rawPayload = try jsonObject(from: tapResponse.body)
+        XCTAssertEqual(rawPayload["ok"] as? Bool, true,
+                       "tap failed: \(rawPayload)")
+
+        let result = try XCTUnwrap(rawPayload["result"] as? [String: Any])
+        XCTAssertEqual(result["handle"] as? String, handle)
+        XCTAssertEqual(result["dispatched"] as? Bool, true)
+
+    }
+
     func testOldestHandleBecomesStaleAfterNinthQuery() async throws {
         _ = try await pollHealth(timeout: 5) { payload in
             payload["status"] as? String == "active"
@@ -375,6 +409,12 @@ final class InspectorMCPTransportTests: XCTestCase {
         timeout: TimeInterval,
         until predicate: @escaping ([String: Any]) -> Bool
     ) async throws -> [String: Any] {
+        await MainActor.run {
+            if Inspector.sharedInstance.state != .started {
+                Inspector.sharedInstance.start()
+            }
+        }
+
         let deadline = Date().addingTimeInterval(timeout)
         var lastError: Error?
 

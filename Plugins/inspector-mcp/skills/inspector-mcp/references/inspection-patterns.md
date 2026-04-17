@@ -112,3 +112,42 @@ Call `inspect` to open the Inspector UI focused on a specific view. Typical reci
 - Consecutive calls stack modals. Use Inspector's native back affordance to unwind.
 - Stale handles → `staleHandle` error. Re-query before retrying.
 - Non-UIView references → `unsupportedTarget`. Resolve to a concrete view first.
+
+## Semantic tap (v2.3)
+
+Use `tap` for the first write-side app interaction primitive:
+
+1. `query` → find an exact handle for the control you want
+2. (optional) `resolve` → confirm the handle is really the right control
+3. `tap(handle)` → dispatch one supported control action
+
+Request:
+
+```json
+{"handle":"HANDLE"}
+```
+
+Response:
+
+```json
+{"handle":"HANDLE","dispatched":true}
+```
+
+Important semantics:
+- `tap` is **semantic activation of an exact-handle `UIControl`**
+- it is **not** synthetic touch injection
+- it does **not** hit-test coordinates
+- it does **not** trigger gesture recognizers on plain `UIView`s
+- it does **not** walk up to a parent button if you queried a child label/image
+
+MVP success conditions:
+- handle is live
+- underlying object is exactly a visible, enabled `UIControl`
+- the control is attached to a window
+- the control exposes `.primaryActionTriggered` or `.touchUpInside`
+
+Common failures:
+- `staleHandle` → issue a fresh `query`
+- `internalFailure` with a tappability message → the target is not a supported button-like control for MVP
+
+Because mutation can immediately change the hierarchy, prefer a fresh `query` after successful taps before chaining the next action.

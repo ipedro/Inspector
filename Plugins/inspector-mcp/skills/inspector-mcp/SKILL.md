@@ -126,6 +126,22 @@ For interactive sessions, chain `query → inspect` to open the Inspector UI foc
 
 Response: `{"handle":"...", "presented": true}`. `presented: true` means the Inspector UI dispatch was accepted — the modal animates in asynchronously. Consecutive `inspect` calls stack modals; Inspector's native back affordance dismisses them.
 
+For the first write-side app interaction primitive, use `query → tap` on exact-handle button-like controls:
+
+```json
+{"handle":"<handle returned by query>"}
+```
+
+Response: `{"handle":"...", "dispatched": true}`. `dispatched: true` means Inspector synchronously fired one supported control action for that exact-handle `UIControl`. This is **semantic activation**, not synthetic touch injection:
+- no hit-test simulation
+- no gesture-recognizer dispatch for plain `UIView`s
+- no ancestor promotion from child handle to parent button
+
+MVP limitations:
+- succeeds only for exact-handle, visible, enabled `UIControl`s wired for `.primaryActionTriggered` or `.touchUpInside`
+- fails for gesture-backed non-controls, sliders/switches/date pickers, hidden/disabled/detached controls, and stale handles
+- after any successful mutation, prefer a fresh `query` before the next action because the UI may have changed and invalidated handles
+
 ### 5a. Controlling view-hierarchy layers (v2.2)
 
 Call `list_layers` to see which built-in highlight layers are populated on the current screen, along with their active state:
@@ -188,6 +204,7 @@ Current constraints:
 - v1: read-only (query, resolve, snapshot only)
 - v2.1: `inspect` adds write-side dispatch (presents Inspector UI); all other tools remain non-mutating
 - v2.2+: `list_layers` (read-only) and `toggle_layer` (write-side) add layer-highlight control
+- v2.3+: `tap` adds exact-handle semantic activation for button-like `UIControl`s
 
 If startup says the endpoint is occupied by the wrong app:
 - shut down the simulator or other app
@@ -230,3 +247,4 @@ Read these only when needed:
 - **v2 (2026-04-17)** — The `snapshot` tool response no longer carries `pngBase64`. It now returns `pngPath` (absolute host path) and `createdAt`; `scale` was renamed to `deviceScale`. Restart your MCP clients (Codex, Claude Code) after upgrading Inspector — in-flight sessions keep the old schema until reconnected.
 - **v2.1 (2026-04-17)** — New `inspect` tool. No breaking changes; additive over v2. Reconnect clients to pick up the refreshed `tools/list`.
 - **v2.2 (2026-04-17)** — New `list_layers` and `toggle_layer` tools. Additive over v2.1. Reconnect clients to refresh `tools/list`. `/health.operations` now includes `layers` and `toggleLayer`.
+- **v2.3 (2026-04-18)** — New `tap` tool. Additive over v2.2. Reconnect clients to refresh `tools/list`. `tap` is semantic `UIControl` activation, not synthetic touch injection.

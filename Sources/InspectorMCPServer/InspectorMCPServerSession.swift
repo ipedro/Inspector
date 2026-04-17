@@ -35,7 +35,7 @@ final class InspectorMCPServerSession {
                         "name": "InspectorMCPServer",
                         "version": "2.0.0"
                     ],
-                    "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. Stale handles require a fresh query."
+                    "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. Mutation tools like tap can stale handles immediately, so issue a fresh query after UI changes."
                 ]
             )
         case "tools/list":
@@ -164,6 +164,27 @@ final class InspectorMCPServerSession {
                 ]
             ),
             toolDefinition(
+                name: "tap",
+                description: "Semantically activate an exact-handle UIControl. MVP scope is button-like controls only; this is not synthetic touch injection or gesture dispatch.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "handle": [
+                            "type": "string",
+                            "description": "Opaque handle returned by query or resolve. Must resolve to a tappable UIControl."
+                        ]
+                    ],
+                    "required": ["handle"]
+                ],
+                annotations: [
+                    "readOnlyHint": false,
+                    "destructiveHint": false,
+                    "idempotentHint": false,
+                    "openWorldHint": true
+                ]
+            ),
+            toolDefinition(
                 name: "list_layers",
                 description: "List built-in Inspector view-hierarchy layers populated in the live app, with each layer's current active (highlighted) state.",
                 schema: [
@@ -266,6 +287,18 @@ final class InspectorMCPServerSession {
                 for: result,
                 successText: { inspectResult in
                     "Presented Inspector UI for handle \(inspectResult.handle)."
+                }
+            )
+        case "tap":
+            let request = try JSONObject.decode(
+                InspectorMCPTapRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.tap(request)
+            return try toolResult(
+                for: result,
+                successText: { tapResult in
+                    "Dispatched semantic tap for handle \(tapResult.handle)."
                 }
             )
         case "list_layers":

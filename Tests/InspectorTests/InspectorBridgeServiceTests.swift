@@ -647,6 +647,19 @@ private final class NilSnapshotView: UIView {
     }
 }
 
+private final class TapActionTarget: NSObject {
+    private(set) var primaryActionCount = 0
+    private(set) var touchUpInsideCount = 0
+
+    @objc func primaryActionTriggered() {
+        primaryActionCount += 1
+    }
+
+    @objc func touchUpInside() {
+        touchUpInsideCount += 1
+    }
+}
+
 // MARK: - inspect(_:)
 
 extension InspectorBridgeServiceTests {
@@ -850,6 +863,114 @@ extension InspectorBridgeServiceTests {
         XCTAssertThrowsError(try service.inspect(handle)) { error in
             XCTAssertEqual(error as? InspectorBridgeError, .unsupportedTarget)
         }
+    }
+
+    func testBridgeTapDispatchesPrimaryActionTriggeredWhenAvailable() throws {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        window.makeKeyAndVisible()
+
+        let button = UIButton(type: .system)
+        button.frame = CGRect(x: 0, y: 0, width: 50, height: 20)
+        let target = TapActionTarget()
+        button.addTarget(target, action: #selector(TapActionTarget.primaryActionTriggered), for: .primaryActionTriggered)
+        button.addTarget(target, action: #selector(TapActionTarget.touchUpInside), for: .touchUpInside)
+        window.addSubview(button)
+
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { MockSnapshot(nodes: [ViewHierarchyElement(with: button)]) }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+        let returned = try service.tap(handle)
+
+        XCTAssertEqual(returned, handle)
+        XCTAssertEqual(target.primaryActionCount, 1)
+        XCTAssertEqual(target.touchUpInsideCount, 0,
+                       "tap must dispatch exactly one event and prefer primaryActionTriggered")
+
+        addTeardownBlock { window.isHidden = true }
+    }
+
+    func testBridgeTapFallsBackToTouchUpInside() throws {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        window.makeKeyAndVisible()
+
+        let button = UIButton(type: .system)
+        button.frame = CGRect(x: 0, y: 0, width: 50, height: 20)
+        let target = TapActionTarget()
+        button.addTarget(target, action: #selector(TapActionTarget.touchUpInside), for: .touchUpInside)
+        window.addSubview(button)
+
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { MockSnapshot(nodes: [ViewHierarchyElement(with: button)]) }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+        _ = try service.tap(handle)
+
+        XCTAssertEqual(target.primaryActionCount, 0)
+        XCTAssertEqual(target.touchUpInsideCount, 1)
+
+        addTeardownBlock { window.isHidden = true }
+    }
+
+    func testBridgeTapRejectsGestureBackedNonControlView() throws {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        window.makeKeyAndVisible()
+
+        let tappedView = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        tappedView.isUserInteractionEnabled = true
+        tappedView.addGestureRecognizer(UITapGestureRecognizer(target: nil, action: nil))
+        window.addSubview(tappedView)
+
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { MockSnapshot(nodes: [ViewHierarchyElement(with: tappedView)]) }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+
+        XCTAssertThrowsError(try service.tap(handle)) { error in
+            guard case let .internalFailure(message) = error as? InspectorBridgeError else {
+                XCTFail("expected internalFailure, got \(error)")
+                return
+            }
+            XCTAssertTrue(message.contains("UIControl") || message.contains("tappable"))
+        }
+
+        addTeardownBlock { window.isHidden = true }
+    }
+
+    func testBridgeTapRejectsDisabledControl() throws {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        window.makeKeyAndVisible()
+
+        let button = UIButton(type: .system)
+        button.frame = CGRect(x: 0, y: 0, width: 50, height: 20)
+        button.isEnabled = false
+        let target = TapActionTarget()
+        button.addTarget(target, action: #selector(TapActionTarget.touchUpInside), for: .touchUpInside)
+        window.addSubview(button)
+
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { MockSnapshot(nodes: [ViewHierarchyElement(with: button)]) }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+
+        XCTAssertThrowsError(try service.tap(handle)) { error in
+            guard case let .internalFailure(message) = error as? InspectorBridgeError else {
+                XCTFail("expected internalFailure, got \(error)")
+                return
+            }
+            XCTAssertTrue(message.contains("enabled") || message.contains("interact"))
+        }
+        XCTAssertEqual(target.touchUpInsideCount, 0)
+
+        addTeardownBlock { window.isHidden = true }
     }
 }
 

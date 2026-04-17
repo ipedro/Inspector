@@ -35,6 +35,7 @@ enum InspectorBridgeOperation {
     case resolve
     case snapshot
     case inspect
+    case tap
     case layers
     case toggleLayer
 }
@@ -261,6 +262,44 @@ final class InspectorMCPBridgeService {
             }
 
             Inspector.sharedInstance.inspect(view)
+            return handle
+        }
+    }
+
+    func tap(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeHandle {
+        try performOnMain(.tap) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            let (_, record) = try self.lookupRecord(for: handle)
+            try self.validate(record: record, handle: handle)
+
+            guard let control = record.reference._underlyingObject as? UIControl else {
+                throw InspectorBridgeError.internalFailure("handle is not a tappable UIControl")
+            }
+
+            guard control.window != nil else {
+                throw InspectorBridgeError.internalFailure("control is not attached to a window")
+            }
+
+            guard control.isUserInteractionEnabled, !control.isHidden, control.alpha > 0.01 else {
+                throw InspectorBridgeError.internalFailure("control is not interactable")
+            }
+
+            guard control.isEnabled else {
+                throw InspectorBridgeError.internalFailure("control is not enabled")
+            }
+
+            let event: UIControl.Event
+            if control.allControlEvents.contains(.primaryActionTriggered) {
+                event = .primaryActionTriggered
+            } else if control.allControlEvents.contains(.touchUpInside) {
+                event = .touchUpInside
+            } else {
+                throw InspectorBridgeError.internalFailure("control does not expose a supported tap action")
+            }
+
+            control.sendActions(for: event)
             return handle
         }
     }
@@ -608,6 +647,10 @@ package extension Inspector {
 
     static func bridgeInspect(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeHandle {
         try sharedInspectorMCPBridgeService.inspect(handle)
+    }
+
+    static func bridgeTap(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeHandle {
+        try sharedInspectorMCPBridgeService.tap(handle)
     }
 
     static func bridgeLayers() throws -> [InspectorBridgeLayerState] {

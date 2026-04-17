@@ -111,6 +111,14 @@ final class PlaygroundViewController: BaseViewController {
     @InspectorProperty(.switch)
     var hasAppeared: Bool = false
 
+    private lazy var mcpTapSmokeButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.accessibilityIdentifier = "MCP Tap Smoke Button"
+        button.setTitle("MCP Tap Smoke", for: .normal)
+        button.addTarget(self, action: #selector(handleMCPTapSmokeButton), for: .touchUpInside)
+        return button
+    }()
+
     override var keyCommands: [UIKeyCommand]? { Inspector.keyCommands }
 
     // MARK: - Life cycle
@@ -118,6 +126,7 @@ final class PlaygroundViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         instructionsTextView.text = "Long press any view below or shake the device"
+        contentStackView.addArrangedSubview(mcpTapSmokeButton)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -170,4 +179,6 @@ final class PlaygroundViewController: BaseViewController {
     @IBAction private func openInspector(_ sender: Any) {
         Inspector.present(animated: true)
     }
+
+    @objc private func handleMCPTapSmokeButton() {}
 }
