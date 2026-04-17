@@ -437,6 +437,17 @@ private let sharedInspectorMCPBridgeService = InspectorMCPBridgeService(
     }
 )
 
+let inspectorSnapshotsDirectoryName = "inspector-snapshots"
+
+func inspectorSnapshotsDirectoryURL() -> URL {
+    URL(fileURLWithPath: NSTemporaryDirectory())
+        .appendingPathComponent(inspectorSnapshotsDirectoryName, isDirectory: true)
+}
+
+func cleanupInspectorSnapshotsDirectory() {
+    try? FileManager.default.removeItem(at: inspectorSnapshotsDirectoryURL())
+}
+
 func resetInspectorBridgeState() {
     sharedInspectorMCPBridgeService.reset()
 }

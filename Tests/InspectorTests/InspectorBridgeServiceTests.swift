@@ -599,6 +599,29 @@ private final class NilSnapshotView: UIView {
     }
 }
 
+// MARK: - cleanupInspectorSnapshotsDirectory
+
+extension InspectorBridgeServiceTests {
+    func testCleanupInspectorSnapshotsDirectoryRemovesDirectory() throws {
+        let fileManager = FileManager.default
+        let url = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent("inspector-snapshots", isDirectory: true)
+
+        try? fileManager.removeItem(at: url)
+        try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
+        let sentinel = url.appendingPathComponent("sentinel.png")
+        try Data([0x89]).write(to: sentinel)
+        XCTAssertTrue(fileManager.fileExists(atPath: sentinel.path))
+
+        cleanupInspectorSnapshotsDirectory()
+
+        XCTAssertFalse(fileManager.fileExists(atPath: sentinel.path),
+                       "cleanup must remove the inspector-snapshots directory contents")
+        XCTAssertFalse(fileManager.fileExists(atPath: url.path),
+                       "cleanup must remove the inspector-snapshots directory itself")
+    }
+}
+
 private final class RecordingSnapshotRenderer: InspectorBridgeSnapshotRendering {
     private(set) var lastInvocationWasOnMainThread = false
 
