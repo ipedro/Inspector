@@ -193,11 +193,12 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         ),
         snapshotResult: Result<InspectorMCPSnapshotResult, InspectorMCPTransportError> = .success(
             .init(
-                handle: "handle",
+                handle: "MOCK-HANDLE",
                 mimeType: "image/png",
-                pngBase64: Data("png".utf8).base64EncodedString(),
-                size: .init(width: 1, height: 1),
-                scale: 3
+                pngPath: "/tmp/inspector-snapshots/mock.png",
+                size: .init(width: 10, height: 10),
+                deviceScale: 2,
+                createdAt: Date(timeIntervalSince1970: 0)
             )
         )
     ) {

@@ -179,22 +179,25 @@ public struct InspectorMCPQueryResult: Codable, Equatable {
 public struct InspectorMCPSnapshotResult: Codable, Equatable {
     public let handle: String
     public let mimeType: String
-    public let pngBase64: String
+    public let pngPath: String
     public let size: InspectorMCPSize
-    public let scale: Double
+    public let deviceScale: Double
+    public let createdAt: Date
 
     public init(
         handle: String,
         mimeType: String,
-        pngBase64: String,
+        pngPath: String,
         size: InspectorMCPSize,
-        scale: Double
+        deviceScale: Double,
+        createdAt: Date
     ) {
         self.handle = handle
         self.mimeType = mimeType
-        self.pngBase64 = pngBase64
+        self.pngPath = pngPath
         self.size = size
-        self.scale = scale
+        self.deviceScale = deviceScale
+        self.createdAt = createdAt
     }
 }
 

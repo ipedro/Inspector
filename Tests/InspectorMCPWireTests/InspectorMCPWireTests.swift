@@ -95,6 +95,31 @@ final class InspectorMCPWireTests: XCTestCase {
         XCTAssertNil(decoded.apiVersion)
     }
 
+    func testSnapshotResultRoundTripsNewShape() throws {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        let createdAt = ISO8601DateFormatter().date(from: "2026-04-17T10:00:00Z")!
+        let result = InspectorMCPSnapshotResult(
+            handle: "HANDLE",
+            mimeType: "image/png",
+            pngPath: "/tmp/inspector-snapshots/abc.png",
+            size: .init(width: 402, height: 874),
+            deviceScale: 3,
+            createdAt: createdAt
+        )
+
+        let data = try encoder.encode(result)
+        let decoded = try decoder.decode(InspectorMCPSnapshotResult.self, from: data)
+
+        XCTAssertEqual(decoded.pngPath, "/tmp/inspector-snapshots/abc.png")
+        XCTAssertEqual(decoded.deviceScale, 3)
+        XCTAssertEqual(decoded.createdAt, createdAt)
+        XCTAssertEqual(decoded.mimeType, "image/png")
+    }
+
     private func roundTrip<T: Codable & Equatable>(_ value: T) throws -> T {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
