@@ -188,6 +188,7 @@ swift build --product InspectorMCPServer
 Read these only when needed:
 - [consumer-app-setup.md](references/consumer-app-setup.md) for deriving the package path from DerivedData and wiring Codex/Claude
 - [inspection-patterns.md](references/inspection-patterns.md) for effective query/resolve/snapshot usage and stale-handle recovery
+- [troubleshooting.md](references/troubleshooting.md) when `/mcp` reports "Failed to reconnect" with the bridge actually up, when `Read pngPath` returns stale/empty files, or when `snapshot` fails with `captureFailed`
 
 ## Breaking changes
 
