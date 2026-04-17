@@ -71,9 +71,15 @@ public final class Inspector {
     func start() {
         setup()
         manager?.start()
+#if INSPECTOR_DEBUGGING && targetEnvironment(simulator)
+        startInspectorMCPHTTPTransportIfNeeded()
+#endif
     }
 
     func stop() {
+#if INSPECTOR_DEBUGGING && targetEnvironment(simulator)
+        stopInspectorMCPHTTPTransport()
+#endif
         manager = .none
         contextMenuPresenter = .none
 #if INSPECTOR_DEBUGGING && targetEnvironment(simulator)

@@ -42,6 +42,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //            )
 //        )
 
+        var configuration = InspectorConfiguration.config(
+            enableMCPBridge: true,
+            snapshotExpiration: 300
+        )
+        configuration.snapshotMaxCount = 8
+        Inspector.setConfiguration(configuration)
         Inspector.setCustomization(self)
 
         Inspector.start()

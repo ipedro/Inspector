@@ -22,6 +22,10 @@ let package = Package(
         .library(
             name: "InspectorInterface",
             targets: ["InspectorInterface"]
+        ),
+        .executable(
+            name: "InspectorMCPServer",
+            targets: ["InspectorMCPServer"]
         )
     ],
     traits: [
@@ -40,8 +44,16 @@ let package = Package(
         // MARK: - Existing iOS library
 
         .target(
+            name: "InspectorMCPWire",
+            swiftSettings: [
+                .swiftLanguageMode(.v5)
+            ]
+        ),
+
+        .target(
             name: "Inspector",
             dependencies: [
+                "InspectorMCPWire",
                 .product(name: "UIKeyCommandTableView", package: "UIKeyCommandTableView", condition: .when(platforms: [.iOS])),
                 .product(name: "UIKeyboardAnimatable", package: "UIKeyboardAnimatable", condition: .when(platforms: [.iOS])),
                 .product(name: "Coordinator", package: "Coordinator", condition: .when(platforms: [.iOS]))
@@ -52,6 +64,28 @@ let package = Package(
             swiftSettings: [
                 .define("INSPECTOR_DEBUGGING", .when(traits: ["Debugging"])),
                 .swiftLanguageMode(.v5)
+            ]
+        ),
+        .executableTarget(
+            name: "InspectorMCPServer",
+            dependencies: [
+                "InspectorMCPWire"
+            ],
+            swiftSettings: [
+                .swiftLanguageMode(.v5)
+            ]
+        ),
+        .testTarget(
+            name: "InspectorMCPWireTests",
+            dependencies: [
+                "InspectorMCPWire"
+            ]
+        ),
+        .testTarget(
+            name: "InspectorMCPServerTests",
+            dependencies: [
+                "InspectorMCPServer",
+                "InspectorMCPWire"
             ]
         ),
         .testTarget(

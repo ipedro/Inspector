@@ -5,3 +5,4 @@ xcuserdata/
 BuildTools/.build
 BuildTools/.swiftpm
 .worktrees/
+.omx/

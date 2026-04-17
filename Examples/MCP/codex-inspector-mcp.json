@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "inspector": {
+      "command": "swift",
+      "args": [
+        "run",
+        "InspectorMCPServer",
+        "launch",
+        "--xcodeproj",
+        "Example/Example.xcodeproj",
+        "--scheme",
+        "Example",
+        "--bundle-id",
+        "am.pedro.Inspector"
+      ],
+      "cwd": "/ABSOLUTE/PATH/TO/Inspector"
+    }
+  }
+}
