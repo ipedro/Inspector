@@ -233,6 +233,23 @@ final class InspectorMCPBridgeService {
         }
     }
 
+    func inspect(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeHandle {
+        try performOnMain(.inspect) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            let (_, record) = try self.lookupRecord(for: handle)
+            try self.validate(record: record, handle: handle)
+
+            guard let view = record.reference._underlyingObject as? UIView else {
+                throw InspectorBridgeError.unsupportedTarget
+            }
+
+            Inspector.sharedInstance.inspect(view)
+            return handle
+        }
+    }
+
     private func ensureActive() throws {
         switch availabilityProvider() {
         case .disabled:
@@ -528,6 +545,10 @@ package extension Inspector {
         afterScreenUpdates: Bool = true
     ) throws -> InspectorBridgeSnapshotArtifact {
         try sharedInspectorMCPBridgeService.snapshot(handle, afterScreenUpdates: afterScreenUpdates)
+    }
+
+    static func bridgeInspect(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeHandle {
+        try sharedInspectorMCPBridgeService.inspect(handle)
     }
 }
 

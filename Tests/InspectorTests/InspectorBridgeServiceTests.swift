@@ -644,6 +644,82 @@ private final class NilSnapshotView: UIView {
     }
 }
 
+// MARK: - inspect(_:)
+
+extension InspectorBridgeServiceTests {
+    func testBridgeInspectReturnsHandleForLiveView() throws {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        window.makeKeyAndVisible()
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        window.addSubview(view)
+        let element = ViewHierarchyElement(with: view)
+
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { MockSnapshot(nodes: [element]) }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+        let returned = try service.inspect(handle)
+        XCTAssertEqual(returned, handle)
+
+        addTeardownBlock { window.isHidden = true }
+    }
+
+    func testBridgeInspectRejectsUnknownHandle() {
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { nil }
+        )
+        let handle = InspectorBridgeHandle(rawValue: "UNKNOWN")
+
+        XCTAssertThrowsError(try service.inspect(handle)) { error in
+            XCTAssertEqual(error as? InspectorBridgeError, .staleHandle)
+        }
+    }
+
+    func testBridgeInspectRejectsDeallocatedView() throws {
+        let element: ViewHierarchyElement = {
+            let view = UIView()
+            return ViewHierarchyElement(with: view) // view deallocates when closure returns
+        }()
+
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { MockSnapshot(nodes: [element]) }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+
+        XCTAssertThrowsError(try service.inspect(handle)) { error in
+            XCTAssertEqual(error as? InspectorBridgeError, .staleHandle)
+        }
+    }
+
+    func testBridgeInspectRejectsNonViewReference() throws {
+        let nonViewRef = MockReference(
+            kind: .view,
+            object: NSObject(),
+            depth: 0,
+            className: "NSObject",
+            displayName: "NSObject",
+            elementName: "NSObject",
+            accessibilityIdentifier: nil
+        )
+
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { MockSnapshot(nodes: [nonViewRef]) }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+
+        XCTAssertThrowsError(try service.inspect(handle)) { error in
+            XCTAssertEqual(error as? InspectorBridgeError, .unsupportedTarget)
+        }
+    }
+}
+
 // MARK: - Inspector.stop() clears snapshots directory
 
 extension InspectorBridgeServiceTests {
