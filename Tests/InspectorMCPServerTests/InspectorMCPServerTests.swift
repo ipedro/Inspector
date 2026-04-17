@@ -146,6 +146,59 @@ final class InspectorMCPServerTests: XCTestCase {
         XCTAssertEqual(structuredContent["code"] as? String, "staleHandle")
     }
 
+    func testInitializeResponseAdvertisesV2() async throws {
+        let session = InspectorMCPServerSession(bridgeClient: MockBridgeClient())
+        let responseData = try await session.handleMessage(
+            jsonData(
+                [
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "method": "initialize",
+                    "params": [
+                        "protocolVersion": "2025-11-25",
+                        "capabilities": [:],
+                        "clientInfo": [
+                            "name": "test",
+                            "version": "1"
+                        ]
+                    ]
+                ]
+            )
+        )
+        let response = try jsonObject(from: try XCTUnwrap(responseData))
+        let result = try XCTUnwrap(response["result"] as? [String: Any])
+        let serverInfo = try XCTUnwrap(result["serverInfo"] as? [String: Any])
+        XCTAssertEqual(serverInfo["version"] as? String, "2.0.0")
+    }
+
+    func testSnapshotToolDescriptionMentionsPngPath() async throws {
+        let session = InspectorMCPServerSession(bridgeClient: MockBridgeClient())
+        let responseData = try await session.handleMessage(
+            jsonData(
+                [
+                    "jsonrpc": "2.0",
+                    "id": 2,
+                    "method": "tools/list"
+                ]
+            )
+        )
+        let response = try jsonObject(from: try XCTUnwrap(responseData))
+        let result = try XCTUnwrap(response["result"] as? [String: Any])
+        let tools = try XCTUnwrap(result["tools"] as? [[String: Any]])
+        let snapshotTool = try XCTUnwrap(tools.first { ($0["name"] as? String) == "snapshot" })
+
+        let description = try XCTUnwrap(snapshotTool["description"] as? String)
+        XCTAssertTrue(description.contains("pngPath"),
+                      "description must mention pngPath so agents route to Read")
+
+        let inputSchema = try XCTUnwrap(snapshotTool["inputSchema"] as? [String: Any])
+        let properties = try XCTUnwrap(inputSchema["properties"] as? [String: Any])
+        let handle = try XCTUnwrap(properties["handle"] as? [String: Any])
+        let afterScreenUpdates = try XCTUnwrap(properties["afterScreenUpdates"] as? [String: Any])
+        XCTAssertNotNil(handle["description"], "handle must have a description")
+        XCTAssertNotNil(afterScreenUpdates["description"], "afterScreenUpdates must have a description")
+    }
+
     private func jsonData(_ object: [String: Any]) -> Data {
         try! JSONSerialization.data(withJSONObject: object)
     }

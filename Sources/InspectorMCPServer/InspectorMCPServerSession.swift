@@ -33,7 +33,7 @@ final class InspectorMCPServerSession {
                     ],
                     "serverInfo": [
                         "name": "InspectorMCPServer",
-                        "version": "1.0.0"
+                        "version": "2.0.0"
                     ],
                     "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. Stale handles require a fresh query."
                 ]
@@ -125,13 +125,19 @@ final class InspectorMCPServerSession {
             ),
             toolDefinition(
                 name: "snapshot",
-                description: "Capture a PNG snapshot for a previously returned handle.",
+                description: "Capture a PNG snapshot for a handle. Returns an absolute host file path — use the Read tool on pngPath to load image bytes.",
                 schema: [
                     "type": "object",
                     "additionalProperties": false,
                     "properties": [
-                        "handle": ["type": "string"],
-                        "afterScreenUpdates": ["type": "boolean"]
+                        "handle": [
+                            "type": "string",
+                            "description": "Opaque handle returned by query or resolve."
+                        ],
+                        "afterScreenUpdates": [
+                            "type": "boolean",
+                            "description": "Whether to flush pending view updates before capture. Default true."
+                        ]
                     ],
                     "required": ["handle", "afterScreenUpdates"]
                 ]
