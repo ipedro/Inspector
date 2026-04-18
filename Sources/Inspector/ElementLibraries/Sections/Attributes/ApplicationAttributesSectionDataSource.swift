@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -47,73 +48,137 @@ extension DefaultElementAttributesLibrary {
             case userInterfaceLayoutDirection
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             Property.allCases.compactMap { property in
                 switch property {
                 case .isIdleTimerEnabled:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { !self.application.isIdleTimerDisabled },
-                        handler: { self.application.isIdleTimerDisabled = !$0 }
-                    )
-                case .applicationIconBadgeNumber:
-                    .integerStepper(
-                        title: property.rawValue,
-                        value: { self.application.applicationIconBadgeNumber },
-                        range: { 0...1000 },
-                        stepValue: { 1 },
-                        handler: { self.application.applicationIconBadgeNumber = $0 }
-                    )
-                case .applicationSupportsShakeToEdit:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { self.application.applicationSupportsShakeToEdit },
-                        handler: { self.application.applicationSupportsShakeToEdit = $0 }
-                    )
-                case .applicationState:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: .none,
-                        axis: .horizontal,
-                        value: {
-                            switch self.application.applicationState {
-                            case .active: return "Active"
-                            case .inactive: return "Inactive"
-                            case .background: return "Background"
-                            @unknown default: return "Unknown"
-                            }
+                    .init(
+                        descriptor: .init(
+                            id: "is-idle-timer-enabled",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(!self.application.isIdleTimerDisabled) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            self.application.isIdleTimerDisabled = !isEnabled
                         }
                     )
+                case .applicationIconBadgeNumber:
+                    .init(
+                        descriptor: .init(
+                            id: "application-icon-badge-number",
+                            title: property.rawValue,
+                            kind: .stepper,
+                            value: .number(.init(min: 0, max: 1000, step: 1, isDecimal: false)),
+                            editability: .editable
+                        ),
+                        read: { .number(Double(self.application.applicationIconBadgeNumber)) },
+                        write: { newValue in
+                            guard case let .number(value) = newValue else { return }
+                            self.application.applicationIconBadgeNumber = Int(value)
+                        }
+                    )
+                case .applicationSupportsShakeToEdit:
+                    .init(
+                        descriptor: .init(
+                            id: "application-supports-shake-to-edit",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(self.application.applicationSupportsShakeToEdit) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            self.application.applicationSupportsShakeToEdit = isEnabled
+                        }
+                    )
+                case .applicationState:
+                    .init(
+                        descriptor: .init(
+                            id: "application-state",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, allowsNil: true)),
+                            editability: .readOnly,
+                            presentation: .init(axis: .horizontal)
+                        ),
+                        read: { .string(self.applicationStateDescription()) },
+                        write: nil
+                    )
                 case .backgroundTimeRemaining:
-                    .none
+                    nil
                 case .backgroundRefreshStatus:
-                    .none
+                    nil
                 case .isProtectedDataAvailable:
-                    .none
+                    nil
                 case .userInterfaceLayoutDirection:
-                    .none
+                    nil
                 case .supportsMultipleScenes:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { self.application.supportsMultipleScenes }
+                    .init(
+                        descriptor: .init(
+                            id: "supports-multiple-scenes",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .readOnly
+                        ),
+                        read: { .bool(self.application.supportsMultipleScenes) },
+                        write: nil
                     )
                 case .isRegisteredForRemoteNotifications:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { self.application.isRegisteredForRemoteNotifications }
+                    .init(
+                        descriptor: .init(
+                            id: "is-registered-for-remote-notifications",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .readOnly
+                        ),
+                        read: { .bool(self.application.isRegisteredForRemoteNotifications) },
+                        write: nil
                     )
                 case .supportsAlternateIcons:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { self.application.supportsAlternateIcons }
+                    .init(
+                        descriptor: .init(
+                            id: "supports-alternate-icons",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .readOnly
+                        ),
+                        read: { .bool(self.application.supportsAlternateIcons) },
+                        write: nil
                     )
                 case .alternateIconName:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: .none,
-                        value: { self.application.alternateIconName }
+                    .init(
+                        descriptor: .init(
+                            id: "alternate-icon-name",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, allowsNil: true)),
+                            editability: .readOnly
+                        ),
+                        read: { .string(self.application.alternateIconName) },
+                        write: nil
                     )
                 }
+            }
+        }
+
+        private func applicationStateDescription() -> String {
+            switch application.applicationState {
+            case .active:
+                return "Active"
+            case .inactive:
+                return "Inactive"
+            case .background:
+                return "Background"
+            @unknown default:
+                return "Unknown"
             }
         }
     }

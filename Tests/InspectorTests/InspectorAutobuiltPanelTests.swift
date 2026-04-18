@@ -482,5 +482,36 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertFalse(control.isEnabled)
     }
 
+    func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
+        let application = UIApplication.shared
+        let originalIdleTimerDisabled = application.isIdleTimerDisabled
+        let originalBadgeNumber = application.applicationIconBadgeNumber
+        let originalShakeToEdit = application.applicationSupportsShakeToEdit
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.ApplicationAttributesSectionDataSource(with: application)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertTrue(bindings.count >= 8)
+        XCTAssertEqual(bindings[0].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[1].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[2].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[3].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[4].descriptor.kind, .toggle)
+
+        bindings[1].apply(.number(7))
+        bindings[3].apply(.bool(!originalShakeToEdit))
+        bindings[4].apply(.bool(true))
+
+        XCTAssertEqual(application.applicationIconBadgeNumber, 7)
+        XCTAssertEqual(application.applicationSupportsShakeToEdit, !originalShakeToEdit)
+        XCTAssertFalse(application.isIdleTimerDisabled)
+
+        application.isIdleTimerDisabled = originalIdleTimerDisabled
+        application.applicationIconBadgeNumber = originalBadgeNumber
+        application.applicationSupportsShakeToEdit = originalShakeToEdit
+    }
+
 }
 #endif
