@@ -355,5 +355,29 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(window.canResizeToFitContent)
     }
 
+    func testSegmentedControlAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let control = UISegmentedControl(items: ["One", "Two"])
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.SegmentedControlAttributesSectionDataSource(with: control)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 9)
+        XCTAssertEqual(bindings[0].descriptor.kind, .color)
+        XCTAssertEqual(bindings[3].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[4].descriptor.kind, .options)
+        XCTAssertEqual(bindings[5].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[7].descriptor.kind, .toggle)
+
+        bindings[4].apply(.selection(1))
+        bindings[5].apply(.string("Second"))
+        bindings[7].apply(.bool(false))
+        bindings[8].apply(.bool(true))
+
+        XCTAssertEqual(control.titleForSegment(at: 1), "Second")
+        XCTAssertFalse(control.isEnabledForSegment(at: 1))
+        XCTAssertEqual(control.selectedSegmentIndex, 1)
+    }
+
 }
 #endif

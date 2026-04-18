@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -50,107 +51,177 @@ extension DefaultElementAttributesLibrary {
             case segmentIsSelected = "Selected"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let segmentedControl else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .selectedSegmentTintColor:
-                    return .colorPicker(
-                        title: property.rawValue,
-                        color: { segmentedControl.selectedSegmentTintColor }
-                    ) { selectedSegmentTintColor in
-                        segmentedControl.selectedSegmentTintColor = selectedSegmentTintColor
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "selected-segment-tint-color",
+                            title: property.rawValue,
+                            kind: .color,
+                            value: .color(allowsNil: true),
+                            editability: .editable
+                        ),
+                        read: { .color(segmentedControl.selectedSegmentTintColor) },
+                        write: { newValue in
+                            guard case let .color(color) = newValue else { return }
+                            segmentedControl.selectedSegmentTintColor = color
+                        }
+                    )
                 case .isMomentary:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { segmentedControl.isMomentary }
-                    ) { isMomentary in
-                        segmentedControl.isMomentary = isMomentary
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "is-momentary",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(segmentedControl.isMomentary) },
+                        write: { newValue in
+                            guard case let .bool(isMomentary) = newValue else { return }
+                            segmentedControl.isMomentary = isMomentary
+                        }
+                    )
                 case .isSpringLoaded:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { segmentedControl.isSpringLoaded }
-                    ) { isSpringLoaded in
-                        segmentedControl.isSpringLoaded = isSpringLoaded
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "is-spring-loaded",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(segmentedControl.isSpringLoaded) },
+                        write: { newValue in
+                            guard case let .bool(isSpringLoaded) = newValue else { return }
+                            segmentedControl.isSpringLoaded = isSpringLoaded
+                        }
+                    )
                 case .groupSegment:
-                    return .separator
+                    return .init(
+                        descriptor: .init(
+                            id: "segment-group",
+                            title: property.rawValue,
+                            kind: .separator,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .segmentPicker:
-                    return .segmentPicker(for: segmentedControl) { [weak self] selectedSegment in
-                        self?.selectedSegment = selectedSegment
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "segment-picker",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: (0..<segmentedControl.numberOfSegments).map {
+                                    .init(id: "\($0)", title: "Segment \($0)")
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { [weak self] in .selection(self?.selectedSegment) },
+                        write: { [weak self] newValue in
+                            guard case let .selection(selectedSegment) = newValue else { return }
+                            self?.selectedSegment = selectedSegment
+                        }
+                    )
                 case .segmentTitle:
-                    return .textField(
-                        title: property.rawValue,
-                        placeholder: property.rawValue,
-                        value: { [weak self] in
+                    return .init(
+                        descriptor: .init(
+                            id: "segment-title",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, placeholder: property.rawValue, allowsNil: true)),
+                            editability: .editable
+                        ),
+                        read: { [weak self] in
                             guard let selectedSegment = self?.selectedSegment else {
-                                return nil
+                                return .string(nil)
                             }
 
-                            return segmentedControl.titleForSegment(at: selectedSegment)
-                        }
-                    ) { [weak self] segmentTitle in
-                        guard let selectedSegment = self?.selectedSegment else {
-                            return
-                        }
+                            return .string(segmentedControl.titleForSegment(at: selectedSegment))
+                        },
+                        write: { [weak self] newValue in
+                            guard case let .string(segmentTitle) = newValue else { return }
+                            guard let selectedSegment = self?.selectedSegment else { return }
 
-                        segmentedControl.setTitle(segmentTitle, forSegmentAt: selectedSegment)
-                    }
+                            segmentedControl.setTitle(segmentTitle, forSegmentAt: selectedSegment)
+                        }
+                    )
                 case .segmentImage:
-                    return .imagePicker(
-                        title: property.rawValue,
-                        image: { [weak self] in
+                    return .init(
+                        descriptor: .init(
+                            id: "segment-image",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .none,
+                            editability: .editable
+                        ),
+                        read: { [weak self] in
                             guard let selectedSegment = self?.selectedSegment else {
-                                return nil
+                                return .image(nil)
                             }
 
-                            return segmentedControl.imageForSegment(at: selectedSegment)
+                            return .image(segmentedControl.imageForSegment(at: selectedSegment))
+                        },
+                        write: { [weak self] newValue in
+                            guard case let .image(segmentImage) = newValue else { return }
+                            guard let selectedSegment = self?.selectedSegment else { return }
+                            segmentedControl.setImage(segmentImage, forSegmentAt: selectedSegment)
                         }
-                    ) { [weak self] segmentImage in
-                        guard let selectedSegment = self?.selectedSegment else {
-                            return
-                        }
-
-                        segmentedControl.setImage(segmentImage, forSegmentAt: selectedSegment)
-                    }
+                    )
                 case .segmentIsEnabled:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { [weak self] in
+                    return .init(
+                        descriptor: .init(
+                            id: "segment-is-enabled",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { [weak self] in
                             guard let selectedSegment = self?.selectedSegment else {
-                                return false
+                                return .bool(false)
                             }
 
-                            return segmentedControl.isEnabledForSegment(at: selectedSegment)
+                            return .bool(segmentedControl.isEnabledForSegment(at: selectedSegment))
+                        },
+                        write: { [weak self] newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            guard let selectedSegment = self?.selectedSegment else { return }
+                            segmentedControl.setEnabled(isEnabled, forSegmentAt: selectedSegment)
                         }
-                    ) { [weak self] isEnabled in
-                        guard let selectedSegment = self?.selectedSegment else {
-                            return
-                        }
-
-                        segmentedControl.setEnabled(isEnabled, forSegmentAt: selectedSegment)
-                    }
+                    )
                 case .segmentIsSelected:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { [weak self] in self?.selectedSegment == segmentedControl.selectedSegmentIndex }
-                    ) { [weak self] isSelected in
-                        guard let selectedSegment = self?.selectedSegment else {
-                            return
-                        }
+                    return .init(
+                        descriptor: .init(
+                            id: "segment-is-selected",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { [weak self] in .bool(self?.selectedSegment == segmentedControl.selectedSegmentIndex) },
+                        write: { [weak self] newValue in
+                            guard case let .bool(isSelected) = newValue else { return }
+                            guard let selectedSegment = self?.selectedSegment else { return }
 
-                        switch isSelected {
-                        case true:
-                            segmentedControl.selectedSegmentIndex = selectedSegment
-
-                        case false:
-                            segmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
+                            switch isSelected {
+                            case true:
+                                segmentedControl.selectedSegmentIndex = selectedSegment
+                            case false:
+                                segmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
+                            }
                         }
-                    }
+                    )
                 }
             }
         }
