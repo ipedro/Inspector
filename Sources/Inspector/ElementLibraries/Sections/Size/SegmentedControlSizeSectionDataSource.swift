@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementSizeLibrary {
@@ -47,44 +48,82 @@ extension DefaultElementSizeLibrary {
             case apportionsSegmentWidthsByContent = "Size Mode"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let segmentedControl else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .segmentPicker:
-                    .segmentPicker(for: segmentedControl) { [weak self] selectedSegment in
-                        self?.selectedSegment = selectedSegment
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "segment-picker",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: (0..<segmentedControl.numberOfSegments).map {
+                                    .init(id: "\($0)", title: "Segment \($0)")
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { [weak self] in .selection(self?.selectedSegment) },
+                        write: { [weak self] newValue in
+                            guard case let .selection(selectedSegment) = newValue else { return }
+                            self?.selectedSegment = selectedSegment
+                        }
+                    )
                 case .segmentWidth:
-                    .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { [weak self] in
-                            guard let index = self?.selectedSegment else {
-                                return .zero
-                            }
-                            return segmentedControl.widthForSegment(at: index)
+                    .init(
+                        descriptor: .init(
+                            id: "segment-width",
+                            title: property.rawValue,
+                            kind: .stepper,
+                            value: .number(.init(min: 0, max: Double(segmentedControl.frame.width), step: 1, isDecimal: true)),
+                            editability: .editable
+                        ),
+                        read: { [weak self] in
+                            guard let index = self?.selectedSegment else { return .number(.zero) }
+                            return .number(Double(segmentedControl.widthForSegment(at: index)))
                         },
-                        range: { 0...segmentedControl.frame.width },
-                        stepValue: { 1 },
-                        handler: { [weak self] segmentWidth in
-                            guard let index = self?.selectedSegment else {
-                                return
-                            }
-                            segmentedControl.setWidth(segmentWidth, forSegmentAt: index)
+                        write: { [weak self] newValue in
+                            guard case let .number(segmentWidth) = newValue else { return }
+                            guard let index = self?.selectedSegment else { return }
+                            segmentedControl.setWidth(CGFloat(segmentWidth), forSegmentAt: index)
                         }
                     )
                 case .apportionsSegmentWidthsByContent:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: ["Equal Widths", "Proportional to Content"],
-                        selectedIndex: { segmentedControl.apportionsSegmentWidthsByContent ? 1 : 0 },
-                        handler: { newIndex in
+                    .init(
+                        descriptor: .init(
+                            id: "apportions-segment-widths",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: [
+                                    .init(id: "0", title: "Equal Widths"),
+                                    .init(id: "1", title: "Proportional to Content")
+                                ], allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(segmentedControl.apportionsSegmentWidthsByContent ? 1 : 0) },
+                        write: { newValue in
+                            guard case let .selection(newIndex) = newValue else { return }
                             segmentedControl.apportionsSegmentWidthsByContent = newIndex == 1
                         }
                     )
                 case .separator:
-                    .separator
+                    .init(
+                        descriptor: .init(
+                            id: "separator",
+                            title: property.rawValue,
+                            kind: .separator,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 }
             }
         }

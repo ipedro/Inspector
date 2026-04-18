@@ -142,5 +142,38 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(bindings[2].descriptor.kind, .options)
         XCTAssertEqual(bindings.last?.descriptor.kind, .preview)
     }
+
+    func testLabelSizeSectionUsesBindingBackedFields() throws {
+        let label = UILabel()
+        label.preferredMaxLayoutWidth = 42
+        let dataSource = try XCTUnwrap(
+            DefaultElementSizeLibrary.LabelSizeSectionDataSource(with: label)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 1)
+        XCTAssertEqual(bindings.first?.descriptor.kind, .stepper)
+        if case let .number(value) = bindings.first?.currentValue() {
+            XCTAssertEqual(value, 42)
+        } else {
+            XCTFail("expected numeric current value")
+        }
+    }
+
+    func testSegmentedControlSizeSectionUsesBindingBackedFields() throws {
+        let control = UISegmentedControl(items: ["One", "Two"])
+        let dataSource = try XCTUnwrap(
+            DefaultElementSizeLibrary.SegmentedControlSizeSectionDataSource(with: control)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 4)
+        XCTAssertEqual(bindings.map(\.descriptor.kind), [.options, .stepper, .separator, .options])
+        if case let .selection(index) = bindings.first?.currentValue() {
+            XCTAssertEqual(index, 0)
+        } else {
+            XCTFail("expected selected segment binding")
+        }
+    }
 }
 #endif

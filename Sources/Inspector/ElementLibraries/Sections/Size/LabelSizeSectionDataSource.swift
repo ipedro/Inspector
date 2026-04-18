@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementSizeLibrary {
@@ -37,18 +38,25 @@ extension DefaultElementSizeLibrary {
             case preferredMaxLayoutWidth = "Desired Width"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let label else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .preferredMaxLayoutWidth:
-                    .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { label.preferredMaxLayoutWidth },
-                        range: { 0...Double.infinity },
-                        stepValue: { 1 },
-                        handler: { label.preferredMaxLayoutWidth = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "preferred-max-layout-width",
+                            title: property.rawValue,
+                            kind: .stepper,
+                            value: .number(.init(min: 0, step: 1, isDecimal: true)),
+                            editability: .editable
+                        ),
+                        read: { .number(Double(label.preferredMaxLayoutWidth)) },
+                        write: { newValue in
+                            guard case let .number(value) = newValue else { return }
+                            label.preferredMaxLayoutWidth = CGFloat(value)
+                        }
                     )
                 }
             }
