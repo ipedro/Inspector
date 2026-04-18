@@ -874,6 +874,51 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(viewController.navigationItem.largeTitleDisplayMode, UINavigationItem.LargeTitleDisplayMode.allCases[1])
     }
 
+    func testLayerAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 80, height: 40))
+        view.layer.shadowPath = UIBezierPath(rect: view.bounds).cgPath
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.LayerAttributesSectionDataSource(with: view)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 19)
+        XCTAssertEqual(bindings[0].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[1].descriptor.kind, .color)
+        XCTAssertEqual(bindings[2].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[6].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[8].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[9].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[10].descriptor.kind, .group)
+        XCTAssertEqual(bindings[14].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[16].descriptor.kind, .preview)
+        XCTAssertEqual(bindings[17].descriptor.kind, .color)
+        XCTAssertEqual(bindings[18].descriptor.kind, .textField)
+
+        bindings[0].apply(.number(0.4))
+        bindings[1].apply(.color(.green))
+        bindings[2].apply(.bool(true))
+        bindings[7].apply(.bool(true))
+        bindings[9].apply(.number(6))
+        bindings[11].apply(.number(3))
+        bindings[12].apply(.color(.blue))
+        bindings[14].apply(.number(0.6))
+        bindings[16].apply(.size(.init(width: 2, height: 3)))
+        bindings[17].apply(.color(.black))
+
+        XCTAssertEqual(view.layer.opacity, 0.4, accuracy: 0.001)
+        XCTAssertEqual(UIColor(cgColor: view.layer.backgroundColor!), .green)
+        XCTAssertTrue(view.layer.isHidden)
+        XCTAssertTrue(view.layer.masksToBounds)
+        XCTAssertEqual(view.layer.cornerRadius, 6, accuracy: 0.001)
+        XCTAssertEqual(view.layer.borderWidth, 3, accuracy: 0.001)
+        XCTAssertEqual(UIColor(cgColor: view.layer.borderColor!), .blue)
+        XCTAssertEqual(view.layer.shadowOpacity, 0.6, accuracy: 0.001)
+        XCTAssertEqual(view.layer.shadowOffset, .init(width: 2, height: 3))
+        XCTAssertEqual(UIColor(cgColor: view.layer.shadowColor!), .black)
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled

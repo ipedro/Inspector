@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import QuartzCore
 import UIKit
 
@@ -59,164 +60,59 @@ extension DefaultElementAttributesLibrary {
             case shadowPath = "Shadow Path"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let layer else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .opacity:
-                    return .floatStepper(
-                        title: property.rawValue,
-                        value: { layer.opacity },
-                        range: { 0...1 },
-                        stepValue: { 0.05 }
-                    ) { opacity in
-                        layer.opacity = opacity
-                    }
-
+                    return .init(
+                        descriptor: .init(id: "opacity", title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 1, step: 0.05, isDecimal: true)), editability: .editable),
+                        read: { .number(Double(layer.opacity)) },
+                        write: { newValue in guard case let .number(value) = newValue else { return }; layer.opacity = Float(value) }
+                    )
+                case .backgroundColor:
+                    return .init(
+                        descriptor: .init(id: "background-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable),
+                        read: { .color(layer.backgroundColor.map { UIColor(cgColor: $0) }) },
+                        write: { newValue in guard case let .color(color) = newValue else { return }; layer.backgroundColor = color?.cgColor }
+                    )
                 case .isHidden:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { layer.isHidden }
-                    ) { isHidden in
-                        layer.isHidden = isHidden
-                    }
-
-                case .masksToBounds:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { layer.masksToBounds }
-                    ) { masksToBounds in
-                        layer.masksToBounds = masksToBounds
-                    }
-
+                    return .init(descriptor: .init(id: "is-hidden", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(layer.isHidden) }, write: { newValue in guard case let .bool(v)=newValue else { return }; layer.isHidden = v })
+                case .isDoubleSided:
+                    return .init(descriptor: .init(id: "is-double-sided", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(layer.isDoubleSided) }, write: { newValue in guard case let .bool(v)=newValue else { return }; layer.isDoubleSided = v })
+                case .allowsEdgeAntialiasing:
+                    return .init(descriptor: .init(id: "allows-edge-antialiasing", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(layer.allowsEdgeAntialiasing) }, write: { newValue in guard case let .bool(v)=newValue else { return }; layer.allowsEdgeAntialiasing = v })
+                case .allowsGroupOpacity:
+                    return .init(descriptor: .init(id: "allows-group-opacity", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(layer.allowsGroupOpacity) }, write: { newValue in guard case let .bool(v)=newValue else { return }; layer.allowsGroupOpacity = v })
+                case .separatorMask, .separatorCornerRadius:
+                    return .init(descriptor: .init(id: property.rawValue, title: "", kind: .separator, value: .none, editability: .readOnly), read: { .none }, write: nil, refreshHint: .none)
                 case .mask:
                     guard let mask = layer.mask else { return nil }
-
-                    return .textField(
-                        title: property.rawValue,
-                        placeholder: property.rawValue,
-                        value: { mask.debugDescription },
-                        handler: nil
-                    )
-
-                case .isDoubleSided:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { layer.isDoubleSided }
-                    ) { isDoubleSided in
-                        layer.isDoubleSided = isDoubleSided
-                    }
-
+                    return .init(descriptor: .init(id: "mask", title: property.rawValue, kind: .textField, value: .string(.init(multiline: false, placeholder: property.rawValue, allowsNil: false)), editability: .readOnly), read: { .string(mask.debugDescription) }, write: nil, refreshHint: .none)
+                case .masksToBounds:
+                    return .init(descriptor: .init(id: "masks-to-bounds", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(layer.masksToBounds) }, write: { newValue in guard case let .bool(v)=newValue else { return }; layer.masksToBounds = v })
                 case .cornerRadius:
-                    return .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { layer.cornerRadius },
-                        range: { 0...min(layer.frame.height, layer.frame.width) },
-                        stepValue: { 1 }
-                    ) { cornerRadius in
-                        layer.cornerRadius = cornerRadius
-                    }
-
+                    return .init(descriptor: .init(id: "corner-radius", title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: Double(min(layer.frame.height, layer.frame.width)), step: 1, isDecimal: true)), editability: .editable), read: { .number(Double(layer.cornerRadius)) }, write: { newValue in guard case let .number(v)=newValue else { return }; layer.cornerRadius = CGFloat(v) })
                 case .maskedCorners:
                     return nil
-
+                case .groupBorder, .groupShadow:
+                    return .init(descriptor: .init(id: property.rawValue.replacingOccurrences(of: " ", with: "-").lowercased(), title: property.rawValue, kind: .group, value: .none, editability: .readOnly), read: { .none }, write: nil, refreshHint: .none)
                 case .borderWidth:
-                    return .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { layer.borderWidth },
-                        range: { 0...100 },
-                        stepValue: { 1 }
-                    ) { borderWidth in
-                        layer.borderWidth = borderWidth
-                    }
-
+                    return .init(descriptor: .init(id: "border-width", title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 100, step: 1, isDecimal: true)), editability: .editable), read: { .number(Double(layer.borderWidth)) }, write: { newValue in guard case let .number(v)=newValue else { return }; layer.borderWidth = CGFloat(v) })
                 case .borderColor:
-                    return .cgColorPicker(
-                        title: property.rawValue,
-                        color: { layer.borderColor }
-                    ) { borderColor in
-                        layer.borderColor = borderColor
-                    }
-
-                case .backgroundColor:
-                    return .cgColorPicker(
-                        title: property.rawValue,
-                        color: { layer.backgroundColor }
-                    ) { backgroundColor in
-                        layer.backgroundColor = backgroundColor
-                    }
-
+                    return .init(descriptor: .init(id: "border-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable), read: { .color(layer.borderColor.map { UIColor(cgColor: $0) }) }, write: { newValue in guard case let .color(color)=newValue else { return }; layer.borderColor = color?.cgColor })
                 case .shadowOpacity:
-                    return .floatStepper(
-                        title: property.rawValue,
-                        value: { layer.shadowOpacity },
-                        range: { 0...1 },
-                        stepValue: { 0.05 }
-                    ) { shadowOpacity in
-                        layer.shadowOpacity = shadowOpacity
-                    }
-
+                    return .init(descriptor: .init(id: "shadow-opacity", title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 1, step: 0.05, isDecimal: true)), editability: .editable), read: { .number(Double(layer.shadowOpacity)) }, write: { newValue in guard case let .number(v)=newValue else { return }; layer.shadowOpacity = Float(v) })
                 case .shadowRadius:
-                    return .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { layer.shadowRadius },
-                        range: { 0...100 },
-                        stepValue: { 1 }
-                    ) { shadowRadius in
-                        layer.shadowRadius = shadowRadius
-                    }
-
+                    return .init(descriptor: .init(id: "shadow-radius", title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 100, step: 1, isDecimal: true)), editability: .editable), read: { .number(Double(layer.shadowRadius)) }, write: { newValue in guard case let .number(v)=newValue else { return }; layer.shadowRadius = CGFloat(v) })
                 case .shadowOffset:
-                    return .cgSize(
-                        title: property.rawValue,
-                        size: { layer.shadowOffset }
-                    ) {
-                        guard let shadowOffset = $0 else { return }
-                        layer.shadowOffset = shadowOffset
-                    }
-
+                    return .init(descriptor: .init(id: "shadow-offset", title: property.rawValue, kind: .preview, value: .size, editability: .editable), read: { .size(layer.shadowOffset) }, write: { newValue in guard case let .size(v)=newValue else { return }; layer.shadowOffset = v })
                 case .shadowColor:
-                    return .cgColorPicker(
-                        title: property.rawValue,
-                        color: { layer.shadowColor }
-                    ) { shadowColor in
-                        layer.shadowColor = shadowColor
-                    }
-
+                    return .init(descriptor: .init(id: "shadow-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable), read: { .color(layer.shadowColor.map { UIColor(cgColor: $0) }) }, write: { newValue in guard case let .color(color)=newValue else { return }; layer.shadowColor = color?.cgColor })
                 case .shadowPath:
                     guard let shadowPath = layer.shadowPath else { return nil }
-
-                    return .textField(
-                        title: property.rawValue,
-                        placeholder: property.rawValue,
-                        value: { String(describing: shadowPath) },
-                        handler: nil
-                    )
-
-                case .allowsEdgeAntialiasing:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { layer.allowsEdgeAntialiasing }
-                    ) { allowsEdgeAntialiasing in
-                        layer.allowsEdgeAntialiasing = allowsEdgeAntialiasing
-                    }
-
-                case .allowsGroupOpacity:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { layer.allowsGroupOpacity }
-                    ) { allowsGroupOpacity in
-                        layer.allowsGroupOpacity = allowsGroupOpacity
-                    }
-
-                case .separatorMask,
-                     .separatorCornerRadius:
-                    return .separator
-
-                case .groupBorder,
-                     .groupShadow:
-                    return .group(title: property.rawValue)
+                    return .init(descriptor: .init(id: "shadow-path", title: property.rawValue, kind: .textField, value: .string(.init(multiline: false, placeholder: property.rawValue, allowsNil: false)), editability: .readOnly), read: { .string(String(describing: shadowPath)) }, write: nil, refreshHint: .none)
                 }
             }
         }
