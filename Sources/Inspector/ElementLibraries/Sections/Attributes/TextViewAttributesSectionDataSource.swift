@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -30,7 +31,6 @@ extension DefaultElementAttributesLibrary {
 
         init?(with object: NSObject) {
             guard let textView = object as? UITextView else { return nil }
-
             self.textView = textView
         }
 
@@ -77,186 +77,162 @@ extension DefaultElementAttributesLibrary {
             let id = property.rawValue.replacingOccurrences(of: " ", with: "-").lowercased()
             switch property {
             case .text:
-                return InspectorElementProperty.textView(
-                    title: property.rawValue,
-                    placeholder: textView.text,
-                    value: { textView.text }
-                ) { text in
-                    textView.text = text
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(
+                        id: id,
+                        title: property.rawValue,
+                        kind: .textView,
+                        value: .string(.init(multiline: true, placeholder: textView.text, allowsNil: true)),
+                        editability: .editable
+                    ),
+                    read: { .string(textView.text) },
+                    write: { newValue in
+                        guard case let .string(text) = newValue else { return }
+                        textView.text = text
+                    }
+                )
             case .textColor:
-                return InspectorElementProperty.colorPicker(
-                    title: property.rawValue,
-                    color: { textView.textColor }
-                ) { textColor in
-                    textView.textColor = textColor
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable),
+                    read: { .color(textView.textColor) },
+                    write: { newValue in
+                        guard case let .color(color) = newValue else { return }
+                        textView.textColor = color
+                    }
+                )
             case .fontName:
-                return InspectorElementProperty.fontNamePicker(
-                    title: property.rawValue,
-                    fontProvider: { textView.font }
-                ) { font in
-                    guard let font else { return }
-                    textView.font = font
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(
+                        id: id,
+                        title: property.rawValue,
+                        kind: .options,
+                        value: .selection(.init(options: FontReference.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
+                        editability: .editable,
+                        presentation: .init(axis: .vertical)
+                    ),
+                    read: {
+                        let fontName = textView.font?.fontName ?? UIFont.systemFont(ofSize: UIFont.systemFontSize).fontName
+                        return .selection(FontReference.firstIndex(of: fontName))
+                    },
+                    write: { newValue in
+                        guard case let .selection(index) = newValue,
+                              let index,
+                              let font = FontReference.font(at: index, size: textView.font?.pointSize ?? UIFont.systemFontSize) else { return }
+                        textView.font = font
+                    },
+                    runtimePresentation: .init(selectionOptionIcons: FontReference.allCases.map(\.icon))
+                )
             case .fontSize:
-                return InspectorElementProperty.fontSizeStepper(
-                    title: property.rawValue,
-                    fontProvider: { textView.font }
-                ) { font in
-                    guard let font else { return }
-                    textView.font = font
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 256, step: 1, isDecimal: true)), editability: .editable),
+                    read: { .number(Double(textView.font?.pointSize ?? UIFont.systemFontSize)) },
+                    write: { newValue in
+                        guard case let .number(value) = newValue, let font = textView.font else { return }
+                        textView.font = font.withSize(CGFloat(value))
+                    }
+                )
             case .adjustsFontForContentSizeCategory:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { textView.adjustsFontForContentSizeCategory }
-                ) { adjustsFontForContentSizeCategory in
-                    textView.adjustsFontForContentSizeCategory = adjustsFontForContentSizeCategory
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(textView.adjustsFontForContentSizeCategory) }, write: { newValue in guard case let .bool(v) = newValue else { return }; textView.adjustsFontForContentSizeCategory = v })
             case .textAlignment:
                 let allCases = NSTextAlignment.allCases.withImages
-                return InspectorElementProperty.imageButtonGroup(
-                    title: property.rawValue,
-                    images: allCases.compactMap(\.image),
-                    selectedIndex: { allCases.firstIndex(of: textView.textAlignment) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textView.textAlignment = allCases[newIndex]
-                }.makeBinding(id: id)
-            case .groupBehavior:
-                return InspectorElementProperty.group(title: property.rawValue).makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .imageButtons, value: .selection(.init(options: allCases.enumerated().map { .init(id: "\($0.offset)", title: "\($0.offset)") }, allowsNil: true)), editability: .editable),
+                    read: { .selection(allCases.firstIndex(of: textView.textAlignment)) },
+                    write: { newValue in
+                        guard case let .selection(index) = newValue, let index else { return }
+                        textView.textAlignment = allCases[index]
+                    },
+                    runtimePresentation: .init(selectionImages: allCases.compactMap(\.image))
+                )
+            case .groupBehavior, .groupDataDetectors, .groupTextInputTraits:
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .group, value: .none, editability: .readOnly), read: { .none }, write: nil, refreshHint: .none)
             case .isEditable:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { textView.isEditable }
-                ) { isEditable in
-                    textView.isEditable = isEditable
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(textView.isEditable) }, write: { newValue in guard case let .bool(v) = newValue else { return }; textView.isEditable = v })
             case .isSelectable:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { textView.isSelectable }
-                ) { isSelectable in
-                    textView.isSelectable = isSelectable
-                }.makeBinding(id: id)
-            case .groupDataDetectors:
-                return InspectorElementProperty.group(title: property.rawValue).makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(textView.isSelectable) }, write: { newValue in guard case let .bool(v) = newValue else { return }; textView.isSelectable = v })
             case .dataDetectorPhoneNumber:
-                return InspectorElementProperty.dataDetectorType(textView: textView, dataDetectorType: .phoneNumber).makeBinding(id: id)
+                return dataDetectorBinding(title: property.rawValue, type: .phoneNumber, textView: textView, id: id)
             case .dataDetectorLink:
-                return InspectorElementProperty.dataDetectorType(textView: textView, dataDetectorType: .link).makeBinding(id: id)
+                return dataDetectorBinding(title: property.rawValue, type: .link, textView: textView, id: id)
             case .dataDetectorAddress:
-                return InspectorElementProperty.dataDetectorType(textView: textView, dataDetectorType: .address).makeBinding(id: id)
+                return dataDetectorBinding(title: property.rawValue, type: .address, textView: textView, id: id)
             case .dataDetectorCalendarEvent:
-                return InspectorElementProperty.dataDetectorType(textView: textView, dataDetectorType: .calendarEvent).makeBinding(id: id)
+                return dataDetectorBinding(title: property.rawValue, type: .calendarEvent, textView: textView, id: id)
             case .dataDetectorShipmentTrackingNumber:
-                return InspectorElementProperty.dataDetectorType(textView: textView, dataDetectorType: .shipmentTrackingNumber).makeBinding(id: id)
+                return dataDetectorBinding(title: property.rawValue, type: .shipmentTrackingNumber, textView: textView, id: id)
             case .dataDetectorFlightNumber:
-                return InspectorElementProperty.dataDetectorType(textView: textView, dataDetectorType: .flightNumber).makeBinding(id: id)
+                return dataDetectorBinding(title: property.rawValue, type: .flightNumber, textView: textView, id: id)
             case .dataDetectorLookupSuggestion:
-                return InspectorElementProperty.dataDetectorType(textView: textView, dataDetectorType: .lookupSuggestion).makeBinding(id: id)
-            case .groupTextInputTraits:
-                return InspectorElementProperty.group(title: property.rawValue).makeBinding(id: id)
+                return dataDetectorBinding(title: property.rawValue, type: .lookupSuggestion, textView: textView, id: id)
             case .textContentType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextContentType.allCases.map(\.description),
-                    selectedIndex: {
-                        guard let textContentType = textView.textContentType else { return nil }
-                        return UITextContentType.allCases.firstIndex(of: textContentType)
-                    }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textView.textContentType = UITextContentType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextContentType.allCases.map(\.description), selectedIndex: {
+                    guard let textContentType = textView.textContentType else { return nil }
+                    return UITextContentType.allCases.firstIndex(of: textContentType)
+                }, apply: { index in
+                    textView.textContentType = UITextContentType.allCases[index]
+                })
             case .autocapitalizationType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextAutocapitalizationType.allCases.map(\.description),
-                    selectedIndex: { UITextAutocapitalizationType.allCases.firstIndex(of: textView.autocapitalizationType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textView.autocapitalizationType = UITextAutocapitalizationType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextAutocapitalizationType.allCases.map(\.description), selectedIndex: { UITextAutocapitalizationType.allCases.firstIndex(of: textView.autocapitalizationType) }, apply: { index in
+                    textView.autocapitalizationType = UITextAutocapitalizationType.allCases[index]
+                })
             case .autocorrectionType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextAutocorrectionType.allCases.map(\.description),
-                    selectedIndex: { UITextAutocorrectionType.allCases.firstIndex(of: textView.autocorrectionType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textView.autocorrectionType = UITextAutocorrectionType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextAutocorrectionType.allCases.map(\.description), selectedIndex: { UITextAutocorrectionType.allCases.firstIndex(of: textView.autocorrectionType) }, apply: { index in
+                    textView.autocorrectionType = UITextAutocorrectionType.allCases[index]
+                })
             case .smartDashesType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextSmartDashesType.allCases.map(\.description),
-                    selectedIndex: { UITextSmartDashesType.allCases.firstIndex(of: textView.smartDashesType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textView.smartDashesType = UITextSmartDashesType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextSmartDashesType.allCases.map(\.description), selectedIndex: { UITextSmartDashesType.allCases.firstIndex(of: textView.smartDashesType) }, apply: { index in
+                    textView.smartDashesType = UITextSmartDashesType.allCases[index]
+                })
             case .smartQuotesType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextSmartQuotesType.allCases.map(\.description),
-                    selectedIndex: { UITextSmartQuotesType.allCases.firstIndex(of: textView.smartQuotesType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textView.smartQuotesType = UITextSmartQuotesType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextSmartQuotesType.allCases.map(\.description), selectedIndex: { UITextSmartQuotesType.allCases.firstIndex(of: textView.smartQuotesType) }, apply: { index in
+                    textView.smartQuotesType = UITextSmartQuotesType.allCases[index]
+                })
             case .spellCheckingType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextSpellCheckingType.allCases.map(\.description),
-                    selectedIndex: { UITextSpellCheckingType.allCases.firstIndex(of: textView.spellCheckingType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textView.spellCheckingType = UITextSpellCheckingType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextSpellCheckingType.allCases.map(\.description), selectedIndex: { UITextSpellCheckingType.allCases.firstIndex(of: textView.spellCheckingType) }, apply: { index in
+                    textView.spellCheckingType = UITextSpellCheckingType.allCases[index]
+                })
             case .keyboardType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UIKeyboardType.allCases.map(\.description),
-                    selectedIndex: { UIKeyboardType.allCases.firstIndex(of: textView.keyboardType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textView.keyboardType = UIKeyboardType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UIKeyboardType.allCases.map(\.description), selectedIndex: { UIKeyboardType.allCases.firstIndex(of: textView.keyboardType) }, apply: { index in
+                    textView.keyboardType = UIKeyboardType.allCases[index]
+                })
             case .keyboardAppearance:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UIKeyboardAppearance.allCases.map(\.description),
-                    selectedIndex: { UIKeyboardAppearance.allCases.firstIndex(of: textView.keyboardAppearance) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textView.keyboardAppearance = UIKeyboardAppearance.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UIKeyboardAppearance.allCases.map(\.description), selectedIndex: { UIKeyboardAppearance.allCases.firstIndex(of: textView.keyboardAppearance) }, apply: { index in
+                    textView.keyboardAppearance = UIKeyboardAppearance.allCases[index]
+                })
             case .returnKey:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UIReturnKeyType.allCases.map(\.description),
-                    selectedIndex: { UIReturnKeyType.allCases.firstIndex(of: textView.returnKeyType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textView.returnKeyType = UIReturnKeyType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UIReturnKeyType.allCases.map(\.description), selectedIndex: { UIReturnKeyType.allCases.firstIndex(of: textView.returnKeyType) }, apply: { index in
+                    textView.returnKeyType = UIReturnKeyType.allCases[index]
+                })
             case .enablesReturnKeyAutomatically:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { textView.enablesReturnKeyAutomatically }
-                ) { enablesReturnKeyAutomatically in
-                    textView.enablesReturnKeyAutomatically = enablesReturnKeyAutomatically
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(textView.enablesReturnKeyAutomatically) }, write: { newValue in guard case let .bool(v) = newValue else { return }; textView.enablesReturnKeyAutomatically = v })
             case .isSecureTextEntry:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { textView.isSecureTextEntry }
-                ) { isSecureTextEntry in
-                    textView.isSecureTextEntry = isSecureTextEntry
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(textView.isSecureTextEntry) }, write: { newValue in guard case let .bool(v) = newValue else { return }; textView.isSecureTextEntry = v })
             }
+        }
+
+        private func dataDetectorBinding(title: String, type: UIDataDetectorTypes, textView: UITextView, id: String) -> InspectorPropertyBinding {
+            .init(
+                descriptor: .init(id: id, title: title, kind: .toggle, value: .bool, editability: .editable),
+                read: { .bool(textView.dataDetectorTypes.contains(type)) },
+                write: { newValue in
+                    guard case let .bool(isOn) = newValue else { return }
+                    var dataDetectors = textView.dataDetectorTypes
+                    if isOn { _ = dataDetectors.insert(type).memberAfterInsert }
+                    else { dataDetectors.remove(type) }
+                    textView.dataDetectorTypes = dataDetectors
+                }
+            )
+        }
+
+        private func optionsBinding(id: String, title: String, options: [String], selectedIndex: @escaping () -> Int?, apply: @escaping (Int) -> Void) -> InspectorPropertyBinding {
+            .init(
+                descriptor: .init(id: id, title: title, kind: .options, value: .selection(.init(options: options.enumerated().map { .init(id: "\($0.offset)", title: $0.element) }, allowsNil: true)), editability: .editable),
+                read: { .selection(selectedIndex()) },
+                write: { newValue in
+                    guard case let .selection(index) = newValue, let index else { return }
+                    apply(index)
+                }
+            )
         }
     }
 }
