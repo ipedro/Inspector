@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -66,118 +67,137 @@ extension DefaultElementAttributesLibrary {
         }
 
         private func binding(for property: Property, button: UIButton) -> InspectorPropertyBinding? {
-            let id = property.rawValue.replacingOccurrences(of: " ", with: "-").lowercased()
             switch property {
             case .type:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UIButton.ButtonType.allCases.map(\.description),
-                    selectedIndex: { UIButton.ButtonType.allCases.firstIndex(of: button.buttonType) },
-                    handler: nil
-                ).makeBinding(id: id)
+                return .init(
+                    descriptor: .init(
+                        id: "type",
+                        title: property.rawValue,
+                        kind: .options,
+                        value: .selection(.init(options: UIButton.ButtonType.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
+                        editability: .readOnly
+                    ),
+                    read: { .selection(UIButton.ButtonType.allCases.firstIndex(of: button.buttonType)) },
+                    write: nil,
+                    refreshHint: .none
+                )
             case .fontName:
-                return InspectorElementProperty.fontNamePicker(
-                    title: property.rawValue,
-                    fontProvider: { button.titleLabel?.font }
-                ) { font in
-                    button.titleLabel?.font = font
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(
+                        id: "font-name",
+                        title: property.rawValue,
+                        kind: .options,
+                        value: .selection(.init(options: FontReference.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
+                        editability: .editable,
+                        presentation: .init(axis: .vertical)
+                    ),
+                    read: {
+                        let fontName = button.titleLabel?.font.fontName ?? UIFont.systemFont(ofSize: UIFont.systemFontSize).fontName
+                        return .selection(FontReference.firstIndex(of: fontName))
+                    },
+                    write: { newValue in
+                        guard case let .selection(index) = newValue,
+                              let index,
+                              let font = FontReference.font(at: index, size: button.titleLabel?.font.pointSize ?? UIFont.systemFontSize) else { return }
+                        button.titleLabel?.font = font
+                    },
+                    runtimePresentation: .init(selectionOptionIcons: FontReference.allCases.map(\.icon))
+                )
             case .fontPointSize:
-                return InspectorElementProperty.fontSizeStepper(
-                    title: property.rawValue,
-                    fontProvider: { button.titleLabel?.font }
-                ) { font in
-                    button.titleLabel?.font = font
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(
+                        id: "font-point-size",
+                        title: property.rawValue,
+                        kind: .stepper,
+                        value: .number(.init(min: 0, max: 256, step: 1, isDecimal: true)),
+                        editability: .editable
+                    ),
+                    read: { .number(Double(button.titleLabel?.font.pointSize ?? UIFont.systemFontSize)) },
+                    write: { newValue in
+                        guard case let .number(value) = newValue else { return }
+                        guard let font = button.titleLabel?.font.withSize(CGFloat(value)) else { return }
+                        button.titleLabel?.font = font
+                    }
+                )
             case .groupState, .groupDrawing:
-                return InspectorElementProperty.group(title: property.rawValue).makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: property.rawValue.replacingOccurrences(of: " ", with: "-").lowercased(), title: property.rawValue, kind: .group, value: .none, editability: .readOnly),
+                    read: { .none },
+                    write: nil,
+                    refreshHint: .none
+                )
             case .stateConfig:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UIControl.State.configurableButtonStates.map(\.description),
-                    selectedIndex: { UIControl.State.configurableButtonStates.firstIndex(of: self.selectedControlState) }
-                ) { [weak self] in
-                    guard let newIndex = $0 else { return }
-                    self?.selectedControlState = UIControl.State.configurableButtonStates[newIndex]
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(
+                        id: "state-config",
+                        title: property.rawValue,
+                        kind: .options,
+                        value: .selection(.init(options: UIControl.State.configurableButtonStates.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
+                        editability: .editable
+                    ),
+                    read: { .selection(UIControl.State.configurableButtonStates.firstIndex(of: self.selectedControlState)) },
+                    write: { [weak self] newValue in
+                        guard case let .selection(index) = newValue, let index else { return }
+                        self?.selectedControlState = UIControl.State.configurableButtonStates[index]
+                    }
+                )
             case .titleText:
-                return InspectorElementProperty.textField(
-                    title: property.rawValue,
-                    placeholder: button.title(for: selectedControlState) ?? property.rawValue,
-                    value: { button.title(for: self.selectedControlState) }
-                ) { title in
-                    button.setTitle(title, for: self.selectedControlState)
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: "title-text", title: property.rawValue, kind: .textField, value: .string(.init(multiline: false, placeholder: button.title(for: selectedControlState) ?? property.rawValue, allowsNil: true)), editability: .editable),
+                    read: { .string(button.title(for: self.selectedControlState)) },
+                    write: { newValue in
+                        guard case let .string(title) = newValue else { return }
+                        button.setTitle(title, for: self.selectedControlState)
+                    }
+                )
             case .currentTitleColor:
-                return InspectorElementProperty.colorPicker(
-                    title: property.rawValue,
-                    color: { button.titleColor(for: self.selectedControlState) }
-                ) { currentTitleColor in
-                    button.setTitleColor(currentTitleColor, for: self.selectedControlState)
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: "current-title-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable),
+                    read: { .color(button.titleColor(for: self.selectedControlState)) },
+                    write: { newValue in
+                        guard case let .color(color) = newValue else { return }
+                        button.setTitleColor(color, for: self.selectedControlState)
+                    }
+                )
             case .currentTitleShadowColor:
-                return InspectorElementProperty.colorPicker(
-                    title: property.rawValue,
-                    color: { button.titleShadowColor(for: self.selectedControlState) }
-                ) { currentTitleShadowColor in
-                    button.setTitleShadowColor(currentTitleShadowColor, for: self.selectedControlState)
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: "current-title-shadow-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable),
+                    read: { .color(button.titleShadowColor(for: self.selectedControlState)) },
+                    write: { newValue in
+                        guard case let .color(color) = newValue else { return }
+                        button.setTitleShadowColor(color, for: self.selectedControlState)
+                    }
+                )
             case .image:
-                return InspectorElementProperty.imagePicker(
-                    title: property.rawValue,
-                    image: { button.image(for: self.selectedControlState) }
-                ) { image in
-                    button.setImage(image, for: self.selectedControlState)
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: "image", title: property.rawValue, kind: .preview, value: .none, editability: .editable),
+                    read: { .image(button.image(for: self.selectedControlState)) },
+                    write: { newValue in
+                        guard case let .image(image) = newValue else { return }
+                        button.setImage(image, for: self.selectedControlState)
+                    }
+                )
             case .backgroundImage:
-                return InspectorElementProperty.imagePicker(
-                    title: property.rawValue,
-                    image: { button.backgroundImage(for: self.selectedControlState) }
-                ) { backgroundImage in
-                    button.setBackgroundImage(backgroundImage, for: self.selectedControlState)
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: "background-image", title: property.rawValue, kind: .preview, value: .none, editability: .editable),
+                    read: { .image(button.backgroundImage(for: self.selectedControlState)) },
+                    write: { newValue in
+                        guard case let .image(image) = newValue else { return }
+                        button.setBackgroundImage(image, for: self.selectedControlState)
+                    }
+                )
             case .isPointerInteractionEnabled:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { button.isPointerInteractionEnabled }
-                ) { isPointerInteractionEnabled in
-                    button.isPointerInteractionEnabled = isPointerInteractionEnabled
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: "is-pointer-interaction-enabled", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(button.isPointerInteractionEnabled) }, write: { newValue in guard case let .bool(value) = newValue else { return }; button.isPointerInteractionEnabled = value })
             case .adjustsImageSizeForAccessibilityContentSizeCategory:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { button.adjustsImageSizeForAccessibilityContentSizeCategory }
-                ) { adjustsImageSizeForAccessibilityContentSizeCategory in
-                    button.adjustsImageSizeForAccessibilityContentSizeCategory = adjustsImageSizeForAccessibilityContentSizeCategory
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: "adjusts-image-size-for-accessibility-content-size-category", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(button.adjustsImageSizeForAccessibilityContentSizeCategory) }, write: { newValue in guard case let .bool(value) = newValue else { return }; button.adjustsImageSizeForAccessibilityContentSizeCategory = value })
             case .reversesTitleShadowWhenHighlighted:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { button.reversesTitleShadowWhenHighlighted }
-                ) { reversesTitleShadowWhenHighlighted in
-                    button.reversesTitleShadowWhenHighlighted = reversesTitleShadowWhenHighlighted
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: "reverses-title-shadow-when-highlighted", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(button.reversesTitleShadowWhenHighlighted) }, write: { newValue in guard case let .bool(value) = newValue else { return }; button.reversesTitleShadowWhenHighlighted = value })
             case .showsTouchWhenHighlighted:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { button.showsTouchWhenHighlighted }
-                ) { showsTouchWhenHighlighted in
-                    button.showsTouchWhenHighlighted = showsTouchWhenHighlighted
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: "shows-touch-when-highlighted", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(button.showsTouchWhenHighlighted) }, write: { newValue in guard case let .bool(value) = newValue else { return }; button.showsTouchWhenHighlighted = value })
             case .adjustsImageWhenHighlighted:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { button.adjustsImageWhenHighlighted }
-                ) { adjustsImageWhenHighlighted in
-                    button.adjustsImageWhenHighlighted = adjustsImageWhenHighlighted
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: "adjusts-image-when-highlighted", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(button.adjustsImageWhenHighlighted) }, write: { newValue in guard case let .bool(value) = newValue else { return }; button.adjustsImageWhenHighlighted = value })
             case .adjustsImageWhenDisabled:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { button.adjustsImageWhenDisabled }
-                ) { adjustsImageWhenDisabled in
-                    button.adjustsImageWhenDisabled = adjustsImageWhenDisabled
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: "adjusts-image-when-disabled", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(button.adjustsImageWhenDisabled) }, write: { newValue in guard case let .bool(value) = newValue else { return }; button.adjustsImageWhenDisabled = value })
             }
         }
     }
