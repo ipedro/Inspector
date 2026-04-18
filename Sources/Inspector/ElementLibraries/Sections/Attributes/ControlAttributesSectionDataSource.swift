@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -43,7 +44,7 @@ extension DefaultElementAttributesLibrary {
             case isHighlighted = "Highlighted"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let control else { return [] }
 
             return Property.allCases.compactMap { property in
@@ -51,54 +52,105 @@ extension DefaultElementAttributesLibrary {
                 case .contentHorizontalAlignment:
                     let allCases = UIControl.ContentHorizontalAlignment.allCases.withImages
 
-                    return .imageButtonGroup(
-                        title: property.rawValue,
-                        images: allCases.compactMap(\.image),
-                        selectedIndex: { allCases.firstIndex(of: control.contentHorizontalAlignment) }
-                    ) {
-                        guard let newIndex = $0 else { return }
-
-                        let contentHorizontalAlignment = allCases[newIndex]
-
-                        control.contentHorizontalAlignment = contentHorizontalAlignment
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "content-horizontal-alignment",
+                            title: property.rawValue,
+                            kind: .imageButtons,
+                            value: .selection(
+                                .init(options: allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: "\($0.offset)")
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(allCases.firstIndex(of: control.contentHorizontalAlignment)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
+                            control.contentHorizontalAlignment = allCases[newIndex]
+                        },
+                        runtimePresentation: .init(selectionImages: allCases.compactMap(\.image))
+                    )
                 case .contentVerticalAlignment:
                     let knownCases = UIControl.ContentVerticalAlignment.allCases.filter { $0.image?.withRenderingMode(.alwaysTemplate) != nil }
 
-                    return .imageButtonGroup(
-                        title: property.rawValue,
-                        images: knownCases.compactMap(\.image),
-                        selectedIndex: { knownCases.firstIndex(of: control.contentVerticalAlignment) }
-                    ) {
-                        guard let newIndex = $0 else { return }
-
-                        let contentVerticalAlignment = UIControl.ContentVerticalAlignment.allCases[newIndex]
-
-                        control.contentVerticalAlignment = contentVerticalAlignment
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "content-vertical-alignment",
+                            title: property.rawValue,
+                            kind: .imageButtons,
+                            value: .selection(
+                                .init(options: knownCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: "\($0.offset)")
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(knownCases.firstIndex(of: control.contentVerticalAlignment)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
+                            control.contentVerticalAlignment = UIControl.ContentVerticalAlignment.allCases[newIndex]
+                        },
+                        runtimePresentation: .init(selectionImages: knownCases.compactMap(\.image))
+                    )
                 case .groupState:
-                    return .group(title: property.rawValue)
+                    return .init(
+                        descriptor: .init(
+                            id: "group-state",
+                            title: property.rawValue,
+                            kind: .group,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .isSelected:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { control.isSelected }
-                    ) { isSelected in
-                        control.isSelected = isSelected
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "is-selected",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(control.isSelected) },
+                        write: { newValue in
+                            guard case let .bool(isSelected) = newValue else { return }
+                            control.isSelected = isSelected
+                        }
+                    )
                 case .isEnabled:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { control.isEnabled }
-                    ) { isEnabled in
-                        control.isEnabled = isEnabled
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "is-enabled",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(control.isEnabled) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            control.isEnabled = isEnabled
+                        }
+                    )
                 case .isHighlighted:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { control.isHighlighted }
-                    ) { isHighlighted in
-                        control.isHighlighted = isHighlighted
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "is-highlighted",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(control.isHighlighted) },
+                        write: { newValue in
+                            guard case let .bool(isHighlighted) = newValue else { return }
+                            control.isHighlighted = isHighlighted
+                        }
+                    )
                 }
             }
         }

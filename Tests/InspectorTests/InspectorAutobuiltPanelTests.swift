@@ -460,5 +460,27 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(stackView.isLayoutMarginsRelativeArrangement)
     }
 
+    func testControlAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let control = UIControl(frame: .zero)
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.ControlAttributesSectionDataSource(with: control)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 6)
+        XCTAssertEqual(bindings[0].descriptor.kind, .imageButtons)
+        XCTAssertEqual(bindings[1].descriptor.kind, .imageButtons)
+        XCTAssertEqual(bindings[2].descriptor.kind, .group)
+        XCTAssertEqual(bindings[3].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[4].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[5].descriptor.kind, .toggle)
+
+        bindings[3].apply(.bool(true))
+        bindings[4].apply(.bool(false))
+
+        XCTAssertTrue(control.isSelected)
+        XCTAssertFalse(control.isEnabled)
+    }
+
 }
 #endif
