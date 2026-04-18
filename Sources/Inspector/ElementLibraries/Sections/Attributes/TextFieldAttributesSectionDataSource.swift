@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -76,216 +77,166 @@ extension DefaultElementAttributesLibrary {
             let id = property.rawValue.replacingOccurrences(of: " ", with: "-").lowercased()
             switch property {
             case .text:
-                return InspectorElementProperty.textField(
-                    title: property.rawValue,
-                    placeholder: textField.text.isNilOrEmpty ? property.rawValue : textField.text,
-                    value: { textField.text }
-                ) { text in
-                    textField.text = text
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(
+                        id: id,
+                        title: property.rawValue,
+                        kind: .textField,
+                        value: .string(.init(multiline: false, placeholder: textField.text.isNilOrEmpty ? property.rawValue : textField.text, allowsNil: true)),
+                        editability: .editable
+                    ),
+                    read: { .string(textField.text) },
+                    write: { newValue in
+                        guard case let .string(text) = newValue else { return }
+                        textField.text = text
+                    }
+                )
             case .textColor:
-                return InspectorElementProperty.colorPicker(
-                    title: property.rawValue,
-                    color: { textField.textColor }
-                ) { textColor in
-                    textField.textColor = textColor
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable),
+                    read: { .color(textField.textColor) },
+                    write: { newValue in
+                        guard case let .color(color) = newValue else { return }
+                        textField.textColor = color
+                    }
+                )
             case .fontName:
-                return InspectorElementProperty.fontNamePicker(
-                    title: property.rawValue,
-                    fontProvider: { textField.font }
-                ) { font in
-                    guard let font else { return }
-                    textField.font = font
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(
+                        id: id,
+                        title: property.rawValue,
+                        kind: .options,
+                        value: .selection(.init(options: FontReference.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
+                        editability: .editable,
+                        presentation: .init(axis: .vertical)
+                    ),
+                    read: {
+                        let fontName = textField.font?.fontName ?? UIFont.systemFont(ofSize: UIFont.systemFontSize).fontName
+                        return .selection(FontReference.firstIndex(of: fontName))
+                    },
+                    write: { newValue in
+                        guard case let .selection(index) = newValue,
+                              let index,
+                              let font = FontReference.font(at: index, size: textField.font?.pointSize ?? UIFont.systemFontSize) else { return }
+                        textField.font = font
+                    },
+                    runtimePresentation: .init(selectionOptionIcons: FontReference.allCases.map(\.icon))
+                )
             case .fontSize:
-                return InspectorElementProperty.fontSizeStepper(
-                    title: property.rawValue,
-                    fontProvider: { textField.font }
-                ) { font in
-                    guard let font else { return }
-                    textField.font = font
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 256, step: 1, isDecimal: true)), editability: .editable),
+                    read: { .number(Double(textField.font?.pointSize ?? UIFont.systemFontSize)) },
+                    write: { newValue in
+                        guard case let .number(value) = newValue, let font = textField.font else { return }
+                        textField.font = font.withSize(CGFloat(value))
+                    }
+                )
+            case .adjustsFontSizeToFitWidth:
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(textField.adjustsFontSizeToFitWidth) }, write: { newValue in guard case let .bool(v) = newValue else { return }; textField.adjustsFontSizeToFitWidth = v })
             case .textAlignment:
                 let allCases = NSTextAlignment.allCases.withImages
-                return InspectorElementProperty.imageButtonGroup(
-                    title: property.rawValue,
-                    images: allCases.compactMap(\.image),
-                    selectedIndex: { allCases.firstIndex(of: textField.textAlignment) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.textAlignment = allCases[newIndex]
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .imageButtons, value: .selection(.init(options: allCases.enumerated().map { .init(id: "\($0.offset)", title: "\($0.offset)") }, allowsNil: true)), editability: .editable),
+                    read: { .selection(allCases.firstIndex(of: textField.textAlignment)) },
+                    write: { newValue in
+                        guard case let .selection(index) = newValue, let index else { return }
+                        textField.textAlignment = allCases[index]
+                    },
+                    runtimePresentation: .init(selectionImages: allCases.compactMap(\.image))
+                )
             case .placeholder:
-                return InspectorElementProperty.textField(
-                    title: property.rawValue,
-                    placeholder: textField.placeholder.isNilOrEmpty ? property.rawValue : textField.placeholder,
-                    value: { textField.placeholder }
-                ) { placeholder in
-                    textField.placeholder = placeholder
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .textField, value: .string(.init(multiline: false, placeholder: textField.placeholder.isNilOrEmpty ? property.rawValue : textField.placeholder, allowsNil: true)), editability: .editable),
+                    read: { .string(textField.placeholder) },
+                    write: { newValue in
+                        guard case let .string(value) = newValue else { return }
+                        textField.placeholder = value
+                    }
+                )
             case .groupImages:
-                return InspectorElementProperty.group(title: property.rawValue).makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .group, value: .none, editability: .readOnly), read: { .none }, write: nil, refreshHint: .none)
             case .background:
-                return InspectorElementProperty.imagePicker(
-                    title: property.rawValue,
-                    image: { textField.background }
-                ) { background in
-                    textField.background = background
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .preview, value: .none, editability: .editable), read: { .image(textField.background) }, write: { newValue in guard case let .image(image) = newValue else { return }; textField.background = image })
             case .disabledBackground:
-                return InspectorElementProperty.imagePicker(
-                    title: property.rawValue,
-                    image: { textField.disabledBackground }
-                ) { disabledBackground in
-                    textField.disabledBackground = disabledBackground
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .preview, value: .none, editability: .editable), read: { .image(textField.disabledBackground) }, write: { newValue in guard case let .image(image) = newValue else { return }; textField.disabledBackground = image })
             case .groupBorder, .groupClearButton, .groupAdditionalFontOptions:
-                return InspectorElementProperty.separator.makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: "", kind: .separator, value: .none, editability: .readOnly), read: { .none }, write: nil, refreshHint: .none)
             case .borderStyle:
                 let allCases = UITextField.BorderStyle.allCases.withImages
-                return InspectorElementProperty.imageButtonGroup(
-                    title: property.rawValue,
-                    axis: .vertical,
-                    images: allCases.compactMap(\.image),
-                    selectedIndex: { allCases.firstIndex(of: textField.borderStyle) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.borderStyle = allCases[newIndex]
-                }.makeBinding(id: id)
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .imageButtons, value: .selection(.init(options: allCases.enumerated().map { .init(id: "\($0.offset)", title: "\($0.offset)") }, allowsNil: true)), editability: .editable, presentation: .init(axis: .vertical)),
+                    read: { .selection(allCases.firstIndex(of: textField.borderStyle)) },
+                    write: { newValue in
+                        guard case let .selection(index) = newValue, let index else { return }
+                        textField.borderStyle = allCases[index]
+                    },
+                    runtimePresentation: .init(selectionImages: allCases.compactMap(\.image))
+                )
             case .clearButton:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextField.ViewMode.allCases.map(\.description),
-                    selectedIndex: { UITextField.ViewMode.allCases.firstIndex(of: textField.clearButtonMode) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.clearButtonMode = UITextField.ViewMode.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextField.ViewMode.allCases.map(\.description), selectedIndex: { UITextField.ViewMode.allCases.firstIndex(of: textField.clearButtonMode) }, apply: { index in
+                    textField.clearButtonMode = UITextField.ViewMode.allCases[index]
+                })
             case .clearWhenEditingBegins:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { textField.clearsOnBeginEditing }
-                ) { clearsOnBeginEditing in
-                    textField.clearsOnBeginEditing = clearsOnBeginEditing
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(textField.clearsOnBeginEditing) }, write: { newValue in guard case let .bool(v) = newValue else { return }; textField.clearsOnBeginEditing = v })
             case .minFontSize:
-                return InspectorElementProperty.cgFloatStepper(
-                    title: property.rawValue,
-                    value: { textField.minimumFontSize },
-                    range: { 0...256 },
-                    stepValue: { 1 }
-                ) { minimumFontSize in
-                    textField.minimumFontSize = minimumFontSize
-                }.makeBinding(id: id)
-            case .adjustsFontSizeToFitWidth:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { textField.adjustsFontSizeToFitWidth }
-                ) { adjustsFontSizeToFitWidth in
-                    textField.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 256, step: 1, isDecimal: true)), editability: .editable), read: { .number(Double(textField.minimumFontSize)) }, write: { newValue in guard case let .number(v) = newValue else { return }; textField.minimumFontSize = CGFloat(v) })
             case .groupTextInputTraits:
-                return InspectorElementProperty.group(title: property.rawValue).makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .group, value: .none, editability: .readOnly), read: { .none }, write: nil, refreshHint: .none)
             case .textContentType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextContentType.allCases.map(\.description),
-                    selectedIndex: {
-                        guard let textContentType = textField.textContentType else { return nil }
-                        return UITextContentType.allCases.firstIndex(of: textContentType)
-                    }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.textContentType = UITextContentType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextContentType.allCases.map(\.description), selectedIndex: {
+                    guard let textContentType = textField.textContentType else { return nil }
+                    return UITextContentType.allCases.firstIndex(of: textContentType)
+                }, apply: { index in
+                    textField.textContentType = UITextContentType.allCases[index]
+                })
             case .autocapitalizationType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextAutocapitalizationType.allCases.map(\.description),
-                    selectedIndex: { UITextAutocapitalizationType.allCases.firstIndex(of: textField.autocapitalizationType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.autocapitalizationType = UITextAutocapitalizationType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextAutocapitalizationType.allCases.map(\.description), selectedIndex: { UITextAutocapitalizationType.allCases.firstIndex(of: textField.autocapitalizationType) }, apply: { index in
+                    textField.autocapitalizationType = UITextAutocapitalizationType.allCases[index]
+                })
             case .autocorrectionType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextAutocorrectionType.allCases.map(\.description),
-                    selectedIndex: { UITextAutocorrectionType.allCases.firstIndex(of: textField.autocorrectionType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.autocorrectionType = UITextAutocorrectionType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextAutocorrectionType.allCases.map(\.description), selectedIndex: { UITextAutocorrectionType.allCases.firstIndex(of: textField.autocorrectionType) }, apply: { index in
+                    textField.autocorrectionType = UITextAutocorrectionType.allCases[index]
+                })
             case .smartDashesType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextSmartDashesType.allCases.map(\.description),
-                    selectedIndex: { UITextSmartDashesType.allCases.firstIndex(of: textField.smartDashesType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.smartDashesType = UITextSmartDashesType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextSmartDashesType.allCases.map(\.description), selectedIndex: { UITextSmartDashesType.allCases.firstIndex(of: textField.smartDashesType) }, apply: { index in
+                    textField.smartDashesType = UITextSmartDashesType.allCases[index]
+                })
             case .smartQuotesType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextSmartQuotesType.allCases.map(\.description),
-                    selectedIndex: { UITextSmartQuotesType.allCases.firstIndex(of: textField.smartQuotesType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.smartQuotesType = UITextSmartQuotesType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextSmartQuotesType.allCases.map(\.description), selectedIndex: { UITextSmartQuotesType.allCases.firstIndex(of: textField.smartQuotesType) }, apply: { index in
+                    textField.smartQuotesType = UITextSmartQuotesType.allCases[index]
+                })
             case .spellCheckingType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UITextSpellCheckingType.allCases.map(\.description),
-                    selectedIndex: { UITextSpellCheckingType.allCases.firstIndex(of: textField.spellCheckingType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.spellCheckingType = UITextSpellCheckingType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UITextSpellCheckingType.allCases.map(\.description), selectedIndex: { UITextSpellCheckingType.allCases.firstIndex(of: textField.spellCheckingType) }, apply: { index in
+                    textField.spellCheckingType = UITextSpellCheckingType.allCases[index]
+                })
             case .keyboardType:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UIKeyboardType.allCases.map(\.description),
-                    selectedIndex: { UIKeyboardType.allCases.firstIndex(of: textField.keyboardType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.keyboardType = UIKeyboardType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UIKeyboardType.allCases.map(\.description), selectedIndex: { UIKeyboardType.allCases.firstIndex(of: textField.keyboardType) }, apply: { index in
+                    textField.keyboardType = UIKeyboardType.allCases[index]
+                })
             case .keyboardAppearance:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UIKeyboardAppearance.allCases.map(\.description),
-                    selectedIndex: { UIKeyboardAppearance.allCases.firstIndex(of: textField.keyboardAppearance) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.keyboardAppearance = UIKeyboardAppearance.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UIKeyboardAppearance.allCases.map(\.description), selectedIndex: { UIKeyboardAppearance.allCases.firstIndex(of: textField.keyboardAppearance) }, apply: { index in
+                    textField.keyboardAppearance = UIKeyboardAppearance.allCases[index]
+                })
             case .returnKey:
-                return InspectorElementProperty.optionsList(
-                    title: property.rawValue,
-                    options: UIReturnKeyType.allCases.map(\.description),
-                    selectedIndex: { UIReturnKeyType.allCases.firstIndex(of: textField.returnKeyType) }
-                ) {
-                    guard let newIndex = $0 else { return }
-                    textField.returnKeyType = UIReturnKeyType.allCases[newIndex]
-                }.makeBinding(id: id)
+                return optionsBinding(id: id, title: property.rawValue, options: UIReturnKeyType.allCases.map(\.description), selectedIndex: { UIReturnKeyType.allCases.firstIndex(of: textField.returnKeyType) }, apply: { index in
+                    textField.returnKeyType = UIReturnKeyType.allCases[index]
+                })
             case .enablesReturnKeyAutomatically:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { textField.enablesReturnKeyAutomatically }
-                ) { enablesReturnKeyAutomatically in
-                    textField.enablesReturnKeyAutomatically = enablesReturnKeyAutomatically
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(textField.enablesReturnKeyAutomatically) }, write: { newValue in guard case let .bool(v) = newValue else { return }; textField.enablesReturnKeyAutomatically = v })
             case .isSecureTextEntry:
-                return InspectorElementProperty.switch(
-                    title: property.rawValue,
-                    isOn: { textField.isSecureTextEntry }
-                ) { isSecureTextEntry in
-                    textField.isSecureTextEntry = isSecureTextEntry
-                }.makeBinding(id: id)
+                return .init(descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(textField.isSecureTextEntry) }, write: { newValue in guard case let .bool(v) = newValue else { return }; textField.isSecureTextEntry = v })
             }
+        }
+
+        private func optionsBinding(id: String, title: String, options: [String], selectedIndex: @escaping () -> Int?, apply: @escaping (Int) -> Void) -> InspectorPropertyBinding {
+            .init(
+                descriptor: .init(id: id, title: title, kind: .options, value: .selection(.init(options: options.enumerated().map { .init(id: "\($0.offset)", title: $0.element) }, allowsNil: true)), editability: .editable),
+                read: { .selection(selectedIndex()) },
+                write: { newValue in
+                    guard case let .selection(index) = newValue, let index else { return }
+                    apply(index)
+                }
+            )
         }
     }
 }
