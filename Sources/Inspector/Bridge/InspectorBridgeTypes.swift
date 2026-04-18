@@ -167,6 +167,115 @@ public struct InspectorBridgePropertyMutationResult: Hashable, Codable {
     public let refreshRecommended: Bool
 }
 
+public enum InspectorBridgeInjectedPropertyKind: String, Codable, Hashable {
+    case note
+    case group
+    case separator
+    case toggle
+    case stepper
+    case textField
+    case textView
+    case optionsList
+    case textButtonGroup
+}
+
+public struct InspectorBridgeInjectedPropertyDefinition: Hashable, Codable {
+    public let id: String
+    public let title: String
+    public let kind: InspectorBridgeInjectedPropertyKind
+    public let subtitle: String?
+    public let boolValue: Bool?
+    public let numberValue: Double?
+    public let stringValue: String?
+    public let selectionIndex: Int?
+    public let minimum: Double?
+    public let maximum: Double?
+    public let step: Double?
+    public let isDecimal: Bool?
+    public let options: [String]?
+    public let emptyTitle: String?
+
+    public init(
+        id: String,
+        title: String,
+        kind: InspectorBridgeInjectedPropertyKind,
+        subtitle: String? = nil,
+        boolValue: Bool? = nil,
+        numberValue: Double? = nil,
+        stringValue: String? = nil,
+        selectionIndex: Int? = nil,
+        minimum: Double? = nil,
+        maximum: Double? = nil,
+        step: Double? = nil,
+        isDecimal: Bool? = nil,
+        options: [String]? = nil,
+        emptyTitle: String? = nil
+    ) {
+        self.id = id
+        self.title = title
+        self.kind = kind
+        self.subtitle = subtitle
+        self.boolValue = boolValue
+        self.numberValue = numberValue
+        self.stringValue = stringValue
+        self.selectionIndex = selectionIndex
+        self.minimum = minimum
+        self.maximum = maximum
+        self.step = step
+        self.isDecimal = isDecimal
+        self.options = options
+        self.emptyTitle = emptyTitle
+    }
+}
+
+public struct InspectorBridgeInjectedPropertyRowDefinition: Hashable, Codable {
+    public let title: String
+    public let subtitle: String?
+    public let properties: [InspectorBridgeInjectedPropertyDefinition]
+
+    public init(title: String, subtitle: String? = nil, properties: [InspectorBridgeInjectedPropertyDefinition]) {
+        self.title = title
+        self.subtitle = subtitle
+        self.properties = properties
+    }
+}
+
+public struct InspectorBridgeInjectedSectionDefinition: Hashable, Codable {
+    public let title: String?
+    public let rows: [InspectorBridgeInjectedPropertyRowDefinition]
+
+    public init(title: String? = nil, rows: [InspectorBridgeInjectedPropertyRowDefinition]) {
+        self.title = title
+        self.rows = rows
+    }
+}
+
+public struct InspectorBridgeRegisterInjectedPanelResult: Hashable, Codable {
+    public let panelId: String
+    public let panel: InspectorBridgeEditablePanel
+    public let sectionCount: Int
+    public let refreshRecommended: Bool
+
+    public init(panelId: String, panel: InspectorBridgeEditablePanel, sectionCount: Int, refreshRecommended: Bool) {
+        self.panelId = panelId
+        self.panel = panel
+        self.sectionCount = sectionCount
+        self.refreshRecommended = refreshRecommended
+    }
+}
+
+public struct InspectorBridgeRemoveInjectedPanelResult: Hashable, Codable {
+    public let panelId: String
+    public let removed: Bool
+    public let refreshRecommended: Bool
+
+    public init(panelId: String, removed: Bool, refreshRecommended: Bool) {
+        self.panelId = panelId
+        self.removed = removed
+        self.refreshRecommended = refreshRecommended
+    }
+}
+
 public enum InspectorBridgeActionKind: String, Codable, Hashable {
     case inspect
     case showHighlight

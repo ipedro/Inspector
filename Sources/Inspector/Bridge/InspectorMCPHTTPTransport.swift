@@ -138,7 +138,7 @@ private final class InspectorMCPHTTPServer {
             } catch {
                 let response = self.transportFailureResponse(
                     statusCode: 500,
-                    message: "Internal server error"
+                    message: "Internal server error: \(String(describing: error))"
                 )
                 connection.send(content: response.serialized, completion: .contentProcessed { _ in
                     connection.cancel()
@@ -456,6 +456,32 @@ private final class InspectorMCPHTTPServer {
             } catch let error as InspectorBridgeError {
                 return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
             }
+        case ("POST", InspectorMCPBridgeEndpoint.registerInjectedPanelPath):
+            let payload: InspectorMCPRegisterInjectedPanelRequest = try decode(
+                request.body,
+                allowedKeys: ["handle", "panel", "panelId", "sections"]
+            )
+
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeRegisterInjectedPanelResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.removeInjectedPanelPath):
+            let payload: InspectorMCPRemoveInjectedPanelRequest = try decode(
+                request.body,
+                allowedKeys: ["panelId"]
+            )
+
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeRemoveInjectedPanelResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
         case ("POST", InspectorMCPBridgeEndpoint.layersPath):
             do {
                 return try jsonResponse(
@@ -523,7 +549,7 @@ private final class InspectorMCPHTTPServer {
             inspectorStarted: inspectorStarted,
             keyboardWindowsFiltered: Inspector.sharedInstance.configuration.filtersSystemKeyboardWindows,
             bundleIdentifier: Bundle.main.bundleIdentifier,
-            operations: [.query, .resolve, .refreshHandle, .snapshot, .subtree, .inspect, .tap, .listActions, .performAction, .assertProperty, .assertVisible, .assertHierarchyContains, .captureState, .diffStates, .saveScenario, .listScenarios, .deleteScenario, .diffScenario, .listProperties, .setProperty, .layers, .toggleLayer],
+            operations: [.query, .resolve, .refreshHandle, .snapshot, .subtree, .inspect, .tap, .listActions, .performAction, .assertProperty, .assertVisible, .assertHierarchyContains, .captureState, .diffStates, .saveScenario, .listScenarios, .deleteScenario, .diffScenario, .listProperties, .setProperty, .registerInjectedPanel, .removeInjectedPanel, .layers, .toggleLayer],
             apiVersion: 2
         )
     }
@@ -752,6 +778,30 @@ private final class InspectorMCPHTTPServer {
         return InspectorMCPSetPropertyResult(
             propertyRef: result.propertyRef,
             applied: result.applied,
+            refreshRecommended: result.refreshRecommended
+        )
+    }
+
+    private func bridgeRegisterInjectedPanelResult(for request: InspectorMCPRegisterInjectedPanelRequest) throws -> InspectorMCPRegisterInjectedPanelResult {
+        let result = try Inspector.bridgeRegisterInjectedPanel(
+            handle: .init(rawValue: request.handle),
+            panel: bridgePanel(from: request.panel),
+            panelId: request.panelId,
+            sections: request.sections.map(bridgeInjectedSection(from:))
+        )
+        return .init(
+            panelId: result.panelId,
+            panel: wirePanel(from: result.panel),
+            sectionCount: result.sectionCount,
+            refreshRecommended: result.refreshRecommended
+        )
+    }
+
+    private func bridgeRemoveInjectedPanelResult(for request: InspectorMCPRemoveInjectedPanelRequest) throws -> InspectorMCPRemoveInjectedPanelResult {
+        let result = try Inspector.bridgeRemoveInjectedPanel(panelId: request.panelId)
+        return .init(
+            panelId: result.panelId,
+            removed: result.removed,
             refreshRecommended: result.refreshRecommended
         )
     }
@@ -992,6 +1042,54 @@ private final class InspectorMCPHTTPServer {
             options: value.options,
             nullable: value.nullable
         )
+    }
+
+    private func bridgeInjectedSection(from value: InspectorMCPInjectedSectionDefinition) -> InspectorBridgeInjectedSectionDefinition {
+        .init(
+            title: value.title,
+            rows: value.rows.map(bridgeInjectedRow(from:))
+        )
+    }
+
+    private func bridgeInjectedRow(from value: InspectorMCPInjectedPropertyRowDefinition) -> InspectorBridgeInjectedPropertyRowDefinition {
+        .init(
+            title: value.title,
+            subtitle: value.subtitle,
+            properties: value.properties.map(bridgeInjectedProperty(from:))
+        )
+    }
+
+    private func bridgeInjectedProperty(from value: InspectorMCPInjectedPropertyDefinition) -> InspectorBridgeInjectedPropertyDefinition {
+        .init(
+            id: value.id,
+            title: value.title,
+            kind: bridgeInjectedPropertyKind(from: value.kind),
+            subtitle: value.subtitle,
+            boolValue: value.boolValue,
+            numberValue: value.numberValue,
+            stringValue: value.stringValue,
+            selectionIndex: value.selectionIndex,
+            minimum: value.minimum,
+            maximum: value.maximum,
+            step: value.step,
+            isDecimal: value.isDecimal,
+            options: value.options,
+            emptyTitle: value.emptyTitle
+        )
+    }
+
+    private func bridgeInjectedPropertyKind(from value: InspectorMCPInjectedPropertyKind) -> InspectorBridgeInjectedPropertyKind {
+        switch value {
+        case .note: return .note
+        case .group: return .group
+        case .separator: return .separator
+        case .toggle: return .toggle
+        case .stepper: return .stepper
+        case .textField: return .textField
+        case .textView: return .textView
+        case .optionsList: return .optionsList
+        case .textButtonGroup: return .textButtonGroup
+        }
     }
 
     private func bridgeMutationValue(from request: InspectorMCPSetPropertyRequest) throws -> InspectorBridgePropertyMutationValue {

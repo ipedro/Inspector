@@ -24,6 +24,8 @@ public enum InspectorMCPBridgeEndpoint {
     public static let diffScenarioPath = "/diff-scenario"
     public static let propertiesPath = "/properties"
     public static let setPropertyPath = "/set-property"
+    public static let registerInjectedPanelPath = "/register-injected-panel"
+    public static let removeInjectedPanelPath = "/remove-injected-panel"
     public static let layersPath = "/layers"
     public static let toggleLayerPath = "/toggle-layer"
     public static let baseURL = URL(string: "http://\(host):\(port)")!
@@ -50,6 +52,8 @@ public enum InspectorMCPOperation: String, Codable, CaseIterable {
     case diffScenario
     case listProperties
     case setProperty
+    case registerInjectedPanel
+    case removeInjectedPanel
     case layers
     case toggleLayer
 }
@@ -108,6 +112,18 @@ public enum InspectorMCPEditablePropertyKind: String, Codable {
     case optionsList
     case textButtonGroup
     case imageButtonGroup
+}
+
+public enum InspectorMCPInjectedPropertyKind: String, Codable {
+    case note
+    case group
+    case separator
+    case toggle
+    case stepper
+    case textField
+    case textView
+    case optionsList
+    case textButtonGroup
 }
 
 public enum InspectorMCPEditablePropertySlot: String, Codable {
@@ -272,6 +288,104 @@ public struct InspectorMCPSetPropertyRequest: Codable, Equatable {
         self.numberValue = numberValue
         self.stringValue = stringValue
         self.selectionIndex = selectionIndex
+    }
+}
+
+public struct InspectorMCPInjectedPropertyDefinition: Codable, Equatable {
+    public let id: String
+    public let title: String
+    public let kind: InspectorMCPInjectedPropertyKind
+    public let subtitle: String?
+    public let boolValue: Bool?
+    public let numberValue: Double?
+    public let stringValue: String?
+    public let selectionIndex: Int?
+    public let minimum: Double?
+    public let maximum: Double?
+    public let step: Double?
+    public let isDecimal: Bool?
+    public let options: [String]?
+    public let emptyTitle: String?
+
+    public init(
+        id: String,
+        title: String,
+        kind: InspectorMCPInjectedPropertyKind,
+        subtitle: String? = nil,
+        boolValue: Bool? = nil,
+        numberValue: Double? = nil,
+        stringValue: String? = nil,
+        selectionIndex: Int? = nil,
+        minimum: Double? = nil,
+        maximum: Double? = nil,
+        step: Double? = nil,
+        isDecimal: Bool? = nil,
+        options: [String]? = nil,
+        emptyTitle: String? = nil
+    ) {
+        self.id = id
+        self.title = title
+        self.kind = kind
+        self.subtitle = subtitle
+        self.boolValue = boolValue
+        self.numberValue = numberValue
+        self.stringValue = stringValue
+        self.selectionIndex = selectionIndex
+        self.minimum = minimum
+        self.maximum = maximum
+        self.step = step
+        self.isDecimal = isDecimal
+        self.options = options
+        self.emptyTitle = emptyTitle
+    }
+}
+
+public struct InspectorMCPInjectedPropertyRowDefinition: Codable, Equatable {
+    public let title: String
+    public let subtitle: String?
+    public let properties: [InspectorMCPInjectedPropertyDefinition]
+
+    public init(title: String, subtitle: String? = nil, properties: [InspectorMCPInjectedPropertyDefinition]) {
+        self.title = title
+        self.subtitle = subtitle
+        self.properties = properties
+    }
+}
+
+public struct InspectorMCPInjectedSectionDefinition: Codable, Equatable {
+    public let title: String?
+    public let rows: [InspectorMCPInjectedPropertyRowDefinition]
+
+    public init(title: String? = nil, rows: [InspectorMCPInjectedPropertyRowDefinition]) {
+        self.title = title
+        self.rows = rows
+    }
+}
+
+public struct InspectorMCPRegisterInjectedPanelRequest: Codable, Equatable {
+    public let handle: String
+    public let panel: InspectorMCPEditablePanel
+    public let panelId: String?
+    public let sections: [InspectorMCPInjectedSectionDefinition]
+
+    public init(
+        handle: String,
+        panel: InspectorMCPEditablePanel,
+        panelId: String? = nil,
+        sections: [InspectorMCPInjectedSectionDefinition]
+    ) {
+        self.handle = handle
+        self.panel = panel
+        self.panelId = panelId
+        self.sections = sections
+    }
+}
+
+public struct InspectorMCPRemoveInjectedPanelRequest: Codable, Equatable {
+    public let panelId: String
+
+    public init(panelId: String) {
+        self.panelId = panelId
     }
 }
 
@@ -645,6 +759,32 @@ public struct InspectorMCPSetPropertyResult: Codable, Equatable {
     public init(propertyRef: String, applied: Bool, refreshRecommended: Bool) {
         self.propertyRef = propertyRef
         self.applied = applied
+        self.refreshRecommended = refreshRecommended
+    }
+}
+
+public struct InspectorMCPRegisterInjectedPanelResult: Codable, Equatable {
+    public let panelId: String
+    public let panel: InspectorMCPEditablePanel
+    public let sectionCount: Int
+    public let refreshRecommended: Bool
+
+    public init(panelId: String, panel: InspectorMCPEditablePanel, sectionCount: Int, refreshRecommended: Bool) {
+        self.panelId = panelId
+        self.panel = panel
+        self.sectionCount = sectionCount
+        self.refreshRecommended = refreshRecommended
+    }
+}
+
+public struct InspectorMCPRemoveInjectedPanelResult: Codable, Equatable {
+    public let panelId: String
+    public let removed: Bool
+    public let refreshRecommended: Bool
+
+    public init(panelId: String, removed: Bool, refreshRecommended: Bool) {
+        self.panelId = panelId
+        self.removed = removed
         self.refreshRecommended = refreshRecommended
     }
 }

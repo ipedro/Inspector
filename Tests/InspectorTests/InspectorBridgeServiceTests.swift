@@ -1212,6 +1212,68 @@ extension InspectorBridgeServiceTests {
         XCTAssertTrue(value)
     }
 
+    func testBridgeRegisterAndRemoveInjectedPanelAffectsPropertyListing() throws {
+        let reference = MockReference.view(className: "UIView", displayName: "Host", elementName: "Host", accessibilityIdentifier: "host-view")
+        let service = makeService(
+            snapshot: MockSnapshot(nodes: [reference]),
+            librariesProvider: { panel in
+                guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
+                return [MockLibrary(rows: [])]
+            }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+
+        let registerResult = try service.registerInjectedPanel(
+            for: handle,
+            panel: .attributes,
+            panelId: "agent-panel",
+            sections: [
+                .init(
+                    title: "Agent",
+                    rows: [
+                        .init(
+                            title: "Summary",
+                            subtitle: nil,
+                            properties: [
+                                .init(
+                                    id: "summary",
+                                    title: "Summary",
+                                    kind: .textField,
+                                    subtitle: nil,
+                                    boolValue: nil,
+                                    numberValue: nil,
+                                    stringValue: "hello",
+                                    selectionIndex: nil,
+                                    minimum: nil,
+                                    maximum: nil,
+                                    step: nil,
+                                    isDecimal: nil,
+                                    options: nil,
+                                    emptyTitle: nil
+                                )
+                            ]
+                        )
+                    ]
+                )
+            ]
+        )
+
+        XCTAssertEqual(registerResult.panelId, "agent-panel")
+
+        let propertiesAfterRegister = try service.listProperties(for: handle, panel: .attributes, includeReadOnly: true)
+        let injectedProperties = propertiesAfterRegister.sections.flatMap(\.rows).flatMap(\.properties)
+        XCTAssertEqual(injectedProperties.map(\.title), ["Summary"])
+        XCTAssertEqual(injectedProperties.first?.stringValue, "hello")
+
+        let removeResult = try service.removeInjectedPanel(panelId: "agent-panel")
+        XCTAssertTrue(removeResult.removed)
+
+        let propertiesAfterRemove = try service.listProperties(for: handle, panel: .attributes, includeReadOnly: true)
+        let removedProperties = propertiesAfterRemove.sections.flatMap(\.rows).flatMap(\.properties)
+        XCTAssertTrue(removedProperties.isEmpty)
+    }
+
     func testBridgeSetPropertyRejectsWrongValueKind() throws {
         let view = UIView()
         let reference = ViewHierarchyElement(with: view)

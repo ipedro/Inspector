@@ -28,11 +28,12 @@ extension [InspectorElementLibraryProtocol] {
 
     func formItems(for object: NSObject?, panel: ElementInspectorPanel) -> InspectorElementSections {
         guard let object else { return [] }
-        return InspectorAutobuiltPanelBuilder.sections(
+        let sections = InspectorAutobuiltPanelBuilder.sections(
             for: object,
             panel: panel,
             libraries: self
         )
+        return sections + InspectorInjectedPanelRegistry.shared.sections(for: object, panel: panel)
     }
 
     func curatedFormItems(for object: NSObject?) -> InspectorElementSections {

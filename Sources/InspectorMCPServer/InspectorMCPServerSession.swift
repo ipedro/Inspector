@@ -414,6 +414,48 @@ final class InspectorMCPServerSession {
                 ]
             ),
             toolDefinition(
+                name: "register_injected_panel",
+                description: "Register or update a temporary read-only injected panel for a live object handle. Injected panels share the same runtime panel composition path as curated and autobuilt sections.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "handle": ["type": "string"],
+                        "panel": [
+                            "type": "string",
+                            "enum": ["identity", "attributes", "size"]
+                        ],
+                        "panelId": ["type": "string"],
+                        "sections": ["type": "array"]
+                    ],
+                    "required": ["handle", "panel", "sections"]
+                ],
+                annotations: [
+                    "readOnlyHint": false,
+                    "destructiveHint": false,
+                    "idempotentHint": false,
+                    "openWorldHint": true
+                ]
+            ),
+            toolDefinition(
+                name: "remove_injected_panel",
+                description: "Remove a previously registered injected panel by panelId.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "panelId": ["type": "string"]
+                    ],
+                    "required": ["panelId"]
+                ],
+                annotations: [
+                    "readOnlyHint": false,
+                    "destructiveHint": false,
+                    "idempotentHint": true,
+                    "openWorldHint": true
+                ]
+            ),
+            toolDefinition(
                 name: "list_layers",
                 description: "List built-in Inspector view-hierarchy layers populated in the live app, with each layer's current active (highlighted) state.",
                 schema: [
@@ -704,6 +746,32 @@ final class InspectorMCPServerSession {
                 for: result,
                 successText: { setResult in
                     "Applied property mutation for \(setResult.propertyRef)."
+                }
+            )
+        case "register_injected_panel":
+            let request = try JSONObject.decode(
+                InspectorMCPRegisterInjectedPanelRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.registerInjectedPanel(request)
+            return try toolResult(
+                for: result,
+                successText: { registerResult in
+                    "Registered injected panel \(registerResult.panelId) with \(registerResult.sectionCount) section(s)."
+                }
+            )
+        case "remove_injected_panel":
+            let request = try JSONObject.decode(
+                InspectorMCPRemoveInjectedPanelRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.removeInjectedPanel(request)
+            return try toolResult(
+                for: result,
+                successText: { removeResult in
+                    removeResult.removed
+                        ? "Removed injected panel \(removeResult.panelId)."
+                        : "Injected panel \(removeResult.panelId) did not exist."
                 }
             )
         case "list_layers":

@@ -51,7 +51,7 @@ final class InspectorMCPServerTests: XCTestCase {
         let result = try XCTUnwrap(response["result"] as? [String: Any])
         let tools = try XCTUnwrap(result["tools"] as? [[String: Any]])
 
-        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "refresh_handle", "snapshot", "subtree", "inspect", "tap", "list_actions", "perform_action", "assert_property", "assert_visible", "assert_hierarchy_contains", "capture_state", "diff_states", "save_scenario", "list_scenarios", "delete_scenario", "diff_scenario", "list_properties", "set_property", "list_layers", "toggle_layer"])
+        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "refresh_handle", "snapshot", "subtree", "inspect", "tap", "list_actions", "perform_action", "assert_property", "assert_visible", "assert_hierarchy_contains", "capture_state", "diff_states", "save_scenario", "list_scenarios", "delete_scenario", "diff_scenario", "list_properties", "set_property", "register_injected_panel", "remove_injected_panel", "list_layers", "toggle_layer"])
     }
 
     func testToolsCallQueryReturnsStructuredContentFromBridgeResult() async throws {
@@ -797,6 +797,49 @@ final class InspectorMCPServerTests: XCTestCase {
         XCTAssertEqual(structured["code"] as? String, "internalFailure")
     }
 
+    func testToolsCallRegisterInjectedPanelForwardsToBridgeClient() async throws {
+        let mock = MockBridgeClient(
+            registerInjectedPanelResult: .success(
+                .init(panelId: "agent-panel", panel: .attributes, sectionCount: 1, refreshRecommended: true)
+            )
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":9,"method":"tools/call","params":{"name":"register_injected_panel","arguments":{"handle":"HANDLE","panel":"attributes","panelId":"agent-panel","sections":[{"title":"Agent","rows":[{"title":"Summary","properties":[{"id":"summary","title":"Summary","kind":"textField","stringValue":"hello"}]}]}]}}}"#
+
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+
+        XCTAssertEqual(result["isError"] as? Bool, false)
+        XCTAssertEqual(mock.lastRegisterInjectedPanelRequest?.panelId, "agent-panel")
+
+        let structured = try XCTUnwrap(result["structuredContent"] as? [String: Any])
+        XCTAssertEqual(structured["panelId"] as? String, "agent-panel")
+    }
+
+    func testToolsCallRemoveInjectedPanelForwardsToBridgeClient() async throws {
+        let mock = MockBridgeClient(
+            removeInjectedPanelResult: .success(
+                .init(panelId: "agent-panel", removed: true, refreshRecommended: true)
+            )
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":10,"method":"tools/call","params":{"name":"remove_injected_panel","arguments":{"panelId":"agent-panel"}}}"#
+
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+
+        XCTAssertEqual(result["isError"] as? Bool, false)
+        XCTAssertEqual(mock.lastRemoveInjectedPanelRequest?.panelId, "agent-panel")
+
+        let structured = try XCTUnwrap(result["structuredContent"] as? [String: Any])
+        XCTAssertEqual(structured["panelId"] as? String, "agent-panel")
+        XCTAssertEqual(structured["removed"] as? Bool, true)
+    }
+
     private func jsonData(_ object: [String: Any]) -> Data {
         try! JSONSerialization.data(withJSONObject: object)
     }
@@ -829,6 +872,8 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     var diffScenarioResult: Result<InspectorMCPScenarioDiff, InspectorMCPTransportError>
     var propertyListResult: Result<InspectorMCPPropertyListResult, InspectorMCPTransportError>
     var setPropertyResult: Result<InspectorMCPSetPropertyResult, InspectorMCPTransportError>
+    var registerInjectedPanelResult: Result<InspectorMCPRegisterInjectedPanelResult, InspectorMCPTransportError>
+    var removeInjectedPanelResult: Result<InspectorMCPRemoveInjectedPanelResult, InspectorMCPTransportError>
     var layersResult: Result<InspectorMCPLayersResult, InspectorMCPTransportError>
     var toggleLayerResult: Result<InspectorMCPToggleLayerResult, InspectorMCPTransportError>
     private(set) var lastTapRequest: InspectorMCPTapRequest?
@@ -844,6 +889,8 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     private(set) var lastRefreshHandleRequest: InspectorMCPRefreshHandleRequest?
     private(set) var lastPropertyListRequest: InspectorMCPPropertyListRequest?
     private(set) var lastSetPropertyRequest: InspectorMCPSetPropertyRequest?
+    private(set) var lastRegisterInjectedPanelRequest: InspectorMCPRegisterInjectedPanelRequest?
+    private(set) var lastRemoveInjectedPanelRequest: InspectorMCPRemoveInjectedPanelRequest?
     private(set) var lastSubtreeRequest: InspectorMCPSubtreeRequest?
     private(set) var lastToggleLayerRequest: InspectorMCPToggleLayerRequest?
 
@@ -941,6 +988,12 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         setPropertyResult: Result<InspectorMCPSetPropertyResult, InspectorMCPTransportError> = .success(
             .init(propertyRef: "PROP", applied: true, refreshRecommended: true)
         ),
+        registerInjectedPanelResult: Result<InspectorMCPRegisterInjectedPanelResult, InspectorMCPTransportError> = .success(
+            .init(panelId: "agent-panel", panel: .attributes, sectionCount: 1, refreshRecommended: true)
+        ),
+        removeInjectedPanelResult: Result<InspectorMCPRemoveInjectedPanelResult, InspectorMCPTransportError> = .success(
+            .init(panelId: "agent-panel", removed: true, refreshRecommended: true)
+        ),
         layersResult: Result<InspectorMCPLayersResult, InspectorMCPTransportError> = .success(
             .init(layers: [])
         ),
@@ -969,6 +1022,8 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         self.diffScenarioResult = diffScenarioResult
         self.propertyListResult = propertyListResult
         self.setPropertyResult = setPropertyResult
+        self.registerInjectedPanelResult = registerInjectedPanelResult
+        self.removeInjectedPanelResult = removeInjectedPanelResult
         self.layersResult = layersResult
         self.toggleLayerResult = toggleLayerResult
     }
@@ -1069,6 +1124,16 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     func setProperty(_ request: InspectorMCPSetPropertyRequest) async throws -> Result<InspectorMCPSetPropertyResult, InspectorMCPTransportError> {
         lastSetPropertyRequest = request
         return setPropertyResult
+    }
+
+    func registerInjectedPanel(_ request: InspectorMCPRegisterInjectedPanelRequest) async throws -> Result<InspectorMCPRegisterInjectedPanelResult, InspectorMCPTransportError> {
+        lastRegisterInjectedPanelRequest = request
+        return registerInjectedPanelResult
+    }
+
+    func removeInjectedPanel(_ request: InspectorMCPRemoveInjectedPanelRequest) async throws -> Result<InspectorMCPRemoveInjectedPanelResult, InspectorMCPTransportError> {
+        lastRemoveInjectedPanelRequest = request
+        return removeInjectedPanelResult
     }
 
     func layers() async throws -> Result<InspectorMCPLayersResult, InspectorMCPTransportError> {

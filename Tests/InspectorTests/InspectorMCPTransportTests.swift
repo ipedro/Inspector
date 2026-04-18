@@ -20,7 +20,7 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(health["bridgeEnabled"] as? Bool, true)
         XCTAssertEqual(health["inspectorStarted"] as? Bool, true)
         XCTAssertEqual(health["keyboardWindowsFiltered"] as? Bool, false)
-        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "refreshHandle", "snapshot", "subtree", "inspect", "tap", "listActions", "performAction", "assertProperty", "assertVisible", "assertHierarchyContains", "captureState", "diffStates", "saveScenario", "listScenarios", "deleteScenario", "diffScenario", "listProperties", "setProperty", "layers", "toggleLayer"])
+        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "refreshHandle", "snapshot", "subtree", "inspect", "tap", "listActions", "performAction", "assertProperty", "assertVisible", "assertHierarchyContains", "captureState", "diffStates", "saveScenario", "listScenarios", "deleteScenario", "diffScenario", "listProperties", "setProperty", "registerInjectedPanel", "removeInjectedPanel", "layers", "toggleLayer"])
         XCTAssertEqual(health["apiVersion"] as? Int, 2)
     }
 
@@ -132,13 +132,17 @@ final class InspectorMCPTransportTests: XCTestCase {
         let directory = inspectorSnapshotsDirectoryURL()
         XCTAssertTrue(FileManager.default.fileExists(atPath: directory.path))
 
-        Inspector.sharedInstance.stop()
+        await MainActor.run {
+            Inspector.sharedInstance.stop()
+        }
 
         XCTAssertFalse(FileManager.default.fileExists(atPath: directory.path),
                        "snapshots directory must be gone after Inspector.stop()")
 
         addTeardownBlock {
-            Inspector.sharedInstance.start()
+            await MainActor.run {
+                Inspector.sharedInstance.start()
+            }
         }
     }
 
@@ -573,6 +577,73 @@ final class InspectorMCPTransportTests: XCTestCase {
         }
     }
 
+    func testInjectedPanelToolsRegisterAndRemoveReadOnlySection() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let handle = try await queryHandle(accessibilityIdentifier: "Content Stack View")
+        let panelId = "agent-summary-panel"
+
+        let registerResponse = try await postJSON(
+            path: "/register-injected-panel",
+            body: [
+                "handle": handle,
+                "panel": "attributes",
+                "panelId": panelId,
+                "sections": [
+                    [
+                        "title": "Agent",
+                        "rows": [
+                            [
+                                "title": "Summary",
+                                "properties": [
+                                    [
+                                        "id": "summary",
+                                        "title": "Summary",
+                                        "kind": "textField",
+                                        "stringValue": "Investigating layout"
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        )
+        XCTAssertEqual(registerResponse.statusCode, 200)
+        let registerPayload = try unpackSuccessEnvelope(from: registerResponse.body)
+        XCTAssertEqual(registerPayload["panelId"] as? String, panelId)
+
+        let propertyListResponse = try await postJSON(
+            path: "/properties",
+            body: ["handle": handle, "panel": "attributes", "includeReadOnly": true]
+        )
+        XCTAssertEqual(propertyListResponse.statusCode, 200, String(data: propertyListResponse.body, encoding: .utf8) ?? "<non-utf8>")
+        let propertyPayload = try unpackSuccessEnvelope(from: propertyListResponse.body)
+        let sections = try XCTUnwrap(propertyPayload["sections"] as? [[String: Any]])
+        let summaryProperty = try XCTUnwrap(findProperty(in: sections, titled: "Summary"))
+        XCTAssertEqual(summaryProperty["stringValue"] as? String, "Investigating layout")
+        XCTAssertEqual(summaryProperty["editable"] as? Bool, false)
+
+        let removeResponse = try await postJSON(
+            path: "/remove-injected-panel",
+            body: ["panelId": panelId]
+        )
+        XCTAssertEqual(removeResponse.statusCode, 200)
+        let removePayload = try unpackSuccessEnvelope(from: removeResponse.body)
+        XCTAssertEqual(removePayload["removed"] as? Bool, true)
+
+        let refreshedPropertiesResponse = try await postJSON(
+            path: "/properties",
+            body: ["handle": handle, "panel": "attributes", "includeReadOnly": true]
+        )
+        XCTAssertEqual(refreshedPropertiesResponse.statusCode, 200, String(data: refreshedPropertiesResponse.body, encoding: .utf8) ?? "<non-utf8>")
+        let refreshedPayload = try unpackSuccessEnvelope(from: refreshedPropertiesResponse.body)
+        let refreshedSections = try XCTUnwrap(refreshedPayload["sections"] as? [[String: Any]])
+        XCTAssertNil(findProperty(in: refreshedSections, titled: "Summary"))
+    }
+
     func testOldestHandleBecomesStaleAfterNinthQuery() async throws {
         _ = try await pollHealth(timeout: 5) { payload in
             payload["status"] as? String == "active"
@@ -615,7 +686,7 @@ final class InspectorMCPTransportTests: XCTestCase {
         let freshPayload = try unpackSuccessEnvelope(from: freshResponse.body)
 
         XCTAssertEqual(freshResponse.statusCode, 200)
-        XCTAssertEqual(freshPayload["accessibilityIdentifier"] as? String, "Content Stack View")
+        XCTAssertEqual(freshPayload["accessibilityIdentifier"] as? String, "MCP Tap Smoke Button")
     }
 
     func testRefreshHandleRebindsExpiredHandleForExploration() async throws {

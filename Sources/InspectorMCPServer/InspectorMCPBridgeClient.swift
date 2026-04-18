@@ -23,6 +23,8 @@ protocol InspectorMCPBridgeClient {
     func diffScenario(_ request: InspectorMCPDiffScenarioRequest) async throws -> Result<InspectorMCPScenarioDiff, InspectorMCPTransportError>
     func listProperties(_ request: InspectorMCPPropertyListRequest) async throws -> Result<InspectorMCPPropertyListResult, InspectorMCPTransportError>
     func setProperty(_ request: InspectorMCPSetPropertyRequest) async throws -> Result<InspectorMCPSetPropertyResult, InspectorMCPTransportError>
+    func registerInjectedPanel(_ request: InspectorMCPRegisterInjectedPanelRequest) async throws -> Result<InspectorMCPRegisterInjectedPanelResult, InspectorMCPTransportError>
+    func removeInjectedPanel(_ request: InspectorMCPRemoveInjectedPanelRequest) async throws -> Result<InspectorMCPRemoveInjectedPanelResult, InspectorMCPTransportError>
     func layers() async throws -> Result<InspectorMCPLayersResult, InspectorMCPTransportError>
     func toggleLayer(_ request: InspectorMCPToggleLayerRequest) async throws -> Result<InspectorMCPToggleLayerResult, InspectorMCPTransportError>
 }
@@ -231,6 +233,20 @@ final class InspectorMCPHTTPBridgeClient: InspectorMCPBridgeClient {
     func setProperty(_ request: InspectorMCPSetPropertyRequest) async throws -> Result<InspectorMCPSetPropertyResult, InspectorMCPTransportError> {
         try await sendToolRequest(
             path: InspectorMCPBridgeEndpoint.setPropertyPath,
+            body: request
+        )
+    }
+
+    func registerInjectedPanel(_ request: InspectorMCPRegisterInjectedPanelRequest) async throws -> Result<InspectorMCPRegisterInjectedPanelResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.registerInjectedPanelPath,
+            body: request
+        )
+    }
+
+    func removeInjectedPanel(_ request: InspectorMCPRemoveInjectedPanelRequest) async throws -> Result<InspectorMCPRemoveInjectedPanelResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.removeInjectedPanelPath,
             body: request
         )
     }

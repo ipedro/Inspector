@@ -1,5 +1,6 @@
 #if INSPECTOR_DEBUGGING && canImport(UIKit) && targetEnvironment(simulator)
 import Foundation
+import InspectorContract
 import UIKit
 import os.log
 
@@ -51,6 +52,8 @@ enum InspectorBridgeOperation {
     case diffScenario
     case listProperties
     case setProperty
+    case registerInjectedPanel
+    case removeInjectedPanel
     case layers
     case toggleLayer
 }
@@ -612,6 +615,60 @@ final class InspectorMCPBridgeService {
         }
     }
 
+    func registerInjectedPanel(
+        for handle: InspectorBridgeHandle,
+        panel: InspectorBridgeEditablePanel,
+        panelId explicitPanelID: String?,
+        sections: [InspectorBridgeInjectedSectionDefinition]
+    ) throws -> InspectorBridgeRegisterInjectedPanelResult {
+        try performOnMain(.registerInjectedPanel) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            let (_, record) = try self.lookupRecord(for: handle)
+            try self.validate(record: record, handle: handle)
+
+            guard record.reference._underlyingObject != nil else {
+                throw InspectorBridgeError.staleHandle
+            }
+
+            let normalizedPanelID = explicitPanelID?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let panelId = (normalizedPanelID?.isEmpty == false ? normalizedPanelID : nil) ?? UUID().uuidString
+            let injectedSections = try sections.map(self.injectedSection(from:))
+
+            InspectorInjectedPanelRegistry.shared.upsert(
+                panelId: panelId,
+                objectIdentityToken: record.objectIdentityToken,
+                panel: panel.inspectorPanel,
+                sections: injectedSections
+            )
+
+            return InspectorBridgeRegisterInjectedPanelResult(
+                panelId: panelId,
+                panel: panel,
+                sectionCount: injectedSections.count,
+                refreshRecommended: true
+            )
+        }
+    }
+
+    func removeInjectedPanel(panelId: String) throws -> InspectorBridgeRemoveInjectedPanelResult {
+        try performOnMain(.removeInjectedPanel) {
+            try self.ensureActive()
+            let normalizedPanelId = panelId.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard normalizedPanelId.isEmpty == false else {
+                throw InspectorBridgeError.invalidPropertyValue("panelId must not be empty")
+            }
+
+            let removed = InspectorInjectedPanelRegistry.shared.remove(panelId: normalizedPanelId)
+            return InspectorBridgeRemoveInjectedPanelResult(
+                panelId: normalizedPanelId,
+                removed: removed,
+                refreshRecommended: removed
+            )
+        }
+    }
+
     func assertProperty(
         _ handle: InspectorBridgeHandle,
         property: InspectorBridgeAssertableProperty,
@@ -1161,9 +1218,9 @@ final class InspectorMCPBridgeService {
                 value,
                 nil,
                 nil,
-                numberConstraints?.min,
-                numberConstraints?.max,
-                numberConstraints?.step,
+                finiteNumber(numberConstraints?.min),
+                finiteNumber(numberConstraints?.max),
+                finiteNumber(numberConstraints?.step),
                 numberConstraints?.isDecimal,
                 nil,
                 false
@@ -1215,6 +1272,146 @@ final class InspectorMCPBridgeService {
             property.apply(.selection(selectionIndex))
         default:
             throw InspectorBridgeError.invalidPropertyValue("supplied value does not match property kind")
+        }
+    }
+
+    private func injectedSection(
+        from section: InspectorBridgeInjectedSectionDefinition
+    ) throws -> InspectorInjectedPanelSection {
+        .init(
+            title: section.title,
+            rows: try section.rows.map(injectedRow(from:))
+        )
+    }
+
+    private func injectedRow(
+        from row: InspectorBridgeInjectedPropertyRowDefinition
+    ) throws -> InspectorInjectedPanelRow {
+        .init(
+            title: row.title,
+            subtitle: row.subtitle,
+            fields: try row.properties.map(injectedField(from:))
+        )
+    }
+
+    private func injectedField(
+        from property: InspectorBridgeInjectedPropertyDefinition
+    ) throws -> InspectorInjectedPanelField {
+        let runtimePresentation = InspectorPropertyRuntimePresentation(
+            emptyTitle: property.emptyTitle
+        )
+
+        switch property.kind {
+        case .note:
+            return .init(
+                descriptor: .init(
+                    id: property.id,
+                    title: property.title,
+                    kind: .note,
+                    value: .none,
+                    editability: .readOnly,
+                    presentation: .init(subtitle: property.subtitle)
+                ),
+                value: .none,
+                runtimePresentation: runtimePresentation
+            )
+        case .group:
+            return .init(
+                descriptor: .init(
+                    id: property.id,
+                    title: property.title,
+                    kind: .group,
+                    value: .none,
+                    editability: .readOnly,
+                    presentation: .init(subtitle: property.subtitle)
+                ),
+                value: .none,
+                runtimePresentation: runtimePresentation
+            )
+        case .separator:
+            return .init(
+                descriptor: .init(id: property.id, title: property.title, kind: .separator, value: .none, editability: .readOnly),
+                value: .none,
+                runtimePresentation: runtimePresentation
+            )
+        case .toggle:
+            guard let boolValue = property.boolValue else {
+                throw InspectorBridgeError.invalidPropertyValue("toggle field requires boolValue")
+            }
+            return .init(
+                descriptor: .init(id: property.id, title: property.title, kind: .toggle, value: .bool, editability: .readOnly),
+                value: .bool(boolValue),
+                runtimePresentation: runtimePresentation
+            )
+        case .stepper:
+            guard let numberValue = property.numberValue else {
+                throw InspectorBridgeError.invalidPropertyValue("stepper field requires numberValue")
+            }
+            return .init(
+                descriptor: .init(
+                    id: property.id,
+                    title: property.title,
+                    kind: .stepper,
+                    value: .number(.init(min: property.minimum, max: property.maximum, step: property.step, isDecimal: property.isDecimal ?? false)),
+                    editability: .readOnly
+                ),
+                value: .number(numberValue),
+                runtimePresentation: runtimePresentation
+            )
+        case .textField:
+            return .init(
+                descriptor: .init(
+                    id: property.id,
+                    title: property.title,
+                    kind: .textField,
+                    value: .string(.init(multiline: false, placeholder: property.subtitle, allowsNil: true)),
+                    editability: .readOnly
+                ),
+                value: .string(property.stringValue),
+                runtimePresentation: runtimePresentation
+            )
+        case .textView:
+            return .init(
+                descriptor: .init(
+                    id: property.id,
+                    title: property.title,
+                    kind: .textView,
+                    value: .string(.init(multiline: true, placeholder: property.subtitle, allowsNil: true)),
+                    editability: .readOnly
+                ),
+                value: .string(property.stringValue),
+                runtimePresentation: runtimePresentation
+            )
+        case .optionsList:
+            guard let options = property.options else {
+                throw InspectorBridgeError.invalidPropertyValue("optionsList field requires options")
+            }
+            return .init(
+                descriptor: .init(
+                    id: property.id,
+                    title: property.title,
+                    kind: .options,
+                    value: .selection(.init(options: options.enumerated().map { .init(id: "\($0.offset)", title: $0.element) }, allowsNil: true)),
+                    editability: .readOnly
+                ),
+                value: .selection(property.selectionIndex),
+                runtimePresentation: runtimePresentation
+            )
+        case .textButtonGroup:
+            guard let options = property.options else {
+                throw InspectorBridgeError.invalidPropertyValue("textButtonGroup field requires options")
+            }
+            return .init(
+                descriptor: .init(
+                    id: property.id,
+                    title: property.title,
+                    kind: .textButtons,
+                    value: .selection(.init(options: options.enumerated().map { .init(id: "\($0.offset)", title: $0.element) }, allowsNil: true)),
+                    editability: .readOnly
+                ),
+                value: .selection(property.selectionIndex),
+                runtimePresentation: runtimePresentation
+            )
         }
     }
 
@@ -1516,6 +1713,11 @@ final class InspectorMCPBridgeService {
         }
         return value
     }
+
+    private func finiteNumber(_ value: Double?) -> Double? {
+        guard let value, value.isFinite else { return nil }
+        return value
+    }
 }
 
 private func nodeKind(for reference: ViewHierarchyElementReference) -> InspectorBridgeNodeKind {
@@ -1531,7 +1733,10 @@ private func nodeKind(for reference: ViewHierarchyElementReference) -> Inspector
 }
 
 private func objectIdentityToken(for reference: ViewHierarchyElementReference) -> String {
-    String(reference._objectIdentifier.hashValue)
+    guard let object = reference._underlyingObject else {
+        return String(reference._objectIdentifier.hashValue)
+    }
+    return inspectorObjectIdentityToken(for: object)
 }
 
 private func pathFingerprint(for reference: ViewHierarchyElementReference) -> String {
@@ -1709,6 +1914,24 @@ package extension Inspector {
         value: InspectorBridgePropertyMutationValue
     ) throws -> InspectorBridgePropertyMutationResult {
         try sharedInspectorMCPBridgeService.setProperty(reference: reference, value: value)
+    }
+
+    static func bridgeRegisterInjectedPanel(
+        handle: InspectorBridgeHandle,
+        panel: InspectorBridgeEditablePanel,
+        panelId: String?,
+        sections: [InspectorBridgeInjectedSectionDefinition]
+    ) throws -> InspectorBridgeRegisterInjectedPanelResult {
+        try sharedInspectorMCPBridgeService.registerInjectedPanel(
+            for: handle,
+            panel: panel,
+            panelId: panelId,
+            sections: sections
+        )
+    }
+
+    static func bridgeRemoveInjectedPanel(panelId: String) throws -> InspectorBridgeRemoveInjectedPanelResult {
+        try sharedInspectorMCPBridgeService.removeInjectedPanel(panelId: panelId)
     }
 
     static func bridgeLayers() throws -> [InspectorBridgeLayerState] {

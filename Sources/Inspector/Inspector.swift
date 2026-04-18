@@ -86,6 +86,7 @@ public final class Inspector {
         resetInspectorBridgeState()
         cleanupInspectorSnapshotsDirectory()
 #endif
+        InspectorInjectedPanelRegistry.shared.reset()
     }
 
     private func restartIfNeeded() {
