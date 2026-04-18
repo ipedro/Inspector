@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementSizeLibrary {
@@ -39,28 +40,55 @@ extension DefaultElementSizeLibrary {
             case imageEdgeInsets = "Image Insets"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let button else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .contentEdgeInsets:
-                    .edgeInsets(
-                        title: property.rawValue,
-                        insets: { button.contentEdgeInsets },
-                        handler: { button.contentEdgeInsets = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "content-edge-insets",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .edgeInsets,
+                            editability: .editable
+                        ),
+                        read: { .edgeInsets(button.contentEdgeInsets) },
+                        write: { newValue in
+                            guard case let .edgeInsets(insets) = newValue else { return }
+                            button.contentEdgeInsets = insets
+                        }
                     )
                 case .imageEdgeInsets:
-                    .edgeInsets(
-                        title: property.rawValue,
-                        insets: { button.imageEdgeInsets },
-                        handler: { button.imageEdgeInsets = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "image-edge-insets",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .edgeInsets,
+                            editability: .editable
+                        ),
+                        read: { .edgeInsets(button.imageEdgeInsets) },
+                        write: { newValue in
+                            guard case let .edgeInsets(insets) = newValue else { return }
+                            button.imageEdgeInsets = insets
+                        }
                     )
                 case .titleEdgeInsets:
-                    .edgeInsets(
-                        title: property.rawValue,
-                        insets: { button.titleEdgeInsets },
-                        handler: { button.titleEdgeInsets = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "title-edge-insets",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .edgeInsets,
+                            editability: .editable
+                        ),
+                        read: { .edgeInsets(button.titleEdgeInsets) },
+                        write: { newValue in
+                            guard case let .edgeInsets(insets) = newValue else { return }
+                            button.titleEdgeInsets = insets
+                        }
                     )
                 }
             }

@@ -234,5 +234,25 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(tableView.estimatedRowHeight, 55)
         XCTAssertFalse(tableView.insetsContentViewsToSafeArea)
     }
+
+    func testButtonSizeSectionUsesBindingBackedFieldsAndMutatesInsets() throws {
+        let button = UIButton(type: .system)
+        let dataSource = try XCTUnwrap(
+            DefaultElementSizeLibrary.ButtonSizeSectionDataSource(with: button)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 3)
+        XCTAssertTrue(bindings.allSatisfy { $0.descriptor.kind == .preview })
+
+        let newInsets = UIEdgeInsets(top: 9, left: 8, bottom: 7, right: 6)
+        bindings[0].apply(.edgeInsets(newInsets))
+        bindings[1].apply(.edgeInsets(newInsets))
+        bindings[2].apply(.edgeInsets(newInsets))
+
+        XCTAssertEqual(button.contentEdgeInsets, newInsets)
+        XCTAssertEqual(button.imageEdgeInsets, newInsets)
+        XCTAssertEqual(button.titleEdgeInsets, newInsets)
+    }
 }
 #endif
