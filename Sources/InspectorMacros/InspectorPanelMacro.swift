@@ -157,12 +157,11 @@ public struct InspectorPanelMacro: MemberMacro {
                 self.element = element
             }
         \(sectionBindingSource)
-            var properties: [InspectorElementProperty] {
-                guard let element else { return [] }
-                let binding = makeInspectorSectionBinding()
-        \(extraProperties)
-                return binding.makeInspectorElementProperties(extraProperties: extraProperties)
+            var sectionBinding: InspectorSectionBinding? {
+                guard element != nil else { return nil }
+                return makeInspectorSectionBinding()
             }
+        \(extraProperties)
         }
         """
     }
@@ -175,20 +174,22 @@ public struct InspectorPanelMacro: MemberMacro {
             let type = prop.typeName.replacingOccurrences(of: "!", with: "")
             return """
                     "\(name)": {
-                        guard let child = element.\(name) else { return [] }
+                        guard let element = self.element, let child = element.\(name) else { return [] }
                         return [.group(title: "\(title)")] + (\(type).SectionDataSource(with: child)?.properties ?? [])
                     }
             """
         }.joined(separator: ",\n")
 
         if entries.isEmpty {
-            return "                let extraProperties: [String: () -> [InspectorElementProperty]] = [:]"
+            return "            var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }"
         }
 
         return """
-                let extraProperties: [String: () -> [InspectorElementProperty]] = [
+            var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] {
+                [
         \(entries)
                 ]
+            }
         """
     }
 

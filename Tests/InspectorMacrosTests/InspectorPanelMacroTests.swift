@@ -42,11 +42,17 @@ final class InspectorPanelMacroTests: XCTestCase {
                     ]
                 )
                 func makeInspectorSectionBinding() -> InspectorSectionBinding {
-                        InspectorSectionBinding(
-                        descriptor: Self.inspectorSectionDescriptor,
+                    guard let element else {
+                        return InspectorSectionBinding(
+                            descriptor: MyCardView.inspectorSectionDescriptor,
+                            fields: []
+                        )
+                    }
+                    return InspectorSectionBinding(
+                        descriptor: MyCardView.inspectorSectionDescriptor,
                         fields: [
                             .init(
-                                descriptor: Self.inspectorSectionDescriptor.fields[0],
+                                descriptor: MyCardView.inspectorSectionDescriptor.fields[0],
                                 read: { .color(element.borderColor) },
                                 write: { value in
                                     guard case let .color(newValue) = value, let newValue else { return }
@@ -67,14 +73,11 @@ final class InspectorPanelMacroTests: XCTestCase {
                         }
                         self.element = element
                     }
-                    var properties: [InspectorElementProperty] {
-                        guard let element else {
-                            return []
-                        }
-                        let binding = makeInspectorSectionBinding()
-                        let extraProperties: [String: () -> [InspectorElementProperty]] = [:]
-                        return binding.makeInspectorElementProperties(extraProperties: extraProperties)
+                    var sectionBinding: InspectorSectionBinding? {
+                        guard element != nil else { return nil }
+                        return makeInspectorSectionBinding()
                     }
+                    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }
                 }
                 struct InspectorLibrary: InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
@@ -121,11 +124,17 @@ final class InspectorPanelMacroTests: XCTestCase {
                     ]
                 )
                 func makeInspectorSectionBinding() -> InspectorSectionBinding {
-                        InspectorSectionBinding(
-                        descriptor: Self.inspectorSectionDescriptor,
+                    guard let element else {
+                        return InspectorSectionBinding(
+                            descriptor: PlaygroundViewController.inspectorSectionDescriptor,
+                            fields: []
+                        )
+                    }
+                    return InspectorSectionBinding(
+                        descriptor: PlaygroundViewController.inspectorSectionDescriptor,
                         fields: [
                             .init(
-                                descriptor: Self.inspectorSectionDescriptor.fields[0],
+                                descriptor: PlaygroundViewController.inspectorSectionDescriptor.fields[0],
                                 read: { .none },
                                 write: nil,
                                 refreshHint: .none
@@ -143,18 +152,17 @@ final class InspectorPanelMacroTests: XCTestCase {
                         }
                         self.element = element
                     }
-                    var properties: [InspectorElementProperty] {
-                        guard let element else {
-                            return []
-                        }
-                        let binding = makeInspectorSectionBinding()
-                        let extraProperties: [String: () -> [InspectorElementProperty]] = [
+                    var sectionBinding: InspectorSectionBinding? {
+                        guard element != nil else { return nil }
+                        return makeInspectorSectionBinding()
+                    }
+                    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] {
+                        [
                             "inspectBarButton": {
                                 guard let child = element.inspectBarButton else { return [] }
                                 return [.group(title: "Inspect Bar Button")] + (RoundedButton.SectionDataSource(with: child)?.properties ?? [])
                             }
                         ]
-                        return binding.makeInspectorElementProperties(extraProperties: extraProperties)
                     }
                 }
                 struct InspectorLibrary: InspectorElementLibraryProtocol {
@@ -206,11 +214,17 @@ final class InspectorPanelMacroTests: XCTestCase {
                     ]
                 )
                 func makeInspectorSectionBinding() -> InspectorSectionBinding {
-                        InspectorSectionBinding(
-                        descriptor: Self.inspectorSectionDescriptor,
+                    guard let element else {
+                        return InspectorSectionBinding(
+                            descriptor: SliderView.inspectorSectionDescriptor,
+                            fields: []
+                        )
+                    }
+                    return InspectorSectionBinding(
+                        descriptor: SliderView.inspectorSectionDescriptor,
                         fields: [
                             .init(
-                                descriptor: Self.inspectorSectionDescriptor.fields[0],
+                                descriptor: SliderView.inspectorSectionDescriptor.fields[0],
                                 read: { .number(element.value) },
                                 write: { value in
                                     guard case let .number(newValue) = value else { return }
@@ -231,14 +245,11 @@ final class InspectorPanelMacroTests: XCTestCase {
                         }
                         self.element = element
                     }
-                    var properties: [InspectorElementProperty] {
-                        guard let element else {
-                            return []
-                        }
-                        let binding = makeInspectorSectionBinding()
-                        let extraProperties: [String: () -> [InspectorElementProperty]] = [:]
-                        return binding.makeInspectorElementProperties(extraProperties: extraProperties)
+                    var sectionBinding: InspectorSectionBinding? {
+                        guard element != nil else { return nil }
+                        return makeInspectorSectionBinding()
                     }
+                    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }
                 }
                 struct InspectorLibrary: InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
@@ -303,8 +314,14 @@ final class InspectorPanelMacroTests: XCTestCase {
                     ]
                 )
                 func makeInspectorSectionBinding() -> InspectorSectionBinding {
-                        InspectorSectionBinding(
-                        descriptor: Self.inspectorSectionDescriptor,
+                    guard let element else {
+                        return InspectorSectionBinding(
+                            descriptor: TestView.inspectorSectionDescriptor,
+                            fields: []
+                        )
+                    }
+                    return InspectorSectionBinding(
+                        descriptor: TestView.inspectorSectionDescriptor,
                         fields: [
 
                         ]
@@ -320,14 +337,11 @@ final class InspectorPanelMacroTests: XCTestCase {
                         }
                         self.element = element
                     }
-                    var properties: [InspectorElementProperty] {
-                        guard let element else {
-                            return []
-                        }
-                        let binding = makeInspectorSectionBinding()
-                        let extraProperties: [String: () -> [InspectorElementProperty]] = [:]
-                        return binding.makeInspectorElementProperties(extraProperties: extraProperties)
+                    var sectionBinding: InspectorSectionBinding? {
+                        guard element != nil else { return nil }
+                        return makeInspectorSectionBinding()
                     }
+                    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }
                 }
                 struct InspectorLibrary: InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {

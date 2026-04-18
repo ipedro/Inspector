@@ -31,18 +31,27 @@ public protocol InspectorElementSectionDataSource: AnyObject {
     var subtitle: String? { get }
     /// A list of properties to be displayed.
     var properties: [InspectorElementProperty] { get }
+    /// Optional binding-based runtime description for this section.
+    var sectionBinding: InspectorSectionBinding? { get }
     /// To customize how your sections look provide a type that conforms to `InspectorElementFormSectionView`.
     var customClass: InspectorElementSectionView.Type? { get }
     /// Constant describing the currentstate of the section.
     var state: InspectorElementSectionState { get set }
     /// An optional property to be displayed next to the title.
     var titleAccessoryProperty: InspectorElementProperty? { get }
+    /// Escape hatch for binding fields that still need custom runtime expansion.
+    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { get }
 }
 
 public extension InspectorElementSectionDataSource {
     var subtitle: String? { nil }
+    var properties: [InspectorElementProperty] {
+        sectionBinding?.makeInspectorElementProperties(extraProperties: sectionBindingExtraProperties) ?? []
+    }
+    var sectionBinding: InspectorSectionBinding? { nil }
     var customClass: InspectorElementSectionView.Type? { nil }
     var titleAccessoryProperty: InspectorElementProperty? { nil }
+    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }
 }
 
 extension InspectorElementSectionDataSource {

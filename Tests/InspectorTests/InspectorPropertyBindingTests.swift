@@ -93,5 +93,47 @@ final class InspectorPropertyBindingTests: XCTestCase {
             XCTFail("expected group property")
         }
     }
+
+    func testSectionDataSourceDefaultPropertiesUseSectionBinding() {
+        final class BindingOnlyDataSource: InspectorElementSectionDataSource {
+            var state: InspectorElementSectionState = .collapsed
+            let title = "Binding Only"
+            let sectionBinding: InspectorSectionBinding?
+
+            init() {
+                let descriptor = InspectorPropertyDescriptor(
+                    id: "enabled",
+                    title: "Enabled",
+                    kind: .toggle,
+                    value: .bool,
+                    editability: .editable
+                )
+                var value = false
+                self.sectionBinding = InspectorSectionBinding(
+                    descriptor: .init(id: "binding-only"),
+                    fields: [
+                        .init(
+                            descriptor: descriptor,
+                            read: { .bool(value) },
+                            write: { newValue in
+                                guard case let .bool(updated) = newValue else { return }
+                                value = updated
+                            }
+                        )
+                    ]
+                )
+            }
+        }
+
+        let dataSource = BindingOnlyDataSource()
+        let properties = dataSource.properties
+        XCTAssertEqual(properties.count, 1)
+        if case let .switch(title, isOn, _) = properties[0] {
+            XCTAssertEqual(title, "Enabled")
+            XCTAssertFalse(isOn())
+        } else {
+            XCTFail("expected switch property")
+        }
+    }
 }
 #endif
