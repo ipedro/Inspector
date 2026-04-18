@@ -26,6 +26,21 @@ final class InspectorPanelMacroTests: XCTestCase {
                 var borderColor: UIColor = .clear
 
                 #if INSPECTOR_DEBUGGING
+                static let inspectorSectionDescriptor: InspectorContract.InspectorSectionDescriptor = .init(
+                    id: "My Card View",
+                    title: "My Card View",
+                    defaultState: .collapsed,
+                    fields: [
+                        .init(
+                            id: "borderColor",
+                            title: "Border Color",
+                            kind: .color,
+                            value: .color(allowsNil: false),
+                            editability: .editable,
+                            presentation: nil
+                        )
+                    ]
+                )
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "My Card View"
@@ -90,6 +105,21 @@ final class InspectorPanelMacroTests: XCTestCase {
                 var inspectBarButton: RoundedButton!
 
                 #if INSPECTOR_DEBUGGING
+                static let inspectorSectionDescriptor: InspectorContract.InspectorSectionDescriptor = .init(
+                    id: "Playground",
+                    title: "Playground",
+                    defaultState: .collapsed,
+                    fields: [
+                        .init(
+                            id: "inspectBarButton",
+                            title: "Inspect Bar Button",
+                            kind: .subpanel,
+                            value: .none,
+                            editability: .readOnly,
+                            presentation: nil
+                        )
+                    ]
+                )
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "Playground"
@@ -151,6 +181,21 @@ final class InspectorPanelMacroTests: XCTestCase {
                 }
 
                 #if INSPECTOR_DEBUGGING
+                static let inspectorSectionDescriptor: InspectorContract.InspectorSectionDescriptor = .init(
+                    id: "Slider",
+                    title: "Slider",
+                    defaultState: .collapsed,
+                    fields: [
+                        .init(
+                            id: "value",
+                            title: "Value",
+                            kind: .stepper,
+                            value: .number(.init(min: 0.0, max: 120.0, step: 1.0, isDecimal: true)),
+                            editability: .editable,
+                            presentation: nil
+                        )
+                    ]
+                )
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "Slider"
@@ -237,6 +282,14 @@ final class InspectorPanelMacroTests: XCTestCase {
                 var customEnum: MyEnum = .default
 
                 #if INSPECTOR_DEBUGGING
+                static let inspectorSectionDescriptor: InspectorContract.InspectorSectionDescriptor = .init(
+                    id: "Test",
+                    title: "Test",
+                    defaultState: .collapsed,
+                    fields: [
+
+                    ]
+                )
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "Test"

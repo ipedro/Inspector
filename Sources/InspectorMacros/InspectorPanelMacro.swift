@@ -109,6 +109,11 @@ public struct InspectorPanelMacro: MemberMacro {
             title: title,
             properties: properties
         )
+        let sectionDescriptorSource = generateSectionDescriptorSource(
+            className: className,
+            title: title,
+            properties: properties
+        )
         let inspectorLibrarySource = generateInspectorLibrarySource(className: className)
 
         // 5. Wrap both in #if INSPECTOR_DEBUGGING using IfConfigDeclSyntax
@@ -121,6 +126,7 @@ public struct InspectorPanelMacro: MemberMacro {
                         DeclReferenceExprSyntax(baseName: .identifier("INSPECTOR_DEBUGGING"))
                     ),
                     elements: .decls(MemberBlockItemListSyntax([
+                        MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: sectionDescriptorSource)),
                         MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: sectionDataSourceSource)),
                         MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: inspectorLibrarySource))
                     ]))
@@ -170,6 +176,25 @@ public struct InspectorPanelMacro: MemberMacro {
         """
     }
 
+    private static func generateSectionDescriptorSource(
+        className _: String,
+        title: String,
+        properties: [InspectableProperty]
+    ) -> String {
+        let fieldLines = properties.map(generateDescriptorField).joined(separator: ",\n")
+
+        return """
+        static let inspectorSectionDescriptor: InspectorContract.InspectorSectionDescriptor = .init(
+            id: "\(escapedStringLiteral(title))",
+            title: "\(escapedStringLiteral(title))",
+            defaultState: .collapsed,
+            fields: [
+        \(fieldLines)
+            ]
+        )
+        """
+    }
+
     private static func generateInspectorLibrarySource(className: String) -> String {
         return """
         struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
@@ -187,6 +212,82 @@ public struct InspectorPanelMacro: MemberMacro {
                     case .\(prop.name):
         \(body)
         """
+    }
+
+    private static func generateDescriptorField(prop: InspectableProperty) -> String {
+        let id = escapedStringLiteral(prop.name)
+        let title = escapedStringLiteral(prop.displayName)
+        let descriptor = contractDescriptor(for: prop)
+
+        return """
+                .init(
+                    id: "\(id)",
+                    title: "\(title)",
+                    kind: \(descriptor.kind),
+                    value: \(descriptor.value),
+                    editability: \(descriptor.editability),
+                    presentation: \(descriptor.presentation)
+                )
+        """
+    }
+
+    private static func contractDescriptor(for prop: InspectableProperty) -> (kind: String, value: String, editability: String, presentation: String) {
+        let editable = ".editable"
+        let readOnly = ".readOnly"
+
+        switch prop.descriptor {
+        case .switch:
+            return (".toggle", ".bool", editable, "nil")
+        case .colorPicker:
+            return (".color", ".color(allowsNil: \(prop.isOptional ? "true" : "false"))", editable, "nil")
+        case .stepper(let range, let step):
+            let lo = range.lowerBound == 0 ? "0.0" : "\(range.lowerBound)"
+            let hi = range.upperBound == Double.infinity ? "Double.infinity" : "\(range.upperBound)"
+            let stepStr = step == 1.0 ? "1.0" : "\(step)"
+            let isDecimal = (prop.typeName == "CGFloat" || prop.typeName == "Double" || prop.typeName == "Float") ? "true" : "false"
+            return (
+                ".stepper",
+                ".number(.init(min: \(lo), max: \(hi), step: \(stepStr), isDecimal: \(isDecimal)))",
+                editable,
+                "nil"
+            )
+        case .textField:
+            return (".textField", ".string(.init(multiline: false, placeholder: nil, allowsNil: false))", editable, "nil")
+        case .textView:
+            return (".textView", ".string(.init(multiline: true, placeholder: nil, allowsNil: false))", editable, "nil")
+        case .imagePicker:
+            return (".preview", ".none", editable, "nil")
+        case .optionsList(let options):
+            let rendered = options.enumerated().map { index, option in
+                ".init(id: \"\(index)\", title: \"\(escapedStringLiteral(option))\")"
+            }.joined(separator: ", ")
+            return (".options", ".selection(.init(options: [\(rendered)], allowsNil: true))", editable, "nil")
+        case .textButtonGroup(let texts):
+            let rendered = texts.enumerated().map { index, option in
+                ".init(id: \"\(index)\", title: \"\(escapedStringLiteral(option))\")"
+            }.joined(separator: ", ")
+            return (".textButtons", ".selection(.init(options: [\(rendered)], allowsNil: true))", editable, "nil")
+        case .cgRect:
+            return (".preview", ".rect", editable, "nil")
+        case .cgPoint:
+            return (".preview", ".point", editable, "nil")
+        case .cgSize:
+            return (".preview", ".size", editable, "nil")
+        case .uiOffset:
+            return (".preview", ".offset", editable, "nil")
+        case .edgeInsets:
+            return (".preview", ".edgeInsets", editable, "nil")
+        case .directionalInsets:
+            return (".preview", ".directionalEdgeInsets", editable, "nil")
+        case .group(let groupTitle):
+            return (".group", ".none", readOnly, ".init(subtitle: \"\(escapedStringLiteral(groupTitle))\")")
+        case .separator:
+            return (".separator", ".none", readOnly, "nil")
+        case .infoNote(let text):
+            return (".note", ".none", readOnly, ".init(subtitle: \"\(escapedStringLiteral(text))\", noteStyle: .info)")
+        case .subpanel:
+            return (".subpanel", ".none", readOnly, "nil")
+        }
     }
 
     private static func generatePropertyBuilder(prop: InspectableProperty) -> String {

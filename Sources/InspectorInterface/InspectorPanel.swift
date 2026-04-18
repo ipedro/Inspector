@@ -15,7 +15,7 @@
 /// ```
 /// Generates `MyCardView.SectionDataSource` and `MyCardView.InspectorLibrary`
 /// inside `#if INSPECTOR_DEBUGGING` guards.
-@attached(member, names: named(SectionDataSource), named(InspectorLibrary))
+@attached(member, names: named(SectionDataSource), named(InspectorLibrary), named(inspectorSectionDescriptor))
 public macro InspectorPanel(title: String) =
     #externalMacro(module: "InspectorMacros", type: "InspectorPanelMacro")
 
