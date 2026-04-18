@@ -621,6 +621,46 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(viewController.preferredContentSize, .init(width: 320, height: 200))
     }
 
+    func testImageViewAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let imageView = UIImageView()
+        imageView.animationImages = [UIImage(), UIImage()]
+        imageView.highlightedAnimationImages = [UIImage()]
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.ImageViewAttributesSectionDataSource(with: imageView)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 12)
+        XCTAssertEqual(bindings[0].descriptor.kind, .preview)
+        XCTAssertEqual(bindings[1].descriptor.kind, .group)
+        XCTAssertEqual(bindings[2].descriptor.kind, .preview)
+        XCTAssertEqual(bindings[4].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[5].descriptor.kind, .preview)
+        XCTAssertEqual(bindings[6].descriptor.kind, .group)
+        XCTAssertEqual(bindings[9].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[10].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[11].descriptor.kind, .toggle)
+
+        let image = UIGraphicsImageRenderer(size: .init(width: 2, height: 2)).image { context in
+            UIColor.red.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 2, height: 2))
+        }
+        let highlightedImage = UIGraphicsImageRenderer(size: .init(width: 2, height: 2)).image { context in
+            UIColor.blue.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 2, height: 2))
+        }
+        bindings[0].apply(.image(image))
+        bindings[5].apply(.image(highlightedImage))
+        bindings[10].apply(.bool(true))
+        bindings[11].apply(.bool(true))
+
+        XCTAssertEqual(imageView.image?.pngData(), image.pngData())
+        XCTAssertEqual(imageView.highlightedImage?.pngData(), highlightedImage.pngData())
+        XCTAssertTrue(imageView.isHighlighted)
+        XCTAssertTrue(imageView.adjustsImageSizeForAccessibilityContentSizeCategory)
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled

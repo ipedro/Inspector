@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -44,67 +45,144 @@ extension DefaultElementAttributesLibrary {
             case adjustsImageSizeForAccessibilityContentSizeCategory = "Adjusts Image Size"
         }
 
-        private func imagesPickers(for images: [UIImage]) -> [InspectorElementProperty] {
+        private func imageBindings(for images: [UIImage], idPrefix: String) -> [InspectorPropertyBinding] {
             images.enumerated().map { offset, image in
-                .imagePicker(
-                    title: "#\(offset)",
-                    axis: .horizontal,
-                    image: { image },
-                    handler: .none
+                .init(
+                    descriptor: .init(
+                        id: "\(idPrefix)-\(offset)",
+                        title: "#\(offset)",
+                        kind: .preview,
+                        value: .none,
+                        editability: .readOnly,
+                        presentation: .init(axis: .horizontal)
+                    ),
+                    read: { .image(image) },
+                    write: nil,
+                    refreshHint: .none
                 )
             }
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let imageView else { return [] }
 
-            return Property.allCases
-                .flatMap { property -> [InspectorElementProperty] in
-                    switch property {
-                    case .separator:
-                        return [.separator]
+            return Property.allCases.flatMap { property -> [InspectorPropertyBinding] in
+                switch property {
+                case .separator:
+                    return [
+                        .init(
+                            descriptor: .init(id: "separator", title: "", kind: .separator, value: .none, editability: .readOnly),
+                            read: { .none },
+                            write: nil,
+                            refreshHint: .none
+                        )
+                    ]
 
-                    case .image:
-                        return [.imagePicker(
-                            title: property.rawValue,
-                            image: { imageView.image }
-                        ) { image in
-                            imageView.image = image
-                        }]
+                case .image:
+                    return [
+                        .init(
+                            descriptor: .init(id: "image", title: property.rawValue, kind: .preview, value: .none, editability: .editable),
+                            read: { .image(imageView.image) },
+                            write: { newValue in
+                                guard case let .image(image) = newValue else { return }
+                                imageView.image = image
+                            }
+                        )
+                    ]
 
-                    case .animationImages:
-                        guard let animationImages = imageView.animationImages else { return [] }
-                        return [.group(title: property.rawValue, subtitle: "\(animationImages.count) images")] + imagesPickers(for: animationImages) + [.separator]
+                case .animationImages:
+                    guard let animationImages = imageView.animationImages else { return [] }
+                    return [
+                        .init(
+                            descriptor: .init(
+                                id: "animation-images-group",
+                                title: property.rawValue,
+                                kind: .group,
+                                value: .none,
+                                editability: .readOnly,
+                                presentation: .init(subtitle: "\(animationImages.count) images")
+                            ),
+                            read: { .none },
+                            write: nil,
+                            refreshHint: .none
+                        )
+                    ] + imageBindings(for: animationImages, idPrefix: "animation-image") + [
+                        .init(
+                            descriptor: .init(id: "animation-images-separator", title: "", kind: .separator, value: .none, editability: .readOnly),
+                            read: { .none },
+                            write: nil,
+                            refreshHint: .none
+                        )
+                    ]
 
-                    case .highlightedImage:
-                        return [.imagePicker(
-                            title: property.rawValue,
-                            image: { imageView.highlightedImage }
-                        ) { highlightedImage in
-                            imageView.highlightedImage = highlightedImage
-                        }]
+                case .highlightedImage:
+                    return [
+                        .init(
+                            descriptor: .init(id: "highlighted-image", title: property.rawValue, kind: .preview, value: .none, editability: .editable),
+                            read: { .image(imageView.highlightedImage) },
+                            write: { newValue in
+                                guard case let .image(image) = newValue else { return }
+                                imageView.highlightedImage = image
+                            }
+                        )
+                    ]
 
-                    case .highlightedAnimationImages:
-                        guard let highlightedAnimationImages = imageView.highlightedAnimationImages else { return [] }
-                        return [.group(title: property.rawValue, subtitle: "\(highlightedAnimationImages.count) images")] + imagesPickers(for: highlightedAnimationImages) + [.separator]
+                case .highlightedAnimationImages:
+                    guard let highlightedAnimationImages = imageView.highlightedAnimationImages else { return [] }
+                    return [
+                        .init(
+                            descriptor: .init(
+                                id: "highlighted-animation-images-group",
+                                title: property.rawValue,
+                                kind: .group,
+                                value: .none,
+                                editability: .readOnly,
+                                presentation: .init(subtitle: "\(highlightedAnimationImages.count) images")
+                            ),
+                            read: { .none },
+                            write: nil,
+                            refreshHint: .none
+                        )
+                    ] + imageBindings(for: highlightedAnimationImages, idPrefix: "highlighted-animation-image") + [
+                        .init(
+                            descriptor: .init(id: "highlighted-animation-images-separator", title: "", kind: .separator, value: .none, editability: .readOnly),
+                            read: { .none },
+                            write: nil,
+                            refreshHint: .none
+                        )
+                    ]
 
-                    case .isHighlighted:
-                        return [.switch(
-                            title: property.rawValue,
-                            isOn: { imageView.isHighlighted }
-                        ) { isHighlighted in
-                            imageView.isHighlighted = isHighlighted
-                        }]
+                case .isHighlighted:
+                    return [
+                        .init(
+                            descriptor: .init(id: "is-highlighted", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                            read: { .bool(imageView.isHighlighted) },
+                            write: { newValue in
+                                guard case let .bool(isHighlighted) = newValue else { return }
+                                imageView.isHighlighted = isHighlighted
+                            }
+                        )
+                    ]
 
-                    case .adjustsImageSizeForAccessibilityContentSizeCategory:
-                        return [.switch(
-                            title: property.rawValue,
-                            isOn: { imageView.adjustsImageSizeForAccessibilityContentSizeCategory }
-                        ) { adjustsImageSizeForAccessibilityContentSizeCategory in
-                            imageView.adjustsImageSizeForAccessibilityContentSizeCategory = adjustsImageSizeForAccessibilityContentSizeCategory
-                        }]
-                    }
+                case .adjustsImageSizeForAccessibilityContentSizeCategory:
+                    return [
+                        .init(
+                            descriptor: .init(
+                                id: "adjusts-image-size-for-accessibility-content-size-category",
+                                title: property.rawValue,
+                                kind: .toggle,
+                                value: .bool,
+                                editability: .editable
+                            ),
+                            read: { .bool(imageView.adjustsImageSizeForAccessibilityContentSizeCategory) },
+                            write: { newValue in
+                                guard case let .bool(isEnabled) = newValue else { return }
+                                imageView.adjustsImageSizeForAccessibilityContentSizeCategory = isEnabled
+                            }
+                        )
+                    ]
                 }
+            }
         }
     }
 }
