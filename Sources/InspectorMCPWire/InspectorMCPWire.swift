@@ -14,6 +14,8 @@ public enum InspectorMCPBridgeEndpoint {
     public static let assertPropertyPath = "/assert-property"
     public static let assertVisiblePath = "/assert-visible"
     public static let assertHierarchyContainsPath = "/assert-hierarchy-contains"
+    public static let captureStatePath = "/capture-state"
+    public static let diffStatesPath = "/diff-states"
     public static let propertiesPath = "/properties"
     public static let setPropertyPath = "/set-property"
     public static let layersPath = "/layers"
@@ -32,6 +34,8 @@ public enum InspectorMCPOperation: String, Codable, CaseIterable {
     case assertProperty
     case assertVisible
     case assertHierarchyContains
+    case captureState
+    case diffStates
     case listProperties
     case setProperty
     case layers
@@ -313,6 +317,20 @@ public struct InspectorMCPAssertHierarchyContainsRequest: Codable, Equatable {
         self.isInternalView = isInternalView
         self.isSystemContainer = isSystemContainer
         self.minimumCount = minimumCount
+    }
+}
+
+public struct InspectorMCPCaptureStateRequest: Codable, Equatable {
+    public init() {}
+}
+
+public struct InspectorMCPDiffStatesRequest: Codable, Equatable {
+    public let beforeRef: String
+    public let afterRef: String
+
+    public init(beforeRef: String, afterRef: String) {
+        self.beforeRef = beforeRef
+        self.afterRef = afterRef
     }
 }
 
@@ -634,6 +652,58 @@ public struct InspectorMCPAssertHierarchyContainsResult: Codable, Equatable {
     }
 }
 
+public enum InspectorMCPStateDiffKind: String, Codable {
+    case added
+    case removed
+    case changed
+}
+
+public struct InspectorMCPCapturedState: Codable, Equatable {
+    public let stateRef: String
+    public let createdAt: Date
+    public let nodeCount: Int
+
+    public init(stateRef: String, createdAt: Date, nodeCount: Int) {
+        self.stateRef = stateRef
+        self.createdAt = createdAt
+        self.nodeCount = nodeCount
+    }
+}
+
+public struct InspectorMCPStateDiffEntry: Codable, Equatable {
+    public let signature: String
+    public let kind: InspectorMCPStateDiffKind
+    public let className: String
+    public let elementName: String
+    public let accessibilityIdentifier: String?
+
+    public init(signature: String, kind: InspectorMCPStateDiffKind, className: String, elementName: String, accessibilityIdentifier: String?) {
+        self.signature = signature
+        self.kind = kind
+        self.className = className
+        self.elementName = elementName
+        self.accessibilityIdentifier = accessibilityIdentifier
+    }
+}
+
+public struct InspectorMCPStateDiff: Codable, Equatable {
+    public let beforeRef: String
+    public let afterRef: String
+    public let addedCount: Int
+    public let removedCount: Int
+    public let changedCount: Int
+    public let entries: [InspectorMCPStateDiffEntry]
+
+    public init(beforeRef: String, afterRef: String, addedCount: Int, removedCount: Int, changedCount: Int, entries: [InspectorMCPStateDiffEntry]) {
+        self.beforeRef = beforeRef
+        self.afterRef = afterRef
+        self.addedCount = addedCount
+        self.removedCount = removedCount
+        self.changedCount = changedCount
+        self.entries = entries
+    }
+}
+
 public struct InspectorMCPLayerState: Codable, Equatable {
     public let name: String
     public let displayName: String
@@ -687,6 +757,7 @@ public enum InspectorMCPWireErrorCode: String, Codable {
     case staleHandle
     case stalePropertyReference
     case staleActionReference
+    case staleStateReference
     case snapshotUnavailable
     case unsupportedTarget
     case invalidPropertyValue

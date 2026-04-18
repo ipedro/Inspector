@@ -35,7 +35,7 @@ final class InspectorMCPServerSession {
                         "name": "InspectorMCPServer",
                         "version": "2.0.0"
                     ],
-                    "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. For semantic actions, use list_actions before perform_action. For assertions, use assert_property / assert_visible / assert_hierarchy_contains. For property mutation, use list_properties before set_property. Mutation tools can stale handles immediately, so issue a fresh query after UI changes."
+                    "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. For semantic actions, use list_actions before perform_action. For assertions, use assert_property / assert_visible / assert_hierarchy_contains. For state debugging, use capture_state before diff_states. For property mutation, use list_properties before set_property. Mutation tools can stale handles immediately, so issue a fresh query after UI changes."
                 ]
             )
         case "tools/list":
@@ -267,6 +267,28 @@ final class InspectorMCPServerSession {
                 ]
             ),
             toolDefinition(
+                name: "capture_state",
+                description: "Capture a semantic snapshot of the current live hierarchy for later diffing.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [:]
+                ]
+            ),
+            toolDefinition(
+                name: "diff_states",
+                description: "Diff two captured semantic hierarchy states and report added/removed/changed nodes.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "beforeRef": ["type": "string"],
+                        "afterRef": ["type": "string"]
+                    ],
+                    "required": ["beforeRef", "afterRef"]
+                ]
+            ),
+            toolDefinition(
                 name: "list_properties",
                 description: "List editable properties for a node by reusing Inspector's existing panel property model. Returns opaque propertyRef values for later set_property calls.",
                 schema: [
@@ -490,6 +512,26 @@ final class InspectorMCPServerSession {
                 for: result,
                 successText: { assertion in
                     "Hierarchy assertion \(assertion.passed ? "passed" : "failed") with \(assertion.matchCount) match(es)."
+                }
+            )
+        case "capture_state":
+            let result = try await bridgeClient.captureState(.init())
+            return try toolResult(
+                for: result,
+                successText: { capture in
+                    "Captured semantic state \(capture.stateRef) with \(capture.nodeCount) node(s)."
+                }
+            )
+        case "diff_states":
+            let request = try JSONObject.decode(
+                InspectorMCPDiffStatesRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.diffStates(request)
+            return try toolResult(
+                for: result,
+                successText: { diff in
+                    "Diff completed with \(diff.addedCount) added, \(diff.removedCount) removed, and \(diff.changedCount) changed node(s)."
                 }
             )
         case "list_properties":

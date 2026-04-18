@@ -459,6 +459,7 @@ final class InspectorBridgeServiceTests: XCTestCase {
         availability: InspectorBridgeRuntimeAvailability = .active,
         snapshot: any InspectorBridgeSnapshotProtocol,
         snapshotLimit: Int = 1,
+        stateCaptureLimit: Int = 8,
         snapshotRenderer: InspectorBridgeSnapshotRendering = InspectorBridgeSnapshotRenderer(),
         dateProvider: @escaping InspectorMCPBridgeService.DateProvider = Date.init,
         librariesProvider: @escaping InspectorMCPBridgeService.LibrariesProvider = { _ in [] }
@@ -467,6 +468,7 @@ final class InspectorBridgeServiceTests: XCTestCase {
             availabilityProvider: { availability },
             snapshotProvider: { snapshot },
             snapshotLimitProvider: { snapshotLimit },
+            stateCaptureLimitProvider: { stateCaptureLimit },
             snapshotRenderer: snapshotRenderer,
             dateProvider: dateProvider,
             librariesProvider: librariesProvider
@@ -1401,6 +1403,46 @@ extension InspectorBridgeServiceTests {
         let systemMatches = try service.query(.init(isSystemContainer: true))
         XCTAssertEqual(systemMatches.nodes.count, 1)
         XCTAssertEqual(systemMatches.nodes.first?.accessibilityIdentifier, "system")
+    }
+
+    func testCaptureStateAndDiffStatesReportChangedNode() throws {
+        let node = MockReference.view(className: "UIButton", displayName: "Button", elementName: "Button", accessibilityIdentifier: "button")
+        let snapshot = MockSnapshot(nodes: [node])
+        let service = makeService(snapshot: snapshot)
+
+        let before = try service.captureState()
+        node.hidden = true
+        let after = try service.captureState()
+        let diff = try service.diffStates(before: before.stateRef, after: after.stateRef)
+
+        XCTAssertEqual(diff.changedCount, 1)
+        XCTAssertTrue(diff.entries.contains { $0.kind == .changed && $0.accessibilityIdentifier == "button" })
+    }
+
+    func testCaptureStateSupportsDuplicateSiblings() throws {
+        let parent = MockReference.view(className: "UIView", displayName: "Parent", elementName: "Parent", accessibilityIdentifier: "parent")
+        let childA = MockReference.view(className: "UILabel", displayName: "Label", elementName: "Label", accessibilityIdentifier: nil)
+        let childB = MockReference.view(className: "UILabel", displayName: "Label", elementName: "Label", accessibilityIdentifier: nil)
+        link(parent: parent, child: childA)
+        link(parent: parent, child: childB)
+
+        let service = makeService(snapshot: MockSnapshot(nodes: [parent, childA, childB]))
+        let state = try service.captureState()
+
+        XCTAssertEqual(state.nodeCount, 3)
+    }
+
+    func testDiffStatesRejectsEvictedStateReference() throws {
+        let node = MockReference.view(className: "UIButton", displayName: "Button", elementName: "Button", accessibilityIdentifier: "button")
+        let service = makeService(snapshot: MockSnapshot(nodes: [node]), stateCaptureLimit: 1)
+
+        let first = try service.captureState()
+        let second = try service.captureState()
+
+        XCTAssertNotEqual(first.stateRef, second.stateRef)
+        XCTAssertThrowsError(try service.diffStates(before: first.stateRef, after: second.stateRef)) { error in
+            XCTAssertEqual(error as? InspectorBridgeError, .staleStateReference)
+        }
     }
 }
 

@@ -219,6 +219,49 @@ public struct InspectorBridgeAssertHierarchyContainsResult: Hashable, Codable {
     public let message: String
 }
 
+public struct InspectorBridgeCapturedNodeState: Hashable, Codable {
+    public let signature: String
+    public let nodeKind: InspectorBridgeNodeKind
+    public let className: String
+    public let elementName: String
+    public let accessibilityIdentifier: String?
+    public let isHidden: Bool
+    public let isUserInteractionEnabled: Bool
+    public let isInternalView: Bool
+    public let isSystemContainer: Bool
+    public let childCount: Int
+    public let depth: Int
+}
+
+public struct InspectorBridgeStateCapture: Hashable, Codable {
+    public let stateRef: String
+    public let createdAt: Date
+    public let nodeCount: Int
+}
+
+public enum InspectorBridgeStateDiffKind: String, Codable, Hashable {
+    case added
+    case removed
+    case changed
+}
+
+public struct InspectorBridgeStateDiffEntry: Hashable, Codable {
+    public let signature: String
+    public let kind: InspectorBridgeStateDiffKind
+    public let className: String
+    public let elementName: String
+    public let accessibilityIdentifier: String?
+}
+
+public struct InspectorBridgeStateDiff: Hashable, Codable {
+    public let beforeRef: String
+    public let afterRef: String
+    public let addedCount: Int
+    public let removedCount: Int
+    public let changedCount: Int
+    public let entries: [InspectorBridgeStateDiffEntry]
+}
+
 public struct InspectorBridgeLayerState: Hashable, Codable {
     public let name: String
     public let displayName: String
@@ -268,6 +311,7 @@ public enum InspectorBridgeError: Error, Hashable, Codable {
     case staleHandle
     case stalePropertyReference
     case staleActionReference
+    case staleStateReference
     case snapshotUnavailable(InspectorBridgeSnapshotUnavailableReason)
     case unsupportedTarget
     case invalidPropertyValue(String)

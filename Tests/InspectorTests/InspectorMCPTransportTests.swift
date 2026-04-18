@@ -20,7 +20,7 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(health["bridgeEnabled"] as? Bool, true)
         XCTAssertEqual(health["inspectorStarted"] as? Bool, true)
         XCTAssertEqual(health["keyboardWindowsFiltered"] as? Bool, false)
-        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect", "tap", "listActions", "performAction", "assertProperty", "assertVisible", "assertHierarchyContains", "listProperties", "setProperty", "layers", "toggleLayer"])
+        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect", "tap", "listActions", "performAction", "assertProperty", "assertVisible", "assertHierarchyContains", "captureState", "diffStates", "listProperties", "setProperty", "layers", "toggleLayer"])
         XCTAssertEqual(health["apiVersion"] as? Int, 2)
     }
 
@@ -335,6 +335,15 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertTrue(operations.contains("assertHierarchyContains"))
     }
 
+    func testHealthAdvertisesStateOperations() async throws {
+        let health = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+        let operations = try XCTUnwrap(health["operations"] as? [String])
+        XCTAssertTrue(operations.contains("captureState"))
+        XCTAssertTrue(operations.contains("diffStates"))
+    }
+
     func testAssertionToolsWorkOnLiveHierarchy() async throws {
         _ = try await pollHealth(timeout: 5) { payload in
             payload["status"] as? String == "active"
@@ -381,6 +390,38 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(nodes.first?["isInternalView"] as? Bool, true)
     }
 
+    func testQueryCanFilterSystemContainers() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let response = try await postJSON(
+            path: "/query",
+            body: [
+                "nodeKind": "window",
+                "isSystemContainer": true
+            ]
+        )
+        XCTAssertEqual(response.statusCode, 200)
+        let payload = try unpackSuccessEnvelope(from: response.body)
+        let nodes = try XCTUnwrap(payload["nodes"] as? [[String: Any]])
+        XCTAssertFalse(nodes.isEmpty)
+        XCTAssertEqual(nodes.first?["isSystemContainer"] as? Bool, true)
+
+        let handle = try XCTUnwrap(nodes.first?["handle"] as? String)
+        let assertionResponse = try await postJSON(
+            path: "/assert-property",
+            body: [
+                "handle": handle,
+                "property": "isSystemContainer",
+                "boolValue": true
+            ]
+        )
+        XCTAssertEqual(assertionResponse.statusCode, 200)
+        let assertionPayload = try unpackSuccessEnvelope(from: assertionResponse.body)
+        XCTAssertEqual(assertionPayload["passed"] as? Bool, true)
+    }
+
     func testAssertHierarchyContainsCanTargetInternalViews() async throws {
         _ = try await pollHealth(timeout: 5) { payload in
             payload["status"] as? String == "active"
@@ -398,6 +439,45 @@ final class InspectorMCPTransportTests: XCTestCase {
         let payload = try unpackSuccessEnvelope(from: response.body)
         XCTAssertEqual(payload["passed"] as? Bool, true)
         XCTAssertEqual(payload["matchCount"] as? Int, 1)
+    }
+
+    func testCaptureStateAndDiffStatesDetectMutation() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let beforeResponse = try await postJSON(path: "/capture-state", body: [:])
+        let beforePayload = try unpackSuccessEnvelope(from: beforeResponse.body)
+        let beforeRef = try XCTUnwrap(beforePayload["stateRef"] as? String)
+
+        let handle = try await queryHandle(accessibilityIdentifier: "MCP Tap Smoke Button")
+        let listResponse = try await postJSON(
+            path: "/properties",
+            body: ["handle": handle, "panel": "attributes", "includeReadOnly": false]
+        )
+        let listPayload = try unpackSuccessEnvelope(from: listResponse.body)
+        let sections = try XCTUnwrap(listPayload["sections"] as? [[String: Any]])
+        let propertyRef = try XCTUnwrap(findPropertyRef(in: sections, titled: "Hidden"))
+
+        _ = try await postJSON(
+            path: "/set-property",
+            body: ["propertyRef": propertyRef, "boolValue": true]
+        )
+
+        let afterResponse = try await postJSON(path: "/capture-state", body: [:])
+        let afterPayload = try unpackSuccessEnvelope(from: afterResponse.body)
+        let afterRef = try XCTUnwrap(afterPayload["stateRef"] as? String)
+
+        let diffResponse = try await postJSON(
+            path: "/diff-states",
+            body: ["beforeRef": beforeRef, "afterRef": afterRef]
+        )
+        let diffPayload = try unpackSuccessEnvelope(from: diffResponse.body)
+        XCTAssertGreaterThanOrEqual(diffPayload["changedCount"] as? Int ?? 0, 1)
+
+        addTeardownBlock {
+            try? await self.restoreHidden(accessibilityIdentifier: "MCP Tap Smoke Button")
+        }
     }
 
     func testListPropertiesAndSetPropertyMutateSelectionProperty() async throws {

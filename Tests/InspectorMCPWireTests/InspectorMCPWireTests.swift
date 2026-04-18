@@ -17,6 +17,8 @@ final class InspectorMCPWireTests: XCTestCase {
         XCTAssertEqual(InspectorMCPBridgeEndpoint.assertPropertyPath, "/assert-property")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.assertVisiblePath, "/assert-visible")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.assertHierarchyContainsPath, "/assert-hierarchy-contains")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.captureStatePath, "/capture-state")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.diffStatesPath, "/diff-states")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.propertiesPath, "/properties")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.setPropertyPath, "/set-property")
     }
@@ -268,6 +270,42 @@ final class InspectorMCPWireTests: XCTestCase {
 
     func testAssertHierarchyContainsResultRoundTrips() throws {
         let result = InspectorMCPAssertHierarchyContainsResult(passed: true, matchCount: 2, minimumCount: 1, message: "hierarchy matched 2 node(s)")
+        XCTAssertEqual(try roundTrip(result), result)
+    }
+
+    func testCaptureStateOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.captureState))
+    }
+
+    func testDiffStatesOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.diffStates))
+    }
+
+    func testCaptureStateRequestRoundTrips() throws {
+        XCTAssertEqual(try roundTrip(InspectorMCPCaptureStateRequest()), InspectorMCPCaptureStateRequest())
+    }
+
+    func testDiffStatesRequestRoundTrips() throws {
+        let request = InspectorMCPDiffStatesRequest(beforeRef: "A", afterRef: "B")
+        XCTAssertEqual(try roundTrip(request), request)
+    }
+
+    func testCapturedStateRoundTrips() throws {
+        let result = InspectorMCPCapturedState(stateRef: "STATE", createdAt: Date(timeIntervalSince1970: 1_713_353_600), nodeCount: 42)
+        XCTAssertEqual(try roundTrip(result), result)
+    }
+
+    func testStateDiffRoundTrips() throws {
+        let result = InspectorMCPStateDiff(
+            beforeRef: "A",
+            afterRef: "B",
+            addedCount: 1,
+            removedCount: 2,
+            changedCount: 3,
+            entries: [
+                .init(signature: "sig", kind: .changed, className: "UIButton", elementName: "Button", accessibilityIdentifier: "cta")
+            ]
+        )
         XCTAssertEqual(try roundTrip(result), result)
     }
 

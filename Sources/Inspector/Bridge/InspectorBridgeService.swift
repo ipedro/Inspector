@@ -41,6 +41,8 @@ enum InspectorBridgeOperation {
     case assertProperty
     case assertVisible
     case assertHierarchyContains
+    case captureState
+    case diffStates
     case listProperties
     case setProperty
     case layers
@@ -148,6 +150,7 @@ final class InspectorMCPBridgeService {
     typealias AvailabilityProvider = () -> InspectorBridgeRuntimeAvailability
     typealias SnapshotProvider = () -> (any InspectorBridgeSnapshotProtocol)?
     typealias SnapshotLimitProvider = () -> Int
+    typealias StateCaptureLimitProvider = () -> Int
     typealias DateProvider = () -> Date
     typealias LayerToggler = (ViewHierarchyLayer) -> Void
     typealias LayerActiveProvider = (ViewHierarchyLayer) -> Bool
@@ -183,9 +186,15 @@ final class InspectorMCPBridgeService {
         let descriptor: InspectorBridgeActionDescriptor
     }
 
+    private struct CapturedStateRecord {
+        let createdAt: Date
+        let nodesBySignature: [String: InspectorBridgeCapturedNodeState]
+    }
+
     private let availabilityProvider: AvailabilityProvider
     private let snapshotProvider: SnapshotProvider
     private let snapshotLimitProvider: SnapshotLimitProvider
+    private let stateCaptureLimitProvider: StateCaptureLimitProvider
     private let snapshotRenderer: InspectorBridgeSnapshotRendering
     private let dateProvider: DateProvider
     private let layerToggler: LayerToggler
@@ -200,6 +209,8 @@ final class InspectorMCPBridgeService {
     private var propertyHandlesByOwner: [String: Set<String>] = [:]
     private var actionRecords: [String: ActionRecord] = [:]
     private var actionRefsByOwner: [String: Set<String>] = [:]
+    private var stateCaptures: [String: CapturedStateRecord] = [:]
+    private var stateCaptureOrder: [String] = []
 
     var operationObserver: ((InspectorBridgeOperation, Bool) -> Void)?
 
@@ -207,6 +218,7 @@ final class InspectorMCPBridgeService {
         availabilityProvider: @escaping AvailabilityProvider,
         snapshotProvider: @escaping SnapshotProvider,
         snapshotLimitProvider: @escaping SnapshotLimitProvider = { 1 },
+        stateCaptureLimitProvider: @escaping StateCaptureLimitProvider = { 8 },
         snapshotRenderer: InspectorBridgeSnapshotRendering = InspectorBridgeSnapshotRenderer(),
         dateProvider: @escaping DateProvider = Date.init,
         layerToggler: @escaping LayerToggler = { Inspector.sharedInstance.toggle($0) },
@@ -228,6 +240,7 @@ final class InspectorMCPBridgeService {
         self.availabilityProvider = availabilityProvider
         self.snapshotProvider = snapshotProvider
         self.snapshotLimitProvider = snapshotLimitProvider
+        self.stateCaptureLimitProvider = stateCaptureLimitProvider
         self.snapshotRenderer = snapshotRenderer
         self.dateProvider = dateProvider
         self.layerToggler = layerToggler
@@ -244,6 +257,8 @@ final class InspectorMCPBridgeService {
         propertyHandlesByOwner.removeAll()
         actionRecords.removeAll()
         actionRefsByOwner.removeAll()
+        stateCaptures.removeAll()
+        stateCaptureOrder.removeAll()
     }
 
     func query(_ request: InspectorBridgeQueryRequest = .init()) throws -> InspectorBridgeQueryResponse {
@@ -613,6 +628,78 @@ final class InspectorMCPBridgeService {
                 minimumCount: minimumCount,
                 message: passed ? "hierarchy matched \(count) node(s)" : "hierarchy matched \(count) node(s), expected at least \(minimumCount)"
             )
+        }
+    }
+
+    func captureState() throws -> InspectorBridgeStateCapture {
+        try performOnMain(.captureState) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            guard let snapshot = self.snapshotProvider() else {
+                throw InspectorBridgeError.snapshotUnavailable(.runtimeSnapshotUnavailable)
+            }
+
+            let nodes = snapshot.viewHierarchy.map(self.capturedNodeState(from:))
+            let stateRef = UUID().uuidString
+            self.stateCaptures[stateRef] = CapturedStateRecord(
+                createdAt: self.dateProvider(),
+                nodesBySignature: Dictionary(uniqueKeysWithValues: nodes.map { ($0.signature, $0) })
+            )
+            self.stateCaptureOrder.append(stateRef)
+            self.enforceStateCaptureLimit()
+
+            return InspectorBridgeStateCapture(
+                stateRef: stateRef,
+                createdAt: self.stateCaptures[stateRef]!.createdAt,
+                nodeCount: nodes.count
+            )
+        }
+    }
+
+    func diffStates(before beforeRef: String, after afterRef: String) throws -> InspectorBridgeStateDiff {
+        try performOnMain(.diffStates) {
+            guard let before = self.stateCaptures[beforeRef] else {
+                throw InspectorBridgeError.staleStateReference
+            }
+            guard let after = self.stateCaptures[afterRef] else {
+                throw InspectorBridgeError.staleStateReference
+            }
+
+            let beforeKeys = Set(before.nodesBySignature.keys)
+            let afterKeys = Set(after.nodesBySignature.keys)
+
+            let added = afterKeys.subtracting(beforeKeys).compactMap { key -> InspectorBridgeStateDiffEntry? in
+                guard let node = after.nodesBySignature[key] else { return nil }
+                return .init(signature: key, kind: .added, className: node.className, elementName: node.elementName, accessibilityIdentifier: node.accessibilityIdentifier)
+            }
+            let removed = beforeKeys.subtracting(afterKeys).compactMap { key -> InspectorBridgeStateDiffEntry? in
+                guard let node = before.nodesBySignature[key] else { return nil }
+                return .init(signature: key, kind: .removed, className: node.className, elementName: node.elementName, accessibilityIdentifier: node.accessibilityIdentifier)
+            }
+            let changed = beforeKeys.intersection(afterKeys).compactMap { key -> InspectorBridgeStateDiffEntry? in
+                guard let lhs = before.nodesBySignature[key], let rhs = after.nodesBySignature[key], lhs != rhs else { return nil }
+                return .init(signature: key, kind: .changed, className: rhs.className, elementName: rhs.elementName, accessibilityIdentifier: rhs.accessibilityIdentifier)
+            }
+
+            let entries = added + removed + changed
+            return InspectorBridgeStateDiff(
+                beforeRef: beforeRef,
+                afterRef: afterRef,
+                addedCount: added.count,
+                removedCount: removed.count,
+                changedCount: changed.count,
+                entries: entries
+            )
+        }
+    }
+
+    private func enforceStateCaptureLimit() {
+        let limit = max(self.stateCaptureLimitProvider(), 1)
+
+        while self.stateCaptureOrder.count > limit {
+            let oldest = self.stateCaptureOrder.removeFirst()
+            self.stateCaptures.removeValue(forKey: oldest)
         }
     }
 
@@ -1134,6 +1221,28 @@ final class InspectorMCPBridgeService {
         )
     }
 
+    private func capturedNodeState(from reference: ViewHierarchyElementReference) -> InspectorBridgeCapturedNodeState {
+        InspectorBridgeCapturedNodeState(
+            signature: stateSignature(for: reference),
+            nodeKind: nodeKind(for: reference),
+            className: reference._className,
+            elementName: reference._elementName,
+            accessibilityIdentifier: reference.accessibilityIdentifier,
+            isHidden: reference.isHidden,
+            isUserInteractionEnabled: reference.isUserInteractionEnabled,
+            isInternalView: reference._isInternalView,
+            isSystemContainer: reference._isSystemContainer,
+            childCount: reference.children.count,
+            depth: reference._depth
+        )
+    }
+
+    private func stateSignature(for reference: ViewHierarchyElementReference) -> String {
+        let parentSegment = reference.parent.map(stateSignature(for:)) ?? "root"
+        let siblingIndex = reference.parent?.children.firstIndex(where: { $0 === reference }) ?? 0
+        return "\(parentSegment)/\(reference._classNameWithoutQualifiers)#\(siblingIndex)|\(reference._elementName)|\(reference.accessibilityIdentifier ?? "")"
+    }
+
     private func matches(
         _ reference: ViewHierarchyElementReference,
         request: InspectorBridgeQueryRequest
@@ -1321,6 +1430,14 @@ package extension Inspector {
         minimumCount: Int = 1
     ) throws -> InspectorBridgeAssertHierarchyContainsResult {
         try sharedInspectorMCPBridgeService.assertHierarchyContains(request, minimumCount: minimumCount)
+    }
+
+    static func bridgeCaptureState() throws -> InspectorBridgeStateCapture {
+        try sharedInspectorMCPBridgeService.captureState()
+    }
+
+    static func bridgeDiffStates(before beforeRef: String, after afterRef: String) throws -> InspectorBridgeStateDiff {
+        try sharedInspectorMCPBridgeService.diffStates(before: beforeRef, after: afterRef)
     }
 
     static func bridgeListProperties(

@@ -13,6 +13,8 @@ protocol InspectorMCPBridgeClient {
     func assertProperty(_ request: InspectorMCPAssertPropertyRequest) async throws -> Result<InspectorMCPAssertPropertyResult, InspectorMCPTransportError>
     func assertVisible(_ request: InspectorMCPAssertVisibleRequest) async throws -> Result<InspectorMCPAssertVisibleResult, InspectorMCPTransportError>
     func assertHierarchyContains(_ request: InspectorMCPAssertHierarchyContainsRequest) async throws -> Result<InspectorMCPAssertHierarchyContainsResult, InspectorMCPTransportError>
+    func captureState(_ request: InspectorMCPCaptureStateRequest) async throws -> Result<InspectorMCPCapturedState, InspectorMCPTransportError>
+    func diffStates(_ request: InspectorMCPDiffStatesRequest) async throws -> Result<InspectorMCPStateDiff, InspectorMCPTransportError>
     func listProperties(_ request: InspectorMCPPropertyListRequest) async throws -> Result<InspectorMCPPropertyListResult, InspectorMCPTransportError>
     func setProperty(_ request: InspectorMCPSetPropertyRequest) async throws -> Result<InspectorMCPSetPropertyResult, InspectorMCPTransportError>
     func layers() async throws -> Result<InspectorMCPLayersResult, InspectorMCPTransportError>
@@ -153,6 +155,20 @@ final class InspectorMCPHTTPBridgeClient: InspectorMCPBridgeClient {
     func assertHierarchyContains(_ request: InspectorMCPAssertHierarchyContainsRequest) async throws -> Result<InspectorMCPAssertHierarchyContainsResult, InspectorMCPTransportError> {
         try await sendToolRequest(
             path: InspectorMCPBridgeEndpoint.assertHierarchyContainsPath,
+            body: request
+        )
+    }
+
+    func captureState(_ request: InspectorMCPCaptureStateRequest) async throws -> Result<InspectorMCPCapturedState, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.captureStatePath,
+            body: request
+        )
+    }
+
+    func diffStates(_ request: InspectorMCPDiffStatesRequest) async throws -> Result<InspectorMCPStateDiff, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.diffStatesPath,
             body: request
         )
     }

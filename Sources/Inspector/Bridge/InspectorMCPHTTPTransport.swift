@@ -57,6 +57,8 @@ private struct InspectorMCPHTTPResponse {
     }
 }
 
+private struct InspectorMCPHTTPEmptyRequestBody: Decodable {}
+
 private final class InspectorMCPHTTPServer {
     private let queue = DispatchQueue(label: "am.pedro.inspector.mcp.http")
     private var listener: NWListener?
@@ -336,6 +338,27 @@ private final class InspectorMCPHTTPServer {
             } catch let error as InspectorBridgeError {
                 return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
             }
+        case ("POST", InspectorMCPBridgeEndpoint.captureStatePath):
+            let _: InspectorMCPHTTPEmptyRequestBody = try decode(request.body, allowedKeys: [])
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeCaptureStateResult())
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.diffStatesPath):
+            let payload: InspectorMCPDiffStatesRequest = try decode(
+                request.body,
+                allowedKeys: ["beforeRef", "afterRef"]
+            )
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeDiffStatesResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
         case ("POST", InspectorMCPBridgeEndpoint.propertiesPath):
             let payload: InspectorMCPPropertyListRequest = try decode(
                 request.body,
@@ -429,7 +452,7 @@ private final class InspectorMCPHTTPServer {
             inspectorStarted: inspectorStarted,
             keyboardWindowsFiltered: Inspector.sharedInstance.configuration.filtersSystemKeyboardWindows,
             bundleIdentifier: Bundle.main.bundleIdentifier,
-            operations: [.query, .resolve, .snapshot, .inspect, .tap, .listActions, .performAction, .assertProperty, .assertVisible, .assertHierarchyContains, .listProperties, .setProperty, .layers, .toggleLayer],
+            operations: [.query, .resolve, .snapshot, .inspect, .tap, .listActions, .performAction, .assertProperty, .assertVisible, .assertHierarchyContains, .captureState, .diffStates, .listProperties, .setProperty, .layers, .toggleLayer],
             apiVersion: 2
         )
     }
@@ -554,6 +577,35 @@ private final class InspectorMCPHTTPServer {
         )
     }
 
+    private func bridgeCaptureStateResult() throws -> InspectorMCPCapturedState {
+        let result = try Inspector.bridgeCaptureState()
+        return InspectorMCPCapturedState(
+            stateRef: result.stateRef,
+            createdAt: result.createdAt,
+            nodeCount: result.nodeCount
+        )
+    }
+
+    private func bridgeDiffStatesResult(for request: InspectorMCPDiffStatesRequest) throws -> InspectorMCPStateDiff {
+        let result = try Inspector.bridgeDiffStates(before: request.beforeRef, after: request.afterRef)
+        return InspectorMCPStateDiff(
+            beforeRef: result.beforeRef,
+            afterRef: result.afterRef,
+            addedCount: result.addedCount,
+            removedCount: result.removedCount,
+            changedCount: result.changedCount,
+            entries: result.entries.map {
+                InspectorMCPStateDiffEntry(
+                    signature: $0.signature,
+                    kind: wireStateDiffKind(from: $0.kind),
+                    className: $0.className,
+                    elementName: $0.elementName,
+                    accessibilityIdentifier: $0.accessibilityIdentifier
+                )
+            }
+        )
+    }
+
     private func bridgePropertyListResult(for request: InspectorMCPPropertyListRequest) throws -> InspectorMCPPropertyListResult {
         let response = try Inspector.bridgeListProperties(
             .init(rawValue: request.handle),
@@ -653,6 +705,8 @@ private final class InspectorMCPHTTPServer {
             return .init(code: .stalePropertyReference, message: "Property reference is stale; list properties again", details: .empty)
         case .staleActionReference:
             return .init(code: .staleActionReference, message: "Action reference is stale; list actions again", details: .empty)
+        case .staleStateReference:
+            return .init(code: .staleStateReference, message: "State reference is stale; capture state again", details: .empty)
         case let .snapshotUnavailable(reason):
             return .init(
                 code: .snapshotUnavailable,
@@ -726,6 +780,14 @@ private final class InspectorMCPHTTPServer {
             return .showHighlight
         case .hideHighlight:
             return .hideHighlight
+        }
+    }
+
+    private func wireStateDiffKind(from value: InspectorBridgeStateDiffKind) -> InspectorMCPStateDiffKind {
+        switch value {
+        case .added: return .added
+        case .removed: return .removed
+        case .changed: return .changed
         }
     }
 

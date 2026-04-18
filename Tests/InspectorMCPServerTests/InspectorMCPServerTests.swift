@@ -51,7 +51,7 @@ final class InspectorMCPServerTests: XCTestCase {
         let result = try XCTUnwrap(response["result"] as? [String: Any])
         let tools = try XCTUnwrap(result["tools"] as? [[String: Any]])
 
-        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "snapshot", "inspect", "tap", "list_actions", "perform_action", "assert_property", "assert_visible", "assert_hierarchy_contains", "list_properties", "set_property", "list_layers", "toggle_layer"])
+        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "snapshot", "inspect", "tap", "list_actions", "perform_action", "assert_property", "assert_visible", "assert_hierarchy_contains", "capture_state", "diff_states", "list_properties", "set_property", "list_layers", "toggle_layer"])
     }
 
     func testToolsCallQueryReturnsStructuredContentFromBridgeResult() async throws {
@@ -442,6 +442,18 @@ final class InspectorMCPServerTests: XCTestCase {
         XCTAssertNotNil(tools.first { ($0["name"] as? String) == "assert_hierarchy_contains" })
     }
 
+    func testToolsListIncludesStateTools() async throws {
+        let session = InspectorMCPServerSession(bridgeClient: MockBridgeClient())
+        let request = #"{"jsonrpc":"2.0","id":24,"method":"tools/list"}"#
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+        let tools = try XCTUnwrap(result["tools"] as? [[String: Any]])
+        XCTAssertNotNil(tools.first { ($0["name"] as? String) == "capture_state" })
+        XCTAssertNotNil(tools.first { ($0["name"] as? String) == "diff_states" })
+    }
+
     func testToolsCallAssertPropertyForwardsToBridgeClient() async throws {
         let mock = MockBridgeClient(
             assertPropertyResult: .success(.init(handle: "HANDLE", property: .className, passed: true, actualString: "UIButton", message: "className is UIButton"))
@@ -482,6 +494,33 @@ final class InspectorMCPServerTests: XCTestCase {
         let result = try XCTUnwrap(object?["result"] as? [String: Any])
         XCTAssertEqual(result["isError"] as? Bool, false)
         XCTAssertEqual(mock.lastAssertHierarchyContainsRequest?.accessibilityIdentifierEquals, "MCP Tap Smoke Button")
+    }
+
+    func testToolsCallCaptureStateForwardsToBridgeClient() async throws {
+        let mock = MockBridgeClient(
+            captureStateResult: .success(.init(stateRef: "STATE-A", createdAt: .distantPast, nodeCount: 10))
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":25,"method":"tools/call","params":{"name":"capture_state","arguments":{}}}"#
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+        XCTAssertEqual(result["isError"] as? Bool, false)
+    }
+
+    func testToolsCallDiffStatesForwardsToBridgeClient() async throws {
+        let mock = MockBridgeClient(
+            diffStatesResult: .success(.init(beforeRef: "A", afterRef: "B", addedCount: 0, removedCount: 0, changedCount: 1, entries: []))
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":26,"method":"tools/call","params":{"name":"diff_states","arguments":{"beforeRef":"A","afterRef":"B"}}}"#
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try XCTUnwrap(responseData)
+        let object = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        let result = try XCTUnwrap(object?["result"] as? [String: Any])
+        XCTAssertEqual(result["isError"] as? Bool, false)
+        XCTAssertEqual(mock.lastDiffStatesRequest?.beforeRef, "A")
     }
 
     func testToolsCallListPropertiesForwardsToBridgeClient() async throws {
@@ -684,6 +723,8 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     var assertPropertyResult: Result<InspectorMCPAssertPropertyResult, InspectorMCPTransportError>
     var assertVisibleResult: Result<InspectorMCPAssertVisibleResult, InspectorMCPTransportError>
     var assertHierarchyContainsResult: Result<InspectorMCPAssertHierarchyContainsResult, InspectorMCPTransportError>
+    var captureStateResult: Result<InspectorMCPCapturedState, InspectorMCPTransportError>
+    var diffStatesResult: Result<InspectorMCPStateDiff, InspectorMCPTransportError>
     var propertyListResult: Result<InspectorMCPPropertyListResult, InspectorMCPTransportError>
     var setPropertyResult: Result<InspectorMCPSetPropertyResult, InspectorMCPTransportError>
     var layersResult: Result<InspectorMCPLayersResult, InspectorMCPTransportError>
@@ -694,6 +735,7 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     private(set) var lastAssertPropertyRequest: InspectorMCPAssertPropertyRequest?
     private(set) var lastAssertVisibleRequest: InspectorMCPAssertVisibleRequest?
     private(set) var lastAssertHierarchyContainsRequest: InspectorMCPAssertHierarchyContainsRequest?
+    private(set) var lastDiffStatesRequest: InspectorMCPDiffStatesRequest?
     private(set) var lastPropertyListRequest: InspectorMCPPropertyListRequest?
     private(set) var lastSetPropertyRequest: InspectorMCPSetPropertyRequest?
     private(set) var lastToggleLayerRequest: InspectorMCPToggleLayerRequest?
@@ -761,6 +803,12 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         assertHierarchyContainsResult: Result<InspectorMCPAssertHierarchyContainsResult, InspectorMCPTransportError> = .success(
             .init(passed: true, matchCount: 1, minimumCount: 1, message: "hierarchy matched 1 node(s)")
         ),
+        captureStateResult: Result<InspectorMCPCapturedState, InspectorMCPTransportError> = .success(
+            .init(stateRef: "STATE", createdAt: .distantPast, nodeCount: 1)
+        ),
+        diffStatesResult: Result<InspectorMCPStateDiff, InspectorMCPTransportError> = .success(
+            .init(beforeRef: "A", afterRef: "B", addedCount: 0, removedCount: 0, changedCount: 0, entries: [])
+        ),
         propertyListResult: Result<InspectorMCPPropertyListResult, InspectorMCPTransportError> = .success(
             .init(handle: "MOCK-HANDLE", expiresAt: .distantFuture, panel: .attributes, sections: [])
         ),
@@ -785,6 +833,8 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         self.assertPropertyResult = assertPropertyResult
         self.assertVisibleResult = assertVisibleResult
         self.assertHierarchyContainsResult = assertHierarchyContainsResult
+        self.captureStateResult = captureStateResult
+        self.diffStatesResult = diffStatesResult
         self.propertyListResult = propertyListResult
         self.setPropertyResult = setPropertyResult
         self.layersResult = layersResult
@@ -839,6 +889,15 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     func assertHierarchyContains(_ request: InspectorMCPAssertHierarchyContainsRequest) async throws -> Result<InspectorMCPAssertHierarchyContainsResult, InspectorMCPTransportError> {
         lastAssertHierarchyContainsRequest = request
         return assertHierarchyContainsResult
+    }
+
+    func captureState(_ request: InspectorMCPCaptureStateRequest) async throws -> Result<InspectorMCPCapturedState, InspectorMCPTransportError> {
+        captureStateResult
+    }
+
+    func diffStates(_ request: InspectorMCPDiffStatesRequest) async throws -> Result<InspectorMCPStateDiff, InspectorMCPTransportError> {
+        lastDiffStatesRequest = request
+        return diffStatesResult
     }
 
     func listProperties(_ request: InspectorMCPPropertyListRequest) async throws -> Result<InspectorMCPPropertyListResult, InspectorMCPTransportError> {
