@@ -62,5 +62,47 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
 
         XCTAssertFalse(sections.contains(where: { $0.title == "Autobuilt" }))
     }
+
+    func testHierarchyIdentitySectionUsesBindingBackedNotes() throws {
+        final class CustomBadgeView: UIView {}
+
+        let dataSource = DefaultElementIdentityLibrary.HierarchyIdentitySectionDataSource(with: CustomBadgeView())
+        let bindings = dataSource.propertyBindings
+
+        XCTAssertFalse(bindings.isEmpty)
+        XCTAssertTrue(bindings.allSatisfy { $0.descriptor.kind == .note })
+        XCTAssertEqual(bindings.first?.descriptor.title, String(describing: CustomBadgeView.self))
+    }
+
+    func testPreviewIdentitySectionUsesBindingBackedPreviewAndColor() throws {
+        let view = UIView()
+        let dataSource = DefaultElementIdentityLibrary.PreviewIdentitySectionDataSource(with: view)
+        let bindings = dataSource.propertyBindings
+
+        XCTAssertEqual(bindings.count, 2)
+        XCTAssertEqual(bindings.map(\.descriptor.kind), [.preview, .color])
+        XCTAssertEqual(bindings.first?.descriptor.editability, .readOnly)
+        XCTAssertEqual(bindings.last?.descriptor.editability, .editable)
+    }
+
+    func testHighlightViewSectionUsesBindingBackedControls() throws {
+        let view = UIView(frame: .init(x: 0, y: 0, width: 20, height: 20))
+        let element = ViewHierarchyElement(with: view, iconProvider: .default)
+        let highlightView = HighlightView(
+            frame: view.frame,
+            name: "View",
+            colorScheme: .default,
+            element: element
+        )
+        view.addSubview(highlightView)
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementIdentityLibrary.HighlightViewSectionDataSource(with: view)
+        )
+        let bindings = dataSource.propertyBindings
+
+        XCTAssertEqual(bindings.count, 2)
+        XCTAssertEqual(bindings.map(\.descriptor.kind), [.options, .toggle])
+    }
 }
 #endif

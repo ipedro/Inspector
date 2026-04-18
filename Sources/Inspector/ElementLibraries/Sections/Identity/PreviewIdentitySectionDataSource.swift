@@ -39,19 +39,36 @@ extension DefaultElementIdentityLibrary {
             case backgroundColor = "Preview Background"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             Property.allCases.compactMap { property in
                 switch property {
                 case .preview:
                     guard let view = element._underlyingView else { return nil }
-                    return .preview(target: .init(view: view))
+                    return .init(
+                        descriptor: .init(
+                            id: "preview",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .preview(view) },
+                        write: nil,
+                        refreshHint: .reloadSection
+                    )
 
                 case .backgroundColor:
-                    return .colorPicker(
-                        title: property.rawValue,
-                        color: { Inspector.sharedInstance.configuration.elementInspectorConfiguration.thumbnailBackgroundStyle.color },
-                        handler: {
-                            guard let color = $0 else { return }
+                    return .init(
+                        descriptor: .init(
+                            id: "background-color",
+                            title: property.rawValue,
+                            kind: .color,
+                            value: .color(allowsNil: true),
+                            editability: .editable
+                        ),
+                        read: { .color(Inspector.sharedInstance.configuration.elementInspectorConfiguration.thumbnailBackgroundStyle.color) },
+                        write: { newValue in
+                            guard case let .color(color) = newValue, let color else { return }
                             Inspector.sharedInstance.configuration.elementInspectorConfiguration.thumbnailBackgroundStyle = .custom(color)
                         }
                     )

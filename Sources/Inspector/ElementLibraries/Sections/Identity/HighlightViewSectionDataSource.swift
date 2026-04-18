@@ -42,7 +42,7 @@ extension DefaultElementIdentityLibrary {
             case highlightView = "Show Highlight"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let highlightView else {
                 return []
             }
@@ -50,20 +50,36 @@ extension DefaultElementIdentityLibrary {
             return Property.allCases.compactMap { property in
                 switch property {
                 case .highlightView:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { !highlightView.isHidden },
-                        handler: { isOn in
+                    .init(
+                        descriptor: .init(
+                            id: "show-highlight",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(!highlightView.isHidden) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
                             highlightView.isHidden = !isOn
                         }
                     )
                 case .nameDisplayMode:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: ElementNameView.DisplayMode.allCases.map(\.title),
-                        selectedIndex: { ElementNameView.DisplayMode.allCases.firstIndex(of: highlightView.displayMode) },
-                        handler: {
-                            guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: .init(
+                            id: "name-display-mode",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: ElementNameView.DisplayMode.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.title)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(ElementNameView.DisplayMode.allCases.firstIndex(of: highlightView.displayMode)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
 
                             let displayMode = ElementNameView.DisplayMode.allCases[newIndex]
 

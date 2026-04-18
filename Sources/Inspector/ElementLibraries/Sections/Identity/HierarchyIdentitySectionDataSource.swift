@@ -32,8 +32,19 @@ extension DefaultElementIdentityLibrary {
             classHierarchy = object._classesForCoder
         }
 
-        private(set) lazy var properties: [InspectorElementProperty] = classHierarchy.map { aClass in
-            .infoNote(icon: .info, title: String(describing: aClass), text: .none)
+        private(set) lazy var propertyBindings: [InspectorPropertyBinding] = classHierarchy.enumerated().map { index, aClass in
+            .init(
+                descriptor: .init(
+                    id: "hierarchy-\(index)",
+                    title: String(describing: aClass),
+                    kind: .note,
+                    value: .none,
+                    editability: .readOnly
+                ),
+                read: { .none },
+                write: nil,
+                refreshHint: .none
+            )
         }
     }
 }
