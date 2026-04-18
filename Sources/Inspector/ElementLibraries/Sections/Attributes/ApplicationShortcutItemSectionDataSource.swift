@@ -19,7 +19,7 @@
 //  SOFTWARE.
 
 import Foundation
-
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -41,26 +41,47 @@ extension DefaultElementAttributesLibrary {
             case localizedSubtitle = "Subtitle"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             Property.allCases.compactMap { property in
                 switch property {
                 case .type:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: property.rawValue,
-                        value: { self.shortcutItem.type }
+                    .init(
+                        descriptor: .init(
+                            id: "type",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, placeholder: property.rawValue, allowsNil: false)),
+                            editability: .readOnly
+                        ),
+                        read: { .string(self.shortcutItem.type) },
+                        write: nil,
+                        refreshHint: .none
                     )
                 case .localizedTitle:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: .none,
-                        value: { self.shortcutItem.localizedTitle }
+                    .init(
+                        descriptor: .init(
+                            id: "localized-title",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, placeholder: nil, allowsNil: false)),
+                            editability: .readOnly
+                        ),
+                        read: { .string(self.shortcutItem.localizedTitle) },
+                        write: nil,
+                        refreshHint: .none
                     )
                 case .localizedSubtitle:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: property.rawValue,
-                        value: { self.shortcutItem.localizedSubtitle }
+                    .init(
+                        descriptor: .init(
+                            id: "localized-subtitle",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, placeholder: property.rawValue, allowsNil: true)),
+                            editability: .readOnly
+                        ),
+                        read: { .string(self.shortcutItem.localizedSubtitle) },
+                        write: nil,
+                        refreshHint: .none
                     )
                 }
             }

@@ -771,6 +771,41 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertFalse(view.autoresizesSubviews)
     }
 
+    func testApplicationShortcutItemSectionUsesBindingsAndExposesValues() throws {
+        let shortcutItem = UIApplicationShortcutItem(
+            type: "com.example.open",
+            localizedTitle: "Open",
+            localizedSubtitle: "Recent",
+            icon: nil,
+            userInfo: nil
+        )
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.ApplicationShortcutItemSectionDataSource(with: shortcutItem)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 3)
+        XCTAssertEqual(bindings[0].descriptor.kind, InspectorPropertyKind.textField)
+        XCTAssertEqual(bindings[0].descriptor.editability, InspectorEditability.readOnly)
+        XCTAssertEqual(bindings[1].descriptor.kind, InspectorPropertyKind.textField)
+        XCTAssertEqual(bindings[2].descriptor.kind, InspectorPropertyKind.textField)
+
+        guard case let .string(type) = bindings[0].currentValue() else {
+            return XCTFail("Expected string value for shortcut type")
+        }
+        guard case let .string(title) = bindings[1].currentValue() else {
+            return XCTFail("Expected string value for shortcut title")
+        }
+        guard case let .string(subtitle) = bindings[2].currentValue() else {
+            return XCTFail("Expected string value for shortcut subtitle")
+        }
+
+        XCTAssertEqual(type, "com.example.open")
+        XCTAssertEqual(title, "Open")
+        XCTAssertEqual(subtitle, "Recent")
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled
