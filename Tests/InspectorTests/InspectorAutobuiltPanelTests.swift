@@ -31,6 +31,18 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(titles.contains("Count"))
     }
 
+    func testIdentityPanelNoLongerIncludesRuntimeAttributesSection() {
+        final class CustomBadgeView: UIView {
+            var isCompact = true
+            var titleText = "Badge"
+        }
+
+        let libraries = DefaultElementIdentityLibrary.allCases.map { $0 as InspectorElementLibraryProtocol }
+        let sections = libraries.formItems(for: CustomBadgeView(), panel: .identity)
+
+        XCTAssertFalse(sections.contains { $0.title == "Runtime Attributes" })
+    }
+
     func testAutobuiltBindingsAreReadOnly() throws {
         final class CustomBadgeView: UIView {
             var isCompact = true

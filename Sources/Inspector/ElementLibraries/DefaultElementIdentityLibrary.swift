@@ -24,7 +24,6 @@ enum DefaultElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryP
     case preview
     case hierarchy
     case highlightView
-    case runtimeAttributes
 
     var targetClass: AnyClass {
         NSObject.self
@@ -43,9 +42,6 @@ enum DefaultElementIdentityLibrary: Swift.CaseIterable, InspectorElementLibraryP
 
         case let (.highlightView, viewController as UIViewController):
             .init(with: HighlightViewSectionDataSource(with: viewController.view))
-
-        case (.runtimeAttributes, _):
-            .init(with: RuntimeAttributesIdentitySectionDataSource(with: object))
 
         case (.hierarchy, _):
             .init(with: HierarchyIdentitySectionDataSource(with: object))
