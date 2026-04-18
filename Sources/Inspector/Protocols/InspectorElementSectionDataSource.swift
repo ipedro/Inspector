@@ -34,7 +34,7 @@ public protocol InspectorElementSectionDataSource: AnyObject {
     /// Optional binding-based runtime description for this section.
     var sectionBinding: InspectorSectionBinding? { get }
     /// Runtime bindings for field rendering/mutation when available.
-    var propertyBindings: [InspectorPropertyBinding]? { get }
+    var propertyBindings: [InspectorPropertyBinding] { get }
     /// To customize how your sections look provide a type that conforms to `InspectorElementFormSectionView`.
     var customClass: InspectorElementSectionView.Type? { get }
     /// Constant describing the currentstate of the section.
@@ -53,29 +53,32 @@ public extension InspectorElementSectionDataSource {
         sectionBinding?.makeInspectorElementProperties(extraProperties: sectionBindingExtraProperties) ?? []
     }
     var sectionBinding: InspectorSectionBinding? { nil }
-    var propertyBindings: [InspectorPropertyBinding]? {
+    var propertyBindings: [InspectorPropertyBinding] {
         if let sectionBinding {
             let extraBindings = sectionBindingExtraProperties
                 .sorted { $0.key < $1.key }
-                .map { key, provider -> [InspectorPropertyBinding]? in
+                .map { key, provider -> [InspectorPropertyBinding] in
                     let properties = provider()
                     var bindings: [InspectorPropertyBinding] = []
                     for (index, property) in properties.enumerated() {
                         guard let binding = property.makeBinding(id: "\(key)-\(index)") else {
-                            return nil
+                            assertionFailure("Unsupported legacy property in sectionBindingExtraProperties for key \(key)")
+                            continue
                         }
                         bindings.append(binding)
                     }
                     return bindings
                 }
-            guard extraBindings.allSatisfy({ $0 != nil }) else { return nil }
-            return sectionBinding.fields + extraBindings.compactMap { $0 }.flatMap { $0 }
+            return sectionBinding.fields + extraBindings.flatMap { $0 }
         }
 
         let mapped = properties.enumerated().compactMap { index, property in
             property.makeBinding(id: "legacy-\(index)")
         }
-        return mapped.count == properties.count ? mapped : nil
+        if mapped.count != properties.count {
+            assertionFailure("Unsupported legacy property conversion in \(Self.self)")
+        }
+        return mapped
     }
     var customClass: InspectorElementSectionView.Type? { nil }
     var titleAccessoryProperty: InspectorElementProperty? { nil }

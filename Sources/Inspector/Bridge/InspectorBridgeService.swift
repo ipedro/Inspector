@@ -1021,7 +1021,7 @@ final class InspectorMCPBridgeService {
             descriptors.append(descriptor)
         }
 
-        for (propertyIndex, property) in (row.propertyBindings ?? []).enumerated() {
+        for (propertyIndex, property) in row.propertyBindings.enumerated() {
             guard let descriptor = makeDescriptor(
                 for: property,
                 panel: panel,

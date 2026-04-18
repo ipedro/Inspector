@@ -186,7 +186,7 @@ final class InspectorPropertyBindingTests: XCTestCase {
         }
 
         let dataSource = LegacyDataSource()
-        let bindings = try XCTUnwrap(dataSource.propertyBindings)
+        let bindings = dataSource.propertyBindings
         XCTAssertEqual(bindings.count, 1)
         XCTAssertEqual(bindings.first?.descriptor.title, "Enabled")
     }
@@ -208,9 +208,25 @@ final class InspectorPropertyBindingTests: XCTestCase {
         }
 
         let dataSource = LegacyDataSource()
-        let bindings = try XCTUnwrap(dataSource.propertyBindings)
+        let bindings = dataSource.propertyBindings
         XCTAssertEqual(bindings.count, 1)
         XCTAssertEqual(bindings.first?.descriptor.kind, .imageButtons)
+    }
+
+    func testTitleAccessoryBindingFallsBackFromLegacyTitleAccessoryProperty() throws {
+        final class LegacyTitleAccessoryDataSource: InspectorElementSectionDataSource {
+            var state: InspectorElementSectionState = .collapsed
+            let title = "Legacy"
+            var properties: [InspectorElementProperty] { [] }
+            var titleAccessoryProperty: InspectorElementProperty? {
+                .switch(title: "Enabled", isOn: { true }, handler: { _ in })
+            }
+        }
+
+        let dataSource = LegacyTitleAccessoryDataSource()
+        let binding = try XCTUnwrap(dataSource.titleAccessoryBinding)
+        XCTAssertEqual(binding.descriptor.title, "Enabled")
+        XCTAssertEqual(binding.descriptor.kind, .toggle)
     }
 
     func testToggleBindingCreatesAndAppliesToggleFormView() throws {
