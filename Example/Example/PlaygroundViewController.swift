@@ -119,6 +119,13 @@ final class PlaygroundViewController: BaseViewController {
         return button
     }()
 
+    private lazy var mcpInternalDiscoverabilityView: _MCPInternalDiscoverabilityView = {
+        let view = _MCPInternalDiscoverabilityView(frame: CGRect(x: 0, y: 0, width: 1, height: 1))
+        view.accessibilityIdentifier = "MCP Internal Discoverability View"
+        view.isHidden = false
+        return view
+    }()
+
     override var keyCommands: [UIKeyCommand]? { Inspector.keyCommands }
 
     // MARK: - Life cycle
@@ -127,6 +134,7 @@ final class PlaygroundViewController: BaseViewController {
         super.viewDidLoad()
         instructionsTextView.text = "Long press any view below or shake the device"
         contentStackView.addArrangedSubview(mcpTapSmokeButton)
+        contentStackView.addSubview(mcpInternalDiscoverabilityView)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -182,3 +190,5 @@ final class PlaygroundViewController: BaseViewController {
 
     @objc private func handleMCPTapSmokeButton() {}
 }
+
+private final class _MCPInternalDiscoverabilityView: UIView {}

@@ -22,19 +22,25 @@ public struct InspectorBridgeQueryRequest: Hashable, Codable {
     public var displayNameContains: String?
     public var elementNameContains: String?
     public var accessibilityIdentifierEquals: String?
+    public var isInternalView: Bool?
+    public var isSystemContainer: Bool?
 
     public init(
         nodeKind: InspectorBridgeNodeKind? = nil,
         classNameContains: String? = nil,
         displayNameContains: String? = nil,
         elementNameContains: String? = nil,
-        accessibilityIdentifierEquals: String? = nil
+        accessibilityIdentifierEquals: String? = nil,
+        isInternalView: Bool? = nil,
+        isSystemContainer: Bool? = nil
     ) {
         self.nodeKind = nodeKind
         self.classNameContains = classNameContains
         self.displayNameContains = displayNameContains
         self.elementNameContains = elementNameContains
         self.accessibilityIdentifierEquals = accessibilityIdentifierEquals
+        self.isInternalView = isInternalView
+        self.isSystemContainer = isSystemContainer
     }
 }
 
@@ -49,6 +55,8 @@ public struct InspectorBridgeNode: Hashable, Codable {
     public let frame: CGRect
     public let isHidden: Bool
     public let isUserInteractionEnabled: Bool
+    public let isInternalView: Bool
+    public let isSystemContainer: Bool
     public let depth: Int
     public let parentHandle: InspectorBridgeHandle?
     public let childHandles: [InspectorBridgeHandle]
@@ -143,6 +151,74 @@ public struct InspectorBridgePropertyMutationResult: Hashable, Codable {
     public let refreshRecommended: Bool
 }
 
+public enum InspectorBridgeActionKind: String, Codable, Hashable {
+    case inspect
+    case showHighlight
+    case hideHighlight
+}
+
+public enum InspectorBridgeAssertableProperty: String, Codable, Hashable {
+    case className
+    case displayName
+    case elementName
+    case accessibilityIdentifier
+    case backingObjectType
+    case isHidden
+    case isUserInteractionEnabled
+    case isInternalView
+    case isSystemContainer
+    case childCount
+    case depth
+}
+
+public struct InspectorBridgeActionDescriptor: Hashable, Codable {
+    public let actionRef: String
+    public let title: String
+    public let kind: InspectorBridgeActionKind
+}
+
+public struct InspectorBridgeActionListResponse: Hashable, Codable {
+    public let handle: InspectorBridgeHandle
+    public let expiresAt: Date
+    public let actions: [InspectorBridgeActionDescriptor]
+}
+
+public struct InspectorBridgeActionResult: Hashable, Codable {
+    public let actionRef: String
+    public let performed: Bool
+    public let refreshRecommended: Bool
+}
+
+public enum InspectorBridgeAssertionValue: Hashable, Codable {
+    case bool(Bool)
+    case number(Double)
+    case string(String?)
+}
+
+public struct InspectorBridgeAssertPropertyResult: Hashable, Codable {
+    public let handle: InspectorBridgeHandle
+    public let property: InspectorBridgeAssertableProperty
+    public let passed: Bool
+    public let actualBool: Bool?
+    public let actualNumber: Double?
+    public let actualString: String?
+    public let message: String
+}
+
+public struct InspectorBridgeAssertVisibleResult: Hashable, Codable {
+    public let handle: InspectorBridgeHandle
+    public let passed: Bool
+    public let isHidden: Bool
+    public let message: String
+}
+
+public struct InspectorBridgeAssertHierarchyContainsResult: Hashable, Codable {
+    public let passed: Bool
+    public let matchCount: Int
+    public let minimumCount: Int
+    public let message: String
+}
+
 public struct InspectorBridgeLayerState: Hashable, Codable {
     public let name: String
     public let displayName: String
@@ -191,6 +267,7 @@ public enum InspectorBridgeError: Error, Hashable, Codable {
     case notStarted
     case staleHandle
     case stalePropertyReference
+    case staleActionReference
     case snapshotUnavailable(InspectorBridgeSnapshotUnavailableReason)
     case unsupportedTarget
     case invalidPropertyValue(String)

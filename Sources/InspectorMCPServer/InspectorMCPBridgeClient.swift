@@ -8,6 +8,11 @@ protocol InspectorMCPBridgeClient {
     func snapshot(_ request: InspectorMCPSnapshotRequest) async throws -> Result<InspectorMCPSnapshotResult, InspectorMCPTransportError>
     func inspect(_ request: InspectorMCPInspectRequest) async throws -> Result<InspectorMCPInspectResult, InspectorMCPTransportError>
     func tap(_ request: InspectorMCPTapRequest) async throws -> Result<InspectorMCPTapResult, InspectorMCPTransportError>
+    func listActions(_ request: InspectorMCPActionListRequest) async throws -> Result<InspectorMCPActionListResult, InspectorMCPTransportError>
+    func performAction(_ request: InspectorMCPPerformActionRequest) async throws -> Result<InspectorMCPPerformActionResult, InspectorMCPTransportError>
+    func assertProperty(_ request: InspectorMCPAssertPropertyRequest) async throws -> Result<InspectorMCPAssertPropertyResult, InspectorMCPTransportError>
+    func assertVisible(_ request: InspectorMCPAssertVisibleRequest) async throws -> Result<InspectorMCPAssertVisibleResult, InspectorMCPTransportError>
+    func assertHierarchyContains(_ request: InspectorMCPAssertHierarchyContainsRequest) async throws -> Result<InspectorMCPAssertHierarchyContainsResult, InspectorMCPTransportError>
     func listProperties(_ request: InspectorMCPPropertyListRequest) async throws -> Result<InspectorMCPPropertyListResult, InspectorMCPTransportError>
     func setProperty(_ request: InspectorMCPSetPropertyRequest) async throws -> Result<InspectorMCPSetPropertyResult, InspectorMCPTransportError>
     func layers() async throws -> Result<InspectorMCPLayersResult, InspectorMCPTransportError>
@@ -113,6 +118,41 @@ final class InspectorMCPHTTPBridgeClient: InspectorMCPBridgeClient {
     func tap(_ request: InspectorMCPTapRequest) async throws -> Result<InspectorMCPTapResult, InspectorMCPTransportError> {
         try await sendToolRequest(
             path: InspectorMCPBridgeEndpoint.tapPath,
+            body: request
+        )
+    }
+
+    func listActions(_ request: InspectorMCPActionListRequest) async throws -> Result<InspectorMCPActionListResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.actionsPath,
+            body: request
+        )
+    }
+
+    func performAction(_ request: InspectorMCPPerformActionRequest) async throws -> Result<InspectorMCPPerformActionResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.performActionPath,
+            body: request
+        )
+    }
+
+    func assertProperty(_ request: InspectorMCPAssertPropertyRequest) async throws -> Result<InspectorMCPAssertPropertyResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.assertPropertyPath,
+            body: request
+        )
+    }
+
+    func assertVisible(_ request: InspectorMCPAssertVisibleRequest) async throws -> Result<InspectorMCPAssertVisibleResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.assertVisiblePath,
+            body: request
+        )
+    }
+
+    func assertHierarchyContains(_ request: InspectorMCPAssertHierarchyContainsRequest) async throws -> Result<InspectorMCPAssertHierarchyContainsResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.assertHierarchyContainsPath,
             body: request
         )
     }

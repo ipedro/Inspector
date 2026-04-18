@@ -9,6 +9,11 @@ public enum InspectorMCPBridgeEndpoint {
     public static let snapshotPath = "/snapshot"
     public static let inspectPath = "/inspect"
     public static let tapPath = "/tap"
+    public static let actionsPath = "/actions"
+    public static let performActionPath = "/perform-action"
+    public static let assertPropertyPath = "/assert-property"
+    public static let assertVisiblePath = "/assert-visible"
+    public static let assertHierarchyContainsPath = "/assert-hierarchy-contains"
     public static let propertiesPath = "/properties"
     public static let setPropertyPath = "/set-property"
     public static let layersPath = "/layers"
@@ -22,6 +27,11 @@ public enum InspectorMCPOperation: String, Codable, CaseIterable {
     case snapshot
     case inspect
     case tap
+    case listActions
+    case performAction
+    case assertProperty
+    case assertVisible
+    case assertHierarchyContains
     case listProperties
     case setProperty
     case layers
@@ -38,6 +48,7 @@ public struct InspectorMCPHealthResponse: Codable, Equatable {
     public let status: InspectorMCPHealthStatus
     public let bridgeEnabled: Bool
     public let inspectorStarted: Bool
+    public let keyboardWindowsFiltered: Bool?
     public let bundleIdentifier: String?
     public let operations: [InspectorMCPOperation]
     public let apiVersion: Int?
@@ -46,6 +57,7 @@ public struct InspectorMCPHealthResponse: Codable, Equatable {
         status: InspectorMCPHealthStatus,
         bridgeEnabled: Bool,
         inspectorStarted: Bool,
+        keyboardWindowsFiltered: Bool? = nil,
         bundleIdentifier: String?,
         operations: [InspectorMCPOperation],
         apiVersion: Int? = nil
@@ -53,6 +65,7 @@ public struct InspectorMCPHealthResponse: Codable, Equatable {
         self.status = status
         self.bridgeEnabled = bridgeEnabled
         self.inspectorStarted = inspectorStarted
+        self.keyboardWindowsFiltered = keyboardWindowsFiltered
         self.bundleIdentifier = bundleIdentifier
         self.operations = operations
         self.apiVersion = apiVersion
@@ -86,6 +99,26 @@ public enum InspectorMCPEditablePropertySlot: String, Codable {
     case titleAccessory
 }
 
+public enum InspectorMCPActionKind: String, Codable {
+    case inspect
+    case showHighlight
+    case hideHighlight
+}
+
+public enum InspectorMCPAssertableProperty: String, Codable {
+    case className
+    case displayName
+    case elementName
+    case accessibilityIdentifier
+    case backingObjectType
+    case isHidden
+    case isUserInteractionEnabled
+    case isInternalView
+    case isSystemContainer
+    case childCount
+    case depth
+}
+
 public struct InspectorMCPFrame: Codable, Equatable {
     public let x: Double
     public let y: Double
@@ -116,19 +149,25 @@ public struct InspectorMCPQueryRequest: Codable, Equatable {
     public var displayNameContains: String?
     public var elementNameContains: String?
     public var accessibilityIdentifierEquals: String?
+    public var isInternalView: Bool?
+    public var isSystemContainer: Bool?
 
     public init(
         nodeKind: InspectorMCPNodeKind? = nil,
         classNameContains: String? = nil,
         displayNameContains: String? = nil,
         elementNameContains: String? = nil,
-        accessibilityIdentifierEquals: String? = nil
+        accessibilityIdentifierEquals: String? = nil,
+        isInternalView: Bool? = nil,
+        isSystemContainer: Bool? = nil
     ) {
         self.nodeKind = nodeKind
         self.classNameContains = classNameContains
         self.displayNameContains = displayNameContains
         self.elementNameContains = elementNameContains
         self.accessibilityIdentifierEquals = accessibilityIdentifierEquals
+        self.isInternalView = isInternalView
+        self.isSystemContainer = isSystemContainer
     }
 }
 
@@ -200,6 +239,83 @@ public struct InspectorMCPSetPropertyRequest: Codable, Equatable {
     }
 }
 
+public struct InspectorMCPActionListRequest: Codable, Equatable {
+    public let handle: String
+
+    public init(handle: String) {
+        self.handle = handle
+    }
+}
+
+public struct InspectorMCPPerformActionRequest: Codable, Equatable {
+    public let actionRef: String
+
+    public init(actionRef: String) {
+        self.actionRef = actionRef
+    }
+}
+
+public struct InspectorMCPAssertPropertyRequest: Codable, Equatable {
+    public let handle: String
+    public let property: InspectorMCPAssertableProperty
+    public let boolValue: Bool?
+    public let numberValue: Double?
+    public let stringValue: String?
+
+    public init(
+        handle: String,
+        property: InspectorMCPAssertableProperty,
+        boolValue: Bool? = nil,
+        numberValue: Double? = nil,
+        stringValue: String? = nil
+    ) {
+        self.handle = handle
+        self.property = property
+        self.boolValue = boolValue
+        self.numberValue = numberValue
+        self.stringValue = stringValue
+    }
+}
+
+public struct InspectorMCPAssertVisibleRequest: Codable, Equatable {
+    public let handle: String
+
+    public init(handle: String) {
+        self.handle = handle
+    }
+}
+
+public struct InspectorMCPAssertHierarchyContainsRequest: Codable, Equatable {
+    public let nodeKind: InspectorMCPNodeKind?
+    public let classNameContains: String?
+    public let displayNameContains: String?
+    public let elementNameContains: String?
+    public let accessibilityIdentifierEquals: String?
+    public let isInternalView: Bool?
+    public let isSystemContainer: Bool?
+    public let minimumCount: Int
+
+    public init(
+        nodeKind: InspectorMCPNodeKind? = nil,
+        classNameContains: String? = nil,
+        displayNameContains: String? = nil,
+        elementNameContains: String? = nil,
+        accessibilityIdentifierEquals: String? = nil,
+        isInternalView: Bool? = nil,
+        isSystemContainer: Bool? = nil,
+        minimumCount: Int = 1
+    ) {
+        self.nodeKind = nodeKind
+        self.classNameContains = classNameContains
+        self.displayNameContains = displayNameContains
+        self.elementNameContains = elementNameContains
+        self.accessibilityIdentifierEquals = accessibilityIdentifierEquals
+        self.isInternalView = isInternalView
+        self.isSystemContainer = isSystemContainer
+        self.minimumCount = minimumCount
+    }
+}
+
 public struct InspectorMCPNode: Codable, Equatable {
     public let handle: String
     public let nodeKind: InspectorMCPNodeKind
@@ -211,6 +327,8 @@ public struct InspectorMCPNode: Codable, Equatable {
     public let frame: InspectorMCPFrame
     public let isHidden: Bool
     public let isUserInteractionEnabled: Bool
+    public let isInternalView: Bool
+    public let isSystemContainer: Bool
     public let depth: Int
     public let parentHandle: String?
     public let childHandles: [String]
@@ -227,6 +345,8 @@ public struct InspectorMCPNode: Codable, Equatable {
         frame: InspectorMCPFrame,
         isHidden: Bool,
         isUserInteractionEnabled: Bool,
+        isInternalView: Bool,
+        isSystemContainer: Bool,
         depth: Int,
         parentHandle: String?,
         childHandles: [String],
@@ -242,6 +362,8 @@ public struct InspectorMCPNode: Codable, Equatable {
         self.frame = frame
         self.isHidden = isHidden
         self.isUserInteractionEnabled = isUserInteractionEnabled
+        self.isInternalView = isInternalView
+        self.isSystemContainer = isSystemContainer
         self.depth = depth
         self.parentHandle = parentHandle
         self.childHandles = childHandles
@@ -420,6 +542,98 @@ public struct InspectorMCPSetPropertyResult: Codable, Equatable {
     }
 }
 
+public struct InspectorMCPActionDescriptor: Codable, Equatable {
+    public let actionRef: String
+    public let title: String
+    public let kind: InspectorMCPActionKind
+
+    public init(actionRef: String, title: String, kind: InspectorMCPActionKind) {
+        self.actionRef = actionRef
+        self.title = title
+        self.kind = kind
+    }
+}
+
+public struct InspectorMCPActionListResult: Codable, Equatable {
+    public let handle: String
+    public let expiresAt: Date
+    public let actions: [InspectorMCPActionDescriptor]
+
+    public init(handle: String, expiresAt: Date, actions: [InspectorMCPActionDescriptor]) {
+        self.handle = handle
+        self.expiresAt = expiresAt
+        self.actions = actions
+    }
+}
+
+public struct InspectorMCPPerformActionResult: Codable, Equatable {
+    public let actionRef: String
+    public let performed: Bool
+    public let refreshRecommended: Bool
+
+    public init(actionRef: String, performed: Bool, refreshRecommended: Bool) {
+        self.actionRef = actionRef
+        self.performed = performed
+        self.refreshRecommended = refreshRecommended
+    }
+}
+
+public struct InspectorMCPAssertPropertyResult: Codable, Equatable {
+    public let handle: String
+    public let property: InspectorMCPAssertableProperty
+    public let passed: Bool
+    public let actualBool: Bool?
+    public let actualNumber: Double?
+    public let actualString: String?
+    public let message: String
+
+    public init(
+        handle: String,
+        property: InspectorMCPAssertableProperty,
+        passed: Bool,
+        actualBool: Bool? = nil,
+        actualNumber: Double? = nil,
+        actualString: String? = nil,
+        message: String
+    ) {
+        self.handle = handle
+        self.property = property
+        self.passed = passed
+        self.actualBool = actualBool
+        self.actualNumber = actualNumber
+        self.actualString = actualString
+        self.message = message
+    }
+}
+
+public struct InspectorMCPAssertVisibleResult: Codable, Equatable {
+    public let handle: String
+    public let passed: Bool
+    public let isHidden: Bool
+    public let message: String
+
+    public init(handle: String, passed: Bool, isHidden: Bool, message: String) {
+        self.handle = handle
+        self.passed = passed
+        self.isHidden = isHidden
+        self.message = message
+    }
+}
+
+public struct InspectorMCPAssertHierarchyContainsResult: Codable, Equatable {
+    public let passed: Bool
+    public let matchCount: Int
+    public let minimumCount: Int
+    public let message: String
+
+    public init(passed: Bool, matchCount: Int, minimumCount: Int, message: String) {
+        self.passed = passed
+        self.matchCount = matchCount
+        self.minimumCount = minimumCount
+        self.message = message
+    }
+}
+
 public struct InspectorMCPLayerState: Codable, Equatable {
     public let name: String
     public let displayName: String
@@ -472,6 +686,7 @@ public enum InspectorMCPWireErrorCode: String, Codable {
     case notStarted
     case staleHandle
     case stalePropertyReference
+    case staleActionReference
     case snapshotUnavailable
     case unsupportedTarget
     case invalidPropertyValue

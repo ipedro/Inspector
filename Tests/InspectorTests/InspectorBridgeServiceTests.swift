@@ -539,8 +539,6 @@ private final class MockReference: ViewHierarchyElementReference {
     private let object: NSObject
     private let frameValue: CGRect
     private let canInspect: Bool
-    private let internalView: Bool
-    private let systemContainer: Bool
     private let className: String
     private let classNameWithoutQualifiers: String
     private let elementName: String
@@ -548,6 +546,8 @@ private final class MockReference: ViewHierarchyElementReference {
     private let canPresentOnTop: Bool
     private let interactionEnabled: Bool
     private let identifier: String?
+    private let internalViewFlag: Bool
+    private let systemContainerFlag: Bool
 
     var underlyingView: UIView?
     var underlyingViewControllerValue: UIViewController?
@@ -562,15 +562,15 @@ private final class MockReference: ViewHierarchyElementReference {
         displayName: String,
         elementName: String,
         accessibilityIdentifier: String?,
-        isUserInteractionEnabled: Bool = true
+        isUserInteractionEnabled: Bool = true,
+        isInternalView: Bool = false,
+        isSystemContainer: Bool = false
     ) {
         self.kind = kind
         self.object = object
         _depth = depth
         frameValue = frame
         canInspect = false
-        internalView = false
-        systemContainer = false
         self.className = className
         classNameWithoutQualifiers = className
         self.elementName = elementName
@@ -578,6 +578,8 @@ private final class MockReference: ViewHierarchyElementReference {
         canPresentOnTop = false
         interactionEnabled = isUserInteractionEnabled
         identifier = accessibilityIdentifier
+        internalViewFlag = isInternalView
+        systemContainerFlag = isSystemContainer
         underlyingView = object as? UIView
         underlyingViewControllerValue = object as? UIViewController
     }
@@ -649,8 +651,8 @@ private final class MockReference: ViewHierarchyElementReference {
     var _canHostContextMenuInteraction: Bool { false }
     var _objectIdentifier: ObjectIdentifier { ObjectIdentifier(object) }
     var _canHostInspectorView: Bool { canInspect }
-    var _isInternalView: Bool { internalView }
-    var _isSystemContainer: Bool { systemContainer }
+    var _isInternalView: Bool { internalViewFlag }
+    var _isSystemContainer: Bool { systemContainerFlag }
     var _className: String { className }
     var _classNameWithoutQualifiers: String { classNameWithoutQualifiers }
     var _elementName: String { elementName }
@@ -1251,6 +1253,154 @@ extension InspectorBridgeServiceTests {
             }
             XCTAssertTrue(message.contains("out of bounds"))
         }
+    }
+
+    func testBridgeListActionsProjectsSupportedActions() throws {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        window.makeKeyAndVisible()
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        window.addSubview(view)
+        let reference = ViewHierarchyElement(with: view)
+
+        let service = makeService(snapshot: MockSnapshot(nodes: [reference]))
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+        let response = try service.listActions(for: handle)
+
+        XCTAssertFalse(response.actions.isEmpty)
+        XCTAssertTrue(response.actions.contains { $0.kind == .inspect })
+        XCTAssertTrue(response.actions.contains { $0.kind == .showHighlight })
+
+        addTeardownBlock { window.isHidden = true }
+    }
+
+    func testBridgePerformActionInvokesExecutorAndInvalidatesActionRefs() throws {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        let reference = ViewHierarchyElement(with: view)
+        var performedActions: [String] = []
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { MockSnapshot(nodes: [reference]) },
+            actionExecutor: { action, _ in
+                performedActions.append(action.title)
+            }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+        let actions = try service.listActions(for: handle)
+        let actionRef = try XCTUnwrap(actions.actions.first?.actionRef)
+
+        let result = try service.performAction(reference: actionRef)
+        XCTAssertTrue(result.performed)
+        XCTAssertEqual(performedActions.count, 1)
+
+        XCTAssertThrowsError(try service.performAction(reference: actionRef)) { error in
+            XCTAssertEqual(error as? InspectorBridgeError, .staleActionReference)
+        }
+    }
+
+    func testBridgePerformActionMapsDriftedOwnerToStaleActionReference() throws {
+        let parent = MockReference.view(className: "UIView", displayName: "Parent", elementName: "Parent", accessibilityIdentifier: "parent")
+        let child = MockReference.view(className: "UIView", displayName: "Child", elementName: "Child", accessibilityIdentifier: "child")
+        link(parent: parent, child: child)
+
+        let service = makeService(snapshot: MockSnapshot(nodes: [parent, child]))
+        let handle = try XCTUnwrap(service.query().nodes.first { $0.accessibilityIdentifier == "child" }?.handle)
+        let actions = try service.listActions(for: handle)
+        let actionRef = try XCTUnwrap(actions.actions.first?.actionRef)
+
+        child._depth = 9
+
+        XCTAssertThrowsError(try service.performAction(reference: actionRef)) { error in
+            XCTAssertEqual(error as? InspectorBridgeError, .staleActionReference)
+        }
+    }
+
+    func testBridgeAssertPropertyReportsMatchingBooleanNodeProperty() throws {
+        let label = MockReference.view(className: "UILabel", displayName: "Greeting Label", elementName: "Greeting", accessibilityIdentifier: "greeting")
+        label.hidden = true
+        let service = makeService(snapshot: MockSnapshot(nodes: [label]))
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+
+        let result = try service.assertProperty(handle, property: .isHidden, expected: .bool(true))
+        XCTAssertTrue(result.passed)
+        XCTAssertEqual(result.actualBool, true)
+    }
+
+    func testBridgeAssertVisibleFailsForHiddenNode() throws {
+        let label = MockReference.view(className: "UILabel", displayName: "Greeting Label", elementName: "Greeting", accessibilityIdentifier: "greeting")
+        label.hidden = true
+        let service = makeService(snapshot: MockSnapshot(nodes: [label]))
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+
+        let result = try service.assertVisible(handle)
+        XCTAssertFalse(result.passed)
+        XCTAssertTrue(result.isHidden)
+    }
+
+    func testBridgeAssertPropertyReportsInternalViewFlag() throws {
+        let internalNode = MockReference(
+            kind: .view,
+            object: UIView(),
+            depth: 0,
+            className: "_UITextLayoutCanvasView",
+            displayName: "Internal",
+            elementName: "Internal",
+            accessibilityIdentifier: "internal",
+            isInternalView: true
+        )
+        let service = makeService(snapshot: MockSnapshot(nodes: [internalNode]))
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+
+        let result = try service.assertProperty(handle, property: .isInternalView, expected: .bool(true))
+        XCTAssertTrue(result.passed)
+        XCTAssertEqual(result.actualBool, true)
+    }
+
+    func testBridgeAssertHierarchyContainsUsesMinimumCount() throws {
+        let a = MockReference.view(className: "UIButton", displayName: "A", elementName: "A", accessibilityIdentifier: "a")
+        let b = MockReference.view(className: "UIButton", displayName: "B", elementName: "B", accessibilityIdentifier: "b")
+        let service = makeService(snapshot: MockSnapshot(nodes: [a, b]))
+
+        let result = try service.assertHierarchyContains(
+            .init(classNameContains: "UIButton"),
+            minimumCount: 2
+        )
+        XCTAssertTrue(result.passed)
+        XCTAssertEqual(result.matchCount, 2)
+    }
+
+    func testQueryFiltersByInternalAndSystemFlags() throws {
+        let internalNode = MockReference(
+            kind: .view,
+            object: UIView(),
+            depth: 0,
+            className: "_UITextLayoutCanvasView",
+            displayName: "Internal",
+            elementName: "Internal",
+            accessibilityIdentifier: "internal",
+            isInternalView: true
+        )
+        let systemNode = MockReference(
+            kind: .view,
+            object: UIView(),
+            depth: 0,
+            className: "_UIRemoteKeyboardPlaceholderView",
+            displayName: "System",
+            elementName: "System",
+            accessibilityIdentifier: "system",
+            isInternalView: true,
+            isSystemContainer: true
+        )
+        let appNode = MockReference.view(className: "UIButton", displayName: "App", elementName: "App", accessibilityIdentifier: "app")
+
+        let service = makeService(snapshot: MockSnapshot(nodes: [internalNode, systemNode, appNode]))
+
+        let internalMatches = try service.query(.init(isInternalView: true))
+        XCTAssertEqual(internalMatches.nodes.count, 2)
+
+        let systemMatches = try service.query(.init(isSystemContainer: true))
+        XCTAssertEqual(systemMatches.nodes.count, 1)
+        XCTAssertEqual(systemMatches.nodes.first?.accessibilityIdentifier, "system")
     }
 }
 

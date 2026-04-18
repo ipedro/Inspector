@@ -19,7 +19,8 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(health["status"] as? String, "active")
         XCTAssertEqual(health["bridgeEnabled"] as? Bool, true)
         XCTAssertEqual(health["inspectorStarted"] as? Bool, true)
-        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect", "tap", "listProperties", "setProperty", "layers", "toggleLayer"])
+        XCTAssertEqual(health["keyboardWindowsFiltered"] as? Bool, false)
+        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect", "tap", "listActions", "performAction", "assertProperty", "assertVisible", "assertHierarchyContains", "listProperties", "setProperty", "layers", "toggleLayer"])
         XCTAssertEqual(health["apiVersion"] as? Int, 2)
     }
 
@@ -58,6 +59,8 @@ final class InspectorMCPTransportTests: XCTestCase {
             "frame",
             "isHidden",
             "isUserInteractionEnabled",
+            "isInternalView",
+            "isSystemContainer",
             "depth",
             "parentHandle",
             "childHandles",
@@ -208,6 +211,15 @@ final class InspectorMCPTransportTests: XCTestCase {
                       "/health must advertise the tap operation")
     }
 
+    func testHealthAdvertisesActionOperations() async throws {
+        let health = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+        let operations = try XCTUnwrap(health["operations"] as? [String])
+        XCTAssertTrue(operations.contains("listActions"))
+        XCTAssertTrue(operations.contains("performAction"))
+    }
+
     func testTapReturnsDispatchedEnvelopeForLiveButtonHandle() async throws {
         _ = try await pollHealth(timeout: 5) { payload in
             payload["status"] as? String == "active"
@@ -275,6 +287,117 @@ final class InspectorMCPTransportTests: XCTestCase {
         addTeardownBlock {
             try? await self.restoreHidden(accessibilityIdentifier: "MCP Tap Smoke Button")
         }
+    }
+
+    func testListActionsAndPerformActionToggleHighlightAvailability() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let handle = try await queryHandle(accessibilityIdentifier: "MCP Tap Smoke Button")
+        let actionsResponse = try await postJSON(
+            path: "/actions",
+            body: ["handle": handle]
+        )
+        XCTAssertEqual(actionsResponse.statusCode, 200)
+        let actionsPayload = try unpackSuccessEnvelope(from: actionsResponse.body)
+        let actions = try XCTUnwrap(actionsPayload["actions"] as? [[String: Any]])
+        let showHighlight = try XCTUnwrap(actions.first { $0["kind"] as? String == "showHighlight" })
+        let actionRef = try XCTUnwrap(showHighlight["actionRef"] as? String)
+
+        let performResponse = try await postJSON(
+            path: "/perform-action",
+            body: ["actionRef": actionRef]
+        )
+        XCTAssertEqual(performResponse.statusCode, 200)
+        let performPayload = try unpackSuccessEnvelope(from: performResponse.body)
+        XCTAssertEqual(performPayload["actionRef"] as? String, actionRef)
+        XCTAssertEqual(performPayload["performed"] as? Bool, true)
+        XCTAssertEqual(performPayload["refreshRecommended"] as? Bool, true)
+
+        let refreshedHandle = try await queryHandle(accessibilityIdentifier: "MCP Tap Smoke Button")
+        let refreshedActionsResponse = try await postJSON(
+            path: "/actions",
+            body: ["handle": refreshedHandle]
+        )
+        let refreshedPayload = try unpackSuccessEnvelope(from: refreshedActionsResponse.body)
+        let refreshedActions = try XCTUnwrap(refreshedPayload["actions"] as? [[String: Any]])
+        XCTAssertTrue(refreshedActions.contains { $0["kind"] as? String == "hideHighlight" })
+    }
+
+    func testHealthAdvertisesAssertionOperations() async throws {
+        let health = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+        let operations = try XCTUnwrap(health["operations"] as? [String])
+        XCTAssertTrue(operations.contains("assertProperty"))
+        XCTAssertTrue(operations.contains("assertVisible"))
+        XCTAssertTrue(operations.contains("assertHierarchyContains"))
+    }
+
+    func testAssertionToolsWorkOnLiveHierarchy() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let handle = try await queryHandle(accessibilityIdentifier: "MCP Tap Smoke Button")
+
+        let visibleResponse = try await postJSON(path: "/assert-visible", body: ["handle": handle])
+        let visiblePayload = try unpackSuccessEnvelope(from: visibleResponse.body)
+        XCTAssertEqual(visiblePayload["passed"] as? Bool, true)
+
+        let propertyResponse = try await postJSON(
+            path: "/assert-property",
+            body: ["handle": handle, "property": "className", "stringValue": "UIButton"]
+        )
+        let propertyPayload = try unpackSuccessEnvelope(from: propertyResponse.body)
+        XCTAssertEqual(propertyPayload["passed"] as? Bool, true)
+
+        let hierarchyResponse = try await postJSON(
+            path: "/assert-hierarchy-contains",
+            body: ["accessibilityIdentifierEquals": "MCP Tap Smoke Button", "minimumCount": 1]
+        )
+        let hierarchyPayload = try unpackSuccessEnvelope(from: hierarchyResponse.body)
+        XCTAssertEqual(hierarchyPayload["passed"] as? Bool, true)
+        XCTAssertEqual(hierarchyPayload["matchCount"] as? Int, 1)
+    }
+
+    func testQueryCanFilterInternalViews() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let response = try await postJSON(
+            path: "/query",
+            body: [
+                "accessibilityIdentifierEquals": "MCP Internal Discoverability View",
+                "isInternalView": true
+            ]
+        )
+        XCTAssertEqual(response.statusCode, 200)
+        let payload = try unpackSuccessEnvelope(from: response.body)
+        let nodes = try XCTUnwrap(payload["nodes"] as? [[String: Any]])
+        XCTAssertEqual(nodes.count, 1)
+        XCTAssertEqual(nodes.first?["isInternalView"] as? Bool, true)
+    }
+
+    func testAssertHierarchyContainsCanTargetInternalViews() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let response = try await postJSON(
+            path: "/assert-hierarchy-contains",
+            body: [
+                "accessibilityIdentifierEquals": "MCP Internal Discoverability View",
+                "isInternalView": true,
+                "minimumCount": 1
+            ]
+        )
+        XCTAssertEqual(response.statusCode, 200)
+        let payload = try unpackSuccessEnvelope(from: response.body)
+        XCTAssertEqual(payload["passed"] as? Bool, true)
+        XCTAssertEqual(payload["matchCount"] as? Int, 1)
     }
 
     func testListPropertiesAndSetPropertyMutateSelectionProperty() async throws {

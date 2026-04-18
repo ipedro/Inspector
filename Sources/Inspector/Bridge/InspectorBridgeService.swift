@@ -36,6 +36,11 @@ enum InspectorBridgeOperation {
     case snapshot
     case inspect
     case tap
+    case listActions
+    case performAction
+    case assertProperty
+    case assertVisible
+    case assertHierarchyContains
     case listProperties
     case setProperty
     case layers
@@ -147,6 +152,7 @@ final class InspectorMCPBridgeService {
     typealias LayerToggler = (ViewHierarchyLayer) -> Void
     typealias LayerActiveProvider = (ViewHierarchyLayer) -> Bool
     typealias LibrariesProvider = (InspectorBridgeEditablePanel) -> [InspectorElementLibraryProtocol]
+    typealias ActionExecutor = (ViewHierarchyElementAction, ViewHierarchyElementReference) -> Void
 
     private struct HandleRecord {
         let reference: ViewHierarchyElementReference
@@ -169,6 +175,14 @@ final class InspectorMCPBridgeService {
         let descriptor: InspectorBridgeEditablePropertyDescriptor
     }
 
+    private struct ActionRecord {
+        let ownerHandle: InspectorBridgeHandle
+        let ownerObjectIdentityToken: String
+        let ownerPathFingerprint: String
+        let action: ViewHierarchyElementAction
+        let descriptor: InspectorBridgeActionDescriptor
+    }
+
     private let availabilityProvider: AvailabilityProvider
     private let snapshotProvider: SnapshotProvider
     private let snapshotLimitProvider: SnapshotLimitProvider
@@ -177,12 +191,15 @@ final class InspectorMCPBridgeService {
     private let layerToggler: LayerToggler
     private let layerActiveProvider: LayerActiveProvider
     private let librariesProvider: LibrariesProvider
+    private let actionExecutor: ActionExecutor
 
     private var pinnedSnapshots: [UUID: PinnedSnapshot] = [:]
     private var handleIndex: [String: UUID] = [:]
     private var snapshotOrder: [UUID] = []
     private var propertyRecords: [String: EditablePropertyRecord] = [:]
     private var propertyHandlesByOwner: [String: Set<String>] = [:]
+    private var actionRecords: [String: ActionRecord] = [:]
+    private var actionRefsByOwner: [String: Set<String>] = [:]
 
     var operationObserver: ((InspectorBridgeOperation, Bool) -> Void)?
 
@@ -194,7 +211,19 @@ final class InspectorMCPBridgeService {
         dateProvider: @escaping DateProvider = Date.init,
         layerToggler: @escaping LayerToggler = { Inspector.sharedInstance.toggle($0) },
         layerActiveProvider: @escaping LayerActiveProvider = { Inspector.sharedInstance.isInspecting($0) },
-        librariesProvider: @escaping LibrariesProvider = { _ in [] }
+        librariesProvider: @escaping LibrariesProvider = { _ in [] },
+        actionExecutor: @escaping ActionExecutor = { action, element in
+            guard let manager = Inspector.sharedInstance.manager else { return }
+            let sourceView: UIView
+            if let view = element._underlyingObject as? UIView {
+                sourceView = view
+            } else if let viewController = element._underlyingObject as? UIViewController {
+                sourceView = viewController.view
+            } else {
+                sourceView = manager.keyWindow ?? UIView()
+            }
+            manager.perform(action: action, with: element, from: sourceView)
+        }
     ) {
         self.availabilityProvider = availabilityProvider
         self.snapshotProvider = snapshotProvider
@@ -204,6 +233,7 @@ final class InspectorMCPBridgeService {
         self.layerToggler = layerToggler
         self.layerActiveProvider = layerActiveProvider
         self.librariesProvider = librariesProvider
+        self.actionExecutor = actionExecutor
     }
 
     func reset() {
@@ -212,6 +242,8 @@ final class InspectorMCPBridgeService {
         snapshotOrder.removeAll()
         propertyRecords.removeAll()
         propertyHandlesByOwner.removeAll()
+        actionRecords.removeAll()
+        actionRefsByOwner.removeAll()
     }
 
     func query(_ request: InspectorBridgeQueryRequest = .init()) throws -> InspectorBridgeQueryResponse {
@@ -359,6 +391,73 @@ final class InspectorMCPBridgeService {
         }
     }
 
+    func listActions(
+        for handle: InspectorBridgeHandle
+    ) throws -> InspectorBridgeActionListResponse {
+        try performOnMain(.listActions) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            let (pinnedSnapshot, record) = try self.lookupRecord(for: handle)
+            try self.validate(record: record, handle: handle)
+
+            self.removeActionRefs(for: handle)
+
+            let actions = ViewHierarchyElementAction
+                .allCases(for: record.reference)
+                .compactMap { action in
+                    self.makeActionDescriptor(
+                        for: action,
+                        ownerHandle: handle,
+                        ownerRecord: record
+                    )
+                }
+
+            return InspectorBridgeActionListResponse(
+                handle: handle,
+                expiresAt: pinnedSnapshot.expiresAt,
+                actions: actions
+            )
+        }
+    }
+
+    func performAction(reference: String) throws -> InspectorBridgeActionResult {
+        try performOnMain(.performAction) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            guard let actionRecord = self.actionRecords[reference] else {
+                throw InspectorBridgeError.staleActionReference
+            }
+
+            let ownerRecord: HandleRecord
+            do {
+                let lookup = try self.lookupRecord(for: actionRecord.ownerHandle)
+                ownerRecord = lookup.1
+                try self.validate(record: ownerRecord, handle: actionRecord.ownerHandle)
+            } catch InspectorBridgeError.staleHandle {
+                self.removeActionRefs(for: actionRecord.ownerHandle)
+                throw InspectorBridgeError.staleActionReference
+            }
+
+            guard ownerRecord.objectIdentityToken == actionRecord.ownerObjectIdentityToken,
+                  ownerRecord.pathFingerprint == actionRecord.ownerPathFingerprint
+            else {
+                self.removeActionRefs(for: actionRecord.ownerHandle)
+                throw InspectorBridgeError.staleActionReference
+            }
+
+            self.actionExecutor(actionRecord.action, ownerRecord.reference)
+            self.removeActionRefs(for: actionRecord.ownerHandle)
+
+            return InspectorBridgeActionResult(
+                actionRef: reference,
+                performed: true,
+                refreshRecommended: true
+            )
+        }
+    }
+
     func setProperty(
         reference: String,
         value: InspectorBridgePropertyMutationValue
@@ -371,8 +470,15 @@ final class InspectorMCPBridgeService {
                 throw InspectorBridgeError.stalePropertyReference
             }
 
-            let (_, ownerRecord) = try self.lookupRecord(for: propertyRecord.ownerHandle)
-            try self.validate(record: ownerRecord, handle: propertyRecord.ownerHandle)
+            let ownerRecord: HandleRecord
+            do {
+                let lookup = try self.lookupRecord(for: propertyRecord.ownerHandle)
+                ownerRecord = lookup.1
+                try self.validate(record: ownerRecord, handle: propertyRecord.ownerHandle)
+            } catch InspectorBridgeError.staleHandle {
+                self.removePropertyHandles(for: propertyRecord.ownerHandle)
+                throw InspectorBridgeError.stalePropertyReference
+            }
 
             guard ownerRecord.objectIdentityToken == propertyRecord.ownerObjectIdentityToken,
                   ownerRecord.pathFingerprint == propertyRecord.ownerPathFingerprint
@@ -393,6 +499,119 @@ final class InspectorMCPBridgeService {
                 propertyRef: reference,
                 applied: true,
                 refreshRecommended: true
+            )
+        }
+    }
+
+    func assertProperty(
+        _ handle: InspectorBridgeHandle,
+        property: InspectorBridgeAssertableProperty,
+        expected: InspectorBridgeAssertionValue
+    ) throws -> InspectorBridgeAssertPropertyResult {
+        try performOnMain(.assertProperty) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            let node = try self.resolve(handle)
+
+            switch property {
+            case .className:
+                let actual = node.className
+                guard case let .string(expectedValue) = expected else {
+                    throw InspectorBridgeError.invalidPropertyValue("property expects stringValue")
+                }
+                return .init(handle: handle, property: property, passed: actual == expectedValue, actualBool: nil, actualNumber: nil, actualString: actual, message: "className is \(actual)")
+            case .displayName:
+                let actual = node.displayName
+                guard case let .string(expectedValue) = expected else {
+                    throw InspectorBridgeError.invalidPropertyValue("property expects stringValue")
+                }
+                return .init(handle: handle, property: property, passed: actual == expectedValue, actualBool: nil, actualNumber: nil, actualString: actual, message: "displayName is \(actual)")
+            case .elementName:
+                let actual = node.elementName
+                guard case let .string(expectedValue) = expected else {
+                    throw InspectorBridgeError.invalidPropertyValue("property expects stringValue")
+                }
+                return .init(handle: handle, property: property, passed: actual == expectedValue, actualBool: nil, actualNumber: nil, actualString: actual, message: "elementName is \(actual)")
+            case .accessibilityIdentifier:
+                let actual = node.accessibilityIdentifier
+                guard case let .string(expectedValue) = expected else {
+                    throw InspectorBridgeError.invalidPropertyValue("property expects stringValue")
+                }
+                return .init(handle: handle, property: property, passed: actual == expectedValue, actualBool: nil, actualNumber: nil, actualString: actual, message: "accessibilityIdentifier is \(actual ?? "nil")")
+            case .backingObjectType:
+                let actual = node.backingObjectType
+                guard case let .string(expectedValue) = expected else {
+                    throw InspectorBridgeError.invalidPropertyValue("property expects stringValue")
+                }
+                return .init(handle: handle, property: property, passed: actual == expectedValue, actualBool: nil, actualNumber: nil, actualString: actual, message: "backingObjectType is \(actual)")
+            case .isHidden:
+                let actual = node.isHidden
+                guard case let .bool(expectedValue) = expected else {
+                    throw InspectorBridgeError.invalidPropertyValue("property expects boolValue")
+                }
+                return .init(handle: handle, property: property, passed: actual == expectedValue, actualBool: actual, actualNumber: nil, actualString: nil, message: "isHidden is \(actual)")
+            case .isUserInteractionEnabled:
+                let actual = node.isUserInteractionEnabled
+                guard case let .bool(expectedValue) = expected else {
+                    throw InspectorBridgeError.invalidPropertyValue("property expects boolValue")
+                }
+                return .init(handle: handle, property: property, passed: actual == expectedValue, actualBool: actual, actualNumber: nil, actualString: nil, message: "isUserInteractionEnabled is \(actual)")
+            case .isInternalView:
+                let actual = node.isInternalView
+                guard case let .bool(expectedValue) = expected else {
+                    throw InspectorBridgeError.invalidPropertyValue("property expects boolValue")
+                }
+                return .init(handle: handle, property: property, passed: actual == expectedValue, actualBool: actual, actualNumber: nil, actualString: nil, message: "isInternalView is \(actual)")
+            case .isSystemContainer:
+                let actual = node.isSystemContainer
+                guard case let .bool(expectedValue) = expected else {
+                    throw InspectorBridgeError.invalidPropertyValue("property expects boolValue")
+                }
+                return .init(handle: handle, property: property, passed: actual == expectedValue, actualBool: actual, actualNumber: nil, actualString: nil, message: "isSystemContainer is \(actual)")
+            case .childCount:
+                let actual = Double(node.childCount)
+                guard case let .number(expectedValue) = expected else {
+                    throw InspectorBridgeError.invalidPropertyValue("property expects numberValue")
+                }
+                return .init(handle: handle, property: property, passed: actual == expectedValue, actualBool: nil, actualNumber: actual, actualString: nil, message: "childCount is \(Int(actual))")
+            case .depth:
+                let actual = Double(node.depth)
+                guard case let .number(expectedValue) = expected else {
+                    throw InspectorBridgeError.invalidPropertyValue("property expects numberValue")
+                }
+                return .init(handle: handle, property: property, passed: actual == expectedValue, actualBool: nil, actualNumber: actual, actualString: nil, message: "depth is \(Int(actual))")
+            }
+        }
+    }
+
+    func assertVisible(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeAssertVisibleResult {
+        try performOnMain(.assertVisible) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            let node = try self.resolve(handle)
+            let passed = node.isHidden == false
+            return .init(handle: handle, passed: passed, isHidden: node.isHidden, message: passed ? "node is visible" : "node is hidden")
+        }
+    }
+
+    func assertHierarchyContains(
+        _ request: InspectorBridgeQueryRequest,
+        minimumCount: Int = 1
+    ) throws -> InspectorBridgeAssertHierarchyContainsResult {
+        try performOnMain(.assertHierarchyContains) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            let response = try self.query(request)
+            let count = response.nodes.count
+            let passed = count >= minimumCount
+            return .init(
+                passed: passed,
+                matchCount: count,
+                minimumCount: minimumCount,
+                message: passed ? "hierarchy matched \(count) node(s)" : "hierarchy matched \(count) node(s), expected at least \(minimumCount)"
             )
         }
     }
@@ -558,6 +777,44 @@ final class InspectorMCPBridgeService {
         }
 
         return descriptors
+    }
+
+    private func makeActionDescriptor(
+        for action: ViewHierarchyElementAction,
+        ownerHandle: InspectorBridgeHandle,
+        ownerRecord: HandleRecord
+    ) -> InspectorBridgeActionDescriptor? {
+        let kind: InspectorBridgeActionKind
+        switch action {
+        case let .inspect(preferredPanel: _):
+            kind = .inspect
+        case let .layer(layerAction):
+            switch layerAction {
+            case .showHighlight:
+                kind = .showHighlight
+            case .hideHighlight:
+                kind = .hideHighlight
+            }
+        case .copy:
+            return nil
+        }
+
+        let actionRef = UUID().uuidString
+        let descriptor = InspectorBridgeActionDescriptor(
+            actionRef: actionRef,
+            title: action.title,
+            kind: kind
+        )
+
+        actionRecords[actionRef] = ActionRecord(
+            ownerHandle: ownerHandle,
+            ownerObjectIdentityToken: ownerRecord.objectIdentityToken,
+            ownerPathFingerprint: ownerRecord.pathFingerprint,
+            action: action,
+            descriptor: descriptor
+        )
+        actionRefsByOwner[ownerHandle.rawValue, default: []].insert(actionRef)
+        return descriptor
     }
 
     private func makeDescriptor(
@@ -804,6 +1061,7 @@ final class InspectorMCPBridgeService {
 
         for token in removedSnapshot.handlesByToken.keys {
             removePropertyHandles(for: .init(rawValue: token))
+            removeActionRefs(for: .init(rawValue: token))
             handleIndex.removeValue(forKey: token)
         }
     }
@@ -815,6 +1073,16 @@ final class InspectorMCPBridgeService {
 
         for propertyRef in propertyRefs {
             propertyRecords.removeValue(forKey: propertyRef)
+        }
+    }
+
+    private func removeActionRefs(for ownerHandle: InspectorBridgeHandle) {
+        guard let actionRefs = actionRefsByOwner.removeValue(forKey: ownerHandle.rawValue) else {
+            return
+        }
+
+        for actionRef in actionRefs {
+            actionRecords.removeValue(forKey: actionRef)
         }
     }
 
@@ -857,6 +1125,8 @@ final class InspectorMCPBridgeService {
             frame: reference._frame.wrappedValue,
             isHidden: reference.isHidden,
             isUserInteractionEnabled: reference.isUserInteractionEnabled,
+            isInternalView: reference._isInternalView,
+            isSystemContainer: reference._isSystemContainer,
             depth: reference._depth,
             parentHandle: parentHandle,
             childHandles: childHandles,
@@ -892,6 +1162,18 @@ final class InspectorMCPBridgeService {
 
         if let accessibilityIdentifier = normalized(request.accessibilityIdentifierEquals),
            reference.accessibilityIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines) != accessibilityIdentifier
+        {
+            return false
+        }
+
+        if let expectedInternalView = request.isInternalView,
+           reference._isInternalView != expectedInternalView
+        {
+            return false
+        }
+
+        if let expectedSystemContainer = request.isSystemContainer,
+           reference._isSystemContainer != expectedSystemContainer
         {
             return false
         }
@@ -1012,6 +1294,33 @@ package extension Inspector {
 
     static func bridgeTap(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeHandle {
         try sharedInspectorMCPBridgeService.tap(handle)
+    }
+
+    static func bridgeListActions(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeActionListResponse {
+        try sharedInspectorMCPBridgeService.listActions(for: handle)
+    }
+
+    static func bridgePerformAction(reference: String) throws -> InspectorBridgeActionResult {
+        try sharedInspectorMCPBridgeService.performAction(reference: reference)
+    }
+
+    static func bridgeAssertProperty(
+        _ handle: InspectorBridgeHandle,
+        property: InspectorBridgeAssertableProperty,
+        expected: InspectorBridgeAssertionValue
+    ) throws -> InspectorBridgeAssertPropertyResult {
+        try sharedInspectorMCPBridgeService.assertProperty(handle, property: property, expected: expected)
+    }
+
+    static func bridgeAssertVisible(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeAssertVisibleResult {
+        try sharedInspectorMCPBridgeService.assertVisible(handle)
+    }
+
+    static func bridgeAssertHierarchyContains(
+        _ request: InspectorBridgeQueryRequest,
+        minimumCount: Int = 1
+    ) throws -> InspectorBridgeAssertHierarchyContainsResult {
+        try sharedInspectorMCPBridgeService.assertHierarchyContains(request, minimumCount: minimumCount)
     }
 
     static func bridgeListProperties(

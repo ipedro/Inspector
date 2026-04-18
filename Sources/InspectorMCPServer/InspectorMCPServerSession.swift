@@ -35,7 +35,7 @@ final class InspectorMCPServerSession {
                         "name": "InspectorMCPServer",
                         "version": "2.0.0"
                     ],
-                    "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. For property mutation, use list_properties before set_property. Mutation tools can stale handles immediately, so issue a fresh query after UI changes."
+                    "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. For semantic actions, use list_actions before perform_action. For assertions, use assert_property / assert_visible / assert_hierarchy_contains. For property mutation, use list_properties before set_property. Mutation tools can stale handles immediately, so issue a fresh query after UI changes."
                 ]
             )
         case "tools/list":
@@ -182,6 +182,88 @@ final class InspectorMCPServerSession {
                     "destructiveHint": false,
                     "idempotentHint": false,
                     "openWorldHint": true
+                ]
+            ),
+            toolDefinition(
+                name: "list_actions",
+                description: "List semantic actions available for a node using Inspector's existing action model. Returns opaque actionRef values for perform_action.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "handle": [
+                            "type": "string",
+                            "description": "Opaque handle returned by query or resolve."
+                        ]
+                    ],
+                    "required": ["handle"]
+                ]
+            ),
+            toolDefinition(
+                name: "perform_action",
+                description: "Perform one semantic action using an actionRef returned by list_actions. Action refs are ephemeral and should be rediscovered after mutation.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "actionRef": [
+                            "type": "string",
+                            "description": "Opaque action reference returned by list_actions."
+                        ]
+                    ],
+                    "required": ["actionRef"]
+                ],
+                annotations: [
+                    "readOnlyHint": false,
+                    "destructiveHint": false,
+                    "idempotentHint": false,
+                    "openWorldHint": true
+                ]
+            ),
+            toolDefinition(
+                name: "assert_property",
+                description: "Assert a specific resolved node property against one expected typed value.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "handle": ["type": "string", "description": "Opaque handle returned by query or resolve."],
+                        "property": ["type": "string", "enum": ["className","displayName","elementName","accessibilityIdentifier","backingObjectType","isHidden","isUserInteractionEnabled","isInternalView","isSystemContainer","childCount","depth"]],
+                        "boolValue": ["type": "boolean"],
+                        "numberValue": ["type": "number"],
+                        "stringValue": ["type": "string"]
+                    ],
+                    "required": ["handle", "property"]
+                ]
+            ),
+            toolDefinition(
+                name: "assert_visible",
+                description: "Assert that a node is currently visible (not hidden).",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "handle": ["type": "string", "description": "Opaque handle returned by query or resolve."]
+                    ],
+                    "required": ["handle"]
+                ]
+            ),
+            toolDefinition(
+                name: "assert_hierarchy_contains",
+                description: "Assert that the current live hierarchy contains at least a minimum number of nodes matching query-style filters.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "nodeKind": ["type": "string", "enum": ["window", "viewController", "view"]],
+                        "classNameContains": ["type": "string"],
+                        "displayNameContains": ["type": "string"],
+                        "elementNameContains": ["type": "string"],
+                        "accessibilityIdentifierEquals": ["type": "string"],
+                        "isInternalView": ["type": "boolean"],
+                        "isSystemContainer": ["type": "boolean"],
+                        "minimumCount": ["type": "integer"]
+                    ]
                 ]
             ),
             toolDefinition(
@@ -348,6 +430,66 @@ final class InspectorMCPServerSession {
                 for: result,
                 successText: { tapResult in
                     "Dispatched semantic tap for handle \(tapResult.handle)."
+                }
+            )
+        case "list_actions":
+            let request = try JSONObject.decode(
+                InspectorMCPActionListRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.listActions(request)
+            return try toolResult(
+                for: result,
+                successText: { actionResult in
+                    "Listed \(actionResult.actions.count) semantic action(s) for handle \(actionResult.handle)."
+                }
+            )
+        case "perform_action":
+            let request = try JSONObject.decode(
+                InspectorMCPPerformActionRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.performAction(request)
+            return try toolResult(
+                for: result,
+                successText: { actionResult in
+                    "Performed semantic action \(actionResult.actionRef)."
+                }
+            )
+        case "assert_property":
+            let request = try JSONObject.decode(
+                InspectorMCPAssertPropertyRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.assertProperty(request)
+            return try toolResult(
+                for: result,
+                successText: { assertion in
+                    "Assertion on \(assertion.property.rawValue) \(assertion.passed ? "passed" : "failed")."
+                }
+            )
+        case "assert_visible":
+            let request = try JSONObject.decode(
+                InspectorMCPAssertVisibleRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.assertVisible(request)
+            return try toolResult(
+                for: result,
+                successText: { assertion in
+                    "Visibility assertion \(assertion.passed ? "passed" : "failed") for handle \(assertion.handle)."
+                }
+            )
+        case "assert_hierarchy_contains":
+            let request = try JSONObject.decode(
+                InspectorMCPAssertHierarchyContainsRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.assertHierarchyContains(request)
+            return try toolResult(
+                for: result,
+                successText: { assertion in
+                    "Hierarchy assertion \(assertion.passed ? "passed" : "failed") with \(assertion.matchCount) match(es)."
                 }
             )
         case "list_properties":

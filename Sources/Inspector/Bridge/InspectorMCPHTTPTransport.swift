@@ -210,7 +210,9 @@ private final class InspectorMCPHTTPServer {
                 "classNameContains",
                 "displayNameContains",
                 "elementNameContains",
-                "accessibilityIdentifierEquals"
+                "accessibilityIdentifierEquals",
+                "isInternalView",
+                "isSystemContainer"
             ])
 
             do {
@@ -268,6 +270,68 @@ private final class InspectorMCPHTTPServer {
             do {
                 return try jsonResponse(
                     InspectorMCPSuccessEnvelope(result: try bridgeTapResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.actionsPath):
+            let payload: InspectorMCPActionListRequest = try decode(
+                request.body,
+                allowedKeys: ["handle"]
+            )
+
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeActionListResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.performActionPath):
+            let payload: InspectorMCPPerformActionRequest = try decode(
+                request.body,
+                allowedKeys: ["actionRef"]
+            )
+
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgePerformActionResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.assertPropertyPath):
+            let payload: InspectorMCPAssertPropertyRequest = try decode(
+                request.body,
+                allowedKeys: ["handle", "property", "boolValue", "numberValue", "stringValue"]
+            )
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeAssertPropertyResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.assertVisiblePath):
+            let payload: InspectorMCPAssertVisibleRequest = try decode(
+                request.body,
+                allowedKeys: ["handle"]
+            )
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeAssertVisibleResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.assertHierarchyContainsPath):
+            let payload: InspectorMCPAssertHierarchyContainsRequest = try decode(
+                request.body,
+                allowedKeys: ["nodeKind", "classNameContains", "displayNameContains", "elementNameContains", "accessibilityIdentifierEquals", "isInternalView", "isSystemContainer", "minimumCount"]
+            )
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeAssertHierarchyContainsResult(for: payload))
                 )
             } catch let error as InspectorBridgeError {
                 return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
@@ -363,8 +427,9 @@ private final class InspectorMCPHTTPServer {
             status: status,
             bridgeEnabled: bridgeEnabled,
             inspectorStarted: inspectorStarted,
+            keyboardWindowsFiltered: Inspector.sharedInstance.configuration.filtersSystemKeyboardWindows,
             bundleIdentifier: Bundle.main.bundleIdentifier,
-            operations: [.query, .resolve, .snapshot, .inspect, .tap, .listProperties, .setProperty, .layers, .toggleLayer],
+            operations: [.query, .resolve, .snapshot, .inspect, .tap, .listActions, .performAction, .assertProperty, .assertVisible, .assertHierarchyContains, .listProperties, .setProperty, .layers, .toggleLayer],
             apiVersion: 2
         )
     }
@@ -376,7 +441,9 @@ private final class InspectorMCPHTTPServer {
                 classNameContains: request.classNameContains,
                 displayNameContains: request.displayNameContains,
                 elementNameContains: request.elementNameContains,
-                accessibilityIdentifierEquals: request.accessibilityIdentifierEquals
+                accessibilityIdentifierEquals: request.accessibilityIdentifierEquals,
+                isInternalView: request.isInternalView,
+                isSystemContainer: request.isSystemContainer
             )
         )
 
@@ -414,6 +481,77 @@ private final class InspectorMCPHTTPServer {
     private func bridgeTapResult(for request: InspectorMCPTapRequest) throws -> InspectorMCPTapResult {
         _ = try Inspector.bridgeTap(.init(rawValue: request.handle))
         return InspectorMCPTapResult(handle: request.handle, dispatched: true)
+    }
+
+    private func bridgeActionListResult(for request: InspectorMCPActionListRequest) throws -> InspectorMCPActionListResult {
+        let result = try Inspector.bridgeListActions(.init(rawValue: request.handle))
+        return InspectorMCPActionListResult(
+            handle: result.handle.rawValue,
+            expiresAt: result.expiresAt,
+            actions: result.actions.map { descriptor in
+                InspectorMCPActionDescriptor(
+                    actionRef: descriptor.actionRef,
+                    title: descriptor.title,
+                    kind: wireActionKind(from: descriptor.kind)
+                )
+            }
+        )
+    }
+
+    private func bridgePerformActionResult(for request: InspectorMCPPerformActionRequest) throws -> InspectorMCPPerformActionResult {
+        let result = try Inspector.bridgePerformAction(reference: request.actionRef)
+        return InspectorMCPPerformActionResult(
+            actionRef: result.actionRef,
+            performed: result.performed,
+            refreshRecommended: result.refreshRecommended
+        )
+    }
+
+    private func bridgeAssertPropertyResult(for request: InspectorMCPAssertPropertyRequest) throws -> InspectorMCPAssertPropertyResult {
+        let expected = try bridgeAssertionValue(from: request)
+        let result = try Inspector.bridgeAssertProperty(
+            .init(rawValue: request.handle),
+            property: bridgeAssertableProperty(from: request.property),
+            expected: expected
+        )
+        return InspectorMCPAssertPropertyResult(
+            handle: result.handle.rawValue,
+            property: wireAssertableProperty(from: result.property),
+            passed: result.passed,
+            actualBool: result.actualBool,
+            actualNumber: result.actualNumber,
+            actualString: result.actualString,
+            message: result.message
+        )
+    }
+
+    private func bridgeAssertVisibleResult(for request: InspectorMCPAssertVisibleRequest) throws -> InspectorMCPAssertVisibleResult {
+        let result = try Inspector.bridgeAssertVisible(.init(rawValue: request.handle))
+        return InspectorMCPAssertVisibleResult(
+            handle: result.handle.rawValue,
+            passed: result.passed,
+            isHidden: result.isHidden,
+            message: result.message
+        )
+    }
+
+    private func bridgeAssertHierarchyContainsResult(for request: InspectorMCPAssertHierarchyContainsRequest) throws -> InspectorMCPAssertHierarchyContainsResult {
+        let query = InspectorBridgeQueryRequest(
+            nodeKind: request.nodeKind.flatMap(bridgeNodeKind(from:)),
+            classNameContains: request.classNameContains,
+            displayNameContains: request.displayNameContains,
+            elementNameContains: request.elementNameContains,
+            accessibilityIdentifierEquals: request.accessibilityIdentifierEquals,
+            isInternalView: request.isInternalView,
+            isSystemContainer: request.isSystemContainer
+        )
+        let result = try Inspector.bridgeAssertHierarchyContains(query, minimumCount: request.minimumCount)
+        return InspectorMCPAssertHierarchyContainsResult(
+            passed: result.passed,
+            matchCount: result.matchCount,
+            minimumCount: result.minimumCount,
+            message: result.message
+        )
     }
 
     private func bridgePropertyListResult(for request: InspectorMCPPropertyListRequest) throws -> InspectorMCPPropertyListResult {
@@ -483,6 +621,8 @@ private final class InspectorMCPHTTPServer {
             ),
             isHidden: node.isHidden,
             isUserInteractionEnabled: node.isUserInteractionEnabled,
+            isInternalView: node.isInternalView,
+            isSystemContainer: node.isSystemContainer,
             depth: node.depth,
             parentHandle: node.parentHandle?.rawValue,
             childHandles: node.childHandles.map(\.rawValue),
@@ -511,6 +651,8 @@ private final class InspectorMCPHTTPServer {
             return .init(code: .staleHandle, message: "Handle is stale; issue a fresh query", details: .empty)
         case .stalePropertyReference:
             return .init(code: .stalePropertyReference, message: "Property reference is stale; list properties again", details: .empty)
+        case .staleActionReference:
+            return .init(code: .staleActionReference, message: "Action reference is stale; list actions again", details: .empty)
         case let .snapshotUnavailable(reason):
             return .init(
                 code: .snapshotUnavailable,
@@ -576,6 +718,49 @@ private final class InspectorMCPHTTPServer {
         }
     }
 
+    private func wireActionKind(from value: InspectorBridgeActionKind) -> InspectorMCPActionKind {
+        switch value {
+        case .inspect:
+            return .inspect
+        case .showHighlight:
+            return .showHighlight
+        case .hideHighlight:
+            return .hideHighlight
+        }
+    }
+
+    private func bridgeAssertableProperty(from value: InspectorMCPAssertableProperty) -> InspectorBridgeAssertableProperty {
+        switch value {
+        case .className: return .className
+        case .displayName: return .displayName
+        case .elementName: return .elementName
+        case .accessibilityIdentifier: return .accessibilityIdentifier
+        case .backingObjectType: return .backingObjectType
+        case .isHidden: return .isHidden
+        case .isUserInteractionEnabled: return .isUserInteractionEnabled
+        case .isInternalView: return .isInternalView
+        case .isSystemContainer: return .isSystemContainer
+        case .childCount: return .childCount
+        case .depth: return .depth
+        }
+    }
+
+    private func wireAssertableProperty(from value: InspectorBridgeAssertableProperty) -> InspectorMCPAssertableProperty {
+        switch value {
+        case .className: return .className
+        case .displayName: return .displayName
+        case .elementName: return .elementName
+        case .accessibilityIdentifier: return .accessibilityIdentifier
+        case .backingObjectType: return .backingObjectType
+        case .isHidden: return .isHidden
+        case .isUserInteractionEnabled: return .isUserInteractionEnabled
+        case .isInternalView: return .isInternalView
+        case .isSystemContainer: return .isSystemContainer
+        case .childCount: return .childCount
+        case .depth: return .depth
+        }
+    }
+
     private func wirePropertySection(from value: InspectorBridgeEditablePropertySection) -> InspectorMCPEditablePropertySection {
         InspectorMCPEditablePropertySection(
             title: value.title,
@@ -637,6 +822,26 @@ private final class InspectorMCPHTTPServer {
             return .string(request.stringValue)
         }
         return .selection(request.selectionIndex)
+    }
+
+    private func bridgeAssertionValue(from request: InspectorMCPAssertPropertyRequest) throws -> InspectorBridgeAssertionValue {
+        let populatedValues = [
+            request.boolValue != nil,
+            request.numberValue != nil,
+            request.stringValue != nil
+        ].filter { $0 }
+
+        guard populatedValues.count == 1 else {
+            throw InspectorBridgeError.invalidPropertyValue("exactly one assertion value field must be provided")
+        }
+
+        if let boolValue = request.boolValue {
+            return .bool(boolValue)
+        }
+        if let numberValue = request.numberValue {
+            return .number(numberValue)
+        }
+        return .string(request.stringValue)
     }
 
     private func wireSnapshotReason(from value: InspectorBridgeSnapshotUnavailableReason) -> InspectorMCPSnapshotUnavailableReason {

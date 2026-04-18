@@ -12,6 +12,11 @@ final class InspectorMCPWireTests: XCTestCase {
         XCTAssertEqual(InspectorMCPBridgeEndpoint.resolvePath, "/resolve")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.snapshotPath, "/snapshot")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.tapPath, "/tap")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.actionsPath, "/actions")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.performActionPath, "/perform-action")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.assertPropertyPath, "/assert-property")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.assertVisiblePath, "/assert-visible")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.assertHierarchyContainsPath, "/assert-hierarchy-contains")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.propertiesPath, "/properties")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.setPropertyPath, "/set-property")
     }
@@ -21,6 +26,7 @@ final class InspectorMCPWireTests: XCTestCase {
             status: .active,
             bridgeEnabled: true,
             inspectorStarted: true,
+            keyboardWindowsFiltered: false,
             bundleIdentifier: "am.pedro.Inspector",
             operations: [.query, .resolve, .snapshot]
         )
@@ -42,6 +48,8 @@ final class InspectorMCPWireTests: XCTestCase {
             frame: .init(x: 10, y: 20, width: 30, height: 40),
             isHidden: false,
             isUserInteractionEnabled: true,
+            isInternalView: false,
+            isSystemContainer: false,
             depth: 3,
             parentHandle: "parent-handle",
             childHandles: ["child-1", "child-2"],
@@ -79,6 +87,7 @@ final class InspectorMCPWireTests: XCTestCase {
             status: .active,
             bridgeEnabled: true,
             inspectorStarted: true,
+            keyboardWindowsFiltered: true,
             bundleIdentifier: "com.example",
             operations: [.query, .resolve, .snapshot],
             apiVersion: 2
@@ -179,6 +188,87 @@ final class InspectorMCPWireTests: XCTestCase {
 
     func testTapPathMatchesRouteConstant() {
         XCTAssertEqual(InspectorMCPBridgeEndpoint.tapPath, "/tap")
+    }
+
+    func testListActionsOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.listActions))
+    }
+
+    func testPerformActionOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.performAction))
+    }
+
+    func testActionListRequestRoundTrips() throws {
+        let request = InspectorMCPActionListRequest(handle: "HANDLE-A")
+        let decoded = try roundTrip(request)
+        XCTAssertEqual(decoded, request)
+    }
+
+    func testPerformActionRequestRoundTrips() throws {
+        let request = InspectorMCPPerformActionRequest(actionRef: "ACTION-1")
+        let decoded = try roundTrip(request)
+        XCTAssertEqual(decoded, request)
+    }
+
+    func testActionListResultRoundTrips() throws {
+        let result = InspectorMCPActionListResult(
+            handle: "HANDLE-A",
+            expiresAt: Date(timeIntervalSince1970: 1_713_353_600),
+            actions: [
+                .init(actionRef: "ACTION-1", title: "Inspect Attributes", kind: .inspect),
+                .init(actionRef: "ACTION-2", title: "Highlight Views", kind: .showHighlight)
+            ]
+        )
+        let decoded = try roundTrip(result)
+        XCTAssertEqual(decoded, result)
+    }
+
+    func testPerformActionResultRoundTrips() throws {
+        let result = InspectorMCPPerformActionResult(actionRef: "ACTION-3", performed: true, refreshRecommended: true)
+        let decoded = try roundTrip(result)
+        XCTAssertEqual(decoded, result)
+    }
+
+    func testAssertPropertyOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.assertProperty))
+    }
+
+    func testAssertVisibleOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.assertVisible))
+    }
+
+    func testAssertHierarchyContainsOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.assertHierarchyContains))
+    }
+
+    func testAssertPropertyRequestRoundTrips() throws {
+        let request = InspectorMCPAssertPropertyRequest(handle: "HANDLE-ASSERT", property: .isHidden, boolValue: false)
+        XCTAssertEqual(try roundTrip(request), request)
+    }
+
+    func testAssertVisibleRequestRoundTrips() throws {
+        let request = InspectorMCPAssertVisibleRequest(handle: "HANDLE-VISIBLE")
+        XCTAssertEqual(try roundTrip(request), request)
+    }
+
+    func testAssertHierarchyContainsRequestRoundTrips() throws {
+        let request = InspectorMCPAssertHierarchyContainsRequest(classNameContains: "UIButton", minimumCount: 2)
+        XCTAssertEqual(try roundTrip(request), request)
+    }
+
+    func testAssertPropertyResultRoundTrips() throws {
+        let result = InspectorMCPAssertPropertyResult(handle: "HANDLE", property: .className, passed: true, actualString: "UIButton", message: "className is UIButton")
+        XCTAssertEqual(try roundTrip(result), result)
+    }
+
+    func testAssertVisibleResultRoundTrips() throws {
+        let result = InspectorMCPAssertVisibleResult(handle: "HANDLE", passed: true, isHidden: false, message: "node is visible")
+        XCTAssertEqual(try roundTrip(result), result)
+    }
+
+    func testAssertHierarchyContainsResultRoundTrips() throws {
+        let result = InspectorMCPAssertHierarchyContainsResult(passed: true, matchCount: 2, minimumCount: 1, message: "hierarchy matched 2 node(s)")
+        XCTAssertEqual(try roundTrip(result), result)
     }
 
     func testListPropertiesOperationIsInAllCases() {

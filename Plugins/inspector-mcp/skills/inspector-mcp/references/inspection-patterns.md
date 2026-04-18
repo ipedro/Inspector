@@ -7,7 +7,8 @@ Use this when the server is already registered and the task is live UI inspectio
 Use tools in this order:
 1. `query`
 2. `resolve`
-3. `snapshot`
+3. `list_actions` / `list_properties`
+4. `snapshot`
 
 Reason:
 - `query` finds candidates and returns handles
@@ -151,6 +152,38 @@ Common failures:
 - `internalFailure` with a tappability message → the target is not a supported button-like control for MVP
 
 Because mutation can immediately change the hierarchy, prefer a fresh `query` after successful taps before chaining the next action.
+
+## Semantic actions (v2.5)
+
+Use `list_actions` when you want to discover what semantic operations are currently available for a node.
+
+Request:
+
+```json
+{"handle":"HANDLE"}
+```
+
+Response:
+
+```json
+{"handle":"HANDLE","expiresAt":"...","actions":[{"actionRef":"ACTION","title":"Inspect Attributes","kind":"inspect"}]}
+```
+
+Then invoke one with:
+
+```json
+{"actionRef":"ACTION"}
+```
+
+Current MVP action kinds:
+- `inspect`
+- `showHighlight`
+- `hideHighlight`
+
+Important semantics:
+- action refs are ephemeral and snapshot-scoped
+- after a successful `perform_action`, rediscover actions before the next operation
+- actions reuse Inspector's existing semantic action model; this is not coordinate tapping or generic simulator orchestration
 
 ## Property mutation (v2.4)
 
