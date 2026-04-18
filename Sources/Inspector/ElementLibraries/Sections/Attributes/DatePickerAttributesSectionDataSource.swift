@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -45,68 +46,96 @@ extension DefaultElementAttributesLibrary {
             case minuteInterval = "Interval"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let datePicker else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .datePickerStyle:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UIDatePickerStyle.allCases.map(\.description),
-                        selectedIndex: { UIDatePickerStyle.allCases.firstIndex(of: datePicker.datePickerStyle) }
-                    ) {
-                        guard let newIndex = $0 else {
-                            return
+                    .init(
+                        descriptor: .init(
+                            id: "date-picker-style",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: UIDatePickerStyle.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(UIDatePickerStyle.allCases.firstIndex(of: datePicker.datePickerStyle)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
+
+                            let datePickerStyle = UIDatePickerStyle.allCases[newIndex]
+
+                            if
+                                datePicker.datePickerMode == .countDownTimer,
+                                datePickerStyle == .inline || datePickerStyle == .compact
+                            {
+                                datePicker.datePickerMode = .dateAndTime
+                            }
+
+                            datePicker.preferredDatePickerStyle = datePickerStyle
                         }
-
-                        let datePickerStyle = UIDatePickerStyle.allCases[newIndex]
-
-                        if
-                            datePicker.datePickerMode == .countDownTimer,
-                            datePickerStyle == .inline || datePickerStyle == .compact
-                        {
-                            datePicker.datePickerMode = .dateAndTime
-                        }
-
-                        datePicker.preferredDatePickerStyle = datePickerStyle
-                    }
+                    )
 
                 case .datePickerMode:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UIDatePicker.Mode.allCases.map(\.description),
-                        selectedIndex: { UIDatePicker.Mode.allCases.firstIndex(of: datePicker.datePickerMode) }
-                    ) {
-                        guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: .init(
+                            id: "date-picker-mode",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: UIDatePicker.Mode.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(UIDatePicker.Mode.allCases.firstIndex(of: datePicker.datePickerMode)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
 
-                        let datePickerMode = UIDatePicker.Mode.allCases[newIndex]
+                            let datePickerMode = UIDatePicker.Mode.allCases[newIndex]
 
-                        if
-                            datePickerMode == .countDownTimer,
-                            datePicker.datePickerStyle == .inline || datePicker.datePickerStyle == .compact
-                        {
-                            return
+                            if
+                                datePickerMode == .countDownTimer,
+                                datePicker.datePickerStyle == .inline || datePicker.datePickerStyle == .compact
+                            {
+                                return
+                            }
+
+                            datePicker.datePickerMode = datePickerMode
                         }
-
-                        datePicker.datePickerMode = datePickerMode
-                    }
+                    )
 
                 case .locale:
                     nil
 
                 case .minuteInterval:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: validMinuteIntervals.map { "\($0) \($0 == 1 ? "minute" : "minutes")" },
-                        selectedIndex: { self.validMinuteIntervals.firstIndex(of: datePicker.minuteInterval) }
-                    ) {
-                        guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: .init(
+                            id: "minute-interval",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: validMinuteIntervals.enumerated().map {
+                                    .init(id: "\($0.offset)", title: "\($0.element) \($0.element == 1 ? "minute" : "minutes")")
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(self.validMinuteIntervals.firstIndex(of: datePicker.minuteInterval)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
 
-                        let minuteInterval = self.validMinuteIntervals[newIndex]
+                            let minuteInterval = self.validMinuteIntervals[newIndex]
 
-                        datePicker.minuteInterval = minuteInterval
-                    }
+                            datePicker.minuteInterval = minuteInterval
+                        }
+                    )
                 }
             }
         }

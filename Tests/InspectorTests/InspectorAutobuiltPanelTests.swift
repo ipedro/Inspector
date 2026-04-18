@@ -319,5 +319,24 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(tabBar.barTintColor, .purple)
     }
 
+    func testDatePickerAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let datePicker = UIDatePicker(frame: .zero)
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.DatePickerAttributesSectionDataSource(with: datePicker)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 3)
+        XCTAssertTrue(bindings.allSatisfy { $0.descriptor.kind == .options })
+
+        bindings[0].apply(.selection(0))
+        bindings[1].apply(.selection(0))
+        bindings[2].apply(.selection(1))
+
+        XCTAssertEqual(datePicker.preferredDatePickerStyle, UIDatePickerStyle.allCases[0])
+        XCTAssertEqual(datePicker.datePickerMode, UIDatePicker.Mode.allCases[0])
+        XCTAssertEqual(datePicker.minuteInterval, 2)
+    }
+
 }
 #endif
