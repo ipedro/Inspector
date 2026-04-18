@@ -41,6 +41,22 @@ final class InspectorPanelMacroTests: XCTestCase {
                         )
                     ]
                 )
+                func makeInspectorSectionBinding() -> Inspector.InspectorSectionBinding {
+                    Inspector.InspectorSectionBinding(
+                        descriptor: Self.inspectorSectionDescriptor,
+                        fields: [
+                            .init(
+                                descriptor: Self.inspectorSectionDescriptor.fields[0],
+                                read: { .color(element.borderColor) },
+                                write: { value in
+                                    guard case let .color(newValue) = value, let newValue else { return }
+                                    element.borderColor = newValue
+                                },
+                                refreshHint: .reloadInspector
+                            )
+                        ]
+                    )
+                }
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "My Card View"
@@ -120,6 +136,19 @@ final class InspectorPanelMacroTests: XCTestCase {
                         )
                     ]
                 )
+                func makeInspectorSectionBinding() -> Inspector.InspectorSectionBinding {
+                    Inspector.InspectorSectionBinding(
+                        descriptor: Self.inspectorSectionDescriptor,
+                        fields: [
+                            .init(
+                                descriptor: Self.inspectorSectionDescriptor.fields[0],
+                                read: { .none },
+                                write: nil,
+                                refreshHint: .none
+                            )
+                        ]
+                    )
+                }
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "Playground"
@@ -196,6 +225,22 @@ final class InspectorPanelMacroTests: XCTestCase {
                         )
                     ]
                 )
+                func makeInspectorSectionBinding() -> Inspector.InspectorSectionBinding {
+                    Inspector.InspectorSectionBinding(
+                        descriptor: Self.inspectorSectionDescriptor,
+                        fields: [
+                            .init(
+                                descriptor: Self.inspectorSectionDescriptor.fields[0],
+                                read: { .number(element.value) },
+                                write: { value in
+                                    guard case let .number(newValue) = value else { return }
+                                    element.value = newValue
+                                },
+                                refreshHint: .reloadInspector
+                            )
+                        ]
+                    )
+                }
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "Slider"
@@ -290,6 +335,14 @@ final class InspectorPanelMacroTests: XCTestCase {
 
                     ]
                 )
+                func makeInspectorSectionBinding() -> Inspector.InspectorSectionBinding {
+                    Inspector.InspectorSectionBinding(
+                        descriptor: Self.inspectorSectionDescriptor,
+                        fields: [
+
+                        ]
+                    )
+                }
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "Test"

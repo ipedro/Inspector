@@ -114,6 +114,7 @@ public struct InspectorPanelMacro: MemberMacro {
             title: title,
             properties: properties
         )
+        let sectionBindingSource = generateSectionBindingSource(properties: properties)
         let inspectorLibrarySource = generateInspectorLibrarySource(className: className)
 
         // 5. Wrap both in #if INSPECTOR_DEBUGGING using IfConfigDeclSyntax
@@ -127,6 +128,7 @@ public struct InspectorPanelMacro: MemberMacro {
                     ),
                     elements: .decls(MemberBlockItemListSyntax([
                         MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: sectionDescriptorSource)),
+                        MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: sectionBindingSource)),
                         MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: sectionDataSourceSource)),
                         MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: inspectorLibrarySource))
                     ]))
@@ -195,6 +197,23 @@ public struct InspectorPanelMacro: MemberMacro {
         """
     }
 
+    private static func generateSectionBindingSource(properties: [InspectableProperty]) -> String {
+        let lines = properties.enumerated().map { index, prop in
+            generateBindingField(index: index, prop: prop)
+        }.joined(separator: ",\n")
+
+        return """
+        func makeInspectorSectionBinding() -> Inspector.InspectorSectionBinding {
+            Inspector.InspectorSectionBinding(
+                descriptor: Self.inspectorSectionDescriptor,
+                fields: [
+        \(lines)
+                ]
+            )
+        }
+        """
+    }
+
     private static func generateInspectorLibrarySource(className: String) -> String {
         return """
         struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
@@ -229,6 +248,185 @@ public struct InspectorPanelMacro: MemberMacro {
                     presentation: \(descriptor.presentation)
                 )
         """
+    }
+
+    private static func generateBindingField(index: Int, prop: InspectableProperty) -> String {
+        let n = prop.name
+        let descriptorRef = "Self.inspectorSectionDescriptor.fields[\(index)]"
+
+        switch prop.descriptor {
+        case .switch:
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .bool(element.\(n)) },
+                    write: { value in
+                        guard case let .bool(newValue) = value else { return }
+                        element.\(n) = newValue
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+        case .colorPicker:
+            if prop.isOptional {
+                return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .color(element.\(n)) },
+                    write: { value in
+                        guard case let .color(newValue) = value else { return }
+                        element.\(n) = newValue
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+            } else {
+                return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .color(element.\(n)) },
+                    write: { value in
+                        guard case let .color(newValue) = value, let newValue else { return }
+                        element.\(n) = newValue
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+            }
+        case .stepper:
+            let readExpr = prop.typeName == "CGFloat" ? ".number(Double(element.\(n)))" : ".number(element.\(n))"
+            let writeExpr = prop.typeName == "CGFloat"
+                ? "element.\(n) = CGFloat(newValue)"
+                : "element.\(n) = newValue"
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { \(readExpr) },
+                    write: { value in
+                        guard case let .number(newValue) = value else { return }
+                        \(writeExpr)
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+        case .textField, .textView:
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .string(element.\(n)) },
+                    write: { value in
+                        guard case let .string(newValue) = value else { return }
+                        element.\(n) = newValue ?? ""
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+        case .cgRect:
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .rect(element.\(n)) },
+                    write: { value in
+                        guard case let .rect(newValue) = value else { return }
+                        element.\(n) = newValue
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+        case .cgPoint:
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .point(element.\(n)) },
+                    write: { value in
+                        guard case let .point(newValue) = value else { return }
+                        element.\(n) = newValue
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+        case .cgSize:
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .size(element.\(n)) },
+                    write: { value in
+                        guard case let .size(newValue) = value else { return }
+                        element.\(n) = newValue
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+        case .uiOffset:
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .offset(element.\(n)) },
+                    write: { value in
+                        guard case let .offset(newValue) = value else { return }
+                        element.\(n) = newValue
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+        case .edgeInsets:
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .edgeInsets(element.\(n)) },
+                    write: { value in
+                        guard case let .edgeInsets(newValue) = value else { return }
+                        element.\(n) = newValue
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+        case .directionalInsets:
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .directionalEdgeInsets(element.\(n)) },
+                    write: { value in
+                        guard case let .directionalEdgeInsets(newValue) = value else { return }
+                        element.\(n) = newValue
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+        case .optionsList, .textButtonGroup:
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .selection(element.\(n)) },
+                    write: { value in
+                        guard case let .selection(newValue) = value else { return }
+                        element.\(n) = newValue
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+        case .imagePicker:
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .image(element.\(n)) },
+                    write: { value in
+                        guard case let .image(newValue) = value else { return }
+                        element.\(n) = newValue
+                    },
+                    refreshHint: .reloadInspector
+                )
+            """
+        case .group, .separator, .infoNote, .subpanel:
+            return """
+                .init(
+                    descriptor: \(descriptorRef),
+                    read: { .none },
+                    write: nil,
+                    refreshHint: .none
+                )
+            """
+        }
     }
 
     private static func contractDescriptor(for prop: InspectableProperty) -> (kind: String, value: String, editability: String, presentation: String) {
