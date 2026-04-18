@@ -19,6 +19,10 @@ final class InspectorMCPWireTests: XCTestCase {
         XCTAssertEqual(InspectorMCPBridgeEndpoint.assertHierarchyContainsPath, "/assert-hierarchy-contains")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.captureStatePath, "/capture-state")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.diffStatesPath, "/diff-states")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.saveScenarioPath, "/save-scenario")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.scenariosPath, "/scenarios")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.deleteScenarioPath, "/delete-scenario")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.diffScenarioPath, "/diff-scenario")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.propertiesPath, "/properties")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.setPropertyPath, "/set-property")
     }
@@ -307,6 +311,30 @@ final class InspectorMCPWireTests: XCTestCase {
             ]
         )
         XCTAssertEqual(try roundTrip(result), result)
+    }
+
+    func testScenarioOperationsAreInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.saveScenario))
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.listScenarios))
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.deleteScenario))
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.diffScenario))
+    }
+
+    func testScenarioRequestsRoundTrip() throws {
+        XCTAssertEqual(try roundTrip(InspectorMCPSaveScenarioRequest(name: "baseline")), InspectorMCPSaveScenarioRequest(name: "baseline"))
+        XCTAssertEqual(try roundTrip(InspectorMCPDeleteScenarioRequest(name: "baseline")), InspectorMCPDeleteScenarioRequest(name: "baseline"))
+        XCTAssertEqual(try roundTrip(InspectorMCPDiffScenarioRequest(name: "baseline")), InspectorMCPDiffScenarioRequest(name: "baseline"))
+    }
+
+    func testScenarioResultsRoundTrip() throws {
+        XCTAssertEqual(
+            try roundTrip(InspectorMCPScenarioListResult(scenarios: [.init(name: "baseline", createdAt: Date(timeIntervalSince1970: 1_713_353_600), nodeCount: 3)])),
+            InspectorMCPScenarioListResult(scenarios: [.init(name: "baseline", createdAt: Date(timeIntervalSince1970: 1_713_353_600), nodeCount: 3)])
+        )
+        XCTAssertEqual(
+            try roundTrip(InspectorMCPScenarioDiff(name: "baseline", addedCount: 1, removedCount: 0, changedCount: 2, entries: [])),
+            InspectorMCPScenarioDiff(name: "baseline", addedCount: 1, removedCount: 0, changedCount: 2, entries: [])
+        )
     }
 
     func testListPropertiesOperationIsInAllCases() {

@@ -16,6 +16,10 @@ public enum InspectorMCPBridgeEndpoint {
     public static let assertHierarchyContainsPath = "/assert-hierarchy-contains"
     public static let captureStatePath = "/capture-state"
     public static let diffStatesPath = "/diff-states"
+    public static let saveScenarioPath = "/save-scenario"
+    public static let scenariosPath = "/scenarios"
+    public static let deleteScenarioPath = "/delete-scenario"
+    public static let diffScenarioPath = "/diff-scenario"
     public static let propertiesPath = "/properties"
     public static let setPropertyPath = "/set-property"
     public static let layersPath = "/layers"
@@ -36,6 +40,10 @@ public enum InspectorMCPOperation: String, Codable, CaseIterable {
     case assertHierarchyContains
     case captureState
     case diffStates
+    case saveScenario
+    case listScenarios
+    case deleteScenario
+    case diffScenario
     case listProperties
     case setProperty
     case layers
@@ -331,6 +339,30 @@ public struct InspectorMCPDiffStatesRequest: Codable, Equatable {
     public init(beforeRef: String, afterRef: String) {
         self.beforeRef = beforeRef
         self.afterRef = afterRef
+    }
+}
+
+public struct InspectorMCPSaveScenarioRequest: Codable, Equatable {
+    public let name: String
+
+    public init(name: String) {
+        self.name = name
+    }
+}
+
+public struct InspectorMCPDeleteScenarioRequest: Codable, Equatable {
+    public let name: String
+
+    public init(name: String) {
+        self.name = name
+    }
+}
+
+public struct InspectorMCPDiffScenarioRequest: Codable, Equatable {
+    public let name: String
+
+    public init(name: String) {
+        self.name = name
     }
 }
 
@@ -704,6 +736,42 @@ public struct InspectorMCPStateDiff: Codable, Equatable {
     }
 }
 
+public struct InspectorMCPSavedScenario: Codable, Equatable {
+    public let name: String
+    public let createdAt: Date
+    public let nodeCount: Int
+
+    public init(name: String, createdAt: Date, nodeCount: Int) {
+        self.name = name
+        self.createdAt = createdAt
+        self.nodeCount = nodeCount
+    }
+}
+
+public struct InspectorMCPScenarioListResult: Codable, Equatable {
+    public let scenarios: [InspectorMCPSavedScenario]
+
+    public init(scenarios: [InspectorMCPSavedScenario]) {
+        self.scenarios = scenarios
+    }
+}
+
+public struct InspectorMCPScenarioDiff: Codable, Equatable {
+    public let name: String
+    public let addedCount: Int
+    public let removedCount: Int
+    public let changedCount: Int
+    public let entries: [InspectorMCPStateDiffEntry]
+
+    public init(name: String, addedCount: Int, removedCount: Int, changedCount: Int, entries: [InspectorMCPStateDiffEntry]) {
+        self.name = name
+        self.addedCount = addedCount
+        self.removedCount = removedCount
+        self.changedCount = changedCount
+        self.entries = entries
+    }
+}
+
 public struct InspectorMCPLayerState: Codable, Equatable {
     public let name: String
     public let displayName: String
@@ -758,6 +826,7 @@ public enum InspectorMCPWireErrorCode: String, Codable {
     case stalePropertyReference
     case staleActionReference
     case staleStateReference
+    case unknownScenario
     case snapshotUnavailable
     case unsupportedTarget
     case invalidPropertyValue

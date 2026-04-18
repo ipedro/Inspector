@@ -35,7 +35,7 @@ final class InspectorMCPServerSession {
                         "name": "InspectorMCPServer",
                         "version": "2.0.0"
                     ],
-                    "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. For semantic actions, use list_actions before perform_action. For assertions, use assert_property / assert_visible / assert_hierarchy_contains. For state debugging, use capture_state before diff_states. For property mutation, use list_properties before set_property. Mutation tools can stale handles immediately, so issue a fresh query after UI changes."
+                    "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. For semantic actions, use list_actions before perform_action. For assertions, use assert_property / assert_visible / assert_hierarchy_contains. For state debugging, use capture_state before diff_states and save_scenario / diff_scenario for named baselines. For property mutation, use list_properties before set_property. Mutation tools can stale handles immediately, so issue a fresh query after UI changes."
                 ]
             )
         case "tools/list":
@@ -289,6 +289,57 @@ final class InspectorMCPServerSession {
                 ]
             ),
             toolDefinition(
+                name: "save_scenario",
+                description: "Capture the current semantic hierarchy as a named scenario baseline.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "name": ["type": "string"]
+                    ],
+                    "required": ["name"]
+                ]
+            ),
+            toolDefinition(
+                name: "list_scenarios",
+                description: "List saved semantic scenarios.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [:]
+                ]
+            ),
+            toolDefinition(
+                name: "delete_scenario",
+                description: "Delete a saved semantic scenario by name.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "name": ["type": "string"]
+                    ],
+                    "required": ["name"]
+                ],
+                annotations: [
+                    "readOnlyHint": false,
+                    "destructiveHint": true,
+                    "idempotentHint": false,
+                    "openWorldHint": true
+                ]
+            ),
+            toolDefinition(
+                name: "diff_scenario",
+                description: "Diff the current live semantic hierarchy against a saved scenario baseline.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "name": ["type": "string"]
+                    ],
+                    "required": ["name"]
+                ]
+            ),
+            toolDefinition(
                 name: "list_properties",
                 description: "List editable properties for a node by reusing Inspector's existing panel property model. Returns opaque propertyRef values for later set_property calls.",
                 schema: [
@@ -532,6 +583,50 @@ final class InspectorMCPServerSession {
                 for: result,
                 successText: { diff in
                     "Diff completed with \(diff.addedCount) added, \(diff.removedCount) removed, and \(diff.changedCount) changed node(s)."
+                }
+            )
+        case "save_scenario":
+            let request = try JSONObject.decode(
+                InspectorMCPSaveScenarioRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.saveScenario(request)
+            return try toolResult(
+                for: result,
+                successText: { scenario in
+                    "Saved scenario \(scenario.name) with \(scenario.nodeCount) node(s)."
+                }
+            )
+        case "list_scenarios":
+            let result = try await bridgeClient.listScenarios()
+            return try toolResult(
+                for: result,
+                successText: { scenarios in
+                    "Listed \(scenarios.scenarios.count) scenario(s)."
+                }
+            )
+        case "delete_scenario":
+            let request = try JSONObject.decode(
+                InspectorMCPDeleteScenarioRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.deleteScenario(request)
+            return try toolResult(
+                for: result,
+                successText: { scenario in
+                    "Deleted scenario \(scenario.name)."
+                }
+            )
+        case "diff_scenario":
+            let request = try JSONObject.decode(
+                InspectorMCPDiffScenarioRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.diffScenario(request)
+            return try toolResult(
+                for: result,
+                successText: { diff in
+                    "Scenario diff completed for \(diff.name) with \(diff.changedCount) changed node(s)."
                 }
             )
         case "list_properties":

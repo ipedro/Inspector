@@ -103,6 +103,7 @@ Tool order matters:
 2. `resolve`
 3. `list_actions` / `list_properties`
 4. `snapshot`
+5. `capture_state` / `diff_states` / `save_scenario` / `diff_scenario` when debugging semantic state drift
 
 Start narrow. Prefer:
 - `accessibilityIdentifierEquals`
@@ -191,6 +192,20 @@ MVP limitations:
 - property refs are ephemeral and should be rediscovered after any successful mutation
 - unsupported property kinds and malformed values fail fast server-side
 
+For named semantic baselines, use:
+
+```json
+{"name":"quicktype-baseline"}
+```
+
+with:
+- `save_scenario` → capture the current live hierarchy under a stable name
+- `list_scenarios` → enumerate saved baselines
+- `diff_scenario` → compare the current hierarchy against that named baseline
+- `delete_scenario` → remove obsolete baselines
+
+`capture_state` / `diff_states` are still better for short-lived ad-hoc before/after comparisons inside one session. `save_scenario` is for longer-lived named references such as “clean screen”, “keyboard shown”, or “quicktype visible”.
+
 ### 5a. Controlling view-hierarchy layers (v2.2)
 
 Call `list_layers` to see which built-in highlight layers are populated on the current screen, along with their active state:
@@ -256,6 +271,7 @@ Current constraints:
 - v2.3+: `tap` adds exact-handle semantic activation for button-like `UIControl`s
 - v2.4+: `list_properties` + `set_property` add typed property mutation by reusing Inspector property handlers
 - v2.5+: `list_actions` + `perform_action` add generic semantic action discovery/invocation over Inspector's existing action model
+- v2.6+: `save_scenario` / `list_scenarios` / `delete_scenario` / `diff_scenario` add named semantic baselines on top of state capture
 
 If startup says the endpoint is occupied by the wrong app:
 - shut down the simulator or other app
@@ -301,3 +317,4 @@ Read these only when needed:
 - **v2.3 (2026-04-18)** — New `tap` tool. Additive over v2.2. Reconnect clients to refresh `tools/list`. `tap` is semantic `UIControl` activation, not synthetic touch injection.
 - **v2.4 (2026-04-18)** — New `list_properties` and `set_property` tools. Additive over v2.3. Reconnect clients to refresh `tools/list`. Property refs are ephemeral and should be rediscovered after successful mutations.
 - **v2.5 (2026-04-18)** — New `list_actions` and `perform_action` tools. Additive over v2.4. Reconnect clients to refresh `tools/list`. Action refs are ephemeral and should be rediscovered after successful actions.
+- **v2.6 (2026-04-18)** — New `save_scenario`, `list_scenarios`, `delete_scenario`, and `diff_scenario` tools. Additive over v2.5. Reconnect clients to refresh `tools/list`. Named scenarios are in-memory semantic baselines and do not survive bridge restarts.

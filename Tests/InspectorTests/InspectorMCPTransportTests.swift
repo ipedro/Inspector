@@ -480,6 +480,46 @@ final class InspectorMCPTransportTests: XCTestCase {
         }
     }
 
+    func testScenarioToolsManageNamedBaseline() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let saveResponse = try await postJSON(
+            path: "/save-scenario",
+            body: ["name": "baseline"]
+        )
+        XCTAssertEqual(saveResponse.statusCode, 200)
+        let savePayload = try unpackSuccessEnvelope(from: saveResponse.body)
+        XCTAssertEqual(savePayload["name"] as? String, "baseline")
+
+        let listResponse = try await postJSON(path: "/scenarios", body: [:])
+        let listPayload = try unpackSuccessEnvelope(from: listResponse.body)
+        let scenarios = try XCTUnwrap(listPayload["scenarios"] as? [[String: Any]])
+        XCTAssertTrue(scenarios.contains { $0["name"] as? String == "baseline" })
+
+        let handle = try await queryHandle(accessibilityIdentifier: "MCP Tap Smoke Button")
+        let listPropertiesResponse = try await postJSON(
+            path: "/properties",
+            body: ["handle": handle, "panel": "attributes", "includeReadOnly": false]
+        )
+        let propertyPayload = try unpackSuccessEnvelope(from: listPropertiesResponse.body)
+        let sections = try XCTUnwrap(propertyPayload["sections"] as? [[String: Any]])
+        let propertyRef = try XCTUnwrap(findPropertyRef(in: sections, titled: "Hidden"))
+        _ = try await postJSON(path: "/set-property", body: ["propertyRef": propertyRef, "boolValue": true])
+
+        let diffResponse = try await postJSON(path: "/diff-scenario", body: ["name": "baseline"])
+        let diffPayload = try unpackSuccessEnvelope(from: diffResponse.body)
+        XCTAssertGreaterThanOrEqual(diffPayload["changedCount"] as? Int ?? 0, 1)
+
+        let deleteResponse = try await postJSON(path: "/delete-scenario", body: ["name": "baseline"])
+        XCTAssertEqual(deleteResponse.statusCode, 200)
+
+        addTeardownBlock {
+            try? await self.restoreHidden(accessibilityIdentifier: "MCP Tap Smoke Button")
+        }
+    }
+
     func testListPropertiesAndSetPropertyMutateSelectionProperty() async throws {
         _ = try await pollHealth(timeout: 5) { payload in
             payload["status"] as? String == "active"

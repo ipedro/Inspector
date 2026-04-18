@@ -51,7 +51,7 @@ final class InspectorMCPServerTests: XCTestCase {
         let result = try XCTUnwrap(response["result"] as? [String: Any])
         let tools = try XCTUnwrap(result["tools"] as? [[String: Any]])
 
-        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "snapshot", "inspect", "tap", "list_actions", "perform_action", "assert_property", "assert_visible", "assert_hierarchy_contains", "capture_state", "diff_states", "list_properties", "set_property", "list_layers", "toggle_layer"])
+        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "snapshot", "inspect", "tap", "list_actions", "perform_action", "assert_property", "assert_visible", "assert_hierarchy_contains", "capture_state", "diff_states", "save_scenario", "list_scenarios", "delete_scenario", "diff_scenario", "list_properties", "set_property", "list_layers", "toggle_layer"])
     }
 
     func testToolsCallQueryReturnsStructuredContentFromBridgeResult() async throws {
@@ -452,6 +452,10 @@ final class InspectorMCPServerTests: XCTestCase {
         let tools = try XCTUnwrap(result["tools"] as? [[String: Any]])
         XCTAssertNotNil(tools.first { ($0["name"] as? String) == "capture_state" })
         XCTAssertNotNil(tools.first { ($0["name"] as? String) == "diff_states" })
+        XCTAssertNotNil(tools.first { ($0["name"] as? String) == "save_scenario" })
+        XCTAssertNotNil(tools.first { ($0["name"] as? String) == "list_scenarios" })
+        XCTAssertNotNil(tools.first { ($0["name"] as? String) == "delete_scenario" })
+        XCTAssertNotNil(tools.first { ($0["name"] as? String) == "diff_scenario" })
     }
 
     func testToolsCallAssertPropertyForwardsToBridgeClient() async throws {
@@ -521,6 +525,31 @@ final class InspectorMCPServerTests: XCTestCase {
         let result = try XCTUnwrap(object?["result"] as? [String: Any])
         XCTAssertEqual(result["isError"] as? Bool, false)
         XCTAssertEqual(mock.lastDiffStatesRequest?.beforeRef, "A")
+    }
+
+    func testToolsCallScenarioOperationsForwardToBridgeClient() async throws {
+        let mock = MockBridgeClient(
+            saveScenarioResult: .success(.init(name: "baseline", createdAt: .distantPast, nodeCount: 2)),
+            listScenariosResult: .success(.init(scenarios: [.init(name: "baseline", createdAt: .distantPast, nodeCount: 2)])),
+            deleteScenarioResult: .success(.init(name: "baseline", createdAt: .distantPast, nodeCount: 2)),
+            diffScenarioResult: .success(.init(name: "baseline", addedCount: 0, removedCount: 0, changedCount: 1, entries: []))
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+
+        let save = try await session.handleMessage(Data(#"{"jsonrpc":"2.0","id":27,"method":"tools/call","params":{"name":"save_scenario","arguments":{"name":"baseline"}}}"#.utf8))
+        XCTAssertNotNil(save)
+        XCTAssertEqual(mock.lastSaveScenarioRequest?.name, "baseline")
+
+        let list = try await session.handleMessage(Data(#"{"jsonrpc":"2.0","id":28,"method":"tools/call","params":{"name":"list_scenarios","arguments":{}}}"#.utf8))
+        XCTAssertNotNil(list)
+
+        let delete = try await session.handleMessage(Data(#"{"jsonrpc":"2.0","id":29,"method":"tools/call","params":{"name":"delete_scenario","arguments":{"name":"baseline"}}}"#.utf8))
+        XCTAssertNotNil(delete)
+        XCTAssertEqual(mock.lastDeleteScenarioRequest?.name, "baseline")
+
+        let diff = try await session.handleMessage(Data(#"{"jsonrpc":"2.0","id":30,"method":"tools/call","params":{"name":"diff_scenario","arguments":{"name":"baseline"}}}"#.utf8))
+        XCTAssertNotNil(diff)
+        XCTAssertEqual(mock.lastDiffScenarioRequest?.name, "baseline")
     }
 
     func testToolsCallListPropertiesForwardsToBridgeClient() async throws {
@@ -725,6 +754,10 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     var assertHierarchyContainsResult: Result<InspectorMCPAssertHierarchyContainsResult, InspectorMCPTransportError>
     var captureStateResult: Result<InspectorMCPCapturedState, InspectorMCPTransportError>
     var diffStatesResult: Result<InspectorMCPStateDiff, InspectorMCPTransportError>
+    var saveScenarioResult: Result<InspectorMCPSavedScenario, InspectorMCPTransportError>
+    var listScenariosResult: Result<InspectorMCPScenarioListResult, InspectorMCPTransportError>
+    var deleteScenarioResult: Result<InspectorMCPSavedScenario, InspectorMCPTransportError>
+    var diffScenarioResult: Result<InspectorMCPScenarioDiff, InspectorMCPTransportError>
     var propertyListResult: Result<InspectorMCPPropertyListResult, InspectorMCPTransportError>
     var setPropertyResult: Result<InspectorMCPSetPropertyResult, InspectorMCPTransportError>
     var layersResult: Result<InspectorMCPLayersResult, InspectorMCPTransportError>
@@ -736,6 +769,9 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     private(set) var lastAssertVisibleRequest: InspectorMCPAssertVisibleRequest?
     private(set) var lastAssertHierarchyContainsRequest: InspectorMCPAssertHierarchyContainsRequest?
     private(set) var lastDiffStatesRequest: InspectorMCPDiffStatesRequest?
+    private(set) var lastSaveScenarioRequest: InspectorMCPSaveScenarioRequest?
+    private(set) var lastDeleteScenarioRequest: InspectorMCPDeleteScenarioRequest?
+    private(set) var lastDiffScenarioRequest: InspectorMCPDiffScenarioRequest?
     private(set) var lastPropertyListRequest: InspectorMCPPropertyListRequest?
     private(set) var lastSetPropertyRequest: InspectorMCPSetPropertyRequest?
     private(set) var lastToggleLayerRequest: InspectorMCPToggleLayerRequest?
@@ -809,6 +845,18 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         diffStatesResult: Result<InspectorMCPStateDiff, InspectorMCPTransportError> = .success(
             .init(beforeRef: "A", afterRef: "B", addedCount: 0, removedCount: 0, changedCount: 0, entries: [])
         ),
+        saveScenarioResult: Result<InspectorMCPSavedScenario, InspectorMCPTransportError> = .success(
+            .init(name: "baseline", createdAt: .distantPast, nodeCount: 1)
+        ),
+        listScenariosResult: Result<InspectorMCPScenarioListResult, InspectorMCPTransportError> = .success(
+            .init(scenarios: [])
+        ),
+        deleteScenarioResult: Result<InspectorMCPSavedScenario, InspectorMCPTransportError> = .success(
+            .init(name: "baseline", createdAt: .distantPast, nodeCount: 1)
+        ),
+        diffScenarioResult: Result<InspectorMCPScenarioDiff, InspectorMCPTransportError> = .success(
+            .init(name: "baseline", addedCount: 0, removedCount: 0, changedCount: 0, entries: [])
+        ),
         propertyListResult: Result<InspectorMCPPropertyListResult, InspectorMCPTransportError> = .success(
             .init(handle: "MOCK-HANDLE", expiresAt: .distantFuture, panel: .attributes, sections: [])
         ),
@@ -835,6 +883,10 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         self.assertHierarchyContainsResult = assertHierarchyContainsResult
         self.captureStateResult = captureStateResult
         self.diffStatesResult = diffStatesResult
+        self.saveScenarioResult = saveScenarioResult
+        self.listScenariosResult = listScenariosResult
+        self.deleteScenarioResult = deleteScenarioResult
+        self.diffScenarioResult = diffScenarioResult
         self.propertyListResult = propertyListResult
         self.setPropertyResult = setPropertyResult
         self.layersResult = layersResult
@@ -898,6 +950,25 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     func diffStates(_ request: InspectorMCPDiffStatesRequest) async throws -> Result<InspectorMCPStateDiff, InspectorMCPTransportError> {
         lastDiffStatesRequest = request
         return diffStatesResult
+    }
+
+    func saveScenario(_ request: InspectorMCPSaveScenarioRequest) async throws -> Result<InspectorMCPSavedScenario, InspectorMCPTransportError> {
+        lastSaveScenarioRequest = request
+        return saveScenarioResult
+    }
+
+    func listScenarios() async throws -> Result<InspectorMCPScenarioListResult, InspectorMCPTransportError> {
+        listScenariosResult
+    }
+
+    func deleteScenario(_ request: InspectorMCPDeleteScenarioRequest) async throws -> Result<InspectorMCPSavedScenario, InspectorMCPTransportError> {
+        lastDeleteScenarioRequest = request
+        return deleteScenarioResult
+    }
+
+    func diffScenario(_ request: InspectorMCPDiffScenarioRequest) async throws -> Result<InspectorMCPScenarioDiff, InspectorMCPTransportError> {
+        lastDiffScenarioRequest = request
+        return diffScenarioResult
     }
 
     func listProperties(_ request: InspectorMCPPropertyListRequest) async throws -> Result<InspectorMCPPropertyListResult, InspectorMCPTransportError> {

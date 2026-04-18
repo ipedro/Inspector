@@ -9,6 +9,7 @@ Use tools in this order:
 2. `resolve`
 3. `list_actions` / `list_properties`
 4. `snapshot`
+5. `capture_state` / `diff_states` / `save_scenario` / `diff_scenario` when comparing semantic states
 
 Reason:
 - `query` finds candidates and returns handles
@@ -223,3 +224,45 @@ Important semantics:
 - after a successful `set_property`, rediscover properties before the next mutation
 - only supported scalar/editor-like kinds are exposed in the MVP
 - unsupported property kinds or wrong value-field combinations fail server-side
+
+## Named semantic scenarios (v2.6)
+
+Use named scenarios when you want a reusable semantic baseline instead of one-off before/after refs.
+
+Capture a baseline:
+
+```json
+{"name":"quicktype-visible"}
+```
+
+with `save_scenario`.
+
+List baselines:
+
+```json
+{}
+```
+
+with `list_scenarios`.
+
+Compare the current live hierarchy against one baseline:
+
+```json
+{"name":"quicktype-visible"}
+```
+
+with `diff_scenario`.
+
+Delete a baseline when it is no longer useful:
+
+```json
+{"name":"quicktype-visible"}
+```
+
+with `delete_scenario`.
+
+Rules:
+- use `capture_state` / `diff_states` for short-lived, ad-hoc comparisons inside one workflow
+- use named scenarios for repeated checks like “clean state”, “keyboard shown”, or “after mutation”
+- scenarios are bridge-memory state, not persisted artifacts; bridge restarts clear them
+- if `diff_scenario` returns `unknownScenario`, recreate the baseline with `save_scenario`

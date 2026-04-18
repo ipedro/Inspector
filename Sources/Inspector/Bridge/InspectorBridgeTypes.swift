@@ -262,6 +262,20 @@ public struct InspectorBridgeStateDiff: Hashable, Codable {
     public let entries: [InspectorBridgeStateDiffEntry]
 }
 
+public struct InspectorBridgeSavedScenario: Hashable, Codable {
+    public let name: String
+    public let createdAt: Date
+    public let nodeCount: Int
+}
+
+public struct InspectorBridgeScenarioDiff: Hashable, Codable {
+    public let name: String
+    public let addedCount: Int
+    public let removedCount: Int
+    public let changedCount: Int
+    public let entries: [InspectorBridgeStateDiffEntry]
+}
+
 public struct InspectorBridgeLayerState: Hashable, Codable {
     public let name: String
     public let displayName: String
@@ -312,6 +326,7 @@ public enum InspectorBridgeError: Error, Hashable, Codable {
     case stalePropertyReference
     case staleActionReference
     case staleStateReference
+    case unknownScenario
     case snapshotUnavailable(InspectorBridgeSnapshotUnavailableReason)
     case unsupportedTarget
     case invalidPropertyValue(String)

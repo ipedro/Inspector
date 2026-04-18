@@ -15,6 +15,10 @@ protocol InspectorMCPBridgeClient {
     func assertHierarchyContains(_ request: InspectorMCPAssertHierarchyContainsRequest) async throws -> Result<InspectorMCPAssertHierarchyContainsResult, InspectorMCPTransportError>
     func captureState(_ request: InspectorMCPCaptureStateRequest) async throws -> Result<InspectorMCPCapturedState, InspectorMCPTransportError>
     func diffStates(_ request: InspectorMCPDiffStatesRequest) async throws -> Result<InspectorMCPStateDiff, InspectorMCPTransportError>
+    func saveScenario(_ request: InspectorMCPSaveScenarioRequest) async throws -> Result<InspectorMCPSavedScenario, InspectorMCPTransportError>
+    func listScenarios() async throws -> Result<InspectorMCPScenarioListResult, InspectorMCPTransportError>
+    func deleteScenario(_ request: InspectorMCPDeleteScenarioRequest) async throws -> Result<InspectorMCPSavedScenario, InspectorMCPTransportError>
+    func diffScenario(_ request: InspectorMCPDiffScenarioRequest) async throws -> Result<InspectorMCPScenarioDiff, InspectorMCPTransportError>
     func listProperties(_ request: InspectorMCPPropertyListRequest) async throws -> Result<InspectorMCPPropertyListResult, InspectorMCPTransportError>
     func setProperty(_ request: InspectorMCPSetPropertyRequest) async throws -> Result<InspectorMCPSetPropertyResult, InspectorMCPTransportError>
     func layers() async throws -> Result<InspectorMCPLayersResult, InspectorMCPTransportError>
@@ -169,6 +173,34 @@ final class InspectorMCPHTTPBridgeClient: InspectorMCPBridgeClient {
     func diffStates(_ request: InspectorMCPDiffStatesRequest) async throws -> Result<InspectorMCPStateDiff, InspectorMCPTransportError> {
         try await sendToolRequest(
             path: InspectorMCPBridgeEndpoint.diffStatesPath,
+            body: request
+        )
+    }
+
+    func saveScenario(_ request: InspectorMCPSaveScenarioRequest) async throws -> Result<InspectorMCPSavedScenario, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.saveScenarioPath,
+            body: request
+        )
+    }
+
+    func listScenarios() async throws -> Result<InspectorMCPScenarioListResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.scenariosPath,
+            body: EmptyRequestBody()
+        )
+    }
+
+    func deleteScenario(_ request: InspectorMCPDeleteScenarioRequest) async throws -> Result<InspectorMCPSavedScenario, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.deleteScenarioPath,
+            body: request
+        )
+    }
+
+    func diffScenario(_ request: InspectorMCPDiffScenarioRequest) async throws -> Result<InspectorMCPScenarioDiff, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.diffScenarioPath,
             body: request
         )
     }

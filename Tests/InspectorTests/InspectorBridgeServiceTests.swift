@@ -1444,6 +1444,27 @@ extension InspectorBridgeServiceTests {
             XCTAssertEqual(error as? InspectorBridgeError, .staleStateReference)
         }
     }
+
+    func testScenarioLifecycleAndDiffAgainstCurrentState() throws {
+        let node = MockReference.view(className: "UIButton", displayName: "Button", elementName: "Button", accessibilityIdentifier: "button")
+        let service = makeService(snapshot: MockSnapshot(nodes: [node]))
+
+        let saved = try service.saveScenario(named: "baseline")
+        XCTAssertEqual(saved.name, "baseline")
+        XCTAssertEqual(try service.listScenarios().map(\.name), ["baseline"])
+
+        node.hidden = true
+        let diff = try service.diffScenario(named: "baseline")
+        XCTAssertEqual(diff.name, "baseline")
+        XCTAssertEqual(diff.changedCount, 1)
+
+        try service.deleteScenario(named: "baseline")
+        XCTAssertTrue(try service.listScenarios().isEmpty)
+
+        XCTAssertThrowsError(try service.diffScenario(named: "baseline")) { error in
+            XCTAssertEqual(error as? InspectorBridgeError, .unknownScenario)
+        }
+    }
 }
 
 // MARK: - Inspector.stop() clears snapshots directory

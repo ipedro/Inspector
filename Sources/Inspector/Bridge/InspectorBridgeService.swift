@@ -43,6 +43,10 @@ enum InspectorBridgeOperation {
     case assertHierarchyContains
     case captureState
     case diffStates
+    case saveScenario
+    case listScenarios
+    case deleteScenario
+    case diffScenario
     case listProperties
     case setProperty
     case layers
@@ -191,6 +195,11 @@ final class InspectorMCPBridgeService {
         let nodesBySignature: [String: InspectorBridgeCapturedNodeState]
     }
 
+    private struct SavedScenarioRecord {
+        let createdAt: Date
+        let nodesBySignature: [String: InspectorBridgeCapturedNodeState]
+    }
+
     private let availabilityProvider: AvailabilityProvider
     private let snapshotProvider: SnapshotProvider
     private let snapshotLimitProvider: SnapshotLimitProvider
@@ -211,6 +220,7 @@ final class InspectorMCPBridgeService {
     private var actionRefsByOwner: [String: Set<String>] = [:]
     private var stateCaptures: [String: CapturedStateRecord] = [:]
     private var stateCaptureOrder: [String] = []
+    private var scenarios: [String: SavedScenarioRecord] = [:]
 
     var operationObserver: ((InspectorBridgeOperation, Bool) -> Void)?
 
@@ -259,6 +269,7 @@ final class InspectorMCPBridgeService {
         actionRefsByOwner.removeAll()
         stateCaptures.removeAll()
         stateCaptureOrder.removeAll()
+        scenarios.removeAll()
     }
 
     func query(_ request: InspectorBridgeQueryRequest = .init()) throws -> InspectorBridgeQueryResponse {
@@ -690,6 +701,87 @@ final class InspectorMCPBridgeService {
                 removedCount: removed.count,
                 changedCount: changed.count,
                 entries: entries
+            )
+        }
+    }
+
+    func saveScenario(named name: String) throws -> InspectorBridgeSavedScenario {
+        try performOnMain(.captureState) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            guard let snapshot = self.snapshotProvider() else {
+                throw InspectorBridgeError.snapshotUnavailable(.runtimeSnapshotUnavailable)
+            }
+
+            let nodes = snapshot.viewHierarchy.map(self.capturedNodeState(from:))
+            let createdAt = self.dateProvider()
+            self.scenarios[name] = SavedScenarioRecord(
+                createdAt: createdAt,
+                nodesBySignature: Dictionary(uniqueKeysWithValues: nodes.map { ($0.signature, $0) })
+            )
+
+            return InspectorBridgeSavedScenario(name: name, createdAt: createdAt, nodeCount: nodes.count)
+        }
+    }
+
+    func listScenarios() throws -> [InspectorBridgeSavedScenario] {
+        try performOnMain(.captureState) {
+            self.scenarios
+                .map { name, record in
+                    InspectorBridgeSavedScenario(name: name, createdAt: record.createdAt, nodeCount: record.nodesBySignature.count)
+                }
+                .sorted { $0.name < $1.name }
+        }
+    }
+
+    func deleteScenario(named name: String) throws {
+        try performOnMain(.captureState) {
+            guard self.scenarios.removeValue(forKey: name) != nil else {
+                throw InspectorBridgeError.unknownScenario
+            }
+        }
+    }
+
+    func diffScenario(named name: String) throws -> InspectorBridgeScenarioDiff {
+        try performOnMain(.diffStates) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            guard let scenario = self.scenarios[name] else {
+                throw InspectorBridgeError.unknownScenario
+            }
+            guard let snapshot = self.snapshotProvider() else {
+                throw InspectorBridgeError.snapshotUnavailable(.runtimeSnapshotUnavailable)
+            }
+
+            let currentNodes = Dictionary(uniqueKeysWithValues: snapshot.viewHierarchy.map { node in
+                let captured = self.capturedNodeState(from: node)
+                return (captured.signature, captured)
+            })
+
+            let beforeKeys = Set(scenario.nodesBySignature.keys)
+            let afterKeys = Set(currentNodes.keys)
+
+            let added = afterKeys.subtracting(beforeKeys).compactMap { key -> InspectorBridgeStateDiffEntry? in
+                guard let node = currentNodes[key] else { return nil }
+                return .init(signature: key, kind: .added, className: node.className, elementName: node.elementName, accessibilityIdentifier: node.accessibilityIdentifier)
+            }
+            let removed = beforeKeys.subtracting(afterKeys).compactMap { key -> InspectorBridgeStateDiffEntry? in
+                guard let node = scenario.nodesBySignature[key] else { return nil }
+                return .init(signature: key, kind: .removed, className: node.className, elementName: node.elementName, accessibilityIdentifier: node.accessibilityIdentifier)
+            }
+            let changed = beforeKeys.intersection(afterKeys).compactMap { key -> InspectorBridgeStateDiffEntry? in
+                guard let lhs = scenario.nodesBySignature[key], let rhs = currentNodes[key], lhs != rhs else { return nil }
+                return .init(signature: key, kind: .changed, className: rhs.className, elementName: rhs.elementName, accessibilityIdentifier: rhs.accessibilityIdentifier)
+            }
+
+            return InspectorBridgeScenarioDiff(
+                name: name,
+                addedCount: added.count,
+                removedCount: removed.count,
+                changedCount: changed.count,
+                entries: added + removed + changed
             )
         }
     }
@@ -1438,6 +1530,22 @@ package extension Inspector {
 
     static func bridgeDiffStates(before beforeRef: String, after afterRef: String) throws -> InspectorBridgeStateDiff {
         try sharedInspectorMCPBridgeService.diffStates(before: beforeRef, after: afterRef)
+    }
+
+    static func bridgeSaveScenario(named name: String) throws -> InspectorBridgeSavedScenario {
+        try sharedInspectorMCPBridgeService.saveScenario(named: name)
+    }
+
+    static func bridgeListScenarios() throws -> [InspectorBridgeSavedScenario] {
+        try sharedInspectorMCPBridgeService.listScenarios()
+    }
+
+    static func bridgeDeleteScenario(named name: String) throws {
+        try sharedInspectorMCPBridgeService.deleteScenario(named: name)
+    }
+
+    static func bridgeDiffScenario(named name: String) throws -> InspectorBridgeScenarioDiff {
+        try sharedInspectorMCPBridgeService.diffScenario(named: name)
     }
 
     static func bridgeListProperties(

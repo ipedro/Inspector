@@ -359,6 +359,51 @@ private final class InspectorMCPHTTPServer {
             } catch let error as InspectorBridgeError {
                 return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
             }
+        case ("POST", InspectorMCPBridgeEndpoint.saveScenarioPath):
+            let payload: InspectorMCPSaveScenarioRequest = try decode(
+                request.body,
+                allowedKeys: ["name"]
+            )
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeSaveScenarioResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.scenariosPath):
+            let _: InspectorMCPHTTPEmptyRequestBody = try decode(request.body, allowedKeys: [])
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeListScenariosResult())
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.deleteScenarioPath):
+            let payload: InspectorMCPDeleteScenarioRequest = try decode(
+                request.body,
+                allowedKeys: ["name"]
+            )
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeDeleteScenarioResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.diffScenarioPath):
+            let payload: InspectorMCPDiffScenarioRequest = try decode(
+                request.body,
+                allowedKeys: ["name"]
+            )
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeDiffScenarioResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
         case ("POST", InspectorMCPBridgeEndpoint.propertiesPath):
             let payload: InspectorMCPPropertyListRequest = try decode(
                 request.body,
@@ -452,7 +497,7 @@ private final class InspectorMCPHTTPServer {
             inspectorStarted: inspectorStarted,
             keyboardWindowsFiltered: Inspector.sharedInstance.configuration.filtersSystemKeyboardWindows,
             bundleIdentifier: Bundle.main.bundleIdentifier,
-            operations: [.query, .resolve, .snapshot, .inspect, .tap, .listActions, .performAction, .assertProperty, .assertVisible, .assertHierarchyContains, .captureState, .diffStates, .listProperties, .setProperty, .layers, .toggleLayer],
+            operations: [.query, .resolve, .snapshot, .inspect, .tap, .listActions, .performAction, .assertProperty, .assertVisible, .assertHierarchyContains, .captureState, .diffStates, .saveScenario, .listScenarios, .deleteScenario, .diffScenario, .listProperties, .setProperty, .layers, .toggleLayer],
             apiVersion: 2
         )
     }
@@ -606,6 +651,36 @@ private final class InspectorMCPHTTPServer {
         )
     }
 
+    private func bridgeSaveScenarioResult(for request: InspectorMCPSaveScenarioRequest) throws -> InspectorMCPSavedScenario {
+        let result = try Inspector.bridgeSaveScenario(named: request.name)
+        return .init(name: result.name, createdAt: result.createdAt, nodeCount: result.nodeCount)
+    }
+
+    private func bridgeListScenariosResult() throws -> InspectorMCPScenarioListResult {
+        .init(scenarios: try Inspector.bridgeListScenarios().map {
+            .init(name: $0.name, createdAt: $0.createdAt, nodeCount: $0.nodeCount)
+        })
+    }
+
+    private func bridgeDeleteScenarioResult(for request: InspectorMCPDeleteScenarioRequest) throws -> InspectorMCPSavedScenario {
+        let existing = try Inspector.bridgeListScenarios().first { $0.name == request.name }
+        try Inspector.bridgeDeleteScenario(named: request.name)
+        return .init(name: request.name, createdAt: existing?.createdAt ?? .distantPast, nodeCount: existing?.nodeCount ?? 0)
+    }
+
+    private func bridgeDiffScenarioResult(for request: InspectorMCPDiffScenarioRequest) throws -> InspectorMCPScenarioDiff {
+        let result = try Inspector.bridgeDiffScenario(named: request.name)
+        return .init(
+            name: result.name,
+            addedCount: result.addedCount,
+            removedCount: result.removedCount,
+            changedCount: result.changedCount,
+            entries: result.entries.map {
+                .init(signature: $0.signature, kind: wireStateDiffKind(from: $0.kind), className: $0.className, elementName: $0.elementName, accessibilityIdentifier: $0.accessibilityIdentifier)
+            }
+        )
+    }
+
     private func bridgePropertyListResult(for request: InspectorMCPPropertyListRequest) throws -> InspectorMCPPropertyListResult {
         let response = try Inspector.bridgeListProperties(
             .init(rawValue: request.handle),
@@ -707,6 +782,8 @@ private final class InspectorMCPHTTPServer {
             return .init(code: .staleActionReference, message: "Action reference is stale; list actions again", details: .empty)
         case .staleStateReference:
             return .init(code: .staleStateReference, message: "State reference is stale; capture state again", details: .empty)
+        case .unknownScenario:
+            return .init(code: .unknownScenario, message: "Scenario does not exist", details: .empty)
         case let .snapshotUnavailable(reason):
             return .init(
                 code: .snapshotUnavailable,
