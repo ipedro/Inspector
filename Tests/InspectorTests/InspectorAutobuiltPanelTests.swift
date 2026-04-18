@@ -843,6 +843,37 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(selector, String(describing: #selector(UIViewController.viewDidLoad)))
     }
 
+    func testNavigationItemAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let viewController = UIViewController()
+        viewController.navigationItem.title = "Old"
+        viewController.navigationItem.prompt = "Prompt"
+        viewController.navigationItem.backButtonTitle = "Back"
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.NavigationItemAttributesSectionDataSource(with: viewController)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 5)
+        XCTAssertEqual(bindings[0].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[1].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[2].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[3].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[4].descriptor.kind, .options)
+
+        bindings[0].apply(.string("New Title"))
+        bindings[1].apply(.string("New Prompt"))
+        bindings[2].apply(.string(nil))
+        bindings[3].apply(.bool(true))
+        bindings[4].apply(.selection(1))
+
+        XCTAssertEqual(viewController.navigationItem.title, "New Title")
+        XCTAssertEqual(viewController.navigationItem.prompt, "New Prompt")
+        XCTAssertNil(viewController.navigationItem.backButtonTitle)
+        XCTAssertTrue(viewController.navigationItem.leftItemsSupplementBackButton)
+        XCTAssertEqual(viewController.navigationItem.largeTitleDisplayMode, UINavigationItem.LargeTitleDisplayMode.allCases[1])
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled

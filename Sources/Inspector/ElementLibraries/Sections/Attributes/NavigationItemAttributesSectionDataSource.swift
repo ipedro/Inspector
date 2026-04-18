@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -44,52 +45,88 @@ extension DefaultElementAttributesLibrary {
             case LargeTitle = "Large Title"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let navigationItem else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .title:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: navigationItem.title,
-                        axis: .vertical,
-                        value: { navigationItem.title },
-                        handler: { navigationItem.title = $0.isNilOrEmpty ? nil : $0 }
+                    return .init(
+                        descriptor: .init(
+                            id: "title",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, placeholder: navigationItem.title, allowsNil: true)),
+                            editability: .editable,
+                            presentation: .init(axis: .vertical)
+                        ),
+                        read: { .string(navigationItem.title) },
+                        write: { newValue in
+                            guard case let .string(value) = newValue else { return }
+                            navigationItem.title = value.isNilOrEmpty ? nil : value
+                        }
                     )
                 case .prompt:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: navigationItem.prompt,
-                        axis: .vertical,
-                        value: { navigationItem.prompt },
-                        handler: { navigationItem.prompt = $0.isNilOrEmpty ? nil : $0 }
+                    return .init(
+                        descriptor: .init(
+                            id: "prompt",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, placeholder: navigationItem.prompt, allowsNil: true)),
+                            editability: .editable,
+                            presentation: .init(axis: .vertical)
+                        ),
+                        read: { .string(navigationItem.prompt) },
+                        write: { newValue in
+                            guard case let .string(value) = newValue else { return }
+                            navigationItem.prompt = value.isNilOrEmpty ? nil : value
+                        }
                     )
                 case .backButtonTitle:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: navigationItem.backButtonTitle,
-                        axis: .vertical,
-                        value: { navigationItem.backButtonTitle },
-                        handler: { navigationItem.backButtonTitle = $0.isNilOrEmpty ? nil : $0 }
+                    return .init(
+                        descriptor: .init(
+                            id: "back-button-title",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, placeholder: navigationItem.backButtonTitle, allowsNil: true)),
+                            editability: .editable,
+                            presentation: .init(axis: .vertical)
+                        ),
+                        read: { .string(navigationItem.backButtonTitle) },
+                        write: { newValue in
+                            guard case let .string(value) = newValue else { return }
+                            navigationItem.backButtonTitle = value.isNilOrEmpty ? nil : value
+                        }
                     )
                 case .leftItemsSupplementBackButton:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { navigationItem.leftItemsSupplementBackButton },
-                        handler: { navigationItem.leftItemsSupplementBackButton = $0 }
+                    return .init(
+                        descriptor: .init(
+                            id: "left-items-supplement-back-button",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(navigationItem.leftItemsSupplementBackButton) },
+                        write: { newValue in
+                            guard case let .bool(value) = newValue else { return }
+                            navigationItem.leftItemsSupplementBackButton = value
+                        }
                     )
                 case .LargeTitle:
-                    .optionsList(
-                        title: property.rawValue,
-                        axis: .vertical,
-                        options: UINavigationItem.LargeTitleDisplayMode.allCases.map(\.description),
-                        selectedIndex: { UINavigationItem.LargeTitleDisplayMode.allCases.firstIndex(of: navigationItem.largeTitleDisplayMode) },
-                        handler: {
-                            guard let newIndex = $0 else { return }
-
-                            let largeTitleDisplayMode = UINavigationItem.LargeTitleDisplayMode.allCases[newIndex]
-                            navigationItem.largeTitleDisplayMode = largeTitleDisplayMode
+                    return .init(
+                        descriptor: .init(
+                            id: "large-title",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(.init(options: UINavigationItem.LargeTitleDisplayMode.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
+                            editability: .editable,
+                            presentation: .init(axis: .vertical)
+                        ),
+                        read: { .selection(UINavigationItem.LargeTitleDisplayMode.allCases.firstIndex(of: navigationItem.largeTitleDisplayMode)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            navigationItem.largeTitleDisplayMode = UINavigationItem.LargeTitleDisplayMode.allCases[index]
                         }
                     )
                 }
