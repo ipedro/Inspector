@@ -728,6 +728,49 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(constraint.identifier, "updated-width")
     }
 
+    func testViewAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let view = UIView(frame: .zero)
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.ViewAttributesSectionDataSource(with: view)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 21)
+        XCTAssertEqual(bindings[0].descriptor.kind, .options)
+        XCTAssertEqual(bindings[2].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[3].descriptor.kind, .group)
+        XCTAssertEqual(bindings[5].descriptor.kind, .note)
+        XCTAssertEqual(bindings[8].descriptor.kind, .group)
+        XCTAssertEqual(bindings[11].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[15].descriptor.kind, .group)
+        XCTAssertEqual(bindings[20].descriptor.kind, .toggle)
+
+        bindings[0].apply(.selection(1))
+        bindings[1].apply(.selection(1))
+        bindings[2].apply(.number(42))
+        bindings[4].apply(.string("view-id"))
+        bindings[6].apply(.string("Primary Label"))
+        bindings[9].apply(.bool(false))
+        bindings[12].apply(.number(0.6))
+        bindings[13].apply(.color(.red))
+        bindings[17].apply(.bool(true))
+        bindings[18].apply(.bool(true))
+        bindings[20].apply(.bool(false))
+
+        XCTAssertEqual(view.contentMode, UIView.ContentMode.allCases[1])
+        XCTAssertEqual(view.semanticContentAttribute, UISemanticContentAttribute.allCases[1])
+        XCTAssertEqual(view.tag, 42)
+        XCTAssertEqual(view.accessibilityIdentifier, "view-id")
+        XCTAssertEqual(view.accessibilityLabel, "Primary Label")
+        XCTAssertFalse(view.isUserInteractionEnabled)
+        XCTAssertEqual(view.alpha, 0.6, accuracy: 0.001)
+        XCTAssertEqual(view.backgroundColor, .red)
+        XCTAssertTrue(view.isHidden)
+        XCTAssertTrue(view.clearsContextBeforeDrawing)
+        XCTAssertFalse(view.autoresizesSubviews)
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled

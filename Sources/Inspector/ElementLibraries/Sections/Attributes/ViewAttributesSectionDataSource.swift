@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -58,150 +59,150 @@ extension DefaultElementAttributesLibrary {
             case autoresizesSubviews = "Autoresize Subviews"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let view else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .contentMode:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UIView.ContentMode.allCases.map(\.description),
-                        selectedIndex: { UIView.ContentMode.allCases.firstIndex(of: view.contentMode) }
-                    ) {
-                        guard let newIndex = $0 else { return }
-
-                        let contentMode = UIView.ContentMode.allCases[newIndex]
-                        view.contentMode = contentMode
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "content-mode",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(.init(options: UIView.ContentMode.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
+                            editability: .editable
+                        ),
+                        read: { .selection(UIView.ContentMode.allCases.firstIndex(of: view.contentMode)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            view.contentMode = UIView.ContentMode.allCases[index]
+                        }
+                    )
                 case .semanticContentAttribute:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UISemanticContentAttribute.allCases.map(\.description),
-                        selectedIndex: { UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute) }
-                    ) {
-                        guard let newIndex = $0 else { return }
-
-                        let semanticContentAttribute = UISemanticContentAttribute.allCases[newIndex]
-                        view.semanticContentAttribute = semanticContentAttribute
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "semantic-content-attribute",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(.init(options: UISemanticContentAttribute.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
+                            editability: .editable
+                        ),
+                        read: { .selection(UISemanticContentAttribute.allCases.firstIndex(of: view.semanticContentAttribute)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            view.semanticContentAttribute = UISemanticContentAttribute.allCases[index]
+                        }
+                    )
                 case .tag:
-                    .integerStepper(
-                        title: property.rawValue,
-                        value: { view.tag },
-                        range: { 0...100 },
-                        stepValue: { 1 }
-                    ) { newValue in
-                        view.tag = newValue
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "tag",
+                            title: property.rawValue,
+                            kind: .stepper,
+                            value: .number(.init(min: 0, max: 100, step: 1, isDecimal: false)),
+                            editability: .editable
+                        ),
+                        read: { .number(Double(view.tag)) },
+                        write: { newValue in
+                            guard case let .number(value) = newValue else { return }
+                            view.tag = Int(value)
+                        }
+                    )
                 case .accessibilityLabel:
-                    .textView(
-                        title: property.rawValue,
-                        placeholder: view.accessibilityLabel?.trimmed ?? property.rawValue,
-                        value: { view.accessibilityLabel }
-                    ) { accessibilityLabel in
-                        view.accessibilityLabel = accessibilityLabel
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "accessibility-label",
+                            title: property.rawValue,
+                            kind: .textView,
+                            value: .string(.init(multiline: true, placeholder: view.accessibilityLabel?.trimmed ?? property.rawValue, allowsNil: true)),
+                            editability: .editable
+                        ),
+                        read: { .string(view.accessibilityLabel) },
+                        write: { newValue in
+                            guard case let .string(value) = newValue else { return }
+                            view.accessibilityLabel = value
+                        }
+                    )
                 case .accessibilityIdentifierFooter:
-                    .infoNote(icon: .none, text: "An identifier can be used to uniquely identify an element in the scripts you write using the UI Automation interfaces. Using an identifier allows you to avoid inappropriately setting or accessing an element’s accessibility label.")
+                    return .init(
+                        descriptor: .init(id: "accessibility-identifier-footer", title: "", kind: .note, value: .none, editability: .readOnly, presentation: .init(subtitle: "An identifier can be used to uniquely identify an element in the scripts you write using the UI Automation interfaces. Using an identifier allows you to avoid inappropriately setting or accessing an element’s accessibility label.", noteStyle: .info)),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .accessibilityLabelFooter:
-                    .infoNote(icon: .none, text: "A succinct label in a localized string that identifies the accessibility element to the user.")
+                    return .init(
+                        descriptor: .init(id: "accessibility-label-footer", title: "", kind: .note, value: .none, editability: .readOnly, presentation: .init(subtitle: "A succinct label in a localized string that identifies the accessibility element to the user.", noteStyle: .info)),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .accessibilityIdentifier:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: view.accessibilityIdentifier?.trimmed ?? property.rawValue,
-                        value: { view.accessibilityIdentifier }
-                    ) { accessibilityIdentifier in
-                        view.accessibilityIdentifier = accessibilityIdentifier
-                        view._highlightView?.updateElementName()
-                    }
-                case .groupInteraction, .accessibilityGroup:
-                    .group(title: property.rawValue)
+                    return .init(
+                        descriptor: .init(
+                            id: "accessibility-identifier",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, placeholder: view.accessibilityIdentifier?.trimmed ?? property.rawValue, allowsNil: true)),
+                            editability: .editable
+                        ),
+                        read: { .string(view.accessibilityIdentifier) },
+                        write: { newValue in
+                            guard case let .string(value) = newValue else { return }
+                            view.accessibilityIdentifier = value
+                            view._highlightView?.updateElementName()
+                        }
+                    )
+                case .groupInteraction, .accessibilityGroup, .groupDrawing:
+                    return .init(
+                        descriptor: .init(id: property.rawValue.replacingOccurrences(of: " ", with: "-").lowercased(), title: property.rawValue, kind: .group, value: .none, editability: .readOnly),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .isUserInteractionEnabled:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: {
-                            guard let element = view._highlightView?.element as? ViewHierarchyElement else {
-                                return view.isUserInteractionEnabled
+                    return .init(
+                        descriptor: .init(id: "is-user-interaction-enabled", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                        read: {
+                            if let element = view._highlightView?.element as? ViewHierarchyElement {
+                                return .bool(element.isUnderlyingViewUserInteractionEnabled)
                             }
-                            return element.isUnderlyingViewUserInteractionEnabled
+                            return .bool(view.isUserInteractionEnabled)
+                        },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            if let element = view._highlightView?.element as? ViewHierarchyElement {
+                                element.isUnderlyingViewUserInteractionEnabled = isEnabled
+                            } else {
+                                view.isUserInteractionEnabled = isEnabled
+                            }
                         }
-                    ) { isUserInteractionEnabled in
-                        guard let element = view._highlightView?.element as? ViewHierarchyElement else {
-                            view.isUserInteractionEnabled = isUserInteractionEnabled
-                            return
-                        }
-                        element.isUnderlyingViewUserInteractionEnabled = isUserInteractionEnabled
-                    }
+                    )
                 case .isMultipleTouchEnabled:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { view.isMultipleTouchEnabled }
-                    ) { isMultipleTouchEnabled in
-                        view.isMultipleTouchEnabled = isMultipleTouchEnabled
-                    }
+                    return .init(descriptor: .init(id: "is-multiple-touch-enabled", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(view.isMultipleTouchEnabled) }, write: { newValue in guard case let .bool(v) = newValue else { return }; view.isMultipleTouchEnabled = v })
                 case .groupAlphaAndColors:
-                    .separator
+                    return .init(descriptor: .init(id: "group-alpha-and-colors", title: "", kind: .separator, value: .none, editability: .readOnly), read: { .none }, write: nil, refreshHint: .none)
                 case .alpha:
-                    .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { view.alpha },
-                        range: { 0...1 },
-                        stepValue: { 0.05 }
-                    ) { alpha in
-                        view.alpha = alpha
-                    }
+                    return .init(
+                        descriptor: .init(id: "alpha", title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 1, step: 0.05, isDecimal: true)), editability: .editable),
+                        read: { .number(Double(view.alpha)) },
+                        write: { newValue in guard case let .number(v) = newValue else { return }; view.alpha = CGFloat(v) }
+                    )
                 case .backgroundColor:
-                    .colorPicker(
-                        title: property.rawValue,
-                        color: { view.backgroundColor }
-                    ) { backgroundColor in
-                        view.backgroundColor = backgroundColor
-                    }
+                    return .init(descriptor: .init(id: "background-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable), read: { .color(view.backgroundColor) }, write: { newValue in guard case let .color(v) = newValue else { return }; view.backgroundColor = v })
                 case .tintColor:
-                    .colorPicker(
-                        title: property.rawValue,
-                        color: { view.tintColor }
-                    ) { tintColor in
-                        view.tintColor = tintColor
-                    }
-                case .groupDrawing:
-                    .group(title: property.rawValue)
+                    return .init(descriptor: .init(id: "tint-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable), read: { .color(view.tintColor) }, write: { newValue in guard case let .color(v) = newValue else { return }; view.tintColor = v })
                 case .isOpaque:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { view.isOpaque }
-                    ) { isOpaque in
-                        view.isOpaque = isOpaque
-                    }
+                    return .init(descriptor: .init(id: "is-opaque", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(view.isOpaque) }, write: { newValue in guard case let .bool(v) = newValue else { return }; view.isOpaque = v })
                 case .isHidden:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { view.isHidden }
-                    ) { isHidden in
-                        view.isHidden = isHidden
-                    }
+                    return .init(descriptor: .init(id: "is-hidden", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(view.isHidden) }, write: { newValue in guard case let .bool(v) = newValue else { return }; view.isHidden = v })
                 case .clearsContextBeforeDrawing:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { view.clearsContextBeforeDrawing }
-                    ) { clearsContextBeforeDrawing in
-                        view.clearsContextBeforeDrawing = clearsContextBeforeDrawing
-                    }
+                    return .init(descriptor: .init(id: "clears-context-before-drawing", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(view.clearsContextBeforeDrawing) }, write: { newValue in guard case let .bool(v) = newValue else { return }; view.clearsContextBeforeDrawing = v })
                 case .clipsToBounds:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { view.clipsToBounds }
-                    ) { clipsToBounds in
-                        view.clipsToBounds = clipsToBounds
-                    }
+                    return .init(descriptor: .init(id: "clips-to-bounds", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(view.clipsToBounds) }, write: { newValue in guard case let .bool(v) = newValue else { return }; view.clipsToBounds = v })
                 case .autoresizesSubviews:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { view.autoresizesSubviews }
-                    ) { autoresizesSubviews in
-                        view.autoresizesSubviews = autoresizesSubviews
-                    }
+                    return .init(descriptor: .init(id: "autoresizes-subviews", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(view.autoresizesSubviews) }, write: { newValue in guard case let .bool(v) = newValue else { return }; view.autoresizesSubviews = v })
                 }
             }
         }
