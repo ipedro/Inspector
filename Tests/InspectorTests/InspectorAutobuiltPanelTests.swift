@@ -1051,6 +1051,54 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(textView.isSecureTextEntry)
     }
 
+    func testTextFieldAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let textField = UITextField()
+        textField.font = UIFont.systemFont(ofSize: 14)
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.TextFieldAttributesSectionDataSource(with: textField)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 29)
+        XCTAssertEqual(bindings[0].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[1].descriptor.kind, .color)
+        XCTAssertEqual(bindings[2].descriptor.kind, .options)
+        XCTAssertEqual(bindings[3].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[5].descriptor.kind, .imageButtons)
+        XCTAssertEqual(bindings[7].descriptor.kind, .group)
+        XCTAssertEqual(bindings[10].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[11].descriptor.kind, .imageButtons)
+        XCTAssertEqual(bindings[14].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[28].descriptor.kind, .toggle)
+
+        bindings[0].apply(.string("Field"))
+        bindings[1].apply(.color(.orange))
+        bindings[3].apply(.number(20))
+        bindings[5].apply(.selection(1))
+        bindings[6].apply(.string("Hint"))
+        bindings[11].apply(.selection(1))
+        bindings[13].apply(.selection(1))
+        bindings[14].apply(.bool(true))
+        bindings[16].apply(.number(10))
+        bindings[18].apply(.selection(1))
+        bindings[26].apply(.selection(1))
+        bindings[28].apply(.bool(true))
+
+        XCTAssertEqual(textField.text, "Field")
+        XCTAssertEqual(textField.textColor, .orange)
+        XCTAssertEqual(try XCTUnwrap(textField.font).pointSize, 20, accuracy: 0.001)
+        XCTAssertEqual(textField.textAlignment, NSTextAlignment.allCases.withImages[1])
+        XCTAssertEqual(textField.placeholder, "Hint")
+        XCTAssertEqual(textField.borderStyle, UITextField.BorderStyle.allCases.withImages[1])
+        XCTAssertEqual(textField.clearButtonMode, UITextField.ViewMode.allCases[1])
+        XCTAssertTrue(textField.clearsOnBeginEditing)
+        XCTAssertEqual(textField.minimumFontSize, 10, accuracy: 0.001)
+        XCTAssertEqual(textField.textContentType, UITextContentType.allCases[1])
+        XCTAssertEqual(textField.returnKeyType, UIReturnKeyType.allCases[1])
+        XCTAssertTrue(textField.isSecureTextEntry)
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled
