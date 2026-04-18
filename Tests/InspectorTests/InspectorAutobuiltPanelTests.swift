@@ -407,5 +407,30 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(item.isSpringLoaded)
     }
 
+    func testSliderAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let slider = UISlider(frame: .zero)
+        slider.minimumValue = 0
+        slider.maximumValue = 10
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.SliderAttributesSectionDataSource(with: slider)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 12)
+        XCTAssertEqual(bindings[0].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[3].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[7].descriptor.kind, .color)
+        XCTAssertEqual(bindings[11].descriptor.kind, .toggle)
+
+        bindings[0].apply(.number(4.5))
+        bindings[7].apply(.color(.red))
+        bindings[11].apply(.bool(false))
+
+        XCTAssertEqual(slider.value, 4.5, accuracy: 0.001)
+        XCTAssertEqual(slider.minimumTrackTintColor, .red)
+        XCTAssertFalse(slider.isContinuous)
+    }
+
 }
 #endif
