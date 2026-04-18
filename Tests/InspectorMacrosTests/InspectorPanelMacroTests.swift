@@ -41,8 +41,8 @@ final class InspectorPanelMacroTests: XCTestCase {
                         )
                     ]
                 )
-                func makeInspectorSectionBinding() -> Inspector.InspectorSectionBinding {
-                    Inspector.InspectorSectionBinding(
+                func makeInspectorSectionBinding() -> InspectorSectionBinding {
+                        InspectorSectionBinding(
                         descriptor: Self.inspectorSectionDescriptor,
                         fields: [
                             .init(
@@ -57,7 +57,7 @@ final class InspectorPanelMacroTests: XCTestCase {
                         ]
                     )
                 }
-                final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
+                final class SectionDataSource: InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "My Card View"
                     private weak var element: MyCardView?
@@ -67,36 +67,20 @@ final class InspectorPanelMacroTests: XCTestCase {
                         }
                         self.element = element
                     }
-                    private enum Property: String, Swift.CaseIterable {
-                        case borderColor = "Border Color"
-                    }
-                    var properties: [Inspector.InspectorElementProperty] {
+                    var properties: [InspectorElementProperty] {
                         guard let element else {
                             return []
                         }
-                        return Property.allCases.flatMap { property -> [Inspector.InspectorElementProperty] in
-                            switch property {
-                            case .borderColor:
-                                return [.colorPicker(
-                                    title: property.rawValue,
-                                    color: {
-                                            element.borderColor
-                                        },
-                                    handler: { newColor in
-                                        if let newColor {
-                                                element.borderColor = newColor
-                                            }
-                                    }
-                                    )]
-                            }
-                        }
+                        let binding = makeInspectorSectionBinding()
+                        let extraProperties: [String: () -> [InspectorElementProperty]] = [:]
+                        return binding.makeInspectorElementProperties(extraProperties: extraProperties)
                     }
                 }
-                struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
+                struct InspectorLibrary: InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
                         MyCardView.self
                     }
-                    func sections(for object: NSObject) -> Inspector.InspectorElementSections {
+                    func sections(for object: NSObject) -> InspectorElementSections {
                         .init(with: SectionDataSource(with: object))
                     }
                 }
@@ -136,8 +120,8 @@ final class InspectorPanelMacroTests: XCTestCase {
                         )
                     ]
                 )
-                func makeInspectorSectionBinding() -> Inspector.InspectorSectionBinding {
-                    Inspector.InspectorSectionBinding(
+                func makeInspectorSectionBinding() -> InspectorSectionBinding {
+                        InspectorSectionBinding(
                         descriptor: Self.inspectorSectionDescriptor,
                         fields: [
                             .init(
@@ -149,7 +133,7 @@ final class InspectorPanelMacroTests: XCTestCase {
                         ]
                     )
                 }
-                final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
+                final class SectionDataSource: InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "Playground"
                     private weak var element: PlaygroundViewController?
@@ -159,29 +143,25 @@ final class InspectorPanelMacroTests: XCTestCase {
                         }
                         self.element = element
                     }
-                    private enum Property: String, Swift.CaseIterable {
-                        case inspectBarButton = "Inspect Bar Button"
-                    }
-                    var properties: [Inspector.InspectorElementProperty] {
+                    var properties: [InspectorElementProperty] {
                         guard let element else {
                             return []
                         }
-                        return Property.allCases.flatMap { property -> [Inspector.InspectorElementProperty] in
-                            switch property {
-                            case .inspectBarButton:
-                                guard let child = element.inspectBarButton else {
-                                    return []
-                                }
-                                return [.group(title: property.rawValue)] + (RoundedButton.SectionDataSource(with: child)?.properties ?? [])
+                        let binding = makeInspectorSectionBinding()
+                        let extraProperties: [String: () -> [InspectorElementProperty]] = [
+                            "inspectBarButton": {
+                                guard let child = element.inspectBarButton else { return [] }
+                                return [.group(title: "Inspect Bar Button")] + (RoundedButton.SectionDataSource(with: child)?.properties ?? [])
                             }
-                        }
+                        ]
+                        return binding.makeInspectorElementProperties(extraProperties: extraProperties)
                     }
                 }
-                struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
+                struct InspectorLibrary: InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
                         PlaygroundViewController.self
                     }
-                    func sections(for object: NSObject) -> Inspector.InspectorElementSections {
+                    func sections(for object: NSObject) -> InspectorElementSections {
                         .init(with: SectionDataSource(with: object))
                     }
                 }
@@ -225,8 +205,8 @@ final class InspectorPanelMacroTests: XCTestCase {
                         )
                     ]
                 )
-                func makeInspectorSectionBinding() -> Inspector.InspectorSectionBinding {
-                    Inspector.InspectorSectionBinding(
+                func makeInspectorSectionBinding() -> InspectorSectionBinding {
+                        InspectorSectionBinding(
                         descriptor: Self.inspectorSectionDescriptor,
                         fields: [
                             .init(
@@ -241,7 +221,7 @@ final class InspectorPanelMacroTests: XCTestCase {
                         ]
                     )
                 }
-                final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
+                final class SectionDataSource: InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "Slider"
                     private weak var element: SliderView?
@@ -251,33 +231,20 @@ final class InspectorPanelMacroTests: XCTestCase {
                         }
                         self.element = element
                     }
-                    private enum Property: String, Swift.CaseIterable {
-                        case value = "Value"
-                    }
-                    var properties: [Inspector.InspectorElementProperty] {
+                    var properties: [InspectorElementProperty] {
                         guard let element else {
                             return []
                         }
-                        return Property.allCases.flatMap { property -> [Inspector.InspectorElementProperty] in
-                            switch property {
-                            case .value:
-                                return [.stepper(
-                                    title: property.rawValue,
-                                    value: { element.value },
-                                    range: { 0.0...120.0 },
-                                    stepValue: { 1.0 },
-                                    isDecimalValue: true,
-                                    handler: { element.value = $0 }
-                                )]
-                            }
-                        }
+                        let binding = makeInspectorSectionBinding()
+                        let extraProperties: [String: () -> [InspectorElementProperty]] = [:]
+                        return binding.makeInspectorElementProperties(extraProperties: extraProperties)
                     }
                 }
-                struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
+                struct InspectorLibrary: InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
                         SliderView.self
                     }
-                    func sections(for object: NSObject) -> Inspector.InspectorElementSections {
+                    func sections(for object: NSObject) -> InspectorElementSections {
                         .init(with: SectionDataSource(with: object))
                     }
                 }
@@ -335,15 +302,15 @@ final class InspectorPanelMacroTests: XCTestCase {
 
                     ]
                 )
-                func makeInspectorSectionBinding() -> Inspector.InspectorSectionBinding {
-                    Inspector.InspectorSectionBinding(
+                func makeInspectorSectionBinding() -> InspectorSectionBinding {
+                        InspectorSectionBinding(
                         descriptor: Self.inspectorSectionDescriptor,
                         fields: [
 
                         ]
                     )
                 }
-                final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
+                final class SectionDataSource: InspectorElementSectionDataSource {
                     var state: InspectorContract.InspectorElementSectionState = .collapsed
                     let title = "Test"
                     private weak var element: TestView?
@@ -353,25 +320,20 @@ final class InspectorPanelMacroTests: XCTestCase {
                         }
                         self.element = element
                     }
-                    private enum Property: String, Swift.CaseIterable {
-
-                    }
-                    var properties: [Inspector.InspectorElementProperty] {
+                    var properties: [InspectorElementProperty] {
                         guard let element else {
                             return []
                         }
-                        return Property.allCases.flatMap { property -> [Inspector.InspectorElementProperty] in
-                            switch property {
-
-                            }
-                        }
+                        let binding = makeInspectorSectionBinding()
+                        let extraProperties: [String: () -> [InspectorElementProperty]] = [:]
+                        return binding.makeInspectorElementProperties(extraProperties: extraProperties)
                     }
                 }
-                struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
+                struct InspectorLibrary: InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
                         TestView.self
                     }
-                    func sections(for object: NSObject) -> Inspector.InspectorElementSections {
+                    func sections(for object: NSObject) -> InspectorElementSections {
                         .init(with: SectionDataSource(with: object))
                     }
                 }

@@ -114,7 +114,6 @@ public struct InspectorPanelMacro: MemberMacro {
             title: title,
             properties: properties
         )
-        let sectionBindingSource = generateSectionBindingSource(properties: properties)
         let inspectorLibrarySource = generateInspectorLibrarySource(className: className)
 
         // 5. Wrap both in #if INSPECTOR_DEBUGGING using IfConfigDeclSyntax
@@ -128,7 +127,6 @@ public struct InspectorPanelMacro: MemberMacro {
                     ),
                     elements: .decls(MemberBlockItemListSyntax([
                         MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: sectionDescriptorSource)),
-                        MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: sectionBindingSource)),
                         MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: sectionDataSourceSource)),
                         MemberBlockItemSyntax(decl: DeclSyntax(stringLiteral: inspectorLibrarySource))
                     ]))
@@ -146,16 +144,11 @@ public struct InspectorPanelMacro: MemberMacro {
         title: String,
         properties: [InspectableProperty]
     ) -> String {
-        let enumCases = properties.map { prop in
-            "        case \(prop.name) = \"\(escapedStringLiteral(prop.displayName))\""
-        }.joined(separator: "\n")
-
-        let switchCases = properties.map { prop in
-            generateSwitchCase(prop: prop)
-        }.joined(separator: "\n")
+        let extraProperties = generateExtraPropertiesSource(properties: properties)
+        let sectionBindingSource = generateSectionBindingSource(className: className, properties: properties)
 
         return """
-        final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
+        final class SectionDataSource: InspectorElementSectionDataSource {
             var state: InspectorContract.InspectorElementSectionState = .collapsed
             let title = "\(escapedStringLiteral(title))"
             private weak var element: \(className)?
@@ -163,18 +156,39 @@ public struct InspectorPanelMacro: MemberMacro {
                 guard let element = object as? \(className) else { return nil }
                 self.element = element
             }
-            private enum Property: String, Swift.CaseIterable {
-        \(enumCases)
-            }
-            var properties: [Inspector.InspectorElementProperty] {
+        \(sectionBindingSource)
+            var properties: [InspectorElementProperty] {
                 guard let element else { return [] }
-                return Property.allCases.flatMap { property -> [Inspector.InspectorElementProperty] in
-                    switch property {
-        \(switchCases)
-                    }
-                }
+                let binding = makeInspectorSectionBinding()
+        \(extraProperties)
+                return binding.makeInspectorElementProperties(extraProperties: extraProperties)
             }
         }
+        """
+    }
+
+    private static func generateExtraPropertiesSource(properties: [InspectableProperty]) -> String {
+        let entries = properties.compactMap { prop -> String? in
+            guard case .subpanel = prop.descriptor else { return nil }
+            let title = escapedStringLiteral(prop.displayName)
+            let name = prop.name
+            let type = prop.typeName.replacingOccurrences(of: "!", with: "")
+            return """
+                    "\(name)": {
+                        guard let child = element.\(name) else { return [] }
+                        return [.group(title: "\(title)")] + (\(type).SectionDataSource(with: child)?.properties ?? [])
+                    }
+            """
+        }.joined(separator: ",\n")
+
+        if entries.isEmpty {
+            return "                let extraProperties: [String: () -> [InspectorElementProperty]] = [:]"
+        }
+
+        return """
+                let extraProperties: [String: () -> [InspectorElementProperty]] = [
+        \(entries)
+                ]
         """
     }
 
@@ -197,28 +211,34 @@ public struct InspectorPanelMacro: MemberMacro {
         """
     }
 
-    private static func generateSectionBindingSource(properties: [InspectableProperty]) -> String {
+    private static func generateSectionBindingSource(className: String, properties: [InspectableProperty]) -> String {
         let lines = properties.enumerated().map { index, prop in
-            generateBindingField(index: index, prop: prop)
+            generateBindingField(className: className, index: index, prop: prop)
         }.joined(separator: ",\n")
 
         return """
-        func makeInspectorSectionBinding() -> Inspector.InspectorSectionBinding {
-            Inspector.InspectorSectionBinding(
-                descriptor: Self.inspectorSectionDescriptor,
+            func makeInspectorSectionBinding() -> InspectorSectionBinding {
+                guard let element else {
+                    return InspectorSectionBinding(
+                        descriptor: \(className).inspectorSectionDescriptor,
+                        fields: []
+                    )
+                }
+                return InspectorSectionBinding(
+                descriptor: \(className).inspectorSectionDescriptor,
                 fields: [
         \(lines)
                 ]
             )
-        }
+            }
         """
     }
 
     private static func generateInspectorLibrarySource(className: String) -> String {
         return """
-        struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
+        struct InspectorLibrary: InspectorElementLibraryProtocol {
             var targetClass: AnyClass { \(className).self }
-            func sections(for object: NSObject) -> Inspector.InspectorElementSections {
+            func sections(for object: NSObject) -> InspectorElementSections {
                 .init(with: SectionDataSource(with: object))
             }
         }
@@ -250,9 +270,9 @@ public struct InspectorPanelMacro: MemberMacro {
         """
     }
 
-    private static func generateBindingField(index: Int, prop: InspectableProperty) -> String {
+    private static func generateBindingField(className: String, index: Int, prop: InspectableProperty) -> String {
         let n = prop.name
-        let descriptorRef = "Self.inspectorSectionDescriptor.fields[\(index)]"
+        let descriptorRef = "\(className).inspectorSectionDescriptor.fields[\(index)]"
 
         switch prop.descriptor {
         case .switch:
