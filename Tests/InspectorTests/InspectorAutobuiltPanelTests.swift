@@ -116,5 +116,31 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(bindings.count, 2)
         XCTAssertEqual(bindings.map(\.descriptor.kind), [.options, .toggle])
     }
+
+    func testViewFrameSizeSectionUsesBindingBackedFields() throws {
+        let view = UIView(frame: .init(x: 1, y: 2, width: 30, height: 40))
+        let dataSource = try XCTUnwrap(
+            DefaultElementSizeLibrary.ViewFrameSizeSectionDataSource(with: view)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 3)
+        XCTAssertEqual(bindings.map(\.descriptor.kind), [.preview, .options, .preview])
+        XCTAssertEqual(bindings.first?.descriptor.title, "Frame Rectangle")
+    }
+
+    func testContentLayoutPrioritySectionUsesBindingBackedFields() throws {
+        let view = UIView(frame: .zero)
+        let dataSource = try XCTUnwrap(
+            DefaultElementSizeLibrary.ContentLayoutPrioritySizeSectionDataSource(with: view)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 9)
+        XCTAssertEqual(bindings.first?.descriptor.kind, .group)
+        XCTAssertEqual(bindings[1].descriptor.kind, .options)
+        XCTAssertEqual(bindings[2].descriptor.kind, .options)
+        XCTAssertEqual(bindings.last?.descriptor.kind, .preview)
+    }
 }
 #endif

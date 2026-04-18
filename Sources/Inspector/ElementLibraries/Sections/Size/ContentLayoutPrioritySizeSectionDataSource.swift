@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementSizeLibrary {
@@ -46,58 +47,65 @@ extension DefaultElementSizeLibrary {
             case instrinsicContentSize = "Intrinsic Size"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let view else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .groupHuggingPriority,
                      .groupCompressionResistancePriority:
-                    .group(title: property.rawValue)
+                    .init(
+                        descriptor: .init(
+                            id: property.rawValue,
+                            title: property.rawValue,
+                            kind: .group,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
 
                 case .horizontalHugging:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UILayoutPriority.allCases.map(\.description),
-                        selectedIndex: { UILayoutPriority.allCases.firstIndex(of: view.contentHuggingPriority(for: .horizontal)) },
-                        handler: {
-                            guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: priorityDescriptor(id: "horizontal-hugging", title: property.rawValue),
+                        read: { .selection(UILayoutPriority.allCases.firstIndex(of: view.contentHuggingPriority(for: .horizontal))) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
                             let priority = UILayoutPriority.allCases[newIndex]
                             view.setContentHuggingPriority(priority, for: .horizontal)
                         }
                     )
 
                 case .verticalHugging:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UILayoutPriority.allCases.map(\.description),
-                        selectedIndex: { UILayoutPriority.allCases.firstIndex(of: view.contentHuggingPriority(for: .vertical)) },
-                        handler: {
-                            guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: priorityDescriptor(id: "vertical-hugging", title: property.rawValue),
+                        read: { .selection(UILayoutPriority.allCases.firstIndex(of: view.contentHuggingPriority(for: .vertical))) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
                             let priority = UILayoutPriority.allCases[newIndex]
                             view.setContentHuggingPriority(priority, for: .vertical)
                         }
                     )
 
                 case .horizontalCompressionResistance:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UILayoutPriority.allCases.map(\.description),
-                        selectedIndex: { UILayoutPriority.allCases.firstIndex(of: view.contentCompressionResistancePriority(for: .horizontal)) },
-                        handler: {
-                            guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: priorityDescriptor(id: "horizontal-compression", title: property.rawValue),
+                        read: { .selection(UILayoutPriority.allCases.firstIndex(of: view.contentCompressionResistancePriority(for: .horizontal))) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
                             let priority = UILayoutPriority.allCases[newIndex]
                             view.setContentCompressionResistancePriority(priority, for: .horizontal)
                         }
                     )
 
                 case .verticalCompressionResistance:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UILayoutPriority.allCases.map(\.description),
-                        selectedIndex: { UILayoutPriority.allCases.firstIndex(of: view.contentCompressionResistancePriority(for: .vertical)) },
-                        handler: {
-                            guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: priorityDescriptor(id: "vertical-compression", title: property.rawValue),
+                        read: { .selection(UILayoutPriority.allCases.firstIndex(of: view.contentCompressionResistancePriority(for: .vertical))) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
                             let priority = UILayoutPriority.allCases[newIndex]
                             view.setContentCompressionResistancePriority(priority, for: .vertical)
                         }
@@ -105,16 +113,47 @@ extension DefaultElementSizeLibrary {
 
                 case .separator0,
                      .separator1:
-                    .separator
+                    .init(
+                        descriptor: .init(
+                            id: property.rawValue,
+                            title: property.rawValue,
+                            kind: .separator,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
 
                 case .instrinsicContentSize:
-                    .cgSize(
-                        title: property.rawValue,
-                        size: { view.intrinsicContentSize },
-                        handler: nil
+                    .init(
+                        descriptor: .init(
+                            id: "intrinsic-content-size",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .size,
+                            editability: .readOnly
+                        ),
+                        read: { .size(view.intrinsicContentSize) },
+                        write: nil
                     )
                 }
             }
+        }
+
+        private func priorityDescriptor(id: String, title: String) -> InspectorPropertyDescriptor {
+            .init(
+                id: id,
+                title: title,
+                kind: .options,
+                value: .selection(
+                    .init(options: UILayoutPriority.allCases.enumerated().map {
+                        .init(id: "\($0.offset)", title: $0.element.description)
+                    }, allowsNil: true)
+                ),
+                editability: .editable
+            )
         }
     }
 }
