@@ -275,5 +275,26 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(indicator.isAnimating)
         XCTAssertFalse(indicator.hidesWhenStopped)
     }
+
+    func testSwitchAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let control = UISwitch(frame: .zero)
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.SwitchAttributesSectionDataSource(with: control)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 5)
+        XCTAssertEqual(bindings.map(\.descriptor.kind), [.textField, .textButtons, .toggle, .color, .color])
+
+        bindings[0].apply(.string("Power"))
+        bindings[2].apply(.bool(true))
+        bindings[3].apply(.color(.green))
+        bindings[4].apply(.color(.yellow))
+
+        XCTAssertEqual(control.title, "Power")
+        XCTAssertTrue(control.isOn)
+        XCTAssertEqual(control.onTintColor, .green)
+        XCTAssertEqual(control.thumbTintColor, .yellow)
+    }
 }
 #endif

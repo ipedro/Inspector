@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -42,26 +43,48 @@ extension DefaultElementAttributesLibrary {
             case thumbTintColor = "Thumb Tint"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let switchControl else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .title:
-                    return .textField(
-                        title: property.rawValue,
-                        placeholder: switchControl.title.isNilOrEmpty ? property.rawValue : switchControl.title,
-                        value: { switchControl.title }
-                    ) { title in
-                        switchControl.title = title
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "title",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(
+                                .init(
+                                    multiline: false,
+                                    placeholder: switchControl.title.isNilOrEmpty ? property.rawValue : switchControl.title,
+                                    allowsNil: true
+                                )
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .string(switchControl.title) },
+                        write: { newValue in
+                            guard case let .string(title) = newValue else { return }
+                            switchControl.title = title
+                        }
+                    )
                 case .preferredStyle:
-                    return .textButtonGroup(
-                        title: property.rawValue,
-                        texts: UISwitch.Style.allCases.map(\.description),
-                        selectedIndex: { UISwitch.Style.allCases.firstIndex(of: switchControl.preferredStyle) },
-                        handler: {
-                            guard let newIndex = $0 else { return }
+                    return .init(
+                        descriptor: .init(
+                            id: "preferred-style",
+                            title: property.rawValue,
+                            kind: .textButtons,
+                            value: .selection(
+                                .init(options: UISwitch.Style.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(UISwitch.Style.allCases.firstIndex(of: switchControl.preferredStyle)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
 
                             let preferredStyle = UISwitch.Style.allCases[newIndex]
 
@@ -69,27 +92,51 @@ extension DefaultElementAttributesLibrary {
                         }
                     )
                 case .isOn:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { switchControl.isOn }
-                    ) { isOn in
-                        switchControl.setOn(isOn, animated: true)
-                        switchControl.sendActions(for: .valueChanged)
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "is-on",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(switchControl.isOn) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            switchControl.setOn(isOn, animated: true)
+                            switchControl.sendActions(for: .valueChanged)
+                        }
+                    )
                 case .onTintColor:
-                    return .colorPicker(
-                        title: property.rawValue,
-                        color: { switchControl.onTintColor }
-                    ) { onTintColor in
-                        switchControl.onTintColor = onTintColor
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "on-tint-color",
+                            title: property.rawValue,
+                            kind: .color,
+                            value: .color(allowsNil: true),
+                            editability: .editable
+                        ),
+                        read: { .color(switchControl.onTintColor) },
+                        write: { newValue in
+                            guard case let .color(onTintColor) = newValue else { return }
+                            switchControl.onTintColor = onTintColor
+                        }
+                    )
                 case .thumbTintColor:
-                    return .colorPicker(
-                        title: property.rawValue,
-                        color: { switchControl.thumbTintColor }
-                    ) { thumbTintColor in
-                        switchControl.thumbTintColor = thumbTintColor
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "thumb-tint-color",
+                            title: property.rawValue,
+                            kind: .color,
+                            value: .color(allowsNil: true),
+                            editability: .editable
+                        ),
+                        read: { .color(switchControl.thumbTintColor) },
+                        write: { newValue in
+                            guard case let .color(thumbTintColor) = newValue else { return }
+                            switchControl.thumbTintColor = thumbTintColor
+                        }
+                    )
                 }
             }
         }
