@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -43,70 +44,122 @@ extension DefaultElementAttributesLibrary {
             case isBaselineRelativeArrangement = "Baseline Relative"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let stackView else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .axis:
-                    .textButtonGroup(
-                        title: property.rawValue,
-                        texts: NSLayoutConstraint.Axis.allCases.map(\.description),
-                        selectedIndex: { NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis) }
-                    ) {
-                        guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: .init(
+                            id: "axis",
+                            title: property.rawValue,
+                            kind: .textButtons,
+                            value: .selection(
+                                .init(options: NSLayoutConstraint.Axis.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(NSLayoutConstraint.Axis.allCases.firstIndex(of: stackView.axis)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
 
-                        let axis = NSLayoutConstraint.Axis.allCases[newIndex]
+                            let axis = NSLayoutConstraint.Axis.allCases[newIndex]
 
-                        stackView.axis = axis
-                    }
+                            stackView.axis = axis
+                        }
+                    )
                 case .alignment:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UIStackView.Alignment.allCases.map(\.description),
-                        selectedIndex: { UIStackView.Alignment.allCases.firstIndex(of: stackView.alignment) }
-                    ) {
-                        guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: .init(
+                            id: "alignment",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: UIStackView.Alignment.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(UIStackView.Alignment.allCases.firstIndex(of: stackView.alignment)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
 
-                        let alignment = UIStackView.Alignment.allCases[newIndex]
+                            let alignment = UIStackView.Alignment.allCases[newIndex]
 
-                        stackView.alignment = alignment
-                    }
+                            stackView.alignment = alignment
+                        }
+                    )
                 case .distribution:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UIStackView.Distribution.allCases.map(\.description),
-                        selectedIndex: { UIStackView.Distribution.allCases.firstIndex(of: stackView.distribution) }
-                    ) {
-                        guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: .init(
+                            id: "distribution",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: UIStackView.Distribution.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(UIStackView.Distribution.allCases.firstIndex(of: stackView.distribution)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
 
-                        let distribution = UIStackView.Distribution.allCases[newIndex]
+                            let distribution = UIStackView.Distribution.allCases[newIndex]
 
-                        stackView.distribution = distribution
-                    }
+                            stackView.distribution = distribution
+                        }
+                    )
                 case .spacing:
-                    .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { stackView.spacing },
-                        range: { 0 ... .infinity },
-                        stepValue: { 1 }
-                    ) { spacing in
-                        stackView.spacing = spacing
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "spacing",
+                            title: property.rawValue,
+                            kind: .stepper,
+                            value: .number(.init(min: 0, step: 1, isDecimal: true)),
+                            editability: .editable
+                        ),
+                        read: { .number(Double(stackView.spacing)) },
+                        write: { newValue in
+                            guard case let .number(spacing) = newValue else { return }
+                            stackView.spacing = CGFloat(spacing)
+                        }
+                    )
                 case .isBaselineRelativeArrangement:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { stackView.isBaselineRelativeArrangement }
-                    ) { isBaselineRelativeArrangement in
-                        stackView.isBaselineRelativeArrangement = isBaselineRelativeArrangement
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "is-baseline-relative-arrangement",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(stackView.isBaselineRelativeArrangement) },
+                        write: { newValue in
+                            guard case let .bool(isBaselineRelativeArrangement) = newValue else { return }
+                            stackView.isBaselineRelativeArrangement = isBaselineRelativeArrangement
+                        }
+                    )
                 case .isLayoutMarginsRelativeArrangement:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { stackView.isLayoutMarginsRelativeArrangement }
-                    ) { isLayoutMarginsRelativeArrangement in
-                        stackView.isLayoutMarginsRelativeArrangement = isLayoutMarginsRelativeArrangement
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "is-layout-margins-relative-arrangement",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(stackView.isLayoutMarginsRelativeArrangement) },
+                        write: { newValue in
+                            guard case let .bool(isLayoutMarginsRelativeArrangement) = newValue else { return }
+                            stackView.isLayoutMarginsRelativeArrangement = isLayoutMarginsRelativeArrangement
+                        }
+                    )
                 }
             }
         }

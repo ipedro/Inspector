@@ -432,5 +432,33 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertFalse(slider.isContinuous)
     }
 
+    func testStackViewAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let stackView = UIStackView()
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.StackViewAttributesSectionDataSource(with: stackView)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 6)
+        XCTAssertEqual(bindings[0].descriptor.kind, .textButtons)
+        XCTAssertEqual(bindings[1].descriptor.kind, .options)
+        XCTAssertEqual(bindings[2].descriptor.kind, .options)
+        XCTAssertEqual(bindings[3].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[4].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[5].descriptor.kind, .toggle)
+
+        bindings[0].apply(.selection(1))
+        bindings[2].apply(.selection(1))
+        bindings[3].apply(.number(24))
+        bindings[4].apply(.bool(true))
+        bindings[5].apply(.bool(true))
+
+        XCTAssertEqual(stackView.axis, NSLayoutConstraint.Axis.allCases[1])
+        XCTAssertEqual(stackView.distribution, UIStackView.Distribution.allCases[1])
+        XCTAssertEqual(stackView.spacing, 24)
+        XCTAssertTrue(stackView.isBaselineRelativeArrangement)
+        XCTAssertTrue(stackView.isLayoutMarginsRelativeArrangement)
+    }
+
 }
 #endif
