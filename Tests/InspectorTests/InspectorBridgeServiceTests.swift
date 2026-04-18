@@ -584,15 +584,35 @@ private final class MockLibrary: InspectorElementLibraryProtocol {
 private final class MockSectionRow: InspectorElementSectionDataSource {
     var title: String
     var subtitle: String?
-    var properties: [InspectorElementProperty]
     var customClass: InspectorElementSectionView.Type? { nil }
     var state: InspectorElementSectionState = .expanded
-    var titleAccessoryProperty: InspectorElementProperty? { nil }
+    let propertyBindings: [InspectorPropertyBinding]
+    let titleAccessoryBinding: InspectorPropertyBinding?
 
-    init(title: String = "Mock Row", subtitle: String? = nil, properties: [InspectorElementProperty]) {
+    init(
+        title: String = "Mock Row",
+        subtitle: String? = nil,
+        properties: [InspectorElementProperty],
+        titleAccessoryProperty: InspectorElementProperty? = nil
+    ) {
         self.title = title
         self.subtitle = subtitle
-        self.properties = properties
+        self.propertyBindings = properties.enumerated().compactMap { index, property in
+            property.makeBinding(id: "mock-\(index)")
+        }
+        self.titleAccessoryBinding = titleAccessoryProperty?.makeBinding(id: "mock-title-accessory")
+    }
+
+    init(
+        title: String = "Mock Row",
+        subtitle: String? = nil,
+        propertyBindings: [InspectorPropertyBinding],
+        titleAccessoryBinding: InspectorPropertyBinding? = nil
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.propertyBindings = propertyBindings
+        self.titleAccessoryBinding = titleAccessoryBinding
     }
 }
 
