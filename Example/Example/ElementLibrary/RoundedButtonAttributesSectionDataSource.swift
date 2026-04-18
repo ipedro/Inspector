@@ -19,6 +19,7 @@
 //  SOFTWARE.
 
 import Inspector
+import InspectorContract
 import UIKit
 
 final class RoundedButtonAttributesSectionDataSource: InspectorElementSectionDataSource {
@@ -41,32 +42,36 @@ final class RoundedButtonAttributesSectionDataSource: InspectorElementSectionDat
         case backgroundColor = "Background Color"
     }
 
-    var properties: [InspectorElementProperty] {
+    var propertyBindings: [InspectorPropertyBinding] {
         Properties.allCases.map { property in
             switch property {
             case .animateOnTouch:
-                .switch(
-                    title: property.rawValue,
-                    isOn: { self.button.animateOnTouch }
-                ) { animateOnTouch in
-                    self.button.animateOnTouch = animateOnTouch
-                }
-
+                .init(
+                    descriptor: .init(id: "animate-on-touch", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                    read: { .bool(self.button.animateOnTouch) },
+                    write: { newValue in
+                        guard case let .bool(animateOnTouch) = newValue else { return }
+                        self.button.animateOnTouch = animateOnTouch
+                    }
+                )
             case .cornerRadius:
-                .switch(
-                    title: property.rawValue,
-                    isOn: { self.button.roundCorners }
-                ) { roundCorners in
-                    self.button.roundCorners = roundCorners
-                }
-
+                .init(
+                    descriptor: .init(id: "round-corners", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                    read: { .bool(self.button.roundCorners) },
+                    write: { newValue in
+                        guard case let .bool(roundCorners) = newValue else { return }
+                        self.button.roundCorners = roundCorners
+                    }
+                )
             case .backgroundColor:
-                .colorPicker(
-                    title: property.rawValue,
-                    color: { self.button.backgroundColor }
-                ) { newBackgroundColor in
-                    self.button.backgroundColor = newBackgroundColor
-                }
+                .init(
+                    descriptor: .init(id: "background-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable),
+                    read: { .color(self.button.backgroundColor) },
+                    write: { newValue in
+                        guard case let .color(newBackgroundColor) = newValue else { return }
+                        self.button.backgroundColor = newBackgroundColor
+                    }
+                )
             }
         }
     }
