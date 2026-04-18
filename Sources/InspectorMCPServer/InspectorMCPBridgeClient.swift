@@ -188,7 +188,7 @@ final class InspectorMCPHTTPBridgeClient: InspectorMCPBridgeClient {
 
 private struct EmptyRequestBody: Encodable {
     func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: EmptyCodingKey.self)
+        let container = encoder.container(keyedBy: EmptyCodingKey.self)
         _ = container
     }
 

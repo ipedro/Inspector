@@ -277,6 +277,49 @@ final class InspectorMCPTransportTests: XCTestCase {
         }
     }
 
+    func testListPropertiesAndSetPropertyMutateSelectionProperty() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let handle = try await queryHandle(accessibilityIdentifier: "MCP Tap Smoke Button")
+        let initialPropertiesResponse = try await postJSON(
+            path: "/properties",
+            body: ["handle": handle, "panel": "attributes", "includeReadOnly": false]
+        )
+        XCTAssertEqual(initialPropertiesResponse.statusCode, 200)
+        let initialPropertiesPayload = try unpackSuccessEnvelope(from: initialPropertiesResponse.body)
+        let initialSections = try XCTUnwrap(initialPropertiesPayload["sections"] as? [[String: Any]])
+        let property = try XCTUnwrap(findProperty(in: initialSections, titled: "Content Mode"))
+        let propertyRef = try XCTUnwrap(property["propertyRef"] as? String)
+
+        let setResponse = try await postJSON(
+            path: "/set-property",
+            body: ["propertyRef": propertyRef, "selectionIndex": 1]
+        )
+        XCTAssertEqual(setResponse.statusCode, 200)
+        let setPayload = try unpackSuccessEnvelope(from: setResponse.body)
+        XCTAssertEqual(setPayload["applied"] as? Bool, true)
+
+        let refreshedHandle = try await queryHandle(accessibilityIdentifier: "MCP Tap Smoke Button")
+        let refreshedPropertiesResponse = try await postJSON(
+            path: "/properties",
+            body: ["handle": refreshedHandle, "panel": "attributes", "includeReadOnly": false]
+        )
+        let refreshedPropertiesPayload = try unpackSuccessEnvelope(from: refreshedPropertiesResponse.body)
+        let refreshedSections = try XCTUnwrap(refreshedPropertiesPayload["sections"] as? [[String: Any]])
+        let refreshedProperty = try XCTUnwrap(findProperty(in: refreshedSections, titled: "Content Mode"))
+        XCTAssertEqual(refreshedProperty["selectionIndex"] as? Int, 1)
+
+        addTeardownBlock {
+            try? await self.restoreSelection(
+                accessibilityIdentifier: "MCP Tap Smoke Button",
+                titled: "Content Mode",
+                selectionIndex: 0
+            )
+        }
+    }
+
     func testOldestHandleBecomesStaleAfterNinthQuery() async throws {
         _ = try await pollHealth(timeout: 5) { payload in
             payload["status"] as? String == "active"
@@ -460,12 +503,16 @@ final class InspectorMCPTransportTests: XCTestCase {
     }
 
     private func findPropertyRef(in sections: [[String: Any]], titled title: String) -> String? {
+        findProperty(in: sections, titled: title)?["propertyRef"] as? String
+    }
+
+    private func findProperty(in sections: [[String: Any]], titled title: String) -> [String: Any]? {
         for section in sections {
             guard let rows = section["rows"] as? [[String: Any]] else { continue }
             for row in rows {
                 guard let properties = row["properties"] as? [[String: Any]] else { continue }
                 for property in properties where property["title"] as? String == title {
-                    return property["propertyRef"] as? String
+                    return property
                 }
             }
         }
@@ -485,6 +532,25 @@ final class InspectorMCPTransportTests: XCTestCase {
         _ = try await postJSON(
             path: "/set-property",
             body: ["propertyRef": propertyRef, "boolValue": false]
+        )
+    }
+
+    private func restoreSelection(
+        accessibilityIdentifier: String,
+        titled title: String,
+        selectionIndex: Int
+    ) async throws {
+        let handle = try await queryHandle(accessibilityIdentifier: accessibilityIdentifier)
+        let listResponse = try await postJSON(
+            path: "/properties",
+            body: ["handle": handle, "panel": "attributes", "includeReadOnly": false]
+        )
+        let listPayload = try unpackSuccessEnvelope(from: listResponse.body)
+        let sections = try XCTUnwrap(listPayload["sections"] as? [[String: Any]])
+        guard let propertyRef = findPropertyRef(in: sections, titled: title) else { return }
+        _ = try await postJSON(
+            path: "/set-property",
+            body: ["propertyRef": propertyRef, "selectionIndex": selectionIndex]
         )
     }
 
