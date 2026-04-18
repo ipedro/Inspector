@@ -53,6 +53,7 @@ let package = Package(
         .target(
             name: "Inspector",
             dependencies: [
+                "InspectorInterface",
                 "InspectorMCPWire",
                 .product(name: "UIKeyCommandTableView", package: "UIKeyCommandTableView", condition: .when(platforms: [.iOS])),
                 .product(name: "UIKeyboardAnimatable", package: "UIKeyboardAnimatable", condition: .when(platforms: [.iOS])),
@@ -114,8 +115,7 @@ let package = Package(
         .target(
             name: "InspectorInterface",
             dependencies: [
-                .target(name: "InspectorMacros"),
-                .target(name: "Inspector")
+                .target(name: "InspectorMacros")
             ],
             swiftSettings: [
                 .define("INSPECTOR_DEBUGGING", .when(traits: ["Debugging"]))

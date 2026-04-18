@@ -1,5 +1,4 @@
 #if INSPECTOR_DEBUGGING && canImport(UIKit) && targetEnvironment(simulator)
-import Inspector
 import UIKit
 
 public enum InspectorBridge {
