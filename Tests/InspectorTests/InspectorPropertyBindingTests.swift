@@ -135,5 +135,50 @@ final class InspectorPropertyBindingTests: XCTestCase {
             XCTFail("expected switch property")
         }
     }
+
+    func testLegacyTogglePropertyCreatesBinding() {
+        var value = false
+        let property = InspectorElementProperty.switch(
+            title: "Enabled",
+            isOn: { value },
+            handler: { value = $0 }
+        )
+
+        let binding = try XCTUnwrap(property.makeBinding(id: "enabled"))
+        XCTAssertEqual(binding.descriptor.title, "Enabled")
+        if case let .bool(current) = binding.read() {
+            XCTAssertFalse(current)
+        } else {
+            XCTFail("expected bool value")
+        }
+    }
+
+    func testLegacyImageButtonGroupCurrentlyReturnsNilBinding() {
+        let property = InspectorElementProperty.imageButtonGroup(
+            title: "Modes",
+            images: [UIImage(), UIImage()],
+            selectedIndex: { 0 },
+            handler: { _ in }
+        )
+
+        XCTAssertNil(property.makeBinding(id: "modes"))
+    }
+
+    func testSectionDataSourcePropertyBindingsFallbacksForLegacyProperties() {
+        final class LegacyDataSource: InspectorElementSectionDataSource {
+            var state: InspectorElementSectionState = .collapsed
+            let title = "Legacy"
+            var properties: [InspectorElementProperty] {
+                [
+                    .switch(title: "Enabled", isOn: { false }, handler: { _ in })
+                ]
+            }
+        }
+
+        let dataSource = LegacyDataSource()
+        let bindings = try XCTUnwrap(dataSource.propertyBindings)
+        XCTAssertEqual(bindings.count, 1)
+        XCTAssertEqual(bindings.first?.descriptor.title, "Enabled")
+    }
 }
 #endif

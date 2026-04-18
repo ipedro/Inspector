@@ -85,7 +85,22 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
 
         guard let dataSource else { return }
 
-        if let titleAccessoryProperty = dataSource.titleAccessoryProperty {
+        if let titleAccessoryBinding = dataSource.titleAccessoryBinding,
+           let titleAccessoryProperty = titleAccessoryBinding.makeInspectorElementProperty()
+        {
+            let titleAccessoryView = makeView(for: titleAccessoryProperty)
+            if let baseForm = titleAccessoryView as? BaseFormControl {
+                baseForm.titleLabel.removeFromSuperview()
+            }
+
+            if let control = titleAccessoryView as? UIControl {
+                control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
+                control.isEnabled = titleAccessoryProperty.hasHandler
+            }
+
+            bindingViews.append((titleAccessoryBinding, titleAccessoryView))
+            viewCode.addTitleAccessoryView(titleAccessoryView)
+        } else if let titleAccessoryProperty = dataSource.titleAccessoryProperty {
             let titleAccessoryView = makeView(for: titleAccessoryProperty)
             if let baseForm = titleAccessoryView as? BaseFormControl {
                 baseForm.titleLabel.removeFromSuperview()
@@ -114,6 +129,52 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
         }
 
         hasAddedFormViews = true
+
+        if let bindings = dataSource.propertyBindings {
+            for (index, binding) in bindings.enumerated() {
+                guard let property = binding.makeInspectorElementProperty() else {
+                    continue
+                }
+
+                let propertyView = makeView(for: property)
+
+                let operation = MainThreadAsyncOperation(name: String(index)) { [weak self] in
+                    guard let self else { return }
+
+                    if index == .zero, let sectionHeader = propertyView as? SectionHeader {
+                        sectionHeader.margins.top = .zero
+                    }
+
+                    if let control = propertyView as? UIControl {
+                        control.addTarget(
+                            self,
+                            action: #selector(InspectorElementSectionViewController.valueChanged(_:)),
+                            for: .valueChanged
+                        )
+                        control.isEnabled = binding.write != nil
+                    }
+
+                    let isLastElement = index == bindings.count - 1
+                    let nextIsControl = index + 1 < bindings.count
+                        ? (bindings[index + 1].makeInspectorElementProperty()?.isControl ?? false)
+                        : false
+
+                    if let fromControl = propertyView as? BaseFormControl {
+                        fromControl.isShowingSeparator = (isLastElement || nextIsControl == false) == false
+                    }
+
+                    bindingViews.append((binding, propertyView))
+
+                    propertyView.alpha = 0
+                    viewCode.addFormViews([propertyView])
+
+                    animate(withDuration: .veryLong) { propertyView.alpha = 1 }
+                }
+
+                delegate.addOperationToQueue(operation)
+            }
+            return
+        }
 
         for (index, property) in dataSource.properties.enumerated() {
             let propertyView = makeView(for: property)
@@ -188,6 +249,7 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
     var state: InspectorElementSectionState { viewCode.state }
 
     private var formViews: [InspectorElementProperty: UIView] = [:]
+    private var bindingViews: [(InspectorPropertyBinding, UIView)] = []
 
     private func makeView(for property: InspectorElementProperty) -> UIView {
         switch property {
@@ -326,78 +388,196 @@ extension InspectorElementSectionViewController {
         delegate?.inspectorElementSectionViewController(self, willChangeFrom: .none, to: viewCode.state)
     }
 
+    private func applyUpdate(property: InspectorElementProperty, formView: UIView) {
+        switch (property, formView) {
+        case let (.stepper(_, _, _, _, _, handler), stepperControl as StepperControl):
+            handler?(stepperControl.value)
+
+        case let (.colorPicker(_, _, _, handler), colorPicker as ColorPreviewControl):
+            handler?(colorPicker.selectedColor)
+
+        case let (.switch(_, _, handler), toggleControl as ToggleControl):
+            handler?(toggleControl.isOn)
+
+        case let (.textButtonGroup(_, _, _, _, handler), segmentedControl as SegmentedControl),
+             let (.imageButtonGroup(_, _, _, _, handler), segmentedControl as SegmentedControl):
+            handler?(segmentedControl.selectedIndex)
+
+        case let (.optionsList(_, _, _, _, _, handler), optionSelector as OptionListControl):
+            handler?(optionSelector.selectedIndex)
+
+        case let (.textField(_, _, _, _, handler), textFieldControl as TextFieldControl):
+            handler?(textFieldControl.value)
+
+        case let (.textView(_, _, _, handler), textViewControl as TextViewControl):
+            handler?(textViewControl.value)
+
+        case let (.imagePicker(_, _, _, handler), imagePicker as ImagePreviewControl):
+            handler?(imagePicker.image)
+
+        case let (.cgRect(_, _, handler: handler), cgRectControl as RectControl):
+            handler?(cgRectControl.rect)
+
+        case let (.cgPoint(_, _, handler: handler), cgPointControl as PointControl):
+            handler?(cgPointControl.point)
+
+        case let (.cgSize(_, _, handler: handler), cgSizeControl as SizeControl):
+            handler?(cgSizeControl.size)
+
+        case let (.uiOffset(_, _, handler: handler), uiOffsetControl as OffsetControl):
+            handler?(uiOffsetControl.offset)
+
+        case let (.directionalInsets(_, _, handler: handler), insetsControl as DirectionalEdgeInsetsControl):
+            handler?(insetsControl.insets)
+
+        case let (.edgeInsets(_, _, handler: handler), insetsControl as EdgeInsetsControl):
+            handler?(insetsControl.insets)
+
+        case (.separator, _),
+             (.group, _),
+             (.infoNote, _),
+             (.preview, _):
+            break
+
+        case (.stepper, _),
+             (.colorPicker, _),
+             (.switch, _),
+             (.textButtonGroup, _),
+             (.imageButtonGroup, _),
+             (.optionsList, _),
+             (.textField, _),
+             (.textView, _),
+             (.imagePicker, _),
+             (.cgRect, _),
+             (.cgSize, _),
+             (.cgPoint, _),
+             (.uiOffset, _),
+             (.edgeInsets, _),
+             (.directionalInsets, _):
+            assertionFailure("shouldn't happen")
+        }
+    }
+
+    private func reload(property: InspectorElementProperty, formView: UIView) {
+        switch (property, formView) {
+        case (.separator, _),
+             (.group, _),
+             (.infoNote, _):
+            break
+
+        case let (.stepper(title, valueProvider, rangeProvider, stepValueProvider, _, _), stepperControl as StepperControl):
+            stepperControl.value = valueProvider()
+            stepperControl.title = title
+            stepperControl.range = rangeProvider()
+            stepperControl.stepValue = stepValueProvider()
+
+        case let (.colorPicker(title, _, selectedColorProvider, _), colorPicker as ColorPreviewControl):
+            colorPicker.selectedColor = selectedColorProvider()
+            colorPicker.title = title
+
+        case let (.imagePicker(title, axis, imageProvider, _), imagePicker as ImagePreviewControl):
+            imagePicker.image = imageProvider()
+            imagePicker.title = title
+            imagePicker.axis = axis
+
+        case let (.switch(title, isOnProvider, _), toggleControl as ToggleControl):
+            toggleControl.isOn = isOnProvider()
+            toggleControl.title = title
+
+        case let (.imageButtonGroup(title, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl),
+             let (.textButtonGroup(title, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
+            segmentedControl.selectedIndex = selectedIndexProvider()
+            segmentedControl.title = title
+
+        case let (.optionsList(title, _, _, _, selectedIndexProvider, _), optionSelector as OptionListControl):
+            optionSelector.selectedIndex = selectedIndexProvider()
+            optionSelector.title = title
+
+        case let (.textField(title, placeholder, _, valueProvider, _), textFieldControl as TextFieldControl):
+            textFieldControl.value = valueProvider()
+            textFieldControl.placeholder = placeholder
+            textFieldControl.title = title
+
+        case let (.textView(title, placeholder, valueProvider, _), textViewControl as TextViewControl):
+            textViewControl.value = valueProvider()
+            textViewControl.placeholder = placeholder
+            textViewControl.title = title
+
+        case let (.cgRect(title, rectProvider, _), cgRectControl as RectControl):
+            cgRectControl.title = title
+            cgRectControl.rect = rectProvider()
+
+        case let (.cgPoint(title, pointProvider, _), cgPointControl as PointControl):
+            cgPointControl.title = title
+            cgPointControl.point = pointProvider()
+
+        case let (.cgSize(title, sizeProvider, _), cgSizeControl as SizeControl):
+            cgSizeControl.title = title
+            cgSizeControl.size = sizeProvider()
+
+        case let (.uiOffset(title, offsetProvider, _), uiOffsetControl as OffsetControl):
+            uiOffsetControl.title = title
+            uiOffsetControl.offset = offsetProvider()
+
+        case let (.directionalInsets(title, insetsProvider, _), directionalInsetsControl as DirectionalEdgeInsetsControl):
+            directionalInsetsControl.title = title
+            directionalInsetsControl.insets = insetsProvider()
+
+        case let (.edgeInsets(title, insetsProvider, _), edgeInsetsControl as EdgeInsetsControl):
+            edgeInsetsControl.title = title
+            edgeInsetsControl.insets = insetsProvider()
+
+        case let (.preview, thumbnailView as ViewHierarchyElementThumbnailView):
+            thumbnailView.updateViews(afterScreenUpdates: false)
+
+        case (.stepper, _),
+             (.colorPicker, _),
+             (.switch, _),
+             (.imageButtonGroup, _),
+             (.textButtonGroup, _),
+             (.optionsList, _),
+             (.textField, _),
+             (.textView, _),
+             (.imagePicker, _),
+             (.cgRect, _),
+             (.cgSize, _),
+             (.cgPoint, _),
+             (.uiOffset, _),
+             (.edgeInsets, _),
+             (.directionalInsets, _),
+             (.preview, _):
+            assertionFailure("shouldn't happen")
+        }
+    }
+
     @objc private func valueChanged(_ sender: AnyObject) {
+        for (binding, formView) in bindingViews where formView === sender {
+            guard let property = binding.makeInspectorElementProperty() else { continue }
+
+            delegate?.inspectorElementSectionViewController(self, willUpdate: property)
+
+            let updateValueOperation = MainThreadOperation(name: "update property value") {
+                self.applyUpdate(property: property, formView: formView)
+            }
+
+            let didUpdateOperation = MainThreadOperation(name: "did update property value") { [weak self] in
+                guard let self else { return }
+
+                self.delegate?.inspectorElementSectionViewController(self, didUpdate: property)
+            }
+
+            didUpdateOperation.addDependency(updateValueOperation)
+
+            delegate?.addOperationToQueue(updateValueOperation)
+            delegate?.addOperationToQueue(didUpdateOperation)
+            return
+        }
+
         for (property, formView) in formViews where formView === sender {
             delegate?.inspectorElementSectionViewController(self, willUpdate: property)
 
             let updateValueOperation = MainThreadOperation(name: "update property value") {
-                switch (property, formView) {
-                case let (.stepper(_, _, _, _, _, handler), stepperControl as StepperControl):
-                    handler?(stepperControl.value)
-
-                case let (.colorPicker(_, _, _, handler), colorPicker as ColorPreviewControl):
-                    handler?(colorPicker.selectedColor)
-
-                case let (.switch(_, _, handler), toggleControl as ToggleControl):
-                    handler?(toggleControl.isOn)
-
-                case let (.textButtonGroup(_, _, _, _, handler), segmentedControl as SegmentedControl),
-                     let (.imageButtonGroup(_, _, _, _, handler), segmentedControl as SegmentedControl):
-                    handler?(segmentedControl.selectedIndex)
-
-                case let (.optionsList(_, _, _, _, _, handler), optionSelector as OptionListControl):
-                    handler?(optionSelector.selectedIndex)
-
-                case let (.textField(_, _, _, _, handler), textFieldControl as TextFieldControl):
-                    handler?(textFieldControl.value)
-
-                case let (.textView(_, _, _, handler), textViewControl as TextViewControl):
-                    handler?(textViewControl.value)
-
-                case let (.imagePicker(_, _, _, handler), imagePicker as ImagePreviewControl):
-                    handler?(imagePicker.image)
-
-                case let (.cgRect(_, _, handler: handler), cgRectControl as RectControl):
-                    handler?(cgRectControl.rect)
-
-                case let (.cgPoint(_, _, handler: handler), cgPointControl as PointControl):
-                    handler?(cgPointControl.point)
-
-                case let (.cgSize(_, _, handler: handler), cgSizeControl as SizeControl):
-                    handler?(cgSizeControl.size)
-
-                case let (.uiOffset(_, _, handler: handler), uiOffsetControl as OffsetControl):
-                    handler?(uiOffsetControl.offset)
-
-                case let (.directionalInsets(_, _, handler: handler), insetsControl as DirectionalEdgeInsetsControl):
-                    handler?(insetsControl.insets)
-
-                case let (.edgeInsets(_, _, handler: handler), insetsControl as EdgeInsetsControl):
-                    handler?(insetsControl.insets)
-
-                case (.separator, _),
-                     (.group, _):
-                    break
-
-                case (.stepper, _),
-                     (.colorPicker, _),
-                     (.switch, _),
-                     (.textButtonGroup, _),
-                     (.imageButtonGroup, _),
-                     (.optionsList, _),
-                     (.textField, _),
-                     (.textView, _),
-                     (.imagePicker, _),
-                     (.cgRect, _),
-                     (.cgSize, _),
-                     (.cgPoint, _),
-                     (.uiOffset, _),
-                     (.edgeInsets, _),
-                     (.directionalInsets, _),
-                     (.infoNote, _),
-                     (.preview, _):
-                    assertionFailure("shouldn't happen")
-                }
+                self.applyUpdate(property: property, formView: formView)
             }
 
             let didUpdateOperation = MainThreadOperation(name: "did update property value") { [weak self] in
@@ -414,96 +594,13 @@ extension InspectorElementSectionViewController {
     }
 
     func reloadData() {
+        for (binding, formView) in bindingViews {
+            guard let property = binding.makeInspectorElementProperty() else { continue }
+            reload(property: property, formView: formView)
+        }
+
         for (property, formView) in formViews {
-            switch (property, formView) {
-            case (.separator, _),
-                 (.group, _),
-                 (.infoNote, _):
-                break
-
-            case let (.stepper(title, valueProvider, rangeProvider, stepValueProvider, _, _), stepperControl as StepperControl):
-                stepperControl.value = valueProvider()
-                stepperControl.title = title
-                stepperControl.range = rangeProvider()
-                stepperControl.stepValue = stepValueProvider()
-
-            case let (.colorPicker(title, _, selectedColorProvider, _), colorPicker as ColorPreviewControl):
-                colorPicker.selectedColor = selectedColorProvider()
-                colorPicker.title = title
-
-            case let (.imagePicker(title, axis, imageProvider, _), imagePicker as ImagePreviewControl):
-                imagePicker.image = imageProvider()
-                imagePicker.title = title
-                imagePicker.axis = axis
-
-            case let (.switch(title, isOnProvider, _), toggleControl as ToggleControl):
-                toggleControl.isOn = isOnProvider()
-                toggleControl.title = title
-
-            case let (.imageButtonGroup(title, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl),
-                 let (.textButtonGroup(title, _, _, selectedIndexProvider, _), segmentedControl as SegmentedControl):
-                segmentedControl.selectedIndex = selectedIndexProvider()
-                segmentedControl.title = title
-
-            case let (.optionsList(title, _, _, _, selectedIndexProvider, _), optionSelector as OptionListControl):
-                optionSelector.selectedIndex = selectedIndexProvider()
-                optionSelector.title = title
-
-            case let (.textField(title, placeholder, _, valueProvider, _), textFieldControl as TextFieldControl):
-                textFieldControl.value = valueProvider()
-                textFieldControl.placeholder = placeholder
-                textFieldControl.title = title
-
-            case let (.textView(title, placeholder, valueProvider, _), textViewControl as TextViewControl):
-                textViewControl.value = valueProvider()
-                textViewControl.placeholder = placeholder
-                textViewControl.title = title
-
-            case let (.cgRect(title, rectProvider, _), cgRectControl as RectControl):
-                cgRectControl.title = title
-                cgRectControl.rect = rectProvider()
-
-            case let (.cgPoint(title, pointProvider, _), cgPointControl as PointControl):
-                cgPointControl.title = title
-                cgPointControl.point = pointProvider()
-
-            case let (.cgSize(title, sizeProvider, _), cgSizeControl as SizeControl):
-                cgSizeControl.title = title
-                cgSizeControl.size = sizeProvider()
-
-            case let (.uiOffset(title, offsetProvider, _), uiOffsetControl as OffsetControl):
-                uiOffsetControl.title = title
-                uiOffsetControl.offset = offsetProvider()
-
-            case let (.directionalInsets(title, insetsProvider, _), directionalInsetsControl as DirectionalEdgeInsetsControl):
-                directionalInsetsControl.title = title
-                directionalInsetsControl.insets = insetsProvider()
-
-            case let (.edgeInsets(title, insetsProvider, _), edgeInsetsControl as EdgeInsetsControl):
-                edgeInsetsControl.title = title
-                edgeInsetsControl.insets = insetsProvider()
-
-            case let (.preview, thumbnailView as ViewHierarchyElementThumbnailView):
-                thumbnailView.updateViews(afterScreenUpdates: false)
-
-            case (.stepper, _),
-                 (.colorPicker, _),
-                 (.switch, _),
-                 (.imageButtonGroup, _),
-                 (.textButtonGroup, _),
-                 (.optionsList, _),
-                 (.textField, _),
-                 (.textView, _),
-                 (.imagePicker, _),
-                 (.cgRect, _),
-                 (.cgSize, _),
-                 (.cgPoint, _),
-                 (.uiOffset, _),
-                 (.edgeInsets, _),
-                 (.directionalInsets, _),
-                 (.preview, _):
-                assertionFailure("shouldn't happen")
-            }
+            reload(property: property, formView: formView)
         }
     }
 }

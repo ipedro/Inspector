@@ -33,6 +33,8 @@ public protocol InspectorElementSectionDataSource: AnyObject {
     var properties: [InspectorElementProperty] { get }
     /// Optional binding-based runtime description for this section.
     var sectionBinding: InspectorSectionBinding? { get }
+    /// Runtime bindings for field rendering/mutation when available.
+    var propertyBindings: [InspectorPropertyBinding]? { get }
     /// To customize how your sections look provide a type that conforms to `InspectorElementFormSectionView`.
     var customClass: InspectorElementSectionView.Type? { get }
     /// Constant describing the currentstate of the section.
@@ -41,6 +43,8 @@ public protocol InspectorElementSectionDataSource: AnyObject {
     var titleAccessoryProperty: InspectorElementProperty? { get }
     /// Escape hatch for binding fields that still need custom runtime expansion.
     var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { get }
+    /// Optional binding-based title accessory.
+    var titleAccessoryBinding: InspectorPropertyBinding? { get }
 }
 
 public extension InspectorElementSectionDataSource {
@@ -49,9 +53,36 @@ public extension InspectorElementSectionDataSource {
         sectionBinding?.makeInspectorElementProperties(extraProperties: sectionBindingExtraProperties) ?? []
     }
     var sectionBinding: InspectorSectionBinding? { nil }
+    var propertyBindings: [InspectorPropertyBinding]? {
+        if let sectionBinding {
+            let extraProperties = sectionBindingExtraProperties
+                .sorted { $0.key < $1.key }
+                .flatMap { key, provider -> [InspectorPropertyBinding]? in
+                    let properties = provider()
+                    var bindings: [InspectorPropertyBinding] = []
+                    for (index, property) in properties.enumerated() {
+                        guard let binding = property.makeBinding(id: "\(key)-\(index)") else {
+                            return nil
+                        }
+                        bindings.append(binding)
+                    }
+                    return bindings
+                }
+            guard extraProperties.allSatisfy({ $0 != nil }) else { return nil }
+            return sectionBinding.fields + extraProperties.compactMap { $0 }.flatMap { $0 }
+        }
+
+        let mapped = properties.enumerated().compactMap { index, property in
+            property.makeBinding(id: "legacy-\(index)")
+        }
+        return mapped.count == properties.count ? mapped : nil
+    }
     var customClass: InspectorElementSectionView.Type? { nil }
     var titleAccessoryProperty: InspectorElementProperty? { nil }
     var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }
+    var titleAccessoryBinding: InspectorPropertyBinding? {
+        titleAccessoryProperty?.makeBinding(id: "title-accessory")
+    }
 }
 
 extension InspectorElementSectionDataSource {

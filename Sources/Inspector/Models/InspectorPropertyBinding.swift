@@ -290,3 +290,149 @@ public extension InspectorSectionBinding {
         }
     }
 }
+
+public extension InspectorElementProperty {
+    func makeBinding(id: String) -> InspectorPropertyBinding? {
+        switch self {
+        case let .switch(title, isOn, handler):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .toggle, value: .bool, editability: handler == nil ? .readOnly : .editable),
+                read: { .bool(isOn()) },
+                write: handler.map { writer in { value in guard case let .bool(updated) = value else { return }; writer(updated) } }
+            )
+        case let .stepper(title, value, range, stepValue, isDecimalValue, handler):
+            let resolvedRange = range()
+            return .init(
+                descriptor: .init(
+                    id: id,
+                    title: title,
+                    kind: .stepper,
+                    value: .number(.init(min: resolvedRange.lowerBound, max: resolvedRange.upperBound, step: stepValue(), isDecimal: isDecimalValue)),
+                    editability: handler == nil ? .readOnly : .editable
+                ),
+                read: { .number(value()) },
+                write: handler.map { writer in { newValue in guard case let .number(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .textField(title, placeholder, _, value, handler):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .textField, value: .string(.init(multiline: false, placeholder: placeholder, allowsNil: true)), editability: handler == nil ? .readOnly : .editable),
+                read: { .string(value()) },
+                write: handler.map { writer in { newValue in guard case let .string(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .textView(title, placeholder, value, handler):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .textView, value: .string(.init(multiline: true, placeholder: placeholder, allowsNil: true)), editability: handler == nil ? .readOnly : .editable),
+                read: { .string(value()) },
+                write: handler.map { writer in { newValue in guard case let .string(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .optionsList(title, _, _, options, selectedIndex, handler):
+            return .init(
+                descriptor: .init(
+                    id: id,
+                    title: title,
+                    kind: .options,
+                    value: .selection(.init(options: options.enumerated().map { .init(id: "\($0.offset)", title: String(describing: $0.element.title)) }, allowsNil: true)),
+                    editability: handler == nil ? .readOnly : .editable
+                ),
+                read: { .selection(selectedIndex()) },
+                write: handler.map { writer in { newValue in guard case let .selection(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .textButtonGroup(title, _, texts, selectedIndex, handler):
+            return .init(
+                descriptor: .init(
+                    id: id,
+                    title: title,
+                    kind: .textButtons,
+                    value: .selection(.init(options: texts.enumerated().map { .init(id: "\($0.offset)", title: $0.element) }, allowsNil: true)),
+                    editability: handler == nil ? .readOnly : .editable
+                ),
+                read: { .selection(selectedIndex()) },
+                write: handler.map { writer in { newValue in guard case let .selection(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .colorPicker(title, _, color, handler):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .color, value: .color(allowsNil: true), editability: handler == nil ? .readOnly : .editable),
+                read: { .color(color()) },
+                write: handler.map { writer in { newValue in guard case let .color(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .cgRect(title, rect, handler):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .preview, value: .rect, editability: handler == nil ? .readOnly : .editable),
+                read: { .rect(rect()) },
+                write: handler.map { writer in { newValue in guard case let .rect(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .cgPoint(title, point, handler):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .preview, value: .point, editability: handler == nil ? .readOnly : .editable),
+                read: { .point(point()) },
+                write: handler.map { writer in { newValue in guard case let .point(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .cgSize(title, size, handler):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .preview, value: .size, editability: handler == nil ? .readOnly : .editable),
+                read: { .size(size()) },
+                write: handler.map { writer in { newValue in guard case let .size(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .uiOffset(title, offset, handler):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .preview, value: .offset, editability: handler == nil ? .readOnly : .editable),
+                read: { .offset(offset()) },
+                write: handler.map { writer in { newValue in guard case let .offset(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .edgeInsets(title, insets, handler):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .preview, value: .edgeInsets, editability: handler == nil ? .readOnly : .editable),
+                read: { .edgeInsets(insets()) },
+                write: handler.map { writer in { newValue in guard case let .edgeInsets(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .directionalInsets(title, insets, handler):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .preview, value: .directionalEdgeInsets, editability: handler == nil ? .readOnly : .editable),
+                read: { .directionalEdgeInsets(insets()) },
+                write: handler.map { writer in { newValue in guard case let .directionalEdgeInsets(updated) = newValue else { return }; writer(updated) } }
+            )
+        case let .preview(target):
+            return .init(
+                descriptor: .init(id: id, title: "Preview", kind: .preview, value: .none, editability: .readOnly),
+                read: {
+                    if let view = target.reference._underlyingView {
+                        return .preview(view)
+                    }
+                    return .none
+                },
+                write: nil,
+                refreshHint: .reloadSection
+            )
+        case let .group(title, subtitle):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .group, value: .none, editability: .readOnly, presentation: .init(subtitle: subtitle)),
+                read: { .none },
+                write: nil,
+                refreshHint: .none
+            )
+        case .separator:
+            return .init(
+                descriptor: .init(id: id, title: "", kind: .separator, value: .none, editability: .readOnly),
+                read: { .none },
+                write: nil,
+                refreshHint: .none
+            )
+        case let .infoNote(icon, title, text):
+            let style: InspectorContract.InspectorNoteStyle = icon == .warning ? .warning : .info
+            return .init(
+                descriptor: .init(id: id, title: title ?? "", kind: .note, value: .none, editability: .readOnly, presentation: .init(subtitle: text, noteStyle: style)),
+                read: { .none },
+                write: nil,
+                refreshHint: .none
+            )
+        case let .imagePicker(title, _, image, handler):
+            return .init(
+                descriptor: .init(id: id, title: title, kind: .preview, value: .none, editability: handler == nil ? .readOnly : .editable),
+                read: { .image(image()) },
+                write: handler.map { writer in { newValue in guard case let .image(updated) = newValue else { return }; writer(updated) } }
+            )
+        case .imageButtonGroup:
+            return nil
+        }
+    }
+}
