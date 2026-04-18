@@ -1008,6 +1008,49 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(navigationBar.largeTitleTextAttributes?[.foregroundColor] as? UIColor, .green)
     }
 
+    func testTextViewAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let textView = UITextView()
+        textView.font = UIFont.systemFont(ofSize: 14)
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.TextViewAttributesSectionDataSource(with: textView)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 29)
+        XCTAssertEqual(bindings[0].descriptor.kind, .textView)
+        XCTAssertEqual(bindings[1].descriptor.kind, .color)
+        XCTAssertEqual(bindings[2].descriptor.kind, .options)
+        XCTAssertEqual(bindings[3].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[5].descriptor.kind, .imageButtons)
+        XCTAssertEqual(bindings[6].descriptor.kind, .group)
+        XCTAssertEqual(bindings[9].descriptor.kind, .group)
+        XCTAssertEqual(bindings[17].descriptor.kind, .group)
+        XCTAssertEqual(bindings[28].descriptor.kind, .toggle)
+
+        bindings[0].apply(.string("Body"))
+        bindings[1].apply(.color(.purple))
+        bindings[3].apply(.number(18))
+        bindings[5].apply(.selection(1))
+        bindings[7].apply(.bool(false))
+        bindings[8].apply(.bool(false))
+        bindings[10].apply(.bool(true))
+        bindings[18].apply(.selection(1))
+        bindings[26].apply(.selection(1))
+        bindings[28].apply(.bool(true))
+
+        XCTAssertEqual(textView.text, "Body")
+        XCTAssertEqual(textView.textColor, .purple)
+        XCTAssertEqual(try XCTUnwrap(textView.font).pointSize, 18, accuracy: 0.001)
+        XCTAssertEqual(textView.textAlignment, NSTextAlignment.allCases.withImages[1])
+        XCTAssertFalse(textView.isEditable)
+        XCTAssertFalse(textView.isSelectable)
+        XCTAssertTrue(textView.dataDetectorTypes.contains(.phoneNumber))
+        XCTAssertEqual(textView.textContentType, UITextContentType.allCases[1])
+        XCTAssertEqual(textView.returnKeyType, UIReturnKeyType.allCases[1])
+        XCTAssertTrue(textView.isSecureTextEntry)
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled
