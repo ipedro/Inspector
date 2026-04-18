@@ -550,6 +550,40 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(tableView.isSpringLoaded)
     }
 
+    func testNavigationControllerAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let rootViewController = UIViewController()
+        let navigationController = UINavigationController(rootViewController: rootViewController)
+        navigationController.setNavigationBarHidden(true, animated: false)
+        navigationController.setToolbarHidden(true, animated: false)
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.NavigationControllerAttributesSectionDataSource(with: navigationController)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 8)
+        XCTAssertEqual(bindings[0].descriptor.kind, .group)
+        XCTAssertEqual(bindings[1].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[2].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[3].descriptor.kind, .group)
+        XCTAssertEqual(bindings[4].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[7].descriptor.kind, .toggle)
+
+        bindings[1].apply(.bool(true))
+        bindings[2].apply(.bool(true))
+        bindings[4].apply(.bool(true))
+        bindings[5].apply(.bool(true))
+        bindings[6].apply(.bool(true))
+        bindings[7].apply(.bool(true))
+
+        XCTAssertFalse(navigationController.isNavigationBarHidden)
+        XCTAssertFalse(navigationController.isToolbarHidden)
+        XCTAssertTrue(navigationController.hidesBarsOnSwipe)
+        XCTAssertTrue(navigationController.hidesBarsOnTap)
+        XCTAssertTrue(navigationController.hidesBarsWhenKeyboardAppears)
+        XCTAssertTrue(navigationController.hidesBarsWhenVerticallyCompact)
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled

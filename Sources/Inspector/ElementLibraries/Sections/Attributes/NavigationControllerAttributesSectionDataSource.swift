@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -47,48 +48,113 @@ extension DefaultElementAttributesLibrary {
             case hidesBarsWhenVerticallyCompact = "When Vertically Compact"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let navigationController else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .groupHideBars, .groupBarVisiblity:
-                    .group(title: property.rawValue)
+                    .init(
+                        descriptor: .init(
+                            id: property.rawValue.replacingOccurrences(of: " ", with: "-").lowercased(),
+                            title: property.rawValue,
+                            kind: .group,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .isNavigationBarHidden:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { !navigationController.isNavigationBarHidden },
-                        handler: { navigationController.setNavigationBarHidden(!$0, animated: true) }
+                    .init(
+                        descriptor: .init(
+                            id: "shows-navigation-bar",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(!navigationController.isNavigationBarHidden) },
+                        write: { newValue in
+                            guard case let .bool(isVisible) = newValue else { return }
+                            navigationController.setNavigationBarHidden(!isVisible, animated: true)
+                        }
                     )
                 case .isToolbarHidden:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { !navigationController.isToolbarHidden },
-                        handler: { navigationController.setToolbarHidden(!$0, animated: true) }
+                    .init(
+                        descriptor: .init(
+                            id: "shows-toolbar",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(!navigationController.isToolbarHidden) },
+                        write: { newValue in
+                            guard case let .bool(isVisible) = newValue else { return }
+                            navigationController.setToolbarHidden(!isVisible, animated: true)
+                        }
                     )
                 case .hidesBarsOnSwipe:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { navigationController.hidesBarsOnSwipe },
-                        handler: { navigationController.hidesBarsOnSwipe = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "hides-bars-on-swipe",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(navigationController.hidesBarsOnSwipe) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            navigationController.hidesBarsOnSwipe = isEnabled
+                        }
                     )
                 case .hidesBarsOnTap:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { navigationController.hidesBarsOnTap },
-                        handler: { navigationController.hidesBarsOnTap = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "hides-bars-on-tap",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(navigationController.hidesBarsOnTap) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            navigationController.hidesBarsOnTap = isEnabled
+                        }
                     )
                 case .hidesBarsWhenKeyboardAppears:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { navigationController.hidesBarsWhenKeyboardAppears },
-                        handler: { navigationController.hidesBarsWhenKeyboardAppears = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "hides-bars-when-keyboard-appears",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(navigationController.hidesBarsWhenKeyboardAppears) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            navigationController.hidesBarsWhenKeyboardAppears = isEnabled
+                        }
                     )
                 case .hidesBarsWhenVerticallyCompact:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { navigationController.hidesBarsWhenVerticallyCompact },
-                        handler: { navigationController.hidesBarsWhenVerticallyCompact = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "hides-bars-when-vertically-compact",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(navigationController.hidesBarsWhenVerticallyCompact) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            navigationController.hidesBarsWhenVerticallyCompact = isEnabled
+                        }
                     )
                 }
             }
