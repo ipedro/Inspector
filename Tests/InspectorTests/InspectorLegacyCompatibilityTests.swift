@@ -5,6 +5,9 @@ import XCTest
 
 @MainActor
 final class InspectorLegacyCompatibilityTests: XCTestCase {
+    // This suite intentionally exercises the deprecated InspectorElementProperty compatibility bridge.
+    // Keep legacy APIs isolated here until the final removal pass deletes them.
+
     func testToggleBindingProducesSwitchProperty() throws {
         var value = false
         let descriptor = InspectorPropertyDescriptor(

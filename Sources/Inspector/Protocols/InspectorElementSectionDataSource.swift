@@ -45,7 +45,7 @@ public protocol InspectorElementSectionDataSource: AnyObject {
     var titleAccessoryProperty: InspectorElementProperty? { get }
     /// Escape hatch for binding fields that still need custom runtime expansion.
     var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { get }
-    /// Legacy escape hatch for runtime expansion via InspectorElementProperty.
+    /// Legacy escape hatch for runtime expansion via InspectorElementProperty. Compatibility-only.
     @available(*, deprecated, message: "Use sectionBindingExtraBindings instead")
     var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { get }
     /// Optional binding-based title accessory.

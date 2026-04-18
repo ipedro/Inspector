@@ -336,6 +336,7 @@ public extension InspectorPropertyBinding {
 }
 
 public extension InspectorSectionBinding {
+    @available(*, deprecated, message: "Compatibility bridge only; prefer binding-native section rendering")
     func makeInspectorElementProperties(
         extraBindings: [String: () -> [InspectorPropertyBinding]] = [:],
         extraProperties: [String: () -> [InspectorElementProperty]] = [:]
