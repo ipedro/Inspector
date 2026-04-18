@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -65,116 +66,144 @@ extension DefaultElementAttributesLibrary {
             case contentSize = "Preferred Content Size"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let viewController else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .separator0, .separator1:
-                    return .separator
+                    return .init(
+                        descriptor: .init(id: property.rawValue.isEmpty ? "separator" : property.rawValue, title: "", kind: .separator, value: .none, editability: .readOnly),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .groupLayout, .groupExtendEdges:
-                    return .group(title: property.rawValue)
+                    return .init(
+                        descriptor: .init(id: property.rawValue.replacingOccurrences(of: " ", with: "-").lowercased(), title: property.rawValue, kind: .group, value: .none, editability: .readOnly),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .title:
-                    return .textField(
-                        title: property.rawValue,
-                        placeholder: nil,
-                        axis: .horizontal,
-                        value: { viewController.title },
-                        handler: { viewController.title = $0 }
+                    return .init(
+                        descriptor: .init(
+                            id: "title",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, placeholder: nil, allowsNil: true)),
+                            editability: .editable,
+                            presentation: .init(axis: .horizontal)
+                        ),
+                        read: { .string(viewController.title) },
+                        write: { newValue in
+                            guard case let .string(title) = newValue else { return }
+                            viewController.title = title
+                        }
                     )
                 case .initialViewController:
                     guard let isInitialViewController else { return nil }
-
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { isInitialViewController },
-                        handler: nil
+                    return .init(
+                        descriptor: .init(id: "is-initial-view-controller", title: property.rawValue, kind: .toggle, value: .bool, editability: .readOnly),
+                        read: { .bool(isInitialViewController) },
+                        write: nil,
+                        refreshHint: .none
                     )
                 case .hidesBottomBarWhenPushed:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { viewController.hidesBottomBarWhenPushed },
-                        handler: { viewController.hidesBottomBarWhenPushed = $0 }
+                    return .init(
+                        descriptor: .init(id: "hides-bottom-bar-when-pushed", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                        read: { .bool(viewController.hidesBottomBarWhenPushed) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            viewController.hidesBottomBarWhenPushed = isEnabled
+                        }
                     )
                 case .topBars:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { viewController.edgesForExtendedLayout.contains(.top) },
-                        handler: {
-                            switch $0 {
-                            case true:
-                                viewController.edgesForExtendedLayout.insert(.top)
-                            case false:
-                                viewController.edgesForExtendedLayout.remove(.top)
-                            }
+                    return .init(
+                        descriptor: .init(id: "under-top-bars", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                        read: { .bool(viewController.edgesForExtendedLayout.contains(.top)) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            if isEnabled { viewController.edgesForExtendedLayout.insert(.top) }
+                            else { viewController.edgesForExtendedLayout.remove(.top) }
                         }
                     )
                 case .bottomBars:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { viewController.edgesForExtendedLayout.contains(.bottom) },
-                        handler: {
-                            switch $0 {
-                            case true:
-                                viewController.edgesForExtendedLayout.insert(.bottom)
-                            case false:
-                                viewController.edgesForExtendedLayout.remove(.bottom)
-                            }
+                    return .init(
+                        descriptor: .init(id: "under-bottom-bars", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                        read: { .bool(viewController.edgesForExtendedLayout.contains(.bottom)) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            if isEnabled { viewController.edgesForExtendedLayout.insert(.bottom) }
+                            else { viewController.edgesForExtendedLayout.remove(.bottom) }
                         }
                     )
                 case .opaqueBars:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { viewController.extendedLayoutIncludesOpaqueBars },
-                        handler: { viewController.extendedLayoutIncludesOpaqueBars = $0 }
+                    return .init(
+                        descriptor: .init(id: "under-opaque-bars", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                        read: { .bool(viewController.extendedLayoutIncludesOpaqueBars) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            viewController.extendedLayoutIncludesOpaqueBars = isEnabled
+                        }
                     )
                 case .modalTransitionStyle:
-                    return .optionsList(
-                        title: property.rawValue,
-                        emptyTitle: "Default",
-                        axis: .horizontal,
-                        options: UIModalTransitionStyle.allCases.map(\.description),
-                        selectedIndex: { UIModalTransitionStyle.allCases.firstIndex(of: viewController.modalTransitionStyle) },
-                        handler: {
-                            guard let newIndex = $0 else { return }
-
-                            let modalTransitionStyle = UIModalTransitionStyle.allCases[newIndex]
-                            viewController.modalTransitionStyle = modalTransitionStyle
+                    return .init(
+                        descriptor: .init(
+                            id: "modal-transition-style",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(.init(options: UIModalTransitionStyle.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
+                            editability: .editable,
+                            presentation: .init(axis: .horizontal)
+                        ),
+                        read: { .selection(UIModalTransitionStyle.allCases.firstIndex(of: viewController.modalTransitionStyle)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            viewController.modalTransitionStyle = UIModalTransitionStyle.allCases[index]
                         }
                     )
                 case .presentationStyle:
-                    return .optionsList(
-                        title: property.rawValue,
-                        emptyTitle: "Default",
-                        axis: .horizontal,
-                        options: UIModalPresentationStyle.allCases.map(\.description),
-                        selectedIndex: { UIModalPresentationStyle.allCases.firstIndex(of: viewController.modalPresentationStyle) },
-                        handler: {
-                            guard let newIndex = $0 else { return }
-
-                            let modalPresentationStyle = UIModalPresentationStyle.allCases[newIndex]
-                            viewController.modalPresentationStyle = modalPresentationStyle
+                    return .init(
+                        descriptor: .init(
+                            id: "modal-presentation-style",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(.init(options: UIModalPresentationStyle.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
+                            editability: .editable,
+                            presentation: .init(axis: .horizontal)
+                        ),
+                        read: { .selection(UIModalPresentationStyle.allCases.firstIndex(of: viewController.modalPresentationStyle)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            viewController.modalPresentationStyle = UIModalPresentationStyle.allCases[index]
                         }
                     )
                 case .definesPresentationContext:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { viewController.definesPresentationContext },
-                        handler: { viewController.definesPresentationContext = $0 }
+                    return .init(
+                        descriptor: .init(id: "defines-presentation-context", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                        read: { .bool(viewController.definesPresentationContext) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            viewController.definesPresentationContext = isEnabled
+                        }
                     )
                 case .providesPresentationContextTransitionStyle:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { viewController.providesPresentationContextTransitionStyle },
-                        handler: { viewController.providesPresentationContextTransitionStyle = $0 }
+                    return .init(
+                        descriptor: .init(id: "provides-presentation-context-transition-style", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                        read: { .bool(viewController.providesPresentationContextTransitionStyle) },
+                        write: { newValue in
+                            guard case let .bool(isEnabled) = newValue else { return }
+                            viewController.providesPresentationContextTransitionStyle = isEnabled
+                        }
                     )
                 case .contentSize:
-                    return .cgSize(
-                        title: property.rawValue,
-                        size: { viewController.preferredContentSize },
-                        handler: {
-                            guard let preferredContentSize = $0 else { return }
-                            viewController.preferredContentSize = preferredContentSize
+                    return .init(
+                        descriptor: .init(id: "preferred-content-size", title: property.rawValue, kind: .preview, value: .size, editability: .editable),
+                        read: { .size(viewController.preferredContentSize) },
+                        write: { newValue in
+                            guard case let .size(size) = newValue else { return }
+                            viewController.preferredContentSize = size
                         }
                     )
                 }

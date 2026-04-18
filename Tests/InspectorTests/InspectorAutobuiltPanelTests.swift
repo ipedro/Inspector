@@ -584,6 +584,43 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(navigationController.hidesBarsWhenVerticallyCompact)
     }
 
+    func testViewControllerAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let viewController = UIViewController()
+        viewController.modalTransitionStyle = .coverVertical
+        viewController.modalPresentationStyle = .fullScreen
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.ViewControllerAttributesSectionDataSource(with: viewController)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 14)
+        XCTAssertEqual(bindings[0].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[1].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[2].descriptor.kind, .group)
+        XCTAssertEqual(bindings[8].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[9].descriptor.kind, .options)
+        XCTAssertEqual(bindings[13].descriptor.kind, .preview)
+
+        bindings[0].apply(.string("Details"))
+        bindings[3].apply(.bool(true))
+        bindings[5].apply(.bool(false))
+        bindings[7].apply(.bool(true))
+        bindings[9].apply(.selection(1))
+        bindings[10].apply(.selection(1))
+        bindings[11].apply(.bool(true))
+        bindings[13].apply(.size(.init(width: 320, height: 200)))
+
+        XCTAssertEqual(viewController.title, "Details")
+        XCTAssertTrue(viewController.hidesBottomBarWhenPushed)
+        XCTAssertFalse(viewController.edgesForExtendedLayout.contains(.top))
+        XCTAssertTrue(viewController.extendedLayoutIncludesOpaqueBars)
+        XCTAssertEqual(viewController.modalTransitionStyle, UIModalTransitionStyle.allCases[1])
+        XCTAssertEqual(viewController.modalPresentationStyle, UIModalPresentationStyle.allCases[1])
+        XCTAssertTrue(viewController.definesPresentationContext)
+        XCTAssertEqual(viewController.preferredContentSize, .init(width: 320, height: 200))
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled
