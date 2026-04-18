@@ -695,6 +695,39 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(mapView.showsTraffic)
     }
 
+    func testLayoutConstraintSizeSectionUsesBindingsAndMutatesBehavior() throws {
+        let view = UIView(frame: .zero)
+        let constraint = view.widthAnchor.constraint(equalToConstant: 80)
+        constraint.identifier = "width"
+        constraint.priority = .defaultHigh
+        constraint.isActive = true
+
+        let element = try XCTUnwrap(LayoutConstraintElement(with: constraint, in: view))
+        let dataSource = DefaultElementSizeLibrary.LayoutConstraintSizeSectionDataSource(constraint: element)
+
+        let titleAccessoryBinding = try XCTUnwrap(dataSource.titleAccessoryBinding)
+        XCTAssertEqual(titleAccessoryBinding.descriptor.kind, .toggle)
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 8)
+        XCTAssertEqual(bindings[0].descriptor.kind, .options)
+        XCTAssertEqual(bindings[2].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[3].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[4].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[5].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[7].descriptor.kind, .textField)
+
+        titleAccessoryBinding.apply(.bool(false))
+        bindings[3].apply(.number(120))
+        bindings[4].apply(.number(500))
+        bindings[7].apply(.string("updated-width"))
+
+        XCTAssertFalse(constraint.isActive)
+        XCTAssertEqual(constraint.constant, 120, accuracy: 0.001)
+        XCTAssertEqual(constraint.priority, .init(500))
+        XCTAssertEqual(constraint.identifier, "updated-width")
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled
