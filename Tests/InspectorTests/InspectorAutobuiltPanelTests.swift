@@ -516,6 +516,40 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(scrollView.keyboardDismissMode, UIScrollView.KeyboardDismissMode.allCases[1])
     }
 
+    func testTableViewAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let tableView = UITableView(frame: .zero, style: .plain)
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.TableViewAttributesSectionDataSource(with: tableView)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 8)
+        XCTAssertEqual(bindings[0].descriptor.kind, .options)
+        XCTAssertEqual(bindings[0].descriptor.editability, .readOnly)
+        XCTAssertEqual(bindings[1].descriptor.kind, .options)
+        XCTAssertEqual(bindings[2].descriptor.kind, .color)
+        XCTAssertEqual(bindings[3].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[4].descriptor.kind, .preview)
+        XCTAssertEqual(bindings[7].descriptor.kind, .toggle)
+
+        bindings[1].apply(.selection(1))
+        bindings[2].apply(.color(.blue))
+        bindings[4].apply(.edgeInsets(.init(top: 1, left: 2, bottom: 3, right: 4)))
+        bindings[5].apply(.selection(2))
+        bindings[6].apply(.selection(1))
+        bindings[7].apply(.bool(true))
+
+        XCTAssertEqual(tableView.separatorStyle, UITableViewCell.SeparatorStyle.allCases[1])
+        XCTAssertEqual(tableView.separatorColor, .blue)
+        XCTAssertEqual(tableView.separatorInset, .init(top: 1, left: 2, bottom: 3, right: 4))
+        XCTAssertTrue(tableView.allowsSelection)
+        XCTAssertTrue(tableView.allowsMultipleSelection)
+        XCTAssertTrue(tableView.allowsSelectionDuringEditing)
+        XCTAssertFalse(tableView.allowsMultipleSelectionDuringEditing)
+        XCTAssertTrue(tableView.isSpringLoaded)
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled

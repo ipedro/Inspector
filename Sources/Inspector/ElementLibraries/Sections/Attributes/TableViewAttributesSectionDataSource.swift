@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -44,107 +45,179 @@ extension DefaultElementAttributesLibrary {
             case isSpringLoaded = "Spring loaded drag n' drop"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let tableView else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .style:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UITableView.Style.allCases.map(\.description),
-                        selectedIndex: { UITableView.Style.allCases.firstIndex(of: tableView.style) },
-                        handler: nil
+                    return .init(
+                        descriptor: .init(
+                            id: "style",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: UITableView.Style.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .readOnly
+                        ),
+                        read: { .selection(UITableView.Style.allCases.firstIndex(of: tableView.style)) },
+                        write: nil,
+                        refreshHint: .none
                     )
                 case .separatorStyle:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UITableViewCell.SeparatorStyle.allCases.map(\.description),
-                        selectedIndex: { UITableViewCell.SeparatorStyle.allCases.firstIndex(of: tableView.separatorStyle) },
-                        handler: {
-                            guard let newIndex = $0 else { return }
-
-                            let style = UITableViewCell.SeparatorStyle.allCases[newIndex]
-                            tableView.separatorStyle = style
+                    return .init(
+                        descriptor: .init(
+                            id: "separator-style",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: UITableViewCell.SeparatorStyle.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(UITableViewCell.SeparatorStyle.allCases.firstIndex(of: tableView.separatorStyle)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
+                            tableView.separatorStyle = UITableViewCell.SeparatorStyle.allCases[newIndex]
                         }
                     )
                 case .separatorColor:
-                    .colorPicker(
-                        title: property.rawValue,
-                        emptyTitle: "Default",
-                        color: { tableView.separatorColor },
-                        handler: { newColor in
-                            tableView.separatorColor = newColor
+                    return .init(
+                        descriptor: .init(
+                            id: "separator-color",
+                            title: property.rawValue,
+                            kind: .color,
+                            value: .color(allowsNil: true),
+                            editability: .editable
+                        ),
+                        read: { .color(tableView.separatorColor) },
+                        write: { newValue in
+                            guard case let .color(color) = newValue else { return }
+                            tableView.separatorColor = color
                         }
                     )
                 case .divider:
-                    .separator
+                    return .init(
+                        descriptor: .init(
+                            id: "divider",
+                            title: "Divider",
+                            kind: .separator,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .separatorInset:
-                    .edgeInsets(
-                        title: property.rawValue,
-                        insets: { tableView.separatorInset },
-                        handler: { separatorInset in
-                            tableView.separatorInset = separatorInset
+                    return .init(
+                        descriptor: .init(
+                            id: "separator-inset",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .edgeInsets,
+                            editability: .editable
+                        ),
+                        read: { .edgeInsets(tableView.separatorInset) },
+                        write: { newValue in
+                            guard case let .edgeInsets(insets) = newValue else { return }
+                            tableView.separatorInset = insets
                         }
                     )
                 case .selection:
-                    .optionsList(
-                        title: property.rawValue,
-                        emptyTitle: property.rawValue,
-                        axis: .vertical,
-                        options: ["None", "Single Selection", "Multiple Selection"],
-                        selectedIndex: {
-                            if tableView.allowsMultipleSelection { return 1 }
-                            if tableView.allowsSelection { return 0 }
-                            return 0
+                    return .init(
+                        descriptor: .init(
+                            id: "selection",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: [
+                                    .init(id: "0", title: "None"),
+                                    .init(id: "1", title: "Single Selection"),
+                                    .init(id: "2", title: "Multiple Selection")
+                                ], allowsNil: true)
+                            ),
+                            editability: .editable,
+                            presentation: .init(axis: .vertical)
+                        ),
+                        read: {
+                            if tableView.allowsMultipleSelection { return .selection(2) }
+                            if tableView.allowsSelection { return .selection(1) }
+                            return .selection(0)
+                        },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            switch index {
+                            case 0:
+                                tableView.allowsSelection = false
+                                tableView.allowsMultipleSelection = false
+                            case 1:
+                                tableView.allowsSelection = true
+                                tableView.allowsMultipleSelection = false
+                            case 2:
+                                tableView.allowsSelection = true
+                                tableView.allowsMultipleSelection = true
+                            default:
+                                break
+                            }
                         }
-                    ) {
-                        switch $0 {
-                        case 0:
-                            tableView.allowsSelection = false
-                            tableView.allowsMultipleSelection = false
-                        case 1:
-                            tableView.allowsSelection = true
-                            tableView.allowsMultipleSelection = false
-                        case 2:
-                            tableView.allowsSelection = true
-                            tableView.allowsMultipleSelection = true
-                        default:
-                            break
-                        }
-                    }
+                    )
                 case .editingSelection:
-                    .optionsList(
-                        title: property.rawValue,
-                        emptyTitle: property.rawValue,
-                        axis: .vertical,
-                        options: ["None", "Single Selection", "Multiple Selection"],
-                        selectedIndex: {
-                            if tableView.allowsMultipleSelectionDuringEditing { return 1 }
-                            if tableView.allowsSelectionDuringEditing { return 0 }
-                            return 0
+                    return .init(
+                        descriptor: .init(
+                            id: "editing-selection",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: [
+                                    .init(id: "0", title: "None"),
+                                    .init(id: "1", title: "Single Selection"),
+                                    .init(id: "2", title: "Multiple Selection")
+                                ], allowsNil: true)
+                            ),
+                            editability: .editable,
+                            presentation: .init(axis: .vertical)
+                        ),
+                        read: {
+                            if tableView.allowsMultipleSelectionDuringEditing { return .selection(2) }
+                            if tableView.allowsSelectionDuringEditing { return .selection(1) }
+                            return .selection(0)
+                        },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            switch index {
+                            case 0:
+                                tableView.allowsSelectionDuringEditing = false
+                                tableView.allowsMultipleSelectionDuringEditing = false
+                            case 1:
+                                tableView.allowsSelectionDuringEditing = true
+                                tableView.allowsMultipleSelectionDuringEditing = false
+                            case 2:
+                                tableView.allowsSelectionDuringEditing = true
+                                tableView.allowsMultipleSelectionDuringEditing = true
+                            default:
+                                break
+                            }
                         }
-                    ) {
-                        switch $0 {
-                        case 0:
-                            tableView.allowsSelectionDuringEditing = false
-                            tableView.allowsMultipleSelectionDuringEditing = false
-                        case 1:
-                            tableView.allowsSelectionDuringEditing = true
-                            tableView.allowsMultipleSelectionDuringEditing = false
-                        case 2:
-                            tableView.allowsSelectionDuringEditing = true
-                            tableView.allowsMultipleSelectionDuringEditing = true
-                        default:
-                            break
-                        }
-                    }
+                    )
                 case .isSpringLoaded:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { tableView.isSpringLoaded },
-                        handler: { isSpringLoaded in
-                            tableView.isSpringLoaded = isSpringLoaded
+                    return .init(
+                        descriptor: .init(
+                            id: "is-spring-loaded",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(tableView.isSpringLoaded) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            tableView.isSpringLoaded = isOn
                         }
                     )
                 }
