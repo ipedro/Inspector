@@ -257,26 +257,14 @@ extension DefaultElementAttributesLibrary.NavigationBarAppearanceAttributesSecti
             }
         }
 
-        var infoNote: InspectorElementProperty {
-            .infoNote(icon: .info, text: message)
-        }
-
-        var warning: InspectorElementProperty? {
+        var warningMessage: String? {
             switch self {
             case .scrollEdge:
-                return .infoNote(
-                    icon: .warning,
-                    text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top."
-                )
-
+                return "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top."
             case .compactScrollEdge:
-                return .infoNote(
-                    icon: .warning,
-                    text: "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top in a vertically compact orientation."
-                )
-
+                return "Starting iOS 15 when this property is nil, the navigation bar's background will become transparent when scrolled to the top in a vertically compact orientation."
             default:
-                return .none
+                return nil
             }
         }
     }
