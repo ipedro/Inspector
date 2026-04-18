@@ -1142,6 +1142,59 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(button.adjustsImageSizeForAccessibilityContentSizeCategory)
     }
 
+    func testNavigationBarAppearanceSectionUsesBindingsAndMutatesBehavior() throws {
+        let navigationBar = UINavigationBar(frame: .zero)
+        let appearance = UINavigationBarAppearance()
+        appearance.titleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 12),
+            .foregroundColor: UIColor.black
+        ]
+        appearance.largeTitleTextAttributes = [
+            .font: UIFont.boldSystemFont(ofSize: 20),
+            .foregroundColor: UIColor.gray
+        ]
+        navigationBar.standardAppearance = appearance
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.NavigationBarAppearanceAttributesSectionDataSource(with: navigationBar, .standard)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertTrue(bindings.count >= 20)
+        XCTAssertEqual(bindings[0].descriptor.kind, .note)
+        XCTAssertEqual(bindings[1].descriptor.kind, .options)
+        XCTAssertEqual(bindings[2].descriptor.kind, .color)
+        XCTAssertEqual(bindings[8].descriptor.kind, .group)
+        XCTAssertEqual(bindings[9].descriptor.kind, .options)
+        XCTAssertEqual(bindings[10].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[15].descriptor.kind, .options)
+        XCTAssertEqual(bindings[16].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[19].descriptor.kind, .preview)
+
+        let image = UIGraphicsImageRenderer(size: .init(width: 2, height: 2)).image { context in
+            UIColor.orange.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 2, height: 2))
+        }
+
+        bindings[1].apply(.selection(1))
+        bindings[2].apply(.color(.yellow))
+        bindings[3].apply(.image(image))
+        bindings[10].apply(.number(16))
+        bindings[11].apply(.color(.blue))
+        bindings[16].apply(.number(28))
+        bindings[17].apply(.color(.green))
+        bindings[19].apply(.size(.init(width: 3, height: 4)))
+
+        XCTAssertEqual(appearance.backgroundEffect?.style, UIBlurEffect.Style.allCases[1])
+        XCTAssertEqual(appearance.backgroundColor, .yellow)
+        XCTAssertEqual(appearance.backgroundImage?.pngData(), image.pngData())
+        XCTAssertEqual(try XCTUnwrap(appearance.titleTextAttributes[.font] as? UIFont).pointSize, 16, accuracy: 0.001)
+        XCTAssertEqual(appearance.titleTextAttributes[.foregroundColor] as? UIColor, .blue)
+        XCTAssertEqual(try XCTUnwrap(appearance.largeTitleTextAttributes[.font] as? UIFont).pointSize, 28, accuracy: 0.001)
+        XCTAssertEqual(appearance.largeTitleTextAttributes[.foregroundColor] as? UIColor, .green)
+        XCTAssertEqual((appearance.largeTitleTextAttributes[.shadow] as? NSShadow)?.shadowOffset, .init(width: 3, height: 4))
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled
