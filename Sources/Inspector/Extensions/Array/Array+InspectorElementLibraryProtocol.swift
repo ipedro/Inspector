@@ -23,6 +23,19 @@ import UIKit
 
 extension [InspectorElementLibraryProtocol] {
     func formItems(for object: NSObject?) -> InspectorElementSections {
+        curatedFormItems(for: object)
+    }
+
+    func formItems(for object: NSObject?, panel: ElementInspectorPanel) -> InspectorElementSections {
+        guard let object else { return [] }
+        return InspectorAutobuiltPanelBuilder.sections(
+            for: object,
+            panel: panel,
+            libraries: self
+        )
+    }
+
+    func curatedFormItems(for object: NSObject?) -> InspectorElementSections {
         guard let object else { return [] }
 
         return object._classesForCoder

@@ -480,7 +480,7 @@ final class InspectorMCPBridgeService {
             }
 
             let libraries = self.librariesProvider(panel)
-            let sections = libraries.formItems(for: object)
+            let sections = libraries.formItems(for: object, panel: panel.inspectorPanel)
             self.removePropertyHandles(for: handle)
 
             let editableSections = self.editableSections(
@@ -1733,6 +1733,19 @@ private extension InspectorSnapshotCaptureFailure {
             .isHidden
         case .captureFailed:
             .captureFailed
+        }
+    }
+}
+
+private extension InspectorBridgeEditablePanel {
+    var inspectorPanel: ElementInspectorPanel {
+        switch self {
+        case .identity:
+            .identity
+        case .attributes:
+            .attributes
+        case .size:
+            .size
         }
     }
 }

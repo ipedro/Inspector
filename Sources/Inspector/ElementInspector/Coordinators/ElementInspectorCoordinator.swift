@@ -176,7 +176,7 @@ final class ElementInspectorCoordinator: Coordinator<ElementInspectorDependencie
             let dataSource = DefaultFormPanelDataSource(
                 sections: {
                     guard let libraries = dependencies.catalog.libraries[panel] else { return [] }
-                    return libraries.formItems(for: element._underlyingObject)
+                    return libraries.formItems(for: element._underlyingObject, panel: panel)
                 }()
             )
 
