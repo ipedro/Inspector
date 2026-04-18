@@ -77,7 +77,7 @@ final class InspectorPanelMacroTests: XCTestCase {
                         guard element != nil else { return nil }
                         return makeInspectorSectionBinding()
                     }
-                    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }
+                    var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { [:] }
                 }
                 struct InspectorLibrary: InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
@@ -156,11 +156,24 @@ final class InspectorPanelMacroTests: XCTestCase {
                         guard element != nil else { return nil }
                         return makeInspectorSectionBinding()
                     }
-                    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] {
+                    var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] {
                         [
                             "inspectBarButton": {
-                                guard let child = element.inspectBarButton else { return [] }
-                                return [.group(title: "Inspect Bar Button")] + (RoundedButton.SectionDataSource(with: child)?.properties ?? [])
+                                guard let child = element.inspectBarButton, let section = RoundedButton.SectionDataSource(with: child) else { return [] }
+                                return [
+                                    .init(
+                                        descriptor: .init(
+                                            id: "group-inspectBarButton",
+                                            title: "Inspect Bar Button",
+                                            kind: .group,
+                                            value: .none,
+                                            editability: .readOnly
+                                        ),
+                                        read: { .none },
+                                        write: nil,
+                                        refreshHint: .none
+                                    )
+                                ] + section.propertyBindings
                             }
                         ]
                     }
@@ -249,7 +262,7 @@ final class InspectorPanelMacroTests: XCTestCase {
                         guard element != nil else { return nil }
                         return makeInspectorSectionBinding()
                     }
-                    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }
+                    var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { [:] }
                 }
                 struct InspectorLibrary: InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
@@ -341,7 +354,7 @@ final class InspectorPanelMacroTests: XCTestCase {
                         guard element != nil else { return nil }
                         return makeInspectorSectionBinding()
                     }
-                    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }
+                    var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { [:] }
                 }
                 struct InspectorLibrary: InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {

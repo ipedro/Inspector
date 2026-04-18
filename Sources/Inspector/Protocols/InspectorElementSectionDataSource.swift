@@ -42,6 +42,8 @@ public protocol InspectorElementSectionDataSource: AnyObject {
     /// An optional property to be displayed next to the title.
     var titleAccessoryProperty: InspectorElementProperty? { get }
     /// Escape hatch for binding fields that still need custom runtime expansion.
+    var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { get }
+    /// Legacy escape hatch for runtime expansion via InspectorElementProperty.
     var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { get }
     /// Optional binding-based title accessory.
     var titleAccessoryBinding: InspectorPropertyBinding? { get }
@@ -50,12 +52,19 @@ public protocol InspectorElementSectionDataSource: AnyObject {
 public extension InspectorElementSectionDataSource {
     var subtitle: String? { nil }
     var properties: [InspectorElementProperty] {
-        sectionBinding?.makeInspectorElementProperties(extraProperties: sectionBindingExtraProperties) ?? []
+        sectionBinding?.makeInspectorElementProperties(
+            extraBindings: sectionBindingExtraBindings,
+            extraProperties: sectionBindingExtraProperties
+        ) ?? []
     }
     var sectionBinding: InspectorSectionBinding? { nil }
     var propertyBindings: [InspectorPropertyBinding] {
         if let sectionBinding {
-            let extraBindings = sectionBindingExtraProperties
+            let bindingExtras = sectionBindingExtraBindings
+                .sorted { $0.key < $1.key }
+                .flatMap { _, provider in provider() }
+
+            let propertyExtras = sectionBindingExtraProperties
                 .sorted { $0.key < $1.key }
                 .map { key, provider -> [InspectorPropertyBinding] in
                     let properties = provider()
@@ -69,7 +78,8 @@ public extension InspectorElementSectionDataSource {
                     }
                     return bindings
                 }
-            return sectionBinding.fields + extraBindings.flatMap { $0 }
+                .flatMap { $0 }
+            return sectionBinding.fields + bindingExtras + propertyExtras
         }
 
         let mapped = properties.enumerated().compactMap { index, property in
@@ -82,6 +92,7 @@ public extension InspectorElementSectionDataSource {
     }
     var customClass: InspectorElementSectionView.Type? { nil }
     var titleAccessoryProperty: InspectorElementProperty? { nil }
+    var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { [:] }
     var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }
     var titleAccessoryBinding: InspectorPropertyBinding? {
         titleAccessoryProperty?.makeBinding(id: "title-accessory")

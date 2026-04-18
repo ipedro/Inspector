@@ -229,6 +229,54 @@ final class InspectorPropertyBindingTests: XCTestCase {
         XCTAssertEqual(binding.descriptor.kind, .toggle)
     }
 
+    func testSectionDataSourcePropertyBindingsIncludeBindingExtras() {
+        final class BindingExtraDataSource: InspectorElementSectionDataSource {
+            var state: InspectorElementSectionState = .collapsed
+            let title = "Extra"
+            var sectionBinding: InspectorSectionBinding? {
+                .init(
+                    descriptor: .init(id: "section", title: "Section", defaultState: .collapsed, fields: [
+                        .init(id: "child", title: "Child", kind: .subpanel, value: .none, editability: .readOnly)
+                    ]),
+                    fields: [
+                        .init(
+                            descriptor: .init(id: "child", title: "Child", kind: .subpanel, value: .none, editability: .readOnly),
+                            read: { .none },
+                            write: nil,
+                            refreshHint: .none
+                        )
+                    ]
+                )
+            }
+            var sectionBindingExtraBindings: [String : () -> [InspectorPropertyBinding]] {
+                [
+                    "child": {
+                        [
+                            .init(
+                                descriptor: .init(id: "group-child", title: "Child", kind: .group, value: .none, editability: .readOnly),
+                                read: { .none },
+                                write: nil,
+                                refreshHint: .none
+                            )
+                        ]
+                    }
+                ]
+            }
+        }
+
+        let dataSource = BindingExtraDataSource()
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 2)
+        XCTAssertEqual(bindings[1].descriptor.kind, .group)
+        let properties = dataSource.properties
+        XCTAssertEqual(properties.count, 1)
+        if case let .group(title, _) = properties[0] {
+            XCTAssertEqual(title, "Child")
+        } else {
+            XCTFail("Expected group property")
+        }
+    }
+
     func testToggleBindingCreatesAndAppliesToggleFormView() throws {
         var value = false
         let binding = InspectorPropertyBinding(

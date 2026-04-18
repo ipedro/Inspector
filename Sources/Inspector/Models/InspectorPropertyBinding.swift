@@ -336,9 +336,13 @@ public extension InspectorPropertyBinding {
 
 public extension InspectorSectionBinding {
     func makeInspectorElementProperties(
+        extraBindings: [String: () -> [InspectorPropertyBinding]] = [:],
         extraProperties: [String: () -> [InspectorElementProperty]] = [:]
     ) -> [InspectorElementProperty] {
         fields.flatMap { field in
+            if let extra = extraBindings[field.descriptor.id] {
+                return extra().compactMap { $0.makeInspectorElementProperty() }
+            }
             if let extra = extraProperties[field.descriptor.id] {
                 return extra()
             }

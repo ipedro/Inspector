@@ -144,7 +144,7 @@ public struct InspectorPanelMacro: MemberMacro {
         title: String,
         properties: [InspectableProperty]
     ) -> String {
-        let extraProperties = generateExtraPropertiesSource(properties: properties)
+        let extraBindings = generateExtraBindingsSource(properties: properties)
         let sectionBindingSource = generateSectionBindingSource(className: className, properties: properties)
 
         return """
@@ -161,12 +161,12 @@ public struct InspectorPanelMacro: MemberMacro {
                 guard element != nil else { return nil }
                 return makeInspectorSectionBinding()
             }
-        \(extraProperties)
+        \(extraBindings)
         }
         """
     }
 
-    private static func generateExtraPropertiesSource(properties: [InspectableProperty]) -> String {
+    private static func generateExtraBindingsSource(properties: [InspectableProperty]) -> String {
         let entries = properties.compactMap { prop -> String? in
             guard case .subpanel = prop.descriptor else { return nil }
             let title = escapedStringLiteral(prop.displayName)
@@ -174,18 +174,31 @@ public struct InspectorPanelMacro: MemberMacro {
             let type = prop.typeName.replacingOccurrences(of: "!", with: "")
             return """
                     "\(name)": {
-                        guard let element = self.element, let child = element.\(name) else { return [] }
-                        return [.group(title: "\(title)")] + (\(type).SectionDataSource(with: child)?.properties ?? [])
+                        guard let element = self.element, let child = element.\(name), let section = \(type).SectionDataSource(with: child) else { return [] }
+                        return [
+                            .init(
+                                descriptor: .init(
+                                    id: "group-\(name)",
+                                    title: "\(title)",
+                                    kind: .group,
+                                    value: .none,
+                                    editability: .readOnly
+                                ),
+                                read: { .none },
+                                write: nil,
+                                refreshHint: .none
+                            )
+                        ] + section.propertyBindings
                     }
             """
         }.joined(separator: ",\n")
 
         if entries.isEmpty {
-            return "            var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }"
+            return "            var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { [:] }"
         }
 
         return """
-            var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] {
+            var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] {
                 [
         \(entries)
                 ]
