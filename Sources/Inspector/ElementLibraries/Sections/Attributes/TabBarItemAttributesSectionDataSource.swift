@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -48,45 +49,100 @@ extension DefaultElementAttributesLibrary {
             case isSpringLoaded = "Spring Loaded"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let tabBarItem else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .badgeValue:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: "Value",
-                        axis: .vertical,
-                        value: { tabBarItem.badgeValue },
-                        handler: { tabBarItem.badgeValue = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "badge-value",
+                            title: property.rawValue,
+                            kind: .textField,
+                            value: .string(.init(multiline: false, placeholder: "Value", allowsNil: true)),
+                            editability: .editable,
+                            presentation: .init(axis: .vertical)
+                        ),
+                        read: { .string(tabBarItem.badgeValue) },
+                        write: { newValue in
+                            guard case let .string(value) = newValue else { return }
+                            tabBarItem.badgeValue = value
+                        }
                     )
                 case .badgeColor:
-                    .colorPicker(
-                        title: property.rawValue,
-                        emptyTitle: "Default",
-                        color: { tabBarItem.badgeColor },
-                        handler: { tabBarItem.badgeColor = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "badge-color",
+                            title: property.rawValue,
+                            kind: .color,
+                            value: .color(allowsNil: true),
+                            editability: .editable
+                        ),
+                        read: { .color(tabBarItem.badgeColor) },
+                        write: { newValue in
+                            guard case let .color(color) = newValue else { return }
+                            tabBarItem.badgeColor = color
+                        },
+                        runtimePresentation: .init(emptyTitle: "Default")
                     )
                 case .selectedImage:
-                    .imagePicker(
-                        title: property.rawValue,
-                        image: { tabBarItem.selectedImage },
-                        handler: { tabBarItem.selectedImage = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "selected-image",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .none,
+                            editability: .editable
+                        ),
+                        read: { .image(tabBarItem.selectedImage) },
+                        write: { newValue in
+                            guard case let .image(image) = newValue else { return }
+                            tabBarItem.selectedImage = image
+                        }
                     )
                 case .titlePositionAdjustment:
-                    .uiOffset(
-                        title: property.rawValue,
-                        offset: { tabBarItem.titlePositionAdjustment },
-                        handler: { tabBarItem.titlePositionAdjustment = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "title-position-adjustment",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .offset,
+                            editability: .editable
+                        ),
+                        read: { .offset(tabBarItem.titlePositionAdjustment) },
+                        write: { newValue in
+                            guard case let .offset(offset) = newValue else { return }
+                            tabBarItem.titlePositionAdjustment = offset
+                        }
                     )
                 case .groupDragAndDrop:
-                    .group(title: property.rawValue)
+                    .init(
+                        descriptor: .init(
+                            id: "drag-and-drop-group",
+                            title: property.rawValue,
+                            kind: .group,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .isSpringLoaded:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { tabBarItem.isSpringLoaded },
-                        handler: { tabBarItem.isSpringLoaded = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "is-spring-loaded",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(tabBarItem.isSpringLoaded) },
+                        write: { newValue in
+                            guard case let .bool(isSpringLoaded) = newValue else { return }
+                            tabBarItem.isSpringLoaded = isSpringLoaded
+                        }
                     )
                 }
             }

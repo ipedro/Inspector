@@ -379,5 +379,33 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(control.selectedSegmentIndex, 1)
     }
 
+    func testTabBarItemAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let viewController = UIViewController()
+        let item = UITabBarItem(title: "Home", image: nil, selectedImage: nil)
+        viewController.tabBarItem = item
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.TabBarItemAttributesSectionDataSource(with: viewController)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 6)
+        XCTAssertEqual(bindings[0].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[1].descriptor.kind, .color)
+        XCTAssertEqual(bindings[3].descriptor.kind, .preview)
+        XCTAssertEqual(bindings[4].descriptor.kind, .group)
+        XCTAssertEqual(bindings[5].descriptor.kind, .toggle)
+
+        bindings[0].apply(.string("9"))
+        bindings[1].apply(.color(.orange))
+        bindings[3].apply(.offset(.init(horizontal: 3, vertical: 4)))
+        bindings[5].apply(.bool(true))
+
+        XCTAssertEqual(item.badgeValue, "9")
+        XCTAssertEqual(item.badgeColor, .orange)
+        XCTAssertEqual(item.titlePositionAdjustment, .init(horizontal: 3, vertical: 4))
+        XCTAssertTrue(item.isSpringLoaded)
+    }
+
 }
 #endif
