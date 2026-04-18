@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -55,122 +56,65 @@ extension DefaultElementAttributesLibrary {
             case shadowColor = "Shadow"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let label else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .text:
-                    return .textView(
-                        title: property.rawValue,
-                        placeholder: label.text ?? property.rawValue,
-                        value: { label.text }
-                    ) { text in
-                        label.text = text
-                    }
+                    return .init(
+                        descriptor: .init(id: "text", title: property.rawValue, kind: .textView, value: .string(.init(multiline: true, placeholder: label.text ?? property.rawValue, allowsNil: true)), editability: .editable),
+                        read: { .string(label.text) },
+                        write: { newValue in guard case let .string(text) = newValue else { return }; label.text = text }
+                    )
                 case .textColor:
-                    return .colorPicker(
-                        title: property.rawValue,
-                        color: { label.textColor }
-                    ) { textColor in
-                        label.textColor = textColor
-                    }
+                    return .init(descriptor: .init(id: "text-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable), read: { .color(label.textColor) }, write: { newValue in guard case let .color(color) = newValue else { return }; label.textColor = color })
                 case .fontName:
-                    return .fontNamePicker(
-                        title: property.rawValue,
-                        fontProvider: { label.font }
-                    ) { font in
-                        guard let font else {
-                            return
-                        }
-
-                        label.font = font
-                    }
+                    return .init(
+                        descriptor: .init(id: "font-name", title: property.rawValue, kind: .options, value: .selection(.init(options: FontReference.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)), editability: .editable, presentation: .init(axis: .vertical)),
+                        read: { .selection(FontReference.firstIndex(of: label.font.fontName)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue,
+                                  let index,
+                                  let font = FontReference.font(at: index, size: label.font.pointSize) else { return }
+                            label.font = font
+                        },
+                        runtimePresentation: .init(selectionOptionIcons: FontReference.allCases.map(\.icon))
+                    )
                 case .fontSize:
-                    return .fontSizeStepper(
-                        title: property.rawValue,
-                        fontProvider: { label.font }
-                    ) { font in
-                        guard let font else {
-                            return
-                        }
-
-                        label.font = font
-                    }
+                    return .init(
+                        descriptor: .init(id: "font-size", title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 256, step: 1, isDecimal: true)), editability: .editable),
+                        read: { .number(Double(label.font.pointSize)) },
+                        write: { newValue in guard case let .number(value) = newValue else { return }; label.font = label.font.withSize(CGFloat(value)) }
+                    )
                 case .adjustsFontSizeToFitWidth:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { label.adjustsFontSizeToFitWidth }
-                    ) { adjustsFontSizeToFitWidth in
-                        label.adjustsFontSizeToFitWidth = adjustsFontSizeToFitWidth
-                    }
+                    return .init(descriptor: .init(id: "adjusts-font-size-to-fit-width", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(label.adjustsFontSizeToFitWidth) }, write: { newValue in guard case let .bool(v) = newValue else { return }; label.adjustsFontSizeToFitWidth = v })
                 case .textAlignment:
                     let allCases = NSTextAlignment.allCases.withImages
-
-                    return .imageButtonGroup(
-                        title: property.rawValue,
-                        images: allCases.compactMap(\.image),
-                        selectedIndex: { allCases.firstIndex(of: label.textAlignment) }
-                    ) {
-                        guard let newIndex = $0 else { return }
-
-                        let textAlignment = allCases[newIndex]
-
-                        label.textAlignment = textAlignment
-                    }
+                    return .init(
+                        descriptor: .init(id: "text-alignment", title: property.rawValue, kind: .imageButtons, value: .selection(.init(options: allCases.enumerated().map { .init(id: "\($0.offset)", title: "\($0.offset)") }, allowsNil: true)), editability: .editable),
+                        read: { .selection(allCases.firstIndex(of: label.textAlignment)) },
+                        write: { newValue in guard case let .selection(index) = newValue, let index else { return }; label.textAlignment = allCases[index] },
+                        runtimePresentation: .init(selectionImages: allCases.compactMap(\.image))
+                    )
                 case .numberOfLines:
-                    return .integerStepper(
-                        title: property.rawValue,
-                        value: { label.numberOfLines },
-                        range: { 0...100 },
-                        stepValue: { 1 }
-                    ) { numberOfLines in
-                        label.numberOfLines = numberOfLines
-                    }
+                    return .init(descriptor: .init(id: "number-of-lines", title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 100, step: 1, isDecimal: false)), editability: .editable), read: { .number(Double(label.numberOfLines)) }, write: { newValue in guard case let .number(v) = newValue else { return }; label.numberOfLines = Int(v) })
                 case .groupBehavior:
-                    return .group(title: property.rawValue)
+                    return .init(descriptor: .init(id: "group-behavior", title: property.rawValue, kind: .group, value: .none, editability: .readOnly), read: { .none }, write: nil, refreshHint: .none)
                 case .isEnabled:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { label.isEnabled }
-                    ) { isEnabled in
-                        label.isEnabled = isEnabled
-                    }
+                    return .init(descriptor: .init(id: "is-enabled", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(label.isEnabled) }, write: { newValue in guard case let .bool(v) = newValue else { return }; label.isEnabled = v })
                 case .isHighlighted:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { label.isHighlighted }
-                    ) { isHighlighted in
-                        label.isHighlighted = isHighlighted
-                    }
-                case .separator0,
-                     .separator1:
-                    return .separator
-                case .baseline,
-                     .lineBreak,
-                     .autoShrink:
+                    return .init(descriptor: .init(id: "is-highlighted", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(label.isHighlighted) }, write: { newValue in guard case let .bool(v) = newValue else { return }; label.isHighlighted = v })
+                case .separator0, .separator1:
+                    return .init(descriptor: .init(id: property.rawValue, title: "", kind: .separator, value: .none, editability: .readOnly), read: { .none }, write: nil, refreshHint: .none)
+                case .baseline, .lineBreak, .autoShrink:
                     return nil
                 case .allowsDefaultTighteningForTruncation:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { label.allowsDefaultTighteningForTruncation }
-                    ) { allowsDefaultTighteningForTruncation in
-                        label.allowsDefaultTighteningForTruncation = allowsDefaultTighteningForTruncation
-                    }
+                    return .init(descriptor: .init(id: "allows-default-tightening-for-truncation", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(label.allowsDefaultTighteningForTruncation) }, write: { newValue in guard case let .bool(v) = newValue else { return }; label.allowsDefaultTighteningForTruncation = v })
                 case .highlightedTextColor:
-                    return .colorPicker(
-                        title: property.rawValue,
-                        color: { label.highlightedTextColor }
-                    ) { highlightedTextColor in
-                        label.highlightedTextColor = highlightedTextColor
-                    }
+                    return .init(descriptor: .init(id: "highlighted-text-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable), read: { .color(label.highlightedTextColor) }, write: { newValue in guard case let .color(color) = newValue else { return }; label.highlightedTextColor = color })
                 case .shadowColor:
-                    return .colorPicker(
-                        title: property.rawValue,
-                        color: { label.shadowColor }
-                    ) { shadowColor in
-                        label.shadowColor = shadowColor
-                    }
+                    return .init(descriptor: .init(id: "shadow-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable), read: { .color(label.shadowColor) }, write: { newValue in guard case let .color(color) = newValue else { return }; label.shadowColor = color })
                 }
             }
         }

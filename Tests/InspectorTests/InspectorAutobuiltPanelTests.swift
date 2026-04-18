@@ -919,6 +919,49 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(UIColor(cgColor: view.layer.shadowColor!), .black)
     }
 
+    func testLabelAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.LabelAttributesSectionDataSource(with: label)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 15)
+        XCTAssertEqual(bindings[0].descriptor.kind, .textView)
+        XCTAssertEqual(bindings[1].descriptor.kind, .color)
+        XCTAssertEqual(bindings[2].descriptor.kind, .options)
+        XCTAssertEqual(bindings[3].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[5].descriptor.kind, .imageButtons)
+        XCTAssertEqual(bindings[7].descriptor.kind, .group)
+        XCTAssertEqual(bindings[10].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[11].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[12].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[13].descriptor.kind, .color)
+        XCTAssertEqual(bindings[14].descriptor.kind, .color)
+
+        bindings[0].apply(.string("Hello"))
+        bindings[1].apply(.color(.red))
+        bindings[3].apply(.number(18))
+        bindings[5].apply(.selection(1))
+        bindings[6].apply(.number(3))
+        bindings[8].apply(.bool(false))
+        bindings[11].apply(.bool(true))
+        bindings[13].apply(.color(.blue))
+        bindings[14].apply(.color(.green))
+
+        XCTAssertEqual(label.text, "Hello")
+        XCTAssertEqual(label.textColor, .red)
+        XCTAssertEqual(label.font.pointSize, 18, accuracy: 0.001)
+        XCTAssertEqual(label.textAlignment, NSTextAlignment.allCases.withImages[1])
+        XCTAssertEqual(label.numberOfLines, 3)
+        XCTAssertFalse(label.isEnabled)
+        XCTAssertTrue(label.allowsDefaultTighteningForTruncation)
+        XCTAssertEqual(label.highlightedTextColor, .blue)
+        XCTAssertEqual(label.shadowColor, .green)
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled
