@@ -57,6 +57,14 @@ public struct InspectorSectionBinding {
 }
 
 public extension InspectorPropertyBinding {
+    func currentValue() -> InspectorValue {
+        readValue()
+    }
+
+    func apply(_ value: InspectorValue) {
+        writeValue(value)
+    }
+
     func makeInspectorElementProperty() -> InspectorElementProperty? {
         switch descriptor.kind {
         case .toggle:

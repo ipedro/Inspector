@@ -181,7 +181,7 @@ final class InspectorMCPBridgeService {
         let ownerHandle: InspectorBridgeHandle
         let ownerObjectIdentityToken: String
         let ownerPathFingerprint: String
-        let property: InspectorElementProperty
+        let binding: InspectorPropertyBinding
         let descriptor: InspectorBridgeEditablePropertyDescriptor
     }
 
@@ -596,7 +596,7 @@ final class InspectorMCPBridgeService {
                 throw InspectorBridgeError.stalePropertyReference
             }
 
-            try self.apply(value: value, to: propertyRecord.property)
+            try self.apply(value: value, to: propertyRecord.binding)
 
             if let view = ownerRecord.reference._underlyingObject as? UIView {
                 view._highlightView?.reloadData()
@@ -1005,7 +1005,7 @@ final class InspectorMCPBridgeService {
     ) -> [InspectorBridgeEditablePropertyDescriptor] {
         var descriptors: [InspectorBridgeEditablePropertyDescriptor] = []
 
-        if let titleAccessory = row.titleAccessoryProperty,
+        if let titleAccessory = row.titleAccessoryBinding,
            let descriptor = makeDescriptor(
             for: titleAccessory,
             panel: panel,
@@ -1021,7 +1021,7 @@ final class InspectorMCPBridgeService {
             descriptors.append(descriptor)
         }
 
-        for (propertyIndex, property) in row.properties.enumerated() {
+        for (propertyIndex, property) in (row.propertyBindings ?? []).enumerated() {
             guard let descriptor = makeDescriptor(
                 for: property,
                 panel: panel,
@@ -1080,7 +1080,7 @@ final class InspectorMCPBridgeService {
     }
 
     private func makeDescriptor(
-        for property: InspectorElementProperty,
+        for property: InspectorPropertyBinding,
         panel: InspectorBridgeEditablePanel,
         sectionIndex: Int,
         rowIndex: Int,
@@ -1124,7 +1124,7 @@ final class InspectorMCPBridgeService {
             ownerHandle: ownerHandle,
             ownerObjectIdentityToken: ownerRecord.objectIdentityToken,
             ownerPathFingerprint: ownerRecord.pathFingerprint,
-            property: property,
+            binding: property,
             descriptor: descriptor
         )
         propertyHandlesByOwner[ownerHandle.rawValue, default: []].insert(propertyRef)
@@ -1132,7 +1132,7 @@ final class InspectorMCPBridgeService {
     }
 
     private func descriptorBase(
-        for property: InspectorElementProperty
+        for property: InspectorPropertyBinding
     ) -> (
         title: String,
         kind: InspectorBridgeEditablePropertyKind,
@@ -1148,22 +1148,36 @@ final class InspectorMCPBridgeService {
         options: [String]?,
         nullable: Bool
     )? {
-        switch property {
-        case let .switch(title, isOn, handler):
-            return (title, .toggle, handler != nil, isOn(), nil, nil, nil, nil, nil, nil, nil, nil, false)
-        case let .stepper(title, value, range, stepValue, isDecimalValue, handler):
-            let bounds = range()
-            return (title, .stepper, handler != nil, nil, value(), nil, nil, bounds.lowerBound, bounds.upperBound, stepValue(), isDecimalValue, nil, false)
-        case let .textField(title, placeholder: _, axis: _, value, handler):
-            return (title, .textField, handler != nil, nil, nil, value(), nil, nil, nil, nil, nil, nil, true)
-        case let .textView(title, placeholder: _, value, handler):
-            return (title, .textView, handler != nil, nil, nil, value(), nil, nil, nil, nil, nil, nil, true)
-        case let .optionsList(title, emptyTitle: _, axis: _, options, selectedIndex, handler):
-            return (title, .optionsList, handler != nil, nil, nil, nil, selectedIndex(), nil, nil, nil, nil, options.map { $0.title.description }, true)
-        case let .textButtonGroup(title, axis: _, texts, selectedIndex, handler):
-            return (title, .textButtonGroup, handler != nil, nil, nil, nil, selectedIndex(), nil, nil, nil, nil, texts, true)
-        case let .imageButtonGroup(title, axis: _, images, selectedIndex, handler):
-            return (title, .imageButtonGroup, handler != nil, nil, nil, nil, selectedIndex(), 0, Double(images.count - 1), 1, false, nil, true)
+        let editable = property.write != nil
+        switch (property.descriptor.kind, property.descriptor.value, property.currentValue()) {
+        case let (.toggle, .bool, .bool(value)):
+            return (property.descriptor.title, .toggle, editable, value, nil, nil, nil, nil, nil, nil, nil, nil, false)
+        case let (.stepper, .number(numberConstraints), .number(value)):
+            return (
+                property.descriptor.title,
+                .stepper,
+                editable,
+                nil,
+                value,
+                nil,
+                nil,
+                numberConstraints?.min,
+                numberConstraints?.max,
+                numberConstraints?.step,
+                numberConstraints?.isDecimal,
+                nil,
+                false
+            )
+        case let (.textField, .string, .string(value)):
+            return (property.descriptor.title, .textField, editable, nil, nil, value, nil, nil, nil, nil, nil, nil, true)
+        case let (.textView, .string, .string(value)):
+            return (property.descriptor.title, .textView, editable, nil, nil, value, nil, nil, nil, nil, nil, nil, true)
+        case let (.options, .selection(selectionConstraints), .selection(index)):
+            return (property.descriptor.title, .optionsList, editable, nil, nil, nil, index, nil, nil, nil, nil, selectionConstraints.options.map(\.title), true)
+        case let (.textButtons, .selection(selectionConstraints), .selection(index)):
+            return (property.descriptor.title, .textButtonGroup, editable, nil, nil, nil, index, nil, nil, nil, nil, selectionConstraints.options.map(\.title), true)
+        case let (.imageButtons, .selection(selectionConstraints), .selection(index)):
+            return (property.descriptor.title, .imageButtonGroup, editable, nil, nil, nil, index, 0, Double(max(selectionConstraints.options.count - 1, 0)), 1, false, selectionConstraints.options.map(\.title), true)
         default:
             return nil
         }
@@ -1171,73 +1185,36 @@ final class InspectorMCPBridgeService {
 
     private func apply(
         value: InspectorBridgePropertyMutationValue,
-        to property: InspectorElementProperty
+        to property: InspectorPropertyBinding
     ) throws {
-        switch (property, value) {
-        case let (.switch(_, _, handler), .bool(boolValue)):
-            guard let handler else {
-                throw InspectorBridgeError.internalFailure("property is read-only")
-            }
-            handler(boolValue)
-        case let (.stepper(_, _, range, _, _, handler), .number(numberValue)):
-            guard let handler else {
-                throw InspectorBridgeError.internalFailure("property is read-only")
-            }
-            let bounds = range()
-            guard bounds.contains(numberValue) else {
+        guard property.write != nil else {
+            throw InspectorBridgeError.internalFailure("property is read-only")
+        }
+
+        switch (property.descriptor.kind, property.descriptor.value, value) {
+        case let (.toggle, .bool, .bool(boolValue)):
+            property.apply(.bool(boolValue))
+        case let (.stepper, .number(numberConstraints), .number(numberValue)):
+            let min = numberConstraints?.min ?? 0
+            let max = numberConstraints?.max ?? Double.infinity
+            guard (min...max).contains(numberValue) else {
                 throw InspectorBridgeError.invalidPropertyValue("value is outside the allowed range")
             }
-            handler(numberValue)
-        case let (.textField(_, _, _, _, handler), .string(stringValue)):
-            guard let handler else {
-                throw InspectorBridgeError.internalFailure("property is read-only")
-            }
-            handler(stringValue)
-        case let (.textView(_, _, _, handler), .string(stringValue)):
-            guard let handler else {
-                throw InspectorBridgeError.internalFailure("property is read-only")
-            }
-            handler(stringValue)
-        case let (.optionsList(_, _, _, options, _, handler), .selection(selectionIndex)):
-            guard let handler else {
-                throw InspectorBridgeError.internalFailure("property is read-only")
-            }
+            property.apply(.number(numberValue))
+        case let (.textField, .string, .string(stringValue)),
+             let (.textView, .string, .string(stringValue)):
+            property.apply(.string(stringValue))
+        case let (.options, .selection(selectionConstraints), .selection(selectionIndex)),
+             let (.textButtons, .selection(selectionConstraints), .selection(selectionIndex)),
+             let (.imageButtons, .selection(selectionConstraints), .selection(selectionIndex)):
             if let selectionIndex {
-                guard options.indices.contains(selectionIndex) else {
+                guard selectionConstraints.options.indices.contains(selectionIndex) else {
                     throw InspectorBridgeError.invalidPropertyValue("selectionIndex is out of bounds")
                 }
             }
-            handler(selectionIndex)
-        case let (.textButtonGroup(_, _, texts, _, handler), .selection(selectionIndex)):
-            guard let handler else {
-                throw InspectorBridgeError.internalFailure("property is read-only")
-            }
-            if let selectionIndex {
-                guard texts.indices.contains(selectionIndex) else {
-                    throw InspectorBridgeError.invalidPropertyValue("selectionIndex is out of bounds")
-                }
-            }
-            handler(selectionIndex)
-        case let (.imageButtonGroup(_, _, images, _, handler), .selection(selectionIndex)):
-            guard let handler else {
-                throw InspectorBridgeError.internalFailure("property is read-only")
-            }
-            if let selectionIndex {
-                guard images.indices.contains(selectionIndex) else {
-                    throw InspectorBridgeError.invalidPropertyValue("selectionIndex is out of bounds")
-                }
-            }
-            handler(selectionIndex)
-        case (.switch, _),
-             (.stepper, _),
-             (.textField, _),
-             (.textView, _),
-             (.optionsList, _),
-             (.textButtonGroup, _),
-             (.imageButtonGroup, _):
-            throw InspectorBridgeError.invalidPropertyValue("supplied value does not match property kind")
+            property.apply(.selection(selectionIndex))
         default:
-            throw InspectorBridgeError.internalFailure("unsupported property kind")
+            throw InspectorBridgeError.invalidPropertyValue("supplied value does not match property kind")
         }
     }
 

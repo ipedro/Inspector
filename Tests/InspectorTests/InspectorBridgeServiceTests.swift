@@ -570,9 +570,9 @@ private final class MockSnapshot: InspectorBridgeSnapshotProtocol {
 
 private final class MockLibrary: InspectorElementLibraryProtocol {
     let targetClass: AnyClass = UIView.self
-    private let rows: [MockSectionRow]
+    private let rows: [InspectorElementSectionDataSource]
 
-    init(rows: [MockSectionRow]) {
+    init(rows: [InspectorElementSectionDataSource]) {
         self.rows = rows
     }
 
@@ -1106,6 +1106,36 @@ extension InspectorBridgeServiceTests {
         XCTAssertNotNil(properties.first?.propertyRef)
     }
 
+    func testBridgeListPropertiesSupportsBindingBackedRows() throws {
+        final class BindingRow: InspectorElementSectionDataSource {
+            var state: InspectorElementSectionState = .collapsed
+            let title = "Binding Row"
+            let sectionBinding: InspectorSectionBinding? = .init(
+                descriptor: .init(id: "binding-row"),
+                fields: [
+                    .init(
+                        descriptor: .init(id: "enabled", title: "Enabled", kind: .toggle, value: .bool, editability: .editable),
+                        read: { .bool(true) },
+                        write: { _ in }
+                    )
+                ]
+            )
+        }
+
+        let bindingService = makeService(
+            snapshot: MockSnapshot(nodes: [MockReference.view(className: "UIView", displayName: "Binding", elementName: "Binding", accessibilityIdentifier: "binding-view")]),
+            librariesProvider: { panel in
+                guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
+                return [MockLibrary(rows: [BindingRow()])]
+            }
+        )
+
+        let bindingHandle = try XCTUnwrap(bindingService.query().nodes.first?.handle)
+        let response = try bindingService.listProperties(for: bindingHandle, panel: InspectorBridgeEditablePanel.attributes)
+        let properties = response.sections.flatMap { $0.rows }.flatMap { $0.properties }
+        XCTAssertEqual(properties.map { $0.title }, ["Enabled"])
+    }
+
     func testBridgeSetPropertyAppliesHandlerAndInvalidatesPropertyRefs() throws {
         let view = UIView()
         let reference = ViewHierarchyElement(with: view)
@@ -1132,6 +1162,54 @@ extension InspectorBridgeServiceTests {
         XCTAssertThrowsError(try service.setProperty(reference: propertyRef, value: InspectorBridgePropertyMutationValue.bool(false))) { error in
             XCTAssertEqual(error as? InspectorBridgeError, InspectorBridgeError.stalePropertyReference)
         }
+    }
+
+    func testBridgeSetPropertyAppliesBindingWriter() throws {
+        let reference = MockReference.view(className: "UIView", displayName: "Binding", elementName: "Binding", accessibilityIdentifier: "binding-view")
+        var value = false
+        final class BindingRow: InspectorElementSectionDataSource {
+            var state: InspectorElementSectionState = .collapsed
+            let title = "Binding Row"
+            let bindingProvider: () -> InspectorSectionBinding?
+
+            init(bindingProvider: @escaping () -> InspectorSectionBinding?) {
+                self.bindingProvider = bindingProvider
+            }
+
+            var sectionBinding: InspectorSectionBinding? { bindingProvider() }
+        }
+
+        let service = makeService(
+            snapshot: MockSnapshot(nodes: [reference]),
+            librariesProvider: { panel in
+                guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
+                return [MockLibrary(rows: [
+                    BindingRow {
+                        InspectorSectionBinding(
+                            descriptor: .init(id: "binding-row"),
+                            fields: [
+                                .init(
+                                    descriptor: .init(id: "enabled", title: "Enabled", kind: .toggle, value: .bool, editability: .editable),
+                                    read: { .bool(value) },
+                                    write: { newValue in
+                                        guard case let .bool(updated) = newValue else { return }
+                                        value = updated
+                                    }
+                                )
+                            ]
+                        )
+                    }
+                ])]
+            }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+        let list = try service.listProperties(for: handle, panel: InspectorBridgeEditablePanel.attributes)
+        let propertyRef = try XCTUnwrap(list.sections.first?.rows.first?.properties.first?.propertyRef)
+
+        let result = try service.setProperty(reference: propertyRef, value: InspectorBridgePropertyMutationValue.bool(true))
+        XCTAssertTrue(result.applied)
+        XCTAssertTrue(value)
     }
 
     func testBridgeSetPropertyRejectsWrongValueKind() throws {
