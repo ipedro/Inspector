@@ -338,5 +338,22 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(datePicker.minuteInterval, 2)
     }
 
+    func testWindowAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let window = UIWindow(frame: .zero)
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.WindowAttributesSectionDataSource(with: window)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 8)
+        XCTAssertEqual(bindings[0].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[1].descriptor.editability, .readOnly)
+        XCTAssertEqual(bindings[4].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[6].descriptor.kind, .preview)
+
+        bindings[0].apply(.bool(true))
+        XCTAssertTrue(window.canResizeToFitContent)
+    }
+
 }
 #endif

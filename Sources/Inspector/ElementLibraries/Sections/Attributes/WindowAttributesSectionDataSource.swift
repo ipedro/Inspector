@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -45,55 +46,99 @@ extension DefaultElementAttributesLibrary {
             case screenScale = "Screen Scale"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let window else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .canResizeToFitContent:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { window.canResizeToFitContent },
-                        handler: { canResizeToFitContent in
+                    return .init(
+                        descriptor: .init(
+                            id: "can-resize-to-fit-content",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(window.canResizeToFitContent) },
+                        write: { newValue in
+                            guard case let .bool(canResizeToFitContent) = newValue else { return }
                             window.canResizeToFitContent = canResizeToFitContent
                         }
                     )
                 case .separator0, .separator1:
-                    return .separator
+                    return .init(
+                        descriptor: .init(
+                            id: property.rawValue,
+                            title: property.rawValue,
+                            kind: .separator,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
 
                 case .screenBounds:
-                    return .cgRect(
-                        title: property.rawValue,
-                        rect: { window.screen.bounds },
-                        handler: nil
+                    return .init(
+                        descriptor: .init(
+                            id: "screen-bounds",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .rect,
+                            editability: .readOnly
+                        ),
+                        read: { .rect(window.screen.bounds) },
+                        write: nil
                     )
                 case .screenScale:
-                    return .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { window.screen.scale },
-                        range: { 0...window.screen.scale },
-                        stepValue: { 1 },
-                        handler: nil
+                    return .init(
+                        descriptor: .init(
+                            id: "screen-scale",
+                            title: property.rawValue,
+                            kind: .stepper,
+                            value: .number(.init(min: 0, max: Double(window.screen.scale), step: 1, isDecimal: true)),
+                            editability: .readOnly
+                        ),
+                        read: { .number(Double(window.screen.scale)) },
+                        write: nil
                     )
                 case .windowLevel:
-                    return .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { window.windowLevel.rawValue },
-                        range: { -Double.infinity...Double.infinity },
-                        stepValue: { 1 },
-                        handler: nil
+                    return .init(
+                        descriptor: .init(
+                            id: "window-level",
+                            title: property.rawValue,
+                            kind: .stepper,
+                            value: .number(.init(step: 1, isDecimal: true)),
+                            editability: .readOnly
+                        ),
+                        read: { .number(Double(window.windowLevel.rawValue)) },
+                        write: nil
                     )
                 case .isKeyWindow:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { window.isKeyWindow },
-                        handler: nil
+                    return .init(
+                        descriptor: .init(
+                            id: "is-key-window",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .readOnly
+                        ),
+                        read: { .bool(window.isKeyWindow) },
+                        write: nil
                     )
                 case .canBecomeKey:
-                    return .switch(
-                        title: property.rawValue,
-                        isOn: { window.canBecomeKey },
-                        handler: nil
+                    return .init(
+                        descriptor: .init(
+                            id: "can-become-key",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .readOnly
+                        ),
+                        read: { .bool(window.canBecomeKey) },
+                        write: nil
                     )
                 }
             }
