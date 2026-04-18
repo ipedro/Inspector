@@ -21,11 +21,15 @@
 import UIKit
 
 extension ElementInspectorFormPanelViewController: InspectorElementSectionViewControllerDelegate {
-    func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
-                                               willUpdate property: InspectorElementProperty) {}
+    func inspectorElementSectionViewController(
+        _ sectionViewController: InspectorElementSectionViewController,
+        willUpdateValues _: InspectorElementSectionViewController
+    ) {}
 
-    func inspectorElementSectionViewController(_ sectionViewController: InspectorElementSectionViewController,
-                                               didUpdate property: InspectorElementProperty)
+    func inspectorElementSectionViewController(
+        _ sectionViewController: InspectorElementSectionViewController,
+        didUpdateValues _: InspectorElementSectionViewController
+    )
     {
         let updateOperation = MainThreadOperation(name: "update sections") { [weak self] in
             guard
@@ -37,7 +41,7 @@ extension ElementInspectorFormPanelViewController: InspectorElementSectionViewCo
 
             formPanels.forEach { $0.reloadData() }
 
-            formDelegate?.elementInspectorFormPanel(self, didUpdateProperty: property, in: item)
+            formDelegate?.elementInspectorFormPanel(self, didUpdateValuesIn: item)
         }
 
         formDelegate?.addOperationToQueue(updateOperation)

@@ -33,12 +33,12 @@ protocol InspectorElementSectionViewControllerDelegate: OperationQueueManagerPro
 
     func inspectorElementSectionViewController(
         _ sectionViewController: InspectorElementSectionViewController,
-        didUpdate property: InspectorElementProperty
+        didUpdateValues: InspectorElementSectionViewController
     )
 
     func inspectorElementSectionViewController(
         _ sectionViewController: InspectorElementSectionViewController,
-        willUpdate property: InspectorElementProperty
+        willUpdateValues: InspectorElementSectionViewController
     )
 
     func inspectorElementSectionViewController(
@@ -86,22 +86,25 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
         guard let dataSource else { return }
 
         if let titleAccessoryBinding = dataSource.titleAccessoryBinding,
-           let titleAccessoryProperty = titleAccessoryBinding.makeInspectorElementProperty()
+           let titleAccessoryView = titleAccessoryBinding.makeFormView()
+                ?? titleAccessoryBinding.makeInspectorElementProperty().map(makeView(for:))
         {
-            let titleAccessoryView = makeView(for: titleAccessoryProperty)
+            configureDelegates(for: titleAccessoryView)
+
             if let baseForm = titleAccessoryView as? BaseFormControl {
                 baseForm.titleLabel.removeFromSuperview()
             }
 
             if let control = titleAccessoryView as? UIControl {
                 control.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
-                control.isEnabled = titleAccessoryProperty.hasHandler
+                control.isEnabled = titleAccessoryBinding.hasHandler
             }
 
             bindingViews.append((titleAccessoryBinding, titleAccessoryView))
             viewCode.addTitleAccessoryView(titleAccessoryView)
         } else if let titleAccessoryProperty = dataSource.titleAccessoryProperty {
             let titleAccessoryView = makeView(for: titleAccessoryProperty)
+            configureDelegates(for: titleAccessoryView)
             if let baseForm = titleAccessoryView as? BaseFormControl {
                 baseForm.titleLabel.removeFromSuperview()
             }
@@ -132,14 +135,16 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
 
         if let bindings = dataSource.propertyBindings {
             for (index, binding) in bindings.enumerated() {
-                guard let property = binding.makeInspectorElementProperty() else {
+                guard let propertyView = binding.makeFormView()
+                    ?? binding.makeInspectorElementProperty().map(makeView(for:))
+                else {
                     continue
                 }
 
-                let propertyView = makeView(for: property)
-
                 let operation = MainThreadAsyncOperation(name: String(index)) { [weak self] in
                     guard let self else { return }
+
+                    self.configureDelegates(for: propertyView)
 
                     if index == .zero, let sectionHeader = propertyView as? SectionHeader {
                         sectionHeader.margins.top = .zero
@@ -156,7 +161,7 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
 
                     let isLastElement = index == bindings.count - 1
                     let nextIsControl = index + 1 < bindings.count
-                        ? (bindings[index + 1].makeInspectorElementProperty()?.isControl ?? false)
+                        ? bindings[index + 1].isControl
                         : false
 
                     if let fromControl = propertyView as? BaseFormControl {
@@ -181,6 +186,8 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
 
             let operation = MainThreadAsyncOperation(name: String(index)) { [weak self] in
                 guard let self else { return }
+
+                self.configureDelegates(for: propertyView)
 
                 if index == .zero, let sectionHeader = propertyView as? SectionHeader {
                     sectionHeader.margins.top = .zero
@@ -226,7 +233,8 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
             return
         }
 
-        let isLargeList = (dataSource?.properties.count ?? .zero) > 20
+        let itemCount = dataSource?.propertyBindings?.count ?? dataSource?.properties.count ?? .zero
+        let isLargeList = itemCount > 20
 
         if isLargeList, let formView = viewCode as? InspectorElementSectionFormView {
             formView.collapseIcon.showLoading()
@@ -250,6 +258,20 @@ final class InspectorElementSectionViewController: UIViewController, DataReloadi
 
     private var formViews: [InspectorElementProperty: UIView] = [:]
     private var bindingViews: [(InspectorPropertyBinding, UIView)] = []
+
+    private func configureDelegates(for propertyView: UIView) {
+        if let colorPreviewControl = propertyView as? ColorPreviewControl {
+            colorPreviewControl.delegate = self
+        }
+
+        if let imagePreviewControl = propertyView as? ImagePreviewControl {
+            imagePreviewControl.delegate = self
+        }
+
+        if let optionListControl = propertyView as? OptionListControl {
+            optionListControl.delegate = self
+        }
+    }
 
     private func makeView(for property: InspectorElementProperty) -> UIView {
         switch property {
@@ -552,18 +574,16 @@ extension InspectorElementSectionViewController {
 
     @objc private func valueChanged(_ sender: AnyObject) {
         for (binding, formView) in bindingViews where formView === sender {
-            guard let property = binding.makeInspectorElementProperty() else { continue }
-
-            delegate?.inspectorElementSectionViewController(self, willUpdate: property)
+            delegate?.inspectorElementSectionViewController(self, willUpdateValues: self)
 
             let updateValueOperation = MainThreadOperation(name: "update property value") {
-                self.applyUpdate(property: property, formView: formView)
+                binding.applyUpdate(from: formView)
             }
 
             let didUpdateOperation = MainThreadOperation(name: "did update property value") { [weak self] in
                 guard let self else { return }
 
-                self.delegate?.inspectorElementSectionViewController(self, didUpdate: property)
+                self.delegate?.inspectorElementSectionViewController(self, didUpdateValues: self)
             }
 
             didUpdateOperation.addDependency(updateValueOperation)
@@ -574,7 +594,7 @@ extension InspectorElementSectionViewController {
         }
 
         for (property, formView) in formViews where formView === sender {
-            delegate?.inspectorElementSectionViewController(self, willUpdate: property)
+            delegate?.inspectorElementSectionViewController(self, willUpdateValues: self)
 
             let updateValueOperation = MainThreadOperation(name: "update property value") {
                 self.applyUpdate(property: property, formView: formView)
@@ -583,7 +603,7 @@ extension InspectorElementSectionViewController {
             let didUpdateOperation = MainThreadOperation(name: "did update property value") { [weak self] in
                 guard let self else { return }
 
-                self.delegate?.inspectorElementSectionViewController(self, didUpdate: property)
+                self.delegate?.inspectorElementSectionViewController(self, didUpdateValues: self)
             }
 
             didUpdateOperation.addDependency(updateValueOperation)
@@ -595,8 +615,7 @@ extension InspectorElementSectionViewController {
 
     func reloadData() {
         for (binding, formView) in bindingViews {
-            guard let property = binding.makeInspectorElementProperty() else { continue }
-            reload(property: property, formView: formView)
+            binding.reload(formView: formView)
         }
 
         for (property, formView) in formViews {

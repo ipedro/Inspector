@@ -28,8 +28,7 @@ protocol ElementInspectorFormPanelDelegate: OperationQueueManagerProtocol {
                                    didTap imagePreviewControl: ImagePreviewControl)
 
     func elementInspectorFormPanel(_ formPanelViewController: ElementInspectorFormPanelViewController,
-                                   didUpdateProperty property: InspectorElementProperty,
-                                   in section: InspectorElementSection)
+                                   didUpdateValuesIn section: InspectorElementSection)
 }
 
 protocol ElementInspectorFormPanelItemStateDelegate: AnyObject {

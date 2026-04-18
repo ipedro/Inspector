@@ -55,9 +55,9 @@ public extension InspectorElementSectionDataSource {
     var sectionBinding: InspectorSectionBinding? { nil }
     var propertyBindings: [InspectorPropertyBinding]? {
         if let sectionBinding {
-            let extraProperties = sectionBindingExtraProperties
+            let extraBindings = sectionBindingExtraProperties
                 .sorted { $0.key < $1.key }
-                .flatMap { key, provider -> [InspectorPropertyBinding]? in
+                .map { key, provider -> [InspectorPropertyBinding]? in
                     let properties = provider()
                     var bindings: [InspectorPropertyBinding] = []
                     for (index, property) in properties.enumerated() {
@@ -68,8 +68,8 @@ public extension InspectorElementSectionDataSource {
                     }
                     return bindings
                 }
-            guard extraProperties.allSatisfy({ $0 != nil }) else { return nil }
-            return sectionBinding.fields + extraProperties.compactMap { $0 }.flatMap { $0 }
+            guard extraBindings.allSatisfy({ $0 != nil }) else { return nil }
+            return sectionBinding.fields + extraBindings.compactMap { $0 }.flatMap { $0 }
         }
 
         let mapped = properties.enumerated().compactMap { index, property in

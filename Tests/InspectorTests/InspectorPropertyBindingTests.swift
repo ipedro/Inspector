@@ -3,8 +3,9 @@
 import InspectorContract
 import XCTest
 
+@MainActor
 final class InspectorPropertyBindingTests: XCTestCase {
-    func testToggleBindingProducesSwitchProperty() {
+    func testToggleBindingProducesSwitchProperty() throws {
         var value = false
         let descriptor = InspectorPropertyDescriptor(
             id: "enabled",
@@ -33,7 +34,7 @@ final class InspectorPropertyBindingTests: XCTestCase {
         }
     }
 
-    func testStepperBindingUsesDescriptorConstraints() {
+    func testStepperBindingUsesDescriptorConstraints() throws {
         var value = 0.5
         let descriptor = InspectorPropertyDescriptor(
             id: "alpha",
@@ -136,7 +137,7 @@ final class InspectorPropertyBindingTests: XCTestCase {
         }
     }
 
-    func testLegacyTogglePropertyCreatesBinding() {
+    func testLegacyTogglePropertyCreatesBinding() throws {
         var value = false
         let property = InspectorElementProperty.switch(
             title: "Enabled",
@@ -164,7 +165,7 @@ final class InspectorPropertyBindingTests: XCTestCase {
         XCTAssertNil(property.makeBinding(id: "modes"))
     }
 
-    func testSectionDataSourcePropertyBindingsFallbacksForLegacyProperties() {
+    func testSectionDataSourcePropertyBindingsFallbacksForLegacyProperties() throws {
         final class LegacyDataSource: InspectorElementSectionDataSource {
             var state: InspectorElementSectionState = .collapsed
             let title = "Legacy"
@@ -179,6 +180,126 @@ final class InspectorPropertyBindingTests: XCTestCase {
         let bindings = try XCTUnwrap(dataSource.propertyBindings)
         XCTAssertEqual(bindings.count, 1)
         XCTAssertEqual(bindings.first?.descriptor.title, "Enabled")
+    }
+
+    func testToggleBindingCreatesAndAppliesToggleFormView() throws {
+        var value = false
+        let binding = InspectorPropertyBinding(
+            descriptor: .init(
+                id: "enabled",
+                title: "Enabled",
+                kind: .toggle,
+                value: .bool,
+                editability: .editable
+            ),
+            read: { .bool(value) },
+            write: { newValue in
+                guard case let .bool(updated) = newValue else { return }
+                value = updated
+            }
+        )
+
+        let view = try XCTUnwrap(binding.makeFormView())
+        let toggle = try XCTUnwrap(view as? ToggleControl)
+        XCTAssertFalse(toggle.isOn)
+
+        toggle.isOn = true
+        binding.applyUpdate(from: toggle)
+
+        XCTAssertTrue(value)
+    }
+
+    func testStepperBindingReloadsExistingStepperFormView() throws {
+        var value = 0.25
+        let binding = InspectorPropertyBinding(
+            descriptor: .init(
+                id: "alpha",
+                title: "Alpha",
+                kind: .stepper,
+                value: .number(.init(min: 0, max: 1, step: 0.05, isDecimal: true)),
+                editability: .editable
+            ),
+            read: { .number(value) },
+            write: { newValue in
+                guard case let .number(updated) = newValue else { return }
+                value = updated
+            }
+        )
+
+        let view = try XCTUnwrap(binding.makeFormView())
+        let stepper = try XCTUnwrap(view as? StepperControl)
+        XCTAssertEqual(stepper.value, 0.25)
+
+        value = 0.75
+        binding.reload(formView: stepper)
+
+        XCTAssertEqual(stepper.value, 0.75)
+        XCTAssertEqual(stepper.range, 0...1)
+        XCTAssertEqual(stepper.stepValue, 0.05)
+    }
+
+    func testTextFieldBindingAppliesAndReloadsTextFieldFormView() throws {
+        var value = "Before"
+        let binding = InspectorPropertyBinding(
+            descriptor: .init(
+                id: "title",
+                title: "Title",
+                kind: .textField,
+                value: .string(.init(multiline: false, placeholder: "Placeholder", allowsNil: true)),
+                editability: .editable
+            ),
+            read: { .string(value) },
+            write: { newValue in
+                guard case let .string(updated) = newValue else { return }
+                value = updated ?? ""
+            }
+        )
+
+        let view = try XCTUnwrap(binding.makeFormView())
+        let textField = try XCTUnwrap(view as? TextFieldControl)
+        XCTAssertEqual(textField.value, "Before")
+
+        textField.value = "After"
+        binding.applyUpdate(from: textField)
+        XCTAssertEqual(value, "After")
+
+        value = "Reloaded"
+        binding.reload(formView: textField)
+        XCTAssertEqual(textField.value, "Reloaded")
+        XCTAssertEqual(textField.placeholder, "Placeholder")
+    }
+
+    func testSelectionBindingAppliesAndReloadsSegmentedControlFormView() throws {
+        var value: Int? = 0
+        let binding = InspectorPropertyBinding(
+            descriptor: .init(
+                id: "distribution",
+                title: "Distribution",
+                kind: .textButtons,
+                value: .selection(.init(options: [
+                    .init(id: "fill", title: "Fill"),
+                    .init(id: "equal", title: "Equal")
+                ], allowsNil: true)),
+                editability: .editable
+            ),
+            read: { .selection(value) },
+            write: { newValue in
+                guard case let .selection(updated) = newValue else { return }
+                value = updated
+            }
+        )
+
+        let view = try XCTUnwrap(binding.makeFormView())
+        let segmentedControl = try XCTUnwrap(view as? SegmentedControl)
+        XCTAssertEqual(segmentedControl.selectedIndex, 0)
+
+        segmentedControl.selectedIndex = 1
+        binding.applyUpdate(from: segmentedControl)
+        XCTAssertEqual(value, 1)
+
+        value = nil
+        binding.reload(formView: segmentedControl)
+        XCTAssertNil(segmentedControl.selectedIndex)
     }
 }
 #endif
