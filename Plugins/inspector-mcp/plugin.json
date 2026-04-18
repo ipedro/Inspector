@@ -1,7 +1,7 @@
 {
   "name": "inspector-mcp",
   "version": "0.1.0",
-  "description": "Skills for driving the Inspector MCP bridge — set up consumer iOS apps, register InspectorMCPServer, and query/resolve/snapshot the live UIKit hierarchy on Simulator.",
+  "description": "Skills for Inspector workflows — drive the MCP bridge, implement the Inspector library itself, and integrate Inspector into consumer iOS apps.",
   "author": {
     "name": "Pedro Almeida",
     "url": "https://github.com/ipedro/Inspector"
@@ -9,5 +9,5 @@
   "homepage": "https://github.com/ipedro/Inspector",
   "repository": "https://github.com/ipedro/Inspector",
   "license": "MIT",
-  "keywords": ["inspector", "ios", "uikit", "mcp", "simulator", "swift"]
+  "keywords": ["inspector", "ios", "uikit", "mcp", "simulator", "swift", "debugging", "integration"]
 }

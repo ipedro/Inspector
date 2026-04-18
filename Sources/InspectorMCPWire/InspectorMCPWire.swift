@@ -6,7 +6,9 @@ public enum InspectorMCPBridgeEndpoint {
     public static let healthPath = "/health"
     public static let queryPath = "/query"
     public static let resolvePath = "/resolve"
+    public static let refreshHandlePath = "/refresh-handle"
     public static let snapshotPath = "/snapshot"
+    public static let subtreePath = "/subtree"
     public static let inspectPath = "/inspect"
     public static let tapPath = "/tap"
     public static let actionsPath = "/actions"
@@ -30,7 +32,9 @@ public enum InspectorMCPBridgeEndpoint {
 public enum InspectorMCPOperation: String, Codable, CaseIterable {
     case query
     case resolve
+    case refreshHandle
     case snapshot
+    case subtree
     case inspect
     case tap
     case listActions
@@ -191,6 +195,16 @@ public struct InspectorMCPResolveRequest: Codable, Equatable {
     }
 }
 
+public struct InspectorMCPRefreshHandleRequest: Codable, Equatable {
+    public let handle: String?
+    public let semanticReference: String?
+
+    public init(handle: String? = nil, semanticReference: String? = nil) {
+        self.handle = handle
+        self.semanticReference = semanticReference
+    }
+}
+
 public struct InspectorMCPSnapshotRequest: Codable, Equatable {
     public let handle: String
     public let afterScreenUpdates: Bool
@@ -198,6 +212,16 @@ public struct InspectorMCPSnapshotRequest: Codable, Equatable {
     public init(handle: String, afterScreenUpdates: Bool) {
         self.handle = handle
         self.afterScreenUpdates = afterScreenUpdates
+    }
+}
+
+public struct InspectorMCPSubtreeRequest: Codable, Equatable {
+    public let handle: String
+    public let maxDepth: Int
+
+    public init(handle: String, maxDepth: Int) {
+        self.handle = handle
+        self.maxDepth = maxDepth
     }
 }
 
@@ -368,6 +392,7 @@ public struct InspectorMCPDiffScenarioRequest: Codable, Equatable {
 
 public struct InspectorMCPNode: Codable, Equatable {
     public let handle: String
+    public let semanticReference: String
     public let nodeKind: InspectorMCPNodeKind
     public let backingObjectType: String
     public let className: String
@@ -386,6 +411,7 @@ public struct InspectorMCPNode: Codable, Equatable {
 
     public init(
         handle: String,
+        semanticReference: String = "",
         nodeKind: InspectorMCPNodeKind,
         backingObjectType: String,
         className: String,
@@ -403,6 +429,7 @@ public struct InspectorMCPNode: Codable, Equatable {
         childCount: Int
     ) {
         self.handle = handle
+        self.semanticReference = semanticReference
         self.nodeKind = nodeKind
         self.backingObjectType = backingObjectType
         self.className = className
@@ -418,6 +445,36 @@ public struct InspectorMCPNode: Codable, Equatable {
         self.parentHandle = parentHandle
         self.childHandles = childHandles
         self.childCount = childCount
+    }
+}
+
+public struct InspectorMCPRefreshHandleResult: Codable, Equatable {
+    public let handle: String
+    public let semanticReference: String
+    public let expiresAt: Date
+    public let rebound: Bool
+
+    public init(handle: String, semanticReference: String, expiresAt: Date, rebound: Bool) {
+        self.handle = handle
+        self.semanticReference = semanticReference
+        self.expiresAt = expiresAt
+        self.rebound = rebound
+    }
+}
+
+public struct InspectorMCPSubtreeResult: Codable, Equatable {
+    public let rootHandle: String
+    public let semanticReference: String
+    public let expiresAt: Date
+    public let maxDepth: Int
+    public let nodes: [InspectorMCPNode]
+
+    public init(rootHandle: String, semanticReference: String, expiresAt: Date, maxDepth: Int, nodes: [InspectorMCPNode]) {
+        self.rootHandle = rootHandle
+        self.semanticReference = semanticReference
+        self.expiresAt = expiresAt
+        self.maxDepth = maxDepth
+        self.nodes = nodes
     }
 }
 
@@ -823,6 +880,8 @@ public enum InspectorMCPWireErrorCode: String, Codable {
     case disabled
     case notStarted
     case staleHandle
+    case unresolvedSemanticReference
+    case ambiguousSemanticReference
     case stalePropertyReference
     case staleActionReference
     case staleStateReference

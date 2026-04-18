@@ -106,6 +106,77 @@ final class InspectorBridgeServiceTests: XCTestCase {
         }
     }
 
+    func testRefreshHandleRebindsExpiredHandleUsingRememberedSemanticReference() throws {
+        var now = Date()
+
+        let firstWindow = MockReference.window(className: "UIWindow", displayName: "Window", elementName: "Window", accessibilityIdentifier: "window")
+        let firstChild = MockReference.view(className: "UILabel", displayName: "Greeting Label", elementName: "Greeting", accessibilityIdentifier: "greeting")
+        link(parent: firstWindow, child: firstChild)
+
+        let secondWindow = MockReference.window(className: "UIWindow", displayName: "Window", elementName: "Window", accessibilityIdentifier: "window")
+        let secondChild = MockReference.view(className: "UILabel", displayName: "Greeting Label", elementName: "Greeting", accessibilityIdentifier: "greeting")
+        link(parent: secondWindow, child: secondChild)
+
+        var currentSnapshot: any InspectorBridgeSnapshotProtocol = MockSnapshot(
+            expirationDate: now.addingTimeInterval(1),
+            nodes: [firstWindow, firstChild]
+        )
+
+        let service = InspectorMCPBridgeService(
+            availabilityProvider: { .active },
+            snapshotProvider: { currentSnapshot },
+            dateProvider: { now }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first { $0.accessibilityIdentifier == "greeting" }?.handle)
+        now = now.addingTimeInterval(2)
+        currentSnapshot = MockSnapshot(
+            expirationDate: now.addingTimeInterval(60),
+            nodes: [secondWindow, secondChild]
+        )
+
+        let refreshed = try service.refreshHandle(handle)
+        XCTAssertTrue(refreshed.rebound)
+
+        let resolved = try service.resolve(refreshed.handle)
+        XCTAssertEqual(resolved.accessibilityIdentifier, "greeting")
+    }
+
+    func testRefreshHandleRejectsAmbiguousSemanticReference() throws {
+        let leftRoot = MockReference.window(className: "UIWindow", displayName: "Window", elementName: "Window", accessibilityIdentifier: "window")
+        let rightRoot = MockReference.window(className: "UIWindow", displayName: "Window", elementName: "Window", accessibilityIdentifier: "window")
+        let left = MockReference.view(className: "UILabel", displayName: "Greeting Label", elementName: "Greeting", accessibilityIdentifier: "greeting")
+        let right = MockReference.view(className: "UILabel", displayName: "Greeting Label", elementName: "Greeting", accessibilityIdentifier: "greeting")
+        link(parent: leftRoot, child: left)
+        link(parent: rightRoot, child: right)
+
+        let service = makeService(snapshot: MockSnapshot(nodes: [leftRoot, left, rightRoot, right]))
+        let query = try service.query(.init(accessibilityIdentifierEquals: "greeting"))
+        let semanticReference = try XCTUnwrap(query.nodes.first?.semanticReference)
+
+        XCTAssertThrowsError(try service.refreshHandle(nil, semanticReference: semanticReference)) { error in
+            XCTAssertEqual(error as? InspectorBridgeError, .ambiguousSemanticReference)
+        }
+    }
+
+    func testSubtreeReturnsRootAndDescendantsThroughRequestedDepth() throws {
+        let root = MockReference.window(className: "UIWindow", displayName: "Window", elementName: "Window", accessibilityIdentifier: "window")
+        let parent = MockReference.view(className: "UIStackView", displayName: "Content Stack View", elementName: "Content", accessibilityIdentifier: "content")
+        let child = MockReference.view(className: "UILabel", displayName: "Greeting Label", elementName: "Greeting", accessibilityIdentifier: "greeting")
+        let grandchild = MockReference.view(className: "UIImageView", displayName: "Icon", elementName: "Icon", accessibilityIdentifier: "icon")
+        link(parent: root, child: parent)
+        link(parent: parent, child: child)
+        link(parent: child, child: grandchild)
+
+        let service = makeService(snapshot: MockSnapshot(nodes: [root, parent, child, grandchild]))
+        let handle = try XCTUnwrap(service.query(.init(accessibilityIdentifierEquals: "content")).nodes.first?.handle)
+
+        let subtree = try service.subtree(handle, maxDepth: 1)
+        XCTAssertEqual(subtree.nodes.count, 2)
+        XCTAssertEqual(subtree.nodes.first?.accessibilityIdentifier, "content")
+        XCTAssertEqual(subtree.nodes.last?.accessibilityIdentifier, "greeting")
+    }
+
     func testQueryRejectsDisabledAvailability() {
         let label = MockReference.view(className: "UILabel", displayName: "Greeting Label", elementName: "Greeting", accessibilityIdentifier: "greeting")
         let service = makeService(availability: .disabled, snapshot: MockSnapshot(nodes: [label]))

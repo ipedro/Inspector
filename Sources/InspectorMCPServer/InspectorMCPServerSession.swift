@@ -35,7 +35,7 @@ final class InspectorMCPServerSession {
                         "name": "InspectorMCPServer",
                         "version": "2.0.0"
                     ],
-                    "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. For semantic actions, use list_actions before perform_action. For assertions, use assert_property / assert_visible / assert_hierarchy_contains. For state debugging, use capture_state before diff_states and save_scenario / diff_scenario for named baselines. For property mutation, use list_properties before set_property. Mutation tools can stale handles immediately, so issue a fresh query after UI changes."
+                    "instructions": "Use query to discover nodes, then resolve, refresh_handle, or subtree on returned handles. For semantic actions, use list_actions before perform_action. For assertions, use assert_property / assert_visible / assert_hierarchy_contains. For state debugging, use capture_state before diff_states and save_scenario / diff_scenario for named baselines. For property mutation, use list_properties before set_property. Mutation stays strict on live handles even when exploration refs are refreshable."
                 ]
             )
         case "tools/list":
@@ -124,6 +124,18 @@ final class InspectorMCPServerSession {
                 ]
             ),
             toolDefinition(
+                name: "refresh_handle",
+                description: "Refresh a handle for exploration by using either the last-seen semantic identity behind a handle or an explicit semanticReference. Best-effort rebinding only.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "handle": ["type": "string"],
+                        "semanticReference": ["type": "string"]
+                    ]
+                ]
+            ),
+            toolDefinition(
                 name: "snapshot",
                 description: "Capture a PNG snapshot for a handle. Returns an absolute host file path — use the Read tool on pngPath to load image bytes.",
                 schema: [
@@ -140,6 +152,19 @@ final class InspectorMCPServerSession {
                         ]
                     ],
                     "required": ["handle", "afterScreenUpdates"]
+                ]
+            ),
+            toolDefinition(
+                name: "subtree",
+                description: "Return a depth-limited semantic subtree rooted at the latest matching node for a handle.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "handle": ["type": "string"],
+                        "maxDepth": ["type": "integer"]
+                    ],
+                    "required": ["handle", "maxDepth"]
                 ]
             ),
             toolDefinition(
@@ -469,6 +494,18 @@ final class InspectorMCPServerSession {
                     "Resolved \(node.className) for handle \(node.handle)."
                 }
             )
+        case "refresh_handle":
+            let request = try JSONObject.decode(
+                InspectorMCPRefreshHandleRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.refreshHandle(request)
+            return try toolResult(
+                for: result,
+                successText: { refreshed in
+                    refreshed.rebound ? "Rebound handle for continued exploration." : "Handle remains current."
+                }
+            )
         case "snapshot":
             let request = try JSONObject.decode(
                 InspectorMCPSnapshotRequest.self,
@@ -479,6 +516,18 @@ final class InspectorMCPServerSession {
                 for: result,
                 successText: { snapshot in
                     "Captured \(snapshot.mimeType) snapshot for handle \(snapshot.handle)."
+                }
+            )
+        case "subtree":
+            let request = try JSONObject.decode(
+                InspectorMCPSubtreeRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.subtree(request)
+            return try toolResult(
+                for: result,
+                successText: { subtree in
+                    "Returned subtree with \(subtree.nodes.count) node(s) from root \(subtree.rootHandle)."
                 }
             )
         case "inspect":

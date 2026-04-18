@@ -100,8 +100,8 @@ If you are inside the Inspector repo itself, you can also point the client at:
 
 Tool order matters:
 1. `query`
-2. `resolve`
-3. `list_actions` / `list_properties`
+2. `resolve` / `refresh_handle`
+3. `subtree` / `list_actions` / `list_properties`
 4. `snapshot`
 5. `capture_state` / `diff_states` / `save_scenario` / `diff_scenario` when debugging semantic state drift
 
@@ -119,6 +119,27 @@ Good first query:
 ```
 
 Avoid broad snapshots first. First get a stable handle with `query`, confirm the node with `resolve`, then call `snapshot`.
+
+For longer exploration sessions, save the node's `semanticReference` from `query`/`resolve` results. If a handle goes stale, prefer:
+
+```json
+{"semanticReference":"<semanticReference returned by query or resolve>"}
+```
+
+with `refresh_handle`.
+
+Important semantics:
+- refresh is **best-effort rebinding for exploration**
+- mutation still requires a currently valid live handle
+- if rebinding is ambiguous or the logical node is gone, the call fails instead of guessing
+
+For depth-limited app-owned tree inspection, use:
+
+```json
+{"handle":"<handle returned by query>","maxDepth":2}
+```
+
+with `subtree`.
 
 For interactive sessions, chain `query → inspect` to open the Inspector UI focused on a view:
 
@@ -272,6 +293,7 @@ Current constraints:
 - v2.4+: `list_properties` + `set_property` add typed property mutation by reusing Inspector property handlers
 - v2.5+: `list_actions` + `perform_action` add generic semantic action discovery/invocation over Inspector's existing action model
 - v2.6+: `save_scenario` / `list_scenarios` / `delete_scenario` / `diff_scenario` add named semantic baselines on top of state capture
+- v2.7+: `refresh_handle` / `subtree` add stable-enough exploration across time and bulk subtree inspection for app-owned UI
 
 If startup says the endpoint is occupied by the wrong app:
 - shut down the simulator or other app
@@ -318,3 +340,4 @@ Read these only when needed:
 - **v2.4 (2026-04-18)** — New `list_properties` and `set_property` tools. Additive over v2.3. Reconnect clients to refresh `tools/list`. Property refs are ephemeral and should be rediscovered after successful mutations.
 - **v2.5 (2026-04-18)** — New `list_actions` and `perform_action` tools. Additive over v2.4. Reconnect clients to refresh `tools/list`. Action refs are ephemeral and should be rediscovered after successful actions.
 - **v2.6 (2026-04-18)** — New `save_scenario`, `list_scenarios`, `delete_scenario`, and `diff_scenario` tools. Additive over v2.5. Reconnect clients to refresh `tools/list`. Named scenarios are in-memory semantic baselines and do not survive bridge restarts.
+- **v2.7 (2026-04-18)** — New `refresh_handle` and `subtree` tools. Additive over v2.6. Reconnect clients to refresh `tools/list`. Refresh uses best-effort semantic rebinding for exploration only; exact mutation still requires a valid live handle.

@@ -237,6 +237,19 @@ private final class InspectorMCPHTTPServer {
             } catch let error as InspectorBridgeError {
                 return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
             }
+        case ("POST", InspectorMCPBridgeEndpoint.refreshHandlePath):
+            let payload: InspectorMCPRefreshHandleRequest = try decode(
+                request.body,
+                allowedKeys: ["handle", "semanticReference"]
+            )
+
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeRefreshHandleResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
         case ("POST", InspectorMCPBridgeEndpoint.snapshotPath):
             let payload: InspectorMCPSnapshotRequest = try decode(
                 request.body,
@@ -246,6 +259,19 @@ private final class InspectorMCPHTTPServer {
             do {
                 return try jsonResponse(
                     InspectorMCPSuccessEnvelope(result: try bridgeSnapshotResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.subtreePath):
+            let payload: InspectorMCPSubtreeRequest = try decode(
+                request.body,
+                allowedKeys: ["handle", "maxDepth"]
+            )
+
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeSubtreeResult(for: payload))
                 )
             } catch let error as InspectorBridgeError {
                 return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
@@ -497,7 +523,7 @@ private final class InspectorMCPHTTPServer {
             inspectorStarted: inspectorStarted,
             keyboardWindowsFiltered: Inspector.sharedInstance.configuration.filtersSystemKeyboardWindows,
             bundleIdentifier: Bundle.main.bundleIdentifier,
-            operations: [.query, .resolve, .snapshot, .inspect, .tap, .listActions, .performAction, .assertProperty, .assertVisible, .assertHierarchyContains, .captureState, .diffStates, .saveScenario, .listScenarios, .deleteScenario, .diffScenario, .listProperties, .setProperty, .layers, .toggleLayer],
+            operations: [.query, .resolve, .refreshHandle, .snapshot, .subtree, .inspect, .tap, .listActions, .performAction, .assertProperty, .assertVisible, .assertHierarchyContains, .captureState, .diffStates, .saveScenario, .listScenarios, .deleteScenario, .diffScenario, .listProperties, .setProperty, .layers, .toggleLayer],
             apiVersion: 2
         )
     }
@@ -525,6 +551,19 @@ private final class InspectorMCPHTTPServer {
         wireNode(from: try Inspector.bridgeResolve(.init(rawValue: request.handle)))
     }
 
+    private func bridgeRefreshHandleResult(for request: InspectorMCPRefreshHandleRequest) throws -> InspectorMCPRefreshHandleResult {
+        let result = try Inspector.bridgeRefreshHandle(
+            request.handle.map(InspectorBridgeHandle.init(rawValue:)),
+            semanticReference: request.semanticReference
+        )
+        return InspectorMCPRefreshHandleResult(
+            handle: result.handle.rawValue,
+            semanticReference: result.semanticReference,
+            expiresAt: result.expiresAt,
+            rebound: result.rebound
+        )
+    }
+
     private func bridgeSnapshotResult(for request: InspectorMCPSnapshotRequest) throws -> InspectorMCPSnapshotResult {
         let artifact = try Inspector.bridgeSnapshot(
             .init(rawValue: request.handle),
@@ -538,6 +577,17 @@ private final class InspectorMCPHTTPServer {
             size: .init(width: artifact.size.width.doubleValue, height: artifact.size.height.doubleValue),
             deviceScale: artifact.deviceScale.doubleValue,
             createdAt: artifact.createdAt
+        )
+    }
+
+    private func bridgeSubtreeResult(for request: InspectorMCPSubtreeRequest) throws -> InspectorMCPSubtreeResult {
+        let result = try Inspector.bridgeSubtree(.init(rawValue: request.handle), maxDepth: request.maxDepth)
+        return InspectorMCPSubtreeResult(
+            rootHandle: result.rootHandle.rawValue,
+            semanticReference: result.semanticReference,
+            expiresAt: result.expiresAt,
+            maxDepth: result.maxDepth,
+            nodes: result.nodes.map(wireNode(from:))
         )
     }
 
@@ -734,6 +784,7 @@ private final class InspectorMCPHTTPServer {
     private func wireNode(from node: InspectorBridgeNode) -> InspectorMCPNode {
         InspectorMCPNode(
             handle: node.handle.rawValue,
+            semanticReference: node.semanticReference,
             nodeKind: wireNodeKind(from: node.nodeKind),
             backingObjectType: node.backingObjectType,
             className: node.className,
@@ -776,6 +827,10 @@ private final class InspectorMCPHTTPServer {
             return .init(code: .notStarted, message: "Inspector has not started yet", details: .empty)
         case .staleHandle:
             return .init(code: .staleHandle, message: "Handle is stale; issue a fresh query", details: .empty)
+        case .unresolvedSemanticReference:
+            return .init(code: .unresolvedSemanticReference, message: "Semantic reference could not be rebound", details: .empty)
+        case .ambiguousSemanticReference:
+            return .init(code: .ambiguousSemanticReference, message: "Semantic reference matched multiple nodes; narrow the target", details: .empty)
         case .stalePropertyReference:
             return .init(code: .stalePropertyReference, message: "Property reference is stale; list properties again", details: .empty)
         case .staleActionReference:

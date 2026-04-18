@@ -20,7 +20,7 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(health["bridgeEnabled"] as? Bool, true)
         XCTAssertEqual(health["inspectorStarted"] as? Bool, true)
         XCTAssertEqual(health["keyboardWindowsFiltered"] as? Bool, false)
-        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect", "tap", "listActions", "performAction", "assertProperty", "assertVisible", "assertHierarchyContains", "captureState", "diffStates", "listProperties", "setProperty", "layers", "toggleLayer"])
+        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "refreshHandle", "snapshot", "subtree", "inspect", "tap", "listActions", "performAction", "assertProperty", "assertVisible", "assertHierarchyContains", "captureState", "diffStates", "saveScenario", "listScenarios", "deleteScenario", "diffScenario", "listProperties", "setProperty", "layers", "toggleLayer"])
         XCTAssertEqual(health["apiVersion"] as? Int, 2)
     }
 
@@ -50,6 +50,7 @@ final class InspectorMCPTransportTests: XCTestCase {
 
         let expectedKeys = [
             "handle",
+            "semanticReference",
             "nodeKind",
             "backingObjectType",
             "className",
@@ -218,6 +219,15 @@ final class InspectorMCPTransportTests: XCTestCase {
         let operations = try XCTUnwrap(health["operations"] as? [String])
         XCTAssertTrue(operations.contains("listActions"))
         XCTAssertTrue(operations.contains("performAction"))
+    }
+
+    func testHealthAdvertisesRefreshAndSubtreeOperations() async throws {
+        let health = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+        let operations = try XCTUnwrap(health["operations"] as? [String])
+        XCTAssertTrue(operations.contains("refreshHandle"))
+        XCTAssertTrue(operations.contains("subtree"))
     }
 
     func testTapReturnsDispatchedEnvelopeForLiveButtonHandle() async throws {
@@ -568,7 +578,7 @@ final class InspectorMCPTransportTests: XCTestCase {
             payload["status"] as? String == "active"
         }
 
-        let queryBody = ["accessibilityIdentifierEquals": "Content Stack View"]
+        let queryBody = ["accessibilityIdentifierEquals": "MCP Tap Smoke Button"]
         var firstHandle: String?
         var ninthHandle: String?
 
@@ -606,6 +616,63 @@ final class InspectorMCPTransportTests: XCTestCase {
 
         XCTAssertEqual(freshResponse.statusCode, 200)
         XCTAssertEqual(freshPayload["accessibilityIdentifier"] as? String, "Content Stack View")
+    }
+
+    func testRefreshHandleRebindsExpiredHandleForExploration() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let queryBody = ["accessibilityIdentifierEquals": "MCP Tap Smoke Button"]
+        var firstHandle: String?
+        var semanticReference: String?
+        for index in 1...9 {
+            let response = try await postJSON(path: "/query", body: queryBody)
+            let payload = try unpackSuccessEnvelope(from: response.body)
+            let nodes = try XCTUnwrap(payload["nodes"] as? [[String: Any]])
+            let firstNode = try XCTUnwrap(nodes.first)
+            let handle = try XCTUnwrap(firstNode["handle"] as? String)
+            if index == 1 {
+                firstHandle = handle
+                semanticReference = firstNode["semanticReference"] as? String
+            }
+        }
+
+        let staleResponse = try await postJSON(
+            path: "/resolve",
+            body: ["handle": try XCTUnwrap(firstHandle)]
+        )
+        let stalePayload = try jsonObject(from: staleResponse.body)
+        XCTAssertEqual(stalePayload["ok"] as? Bool, false)
+
+        let response = try await postJSON(
+            path: "/refresh-handle",
+            body: ["semanticReference": try XCTUnwrap(semanticReference)]
+        )
+        XCTAssertEqual(response.statusCode, 200)
+        let payload = try unpackSuccessEnvelope(from: response.body)
+        XCTAssertEqual(payload["rebound"] as? Bool, true)
+        let reboundHandle = try XCTUnwrap(payload["handle"] as? String)
+        XCTAssertFalse(reboundHandle.isEmpty)
+
+        let resolved = try await postJSON(path: "/resolve", body: ["handle": reboundHandle])
+        let resolvedPayload = try unpackSuccessEnvelope(from: resolved.body)
+        XCTAssertEqual(resolvedPayload["accessibilityIdentifier"] as? String, "MCP Tap Smoke Button")
+    }
+
+    func testSubtreeReturnsDepthLimitedNodes() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let handle = try await queryHandle(accessibilityIdentifier: "Content Stack View")
+        let response = try await postJSON(path: "/subtree", body: ["handle": handle, "maxDepth": 1])
+        XCTAssertEqual(response.statusCode, 200)
+        let payload = try unpackSuccessEnvelope(from: response.body)
+        let nodes = try XCTUnwrap(payload["nodes"] as? [[String: Any]])
+        XCTAssertGreaterThanOrEqual(nodes.count, 1)
+        XCTAssertNotNil(payload["semanticReference"] as? String)
+        XCTAssertEqual(nodes.first?["accessibilityIdentifier"] as? String, "Content Stack View")
     }
 
     func testHealthAdvertisesLayerOperations() async throws {

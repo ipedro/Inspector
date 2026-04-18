@@ -4,6 +4,7 @@ Skills and helpers for driving the Inspector MCP bridge from Claude Code.
 
 ## Versions
 
+- **v2.7 (2026-04-18)** — Adds `refresh_handle` + `subtree`. Handles become refreshable for exploration, and app-owned subtrees can be fetched in one call. Additive, no breaking changes.
 - **v2.6 (2026-04-18)** — Adds `save_scenario` / `list_scenarios` / `delete_scenario` / `diff_scenario`. Named semantic baselines for broken-state debugging and regression comparison. Additive, no breaking changes.
 - **v2.5 (2026-04-18)** — Adds `list_actions` + `perform_action`. Generic semantic action discovery/invocation over Inspector's existing action model. Additive, no breaking changes.
 - **v2.4 (2026-04-18)** — Adds `list_properties` + `set_property`. Typed property mutation reusing Inspector property handlers. Additive, no breaking changes.
@@ -14,8 +15,10 @@ Skills and helpers for driving the Inspector MCP bridge from Claude Code.
 
 ## What's in it
 
-- **`inspector-mcp` skill** — register `InspectorMCPServer` for a consumer Xcode project, then use `query` / `resolve` / `snapshot` / `inspect` / `tap` / `list_actions` / `perform_action` / `list_properties` / `set_property` / `capture_state` / `diff_states` / `save_scenario` / `list_scenarios` / `delete_scenario` / `diff_scenario` on the live UIKit hierarchy. Includes `scripts/find_inspector_package.py` to locate the Inspector Swift package under DerivedData.
+- **`inspector-mcp` skill** — register `InspectorMCPServer` for a consumer Xcode project, then use `query` / `resolve` / `refresh_handle` / `subtree` / `snapshot` / `inspect` / `tap` / `list_actions` / `perform_action` / `list_properties` / `set_property` / `capture_state` / `diff_states` / `save_scenario` / `list_scenarios` / `delete_scenario` / `diff_scenario` on the live UIKit hierarchy. Includes `scripts/find_inspector_package.py` to locate the Inspector Swift package under DerivedData.
 - **`inspector-mcp-consumer` skill** — patch a consumer iOS app so it exposes the bridge: pick the right lifecycle entry point, set `enableMCPBridge = true` with `snapshotExpiration = 300` / `snapshotMaxCount = 8` before `Inspector.start()`.
+- **`inspector-implementation` skill** — work on the Inspector library itself: runtime behavior, panels, libraries, macros, Example-app dogfooding, and verification.
+- **`inspector-integration` skill** — integrate Inspector the library into a consumer app even when MCP is not the main goal: startup wiring, configuration, customization, and debug-only registration patterns.
 - **`templates/`** — drop-in shell wrapper and Codex MCP config for consumer apps. See [`templates/README.md`](templates/README.md).
 
 Both skills reference `${CLAUDE_PLUGIN_ROOT}` so paths stay portable across machines.
@@ -58,6 +61,14 @@ Plugins/inspector-mcp/
 │   │   │   └── inspection-patterns.md
 │   │   └── scripts/
 │   │       └── find_inspector_package.py
+│   ├── inspector-implementation/
+│   │   ├── SKILL.md
+│   │   └── references/
+│   │       └── architecture.md
+│   ├── inspector-integration/
+│   │   ├── SKILL.md
+│   │   └── references/
+│   │       └── integration-patterns.md
 │   └── inspector-mcp-consumer/
 │       ├── SKILL.md
 │       └── references/

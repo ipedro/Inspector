@@ -46,6 +46,7 @@ public struct InspectorBridgeQueryRequest: Hashable, Codable {
 
 public struct InspectorBridgeNode: Hashable, Codable {
     public let handle: InspectorBridgeHandle
+    public let semanticReference: String
     public let nodeKind: InspectorBridgeNodeKind
     public let backingObjectType: String
     public let className: String
@@ -61,6 +62,21 @@ public struct InspectorBridgeNode: Hashable, Codable {
     public let parentHandle: InspectorBridgeHandle?
     public let childHandles: [InspectorBridgeHandle]
     public let childCount: Int
+}
+
+public struct InspectorBridgeRefreshHandleResult: Hashable, Codable {
+    public let handle: InspectorBridgeHandle
+    public let semanticReference: String
+    public let expiresAt: Date
+    public let rebound: Bool
+}
+
+public struct InspectorBridgeSubtreeResponse: Hashable, Codable {
+    public let rootHandle: InspectorBridgeHandle
+    public let semanticReference: String
+    public let expiresAt: Date
+    public let maxDepth: Int
+    public let nodes: [InspectorBridgeNode]
 }
 
 public struct InspectorBridgeQueryResponse: Hashable, Codable {
@@ -323,6 +339,8 @@ public enum InspectorBridgeError: Error, Hashable, Codable {
     case disabled
     case notStarted
     case staleHandle
+    case unresolvedSemanticReference
+    case ambiguousSemanticReference
     case stalePropertyReference
     case staleActionReference
     case staleStateReference

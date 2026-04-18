@@ -10,7 +10,9 @@ final class InspectorMCPWireTests: XCTestCase {
         XCTAssertEqual(InspectorMCPBridgeEndpoint.healthPath, "/health")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.queryPath, "/query")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.resolvePath, "/resolve")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.refreshHandlePath, "/refresh-handle")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.snapshotPath, "/snapshot")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.subtreePath, "/subtree")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.tapPath, "/tap")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.actionsPath, "/actions")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.performActionPath, "/perform-action")
@@ -45,6 +47,7 @@ final class InspectorMCPWireTests: XCTestCase {
     func testQuerySuccessEnvelopeRoundTripsFrozenNodeShape() throws {
         let node = InspectorMCPNode(
             handle: "handle-1",
+            semanticReference: "root/UIStackView#0|Content Stack View|Content Stack View",
             nodeKind: .view,
             backingObjectType: "UIStackView",
             className: "UIStackView",
@@ -141,6 +144,11 @@ final class InspectorMCPWireTests: XCTestCase {
     func testInspectOperationIsInAllCases() {
         XCTAssertTrue(InspectorMCPOperation.allCases.contains(.inspect),
                       "InspectorMCPOperation.inspect must be a declared case")
+    }
+
+    func testRefreshAndSubtreeOperationsAreInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.refreshHandle))
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.subtree))
     }
 
     func testInspectRequestRoundTrips() throws {

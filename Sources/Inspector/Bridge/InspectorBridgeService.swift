@@ -33,7 +33,9 @@ enum InspectorBridgeRuntimeAvailability {
 enum InspectorBridgeOperation {
     case query
     case resolve
+    case refreshHandle
     case snapshot
+    case subtree
     case inspect
     case tap
     case listActions
@@ -165,6 +167,7 @@ final class InspectorMCPBridgeService {
         let reference: ViewHierarchyElementReference
         let objectIdentityToken: String
         let pathFingerprint: String
+        let semanticReference: String
     }
 
     private struct PinnedSnapshot {
@@ -214,6 +217,8 @@ final class InspectorMCPBridgeService {
     private var pinnedSnapshots: [UUID: PinnedSnapshot] = [:]
     private var handleIndex: [String: UUID] = [:]
     private var snapshotOrder: [UUID] = []
+    private var semanticReferencesByHandle: [String: String] = [:]
+    private var semanticReferenceOrder: [String] = []
     private var propertyRecords: [String: EditablePropertyRecord] = [:]
     private var propertyHandlesByOwner: [String: Set<String>] = [:]
     private var actionRecords: [String: ActionRecord] = [:]
@@ -263,6 +268,8 @@ final class InspectorMCPBridgeService {
         pinnedSnapshots.removeAll()
         handleIndex.removeAll()
         snapshotOrder.removeAll()
+        semanticReferencesByHandle.removeAll()
+        semanticReferenceOrder.removeAll()
         propertyRecords.removeAll()
         propertyHandlesByOwner.removeAll()
         actionRecords.removeAll()
@@ -306,6 +313,42 @@ final class InspectorMCPBridgeService {
         }
     }
 
+    func refreshHandle(
+        _ handle: InspectorBridgeHandle? = nil,
+        semanticReference explicitSemanticReference: String? = nil
+    ) throws -> InspectorBridgeRefreshHandleResult {
+        try performOnMain(.refreshHandle) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            guard let snapshot = self.snapshotProvider() else {
+                throw InspectorBridgeError.snapshotUnavailable(.runtimeSnapshotUnavailable)
+            }
+
+            let pinnedSnapshot = self.pin(snapshot: snapshot)
+            let semanticReference = try self.resolveSemanticReference(
+                handle: handle,
+                explicitSemanticReference: explicitSemanticReference
+            )
+            let matches = snapshot.viewHierarchy.filter { self.semanticReference(for: $0) == semanticReference }
+
+            guard let match = matches.only else {
+                if matches.isEmpty {
+                    throw InspectorBridgeError.unresolvedSemanticReference
+                }
+                throw InspectorBridgeError.ambiguousSemanticReference
+            }
+
+            let node = self.node(for: match, in: pinnedSnapshot)
+            return InspectorBridgeRefreshHandleResult(
+                handle: node.handle,
+                semanticReference: semanticReference,
+                expiresAt: pinnedSnapshot.expiresAt,
+                rebound: handle.map { $0 != node.handle } ?? true
+            )
+        }
+    }
+
     func snapshot(
         _ handle: InspectorBridgeHandle,
         afterScreenUpdates: Bool = true
@@ -321,6 +364,46 @@ final class InspectorMCPBridgeService {
                 for: record.reference,
                 handle: handle,
                 afterScreenUpdates: afterScreenUpdates
+            )
+        }
+    }
+
+    func subtree(
+        _ handle: InspectorBridgeHandle,
+        maxDepth: Int
+    ) throws -> InspectorBridgeSubtreeResponse {
+        try performOnMain(.subtree) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            guard maxDepth >= 0 else {
+                throw InspectorBridgeError.invalidPropertyValue("maxDepth must be >= 0")
+            }
+            guard let snapshot = self.snapshotProvider() else {
+                throw InspectorBridgeError.snapshotUnavailable(.runtimeSnapshotUnavailable)
+            }
+
+            let pinnedSnapshot = self.pin(snapshot: snapshot)
+            let semanticReference = try self.resolveSemanticReference(handle: handle, explicitSemanticReference: nil)
+            let matches = snapshot.viewHierarchy.filter { self.semanticReference(for: $0) == semanticReference }
+
+            guard let root = matches.only else {
+                if matches.isEmpty {
+                    throw InspectorBridgeError.unresolvedSemanticReference
+                }
+                throw InspectorBridgeError.ambiguousSemanticReference
+            }
+
+            let rootNode = self.node(for: root, in: pinnedSnapshot)
+            let nodes = self.collectSubtree(from: root, rootDepth: root._depth, maxDepth: maxDepth)
+                .map { self.node(for: $0, in: pinnedSnapshot) }
+
+            return InspectorBridgeSubtreeResponse(
+                rootHandle: rootNode.handle,
+                semanticReference: semanticReference,
+                expiresAt: pinnedSnapshot.expiresAt,
+                maxDepth: maxDepth,
+                nodes: nodes
             )
         }
     }
@@ -1172,12 +1255,15 @@ final class InspectorMCPBridgeService {
             let record = HandleRecord(
                 reference: reference,
                 objectIdentityToken: objectIdentityToken(for: reference),
-                pathFingerprint: pathFingerprint(for: reference)
+                pathFingerprint: pathFingerprint(for: reference),
+                semanticReference: semanticReference(for: reference)
             )
 
             handlesByToken[token] = record
             handlesByReferenceID[referenceID] = handle
             handleIndex[token] = snapshotID
+            semanticReferencesByHandle[token] = record.semanticReference
+            semanticReferenceOrder.append(token)
         }
 
         let pinnedSnapshot = PinnedSnapshot(
@@ -1190,6 +1276,7 @@ final class InspectorMCPBridgeService {
         pinnedSnapshots[snapshotID] = pinnedSnapshot
         snapshotOrder.append(snapshotID)
         enforceSnapshotLimit()
+        enforceSemanticReferenceLimit()
         return pinnedSnapshot
     }
 
@@ -1198,6 +1285,15 @@ final class InspectorMCPBridgeService {
 
         while snapshotOrder.count > limit {
             remove(snapshotID: snapshotOrder[0])
+        }
+    }
+
+    private func enforceSemanticReferenceLimit() {
+        let limit = max(snapshotLimitProvider(), 1) * 128
+
+        while semanticReferenceOrder.count > limit {
+            let token = semanticReferenceOrder.removeFirst()
+            semanticReferencesByHandle.removeValue(forKey: token)
         }
     }
 
@@ -1282,6 +1378,49 @@ final class InspectorMCPBridgeService {
         }
     }
 
+    private func resolveSemanticReference(
+        handle: InspectorBridgeHandle?,
+        explicitSemanticReference: String?
+    ) throws -> String {
+        if let explicitSemanticReference = normalized(explicitSemanticReference) {
+            return explicitSemanticReference
+        }
+
+        guard let handle else {
+            throw InspectorBridgeError.invalidPropertyValue("either handle or semanticReference is required")
+        }
+
+        if let snapshotID = handleIndex[handle.rawValue],
+           let pinnedSnapshot = pinnedSnapshots[snapshotID],
+           let record = pinnedSnapshot.handlesByToken[handle.rawValue]
+        {
+            return record.semanticReference
+        }
+
+        if let semanticReference = semanticReferencesByHandle[handle.rawValue] {
+            return semanticReference
+        }
+
+        throw InspectorBridgeError.staleHandle
+    }
+
+    private func collectSubtree(
+        from root: ViewHierarchyElementReference,
+        rootDepth _: Int,
+        maxDepth: Int
+    ) -> [ViewHierarchyElementReference] {
+        var results: [ViewHierarchyElementReference] = []
+
+        func visit(_ node: ViewHierarchyElementReference, depth: Int) {
+            guard depth <= maxDepth else { return }
+            results.append(node)
+            node.children.forEach { visit($0, depth: depth + 1) }
+        }
+
+        visit(root, depth: 0)
+        return results
+    }
+
     private func node(
         for reference: ViewHierarchyElementReference,
         in pinnedSnapshot: PinnedSnapshot
@@ -1295,6 +1434,7 @@ final class InspectorMCPBridgeService {
 
         return InspectorBridgeNode(
             handle: handle,
+            semanticReference: semanticReference(for: reference),
             nodeKind: nodeKind(for: reference),
             backingObjectType: reference._className,
             className: reference._className,
@@ -1333,6 +1473,17 @@ final class InspectorMCPBridgeService {
         let parentSegment = reference.parent.map(stateSignature(for:)) ?? "root"
         let siblingIndex = reference.parent?.children.firstIndex(where: { $0 === reference }) ?? 0
         return "\(parentSegment)/\(reference._classNameWithoutQualifiers)#\(siblingIndex)|\(reference._elementName)|\(reference.accessibilityIdentifier ?? "")"
+    }
+
+    private func semanticReference(for reference: ViewHierarchyElementReference) -> String {
+        let classPath = (
+            reference.allParents
+                .reversed()
+                .map(\._classNameWithoutQualifiers)
+            + [reference._classNameWithoutQualifiers]
+        ).joined(separator: "/")
+
+        return "\(classPath)#\(reference._depth)|\(reference._elementName)|\(reference.accessibilityIdentifier ?? "")"
     }
 
     private func matches(
@@ -1416,6 +1567,12 @@ private func pathFingerprint(for reference: ViewHierarchyElementReference) -> St
     return path.joined(separator: "/") + "#\(reference._depth)"
 }
 
+private extension Collection {
+    var only: Element? {
+        count == 1 ? first : nil
+    }
+}
+
 private let sharedInspectorMCPBridgeService = InspectorMCPBridgeService(
     availabilityProvider: {
         let inspector = Inspector.sharedInstance
@@ -1482,11 +1639,25 @@ package extension Inspector {
         try sharedInspectorMCPBridgeService.resolve(handle)
     }
 
+    static func bridgeRefreshHandle(
+        _ handle: InspectorBridgeHandle? = nil,
+        semanticReference: String? = nil
+    ) throws -> InspectorBridgeRefreshHandleResult {
+        try sharedInspectorMCPBridgeService.refreshHandle(handle, semanticReference: semanticReference)
+    }
+
     static func bridgeSnapshot(
         _ handle: InspectorBridgeHandle,
         afterScreenUpdates: Bool = true
     ) throws -> InspectorBridgeSnapshotArtifact {
         try sharedInspectorMCPBridgeService.snapshot(handle, afterScreenUpdates: afterScreenUpdates)
+    }
+
+    static func bridgeSubtree(
+        _ handle: InspectorBridgeHandle,
+        maxDepth: Int
+    ) throws -> InspectorBridgeSubtreeResponse {
+        try sharedInspectorMCPBridgeService.subtree(handle, maxDepth: maxDepth)
     }
 
     static func bridgeInspect(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeHandle {

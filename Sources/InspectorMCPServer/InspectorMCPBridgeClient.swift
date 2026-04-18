@@ -5,7 +5,9 @@ protocol InspectorMCPBridgeClient {
     func health() async throws -> InspectorMCPHealthResponse
     func query(_ request: InspectorMCPQueryRequest) async throws -> Result<InspectorMCPQueryResult, InspectorMCPTransportError>
     func resolve(_ request: InspectorMCPResolveRequest) async throws -> Result<InspectorMCPNode, InspectorMCPTransportError>
+    func refreshHandle(_ request: InspectorMCPRefreshHandleRequest) async throws -> Result<InspectorMCPRefreshHandleResult, InspectorMCPTransportError>
     func snapshot(_ request: InspectorMCPSnapshotRequest) async throws -> Result<InspectorMCPSnapshotResult, InspectorMCPTransportError>
+    func subtree(_ request: InspectorMCPSubtreeRequest) async throws -> Result<InspectorMCPSubtreeResult, InspectorMCPTransportError>
     func inspect(_ request: InspectorMCPInspectRequest) async throws -> Result<InspectorMCPInspectResult, InspectorMCPTransportError>
     func tap(_ request: InspectorMCPTapRequest) async throws -> Result<InspectorMCPTapResult, InspectorMCPTransportError>
     func listActions(_ request: InspectorMCPActionListRequest) async throws -> Result<InspectorMCPActionListResult, InspectorMCPTransportError>
@@ -107,9 +109,23 @@ final class InspectorMCPHTTPBridgeClient: InspectorMCPBridgeClient {
         )
     }
 
+    func refreshHandle(_ request: InspectorMCPRefreshHandleRequest) async throws -> Result<InspectorMCPRefreshHandleResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.refreshHandlePath,
+            body: request
+        )
+    }
+
     func snapshot(_ request: InspectorMCPSnapshotRequest) async throws -> Result<InspectorMCPSnapshotResult, InspectorMCPTransportError> {
         try await sendToolRequest(
             path: InspectorMCPBridgeEndpoint.snapshotPath,
+            body: request
+        )
+    }
+
+    func subtree(_ request: InspectorMCPSubtreeRequest) async throws -> Result<InspectorMCPSubtreeResult, InspectorMCPTransportError> {
+        try await sendToolRequest(
+            path: InspectorMCPBridgeEndpoint.subtreePath,
             body: request
         )
     }

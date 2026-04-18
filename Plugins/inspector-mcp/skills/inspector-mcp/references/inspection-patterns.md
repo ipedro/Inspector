@@ -6,8 +6,8 @@ Use this when the server is already registered and the task is live UI inspectio
 
 Use tools in this order:
 1. `query`
-2. `resolve`
-3. `list_actions` / `list_properties`
+2. `resolve` / `refresh_handle`
+3. `subtree` / `list_actions` / `list_properties`
 4. `snapshot`
 5. `capture_state` / `diff_states` / `save_scenario` / `diff_scenario` when comparing semantic states
 
@@ -84,6 +84,14 @@ Do this:
 1. issue a fresh `query`
 2. take the new handle
 3. continue with `resolve` or `snapshot`
+
+Or, if you saved `semanticReference` from an earlier `query`/`resolve`, call:
+
+```json
+{"semanticReference":"SEMANTIC_REF"}
+```
+
+with `refresh_handle`.
 
 Do not:
 - keep retrying the old handle
@@ -185,6 +193,53 @@ Important semantics:
 - action refs are ephemeral and snapshot-scoped
 - after a successful `perform_action`, rediscover actions before the next operation
 - actions reuse Inspector's existing semantic action model; this is not coordinate tapping or generic simulator orchestration
+
+## Refreshable exploration handles (v2.7)
+
+`refresh_handle` exists to make exploration stable enough across time without pretending live object identity is permanent.
+
+Request:
+
+```json
+{"semanticReference":"SEMANTIC_REF"}
+```
+
+or:
+
+```json
+{"handle":"STALE_OR_OLD_HANDLE"}
+```
+
+Response:
+
+```json
+{"handle":"NEW_HANDLE","semanticReference":"SEMANTIC_REF","expiresAt":"...","rebound":true}
+```
+
+Rules:
+- refresh is for exploration continuity, not mutation safety
+- a rebound handle may point to the same logical node in a newer runtime snapshot
+- if rebinding is ambiguous, the call fails instead of guessing
+- exact mutations still require a currently valid live handle/propertyRef/actionRef chain
+
+## Subtree export (v2.7)
+
+Use `subtree` when one-node-at-a-time traversal is too expensive:
+
+```json
+{"handle":"HANDLE","maxDepth":2}
+```
+
+Response shape:
+
+```json
+{"rootHandle":"HANDLE","semanticReference":"SEMANTIC_REF","expiresAt":"...","maxDepth":2,"nodes":[...]}
+```
+
+Rules:
+- `subtree` is depth-limited and intended for app-owned semantic inspection
+- use it to inspect a meaningful chunk before choosing actions/properties/assertions
+- it complements `resolve`; it does not replace targeted follow-up calls
 
 ## Property mutation (v2.4)
 

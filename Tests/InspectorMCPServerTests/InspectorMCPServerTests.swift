@@ -51,7 +51,7 @@ final class InspectorMCPServerTests: XCTestCase {
         let result = try XCTUnwrap(response["result"] as? [String: Any])
         let tools = try XCTUnwrap(result["tools"] as? [[String: Any]])
 
-        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "snapshot", "inspect", "tap", "list_actions", "perform_action", "assert_property", "assert_visible", "assert_hierarchy_contains", "capture_state", "diff_states", "save_scenario", "list_scenarios", "delete_scenario", "diff_scenario", "list_properties", "set_property", "list_layers", "toggle_layer"])
+        XCTAssertEqual(tools.map { $0["name"] as? String }, ["query", "resolve", "refresh_handle", "snapshot", "subtree", "inspect", "tap", "list_actions", "perform_action", "assert_property", "assert_visible", "assert_hierarchy_contains", "capture_state", "diff_states", "save_scenario", "list_scenarios", "delete_scenario", "diff_scenario", "list_properties", "set_property", "list_layers", "toggle_layer"])
     }
 
     func testToolsCallQueryReturnsStructuredContentFromBridgeResult() async throws {
@@ -63,6 +63,7 @@ final class InspectorMCPServerTests: XCTestCase {
                         nodes: [
                             .init(
                                 handle: "handle-1",
+                                semanticReference: "root/UIStackView#0|Content Stack View|Content Stack View",
                                 nodeKind: .view,
                                 backingObjectType: "UIStackView",
                                 className: "UIStackView",
@@ -147,6 +148,72 @@ final class InspectorMCPServerTests: XCTestCase {
 
         XCTAssertEqual(result["isError"] as? Bool, true)
         XCTAssertEqual(structuredContent["code"] as? String, "staleHandle")
+    }
+
+    func testToolsCallRefreshHandleForwardsToBridgeClient() async throws {
+        let mock = MockBridgeClient(
+            refreshHandleResult: .success(
+                .init(handle: "REFRESHED", semanticReference: "UIView/UIButton#2|Tap|tap", expiresAt: .distantFuture, rebound: true)
+            )
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":41,"method":"tools/call","params":{"name":"refresh_handle","arguments":{"semanticReference":"UIView/UIButton#2|Tap|tap"}}}"#
+
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try jsonObject(from: try XCTUnwrap(responseData))
+        let result = try XCTUnwrap(response["result"] as? [String: Any])
+        let structured = try XCTUnwrap(result["structuredContent"] as? [String: Any])
+
+        XCTAssertEqual(result["isError"] as? Bool, false)
+        XCTAssertEqual(structured["handle"] as? String, "REFRESHED")
+        XCTAssertEqual(structured["rebound"] as? Bool, true)
+        XCTAssertEqual(mock.lastRefreshHandleRequest?.semanticReference, "UIView/UIButton#2|Tap|tap")
+    }
+
+    func testToolsCallSubtreeForwardsToBridgeClient() async throws {
+        let mock = MockBridgeClient(
+            subtreeResult: .success(
+                .init(
+                    rootHandle: "ROOT",
+                    semanticReference: "UIView/UIStackView#1|Content Stack View|Content Stack View",
+                    expiresAt: .distantFuture,
+                    maxDepth: 1,
+                    nodes: [
+                        .init(
+                            handle: "ROOT",
+                            semanticReference: "UIView/UIStackView#1|Content Stack View|Content Stack View",
+                            nodeKind: .view,
+                            backingObjectType: "UIStackView",
+                            className: "UIStackView",
+                            displayName: "Content Stack View",
+                            elementName: "Content Stack View",
+                            accessibilityIdentifier: "Content Stack View",
+                            frame: .init(x: 0, y: 0, width: 10, height: 10),
+                            isHidden: false,
+                            isUserInteractionEnabled: true,
+                            isInternalView: false,
+                            isSystemContainer: false,
+                            depth: 1,
+                            parentHandle: nil,
+                            childHandles: ["CHILD"],
+                            childCount: 1
+                        )
+                    ]
+                )
+            )
+        )
+        let session = InspectorMCPServerSession(bridgeClient: mock)
+        let request = #"{"jsonrpc":"2.0","id":42,"method":"tools/call","params":{"name":"subtree","arguments":{"handle":"ROOT","maxDepth":1}}}"#
+
+        let responseData = try await session.handleMessage(Data(request.utf8))
+        let response = try jsonObject(from: try XCTUnwrap(responseData))
+        let result = try XCTUnwrap(response["result"] as? [String: Any])
+        let structured = try XCTUnwrap(result["structuredContent"] as? [String: Any])
+
+        XCTAssertEqual(result["isError"] as? Bool, false)
+        XCTAssertEqual(structured["rootHandle"] as? String, "ROOT")
+        XCTAssertEqual(structured["maxDepth"] as? Int, 1)
+        XCTAssertEqual(mock.lastSubtreeRequest?.handle, "ROOT")
     }
 
     func testInitializeResponseAdvertisesV2() async throws {
@@ -744,7 +811,9 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     var healthResult: InspectorMCPHealthResponse
     var queryResult: Result<InspectorMCPQueryResult, InspectorMCPTransportError>
     var resolveResult: Result<InspectorMCPNode, InspectorMCPTransportError>
+    var refreshHandleResult: Result<InspectorMCPRefreshHandleResult, InspectorMCPTransportError>
     var snapshotResult: Result<InspectorMCPSnapshotResult, InspectorMCPTransportError>
+    var subtreeResult: Result<InspectorMCPSubtreeResult, InspectorMCPTransportError>
     var inspectResult: Result<InspectorMCPInspectResult, InspectorMCPTransportError>
     var tapResult: Result<InspectorMCPTapResult, InspectorMCPTransportError>
     var actionListResult: Result<InspectorMCPActionListResult, InspectorMCPTransportError>
@@ -772,8 +841,10 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
     private(set) var lastSaveScenarioRequest: InspectorMCPSaveScenarioRequest?
     private(set) var lastDeleteScenarioRequest: InspectorMCPDeleteScenarioRequest?
     private(set) var lastDiffScenarioRequest: InspectorMCPDiffScenarioRequest?
+    private(set) var lastRefreshHandleRequest: InspectorMCPRefreshHandleRequest?
     private(set) var lastPropertyListRequest: InspectorMCPPropertyListRequest?
     private(set) var lastSetPropertyRequest: InspectorMCPSetPropertyRequest?
+    private(set) var lastSubtreeRequest: InspectorMCPSubtreeRequest?
     private(set) var lastToggleLayerRequest: InspectorMCPToggleLayerRequest?
 
     init(
@@ -791,6 +862,7 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         resolveResult: Result<InspectorMCPNode, InspectorMCPTransportError> = .success(
             .init(
                 handle: "handle",
+                semanticReference: "root/UIView#0|View|",
                 nodeKind: .view,
                 backingObjectType: "UIView",
                 className: "UIView",
@@ -808,6 +880,9 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
                 childCount: 0
             )
         ),
+        refreshHandleResult: Result<InspectorMCPRefreshHandleResult, InspectorMCPTransportError> = .success(
+            .init(handle: "handle", semanticReference: "root/UIView#0|View|", expiresAt: .distantFuture, rebound: true)
+        ),
         snapshotResult: Result<InspectorMCPSnapshotResult, InspectorMCPTransportError> = .success(
             .init(
                 handle: "MOCK-HANDLE",
@@ -817,6 +892,9 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
                 deviceScale: 2,
                 createdAt: Date(timeIntervalSince1970: 0)
             )
+        ),
+        subtreeResult: Result<InspectorMCPSubtreeResult, InspectorMCPTransportError> = .success(
+            .init(rootHandle: "handle", semanticReference: "root/UIView#0|View|", expiresAt: .distantFuture, maxDepth: 1, nodes: [])
         ),
         inspectResult: Result<InspectorMCPInspectResult, InspectorMCPTransportError> = .success(
             .init(handle: "MOCK-HANDLE", presented: true)
@@ -873,7 +951,9 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         self.healthResult = healthResult
         self.queryResult = queryResult
         self.resolveResult = resolveResult
+        self.refreshHandleResult = refreshHandleResult
         self.snapshotResult = snapshotResult
+        self.subtreeResult = subtreeResult
         self.inspectResult = inspectResult
         self.tapResult = tapResult
         self.actionListResult = actionListResult
@@ -905,8 +985,18 @@ private final class MockBridgeClient: InspectorMCPBridgeClient {
         resolveResult
     }
 
+    func refreshHandle(_ request: InspectorMCPRefreshHandleRequest) async throws -> Result<InspectorMCPRefreshHandleResult, InspectorMCPTransportError> {
+        lastRefreshHandleRequest = request
+        return refreshHandleResult
+    }
+
     func snapshot(_ request: InspectorMCPSnapshotRequest) async throws -> Result<InspectorMCPSnapshotResult, InspectorMCPTransportError> {
         snapshotResult
+    }
+
+    func subtree(_ request: InspectorMCPSubtreeRequest) async throws -> Result<InspectorMCPSubtreeResult, InspectorMCPTransportError> {
+        lastSubtreeRequest = request
+        return subtreeResult
     }
 
     func inspect(_ request: InspectorMCPInspectRequest) async throws -> Result<InspectorMCPInspectResult, InspectorMCPTransportError> {
