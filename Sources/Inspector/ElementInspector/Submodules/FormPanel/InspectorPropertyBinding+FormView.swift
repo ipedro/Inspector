@@ -49,11 +49,19 @@ extension InspectorPropertyBinding {
             )
         case let (.textButtons, .selection(index)),
              let (.imageButtons, .selection(index)):
-            view = SegmentedControl(
-                title: descriptor.title,
-                texts: selectionTexts,
-                selectedIndex: index
-            )
+            if let images = runtimePresentation?.selectionImages {
+                view = SegmentedControl(
+                    title: descriptor.title,
+                    images: images,
+                    selectedIndex: index
+                )
+            } else {
+                view = SegmentedControl(
+                    title: descriptor.title,
+                    texts: selectionTexts,
+                    selectedIndex: index
+                )
+            }
         case let (.color, .color(value)):
             view = ColorPreviewControl(
                 title: descriptor.title,
@@ -238,7 +246,11 @@ extension InspectorPropertyBinding {
     }
 
     private var selectionOptions: [OptionListControl.Option] {
-        selectionTexts.map { ($0, nil) }
+        let icons = runtimePresentation?.selectionOptionIcons ?? []
+        return selectionTexts.enumerated().map { index, title in
+            let icon = icons.indices.contains(index) ? icons[index] : nil
+            return (title, icon)
+        }
     }
 
     private var selectionEmptyTitle: String {

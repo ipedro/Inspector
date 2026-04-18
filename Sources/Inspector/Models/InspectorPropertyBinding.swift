@@ -24,22 +24,41 @@ public enum InspectorRefreshHint: Hashable {
     case reloadInspector
 }
 
+public struct InspectorPropertyRuntimePresentation {
+    public var emptyTitle: String?
+    public var selectionOptionIcons: [UIImage?]?
+    public var selectionImages: [UIImage]?
+
+    public init(
+        emptyTitle: String? = nil,
+        selectionOptionIcons: [UIImage?]? = nil,
+        selectionImages: [UIImage]? = nil
+    ) {
+        self.emptyTitle = emptyTitle
+        self.selectionOptionIcons = selectionOptionIcons
+        self.selectionImages = selectionImages
+    }
+}
+
 public struct InspectorPropertyBinding {
     public let descriptor: InspectorContract.InspectorPropertyDescriptor
     public let read: @MainActor () -> InspectorValue
     public let write: (@MainActor (InspectorValue) -> Void)?
     public let refreshHint: InspectorRefreshHint
+    public let runtimePresentation: InspectorPropertyRuntimePresentation?
 
     public init(
         descriptor: InspectorContract.InspectorPropertyDescriptor,
         read: @escaping @MainActor () -> InspectorValue,
         write: (@MainActor (InspectorValue) -> Void)? = nil,
-        refreshHint: InspectorRefreshHint = .reloadInspector
+        refreshHint: InspectorRefreshHint = .reloadInspector,
+        runtimePresentation: InspectorPropertyRuntimePresentation? = nil
     ) {
         self.descriptor = descriptor
         self.read = read
         self.write = write
         self.refreshHint = refreshHint
+        self.runtimePresentation = runtimePresentation
     }
 }
 
@@ -113,6 +132,7 @@ public extension InspectorPropertyBinding {
             return .textField(
                 title: descriptor.title,
                 placeholder: stringConstraints?.placeholder,
+                axis: axis,
                 value: {
                     guard case let .string(value) = self.readValue() else { return nil }
                     return value
@@ -150,6 +170,8 @@ public extension InspectorPropertyBinding {
             if descriptor.kind == .options {
                 return .optionsList(
                     title: descriptor.title,
+                    emptyTitle: runtimePresentation?.emptyTitle ?? "Unspecified",
+                    axis: axis,
                     options: options,
                     selectedIndex: {
                         guard case let .selection(index) = self.readValue() else { return nil }
@@ -162,6 +184,7 @@ public extension InspectorPropertyBinding {
             }
             return .textButtonGroup(
                 title: descriptor.title,
+                axis: axis,
                 texts: options,
                 selectedIndex: {
                     guard case let .selection(index) = self.readValue() else { return nil }
@@ -174,6 +197,7 @@ public extension InspectorPropertyBinding {
         case .color:
             return .colorPicker(
                 title: descriptor.title,
+                emptyTitle: runtimePresentation?.emptyTitle ?? "No color",
                 color: {
                     guard case let .color(value) = self.readValue() else { return nil }
                     return value
@@ -253,7 +277,23 @@ public extension InspectorPropertyBinding {
             case .none, .bool, .number, .string, .selection, .color:
                 return nil
             }
-        case .subpanel, .imageButtons:
+        case .imageButtons:
+            guard let images = runtimePresentation?.selectionImages else {
+                return nil
+            }
+            return .imageButtonGroup(
+                title: descriptor.title,
+                axis: axis,
+                images: images,
+                selectedIndex: {
+                    guard case let .selection(index) = self.readValue() else { return nil }
+                    return index
+                },
+                handler: write.map { _ in
+                    { self.writeValue(.selection($0)) }
+                }
+            )
+        case .subpanel:
             return nil
         }
     }
@@ -279,6 +319,17 @@ public extension InspectorPropertyBinding {
 
         return DispatchQueue.main.sync {
             MainActor.assumeIsolated { read() }
+        }
+    }
+
+    private var axis: NSLayoutConstraint.Axis {
+        switch descriptor.presentation?.axis {
+        case .horizontal:
+            .horizontal
+        case .vertical:
+            .vertical
+        case .none:
+            .vertical
         }
     }
 }
@@ -321,9 +372,16 @@ public extension InspectorElementProperty {
                 read: { .number(value()) },
                 write: handler.map { writer in { newValue in guard case let .number(updated) = newValue else { return }; writer(updated) } }
             )
-        case let .textField(title, placeholder, _, value, handler):
+        case let .textField(title, placeholder, axis, value, handler):
             return .init(
-                descriptor: .init(id: id, title: title, kind: .textField, value: .string(.init(multiline: false, placeholder: placeholder, allowsNil: true)), editability: handler == nil ? .readOnly : .editable),
+                descriptor: .init(
+                    id: id,
+                    title: title,
+                    kind: .textField,
+                    value: .string(.init(multiline: false, placeholder: placeholder, allowsNil: true)),
+                    editability: handler == nil ? .readOnly : .editable,
+                    presentation: .init(axis: axis.inspectorAxis)
+                ),
                 read: { .string(value()) },
                 write: handler.map { writer in { newValue in guard case let .string(updated) = newValue else { return }; writer(updated) } }
             )
@@ -333,35 +391,56 @@ public extension InspectorElementProperty {
                 read: { .string(value()) },
                 write: handler.map { writer in { newValue in guard case let .string(updated) = newValue else { return }; writer(updated) } }
             )
-        case let .optionsList(title, _, _, options, selectedIndex, handler):
+        case let .optionsList(title, emptyTitle, axis, options, selectedIndex, handler):
             return .init(
                 descriptor: .init(
                     id: id,
                     title: title,
                     kind: .options,
                     value: .selection(.init(options: options.enumerated().map { .init(id: "\($0.offset)", title: String(describing: $0.element.title)) }, allowsNil: true)),
-                    editability: handler == nil ? .readOnly : .editable
+                    editability: handler == nil ? .readOnly : .editable,
+                    presentation: .init(axis: axis.inspectorAxis)
                 ),
                 read: { .selection(selectedIndex()) },
-                write: handler.map { writer in { newValue in guard case let .selection(updated) = newValue else { return }; writer(updated) } }
+                write: handler.map { writer in { newValue in guard case let .selection(updated) = newValue else { return }; writer(updated) } },
+                runtimePresentation: .init(
+                    emptyTitle: emptyTitle,
+                    selectionOptionIcons: options.map(\.icon)
+                )
             )
-        case let .textButtonGroup(title, _, texts, selectedIndex, handler):
+        case let .textButtonGroup(title, axis, texts, selectedIndex, handler):
             return .init(
                 descriptor: .init(
                     id: id,
                     title: title,
                     kind: .textButtons,
                     value: .selection(.init(options: texts.enumerated().map { .init(id: "\($0.offset)", title: $0.element) }, allowsNil: true)),
-                    editability: handler == nil ? .readOnly : .editable
+                    editability: handler == nil ? .readOnly : .editable,
+                    presentation: .init(axis: axis.inspectorAxis)
                 ),
                 read: { .selection(selectedIndex()) },
                 write: handler.map { writer in { newValue in guard case let .selection(updated) = newValue else { return }; writer(updated) } }
             )
-        case let .colorPicker(title, _, color, handler):
+        case let .imageButtonGroup(title, axis, images, selectedIndex, handler):
+            return .init(
+                descriptor: .init(
+                    id: id,
+                    title: title,
+                    kind: .imageButtons,
+                    value: .selection(.init(options: images.enumerated().map { .init(id: "\($0.offset)", title: "\($0.offset)") }, allowsNil: true)),
+                    editability: handler == nil ? .readOnly : .editable,
+                    presentation: .init(axis: axis.inspectorAxis)
+                ),
+                read: { .selection(selectedIndex()) },
+                write: handler.map { writer in { newValue in guard case let .selection(updated) = newValue else { return }; writer(updated) } },
+                runtimePresentation: .init(selectionImages: images)
+            )
+        case let .colorPicker(title, emptyTitle, color, handler):
             return .init(
                 descriptor: .init(id: id, title: title, kind: .color, value: .color(allowsNil: true), editability: handler == nil ? .readOnly : .editable),
                 read: { .color(color()) },
-                write: handler.map { writer in { newValue in guard case let .color(updated) = newValue else { return }; writer(updated) } }
+                write: handler.map { writer in { newValue in guard case let .color(updated) = newValue else { return }; writer(updated) } },
+                runtimePresentation: .init(emptyTitle: emptyTitle)
             )
         case let .cgRect(title, rect, handler):
             return .init(
@@ -433,14 +512,32 @@ public extension InspectorElementProperty {
                 write: nil,
                 refreshHint: .none
             )
-        case let .imagePicker(title, _, image, handler):
+        case let .imagePicker(title, axis, image, handler):
             return .init(
-                descriptor: .init(id: id, title: title, kind: .preview, value: .none, editability: handler == nil ? .readOnly : .editable),
+                descriptor: .init(
+                    id: id,
+                    title: title,
+                    kind: .preview,
+                    value: .none,
+                    editability: handler == nil ? .readOnly : .editable,
+                    presentation: .init(axis: axis.inspectorAxis)
+                ),
                 read: { .image(image()) },
                 write: handler.map { writer in { newValue in guard case let .image(updated) = newValue else { return }; writer(updated) } }
             )
-        case .imageButtonGroup:
-            return nil
+        }
+    }
+}
+
+private extension NSLayoutConstraint.Axis {
+    var inspectorAxis: InspectorContract.InspectorAxis {
+        switch self {
+        case .horizontal:
+            .horizontal
+        case .vertical:
+            .vertical
+        @unknown default:
+            .vertical
         }
     }
 }

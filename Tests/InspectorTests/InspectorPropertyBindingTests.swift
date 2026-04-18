@@ -154,15 +154,24 @@ final class InspectorPropertyBindingTests: XCTestCase {
         }
     }
 
-    func testLegacyImageButtonGroupCurrentlyReturnsNilBinding() {
+    func testLegacyImageButtonGroupCreatesBindingWithRuntimeImages() throws {
+        var selectedIndex: Int? = 0
         let property = InspectorElementProperty.imageButtonGroup(
             title: "Modes",
             images: [UIImage(), UIImage()],
-            selectedIndex: { 0 },
-            handler: { _ in }
+            selectedIndex: { selectedIndex },
+            handler: { selectedIndex = $0 }
         )
 
-        XCTAssertNil(property.makeBinding(id: "modes"))
+        let binding = try XCTUnwrap(property.makeBinding(id: "modes"))
+        XCTAssertEqual(binding.descriptor.kind, .imageButtons)
+        let view = try XCTUnwrap(binding.makeFormView())
+        let segmentedControl = try XCTUnwrap(view as? SegmentedControl)
+        XCTAssertEqual(segmentedControl.selectedIndex, 0)
+
+        segmentedControl.selectedIndex = 1
+        binding.applyUpdate(from: segmentedControl)
+        XCTAssertEqual(selectedIndex, 1)
     }
 
     func testSectionDataSourcePropertyBindingsFallbacksForLegacyProperties() throws {
@@ -180,6 +189,28 @@ final class InspectorPropertyBindingTests: XCTestCase {
         let bindings = try XCTUnwrap(dataSource.propertyBindings)
         XCTAssertEqual(bindings.count, 1)
         XCTAssertEqual(bindings.first?.descriptor.title, "Enabled")
+    }
+
+    func testSectionDataSourcePropertyBindingsIncludeLegacyImageButtonGroup() throws {
+        final class LegacyDataSource: InspectorElementSectionDataSource {
+            var state: InspectorElementSectionState = .collapsed
+            let title = "Legacy"
+            var properties: [InspectorElementProperty] {
+                [
+                    .imageButtonGroup(
+                        title: "Alignment",
+                        images: [UIImage(), UIImage()],
+                        selectedIndex: { 0 },
+                        handler: { _ in }
+                    )
+                ]
+            }
+        }
+
+        let dataSource = LegacyDataSource()
+        let bindings = try XCTUnwrap(dataSource.propertyBindings)
+        XCTAssertEqual(bindings.count, 1)
+        XCTAssertEqual(bindings.first?.descriptor.kind, .imageButtons)
     }
 
     func testToggleBindingCreatesAndAppliesToggleFormView() throws {
