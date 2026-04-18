@@ -12,6 +12,8 @@ final class InspectorMCPWireTests: XCTestCase {
         XCTAssertEqual(InspectorMCPBridgeEndpoint.resolvePath, "/resolve")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.snapshotPath, "/snapshot")
         XCTAssertEqual(InspectorMCPBridgeEndpoint.tapPath, "/tap")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.propertiesPath, "/properties")
+        XCTAssertEqual(InspectorMCPBridgeEndpoint.setPropertyPath, "/set-property")
     }
 
     func testHealthResponseRoundTripsThroughJSON() throws {
@@ -177,6 +179,64 @@ final class InspectorMCPWireTests: XCTestCase {
 
     func testTapPathMatchesRouteConstant() {
         XCTAssertEqual(InspectorMCPBridgeEndpoint.tapPath, "/tap")
+    }
+
+    func testListPropertiesOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.listProperties))
+    }
+
+    func testSetPropertyOperationIsInAllCases() {
+        XCTAssertTrue(InspectorMCPOperation.allCases.contains(.setProperty))
+    }
+
+    func testPropertyListRequestRoundTrips() throws {
+        let request = InspectorMCPPropertyListRequest(handle: "HANDLE-5", panel: .attributes, includeReadOnly: false)
+        let decoded = try roundTrip(request)
+        XCTAssertEqual(decoded, request)
+    }
+
+    func testSetPropertyRequestRoundTrips() throws {
+        let request = InspectorMCPSetPropertyRequest(propertyRef: "PROP-1", boolValue: true)
+        let decoded = try roundTrip(request)
+        XCTAssertEqual(decoded, request)
+    }
+
+    func testPropertyListResultRoundTrips() throws {
+        let result = InspectorMCPPropertyListResult(
+            handle: "HANDLE-6",
+            expiresAt: Date(timeIntervalSince1970: 1_713_353_600),
+            panel: .attributes,
+            sections: [
+                .init(
+                    title: "View",
+                    rows: [
+                        .init(
+                            title: "View",
+                            properties: [
+                                .init(
+                                    propertyRef: "PROP-2",
+                                    path: .init(panel: .attributes, section: 0, row: 0, slot: .property, index: 0),
+                                    title: "Hidden",
+                                    kind: .toggle,
+                                    editable: true,
+                                    boolValue: false,
+                                    nullable: false
+                                )
+                            ]
+                        )
+                    ]
+                )
+            ]
+        )
+
+        let decoded = try roundTrip(result)
+        XCTAssertEqual(decoded, result)
+    }
+
+    func testSetPropertyResultRoundTrips() throws {
+        let result = InspectorMCPSetPropertyResult(propertyRef: "PROP-3", applied: true, refreshRecommended: true)
+        let decoded = try roundTrip(result)
+        XCTAssertEqual(decoded, result)
     }
 
     func testLayersOperationIsInAllCases() {

@@ -36,6 +36,8 @@ enum InspectorBridgeOperation {
     case snapshot
     case inspect
     case tap
+    case listProperties
+    case setProperty
     case layers
     case toggleLayer
 }
@@ -144,6 +146,7 @@ final class InspectorMCPBridgeService {
     typealias DateProvider = () -> Date
     typealias LayerToggler = (ViewHierarchyLayer) -> Void
     typealias LayerActiveProvider = (ViewHierarchyLayer) -> Bool
+    typealias LibrariesProvider = (InspectorBridgeEditablePanel) -> [InspectorElementLibraryProtocol]
 
     private struct HandleRecord {
         let reference: ViewHierarchyElementReference
@@ -158,6 +161,14 @@ final class InspectorMCPBridgeService {
         let handlesByReferenceID: [ObjectIdentifier: InspectorBridgeHandle]
     }
 
+    private struct EditablePropertyRecord {
+        let ownerHandle: InspectorBridgeHandle
+        let ownerObjectIdentityToken: String
+        let ownerPathFingerprint: String
+        let property: InspectorElementProperty
+        let descriptor: InspectorBridgeEditablePropertyDescriptor
+    }
+
     private let availabilityProvider: AvailabilityProvider
     private let snapshotProvider: SnapshotProvider
     private let snapshotLimitProvider: SnapshotLimitProvider
@@ -165,10 +176,13 @@ final class InspectorMCPBridgeService {
     private let dateProvider: DateProvider
     private let layerToggler: LayerToggler
     private let layerActiveProvider: LayerActiveProvider
+    private let librariesProvider: LibrariesProvider
 
     private var pinnedSnapshots: [UUID: PinnedSnapshot] = [:]
     private var handleIndex: [String: UUID] = [:]
     private var snapshotOrder: [UUID] = []
+    private var propertyRecords: [String: EditablePropertyRecord] = [:]
+    private var propertyHandlesByOwner: [String: Set<String>] = [:]
 
     var operationObserver: ((InspectorBridgeOperation, Bool) -> Void)?
 
@@ -179,7 +193,8 @@ final class InspectorMCPBridgeService {
         snapshotRenderer: InspectorBridgeSnapshotRendering = InspectorBridgeSnapshotRenderer(),
         dateProvider: @escaping DateProvider = Date.init,
         layerToggler: @escaping LayerToggler = { Inspector.sharedInstance.toggle($0) },
-        layerActiveProvider: @escaping LayerActiveProvider = { Inspector.sharedInstance.isInspecting($0) }
+        layerActiveProvider: @escaping LayerActiveProvider = { Inspector.sharedInstance.isInspecting($0) },
+        librariesProvider: @escaping LibrariesProvider = { _ in [] }
     ) {
         self.availabilityProvider = availabilityProvider
         self.snapshotProvider = snapshotProvider
@@ -188,12 +203,15 @@ final class InspectorMCPBridgeService {
         self.dateProvider = dateProvider
         self.layerToggler = layerToggler
         self.layerActiveProvider = layerActiveProvider
+        self.librariesProvider = librariesProvider
     }
 
     func reset() {
         pinnedSnapshots.removeAll()
         handleIndex.removeAll()
         snapshotOrder.removeAll()
+        propertyRecords.removeAll()
+        propertyHandlesByOwner.removeAll()
     }
 
     func query(_ request: InspectorBridgeQueryRequest = .init()) throws -> InspectorBridgeQueryResponse {
@@ -304,6 +322,81 @@ final class InspectorMCPBridgeService {
         }
     }
 
+    func listProperties(
+        for handle: InspectorBridgeHandle,
+        panel: InspectorBridgeEditablePanel,
+        includeReadOnly: Bool = false
+    ) throws -> InspectorBridgePropertyListResponse {
+        try performOnMain(.listProperties) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            let (pinnedSnapshot, record) = try self.lookupRecord(for: handle)
+            try self.validate(record: record, handle: handle)
+
+            guard let object = record.reference._underlyingObject else {
+                throw InspectorBridgeError.staleHandle
+            }
+
+            let libraries = self.librariesProvider(panel)
+            let sections = libraries.formItems(for: object)
+            self.removePropertyHandles(for: handle)
+
+            let editableSections = self.editableSections(
+                from: sections,
+                panel: panel,
+                ownerHandle: handle,
+                ownerRecord: record,
+                includeReadOnly: includeReadOnly
+            )
+
+            return InspectorBridgePropertyListResponse(
+                handle: handle,
+                expiresAt: pinnedSnapshot.expiresAt,
+                panel: panel,
+                sections: editableSections
+            )
+        }
+    }
+
+    func setProperty(
+        reference: String,
+        value: InspectorBridgePropertyMutationValue
+    ) throws -> InspectorBridgePropertyMutationResult {
+        try performOnMain(.setProperty) {
+            try self.ensureActive()
+            self.cleanupExpiredSnapshots()
+
+            guard let propertyRecord = self.propertyRecords[reference] else {
+                throw InspectorBridgeError.stalePropertyReference
+            }
+
+            let (_, ownerRecord) = try self.lookupRecord(for: propertyRecord.ownerHandle)
+            try self.validate(record: ownerRecord, handle: propertyRecord.ownerHandle)
+
+            guard ownerRecord.objectIdentityToken == propertyRecord.ownerObjectIdentityToken,
+                  ownerRecord.pathFingerprint == propertyRecord.ownerPathFingerprint
+            else {
+                self.removePropertyHandles(for: propertyRecord.ownerHandle)
+                throw InspectorBridgeError.stalePropertyReference
+            }
+
+            try self.apply(value: value, to: propertyRecord.property)
+
+            if let view = ownerRecord.reference._underlyingObject as? UIView {
+                view._highlightView?.reloadData()
+            }
+
+            self.removePropertyHandles(for: propertyRecord.ownerHandle)
+
+            return InspectorBridgePropertyMutationResult(
+                propertyRef: reference,
+                applied: true,
+                refreshRecommended: true
+            )
+        }
+    }
+
     func layers() throws -> [InspectorBridgeLayerState] {
         try performOnMain(.layers) {
             try self.ensureActive()
@@ -384,6 +477,248 @@ final class InspectorMCPBridgeService {
 
         for snapshotID in expiredSnapshotIDs {
             remove(snapshotID: snapshotID)
+        }
+    }
+
+    private func editableSections(
+        from sections: InspectorElementSections,
+        panel: InspectorBridgeEditablePanel,
+        ownerHandle: InspectorBridgeHandle,
+        ownerRecord: HandleRecord,
+        includeReadOnly: Bool
+    ) -> [InspectorBridgeEditablePropertySection] {
+        sections.enumerated().compactMap { (sectionIndex: Int, section: InspectorElementSection) -> InspectorBridgeEditablePropertySection? in
+            let rows = section.dataSources.enumerated().compactMap { (rowIndex: Int, row: InspectorElementSectionDataSource) -> InspectorBridgeEditablePropertyRow? in
+                let properties = self.editableProperties(
+                    from: row,
+                    panel: panel,
+                    sectionIndex: sectionIndex,
+                    rowIndex: rowIndex,
+                    ownerHandle: ownerHandle,
+                    ownerRecord: ownerRecord,
+                    includeReadOnly: includeReadOnly
+                )
+
+                guard !properties.isEmpty else { return nil }
+
+                return InspectorBridgeEditablePropertyRow(
+                    title: row.title,
+                    subtitle: row.subtitle,
+                    properties: properties
+                )
+            }
+
+            guard !rows.isEmpty else { return nil }
+            return InspectorBridgeEditablePropertySection(title: section.title, rows: rows)
+        }
+    }
+
+    private func editableProperties(
+        from row: InspectorElementSectionDataSource,
+        panel: InspectorBridgeEditablePanel,
+        sectionIndex: Int,
+        rowIndex: Int,
+        ownerHandle: InspectorBridgeHandle,
+        ownerRecord: HandleRecord,
+        includeReadOnly: Bool
+    ) -> [InspectorBridgeEditablePropertyDescriptor] {
+        var descriptors: [InspectorBridgeEditablePropertyDescriptor] = []
+
+        if let titleAccessory = row.titleAccessoryProperty,
+           let descriptor = makeDescriptor(
+            for: titleAccessory,
+            panel: panel,
+            sectionIndex: sectionIndex,
+            rowIndex: rowIndex,
+            slot: .titleAccessory,
+            propertyIndex: 0,
+            ownerHandle: ownerHandle,
+            ownerRecord: ownerRecord,
+            includeReadOnly: includeReadOnly
+           )
+        {
+            descriptors.append(descriptor)
+        }
+
+        for (propertyIndex, property) in row.properties.enumerated() {
+            guard let descriptor = makeDescriptor(
+                for: property,
+                panel: panel,
+                sectionIndex: sectionIndex,
+                rowIndex: rowIndex,
+                slot: .property,
+                propertyIndex: propertyIndex,
+                ownerHandle: ownerHandle,
+                ownerRecord: ownerRecord,
+                includeReadOnly: includeReadOnly
+            ) else {
+                continue
+            }
+            descriptors.append(descriptor)
+        }
+
+        return descriptors
+    }
+
+    private func makeDescriptor(
+        for property: InspectorElementProperty,
+        panel: InspectorBridgeEditablePanel,
+        sectionIndex: Int,
+        rowIndex: Int,
+        slot: InspectorBridgeEditablePropertySlot,
+        propertyIndex: Int,
+        ownerHandle: InspectorBridgeHandle,
+        ownerRecord: HandleRecord,
+        includeReadOnly: Bool
+    ) -> InspectorBridgeEditablePropertyDescriptor? {
+        guard let base = descriptorBase(for: property) else { return nil }
+        guard includeReadOnly || base.editable else { return nil }
+
+        let propertyRef = UUID().uuidString
+        let path = InspectorBridgeEditablePropertyPath(
+            panel: panel,
+            section: sectionIndex,
+            row: rowIndex,
+            slot: slot,
+            index: propertyIndex
+        )
+
+        let descriptor = InspectorBridgeEditablePropertyDescriptor(
+            propertyRef: propertyRef,
+            path: path,
+            title: base.title,
+            kind: base.kind,
+            editable: base.editable,
+            boolValue: base.boolValue,
+            numberValue: base.numberValue,
+            stringValue: base.stringValue,
+            selectionIndex: base.selectionIndex,
+            minimum: base.minimum,
+            maximum: base.maximum,
+            step: base.step,
+            isDecimal: base.isDecimal,
+            options: base.options,
+            nullable: base.nullable
+        )
+
+        propertyRecords[propertyRef] = EditablePropertyRecord(
+            ownerHandle: ownerHandle,
+            ownerObjectIdentityToken: ownerRecord.objectIdentityToken,
+            ownerPathFingerprint: ownerRecord.pathFingerprint,
+            property: property,
+            descriptor: descriptor
+        )
+        propertyHandlesByOwner[ownerHandle.rawValue, default: []].insert(propertyRef)
+        return descriptor
+    }
+
+    private func descriptorBase(
+        for property: InspectorElementProperty
+    ) -> (
+        title: String,
+        kind: InspectorBridgeEditablePropertyKind,
+        editable: Bool,
+        boolValue: Bool?,
+        numberValue: Double?,
+        stringValue: String?,
+        selectionIndex: Int?,
+        minimum: Double?,
+        maximum: Double?,
+        step: Double?,
+        isDecimal: Bool?,
+        options: [String]?,
+        nullable: Bool
+    )? {
+        switch property {
+        case let .switch(title, isOn, handler):
+            return (title, .toggle, handler != nil, isOn(), nil, nil, nil, nil, nil, nil, nil, nil, false)
+        case let .stepper(title, value, range, stepValue, isDecimalValue, handler):
+            let bounds = range()
+            return (title, .stepper, handler != nil, nil, value(), nil, nil, bounds.lowerBound, bounds.upperBound, stepValue(), isDecimalValue, nil, false)
+        case let .textField(title, placeholder: _, axis: _, value, handler):
+            return (title, .textField, handler != nil, nil, nil, value(), nil, nil, nil, nil, nil, nil, true)
+        case let .textView(title, placeholder: _, value, handler):
+            return (title, .textView, handler != nil, nil, nil, value(), nil, nil, nil, nil, nil, nil, true)
+        case let .optionsList(title, emptyTitle: _, axis: _, options, selectedIndex, handler):
+            return (title, .optionsList, handler != nil, nil, nil, nil, selectedIndex(), nil, nil, nil, nil, options.map { $0.title.description }, true)
+        case let .textButtonGroup(title, axis: _, texts, selectedIndex, handler):
+            return (title, .textButtonGroup, handler != nil, nil, nil, nil, selectedIndex(), nil, nil, nil, nil, texts, true)
+        case let .imageButtonGroup(title, axis: _, images, selectedIndex, handler):
+            return (title, .imageButtonGroup, handler != nil, nil, nil, nil, selectedIndex(), 0, Double(images.count - 1), 1, false, nil, true)
+        default:
+            return nil
+        }
+    }
+
+    private func apply(
+        value: InspectorBridgePropertyMutationValue,
+        to property: InspectorElementProperty
+    ) throws {
+        switch (property, value) {
+        case let (.switch(_, _, handler), .bool(boolValue)):
+            guard let handler else {
+                throw InspectorBridgeError.internalFailure("property is read-only")
+            }
+            handler(boolValue)
+        case let (.stepper(_, _, range, _, _, handler), .number(numberValue)):
+            guard let handler else {
+                throw InspectorBridgeError.internalFailure("property is read-only")
+            }
+            let bounds = range()
+            guard bounds.contains(numberValue) else {
+                throw InspectorBridgeError.invalidPropertyValue("value is outside the allowed range")
+            }
+            handler(numberValue)
+        case let (.textField(_, _, _, _, handler), .string(stringValue)):
+            guard let handler else {
+                throw InspectorBridgeError.internalFailure("property is read-only")
+            }
+            handler(stringValue)
+        case let (.textView(_, _, _, handler), .string(stringValue)):
+            guard let handler else {
+                throw InspectorBridgeError.internalFailure("property is read-only")
+            }
+            handler(stringValue)
+        case let (.optionsList(_, _, _, options, _, handler), .selection(selectionIndex)):
+            guard let handler else {
+                throw InspectorBridgeError.internalFailure("property is read-only")
+            }
+            if let selectionIndex {
+                guard options.indices.contains(selectionIndex) else {
+                    throw InspectorBridgeError.invalidPropertyValue("selectionIndex is out of bounds")
+                }
+            }
+            handler(selectionIndex)
+        case let (.textButtonGroup(_, _, texts, _, handler), .selection(selectionIndex)):
+            guard let handler else {
+                throw InspectorBridgeError.internalFailure("property is read-only")
+            }
+            if let selectionIndex {
+                guard texts.indices.contains(selectionIndex) else {
+                    throw InspectorBridgeError.invalidPropertyValue("selectionIndex is out of bounds")
+                }
+            }
+            handler(selectionIndex)
+        case let (.imageButtonGroup(_, _, images, _, handler), .selection(selectionIndex)):
+            guard let handler else {
+                throw InspectorBridgeError.internalFailure("property is read-only")
+            }
+            if let selectionIndex {
+                guard images.indices.contains(selectionIndex) else {
+                    throw InspectorBridgeError.invalidPropertyValue("selectionIndex is out of bounds")
+                }
+            }
+            handler(selectionIndex)
+        case (.switch, _),
+             (.stepper, _),
+             (.textField, _),
+             (.textView, _),
+             (.optionsList, _),
+             (.textButtonGroup, _),
+             (.imageButtonGroup, _):
+            throw InspectorBridgeError.invalidPropertyValue("supplied value does not match property kind")
+        default:
+            throw InspectorBridgeError.internalFailure("unsupported property kind")
         }
     }
 
@@ -468,7 +803,18 @@ final class InspectorMCPBridgeService {
         snapshotOrder.removeAll { $0 == snapshotID }
 
         for token in removedSnapshot.handlesByToken.keys {
+            removePropertyHandles(for: .init(rawValue: token))
             handleIndex.removeValue(forKey: token)
+        }
+    }
+
+    private func removePropertyHandles(for ownerHandle: InspectorBridgeHandle) {
+        guard let propertyRefs = propertyHandlesByOwner.removeValue(forKey: ownerHandle.rawValue) else {
+            return
+        }
+
+        for propertyRef in propertyRefs {
+            propertyRecords.removeValue(forKey: propertyRef)
         }
     }
 
@@ -611,7 +957,22 @@ private let sharedInspectorMCPBridgeService = InspectorMCPBridgeService(
         artifactLimitProvider: {
             Inspector.sharedInstance.configuration.snapshotArtifactMaxCount
         }
-    )
+    ),
+    librariesProvider: { panel in
+        guard let manager = Inspector.sharedInstance.manager else { return [] }
+
+        let inspectorPanel: ElementInspectorPanel
+        switch panel {
+        case .identity:
+            inspectorPanel = .identity
+        case .attributes:
+            inspectorPanel = .attributes
+        case .size:
+            inspectorPanel = .size
+        }
+
+        return manager.catalog.libraries[inspectorPanel] ?? []
+    }
 )
 
 let inspectorSnapshotsDirectoryName = "inspector-snapshots"
@@ -651,6 +1012,21 @@ package extension Inspector {
 
     static func bridgeTap(_ handle: InspectorBridgeHandle) throws -> InspectorBridgeHandle {
         try sharedInspectorMCPBridgeService.tap(handle)
+    }
+
+    static func bridgeListProperties(
+        _ handle: InspectorBridgeHandle,
+        panel: InspectorBridgeEditablePanel,
+        includeReadOnly: Bool = false
+    ) throws -> InspectorBridgePropertyListResponse {
+        try sharedInspectorMCPBridgeService.listProperties(for: handle, panel: panel, includeReadOnly: includeReadOnly)
+    }
+
+    static func bridgeSetProperty(
+        reference: String,
+        value: InspectorBridgePropertyMutationValue
+    ) throws -> InspectorBridgePropertyMutationResult {
+        try sharedInspectorMCPBridgeService.setProperty(reference: reference, value: value)
     }
 
     static func bridgeLayers() throws -> [InspectorBridgeLayerState] {

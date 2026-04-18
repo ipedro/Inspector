@@ -9,6 +9,8 @@ public enum InspectorMCPBridgeEndpoint {
     public static let snapshotPath = "/snapshot"
     public static let inspectPath = "/inspect"
     public static let tapPath = "/tap"
+    public static let propertiesPath = "/properties"
+    public static let setPropertyPath = "/set-property"
     public static let layersPath = "/layers"
     public static let toggleLayerPath = "/toggle-layer"
     public static let baseURL = URL(string: "http://\(host):\(port)")!
@@ -20,6 +22,8 @@ public enum InspectorMCPOperation: String, Codable, CaseIterable {
     case snapshot
     case inspect
     case tap
+    case listProperties
+    case setProperty
     case layers
     case toggleLayer
 }
@@ -59,6 +63,27 @@ public enum InspectorMCPNodeKind: String, Codable {
     case window
     case viewController
     case view
+}
+
+public enum InspectorMCPEditablePanel: String, Codable {
+    case identity
+    case attributes
+    case size
+}
+
+public enum InspectorMCPEditablePropertyKind: String, Codable {
+    case toggle
+    case stepper
+    case textField
+    case textView
+    case optionsList
+    case textButtonGroup
+    case imageButtonGroup
+}
+
+public enum InspectorMCPEditablePropertySlot: String, Codable {
+    case property
+    case titleAccessory
 }
 
 public struct InspectorMCPFrame: Codable, Equatable {
@@ -138,6 +163,40 @@ public struct InspectorMCPTapRequest: Codable, Equatable {
 
     public init(handle: String) {
         self.handle = handle
+    }
+}
+
+public struct InspectorMCPPropertyListRequest: Codable, Equatable {
+    public let handle: String
+    public let panel: InspectorMCPEditablePanel
+    public let includeReadOnly: Bool
+
+    public init(handle: String, panel: InspectorMCPEditablePanel, includeReadOnly: Bool = false) {
+        self.handle = handle
+        self.panel = panel
+        self.includeReadOnly = includeReadOnly
+    }
+}
+
+public struct InspectorMCPSetPropertyRequest: Codable, Equatable {
+    public let propertyRef: String
+    public let boolValue: Bool?
+    public let numberValue: Double?
+    public let stringValue: String?
+    public let selectionIndex: Int?
+
+    public init(
+        propertyRef: String,
+        boolValue: Bool? = nil,
+        numberValue: Double? = nil,
+        stringValue: String? = nil,
+        selectionIndex: Int? = nil
+    ) {
+        self.propertyRef = propertyRef
+        self.boolValue = boolValue
+        self.numberValue = numberValue
+        self.stringValue = stringValue
+        self.selectionIndex = selectionIndex
     }
 }
 
@@ -245,6 +304,122 @@ public struct InspectorMCPTapResult: Codable, Equatable {
     }
 }
 
+public struct InspectorMCPEditablePropertyPath: Codable, Equatable {
+    public let panel: InspectorMCPEditablePanel
+    public let section: Int
+    public let row: Int
+    public let slot: InspectorMCPEditablePropertySlot
+    public let index: Int
+
+    public init(panel: InspectorMCPEditablePanel, section: Int, row: Int, slot: InspectorMCPEditablePropertySlot, index: Int) {
+        self.panel = panel
+        self.section = section
+        self.row = row
+        self.slot = slot
+        self.index = index
+    }
+}
+
+public struct InspectorMCPEditableProperty: Codable, Equatable {
+    public let propertyRef: String
+    public let path: InspectorMCPEditablePropertyPath
+    public let title: String
+    public let kind: InspectorMCPEditablePropertyKind
+    public let editable: Bool
+    public let boolValue: Bool?
+    public let numberValue: Double?
+    public let stringValue: String?
+    public let selectionIndex: Int?
+    public let minimum: Double?
+    public let maximum: Double?
+    public let step: Double?
+    public let isDecimal: Bool?
+    public let options: [String]?
+    public let nullable: Bool
+
+    public init(
+        propertyRef: String,
+        path: InspectorMCPEditablePropertyPath,
+        title: String,
+        kind: InspectorMCPEditablePropertyKind,
+        editable: Bool,
+        boolValue: Bool? = nil,
+        numberValue: Double? = nil,
+        stringValue: String? = nil,
+        selectionIndex: Int? = nil,
+        minimum: Double? = nil,
+        maximum: Double? = nil,
+        step: Double? = nil,
+        isDecimal: Bool? = nil,
+        options: [String]? = nil,
+        nullable: Bool
+    ) {
+        self.propertyRef = propertyRef
+        self.path = path
+        self.title = title
+        self.kind = kind
+        self.editable = editable
+        self.boolValue = boolValue
+        self.numberValue = numberValue
+        self.stringValue = stringValue
+        self.selectionIndex = selectionIndex
+        self.minimum = minimum
+        self.maximum = maximum
+        self.step = step
+        self.isDecimal = isDecimal
+        self.options = options
+        self.nullable = nullable
+    }
+}
+
+public struct InspectorMCPEditablePropertyRow: Codable, Equatable {
+    public let title: String
+    public let subtitle: String?
+    public let properties: [InspectorMCPEditableProperty]
+
+    public init(title: String, subtitle: String? = nil, properties: [InspectorMCPEditableProperty]) {
+        self.title = title
+        self.subtitle = subtitle
+        self.properties = properties
+    }
+}
+
+public struct InspectorMCPEditablePropertySection: Codable, Equatable {
+    public let title: String?
+    public let rows: [InspectorMCPEditablePropertyRow]
+
+    public init(title: String? = nil, rows: [InspectorMCPEditablePropertyRow]) {
+        self.title = title
+        self.rows = rows
+    }
+}
+
+public struct InspectorMCPPropertyListResult: Codable, Equatable {
+    public let handle: String
+    public let expiresAt: Date
+    public let panel: InspectorMCPEditablePanel
+    public let sections: [InspectorMCPEditablePropertySection]
+
+    public init(handle: String, expiresAt: Date, panel: InspectorMCPEditablePanel, sections: [InspectorMCPEditablePropertySection]) {
+        self.handle = handle
+        self.expiresAt = expiresAt
+        self.panel = panel
+        self.sections = sections
+    }
+}
+
+public struct InspectorMCPSetPropertyResult: Codable, Equatable {
+    public let propertyRef: String
+    public let applied: Bool
+    public let refreshRecommended: Bool
+
+    public init(propertyRef: String, applied: Bool, refreshRecommended: Bool) {
+        self.propertyRef = propertyRef
+        self.applied = applied
+        self.refreshRecommended = refreshRecommended
+    }
+}
+
 public struct InspectorMCPLayerState: Codable, Equatable {
     public let name: String
     public let displayName: String
@@ -296,8 +471,10 @@ public enum InspectorMCPWireErrorCode: String, Codable {
     case disabled
     case notStarted
     case staleHandle
+    case stalePropertyReference
     case snapshotUnavailable
     case unsupportedTarget
+    case invalidPropertyValue
     case internalFailure
 }
 

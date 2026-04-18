@@ -65,6 +65,84 @@ public struct InspectorBridgeQueryResponse: Hashable, Codable {
     }
 }
 
+public enum InspectorBridgeEditablePanel: String, Codable, Hashable {
+    case identity
+    case attributes
+    case size
+}
+
+public enum InspectorBridgeEditablePropertyKind: String, Codable {
+    case toggle
+    case stepper
+    case textField
+    case textView
+    case optionsList
+    case textButtonGroup
+    case imageButtonGroup
+}
+
+public enum InspectorBridgeEditablePropertySlot: String, Codable {
+    case property
+    case titleAccessory
+}
+
+public struct InspectorBridgeEditablePropertyPath: Hashable, Codable {
+    public let panel: InspectorBridgeEditablePanel
+    public let section: Int
+    public let row: Int
+    public let slot: InspectorBridgeEditablePropertySlot
+    public let index: Int
+}
+
+public struct InspectorBridgeEditablePropertyDescriptor: Hashable, Codable {
+    public let propertyRef: String
+    public let path: InspectorBridgeEditablePropertyPath
+    public let title: String
+    public let kind: InspectorBridgeEditablePropertyKind
+    public let editable: Bool
+    public let boolValue: Bool?
+    public let numberValue: Double?
+    public let stringValue: String?
+    public let selectionIndex: Int?
+    public let minimum: Double?
+    public let maximum: Double?
+    public let step: Double?
+    public let isDecimal: Bool?
+    public let options: [String]?
+    public let nullable: Bool
+}
+
+public struct InspectorBridgeEditablePropertyRow: Hashable, Codable {
+    public let title: String
+    public let subtitle: String?
+    public let properties: [InspectorBridgeEditablePropertyDescriptor]
+}
+
+public struct InspectorBridgeEditablePropertySection: Hashable, Codable {
+    public let title: String?
+    public let rows: [InspectorBridgeEditablePropertyRow]
+}
+
+public struct InspectorBridgePropertyListResponse: Hashable, Codable {
+    public let handle: InspectorBridgeHandle
+    public let expiresAt: Date
+    public let panel: InspectorBridgeEditablePanel
+    public let sections: [InspectorBridgeEditablePropertySection]
+}
+
+public enum InspectorBridgePropertyMutationValue: Hashable, Codable {
+    case bool(Bool)
+    case number(Double)
+    case string(String?)
+    case selection(Int?)
+}
+
+public struct InspectorBridgePropertyMutationResult: Hashable, Codable {
+    public let propertyRef: String
+    public let applied: Bool
+    public let refreshRecommended: Bool
+}
+
 public struct InspectorBridgeLayerState: Hashable, Codable {
     public let name: String
     public let displayName: String
@@ -112,8 +190,10 @@ public enum InspectorBridgeError: Error, Hashable, Codable {
     case disabled
     case notStarted
     case staleHandle
+    case stalePropertyReference
     case snapshotUnavailable(InspectorBridgeSnapshotUnavailableReason)
     case unsupportedTarget
+    case invalidPropertyValue(String)
     case internalFailure(String)
 }
 #endif

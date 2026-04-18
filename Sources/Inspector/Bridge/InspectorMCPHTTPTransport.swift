@@ -272,6 +272,32 @@ private final class InspectorMCPHTTPServer {
             } catch let error as InspectorBridgeError {
                 return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
             }
+        case ("POST", InspectorMCPBridgeEndpoint.propertiesPath):
+            let payload: InspectorMCPPropertyListRequest = try decode(
+                request.body,
+                allowedKeys: ["handle", "panel", "includeReadOnly"]
+            )
+
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgePropertyListResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
+        case ("POST", InspectorMCPBridgeEndpoint.setPropertyPath):
+            let payload: InspectorMCPSetPropertyRequest = try decode(
+                request.body,
+                allowedKeys: ["propertyRef", "boolValue", "numberValue", "stringValue", "selectionIndex"]
+            )
+
+            do {
+                return try jsonResponse(
+                    InspectorMCPSuccessEnvelope(result: try bridgeSetPropertyResult(for: payload))
+                )
+            } catch let error as InspectorBridgeError {
+                return try jsonResponse(InspectorMCPFailureEnvelope(error: transportError(for: error)))
+            }
         case ("POST", InspectorMCPBridgeEndpoint.layersPath):
             do {
                 return try jsonResponse(
@@ -338,7 +364,7 @@ private final class InspectorMCPHTTPServer {
             bridgeEnabled: bridgeEnabled,
             inspectorStarted: inspectorStarted,
             bundleIdentifier: Bundle.main.bundleIdentifier,
-            operations: [.query, .resolve, .snapshot, .inspect, .tap, .layers, .toggleLayer],
+            operations: [.query, .resolve, .snapshot, .inspect, .tap, .listProperties, .setProperty, .layers, .toggleLayer],
             apiVersion: 2
         )
     }
@@ -388,6 +414,31 @@ private final class InspectorMCPHTTPServer {
     private func bridgeTapResult(for request: InspectorMCPTapRequest) throws -> InspectorMCPTapResult {
         _ = try Inspector.bridgeTap(.init(rawValue: request.handle))
         return InspectorMCPTapResult(handle: request.handle, dispatched: true)
+    }
+
+    private func bridgePropertyListResult(for request: InspectorMCPPropertyListRequest) throws -> InspectorMCPPropertyListResult {
+        let response = try Inspector.bridgeListProperties(
+            .init(rawValue: request.handle),
+            panel: bridgePanel(from: request.panel),
+            includeReadOnly: request.includeReadOnly
+        )
+
+        return InspectorMCPPropertyListResult(
+            handle: response.handle.rawValue,
+            expiresAt: response.expiresAt,
+            panel: wirePanel(from: response.panel),
+            sections: response.sections.map(wirePropertySection(from:))
+        )
+    }
+
+    private func bridgeSetPropertyResult(for request: InspectorMCPSetPropertyRequest) throws -> InspectorMCPSetPropertyResult {
+        let mutationValue = try bridgeMutationValue(from: request)
+        let result = try Inspector.bridgeSetProperty(reference: request.propertyRef, value: mutationValue)
+        return InspectorMCPSetPropertyResult(
+            propertyRef: result.propertyRef,
+            applied: result.applied,
+            refreshRecommended: result.refreshRecommended
+        )
     }
 
     private func bridgeLayersResult() throws -> InspectorMCPLayersResult {
@@ -458,6 +509,8 @@ private final class InspectorMCPHTTPServer {
             return .init(code: .notStarted, message: "Inspector has not started yet", details: .empty)
         case .staleHandle:
             return .init(code: .staleHandle, message: "Handle is stale; issue a fresh query", details: .empty)
+        case .stalePropertyReference:
+            return .init(code: .stalePropertyReference, message: "Property reference is stale; list properties again", details: .empty)
         case let .snapshotUnavailable(reason):
             return .init(
                 code: .snapshotUnavailable,
@@ -466,9 +519,124 @@ private final class InspectorMCPHTTPServer {
             )
         case .unsupportedTarget:
             return .init(code: .unsupportedTarget, message: "Inspector MCP bridge is unavailable on this target", details: .empty)
+        case let .invalidPropertyValue(message):
+            return .init(code: .invalidPropertyValue, message: "Property value is invalid", details: .internalFailure(message: message))
         case let .internalFailure(message):
             return .init(code: .internalFailure, message: "Inspector bridge failed internally", details: .internalFailure(message: message))
         }
+    }
+
+    private func bridgePanel(from value: InspectorMCPEditablePanel) -> InspectorBridgeEditablePanel {
+        switch value {
+        case .identity:
+            return .identity
+        case .attributes:
+            return .attributes
+        case .size:
+            return .size
+        }
+    }
+
+    private func wirePanel(from value: InspectorBridgeEditablePanel) -> InspectorMCPEditablePanel {
+        switch value {
+        case .identity:
+            return .identity
+        case .attributes:
+            return .attributes
+        case .size:
+            return .size
+        }
+    }
+
+    private func wirePropertySlot(from value: InspectorBridgeEditablePropertySlot) -> InspectorMCPEditablePropertySlot {
+        switch value {
+        case .property:
+            return .property
+        case .titleAccessory:
+            return .titleAccessory
+        }
+    }
+
+    private func wirePropertyKind(from value: InspectorBridgeEditablePropertyKind) -> InspectorMCPEditablePropertyKind {
+        switch value {
+        case .toggle:
+            return .toggle
+        case .stepper:
+            return .stepper
+        case .textField:
+            return .textField
+        case .textView:
+            return .textView
+        case .optionsList:
+            return .optionsList
+        case .textButtonGroup:
+            return .textButtonGroup
+        case .imageButtonGroup:
+            return .imageButtonGroup
+        }
+    }
+
+    private func wirePropertySection(from value: InspectorBridgeEditablePropertySection) -> InspectorMCPEditablePropertySection {
+        InspectorMCPEditablePropertySection(
+            title: value.title,
+            rows: value.rows.map { row in
+                InspectorMCPEditablePropertyRow(
+                    title: row.title,
+                    subtitle: row.subtitle,
+                    properties: row.properties.map(wireEditableProperty(from:))
+                )
+            }
+        )
+    }
+
+    private func wireEditableProperty(from value: InspectorBridgeEditablePropertyDescriptor) -> InspectorMCPEditableProperty {
+        InspectorMCPEditableProperty(
+            propertyRef: value.propertyRef,
+            path: .init(
+                panel: wirePanel(from: value.path.panel),
+                section: value.path.section,
+                row: value.path.row,
+                slot: wirePropertySlot(from: value.path.slot),
+                index: value.path.index
+            ),
+            title: value.title,
+            kind: wirePropertyKind(from: value.kind),
+            editable: value.editable,
+            boolValue: value.boolValue,
+            numberValue: value.numberValue,
+            stringValue: value.stringValue,
+            selectionIndex: value.selectionIndex,
+            minimum: value.minimum,
+            maximum: value.maximum,
+            step: value.step,
+            isDecimal: value.isDecimal,
+            options: value.options,
+            nullable: value.nullable
+        )
+    }
+
+    private func bridgeMutationValue(from request: InspectorMCPSetPropertyRequest) throws -> InspectorBridgePropertyMutationValue {
+        let populatedValues = [
+            request.boolValue != nil,
+            request.numberValue != nil,
+            request.stringValue != nil,
+            request.selectionIndex != nil
+        ].filter { $0 }
+
+        guard populatedValues.count == 1 else {
+            throw InspectorBridgeError.invalidPropertyValue("exactly one value field must be provided")
+        }
+
+        if let boolValue = request.boolValue {
+            return .bool(boolValue)
+        }
+        if let numberValue = request.numberValue {
+            return .number(numberValue)
+        }
+        if request.stringValue != nil {
+            return .string(request.stringValue)
+        }
+        return .selection(request.selectionIndex)
     }
 
     private func wireSnapshotReason(from value: InspectorBridgeSnapshotUnavailableReason) -> InspectorMCPSnapshotUnavailableReason {

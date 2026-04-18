@@ -19,7 +19,7 @@ final class InspectorMCPTransportTests: XCTestCase {
         XCTAssertEqual(health["status"] as? String, "active")
         XCTAssertEqual(health["bridgeEnabled"] as? Bool, true)
         XCTAssertEqual(health["inspectorStarted"] as? Bool, true)
-        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect", "tap", "layers", "toggleLayer"])
+        XCTAssertEqual(health["operations"] as? [String], ["query", "resolve", "snapshot", "inspect", "tap", "listProperties", "setProperty", "layers", "toggleLayer"])
         XCTAssertEqual(health["apiVersion"] as? Int, 2)
     }
 
@@ -233,6 +233,50 @@ final class InspectorMCPTransportTests: XCTestCase {
 
     }
 
+    func testHealthAdvertisesPropertyMutationOperations() async throws {
+        let health = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+        let operations = try XCTUnwrap(health["operations"] as? [String])
+        XCTAssertTrue(operations.contains("listProperties"))
+        XCTAssertTrue(operations.contains("setProperty"))
+    }
+
+    func testListPropertiesAndSetPropertyMutateExampleView() async throws {
+        _ = try await pollHealth(timeout: 5) { payload in
+            payload["status"] as? String == "active"
+        }
+
+        let handle = try await queryHandle(accessibilityIdentifier: "MCP Tap Smoke Button")
+        let listResponse = try await postJSON(
+            path: "/properties",
+            body: ["handle": handle, "panel": "attributes", "includeReadOnly": false]
+        )
+        XCTAssertEqual(listResponse.statusCode, 200)
+        let listPayload = try unpackSuccessEnvelope(from: listResponse.body)
+        let sections = try XCTUnwrap(listPayload["sections"] as? [[String: Any]])
+        let propertyRef = try XCTUnwrap(findPropertyRef(in: sections, titled: "Hidden"))
+
+        let setResponse = try await postJSON(
+            path: "/set-property",
+            body: ["propertyRef": propertyRef, "boolValue": true]
+        )
+        XCTAssertEqual(setResponse.statusCode, 200)
+        let setPayload = try unpackSuccessEnvelope(from: setResponse.body)
+        XCTAssertEqual(setPayload["propertyRef"] as? String, propertyRef)
+        XCTAssertEqual(setPayload["applied"] as? Bool, true)
+        XCTAssertEqual(setPayload["refreshRecommended"] as? Bool, true)
+
+        let mutatedHandle = try await queryHandle(accessibilityIdentifier: "MCP Tap Smoke Button")
+        let mutatedNodeResponse = try await postJSON(path: "/resolve", body: ["handle": mutatedHandle])
+        let mutatedNode = try unpackSuccessEnvelope(from: mutatedNodeResponse.body)
+        XCTAssertEqual(mutatedNode["isHidden"] as? Bool, true)
+
+        addTeardownBlock {
+            try? await self.restoreHidden(accessibilityIdentifier: "MCP Tap Smoke Button")
+        }
+    }
+
     func testOldestHandleBecomesStaleAfterNinthQuery() async throws {
         _ = try await pollHealth(timeout: 5) { payload in
             payload["status"] as? String == "active"
@@ -403,6 +447,45 @@ final class InspectorMCPTransportTests: XCTestCase {
         )
         XCTAssertEqual(snapshotResponse.statusCode, 200)
         return try unpackSuccessEnvelope(from: snapshotResponse.body)
+    }
+
+    private func queryHandle(accessibilityIdentifier: String) async throws -> String {
+        let queryResponse = try await postJSON(
+            path: "/query",
+            body: ["accessibilityIdentifierEquals": accessibilityIdentifier]
+        )
+        let queryPayload = try unpackSuccessEnvelope(from: queryResponse.body)
+        let nodes = try XCTUnwrap(queryPayload["nodes"] as? [[String: Any]])
+        return try XCTUnwrap(nodes.first?["handle"] as? String)
+    }
+
+    private func findPropertyRef(in sections: [[String: Any]], titled title: String) -> String? {
+        for section in sections {
+            guard let rows = section["rows"] as? [[String: Any]] else { continue }
+            for row in rows {
+                guard let properties = row["properties"] as? [[String: Any]] else { continue }
+                for property in properties where property["title"] as? String == title {
+                    return property["propertyRef"] as? String
+                }
+            }
+        }
+
+        return nil
+    }
+
+    private func restoreHidden(accessibilityIdentifier: String) async throws {
+        let handle = try await queryHandle(accessibilityIdentifier: accessibilityIdentifier)
+        let listResponse = try await postJSON(
+            path: "/properties",
+            body: ["handle": handle, "panel": "attributes", "includeReadOnly": false]
+        )
+        let listPayload = try unpackSuccessEnvelope(from: listResponse.body)
+        let sections = try XCTUnwrap(listPayload["sections"] as? [[String: Any]])
+        guard let propertyRef = findPropertyRef(in: sections, titled: "Hidden") else { return }
+        _ = try await postJSON(
+            path: "/set-property",
+            body: ["propertyRef": propertyRef, "boolValue": false]
+        )
     }
 
     private func pollHealth(

@@ -151,3 +151,42 @@ Common failures:
 - `internalFailure` with a tappability message → the target is not a supported button-like control for MVP
 
 Because mutation can immediately change the hierarchy, prefer a fresh `query` after successful taps before chaining the next action.
+
+## Property mutation (v2.4)
+
+Use this flow when you want to mutate supported Inspector-backed properties without presenting the Inspector UI:
+
+1. `query` -> resolve the node you want
+2. `list_properties(handle, panel)` -> inspect editable descriptors and collect a `propertyRef`
+3. `set_property(propertyRef, typedValue)` -> apply exactly one typed mutation
+
+Discovery request:
+
+```json
+{"handle":"HANDLE","panel":"attributes","includeReadOnly":false}
+```
+
+Mutation request examples:
+
+```json
+{"propertyRef":"PROP","boolValue":true}
+```
+
+```json
+{"propertyRef":"PROP","numberValue":0.5}
+```
+
+```json
+{"propertyRef":"PROP","stringValue":"Updated title"}
+```
+
+```json
+{"propertyRef":"PROP","selectionIndex":2}
+```
+
+Important semantics:
+- property discovery reuses the same Inspector property model the form panel uses
+- `propertyRef` is ephemeral and snapshot-scoped
+- after a successful `set_property`, rediscover properties before the next mutation
+- only supported scalar/editor-like kinds are exposed in the MVP
+- unsupported property kinds or wrong value-field combinations fail server-side

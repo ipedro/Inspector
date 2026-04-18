@@ -142,6 +142,30 @@ MVP limitations:
 - fails for gesture-backed non-controls, sliders/switches/date pickers, hidden/disabled/detached controls, and stale handles
 - after any successful mutation, prefer a fresh `query` before the next action because the UI may have changed and invalidated handles
 
+For broader property-driven mutation, use `query → list_properties → set_property`:
+
+```json
+{"handle":"<handle returned by query>","panel":"attributes","includeReadOnly":false}
+```
+
+`list_properties` returns editable descriptors plus opaque `propertyRef` values. `set_property` then applies exactly one typed value field:
+- `boolValue`
+- `numberValue`
+- `stringValue`
+- `selectionIndex`
+
+Example:
+
+```json
+{"propertyRef":"<propertyRef returned by list_properties>","boolValue":true}
+```
+
+MVP limitations:
+- this reuses Inspector's existing property handlers without presenting Inspector UI
+- supported kinds are scalar/editor-like properties only (`switch`, `stepper`, `textField`, `textView`, selection lists/groups)
+- property refs are ephemeral and should be rediscovered after any successful mutation
+- unsupported property kinds and malformed values fail fast server-side
+
 ### 5a. Controlling view-hierarchy layers (v2.2)
 
 Call `list_layers` to see which built-in highlight layers are populated on the current screen, along with their active state:
@@ -205,6 +229,7 @@ Current constraints:
 - v2.1: `inspect` adds write-side dispatch (presents Inspector UI); all other tools remain non-mutating
 - v2.2+: `list_layers` (read-only) and `toggle_layer` (write-side) add layer-highlight control
 - v2.3+: `tap` adds exact-handle semantic activation for button-like `UIControl`s
+- v2.4+: `list_properties` + `set_property` add typed property mutation by reusing Inspector property handlers
 
 If startup says the endpoint is occupied by the wrong app:
 - shut down the simulator or other app
@@ -248,3 +273,4 @@ Read these only when needed:
 - **v2.1 (2026-04-17)** — New `inspect` tool. No breaking changes; additive over v2. Reconnect clients to pick up the refreshed `tools/list`.
 - **v2.2 (2026-04-17)** — New `list_layers` and `toggle_layer` tools. Additive over v2.1. Reconnect clients to refresh `tools/list`. `/health.operations` now includes `layers` and `toggleLayer`.
 - **v2.3 (2026-04-18)** — New `tap` tool. Additive over v2.2. Reconnect clients to refresh `tools/list`. `tap` is semantic `UIControl` activation, not synthetic touch injection.
+- **v2.4 (2026-04-18)** — New `list_properties` and `set_property` tools. Additive over v2.3. Reconnect clients to refresh `tools/list`. Property refs are ephemeral and should be rediscovered after successful mutations.

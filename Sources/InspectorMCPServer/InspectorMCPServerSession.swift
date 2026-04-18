@@ -35,7 +35,7 @@ final class InspectorMCPServerSession {
                         "name": "InspectorMCPServer",
                         "version": "2.0.0"
                     ],
-                    "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. Mutation tools like tap can stale handles immediately, so issue a fresh query after UI changes."
+                    "instructions": "Use query to discover nodes, then resolve or snapshot returned handles. For property mutation, use list_properties before set_property. Mutation tools can stale handles immediately, so issue a fresh query after UI changes."
                 ]
             )
         case "tools/list":
@@ -185,6 +185,55 @@ final class InspectorMCPServerSession {
                 ]
             ),
             toolDefinition(
+                name: "list_properties",
+                description: "List editable properties for a node by reusing Inspector's existing panel property model. Returns opaque propertyRef values for later set_property calls.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "handle": [
+                            "type": "string",
+                            "description": "Opaque handle returned by query or resolve."
+                        ],
+                        "panel": [
+                            "type": "string",
+                            "enum": ["identity", "attributes", "size"],
+                            "description": "Inspector panel whose editable properties should be projected."
+                        ],
+                        "includeReadOnly": [
+                            "type": "boolean",
+                            "description": "Whether to include supported-but-read-only descriptors. Default false."
+                        ]
+                    ],
+                    "required": ["handle", "panel", "includeReadOnly"]
+                ]
+            ),
+            toolDefinition(
+                name: "set_property",
+                description: "Apply one property mutation using a propertyRef returned by list_properties. Exactly one compatible value field must be provided.",
+                schema: [
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": [
+                        "propertyRef": [
+                            "type": "string",
+                            "description": "Opaque property reference returned by list_properties."
+                        ],
+                        "boolValue": ["type": "boolean"],
+                        "numberValue": ["type": "number"],
+                        "stringValue": ["type": "string"],
+                        "selectionIndex": ["type": "integer"]
+                    ],
+                    "required": ["propertyRef"]
+                ],
+                annotations: [
+                    "readOnlyHint": false,
+                    "destructiveHint": false,
+                    "idempotentHint": false,
+                    "openWorldHint": true
+                ]
+            ),
+            toolDefinition(
                 name: "list_layers",
                 description: "List built-in Inspector view-hierarchy layers populated in the live app, with each layer's current active (highlighted) state.",
                 schema: [
@@ -299,6 +348,34 @@ final class InspectorMCPServerSession {
                 for: result,
                 successText: { tapResult in
                     "Dispatched semantic tap for handle \(tapResult.handle)."
+                }
+            )
+        case "list_properties":
+            let request = try JSONObject.decode(
+                InspectorMCPPropertyListRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.listProperties(request)
+            return try toolResult(
+                for: result,
+                successText: { propertyResult in
+                    let propertyCount = propertyResult.sections
+                        .flatMap(\.rows)
+                        .flatMap(\.properties)
+                        .count
+                    return "Listed \(propertyCount) editable property descriptor(s) for handle \(propertyResult.handle)."
+                }
+            )
+        case "set_property":
+            let request = try JSONObject.decode(
+                InspectorMCPSetPropertyRequest.self,
+                from: arguments
+            )
+            let result = try await bridgeClient.setProperty(request)
+            return try toolResult(
+                for: result,
+                successText: { setResult in
+                    "Applied property mutation for \(setResult.propertyRef)."
                 }
             )
         case "list_layers":

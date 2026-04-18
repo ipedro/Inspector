@@ -460,14 +460,16 @@ final class InspectorBridgeServiceTests: XCTestCase {
         snapshot: any InspectorBridgeSnapshotProtocol,
         snapshotLimit: Int = 1,
         snapshotRenderer: InspectorBridgeSnapshotRendering = InspectorBridgeSnapshotRenderer(),
-        dateProvider: @escaping InspectorMCPBridgeService.DateProvider = Date.init
+        dateProvider: @escaping InspectorMCPBridgeService.DateProvider = Date.init,
+        librariesProvider: @escaping InspectorMCPBridgeService.LibrariesProvider = { _ in [] }
     ) -> InspectorMCPBridgeService {
         InspectorMCPBridgeService(
             availabilityProvider: { availability },
             snapshotProvider: { snapshot },
             snapshotLimitProvider: { snapshotLimit },
             snapshotRenderer: snapshotRenderer,
-            dateProvider: dateProvider
+            dateProvider: dateProvider,
+            librariesProvider: librariesProvider
         )
     }
 
@@ -490,6 +492,34 @@ private final class MockSnapshot: InspectorBridgeSnapshotProtocol {
         self.expirationDate = expirationDate
         viewHierarchy = nodes
         self.availableLayers = availableLayers
+    }
+}
+
+private final class MockLibrary: InspectorElementLibraryProtocol {
+    let targetClass: AnyClass = UIView.self
+    private let rows: [MockSectionRow]
+
+    init(rows: [MockSectionRow]) {
+        self.rows = rows
+    }
+
+    func sections(for object: NSObject) -> InspectorElementSections {
+        [InspectorElementSection(title: "Mock Section", rows: rows)]
+    }
+}
+
+private final class MockSectionRow: InspectorElementSectionDataSource {
+    var title: String
+    var subtitle: String?
+    var properties: [InspectorElementProperty]
+    var customClass: InspectorElementSectionView.Type? { nil }
+    var state: InspectorElementSectionState = .expanded
+    var titleAccessoryProperty: InspectorElementProperty? { nil }
+
+    init(title: String = "Mock Row", subtitle: String? = nil, properties: [InspectorElementProperty]) {
+        self.title = title
+        self.subtitle = subtitle
+        self.properties = properties
     }
 }
 
@@ -971,6 +1001,119 @@ extension InspectorBridgeServiceTests {
         XCTAssertEqual(target.touchUpInsideCount, 0)
 
         addTeardownBlock { window.isHidden = true }
+    }
+
+    func testBridgeListPropertiesProjectsSupportedEditableProperties() throws {
+        let view = UIView()
+        view.accessibilityIdentifier = "editable-view"
+        let reference = ViewHierarchyElement(with: view)
+
+        let service = makeService(
+            snapshot: MockSnapshot(nodes: [reference]),
+            librariesProvider: { panel in
+                guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
+                return [MockLibrary(rows: [
+                    MockSectionRow(properties: [
+                        .switch(title: "Hidden", isOn: { view.isHidden }) { view.isHidden = $0 },
+                        .textField(title: "Identifier", placeholder: nil, axis: .vertical, value: { view.accessibilityIdentifier }) { view.accessibilityIdentifier = $0 }
+                    ])
+                ])]
+            }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+        let response = try service.listProperties(for: handle, panel: InspectorBridgeEditablePanel.attributes)
+
+        let properties = response.sections.flatMap { $0.rows }.flatMap { $0.properties }
+        XCTAssertEqual(properties.count, 2)
+        XCTAssertEqual(properties.map(\.title), ["Hidden", "Identifier"])
+        XCTAssertEqual(properties.map(\.kind), [InspectorBridgeEditablePropertyKind.toggle, InspectorBridgeEditablePropertyKind.textField])
+        XCTAssertNotNil(properties.first?.propertyRef)
+    }
+
+    func testBridgeSetPropertyAppliesHandlerAndInvalidatesPropertyRefs() throws {
+        let view = UIView()
+        let reference = ViewHierarchyElement(with: view)
+        let service = makeService(
+            snapshot: MockSnapshot(nodes: [reference]),
+            librariesProvider: { panel in
+                guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
+                return [MockLibrary(rows: [
+                    MockSectionRow(properties: [
+                        .switch(title: "Hidden", isOn: { view.isHidden }) { view.isHidden = $0 }
+                    ])
+                ])]
+            }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+        let list = try service.listProperties(for: handle, panel: InspectorBridgeEditablePanel.attributes)
+        let propertyRef = try XCTUnwrap(list.sections.first?.rows.first?.properties.first?.propertyRef)
+
+        let result = try service.setProperty(reference: propertyRef, value: InspectorBridgePropertyMutationValue.bool(true))
+        XCTAssertTrue(result.applied)
+        XCTAssertTrue(view.isHidden)
+
+        XCTAssertThrowsError(try service.setProperty(reference: propertyRef, value: InspectorBridgePropertyMutationValue.bool(false))) { error in
+            XCTAssertEqual(error as? InspectorBridgeError, InspectorBridgeError.stalePropertyReference)
+        }
+    }
+
+    func testBridgeSetPropertyRejectsWrongValueKind() throws {
+        let view = UIView()
+        let reference = ViewHierarchyElement(with: view)
+        let service = makeService(
+            snapshot: MockSnapshot(nodes: [reference]),
+            librariesProvider: { panel in
+                guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
+                return [MockLibrary(rows: [
+                    MockSectionRow(properties: [
+                        .switch(title: "Hidden", isOn: { view.isHidden }) { view.isHidden = $0 }
+                    ])
+                ])]
+            }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+        let list = try service.listProperties(for: handle, panel: InspectorBridgeEditablePanel.attributes)
+        let propertyRef = try XCTUnwrap(list.sections.first?.rows.first?.properties.first?.propertyRef)
+
+        XCTAssertThrowsError(try service.setProperty(reference: propertyRef, value: InspectorBridgePropertyMutationValue.number(1))) { error in
+            guard case let .invalidPropertyValue(message) = error as? InspectorBridgeError else {
+                XCTFail("expected invalidPropertyValue, got \(error)")
+                return
+            }
+            XCTAssertTrue(message.contains("does not match"))
+        }
+    }
+
+    func testBridgeSetPropertyRejectsOutOfRangeStepperValue() throws {
+        let view = UIView()
+        let reference = ViewHierarchyElement(with: view)
+        var alphaValue: CGFloat = 1
+        let service = makeService(
+            snapshot: MockSnapshot(nodes: [reference]),
+            librariesProvider: { panel in
+                guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
+                return [MockLibrary(rows: [
+                    MockSectionRow(properties: [
+                        .cgFloatStepper(title: "Alpha", value: { alphaValue }, range: { 0...1 }, stepValue: { 0.1 }) { alphaValue = $0 }
+                    ])
+                ])]
+            }
+        )
+
+        let handle = try XCTUnwrap(service.query().nodes.first?.handle)
+        let list = try service.listProperties(for: handle, panel: InspectorBridgeEditablePanel.attributes)
+        let propertyRef = try XCTUnwrap(list.sections.first?.rows.first?.properties.first?.propertyRef)
+
+        XCTAssertThrowsError(try service.setProperty(reference: propertyRef, value: InspectorBridgePropertyMutationValue.number(2))) { error in
+            guard case let .invalidPropertyValue(message) = error as? InspectorBridgeError else {
+                XCTFail("expected invalidPropertyValue, got \(error)")
+                return
+            }
+            XCTAssertTrue(message.contains("range"))
+        }
     }
 }
 
