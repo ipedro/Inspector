@@ -1099,6 +1099,49 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(textField.isSecureTextEntry)
     }
 
+    func testButtonAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let button = UIButton(type: .system)
+        button.titleLabel?.font = .systemFont(ofSize: 14)
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.ButtonAttributesSectionDataSource(with: button)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 17)
+        XCTAssertEqual(bindings[0].descriptor.kind, .options)
+        XCTAssertEqual(bindings[0].descriptor.editability, .readOnly)
+        XCTAssertEqual(bindings[1].descriptor.kind, .options)
+        XCTAssertEqual(bindings[2].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[3].descriptor.kind, .group)
+        XCTAssertEqual(bindings[4].descriptor.kind, .options)
+        XCTAssertEqual(bindings[5].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[6].descriptor.kind, .color)
+        XCTAssertEqual(bindings[8].descriptor.kind, .preview)
+        XCTAssertEqual(bindings[10].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[11].descriptor.kind, .toggle)
+
+        let image = UIGraphicsImageRenderer(size: .init(width: 2, height: 2)).image { context in
+            UIColor.red.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 2, height: 2))
+        }
+
+        bindings[2].apply(.number(18))
+        bindings[4].apply(.selection(2))
+        bindings[5].apply(.string("Selected"))
+        bindings[6].apply(.color(.blue))
+        bindings[8].apply(.image(image))
+        bindings[10].apply(.bool(true))
+        bindings[11].apply(.bool(true))
+
+        XCTAssertEqual(try XCTUnwrap(button.titleLabel?.font).pointSize, 18, accuracy: 0.001)
+        XCTAssertEqual(button.title(for: .selected), "Selected")
+        XCTAssertEqual(button.titleColor(for: .selected), .blue)
+        XCTAssertEqual(button.image(for: .selected)?.pngData(), image.pngData())
+        XCTAssertTrue(button.isPointerInteractionEnabled)
+        XCTAssertTrue(button.adjustsImageSizeForAccessibilityContentSizeCategory)
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled
