@@ -30,6 +30,7 @@ public protocol InspectorElementSectionDataSource: AnyObject {
     /// An optional subtitle that can be shown below the title.
     var subtitle: String? { get }
     /// A list of properties to be displayed.
+    @available(*, deprecated, message: "Use propertyBindings or sectionBinding instead")
     var properties: [InspectorElementProperty] { get }
     /// Optional binding-based runtime description for this section.
     var sectionBinding: InspectorSectionBinding? { get }
@@ -40,10 +41,12 @@ public protocol InspectorElementSectionDataSource: AnyObject {
     /// Constant describing the currentstate of the section.
     var state: InspectorElementSectionState { get set }
     /// An optional property to be displayed next to the title.
+    @available(*, deprecated, message: "Use titleAccessoryBinding instead")
     var titleAccessoryProperty: InspectorElementProperty? { get }
     /// Escape hatch for binding fields that still need custom runtime expansion.
     var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { get }
     /// Legacy escape hatch for runtime expansion via InspectorElementProperty.
+    @available(*, deprecated, message: "Use sectionBindingExtraBindings instead")
     var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { get }
     /// Optional binding-based title accessory.
     var titleAccessoryBinding: InspectorPropertyBinding? { get }

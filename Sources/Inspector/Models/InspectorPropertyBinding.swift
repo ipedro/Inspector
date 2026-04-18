@@ -84,6 +84,7 @@ public extension InspectorPropertyBinding {
         writeValue(value)
     }
 
+@available(*, deprecated, message: "Compatibility bridge only; prefer binding-native rendering")
     func makeInspectorElementProperty() -> InspectorElementProperty? {
         switch descriptor.kind {
         case .toggle:
@@ -355,6 +356,7 @@ public extension InspectorSectionBinding {
 }
 
 public extension InspectorElementProperty {
+    @available(*, deprecated, message: "Compatibility bridge only; prefer constructing InspectorPropertyBinding directly")
     func makeBinding(id: String) -> InspectorPropertyBinding? {
         switch self {
         case let .switch(title, isOn, handler):

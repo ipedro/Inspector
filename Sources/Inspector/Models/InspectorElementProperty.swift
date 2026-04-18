@@ -23,6 +23,7 @@ import UIKit
 @available(*, deprecated, renamed: "InspectorElementProperty")
 public typealias InspectorElementViewModelProperty = InspectorElementProperty
 
+@available(*, deprecated, message: "Use InspectorPropertyBinding and InspectorPropertyDescriptor instead")
 public enum InspectorElementProperty {
     public struct PreviewTarget {
         let reference: ViewHierarchyElement
