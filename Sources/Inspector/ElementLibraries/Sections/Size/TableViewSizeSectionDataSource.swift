@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementSizeLibrary {
@@ -47,80 +48,120 @@ extension DefaultElementSizeLibrary {
             case insetsContentViewsToSafeArea = "Insets Content Views"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let tableView else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .rowHeight:
-                    .cgFloatStepper(
+                    numericBinding(
+                        id: "row-height",
                         title: property.rawValue,
-                        value: { tableView.rowHeight },
-                        range: { UITableView.automaticDimension...Double.infinity },
-                        stepValue: { 1 }
-                    ) { rowHeight in
-                        tableView.rowHeight = rowHeight
-                    }
+                        value: { Double(tableView.rowHeight) },
+                        setter: { tableView.rowHeight = CGFloat($0) }
+                    )
                 case .estimatedRowHeight:
-                    .cgFloatStepper(
+                    numericBinding(
+                        id: "estimated-row-height",
                         title: property.rawValue,
-                        value: { tableView.estimatedRowHeight },
-                        range: { UITableView.automaticDimension...Double.infinity },
-                        stepValue: { 1 }
-                    ) { estimatedRowHeight in
-                        tableView.estimatedRowHeight = estimatedRowHeight
-                    }
+                        value: { Double(tableView.estimatedRowHeight) },
+                        setter: { tableView.estimatedRowHeight = CGFloat($0) }
+                    )
                 case .separator0,
                      .separator1:
-                    .separator
+                    .init(
+                        descriptor: .init(
+                            id: property.rawValue,
+                            title: property.rawValue,
+                            kind: .separator,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .sectionsGroup,
                      .contentViewGroup:
-                    .group(title: property.rawValue)
+                    .init(
+                        descriptor: .init(
+                            id: property.rawValue,
+                            title: property.rawValue,
+                            kind: .group,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .sectionHeaderHeight:
-                    .cgFloatStepper(
+                    numericBinding(
+                        id: "section-header-height",
                         title: property.rawValue,
-                        value: { tableView.sectionHeaderHeight },
-                        range: { UITableView.automaticDimension...Double.infinity },
-                        stepValue: { 1 }
-                    ) { sectionHeaderHeight in
-                        tableView.sectionHeaderHeight = sectionHeaderHeight
-                    }
+                        value: { Double(tableView.sectionHeaderHeight) },
+                        setter: { tableView.sectionHeaderHeight = CGFloat($0) }
+                    )
                 case .estimatedSectionHeaderHeight:
-                    .cgFloatStepper(
+                    numericBinding(
+                        id: "estimated-section-header-height",
                         title: property.rawValue,
-                        value: { tableView.estimatedSectionHeaderHeight },
-                        range: { UITableView.automaticDimension...Double.infinity },
-                        stepValue: { 1 }
-                    ) { estimatedSectionHeaderHeight in
-                        tableView.estimatedSectionHeaderHeight = estimatedSectionHeaderHeight
-                    }
+                        value: { Double(tableView.estimatedSectionHeaderHeight) },
+                        setter: { tableView.estimatedSectionHeaderHeight = CGFloat($0) }
+                    )
                 case .sectionFooterHeight:
-                    .cgFloatStepper(
+                    numericBinding(
+                        id: "section-footer-height",
                         title: property.rawValue,
-                        value: { tableView.sectionFooterHeight },
-                        range: { UITableView.automaticDimension...Double.infinity },
-                        stepValue: { 1 }
-                    ) { sectionFooterHeight in
-                        tableView.sectionFooterHeight = sectionFooterHeight
-                    }
+                        value: { Double(tableView.sectionFooterHeight) },
+                        setter: { tableView.sectionFooterHeight = CGFloat($0) }
+                    )
                 case .estimatedSectionFooterHeight:
-                    .cgFloatStepper(
+                    numericBinding(
+                        id: "estimated-section-footer-height",
                         title: property.rawValue,
-                        value: { tableView.estimatedSectionFooterHeight },
-                        range: { UITableView.automaticDimension...Double.infinity },
-                        stepValue: { 1 }
-                    ) { estimatedSectionFooterHeight in
-                        tableView.estimatedSectionFooterHeight = estimatedSectionFooterHeight
-                    }
+                        value: { Double(tableView.estimatedSectionFooterHeight) },
+                        setter: { tableView.estimatedSectionFooterHeight = CGFloat($0) }
+                    )
                 case .insetsContentViewsToSafeArea:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { tableView.insetsContentViewsToSafeArea }
-                    ) { insetsContentViewsToSafeArea in
-                        tableView.insetsContentViewsToSafeArea = insetsContentViewsToSafeArea
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "insets-content-views-to-safe-area",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(tableView.insetsContentViewsToSafeArea) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            tableView.insetsContentViewsToSafeArea = isOn
+                        }
+                    )
                 }
             }
+        }
+
+        private func numericBinding(
+            id: String,
+            title: String,
+            value: @escaping () -> Double,
+            setter: @escaping (Double) -> Void
+        ) -> InspectorPropertyBinding {
+            .init(
+                descriptor: .init(
+                    id: id,
+                    title: title,
+                    kind: .stepper,
+                    value: .number(.init(min: Double(UITableView.automaticDimension), step: 1, isDecimal: true)),
+                    editability: .editable
+                ),
+                read: { .number(value()) },
+                write: { newValue in
+                    guard case let .number(updated) = newValue else { return }
+                    setter(updated)
+                }
+            )
         }
     }
 }

@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementSizeLibrary {
@@ -42,48 +43,101 @@ extension DefaultElementSizeLibrary {
             case adjustedContentInset = "Adjusted Content Inset"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let scrollView else { return [] }
 
             return Properties.allCases.map { property in
                 switch property {
                 case .verticalScrollIndicatorInsets:
-                    .edgeInsets(
-                        title: property.rawValue,
-                        insets: { scrollView.verticalScrollIndicatorInsets },
-                        handler: { scrollView.verticalScrollIndicatorInsets = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "vertical-scroll-indicator-insets",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .edgeInsets,
+                            editability: .editable
+                        ),
+                        read: { .edgeInsets(scrollView.verticalScrollIndicatorInsets) },
+                        write: { newValue in
+                            guard case let .edgeInsets(insets) = newValue else { return }
+                            scrollView.verticalScrollIndicatorInsets = insets
+                        }
                     )
                 case .horizontalScrollIndicatorInsets:
-                    .edgeInsets(
-                        title: property.rawValue,
-                        insets: { scrollView.horizontalScrollIndicatorInsets },
-                        handler: { scrollView.horizontalScrollIndicatorInsets = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "horizontal-scroll-indicator-insets",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .edgeInsets,
+                            editability: .editable
+                        ),
+                        read: { .edgeInsets(scrollView.horizontalScrollIndicatorInsets) },
+                        write: { newValue in
+                            guard case let .edgeInsets(insets) = newValue else { return }
+                            scrollView.horizontalScrollIndicatorInsets = insets
+                        }
                     )
                 case .contentInsetsAdjustmentBehavior:
-                    .optionsList(
-                        title: property.rawValue,
-                        axis: .vertical,
-                        options: UIScrollView.ContentInsetAdjustmentBehavior.allCases.map(\.description),
-                        selectedIndex: { UIScrollView.ContentInsetAdjustmentBehavior.allCases.firstIndex(of: scrollView.contentInsetAdjustmentBehavior) },
-                        handler: {
-                            guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: .init(
+                            id: "content-insets-adjustment-behavior",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: UIScrollView.ContentInsetAdjustmentBehavior.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable,
+                            presentation: .init(axis: .vertical)
+                        ),
+                        read: { .selection(UIScrollView.ContentInsetAdjustmentBehavior.allCases.firstIndex(of: scrollView.contentInsetAdjustmentBehavior)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
                             let contentInsetAdjustmentBehavior = UIScrollView.ContentInsetAdjustmentBehavior.allCases[newIndex]
                             scrollView.contentInsetAdjustmentBehavior = contentInsetAdjustmentBehavior
                         }
                     )
                 case .contentInset:
-                    .edgeInsets(
-                        title: property.rawValue,
-                        insets: { scrollView.contentInset },
-                        handler: { scrollView.contentInset = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "content-inset",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .edgeInsets,
+                            editability: .editable
+                        ),
+                        read: { .edgeInsets(scrollView.contentInset) },
+                        write: { newValue in
+                            guard case let .edgeInsets(insets) = newValue else { return }
+                            scrollView.contentInset = insets
+                        }
                     )
                 case .separator:
-                    .separator
+                    .init(
+                        descriptor: .init(
+                            id: "separator",
+                            title: property.rawValue,
+                            kind: .separator,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .adjustedContentInset:
-                    .edgeInsets(
-                        title: property.rawValue,
-                        insets: { scrollView.adjustedContentInset },
-                        handler: nil
+                    .init(
+                        descriptor: .init(
+                            id: "adjusted-content-inset",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .edgeInsets,
+                            editability: .readOnly
+                        ),
+                        read: { .edgeInsets(scrollView.adjustedContentInset) },
+                        write: nil
                     )
                 }
             }

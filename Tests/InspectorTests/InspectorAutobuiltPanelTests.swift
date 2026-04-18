@@ -127,6 +127,9 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(bindings.count, 3)
         XCTAssertEqual(bindings.map(\.descriptor.kind), [.preview, .options, .preview])
         XCTAssertEqual(bindings.first?.descriptor.title, "Frame Rectangle")
+
+        bindings[0].apply(.rect(.init(x: 10, y: 20, width: 50, height: 60)))
+        XCTAssertEqual(view.frame, .init(x: 10, y: 20, width: 50, height: 60))
     }
 
     func testContentLayoutPrioritySectionUsesBindingBackedFields() throws {
@@ -141,6 +144,9 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(bindings[1].descriptor.kind, .options)
         XCTAssertEqual(bindings[2].descriptor.kind, .options)
         XCTAssertEqual(bindings.last?.descriptor.kind, .preview)
+
+        bindings[1].apply(.selection(2))
+        XCTAssertEqual(view.contentHuggingPriority(for: .horizontal), UILayoutPriority.allCases[2])
     }
 
     func testLabelSizeSectionUsesBindingBackedFields() throws {
@@ -158,6 +164,9 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         } else {
             XCTFail("expected numeric current value")
         }
+
+        bindings[0].apply(.number(100))
+        XCTAssertEqual(label.preferredMaxLayoutWidth, 100)
     }
 
     func testSegmentedControlSizeSectionUsesBindingBackedFields() throws {
@@ -174,6 +183,56 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         } else {
             XCTFail("expected selected segment binding")
         }
+
+        bindings[0].apply(.selection(1))
+        bindings[1].apply(.number(88))
+        bindings[3].apply(.selection(1))
+
+        XCTAssertEqual(control.widthForSegment(at: 1), 88)
+        XCTAssertTrue(control.apportionsSegmentWidthsByContent)
+    }
+
+    func testScrollViewSizeSectionUsesBindingBackedFields() throws {
+        let scrollView = UIScrollView(frame: .zero)
+        let dataSource = try XCTUnwrap(
+            DefaultElementSizeLibrary.ScrollViewSizeSectionDataSource(with: scrollView)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 6)
+        XCTAssertEqual(bindings.map(\.descriptor.kind), [.preview, .preview, .options, .preview, .separator, .preview])
+        XCTAssertEqual(bindings[2].descriptor.presentation?.axis, .vertical)
+
+        let newInsets = UIEdgeInsets(top: 1, left: 2, bottom: 3, right: 4)
+        bindings[0].apply(.edgeInsets(newInsets))
+        bindings[3].apply(.edgeInsets(newInsets))
+        bindings[2].apply(.selection(1))
+
+        XCTAssertEqual(scrollView.verticalScrollIndicatorInsets, newInsets)
+        XCTAssertEqual(scrollView.contentInset, newInsets)
+        XCTAssertEqual(scrollView.contentInsetAdjustmentBehavior, UIScrollView.ContentInsetAdjustmentBehavior.allCases[1])
+    }
+
+    func testTableViewSizeSectionUsesBindingBackedFields() throws {
+        let tableView = UITableView(frame: .zero, style: .plain)
+        let dataSource = try XCTUnwrap(
+            DefaultElementSizeLibrary.TableViewSizeSectionDataSource(with: tableView)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 11)
+        XCTAssertEqual(bindings.first?.descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[2].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[3].descriptor.kind, .group)
+        XCTAssertEqual(bindings.last?.descriptor.kind, .toggle)
+
+        bindings[0].apply(.number(44))
+        bindings[1].apply(.number(55))
+        bindings[10].apply(.bool(false))
+
+        XCTAssertEqual(tableView.rowHeight, 44)
+        XCTAssertEqual(tableView.estimatedRowHeight, 55)
+        XCTAssertFalse(tableView.insetsContentViewsToSafeArea)
     }
 }
 #endif
