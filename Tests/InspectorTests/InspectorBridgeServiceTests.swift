@@ -592,20 +592,6 @@ private final class MockSectionRow: InspectorElementSectionDataSource {
     init(
         title: String = "Mock Row",
         subtitle: String? = nil,
-        properties: [InspectorElementProperty],
-        titleAccessoryProperty: InspectorElementProperty? = nil
-    ) {
-        self.title = title
-        self.subtitle = subtitle
-        self.propertyBindings = properties.enumerated().compactMap { index, property in
-            property.makeBinding(id: "mock-\(index)")
-        }
-        self.titleAccessoryBinding = titleAccessoryProperty?.makeBinding(id: "mock-title-accessory")
-    }
-
-    init(
-        title: String = "Mock Row",
-        subtitle: String? = nil,
         propertyBindings: [InspectorPropertyBinding],
         titleAccessoryBinding: InspectorPropertyBinding? = nil
     ) {
@@ -1108,9 +1094,17 @@ extension InspectorBridgeServiceTests {
             librariesProvider: { panel in
                 guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
                 return [MockLibrary(rows: [
-                    MockSectionRow(properties: [
-                        .switch(title: "Hidden", isOn: { view.isHidden }) { view.isHidden = $0 },
-                        .textField(title: "Identifier", placeholder: nil, axis: .vertical, value: { view.accessibilityIdentifier }) { view.accessibilityIdentifier = $0 }
+                    MockSectionRow(propertyBindings: [
+                        .init(
+                            descriptor: .init(id: "hidden", title: "Hidden", kind: .toggle, value: .bool, editability: .editable),
+                            read: { .bool(view.isHidden) },
+                            write: { newValue in guard case let .bool(value) = newValue else { return }; view.isHidden = value }
+                        ),
+                        .init(
+                            descriptor: .init(id: "identifier", title: "Identifier", kind: .textField, value: .string(.init(multiline: false, placeholder: nil, allowsNil: true)), editability: .editable, presentation: .init(axis: .vertical)),
+                            read: { .string(view.accessibilityIdentifier) },
+                            write: { newValue in guard case let .string(value) = newValue else { return }; view.accessibilityIdentifier = value }
+                        )
                     ])
                 ])]
             }
@@ -1164,8 +1158,12 @@ extension InspectorBridgeServiceTests {
             librariesProvider: { panel in
                 guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
                 return [MockLibrary(rows: [
-                    MockSectionRow(properties: [
-                        .switch(title: "Hidden", isOn: { view.isHidden }) { view.isHidden = $0 }
+                    MockSectionRow(propertyBindings: [
+                        .init(
+                            descriptor: .init(id: "hidden", title: "Hidden", kind: .toggle, value: .bool, editability: .editable),
+                            read: { .bool(view.isHidden) },
+                            write: { newValue in guard case let .bool(value) = newValue else { return }; view.isHidden = value }
+                        )
                     ])
                 ])]
             }
@@ -1302,8 +1300,12 @@ extension InspectorBridgeServiceTests {
             librariesProvider: { panel in
                 guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
                 return [MockLibrary(rows: [
-                    MockSectionRow(properties: [
-                        .switch(title: "Hidden", isOn: { view.isHidden }) { view.isHidden = $0 }
+                    MockSectionRow(propertyBindings: [
+                        .init(
+                            descriptor: .init(id: "hidden", title: "Hidden", kind: .toggle, value: .bool, editability: .editable),
+                            read: { .bool(view.isHidden) },
+                            write: { newValue in guard case let .bool(value) = newValue else { return }; view.isHidden = value }
+                        )
                     ])
                 ])]
             }
@@ -1331,8 +1333,12 @@ extension InspectorBridgeServiceTests {
             librariesProvider: { panel in
                 guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
                 return [MockLibrary(rows: [
-                    MockSectionRow(properties: [
-                        .cgFloatStepper(title: "Alpha", value: { alphaValue }, range: { 0...1 }, stepValue: { 0.1 }) { alphaValue = $0 }
+                    MockSectionRow(propertyBindings: [
+                        .init(
+                            descriptor: .init(id: "alpha", title: "Alpha", kind: .stepper, value: .number(.init(min: 0, max: 1, step: 0.1, isDecimal: true)), editability: .editable),
+                            read: { .number(alphaValue) },
+                            write: { newValue in guard case let .number(value) = newValue else { return }; alphaValue = value }
+                        )
                     ])
                 ])]
             }
@@ -1359,8 +1365,13 @@ extension InspectorBridgeServiceTests {
             librariesProvider: { panel in
                 guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
                 return [MockLibrary(rows: [
-                    MockSectionRow(properties: [
-                        .switch(title: "Read Only Hidden", isOn: { view.isHidden }, handler: nil)
+                    MockSectionRow(propertyBindings: [
+                        .init(
+                            descriptor: .init(id: "hidden", title: "Read Only Hidden", kind: .toggle, value: .bool, editability: .readOnly),
+                            read: { .bool(view.isHidden) },
+                            write: nil,
+                            refreshHint: .none
+                        )
                     ])
                 ])]
             }
@@ -1393,8 +1404,13 @@ extension InspectorBridgeServiceTests {
             librariesProvider: { panel in
                 guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
                 return [MockLibrary(rows: [
-                    MockSectionRow(properties: [
-                        .switch(title: "Read Only Hidden", isOn: { view.isHidden }, handler: nil)
+                    MockSectionRow(propertyBindings: [
+                        .init(
+                            descriptor: .init(id: "hidden", title: "Read Only Hidden", kind: .toggle, value: .bool, editability: .readOnly),
+                            read: { .bool(view.isHidden) },
+                            write: nil,
+                            refreshHint: .none
+                        )
                     ])
                 ])]
             }
@@ -1433,8 +1449,12 @@ extension InspectorBridgeServiceTests {
             librariesProvider: { panel in
                 guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
                 return [MockLibrary(rows: [
-                    MockSectionRow(properties: [
-                        .switch(title: "Hidden", isOn: { view.isHidden }) { view.isHidden = $0 }
+                    MockSectionRow(propertyBindings: [
+                        .init(
+                            descriptor: .init(id: "hidden", title: "Hidden", kind: .toggle, value: .bool, editability: .editable),
+                            read: { .bool(view.isHidden) },
+                            write: { newValue in guard case let .bool(value) = newValue else { return }; view.isHidden = value }
+                        )
                     ])
                 ])]
             }
@@ -1462,12 +1482,12 @@ extension InspectorBridgeServiceTests {
             librariesProvider: { panel in
                 guard panel == InspectorBridgeEditablePanel.attributes else { return [] }
                 return [MockLibrary(rows: [
-                    MockSectionRow(properties: [
-                        .optionsList(
-                            title: "Content Mode",
-                            options: ["Scale To Fill", "Aspect Fit"],
-                            selectedIndex: { selection }
-                        ) { selection = $0 }
+                    MockSectionRow(propertyBindings: [
+                        .init(
+                            descriptor: .init(id: "content-mode", title: "Content Mode", kind: .options, value: .selection(.init(options: ["Scale To Fill", "Aspect Fit"].enumerated().map { .init(id: "\($0.offset)", title: $0.element) }, allowsNil: true)), editability: .editable),
+                            read: { .selection(selection) },
+                            write: { newValue in guard case let .selection(index) = newValue else { return }; selection = index }
+                        )
                     ])
                 ])]
             }
