@@ -148,7 +148,7 @@ public struct InspectorPanelMacro: MemberMacro {
 
         return """
         final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
-            var state: Inspector.InspectorElementSectionState = .collapsed
+            var state: InspectorInterface.InspectorElementSectionState = .collapsed
             let title = "\(escapedStringLiteral(title))"
             private weak var element: \(className)?
             init?(with object: NSObject) {

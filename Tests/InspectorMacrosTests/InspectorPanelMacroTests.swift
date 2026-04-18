@@ -27,7 +27,7 @@ final class InspectorPanelMacroTests: XCTestCase {
 
                 #if INSPECTOR_DEBUGGING
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
-                    var state: Inspector.InspectorElementSectionState = .collapsed
+                    var state: InspectorInterface.InspectorElementSectionState = .collapsed
                     let title = "My Card View"
                     private weak var element: MyCardView?
                     init?(with object: NSObject) {
@@ -91,7 +91,7 @@ final class InspectorPanelMacroTests: XCTestCase {
 
                 #if INSPECTOR_DEBUGGING
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
-                    var state: Inspector.InspectorElementSectionState = .collapsed
+                    var state: InspectorInterface.InspectorElementSectionState = .collapsed
                     let title = "Playground"
                     private weak var element: PlaygroundViewController?
                     init?(with object: NSObject) {
@@ -152,7 +152,7 @@ final class InspectorPanelMacroTests: XCTestCase {
 
                 #if INSPECTOR_DEBUGGING
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
-                    var state: Inspector.InspectorElementSectionState = .collapsed
+                    var state: InspectorInterface.InspectorElementSectionState = .collapsed
                     let title = "Slider"
                     private weak var element: SliderView?
                     init?(with object: NSObject) {
@@ -238,7 +238,7 @@ final class InspectorPanelMacroTests: XCTestCase {
 
                 #if INSPECTOR_DEBUGGING
                 final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
-                    var state: Inspector.InspectorElementSectionState = .collapsed
+                    var state: InspectorInterface.InspectorElementSectionState = .collapsed
                     let title = "Test"
                     private weak var element: TestView?
                     init?(with object: NSObject) {
