@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import MapKit
 
 extension DefaultElementAttributesLibrary {
@@ -48,105 +49,84 @@ extension DefaultElementAttributesLibrary {
             case showsTraffic = "Traffic"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let mapView else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .type:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: MKMapType.allCases.map(\.description),
-                        selectedIndex: { MKMapType.allCases.firstIndex(of: mapView.mapType) }
-                    ) {
-                        guard let newIndex = $0 else { return }
-
-                        let mapType = MKMapType.allCases[newIndex]
-
-                        mapView.mapType = mapType
-                    }
+                    return .init(
+                        descriptor: .init(
+                            id: "type",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(.init(options: MKMapType.allCases.enumerated().map {
+                                .init(id: "\($0.offset)", title: $0.element.description)
+                            }, allowsNil: true)),
+                            editability: .editable
+                        ),
+                        read: { .selection(MKMapType.allCases.firstIndex(of: mapView.mapType)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            mapView.mapType = MKMapType.allCases[index]
+                        }
+                    )
                 case .groupAllows, .groupShows:
-                    .group(title: property.rawValue)
+                    return .init(
+                        descriptor: .init(
+                            id: property.rawValue.replacingOccurrences(of: " ", with: "-").lowercased(),
+                            title: property.rawValue,
+                            kind: .group,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .isZoomEnabled:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { mapView.isZoomEnabled }
-                    ) { isZoomEnabled in
-                        mapView.isZoomEnabled = isZoomEnabled
-                    }
+                    return .init(descriptor: .init(id: "is-zoom-enabled", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(mapView.isZoomEnabled) }, write: { newValue in guard case let .bool(v)=newValue else { return }; mapView.isZoomEnabled = v })
                 case .isRotateEnabled:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { mapView.isRotateEnabled }
-                    ) { isRotateEnabled in
-                        mapView.isRotateEnabled = isRotateEnabled
-                    }
+                    return .init(descriptor: .init(id: "is-rotate-enabled", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(mapView.isRotateEnabled) }, write: { newValue in guard case let .bool(v)=newValue else { return }; mapView.isRotateEnabled = v })
                 case .isScrollEnabled:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { mapView.isScrollEnabled }
-                    ) { isScrollEnabled in
-                        mapView.isScrollEnabled = isScrollEnabled
-                    }
+                    return .init(descriptor: .init(id: "is-scroll-enabled", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(mapView.isScrollEnabled) }, write: { newValue in guard case let .bool(v)=newValue else { return }; mapView.isScrollEnabled = v })
                 case .isPitchEnabled:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { mapView.isPitchEnabled }
-                    ) { isPitchEnabled in
-                        mapView.isPitchEnabled = isPitchEnabled
-                    }
+                    return .init(descriptor: .init(id: "is-pitch-enabled", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(mapView.isPitchEnabled) }, write: { newValue in guard case let .bool(v)=newValue else { return }; mapView.isPitchEnabled = v })
                 case .buildings:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { mapView.showsBuildings }
-                    ) { showsBuildings in
-                        mapView.showsBuildings = showsBuildings
-                    }
+                    return .init(descriptor: .init(id: "shows-buildings", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(mapView.showsBuildings) }, write: { newValue in guard case let .bool(v)=newValue else { return }; mapView.showsBuildings = v })
                 case .showsScale:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { mapView.showsScale }
-                    ) { showsScale in
-                        mapView.showsScale = showsScale
-                    }
+                    return .init(descriptor: .init(id: "shows-scale", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(mapView.showsScale) }, write: { newValue in guard case let .bool(v)=newValue else { return }; mapView.showsScale = v })
                 case .pointOfInterestFilter:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: ["None"] + MKPointOfInterestFilter.allCases.map(\.displayName),
-                        selectedIndex: {
-                            guard
-                                let pointOfInterestFilter = mapView.pointOfInterestFilter,
-                                let selectedIndex = MKPointOfInterestFilter.allCases.firstIndex(of: pointOfInterestFilter)
-                            else {
-                                return .zero
+                    return .init(
+                        descriptor: .init(
+                            id: "point-of-interest-filter",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(.init(options: (["None"] + MKPointOfInterestFilter.allCases.map(\.displayName)).enumerated().map {
+                                .init(id: "\($0.offset)", title: $0.element)
+                            }, allowsNil: true)),
+                            editability: .editable
+                        ),
+                        read: {
+                            guard let filter = mapView.pointOfInterestFilter,
+                                  let selectedIndex = MKPointOfInterestFilter.allCases.firstIndex(of: filter) else {
+                                return .selection(0)
                             }
-                            return selectedIndex + 1
+                            return .selection(selectedIndex + 1)
                         },
-                        handler: {
-                            guard let newIndex = $0, newIndex > .zero else {
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            guard index > 0 else {
                                 mapView.pointOfInterestFilter = .none
                                 return
                             }
-
-                            let pointOfInterestFilter = MKPointOfInterestFilter.allCases[newIndex - 1]
-
-                            mapView.pointOfInterestFilter = pointOfInterestFilter
+                            mapView.pointOfInterestFilter = MKPointOfInterestFilter.allCases[index - 1]
                         }
                     )
                 case .showsUserLocation:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { mapView.showsUserLocation }
-                    ) { showsUserLocation in
-                        mapView.showsUserLocation = showsUserLocation
-                    }
+                    return .init(descriptor: .init(id: "shows-user-location", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(mapView.showsUserLocation) }, write: { newValue in guard case let .bool(v)=newValue else { return }; mapView.showsUserLocation = v })
                 case .showsTraffic:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { mapView.showsTraffic }
-                    ) { showsTraffic in
-                        mapView.showsTraffic = showsTraffic
-                    }
+                    return .init(descriptor: .init(id: "shows-traffic", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(mapView.showsTraffic) }, write: { newValue in guard case let .bool(v)=newValue else { return }; mapView.showsTraffic = v })
                 }
             }
         }
@@ -259,7 +239,7 @@ extension MKPointOfInterestCategory: CaseIterable, CustomStringConvertible {
         case .university: "University"
         case .winery: "Winery"
         case .zoo: "Zoo"
-        default: "Unknown"
+        default: rawValue.replacingOccurrences(of: "_", with: " ").capitalized
         }
     }
 }

@@ -1,6 +1,7 @@
 #if INSPECTOR_DEBUGGING && canImport(UIKit) && targetEnvironment(simulator)
 @testable import Inspector
 import InspectorContract
+import MapKit
 import XCTest
 
 @MainActor
@@ -659,6 +660,39 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(imageView.highlightedImage?.pngData(), highlightedImage.pngData())
         XCTAssertTrue(imageView.isHighlighted)
         XCTAssertTrue(imageView.adjustsImageSizeForAccessibilityContentSizeCategory)
+    }
+
+    func testMapViewAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let mapView = MKMapView(frame: .zero)
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.MapViewAttributesSectionDataSource(with: mapView)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 12)
+        XCTAssertEqual(bindings[0].descriptor.kind, .options)
+        XCTAssertEqual(bindings[1].descriptor.kind, .group)
+        XCTAssertEqual(bindings[2].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[6].descriptor.kind, .group)
+        XCTAssertEqual(bindings[9].descriptor.kind, .options)
+        XCTAssertEqual(bindings[11].descriptor.kind, .toggle)
+
+        bindings[0].apply(.selection(1))
+        bindings[2].apply(.bool(false))
+        bindings[3].apply(.bool(false))
+        bindings[7].apply(.bool(true))
+        bindings[8].apply(.bool(true))
+        bindings[9].apply(.selection(1))
+        bindings[11].apply(.bool(true))
+
+        XCTAssertEqual(mapView.mapType, MKMapType.allCases[1])
+        XCTAssertFalse(mapView.isZoomEnabled)
+        XCTAssertFalse(mapView.isRotateEnabled)
+        XCTAssertTrue(mapView.showsBuildings)
+        XCTAssertTrue(mapView.showsScale)
+        XCTAssertEqual(mapView.pointOfInterestFilter, MKPointOfInterestFilter.allCases[0])
+        XCTAssertTrue(mapView.showsTraffic)
     }
 
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
