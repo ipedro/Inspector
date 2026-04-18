@@ -1,3 +1,3 @@
-import InspectorInterface
+import InspectorContract
 
-public typealias InspectorElementSectionState = InspectorInterface.InspectorElementSectionState
+public typealias InspectorElementSectionState = InspectorContract.InspectorElementSectionState

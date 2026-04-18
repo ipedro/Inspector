@@ -23,6 +23,10 @@ let package = Package(
             name: "InspectorInterface",
             targets: ["InspectorInterface"]
         ),
+        .library(
+            name: "InspectorContract",
+            targets: ["InspectorContract"]
+        ),
         .executable(
             name: "InspectorMCPServer",
             targets: ["InspectorMCPServer"]
@@ -51,8 +55,15 @@ let package = Package(
         ),
 
         .target(
+            name: "InspectorContract",
+            swiftSettings: [
+                .swiftLanguageMode(.v5)
+            ]
+        ),
+        .target(
             name: "Inspector",
             dependencies: [
+                "InspectorContract",
                 "InspectorInterface",
                 "InspectorMCPWire",
                 .product(name: "UIKeyCommandTableView", package: "UIKeyCommandTableView", condition: .when(platforms: [.iOS])),
@@ -115,6 +126,7 @@ let package = Package(
         .target(
             name: "InspectorInterface",
             dependencies: [
+                "InspectorContract",
                 .target(name: "InspectorMacros")
             ],
             swiftSettings: [

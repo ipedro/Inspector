@@ -1,3 +1,3 @@
-import InspectorInterface
+import InspectorContract
 
-public typealias InspectorElementItemSeparatorStyle = InspectorInterface.InspectorElementItemSeparatorStyle
+public typealias InspectorElementItemSeparatorStyle = InspectorContract.InspectorElementItemSeparatorStyle
