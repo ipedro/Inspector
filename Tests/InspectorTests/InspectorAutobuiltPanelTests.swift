@@ -296,5 +296,28 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(control.onTintColor, .green)
         XCTAssertEqual(control.thumbTintColor, .yellow)
     }
+
+    func testTabBarAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let tabBar = UITabBar(frame: .zero)
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.TabBarAttributesSectionDataSource(with: tabBar)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 7)
+        XCTAssertEqual(bindings[0].descriptor.kind, .preview)
+        XCTAssertEqual(bindings[3].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[4].descriptor.kind, .options)
+        XCTAssertEqual(bindings[5].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[6].descriptor.kind, .color)
+
+        bindings[4].apply(.selection(0))
+        bindings[5].apply(.bool(false))
+        bindings[6].apply(.color(.purple))
+
+        XCTAssertEqual(tabBar.barStyle, UIBarStyle.allCases[0])
+        XCTAssertFalse(tabBar.isTranslucent)
+        XCTAssertEqual(tabBar.barTintColor, .purple)
+    }
 }
 #endif

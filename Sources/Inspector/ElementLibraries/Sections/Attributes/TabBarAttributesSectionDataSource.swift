@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -43,54 +44,117 @@ extension DefaultElementAttributesLibrary {
             case barTintColor = "Bar Tint"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let tabBar else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .style:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UIBarStyle.allCases.map(\.description),
-                        selectedIndex: { UIBarStyle.allCases.firstIndex(of: tabBar.barStyle) },
-                        handler: { newIndex in
-                            guard let index = newIndex else { return }
-
-                            let newStyle = UIBarStyle.allCases[index]
-                            tabBar.barStyle = newStyle
+                    .init(
+                        descriptor: .init(
+                            id: "style",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: UIBarStyle.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(UIBarStyle.allCases.firstIndex(of: tabBar.barStyle)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            tabBar.barStyle = UIBarStyle.allCases[index]
                         }
                     )
                 case .translucent:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { tabBar.isTranslucent },
-                        handler: { tabBar.isTranslucent = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "translucent",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(tabBar.isTranslucent) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            tabBar.isTranslucent = isOn
+                        }
                     )
                 case .barTintColor:
-                    .colorPicker(
-                        title: property.rawValue,
-                        color: { tabBar.barTintColor },
-                        handler: { tabBar.barTintColor = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "bar-tint-color",
+                            title: property.rawValue,
+                            kind: .color,
+                            value: .color(allowsNil: true),
+                            editability: .editable
+                        ),
+                        read: { .color(tabBar.barTintColor) },
+                        write: { newValue in
+                            guard case let .color(color) = newValue else { return }
+                            tabBar.barTintColor = color
+                        }
                     )
                 case .shadowImage:
-                    .imagePicker(
-                        title: property.rawValue,
-                        image: { tabBar.shadowImage },
-                        handler: { tabBar.shadowImage = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "shadow-image",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .none,
+                            editability: .editable
+                        ),
+                        read: { .image(tabBar.shadowImage) },
+                        write: { newValue in
+                            guard case let .image(image) = newValue else { return }
+                            tabBar.shadowImage = image
+                        }
                     )
                 case .backgroundImage:
-                    .imagePicker(
-                        title: property.rawValue,
-                        image: { tabBar.backgroundImage },
-                        handler: { tabBar.backgroundImage = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "background-image",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .none,
+                            editability: .editable
+                        ),
+                        read: { .image(tabBar.backgroundImage) },
+                        write: { newValue in
+                            guard case let .image(image) = newValue else { return }
+                            tabBar.backgroundImage = image
+                        }
                     )
                 case .separator:
-                    .separator
+                    .init(
+                        descriptor: .init(
+                            id: "separator",
+                            title: property.rawValue,
+                            kind: .separator,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .selectionIndicatorImage:
-                    .imagePicker(
-                        title: property.rawValue,
-                        image: { tabBar.selectionIndicatorImage },
-                        handler: { tabBar.selectionIndicatorImage = $0 }
+                    .init(
+                        descriptor: .init(
+                            id: "selection-indicator-image",
+                            title: property.rawValue,
+                            kind: .preview,
+                            value: .none,
+                            editability: .editable
+                        ),
+                        read: { .image(tabBar.selectionIndicatorImage) },
+                        write: { newValue in
+                            guard case let .image(image) = newValue else { return }
+                            tabBar.selectionIndicatorImage = image
+                        }
                     )
                 }
             }
