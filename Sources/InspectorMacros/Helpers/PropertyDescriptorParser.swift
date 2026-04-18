@@ -149,22 +149,22 @@ enum PropertyDescriptorParser {
         from args: LabeledExprListSyntax,
         label: String
     ) -> ClosedRange<Double>? {
-        guard let arg = args.first(where: { $0.label?.text == label }),
-              let infix = arg.expression.as(InfixOperatorExprSyntax.self),
-              let op = infix.operator.as(BinaryOperatorExprSyntax.self),
-              op.operator.text == "..." else { return nil }
-        // Parse both sides as numeric literals
-        func toDouble(_ expr: ExprSyntax) -> Double? {
-            if let f = expr.as(FloatLiteralExprSyntax.self) { return Double(f.literal.text) }
-            if let i = expr.as(IntegerLiteralExprSyntax.self) { return Double(i.literal.text) }
-            // Double.infinity expressed as member access
-            if let m = expr.as(MemberAccessExprSyntax.self), m.declName.baseName.text == "infinity" {
+        guard let arg = args.first(where: { $0.label?.text == label }) else { return nil }
+
+        let raw = arg.expression.trimmedDescription
+        let parts = raw.components(separatedBy: "...")
+        guard parts.count == 2 else { return nil }
+
+        func toDouble(_ raw: String) -> Double? {
+            let value = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+            if value == "Double.infinity" || value == ".infinity" || value == "infinity" {
                 return Double.infinity
             }
-            return nil
+            return Double(value)
         }
-        guard let lo = toDouble(infix.leftOperand),
-              let hi = toDouble(infix.rightOperand) else { return nil }
+
+        guard let lo = toDouble(parts[0]),
+              let hi = toDouble(parts[1]) else { return nil }
         return lo...hi
     }
 

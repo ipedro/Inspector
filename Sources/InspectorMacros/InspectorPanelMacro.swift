@@ -57,7 +57,7 @@ public struct InspectorPanelMacro: MemberMacro {
             guard let varDecl = member.decl.as(VariableDeclSyntax.self),
                   varDecl.bindingSpecifier.text == "var",
                   let binding = varDecl.bindings.first,
-                  binding.accessorBlock == nil, // stored property only
+                  !binding.hasComputedAccessors, // stored property only (allow didSet/willSet)
                   let pattern = binding.pattern.as(IdentifierPatternSyntax.self),
                   let typeAnnotation = binding.typeAnnotation?.type else { return nil }
 
@@ -147,8 +147,8 @@ public struct InspectorPanelMacro: MemberMacro {
         }.joined(separator: "\n")
 
         return """
-        final class SectionDataSource: InspectorElementSectionDataSource {
-            var state: InspectorElementSectionState = .collapsed
+        final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
+            var state: Inspector.InspectorElementSectionState = .collapsed
             let title = "\(escapedStringLiteral(title))"
             private weak var element: \(className)?
             init?(with object: NSObject) {
@@ -158,9 +158,9 @@ public struct InspectorPanelMacro: MemberMacro {
             private enum Property: String, Swift.CaseIterable {
         \(enumCases)
             }
-            var properties: [InspectorElementProperty] {
+            var properties: [Inspector.InspectorElementProperty] {
                 guard let element else { return [] }
-                return Property.allCases.flatMap { property -> [InspectorElementProperty] in
+                return Property.allCases.flatMap { property -> [Inspector.InspectorElementProperty] in
                     switch property {
         \(switchCases)
                     }
@@ -172,9 +172,9 @@ public struct InspectorPanelMacro: MemberMacro {
 
     private static func generateInspectorLibrarySource(className: String) -> String {
         return """
-        struct InspectorLibrary: InspectorElementLibraryProtocol {
+        struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
             var targetClass: AnyClass { \(className).self }
-            func sections(for object: NSObject) -> InspectorElementSections {
+            func sections(for object: NSObject) -> Inspector.InspectorElementSections {
                 .init(with: SectionDataSource(with: object))
             }
         }
@@ -348,6 +348,23 @@ public struct InspectorPanelMacro: MemberMacro {
             guard let child = element.\(n) else { return [] }
             return [.group(title: \(dn))] + (\(baseType).SectionDataSource(with: child)?.properties ?? [])
             """
+        }
+    }
+}
+
+extension PatternBindingSyntax {
+    var hasComputedAccessors: Bool {
+        guard let block = accessorBlock else { return false }
+
+        switch block.accessors {
+        case .accessors(let list):
+            return list.contains { accessor in
+                accessor.accessorSpecifier.text == "get" || accessor.accessorSpecifier.text == "set"
+            }
+        case .getter:
+            return true
+        @unknown default:
+            return true
         }
     }
 }

@@ -26,8 +26,8 @@ final class InspectorPanelMacroTests: XCTestCase {
                 var borderColor: UIColor = .clear
 
                 #if INSPECTOR_DEBUGGING
-                final class SectionDataSource: InspectorElementSectionDataSource {
-                    var state: InspectorElementSectionState = .collapsed
+                final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
+                    var state: Inspector.InspectorElementSectionState = .collapsed
                     let title = "My Card View"
                     private weak var element: MyCardView?
                     init?(with object: NSObject) {
@@ -39,11 +39,11 @@ final class InspectorPanelMacroTests: XCTestCase {
                     private enum Property: String, Swift.CaseIterable {
                         case borderColor = "Border Color"
                     }
-                    var properties: [InspectorElementProperty] {
+                    var properties: [Inspector.InspectorElementProperty] {
                         guard let element else {
                             return []
                         }
-                        return Property.allCases.flatMap { property -> [InspectorElementProperty] in
+                        return Property.allCases.flatMap { property -> [Inspector.InspectorElementProperty] in
                             switch property {
                             case .borderColor:
                                 return [.colorPicker(
@@ -61,11 +61,11 @@ final class InspectorPanelMacroTests: XCTestCase {
                         }
                     }
                 }
-                struct InspectorLibrary: InspectorElementLibraryProtocol {
+                struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
                         MyCardView.self
                     }
-                    func sections(for object: NSObject) -> InspectorElementSections {
+                    func sections(for object: NSObject) -> Inspector.InspectorElementSections {
                         .init(with: SectionDataSource(with: object))
                     }
                 }
@@ -90,8 +90,8 @@ final class InspectorPanelMacroTests: XCTestCase {
                 var inspectBarButton: RoundedButton!
 
                 #if INSPECTOR_DEBUGGING
-                final class SectionDataSource: InspectorElementSectionDataSource {
-                    var state: InspectorElementSectionState = .collapsed
+                final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
+                    var state: Inspector.InspectorElementSectionState = .collapsed
                     let title = "Playground"
                     private weak var element: PlaygroundViewController?
                     init?(with object: NSObject) {
@@ -103,11 +103,11 @@ final class InspectorPanelMacroTests: XCTestCase {
                     private enum Property: String, Swift.CaseIterable {
                         case inspectBarButton = "Inspect Bar Button"
                     }
-                    var properties: [InspectorElementProperty] {
+                    var properties: [Inspector.InspectorElementProperty] {
                         guard let element else {
                             return []
                         }
-                        return Property.allCases.flatMap { property -> [InspectorElementProperty] in
+                        return Property.allCases.flatMap { property -> [Inspector.InspectorElementProperty] in
                             switch property {
                             case .inspectBarButton:
                                 guard let child = element.inspectBarButton else {
@@ -118,11 +118,76 @@ final class InspectorPanelMacroTests: XCTestCase {
                         }
                     }
                 }
-                struct InspectorLibrary: InspectorElementLibraryProtocol {
+                struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
                         PlaygroundViewController.self
                     }
-                    func sections(for object: NSObject) -> InspectorElementSections {
+                    func sections(for object: NSObject) -> Inspector.InspectorElementSections {
+                        .init(with: SectionDataSource(with: object))
+                    }
+                }
+                #endif
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
+    func testStoredPropertyWithDidSetIsCollected() {
+        assertMacroExpansion(
+            """
+            @InspectorPanel(title: "Slider")
+            class SliderView: UIView {
+                @InspectorProperty(.stepper(range: 0...120, step: 1))
+                var value: Double = 0 {
+                    didSet { print(value) }
+                }
+            }
+            """,
+            expandedSource: """
+            class SliderView: UIView {
+                var value: Double = 0 {
+                    didSet { print(value) }
+                }
+
+                #if INSPECTOR_DEBUGGING
+                final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
+                    var state: Inspector.InspectorElementSectionState = .collapsed
+                    let title = "Slider"
+                    private weak var element: SliderView?
+                    init?(with object: NSObject) {
+                        guard let element = object as? SliderView else {
+                            return nil
+                        }
+                        self.element = element
+                    }
+                    private enum Property: String, Swift.CaseIterable {
+                        case value = "Value"
+                    }
+                    var properties: [Inspector.InspectorElementProperty] {
+                        guard let element else {
+                            return []
+                        }
+                        return Property.allCases.flatMap { property -> [Inspector.InspectorElementProperty] in
+                            switch property {
+                            case .value:
+                                return [.stepper(
+                                    title: property.rawValue,
+                                    value: { element.value },
+                                    range: { 0.0...120.0 },
+                                    stepValue: { 1.0 },
+                                    isDecimalValue: true,
+                                    handler: { element.value = $0 }
+                                )]
+                            }
+                        }
+                    }
+                }
+                struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
+                    var targetClass: AnyClass {
+                        SliderView.self
+                    }
+                    func sections(for object: NSObject) -> Inspector.InspectorElementSections {
                         .init(with: SectionDataSource(with: object))
                     }
                 }
@@ -172,8 +237,8 @@ final class InspectorPanelMacroTests: XCTestCase {
                 var customEnum: MyEnum = .default
 
                 #if INSPECTOR_DEBUGGING
-                final class SectionDataSource: InspectorElementSectionDataSource {
-                    var state: InspectorElementSectionState = .collapsed
+                final class SectionDataSource: Inspector.InspectorElementSectionDataSource {
+                    var state: Inspector.InspectorElementSectionState = .collapsed
                     let title = "Test"
                     private weak var element: TestView?
                     init?(with object: NSObject) {
@@ -185,22 +250,22 @@ final class InspectorPanelMacroTests: XCTestCase {
                     private enum Property: String, Swift.CaseIterable {
 
                     }
-                    var properties: [InspectorElementProperty] {
+                    var properties: [Inspector.InspectorElementProperty] {
                         guard let element else {
                             return []
                         }
-                        return Property.allCases.flatMap { property -> [InspectorElementProperty] in
+                        return Property.allCases.flatMap { property -> [Inspector.InspectorElementProperty] in
                             switch property {
 
                             }
                         }
                     }
                 }
-                struct InspectorLibrary: InspectorElementLibraryProtocol {
+                struct InspectorLibrary: Inspector.InspectorElementLibraryProtocol {
                     var targetClass: AnyClass {
                         TestView.self
                     }
-                    func sections(for object: NSObject) -> InspectorElementSections {
+                    func sections(for object: NSObject) -> Inspector.InspectorElementSections {
                         .init(with: SectionDataSource(with: object))
                     }
                 }

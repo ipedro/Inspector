@@ -1,6 +1,7 @@
 // Tests/InspectorMacrosTests/PropertyDescriptorParserTests.swift
 
 import XCTest
+import SwiftSyntax
 @testable import InspectorMacros
 
 final class PropertyDescriptorParserTests: XCTestCase {
@@ -33,5 +34,21 @@ final class PropertyDescriptorParserTests: XCTestCase {
 
     func testCGRectInfersCGRect() {
         XCTAssertEqual(PropertyDescriptorParser.inferDescriptor(forTypeName: "CGRect"), .cgRect)
+    }
+
+    func testStepperDescriptorParsesFiniteRange() throws {
+        let attribute = try AttributeSyntax(stringLiteral: #"@InspectorProperty(.stepper(range: 0...120, step: 1))"#)
+        XCTAssertEqual(
+            PropertyDescriptorParser.parseDescriptor(from: attribute),
+            .stepper(range: 0...120, step: 1)
+        )
+    }
+
+    func testStepperDescriptorParsesDecimalFiniteRange() throws {
+        let attribute = try AttributeSyntax(stringLiteral: #"@InspectorProperty(.stepper(range: 0...1, step: 0.1))"#)
+        XCTAssertEqual(
+            PropertyDescriptorParser.parseDescriptor(from: attribute),
+            .stepper(range: 0...1, step: 0.1)
+        )
     }
 }

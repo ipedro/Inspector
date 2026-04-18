@@ -13,6 +13,7 @@ This is broader than MCP bridge setup and applies even when the app only needs:
 - configuration via `InspectorConfiguration`
 - customization via `InspectorCustomizationProviding`
 - debug-only custom panels/libraries/macros
+- `InspectorInterface` macro adoption (`@InspectorPanel`, `@InspectorProperty`)
 
 ## Core startup pattern
 
@@ -30,6 +31,7 @@ Do configuration/customization **before** `Inspector.start()`.
 - add Inspector startup to UIKit or SwiftUI app entry points
 - keep startup debug-only
 - register custom libraries/panels through `InspectorCustomizationProviding`
+- integrate `InspectorInterface` macros cleanly in a consumer app
 - verify Example-like integration patterns in another app
 - preserve existing app startup behavior while inserting Inspector cleanly
 
@@ -41,6 +43,16 @@ Do configuration/customization **before** `Inspector.start()`.
 ## Debug-only guidance
 Prefer keeping Inspector setup in debug-only code paths so release builds stay clean.
 If the consumer app uses macro-based custom panels, ensure the same debug trait/build gating applies consistently.
+
+## Macro integration guidance
+
+When the consumer app uses `@InspectorPanel` / `@InspectorProperty`:
+- import **`InspectorInterface`** for the macro declarations
+- import **`Inspector`** when the file also uses Inspector runtime APIs directly (`Inspector.start()`, customization types, etc.)
+- do **not** hide `@InspectorProperty` from the macro expander with local `#if` guards around the annotation itself unless you are certain the macro still sees the declaration
+- prefer gating the surrounding integration/bootstrap path rather than making the annotation invisible
+
+The generated code references Inspector runtime symbols, so the consumer target must have the proper Inspector package products linked in its debug configuration.
 
 ## Verification
 - app launches with Inspector enabled
