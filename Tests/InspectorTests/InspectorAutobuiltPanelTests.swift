@@ -254,5 +254,26 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(button.imageEdgeInsets, newInsets)
         XCTAssertEqual(button.titleEdgeInsets, newInsets)
     }
+
+    func testActivityIndicatorAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.ActivityIndicatorViewAttributesSectionDataSource(with: indicator)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 5)
+        XCTAssertEqual(bindings.map(\.descriptor.kind), [.options, .color, .group, .toggle, .toggle])
+
+        bindings[0].apply(.selection(0))
+        bindings[1].apply(.color(.red))
+        bindings[3].apply(.bool(true))
+        bindings[4].apply(.bool(false))
+
+        XCTAssertEqual(indicator.style, UIActivityIndicatorView.Style.allCases[0])
+        XCTAssertEqual(indicator.color, .red)
+        XCTAssertTrue(indicator.isAnimating)
+        XCTAssertFalse(indicator.hidesWhenStopped)
+    }
 }
 #endif

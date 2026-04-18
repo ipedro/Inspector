@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -42,60 +43,101 @@ extension DefaultElementAttributesLibrary {
             case hidesWhenStopped = "Hides When Stopped"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let activityIndicatorView else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .style:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UIActivityIndicatorView.Style.allCases.map(\.description),
-                        selectedIndex: { UIActivityIndicatorView.Style.allCases.firstIndex(of: activityIndicatorView.style) }
-                    ) {
-                        guard let newIndex = $0 else { return }
+                    .init(
+                        descriptor: .init(
+                            id: "style",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: UIActivityIndicatorView.Style.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(UIActivityIndicatorView.Style.allCases.firstIndex(of: activityIndicatorView.style)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
 
-                        let style = UIActivityIndicatorView.Style.allCases[newIndex]
+                            let style = UIActivityIndicatorView.Style.allCases[newIndex]
 
-                        activityIndicatorView.style = style
-                    }
+                            activityIndicatorView.style = style
+                        }
+                    )
 
                 case .color:
-                    .colorPicker(
-                        title: property.rawValue,
-                        color: { activityIndicatorView.color }
-                    ) {
-                        guard let color = $0 else {
-                            return
+                    .init(
+                        descriptor: .init(
+                            id: "color",
+                            title: property.rawValue,
+                            kind: .color,
+                            value: .color(allowsNil: true),
+                            editability: .editable
+                        ),
+                        read: { .color(activityIndicatorView.color) },
+                        write: { newValue in
+                            guard case let .color(color) = newValue, let color else { return }
+                            activityIndicatorView.color = color
                         }
-
-                        activityIndicatorView.color = color
-                    }
+                    )
 
                 case .groupBehavior:
-                    .group(title: property.rawValue)
+                    .init(
+                        descriptor: .init(
+                            id: "behavior-group",
+                            title: property.rawValue,
+                            kind: .group,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
 
                 case .isAnimating:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { activityIndicatorView.isAnimating }
-                    ) { isAnimating in
-                        switch isAnimating {
-                        case true:
-                            activityIndicatorView.startAnimating()
+                    .init(
+                        descriptor: .init(
+                            id: "is-animating",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(activityIndicatorView.isAnimating) },
+                        write: { newValue in
+                            guard case let .bool(isAnimating) = newValue else { return }
+                            switch isAnimating {
+                            case true:
+                                activityIndicatorView.startAnimating()
 
-                        case false:
-                            activityIndicatorView.stopAnimating()
+                            case false:
+                                activityIndicatorView.stopAnimating()
+                            }
                         }
-                    }
+                    )
 
                 case .hidesWhenStopped:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { activityIndicatorView.hidesWhenStopped }
-                    ) { hidesWhenStopped in
-                        activityIndicatorView.hidesWhenStopped = hidesWhenStopped
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "hides-when-stopped",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(activityIndicatorView.hidesWhenStopped) },
+                        write: { newValue in
+                            guard case let .bool(hidesWhenStopped) = newValue else { return }
+                            activityIndicatorView.hidesWhenStopped = hidesWhenStopped
+                        }
+                    )
                 }
             }
         }
