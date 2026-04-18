@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -58,149 +59,338 @@ extension DefaultElementAttributesLibrary {
             case keyboardDismissMode = "Keyboard"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let scrollView else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .groupIndicators:
-                    .group(title: property.rawValue)
+                    .init(
+                        descriptor: .init(
+                            id: "group-indicators",
+                            title: property.rawValue,
+                            kind: .group,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .indicatorStyle:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UIScrollView.IndicatorStyle.allCases.map(\.description),
-                        selectedIndex: { UIScrollView.IndicatorStyle.allCases.firstIndex(of: scrollView.indicatorStyle) }
-                    ) {
-                        guard let newIndex = $0 else { return }
-
-                        let indicatorStyle = UIScrollView.IndicatorStyle.allCases[newIndex]
-
-                        scrollView.indicatorStyle = indicatorStyle
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "indicator-style",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: UIScrollView.IndicatorStyle.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(UIScrollView.IndicatorStyle.allCases.firstIndex(of: scrollView.indicatorStyle)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
+                            scrollView.indicatorStyle = UIScrollView.IndicatorStyle.allCases[newIndex]
+                        }
+                    )
                 case .showsHorizontalScrollIndicator:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { scrollView.showsHorizontalScrollIndicator }
-                    ) { showsHorizontalScrollIndicator in
-                        scrollView.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "shows-horizontal-scroll-indicator",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(scrollView.showsHorizontalScrollIndicator) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            scrollView.showsHorizontalScrollIndicator = isOn
+                        }
+                    )
                 case .showsVerticalScrollIndicator:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { scrollView.showsVerticalScrollIndicator }
-                    ) { showsVerticalScrollIndicator in
-                        scrollView.showsVerticalScrollIndicator = showsVerticalScrollIndicator
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "shows-vertical-scroll-indicator",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(scrollView.showsVerticalScrollIndicator) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            scrollView.showsVerticalScrollIndicator = isOn
+                        }
+                    )
                 case .groupScrolling:
-                    .group(title: property.rawValue)
+                    .init(
+                        descriptor: .init(
+                            id: "group-scrolling",
+                            title: property.rawValue,
+                            kind: .group,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .isScrollEnabled:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { scrollView.isScrollEnabled }
-                    ) { isScrollEnabled in
-                        scrollView.isScrollEnabled = isScrollEnabled
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "is-scroll-enabled",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(scrollView.isScrollEnabled) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            scrollView.isScrollEnabled = isOn
+                        }
+                    )
                 case .pagingEnabled:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { scrollView.isPagingEnabled }
-                    ) { isPagingEnabled in
-                        scrollView.isPagingEnabled = isPagingEnabled
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "paging-enabled",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(scrollView.isPagingEnabled) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            scrollView.isPagingEnabled = isOn
+                        }
+                    )
                 case .isDirectionalLockEnabled:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { scrollView.isDirectionalLockEnabled }
-                    ) { isDirectionalLockEnabled in
-                        scrollView.isDirectionalLockEnabled = isDirectionalLockEnabled
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "is-directional-lock-enabled",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(scrollView.isDirectionalLockEnabled) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            scrollView.isDirectionalLockEnabled = isOn
+                        }
+                    )
                 case .groupBounce:
-                    .group(title: property.rawValue)
+                    .init(
+                        descriptor: .init(
+                            id: "group-bounce",
+                            title: property.rawValue,
+                            kind: .group,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .bounces:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { scrollView.bounces }
-                    ) { bounces in
-                        scrollView.bounces = bounces
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "bounces",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(scrollView.bounces) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            scrollView.bounces = isOn
+                        }
+                    )
                 case .bouncesZoom:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { scrollView.bouncesZoom }
-                    ) { bouncesZoom in
-                        scrollView.bouncesZoom = bouncesZoom
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "bounces-zoom",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(scrollView.bouncesZoom) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            scrollView.bouncesZoom = isOn
+                        }
+                    )
                 case .alwaysBounceHorizontal:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { scrollView.alwaysBounceHorizontal }
-                    ) { alwaysBounceHorizontal in
-                        scrollView.alwaysBounceHorizontal = alwaysBounceHorizontal
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "always-bounce-horizontal",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(scrollView.alwaysBounceHorizontal) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            scrollView.alwaysBounceHorizontal = isOn
+                        }
+                    )
                 case .bounceVertically:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { scrollView.alwaysBounceVertical }
-                    ) { alwaysBounceVertical in
-                        scrollView.alwaysBounceVertical = alwaysBounceVertical
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "always-bounce-vertical",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(scrollView.alwaysBounceVertical) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            scrollView.alwaysBounceVertical = isOn
+                        }
+                    )
                 case .groupZoom:
-                    .separator
+                    .init(
+                        descriptor: .init(
+                            id: "group-zoom",
+                            title: property.rawValue,
+                            kind: .separator,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .zoomScale:
-                    .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { scrollView.zoomScale },
-                        range: { min(scrollView.minimumZoomScale, scrollView.maximumZoomScale)...max(scrollView.minimumZoomScale, scrollView.maximumZoomScale) },
-                        stepValue: { 0.1 }
-                    ) { zoomScale in
-                        scrollView.zoomScale = zoomScale
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "zoom-scale",
+                            title: property.rawValue,
+                            kind: .stepper,
+                            value: .number(.init(
+                                min: Double(min(scrollView.minimumZoomScale, scrollView.maximumZoomScale)),
+                                max: Double(max(scrollView.minimumZoomScale, scrollView.maximumZoomScale)),
+                                step: 0.1,
+                                isDecimal: true
+                            )),
+                            editability: .editable
+                        ),
+                        read: { .number(Double(scrollView.zoomScale)) },
+                        write: { newValue in
+                            guard case let .number(value) = newValue else { return }
+                            scrollView.zoomScale = CGFloat(value)
+                        }
+                    )
                 case .minimumZoomScale:
-                    .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { scrollView.minimumZoomScale },
-                        range: { 0...max(0, scrollView.maximumZoomScale) },
-                        stepValue: { 0.1 }
-                    ) { minimumZoomScale in
-                        scrollView.minimumZoomScale = minimumZoomScale
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "minimum-zoom-scale",
+                            title: property.rawValue,
+                            kind: .stepper,
+                            value: .number(.init(
+                                min: 0,
+                                max: Double(max(0, scrollView.maximumZoomScale)),
+                                step: 0.1,
+                                isDecimal: true
+                            )),
+                            editability: .editable
+                        ),
+                        read: { .number(Double(scrollView.minimumZoomScale)) },
+                        write: { newValue in
+                            guard case let .number(value) = newValue else { return }
+                            scrollView.minimumZoomScale = CGFloat(value)
+                        }
+                    )
                 case .maximumZoomScale:
-                    .cgFloatStepper(
-                        title: property.rawValue,
-                        value: { scrollView.maximumZoomScale },
-                        range: { scrollView.minimumZoomScale...CGFloat.infinity },
-                        stepValue: { 0.1 }
-                    ) { maximumZoomScale in
-                        scrollView.maximumZoomScale = maximumZoomScale
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "maximum-zoom-scale",
+                            title: property.rawValue,
+                            kind: .stepper,
+                            value: .number(.init(
+                                min: Double(scrollView.minimumZoomScale),
+                                step: 0.1,
+                                isDecimal: true
+                            )),
+                            editability: .editable
+                        ),
+                        read: { .number(Double(scrollView.maximumZoomScale)) },
+                        write: { newValue in
+                            guard case let .number(value) = newValue else { return }
+                            scrollView.maximumZoomScale = CGFloat(value)
+                        }
+                    )
                 case .groupContentTouch:
-                    .group(title: property.rawValue)
+                    .init(
+                        descriptor: .init(
+                            id: "group-content-touch",
+                            title: property.rawValue,
+                            kind: .group,
+                            value: .none,
+                            editability: .readOnly
+                        ),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .delaysContentTouches:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { scrollView.delaysContentTouches }
-                    ) { delaysContentTouches in
-                        scrollView.delaysContentTouches = delaysContentTouches
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "delays-content-touches",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(scrollView.delaysContentTouches) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            scrollView.delaysContentTouches = isOn
+                        }
+                    )
                 case .canCancelContentTouches:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { scrollView.canCancelContentTouches }
-                    ) { canCancelContentTouches in
-                        scrollView.canCancelContentTouches = canCancelContentTouches
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "can-cancel-content-touches",
+                            title: property.rawValue,
+                            kind: .toggle,
+                            value: .bool,
+                            editability: .editable
+                        ),
+                        read: { .bool(scrollView.canCancelContentTouches) },
+                        write: { newValue in
+                            guard case let .bool(isOn) = newValue else { return }
+                            scrollView.canCancelContentTouches = isOn
+                        }
+                    )
                 case .keyboardDismissMode:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UIScrollView.KeyboardDismissMode.allCases.map(\.description),
-                        selectedIndex: { UIScrollView.KeyboardDismissMode.allCases.firstIndex(of: scrollView.keyboardDismissMode) }
-                    ) {
-                        guard let newIndex = $0 else { return }
-
-                        let keyboardDismissMode = UIScrollView.KeyboardDismissMode.allCases[newIndex]
-
-                        scrollView.keyboardDismissMode = keyboardDismissMode
-                    }
+                    .init(
+                        descriptor: .init(
+                            id: "keyboard-dismiss-mode",
+                            title: property.rawValue,
+                            kind: .options,
+                            value: .selection(
+                                .init(options: UIScrollView.KeyboardDismissMode.allCases.enumerated().map {
+                                    .init(id: "\($0.offset)", title: $0.element.description)
+                                }, allowsNil: true)
+                            ),
+                            editability: .editable
+                        ),
+                        read: { .selection(UIScrollView.KeyboardDismissMode.allCases.firstIndex(of: scrollView.keyboardDismissMode)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let newIndex = index else { return }
+                            scrollView.keyboardDismissMode = UIScrollView.KeyboardDismissMode.allCases[newIndex]
+                        }
+                    )
                 }
             }
         }

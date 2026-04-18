@@ -482,6 +482,40 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertFalse(control.isEnabled)
     }
 
+    func testScrollViewAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let scrollView = UIScrollView(frame: .zero)
+        scrollView.maximumZoomScale = 4
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.ScrollViewAttributesSectionDataSource(with: scrollView)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 21)
+        XCTAssertEqual(bindings[0].descriptor.kind, .group)
+        XCTAssertEqual(bindings[1].descriptor.kind, .options)
+        XCTAssertEqual(bindings[5].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[13].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[14].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[20].descriptor.kind, .options)
+
+        bindings[1].apply(.selection(1))
+        bindings[6].apply(.bool(true))
+        bindings[12].apply(.bool(true))
+        bindings[15].apply(.number(0.5))
+        bindings[16].apply(.number(3))
+        bindings[18].apply(.bool(false))
+        bindings[20].apply(.selection(1))
+
+        XCTAssertEqual(scrollView.indicatorStyle, UIScrollView.IndicatorStyle.allCases[1])
+        XCTAssertTrue(scrollView.isPagingEnabled)
+        XCTAssertTrue(scrollView.alwaysBounceVertical)
+        XCTAssertEqual(scrollView.minimumZoomScale, 0.5, accuracy: 0.001)
+        XCTAssertEqual(scrollView.maximumZoomScale, 3, accuracy: 0.001)
+        XCTAssertFalse(scrollView.delaysContentTouches)
+        XCTAssertEqual(scrollView.keyboardDismissMode, UIScrollView.KeyboardDismissMode.allCases[1])
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled
