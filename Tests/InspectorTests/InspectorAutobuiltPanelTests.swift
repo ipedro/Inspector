@@ -806,6 +806,43 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(subtitle, "Recent")
     }
 
+    func testKeyCommandsSectionUsesBindingsAndExposesValues() throws {
+        let keyCommand = UIKeyCommand(
+            title: "Refresh",
+            image: nil,
+            action: #selector(UIViewController.viewDidLoad),
+            input: "r",
+            modifierFlags: [.command, .shift],
+            propertyList: nil,
+            alternates: [],
+            discoverabilityTitle: "Refresh content",
+            attributes: [],
+            state: .off
+        )
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.KeyCommandsSectionDataSource(with: keyCommand)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 6)
+        XCTAssertEqual(bindings[0].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[1].descriptor.kind, .textField)
+        XCTAssertEqual(bindings[2].descriptor.kind, .preview)
+        XCTAssertEqual(bindings[3].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[5].descriptor.kind, .textField)
+
+        guard case let .string(title) = bindings[0].currentValue() else { return XCTFail("Expected title string") }
+        guard case let .string(discoverabilityTitle) = bindings[1].currentValue() else { return XCTFail("Expected discoverability title string") }
+        guard case let .string(keys) = bindings[4].currentValue() else { return XCTFail("Expected key string") }
+        guard case let .string(selector) = bindings[5].currentValue() else { return XCTFail("Expected selector string") }
+
+        XCTAssertEqual(title, "Refresh")
+        XCTAssertEqual(discoverabilityTitle, "Refresh content")
+        XCTAssertEqual(keys, "⇧ + ⌘ + R")
+        XCTAssertEqual(selector, String(describing: #selector(UIViewController.viewDidLoad)))
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled

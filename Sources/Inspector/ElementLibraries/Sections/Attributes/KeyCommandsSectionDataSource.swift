@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -60,50 +61,52 @@ extension DefaultElementAttributesLibrary {
             case selector = "Selector"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let keyCommand else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .separator:
-                    .separator
+                    return .init(
+                        descriptor: .init(id: "separator", title: "", kind: .separator, value: .none, editability: .readOnly),
+                        read: { .none },
+                        write: nil,
+                        refreshHint: .none
+                    )
                 case .discoverabilityTitle:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: .none,
-                        axis: .vertical,
-                        value: { keyCommand.discoverabilityTitle },
-                        handler: .none
+                    return .init(
+                        descriptor: .init(id: "discoverability-title", title: property.rawValue, kind: .textField, value: .string(.init(multiline: false, placeholder: nil, allowsNil: true)), editability: .readOnly, presentation: .init(axis: .vertical)),
+                        read: { .string(keyCommand.discoverabilityTitle) },
+                        write: nil,
+                        refreshHint: .none
                     )
                 case .image:
-                    .imagePicker(
-                        title: property.rawValue,
-                        image: { keyCommand.image },
-                        handler: .none
+                    return .init(
+                        descriptor: .init(id: "image", title: property.rawValue, kind: .preview, value: .none, editability: .readOnly),
+                        read: { .image(keyCommand.image) },
+                        write: nil,
+                        refreshHint: .none
                     )
                 case .key:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: .none,
-                        axis: .vertical,
-                        value: { keyCommand.symbols },
-                        handler: .none
+                    return .init(
+                        descriptor: .init(id: "key", title: property.rawValue, kind: .textField, value: .string(.init(multiline: false, placeholder: nil, allowsNil: true)), editability: .readOnly, presentation: .init(axis: .vertical)),
+                        read: { .string(keyCommand.symbols) },
+                        write: nil,
+                        refreshHint: .none
                     )
                 case .title:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: .none,
-                        axis: .vertical,
-                        value: { keyCommand.title },
-                        handler: .none
+                    return .init(
+                        descriptor: .init(id: "title", title: property.rawValue, kind: .textField, value: .string(.init(multiline: false, placeholder: nil, allowsNil: false)), editability: .readOnly, presentation: .init(axis: .vertical)),
+                        read: { .string(keyCommand.title) },
+                        write: nil,
+                        refreshHint: .none
                     )
                 case .selector:
-                    .textField(
-                        title: property.rawValue,
-                        placeholder: .none,
-                        axis: .vertical,
-                        value: { keyCommand.action?.description },
-                        handler: .none
+                    return .init(
+                        descriptor: .init(id: "selector", title: property.rawValue, kind: .textField, value: .string(.init(multiline: false, placeholder: nil, allowsNil: true)), editability: .readOnly, presentation: .init(axis: .vertical)),
+                        read: { .string(keyCommand.action?.description) },
+                        write: nil,
+                        refreshHint: .none
                     )
                 }
             }
