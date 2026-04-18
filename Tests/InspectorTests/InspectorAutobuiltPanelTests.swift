@@ -962,6 +962,52 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(label.shadowColor, .green)
     }
 
+    func testNavigationBarAttributesSectionUsesBindingsAndMutatesBehavior() throws {
+        let navigationBar = UINavigationBar(frame: .zero)
+        navigationBar.titleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 14),
+            .foregroundColor: UIColor.black
+        ]
+        navigationBar.largeTitleTextAttributes = [
+            .font: UIFont.boldSystemFont(ofSize: 24),
+            .foregroundColor: UIColor.gray
+        ]
+
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.NavigationBarAttributesSectionDataSource(with: navigationBar)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 17)
+        XCTAssertEqual(bindings[0].descriptor.kind, .options)
+        XCTAssertEqual(bindings[1].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[4].descriptor.kind, .preview)
+        XCTAssertEqual(bindings[7].descriptor.kind, .separator)
+        XCTAssertEqual(bindings[8].descriptor.kind, .group)
+        XCTAssertEqual(bindings[9].descriptor.kind, .options)
+        XCTAssertEqual(bindings[10].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[14].descriptor.kind, .options)
+        XCTAssertEqual(bindings[16].descriptor.kind, .color)
+
+        bindings[0].apply(.selection(1))
+        bindings[1].apply(.bool(true))
+        bindings[2].apply(.bool(true))
+        bindings[3].apply(.color(.red))
+        bindings[10].apply(.number(20))
+        bindings[11].apply(.color(.blue))
+        bindings[15].apply(.number(30))
+        bindings[16].apply(.color(.green))
+
+        XCTAssertEqual(navigationBar.barStyle, UIBarStyle.allCases[1])
+        XCTAssertTrue(navigationBar.isTranslucent)
+        XCTAssertTrue(navigationBar.prefersLargeTitles)
+        XCTAssertEqual(navigationBar.barTintColor, .red)
+        XCTAssertEqual(try XCTUnwrap(navigationBar.titleTextAttributes?[.font] as? UIFont).pointSize, 20, accuracy: 0.001)
+        XCTAssertEqual(navigationBar.titleTextAttributes?[.foregroundColor] as? UIColor, .blue)
+        XCTAssertEqual(try XCTUnwrap(navigationBar.largeTitleTextAttributes?[.font] as? UIFont).pointSize, 30, accuracy: 0.001)
+        XCTAssertEqual(navigationBar.largeTitleTextAttributes?[.foregroundColor] as? UIColor, .green)
+    }
+
     func testApplicationAttributesSectionUsesBindingsAndMutatesEditableState() throws {
         let application = UIApplication.shared
         let originalIdleTimerDisabled = application.isIdleTimerDisabled

@@ -18,6 +18,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+import InspectorContract
 import UIKit
 
 extension DefaultElementAttributesLibrary {
@@ -54,126 +55,114 @@ extension DefaultElementAttributesLibrary {
             case largeTitleColor = "Large Title Color"
         }
 
-        var properties: [InspectorElementProperty] {
+        var propertyBindings: [InspectorPropertyBinding] {
             guard let navigationBar else { return [] }
 
             return Property.allCases.compactMap { property in
                 switch property {
                 case .style:
-                    .optionsList(
-                        title: property.rawValue,
-                        options: UIBarStyle.allCases.map(\.description),
-                        selectedIndex: { UIBarStyle.allCases.firstIndex(of: navigationBar.barStyle) },
-                        handler: { newIndex in
-                            guard let index = newIndex else { return }
-
-                            let newStyle = UIBarStyle.allCases[index]
-                            navigationBar.barStyle = newStyle
+                    return .init(
+                        descriptor: .init(id: "style", title: property.rawValue, kind: .options, value: .selection(.init(options: UIBarStyle.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)), editability: .editable),
+                        read: { .selection(UIBarStyle.allCases.firstIndex(of: navigationBar.barStyle)) },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            navigationBar.barStyle = UIBarStyle.allCases[index]
                         }
                     )
                 case .translucent:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { [weak self] in self?.navigationBar?.isTranslucent ?? false },
-                        handler: { [weak self] isTranslucent in
-                            self?.navigationBar?.isTranslucent = isTranslucent
-                        }
-                    )
+                    return .init(descriptor: .init(id: "translucent", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(navigationBar.isTranslucent) }, write: { newValue in guard case let .bool(v) = newValue else { return }; navigationBar.isTranslucent = v })
                 case .prefersLargeTitltes:
-                    .switch(
-                        title: property.rawValue,
-                        isOn: { [weak self] in self?.navigationBar?.prefersLargeTitles ?? false },
-                        handler: { [weak self] prefersLargeTitles in
-                            self?.navigationBar?.prefersLargeTitles = prefersLargeTitles
-                        }
-                    )
+                    return .init(descriptor: .init(id: "prefers-large-titles", title: property.rawValue, kind: .toggle, value: .bool, editability: .editable), read: { .bool(navigationBar.prefersLargeTitles) }, write: { newValue in guard case let .bool(v) = newValue else { return }; navigationBar.prefersLargeTitles = v })
                 case .barTintColor:
-                    .colorPicker(
-                        title: property.rawValue,
-                        color: { [weak self] in self?.navigationBar?.barTintColor },
-                        handler: { [weak self] barTintColor in
-                            self?.navigationBar?.barTintColor = barTintColor
-                        }
-                    )
+                    return .init(descriptor: .init(id: "bar-tint-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable), read: { .color(navigationBar.barTintColor) }, write: { newValue in guard case let .color(v) = newValue else { return }; navigationBar.barTintColor = v })
                 case .shadowImage:
-                    .imagePicker(
-                        title: property.rawValue,
-                        image: { [weak self] in self?.navigationBar?.shadowImage },
-                        handler: { [weak self] in
-                            guard let navigationBar = self?.navigationBar else { return }
-                            navigationBar.shadowImage = $0
-                        }
-                    )
+                    return .init(descriptor: .init(id: "shadow-image", title: property.rawValue, kind: .preview, value: .none, editability: .editable), read: { .image(navigationBar.shadowImage) }, write: { newValue in guard case let .image(v) = newValue else { return }; navigationBar.shadowImage = v })
                 case .backIndicatorImage:
-                    .imagePicker(
-                        title: property.rawValue,
-                        image: { [weak self] in self?.navigationBar?.backIndicatorImage },
-                        handler: { [weak self] in
-                            guard let navigationBar = self?.navigationBar else { return }
-                            navigationBar.backIndicatorImage = $0
-                        }
-                    )
+                    return .init(descriptor: .init(id: "back-indicator-image", title: property.rawValue, kind: .preview, value: .none, editability: .editable), read: { .image(navigationBar.backIndicatorImage) }, write: { newValue in guard case let .image(v) = newValue else { return }; navigationBar.backIndicatorImage = v })
                 case .backIndicatorTransitionMaskImage:
-                    .imagePicker(
-                        title: property.rawValue,
-                        image: { [weak self] in self?.navigationBar?.backIndicatorTransitionMaskImage },
-                        handler: { [weak self] in
-                            guard let navigationBar = self?.navigationBar else { return }
-                            navigationBar.backIndicatorTransitionMaskImage = $0
-                        }
-                    )
+                    return .init(descriptor: .init(id: "back-indicator-transition-mask-image", title: property.rawValue, kind: .preview, value: .none, editability: .editable), read: { .image(navigationBar.backIndicatorTransitionMaskImage) }, write: { newValue in guard case let .image(v) = newValue else { return }; navigationBar.backIndicatorTransitionMaskImage = v })
+                case .separator0, .separator1:
+                    return .init(descriptor: .init(id: property.rawValue, title: "", kind: .separator, value: .none, editability: .readOnly), read: { .none }, write: nil, refreshHint: .none)
+                case .groupTitleTextAttributes, .groupLargeTitleTextAttributes:
+                    return .init(descriptor: .init(id: property.rawValue.replacingOccurrences(of: " ", with: "-").lowercased(), title: property.rawValue, kind: .group, value: .none, editability: .readOnly), read: { .none }, write: nil, refreshHint: .none)
                 case .titleFontName:
-                    .fontNamePicker(
-                        title: property.rawValue,
-                        fontProvider: { [weak self] in self?.navigationBar?.titleTextAttributes?[.font] as? UIFont },
-                        handler: { [weak self] newValue in
-                            self?.navigationBar?.titleTextAttributes?[.font] = newValue
-                        }
+                    return .init(
+                        descriptor: .init(id: "title-font-name", title: property.rawValue, kind: .options, value: .selection(.init(options: FontReference.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)), editability: .editable, presentation: .init(axis: .vertical)),
+                        read: {
+                            let fontName = (navigationBar.titleTextAttributes?[.font] as? UIFont)?.fontName ?? UIFont.systemFont(ofSize: UIFont.systemFontSize).fontName
+                            return .selection(FontReference.firstIndex(of: fontName))
+                        },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            let size = (navigationBar.titleTextAttributes?[.font] as? UIFont)?.pointSize ?? UIFont.systemFontSize
+                            guard let font = FontReference.font(at: index, size: size) else { return }
+                            var attributes = navigationBar.titleTextAttributes ?? [:]
+                            attributes[.font] = font
+                            navigationBar.titleTextAttributes = attributes
+                        },
+                        runtimePresentation: .init(selectionOptionIcons: FontReference.allCases.map(\.icon))
                     )
                 case .titleFontSize:
-                    .fontSizeStepper(
-                        title: property.rawValue,
-                        fontProvider: { [weak self] in self?.navigationBar?.titleTextAttributes?[.font] as? UIFont },
-                        handler: { [weak self] font in
-                            self?.navigationBar?.titleTextAttributes?[.font] = font
+                    return .init(
+                        descriptor: .init(id: "title-font-size", title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 256, step: 1, isDecimal: true)), editability: .editable),
+                        read: { .number(Double((navigationBar.titleTextAttributes?[.font] as? UIFont)?.pointSize ?? UIFont.systemFontSize)) },
+                        write: { newValue in
+                            guard case let .number(value) = newValue else { return }
+                            let currentFont = (navigationBar.titleTextAttributes?[.font] as? UIFont) ?? UIFont.systemFont(ofSize: UIFont.systemFontSize)
+                            var attributes = navigationBar.titleTextAttributes ?? [:]
+                            attributes[.font] = currentFont.withSize(CGFloat(value))
+                            navigationBar.titleTextAttributes = attributes
                         }
                     )
                 case .titleColor:
-                    .colorPicker(
-                        title: property.rawValue,
-                        color: { [weak self] in self?.navigationBar?.titleTextAttributes?[.foregroundColor] as? UIColor },
-                        handler: { [weak self] foregroundColor in
-                            self?.navigationBar?.titleTextAttributes?[.foregroundColor] = foregroundColor
+                    return .init(
+                        descriptor: .init(id: "title-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable),
+                        read: { .color(navigationBar.titleTextAttributes?[.foregroundColor] as? UIColor) },
+                        write: { newValue in
+                            guard case let .color(value) = newValue else { return }
+                            var attributes = navigationBar.titleTextAttributes ?? [:]
+                            attributes[.foregroundColor] = value
+                            navigationBar.titleTextAttributes = attributes
                         }
                     )
-                case .separator0,
-                     .separator1:
-                    .separator
-                case .groupTitleTextAttributes,
-                     .groupLargeTitleTextAttributes:
-                    .group(title: property.rawValue)
                 case .largeTitleFontName:
-                    .fontNamePicker(
-                        title: property.rawValue,
-                        fontProvider: { [weak self] in self?.navigationBar?.largeTitleTextAttributes?[.font] as? UIFont },
-                        handler: { [weak self] newValue in
-                            self?.navigationBar?.largeTitleTextAttributes?[.font] = newValue
-                        }
+                    return .init(
+                        descriptor: .init(id: "large-title-font-name", title: property.rawValue, kind: .options, value: .selection(.init(options: FontReference.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)), editability: .editable, presentation: .init(axis: .vertical)),
+                        read: {
+                            let fontName = (navigationBar.largeTitleTextAttributes?[.font] as? UIFont)?.fontName ?? UIFont.systemFont(ofSize: UIFont.systemFontSize).fontName
+                            return .selection(FontReference.firstIndex(of: fontName))
+                        },
+                        write: { newValue in
+                            guard case let .selection(index) = newValue, let index else { return }
+                            let size = (navigationBar.largeTitleTextAttributes?[.font] as? UIFont)?.pointSize ?? UIFont.systemFontSize
+                            guard let font = FontReference.font(at: index, size: size) else { return }
+                            var attributes = navigationBar.largeTitleTextAttributes ?? [:]
+                            attributes[.font] = font
+                            navigationBar.largeTitleTextAttributes = attributes
+                        },
+                        runtimePresentation: .init(selectionOptionIcons: FontReference.allCases.map(\.icon))
                     )
                 case .largeTitleFontSize:
-                    .fontSizeStepper(
-                        title: property.rawValue,
-                        fontProvider: { [weak self] in self?.navigationBar?.largeTitleTextAttributes?[.font] as? UIFont },
-                        handler: { [weak self] font in
-                            self?.navigationBar?.largeTitleTextAttributes?[.font] = font
+                    return .init(
+                        descriptor: .init(id: "large-title-font-size", title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, max: 256, step: 1, isDecimal: true)), editability: .editable),
+                        read: { .number(Double((navigationBar.largeTitleTextAttributes?[.font] as? UIFont)?.pointSize ?? UIFont.systemFontSize)) },
+                        write: { newValue in
+                            guard case let .number(value) = newValue else { return }
+                            let currentFont = (navigationBar.largeTitleTextAttributes?[.font] as? UIFont) ?? UIFont.systemFont(ofSize: UIFont.systemFontSize)
+                            var attributes = navigationBar.largeTitleTextAttributes ?? [:]
+                            attributes[.font] = currentFont.withSize(CGFloat(value))
+                            navigationBar.largeTitleTextAttributes = attributes
                         }
                     )
                 case .largeTitleColor:
-                    .colorPicker(
-                        title: property.rawValue,
-                        color: { [weak self] in self?.navigationBar?.largeTitleTextAttributes?[.foregroundColor] as? UIColor },
-                        handler: { [weak self] foregroundColor in
-                            self?.navigationBar?.largeTitleTextAttributes?[.foregroundColor] = foregroundColor
+                    return .init(
+                        descriptor: .init(id: "large-title-color", title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable),
+                        read: { .color(navigationBar.largeTitleTextAttributes?[.foregroundColor] as? UIColor) },
+                        write: { newValue in
+                            guard case let .color(value) = newValue else { return }
+                            var attributes = navigationBar.largeTitleTextAttributes ?? [:]
+                            attributes[.foregroundColor] = value
+                            navigationBar.largeTitleTextAttributes = attributes
                         }
                     )
                 }
