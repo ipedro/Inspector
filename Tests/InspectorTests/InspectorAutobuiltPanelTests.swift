@@ -285,13 +285,12 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         let bindings = dataSource.propertyBindings
         XCTAssertEqual(bindings.count, 5)
         XCTAssertEqual(bindings.map(\.descriptor.kind), [.textField, .textButtons, .toggle, .color, .color])
+        XCTAssertEqual(bindings[0].descriptor.editability, .readOnly)
 
-        bindings[0].apply(.string("Power"))
         bindings[2].apply(.bool(true))
         bindings[3].apply(.color(.green))
         bindings[4].apply(.color(.yellow))
 
-        XCTAssertEqual(control.title, "Power")
         XCTAssertTrue(control.isOn)
         XCTAssertEqual(control.onTintColor, .green)
         XCTAssertEqual(control.thumbTintColor, .yellow)
@@ -319,5 +318,6 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertFalse(tabBar.isTranslucent)
         XCTAssertEqual(tabBar.barTintColor, .purple)
     }
+
 }
 #endif

@@ -61,13 +61,10 @@ extension DefaultElementAttributesLibrary {
                                     allowsNil: true
                                 )
                             ),
-                            editability: .editable
+                            editability: .readOnly
                         ),
                         read: { .string(switchControl.title) },
-                        write: { newValue in
-                            guard case let .string(title) = newValue else { return }
-                            switchControl.title = title
-                        }
+                        write: nil
                     )
                 case .preferredStyle:
                     return .init(
