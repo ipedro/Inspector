@@ -20,9 +20,6 @@
 
 import UIKit
 
-@available(*, deprecated, message: "Compatibility-only alias; use InspectorElementSectionDataSource")
-public typealias InspectorElementViewModelProtocol = InspectorElementSectionDataSource
-
 @available(*, deprecated, message: "Compatibility-only protocol; use InspectorElementSectionDataSource directly")
 public protocol InspectorElementSectionLegacyDataSource: AnyObject {
     @available(*, deprecated, message: "Use propertyBindings or sectionBinding instead")
