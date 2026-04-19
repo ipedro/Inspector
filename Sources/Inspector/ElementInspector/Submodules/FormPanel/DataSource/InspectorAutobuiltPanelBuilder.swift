@@ -74,9 +74,11 @@ private final class InspectorAutobuiltAttributesSectionDataSource: InspectorElem
     }
 
     private static func makeFieldBindings(for object: NSObject) -> [InspectorPropertyBinding] {
-        Mirror(reflecting: object).children.compactMap { child in
+        var seenLabels = Set<String>()
+        return mirroredChildren(for: object).compactMap { child in
             guard let label = child.label?.trimmed else { return nil }
             guard label.hasPrefix("_") == false else { return nil }
+            guard seenLabels.insert(label).inserted else { return nil }
             return makeBinding(label: label, sampleValue: child.value, object: object)
         }
     }
@@ -204,7 +206,17 @@ private final class InspectorAutobuiltAttributesSectionDataSource: InspectorElem
     }
 
     private static func currentValue(for label: String, on object: NSObject) -> Any? {
-        Mirror(reflecting: object).children.first(where: { $0.label == label }).map(\.value)
+        mirroredChildren(for: object).first(where: { $0.label == label }).map(\.value)
+    }
+
+    private static func mirroredChildren(for object: NSObject) -> [Mirror.Child] {
+        var children: [Mirror.Child] = []
+        var mirror: Mirror? = Mirror(reflecting: object)
+        while let current = mirror {
+            children.append(contentsOf: current.children)
+            mirror = current.superclassMirror
+        }
+        return children
     }
 
     private static func unwrap(_ value: Any) -> Any? {

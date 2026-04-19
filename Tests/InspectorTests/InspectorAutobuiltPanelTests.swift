@@ -44,6 +44,31 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertFalse(sections.contains { $0.title == "Runtime Attributes" })
     }
 
+    func testAutobuiltSectionIncludesInheritedStoredProperties() throws {
+        class BaseBadgeView: UIView {
+            var inheritedCount = 7
+        }
+        final class CustomBadgeView: BaseBadgeView {
+            var titleText = "Badge"
+        }
+
+        let view = CustomBadgeView()
+        let libraries = DefaultElementAttributesLibrary.allCases.map { $0 as InspectorElementLibraryProtocol }
+        let sections = libraries.formItems(for: view, panel: .attributes)
+        let dataSource = try XCTUnwrap(sections.last?.dataSources.first)
+
+        let titles = dataSource.propertyBindings.map { $0.descriptor.title }
+        XCTAssertTrue(titles.contains("Inherited Count"))
+        XCTAssertTrue(titles.contains("Title Text"))
+
+        let inheritedBinding = try XCTUnwrap(dataSource.propertyBindings.first(where: { $0.descriptor.title == "Inherited Count" }))
+        if case let .number(value) = inheritedBinding.currentValue() {
+            XCTAssertEqual(value, 7)
+        } else {
+            XCTFail("expected inherited numeric current value")
+        }
+    }
+
     func testAutobuiltBindingsAreReadOnly() throws {
         final class CustomBadgeView: UIView {
             var isCompact = true
