@@ -66,6 +66,13 @@ Inspector is a debugging library written in Swift.
 * Better understanding of the inner-workings of components
 * Give more accurate feedback for developers. 
 
+### Modern UIKit coverage
+
+Inspector now includes built-in binding-native inspection for modern UIKit visual styling, including:
+
+* `UIVisualEffectView` glass and glass-container effects on iOS 26+
+* `UIButton.Configuration` glass-backed button styling on iOS 26+
+
 ---
 ## Installation
 
