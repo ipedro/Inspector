@@ -1226,6 +1226,8 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual((configuration.background.visualEffect as? UIGlassEffect)?.resolvedStyle, .clear)
         XCTAssertEqual(configuration.baseForegroundColor, .magenta)
         XCTAssertEqual(configuration.baseBackgroundColor, .yellow)
+        let glassEffect = try XCTUnwrap(configuration.background.visualEffect as? UIGlassEffect)
+        XCTAssertEqual(glassEffect.resolvedStyle, .clear)
         XCTAssertEqual(configuration.cornerStyle, .large)
         XCTAssertEqual(configuration.imagePlacement, .top)
         XCTAssertEqual(configuration.imagePadding, 8, accuracy: 0.001)

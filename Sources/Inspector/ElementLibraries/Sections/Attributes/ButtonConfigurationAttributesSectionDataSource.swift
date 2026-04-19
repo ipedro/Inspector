@@ -38,6 +38,8 @@ extension DefaultElementAttributesLibrary {
             case backgroundEffect = "Background Effect"
             case baseForegroundColor = "Base Foreground"
             case baseBackgroundColor = "Base Background"
+            case glassInteractive = "Glass Interactive"
+            case glassTintColor = "Glass Tint Color"
             case cornerStyle = "Corner Style"
             case buttonSize = "Button Size"
             case titleAlignment = "Title Alignment"
@@ -85,6 +87,34 @@ extension DefaultElementAttributesLibrary {
                     write: { newValue in
                         guard case let .color(value) = newValue, var configuration = button.configuration else { return }
                         configuration.baseBackgroundColor = value
+                        button.configuration = configuration
+                    }
+                )
+            case .glassInteractive:
+                guard button.configuration?.background.visualEffect is UIGlassEffect else { return nil }
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                    read: { .bool((button.configuration?.background.visualEffect as? UIGlassEffect)?.isInteractive ?? false) },
+                    write: { newValue in
+                        guard case let .bool(value) = newValue, var configuration = button.configuration, let currentGlass = configuration.background.visualEffect as? UIGlassEffect else { return }
+                        let updated = UIGlassEffect(style: currentGlass.resolvedStyle)
+                        updated.tintColor = currentGlass.tintColor
+                        updated.isInteractive = value
+                        configuration.background.visualEffect = updated
+                        button.configuration = configuration
+                    }
+                )
+            case .glassTintColor:
+                guard button.configuration?.background.visualEffect is UIGlassEffect else { return nil }
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .color, value: .color(allowsNil: true), editability: .editable),
+                    read: { .color((button.configuration?.background.visualEffect as? UIGlassEffect)?.tintColor) },
+                    write: { newValue in
+                        guard case let .color(value) = newValue, var configuration = button.configuration, let currentGlass = configuration.background.visualEffect as? UIGlassEffect else { return }
+                        let updated = UIGlassEffect(style: currentGlass.resolvedStyle)
+                        updated.isInteractive = currentGlass.isInteractive
+                        updated.tintColor = value
+                        configuration.background.visualEffect = updated
                         button.configuration = configuration
                     }
                 )
