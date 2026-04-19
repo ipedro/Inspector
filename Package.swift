@@ -70,9 +70,6 @@ let package = Package(
                 .product(name: "UIKeyboardAnimatable", package: "UIKeyboardAnimatable", condition: .when(platforms: [.iOS])),
                 .product(name: "Coordinator", package: "Coordinator", condition: .when(platforms: [.iOS]))
             ],
-            exclude: [
-                "Compatibility/README.md"
-            ],
             resources: [
                 .process("Resources")
             ],

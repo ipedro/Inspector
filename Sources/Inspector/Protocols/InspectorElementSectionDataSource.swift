@@ -21,7 +21,7 @@
 import UIKit
 
 /// An object that provides the information necessary to represent an Element Inspector section.
-public protocol InspectorElementSectionDataSource: InspectorElementSectionLegacyDataSource, AnyObject {
+public protocol InspectorElementSectionDataSource: AnyObject {
     /// An optional subtitle that can be shown below the title.
     var title: String { get }
     /// An optional subtitle that can be shown below the title.
@@ -36,13 +36,25 @@ public protocol InspectorElementSectionDataSource: InspectorElementSectionLegacy
     var state: InspectorElementSectionState { get set }
     /// Optional binding-based title accessory.
     var titleAccessoryBinding: InspectorPropertyBinding? { get }
+    /// Escape hatch for binding fields that still need custom runtime expansion.
+    var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { get }
 }
 
 public extension InspectorElementSectionDataSource {
     var subtitle: String? { nil }
     var sectionBinding: InspectorSectionBinding? { nil }
+    var propertyBindings: [InspectorPropertyBinding] {
+        if let sectionBinding {
+            let bindingExtras = sectionBindingExtraBindings
+                .sorted { $0.key < $1.key }
+                .flatMap { _, provider in provider() }
+            return sectionBinding.fields + bindingExtras
+        }
+        return []
+    }
     var customClass: InspectorElementSectionView.Type? { nil }
     var titleAccessoryBinding: InspectorPropertyBinding? { nil }
+    var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { [:] }
 }
 
 extension InspectorElementSectionDataSource {
