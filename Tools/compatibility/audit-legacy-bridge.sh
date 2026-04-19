@@ -4,9 +4,20 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
-python3 - <<'PY'
+strict=0
+if [[ "${1:-}" == "--strict" ]]; then
+  strict=1
+elif [[ $# -gt 0 ]]; then
+  echo "usage: $0 [--strict]" >&2
+  exit 2
+fi
+
+python3 - "$strict" <<'PY'
 from pathlib import Path
 import subprocess
+import sys
+
+strict = bool(int(sys.argv[1]))
 pattern = r'InspectorElementProperty|titleAccessoryProperty|sectionBindingExtraProperties|makeInspectorElementProperty\(|makeBinding\(id:'
 proc = subprocess.run(['rg', '-n', pattern, 'Sources', 'Tests', 'Example', '-g*.swift'], text=True, capture_output=True)
 lines = proc.stdout.splitlines() if proc.stdout else []
@@ -19,4 +30,6 @@ print('\n'.join(compat) if compat else '')
 print('\nSummary:')
 print(f'  non_compatibility_refs={len(non_compat)}')
 print(f'  compatibility_refs={len(compat)}')
+if strict and non_compat:
+    sys.exit(1)
 PY
