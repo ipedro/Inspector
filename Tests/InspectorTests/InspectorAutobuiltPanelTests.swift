@@ -1153,6 +1153,29 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(textField.isSecureTextEntry)
     }
 
+    func testDefaultAttributesLibraryIncludesVisualEffectViewSection() throws {
+        guard #available(iOS 26.0, *) else { return }
+
+        let effectView = UIVisualEffectView(effect: UIGlassEffect(style: .regular))
+        let libraries = DefaultElementAttributesLibrary.allCases.map { $0 as InspectorElementLibraryProtocol }
+        let sections = libraries.formItems(for: effectView, panel: .attributes)
+
+        let rows = sections.flatMap(\.dataSources)
+        XCTAssertTrue(rows.contains(where: { $0.title == "Visual Effect" }))
+    }
+
+    func testDefaultAttributesLibraryIncludesButtonConfigurationSectionForConfiguredButtons() throws {
+        guard #available(iOS 26.0, *) else { return }
+
+        let button = UIButton(configuration: .glass(), primaryAction: nil)
+        let libraries = DefaultElementAttributesLibrary.allCases.map { $0 as InspectorElementLibraryProtocol }
+        let sections = libraries.formItems(for: button, panel: .attributes)
+
+        let rows = sections.flatMap(\.dataSources)
+        XCTAssertTrue(rows.contains(where: { $0.title == "Button" }))
+        XCTAssertTrue(rows.contains(where: { $0.title == "Button Configuration" }))
+    }
+
     func testVisualEffectViewGlassSectionUsesBindingsAndMutatesBehavior() throws {
         guard #available(iOS 26.0, *) else { return }
 
