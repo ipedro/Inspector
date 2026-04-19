@@ -42,6 +42,7 @@ public extension InspectorElementSectionDataSource {
     var subtitle: String? { nil }
     var sectionBinding: InspectorSectionBinding? { nil }
     var customClass: InspectorElementSectionView.Type? { nil }
+    var titleAccessoryBinding: InspectorPropertyBinding? { nil }
 }
 
 extension InspectorElementSectionDataSource {

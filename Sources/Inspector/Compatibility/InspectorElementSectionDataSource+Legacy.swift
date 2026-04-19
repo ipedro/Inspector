@@ -50,10 +50,6 @@ public extension InspectorElementSectionDataSource {
     @available(*, deprecated, message: "Use sectionBindingExtraBindings instead")
     var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }
 
-    var titleAccessoryBinding: InspectorPropertyBinding? {
-        titleAccessoryProperty?.makeBinding(id: "title-accessory")
-    }
-
     var propertyBindings: [InspectorPropertyBinding] {
         if let sectionBinding {
             let bindingExtras = sectionBindingExtraBindings
