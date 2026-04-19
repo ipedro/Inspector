@@ -44,13 +44,6 @@ final class InspectorPropertyBindingTests: XCTestCase {
         let bindings = dataSource.propertyBindings
         XCTAssertEqual(bindings.count, 2)
         XCTAssertEqual(bindings[1].descriptor.kind, .group)
-        let properties = dataSource.properties
-        XCTAssertEqual(properties.count, 1)
-        if case let .group(title, _) = properties[0] {
-            XCTAssertEqual(title, "Child")
-        } else {
-            XCTFail("Expected group property")
-        }
     }
 
     func testToggleBindingCreatesAndAppliesToggleFormView() throws {

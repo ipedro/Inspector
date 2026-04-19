@@ -177,6 +177,51 @@ final class InspectorLegacyCompatibilityTests: XCTestCase {
         XCTAssertEqual(selectedIndex, 1)
     }
 
+    func testSectionBindingCompatibilityRendersBindingExtrasAsProperties() {
+        final class BindingExtraDataSource: InspectorElementSectionDataSource {
+            var state: InspectorElementSectionState = .collapsed
+            let title = "Extra"
+            var sectionBinding: InspectorSectionBinding? {
+                .init(
+                    descriptor: .init(id: "section", title: "Section", defaultState: .collapsed, fields: [
+                        .init(id: "child", title: "Child", kind: .subpanel, value: .none, editability: .readOnly)
+                    ]),
+                    fields: [
+                        .init(
+                            descriptor: .init(id: "child", title: "Child", kind: .subpanel, value: .none, editability: .readOnly),
+                            read: { .none },
+                            write: nil,
+                            refreshHint: .none
+                        )
+                    ]
+                )
+            }
+            var sectionBindingExtraBindings: [String : () -> [InspectorPropertyBinding]] {
+                [
+                    "child": {
+                        [
+                            .init(
+                                descriptor: .init(id: "group-child", title: "Child", kind: .group, value: .none, editability: .readOnly),
+                                read: { .none },
+                                write: nil,
+                                refreshHint: .none
+                            )
+                        ]
+                    }
+                ]
+            }
+        }
+
+        let dataSource = BindingExtraDataSource()
+        let properties = dataSource.properties
+        XCTAssertEqual(properties.count, 1)
+        if case let .group(title, _) = properties[0] {
+            XCTAssertEqual(title, "Child")
+        } else {
+            XCTFail("Expected group property")
+        }
+    }
+
     func testSectionDataSourcePropertyBindingsFallbacksForLegacyProperties() throws {
         final class LegacyDataSource: InspectorElementSectionDataSource {
             var state: InspectorElementSectionState = .collapsed
