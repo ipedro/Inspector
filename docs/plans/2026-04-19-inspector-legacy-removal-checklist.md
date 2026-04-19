@@ -13,6 +13,17 @@ As of this checkpoint:
 - explicit compatibility assertions are isolated in `Tests/InspectorTests/InspectorLegacyCompatibilityTests.swift`
 - `Tools/compatibility/audit-legacy-bridge.sh --strict` reports `non_compatibility_refs=0`
 
+## Current isolated compatibility footprint
+
+Latest audited breakdown:
+
+- `11` — `Sources/Inspector/Compatibility/InspectorElementSectionDataSource+Legacy.swift`
+- `11` — `Tests/InspectorTests/InspectorLegacyCompatibilityTests.swift`
+- `7` — `Sources/Inspector/Compatibility/InspectorPropertyBinding+Legacy.swift`
+- `5` — `Sources/Inspector/Compatibility/InspectorElementProperty.swift`
+- `2` — `Sources/Inspector/Compatibility/InspectorLegacyTypealiases.swift`
+
+
 ## Compatibility files still in play
 
 - `Sources/Inspector/Compatibility/InspectorElementProperty.swift`
