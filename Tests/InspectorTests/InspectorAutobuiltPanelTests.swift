@@ -1182,6 +1182,31 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(glassEffect.tintColor, .cyan)
     }
 
+    func testVisualEffectViewEffectBindingCanSwitchToGlassContainer() throws {
+        guard #available(iOS 26.0, *) else { return }
+
+        let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.VisualEffectViewAttributesSectionDataSource(with: effectView)
+        )
+
+        let effectBinding = try XCTUnwrap(dataSource.propertyBindings.first(where: { $0.descriptor.title == "Effect" }))
+        let effectOptions: [String]
+        if case let .selection(constraints) = effectBinding.descriptor.value {
+            effectOptions = constraints.options.map { $0.title }
+        } else {
+            return XCTFail("expected selection descriptor for effect binding")
+        }
+        let containerIndex = try XCTUnwrap(effectOptions.firstIndex(of: "Glass Container"))
+        effectBinding.apply(.selection(containerIndex))
+
+        XCTAssertTrue(effectView.effect is UIGlassContainerEffect)
+        let spacingBinding = try XCTUnwrap(dataSource.propertyBindings.first(where: { $0.descriptor.title == "Container Spacing" }))
+        spacingBinding.apply(.number(12))
+        let container = try XCTUnwrap(effectView.effect as? UIGlassContainerEffect)
+        XCTAssertEqual(container.spacing, 12, accuracy: 0.001)
+    }
+
     func testVisualEffectViewGlassContainerSectionUsesBindingsAndMutatesBehavior() throws {
         guard #available(iOS 26.0, *) else { return }
 

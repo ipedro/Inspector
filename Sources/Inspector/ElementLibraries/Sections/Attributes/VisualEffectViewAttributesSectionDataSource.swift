@@ -50,16 +50,16 @@ extension DefaultElementAttributesLibrary {
                             id: "effect",
                             title: property.rawValue,
                             kind: .options,
-                            value: .selection(.init(options: VisualEffectKind.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
+                            value: .selection(.init(options: InspectorVisualEffectKind.allCases.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)),
                             editability: .editable
                         ),
-                        read: { .selection(VisualEffectKind.current(for: visualEffectView.effect).flatMap(VisualEffectKind.allCases.firstIndex(of:))) },
+                        read: { .selection(InspectorVisualEffectKind.current(for: visualEffectView.effect).flatMap(InspectorVisualEffectKind.allCases.firstIndex(of:))) },
                         write: { newValue in
                             guard case let .selection(index) = newValue, let index else {
                                 visualEffectView.effect = nil
                                 return
                             }
-                            visualEffectView.effect = VisualEffectKind.allCases[index].makeEffect()
+                            visualEffectView.effect = InspectorVisualEffectKind.allCases[index].makeEffect()
                         }
                     )
                 case .glassInteractive:
@@ -109,102 +109,3 @@ extension DefaultElementAttributesLibrary {
     }
 }
 
-private enum VisualEffectKind: CaseIterable, Equatable, CustomStringConvertible {
-    case none
-    case blur(UIBlurEffect.Style)
-    case glassRegular
-    case glassClear
-    case glassContainer
-
-    static var allCases: [VisualEffectKind] {
-        var cases: [VisualEffectKind] = [.none]
-        cases.append(contentsOf: UIBlurEffect.Style.allCases.map(Self.blur))
-        if #available(iOS 26.0, *) {
-            cases.append(contentsOf: [Self.glassRegular, .glassClear, .glassContainer])
-        }
-        return cases
-    }
-
-    static func current(for effect: UIVisualEffect?) -> VisualEffectKind? {
-        guard let effect else { return VisualEffectKind.none }
-        if let blur = effect as? UIBlurEffect, let style = blur.style {
-            return .blur(style)
-        }
-        if #available(iOS 26.0, *) {
-            if let glass = effect as? UIGlassEffect {
-                return glass.resolvedStyle == .clear ? .glassClear : .glassRegular
-            }
-            if effect is UIGlassContainerEffect {
-                return .glassContainer
-            }
-        }
-        return nil
-    }
-
-    func makeEffect() -> UIVisualEffect? {
-        switch self {
-        case .none:
-            return nil
-        case let .blur(style):
-            return UIBlurEffect(style: style)
-        case .glassRegular:
-            if #available(iOS 26.0, *) {
-                return UIGlassEffect(style: .regular)
-            }
-            return nil
-        case .glassClear:
-            if #available(iOS 26.0, *) {
-                return UIGlassEffect(style: .clear)
-            }
-            return nil
-        case .glassContainer:
-            if #available(iOS 26.0, *) {
-                return UIGlassContainerEffect()
-            }
-            return nil
-        }
-    }
-
-    var description: String {
-        switch self {
-        case .none:
-            return "None"
-        case let .blur(style):
-            return "Blur: \(style.description)"
-        case .glassRegular:
-            return "Glass: Regular"
-        case .glassClear:
-            return "Glass: Clear"
-        case .glassContainer:
-            return "Glass Container"
-        }
-    }
-}
-
-@available(iOS 26.0, *)
-extension UIGlassEffect.Style: CaseIterable {
-    public static var allCases: [UIGlassEffect.Style] { [.regular, .clear] }
-}
-
-@available(iOS 26.0, *)
-extension UIGlassEffect.Style: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .regular: return "Regular"
-        case .clear: return "Clear"
-        @unknown default: return "Unknown"
-        }
-    }
-}
-
-@available(iOS 26.0, *)
-extension UIGlassEffect {
-    var resolvedStyle: UIGlassEffect.Style {
-        if responds(to: NSSelectorFromString("style")), let raw = value(forKey: "style") as? Int, let style = UIGlassEffect.Style(rawValue: raw) {
-            return style
-        }
-        let description = String(describing: self).lowercased()
-        if description.contains("clear") { return .clear }
-        return .regular
-    }
-}
