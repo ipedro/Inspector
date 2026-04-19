@@ -62,3 +62,20 @@ Focused simulator checks:
 
 The final deletion pass should be kept separate from unrelated warning cleanup.
 Warnings around deprecated UIKit APIs are orthogonal and should not block removal of the compatibility bridge.
+
+## Audit gate
+
+Use the audit script before and after deletion:
+
+```bash
+./Tools/compatibility/audit-legacy-bridge.sh --strict
+./Tools/compatibility/audit-legacy-bridge.sh --json
+```
+
+Expected before deletion:
+- `non_compatibility_refs = 0`
+- `compatibility_refs > 0`
+
+Expected after deletion:
+- `non_compatibility_refs = 0`
+- `compatibility_refs = 0`
