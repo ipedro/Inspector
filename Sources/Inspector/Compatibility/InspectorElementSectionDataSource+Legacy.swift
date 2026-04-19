@@ -20,6 +20,16 @@
 
 import UIKit
 
+public protocol InspectorElementSectionLegacyDataSource: AnyObject {
+    @available(*, deprecated, message: "Use propertyBindings or sectionBinding instead")
+    var properties: [InspectorElementProperty] { get }
+    var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { get }
+    @available(*, deprecated, message: "Use titleAccessoryBinding instead")
+    var titleAccessoryProperty: InspectorElementProperty? { get }
+    @available(*, deprecated, message: "Use sectionBindingExtraBindings instead")
+    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { get }
+}
+
 public extension InspectorElementSectionDataSource {
     @available(*, deprecated, message: "Use propertyBindings or sectionBinding instead")
     var properties: [InspectorElementProperty] {
