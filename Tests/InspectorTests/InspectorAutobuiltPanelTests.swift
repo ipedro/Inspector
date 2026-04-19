@@ -44,6 +44,35 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertFalse(sections.contains { $0.title == "Runtime Attributes" })
     }
 
+    func testAutobuiltSectionDeduplicatesShadowedInheritedLabels() throws {
+        class BaseBadgeView: UIView {
+            var titleText = "Base"
+        }
+        final class CustomBadgeView: BaseBadgeView {
+            override init(frame: CGRect) {
+                super.init(frame: frame)
+                titleText = "Derived"
+            }
+
+            required init?(coder: NSCoder) {
+                fatalError("init(coder:) has not been implemented")
+            }
+        }
+
+        let view = CustomBadgeView(frame: .zero)
+        let libraries = DefaultElementAttributesLibrary.allCases.map { $0 as InspectorElementLibraryProtocol }
+        let sections = libraries.formItems(for: view, panel: .attributes)
+        let dataSource = try XCTUnwrap(sections.last?.dataSources.first)
+
+        let titleBindings = dataSource.propertyBindings.filter { $0.descriptor.title == "Title Text" }
+        XCTAssertEqual(titleBindings.count, 1)
+        if case let .string(value) = titleBindings[0].currentValue() {
+            XCTAssertEqual(value, "Derived")
+        } else {
+            XCTFail("expected derived string current value")
+        }
+    }
+
     func testAutobuiltSectionIncludesInheritedStoredProperties() throws {
         class BaseBadgeView: UIView {
             var inheritedCount = 7
