@@ -47,3 +47,20 @@ See:
 - `Tools/compatibility/audit-legacy-bridge.sh`
 
 This directory is migration-only and should shrink to zero.
+
+## Current hotspots
+
+Latest audited compatibility-only counts:
+
+- `11` — `InspectorElementSectionDataSource+Legacy.swift`
+- `11` — `Tests/InspectorTests/InspectorLegacyCompatibilityTests.swift`
+- `7` — `InspectorPropertyBinding+Legacy.swift`
+- `5` — `InspectorElementProperty.swift`
+- `2` — `InspectorLegacyTypealiases.swift`
+
+Refresh these counts with:
+
+```bash
+./Tools/compatibility/audit-legacy-bridge.sh --json
+```
+
