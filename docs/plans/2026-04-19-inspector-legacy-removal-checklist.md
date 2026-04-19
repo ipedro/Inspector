@@ -79,3 +79,5 @@ Expected before deletion:
 Expected after deletion:
 - `non_compatibility_refs = 0`
 - `compatibility_refs = 0`
+
+Use the `compatibility_by_file` breakdown from `--json` output to decide deletion order and to confirm that counts drop where expected after each removal step.
