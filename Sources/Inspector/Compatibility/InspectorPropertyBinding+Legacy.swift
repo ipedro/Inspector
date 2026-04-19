@@ -71,7 +71,7 @@ public extension InspectorPropertyBinding {
             return .textField(
                 title: descriptor.title,
                 placeholder: stringConstraints?.placeholder,
-                axis: axis,
+                axis: compatibilityAxis,
                 value: {
                     guard case let .string(value) = self.currentValue() else { return nil }
                     return value
