@@ -54,52 +54,8 @@ public protocol InspectorElementSectionDataSource: AnyObject {
 
 public extension InspectorElementSectionDataSource {
     var subtitle: String? { nil }
-    var properties: [InspectorElementProperty] {
-        sectionBinding?.makeInspectorElementProperties(
-            extraBindings: sectionBindingExtraBindings,
-            extraProperties: sectionBindingExtraProperties
-        ) ?? []
-    }
     var sectionBinding: InspectorSectionBinding? { nil }
-    var propertyBindings: [InspectorPropertyBinding] {
-        if let sectionBinding {
-            let bindingExtras = sectionBindingExtraBindings
-                .sorted { $0.key < $1.key }
-                .flatMap { _, provider in provider() }
-
-            let propertyExtras = sectionBindingExtraProperties
-                .sorted { $0.key < $1.key }
-                .map { key, provider -> [InspectorPropertyBinding] in
-                    let properties = provider()
-                    var bindings: [InspectorPropertyBinding] = []
-                    for (index, property) in properties.enumerated() {
-                        guard let binding = property.makeBinding(id: "\(key)-\(index)") else {
-                            assertionFailure("Unsupported legacy property in sectionBindingExtraProperties for key \(key)")
-                            continue
-                        }
-                        bindings.append(binding)
-                    }
-                    return bindings
-                }
-                .flatMap { $0 }
-            return sectionBinding.fields + bindingExtras + propertyExtras
-        }
-
-        let mapped = properties.enumerated().compactMap { index, property in
-            property.makeBinding(id: "legacy-\(index)")
-        }
-        if mapped.count != properties.count {
-            assertionFailure("Unsupported legacy property conversion in \(Self.self)")
-        }
-        return mapped
-    }
     var customClass: InspectorElementSectionView.Type? { nil }
-    var titleAccessoryProperty: InspectorElementProperty? { nil }
-    var sectionBindingExtraBindings: [String: () -> [InspectorPropertyBinding]] { [:] }
-    var sectionBindingExtraProperties: [String: () -> [InspectorElementProperty]] { [:] }
-    var titleAccessoryBinding: InspectorPropertyBinding? {
-        titleAccessoryProperty?.makeBinding(id: "title-accessory")
-    }
 }
 
 extension InspectorElementSectionDataSource {
