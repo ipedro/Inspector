@@ -39,8 +39,13 @@ extension DefaultElementAttributesLibrary {
             case baseForegroundColor = "Base Foreground"
             case baseBackgroundColor = "Base Background"
             case cornerStyle = "Corner Style"
+            case buttonSize = "Button Size"
             case titleAlignment = "Title Alignment"
+            case imagePlacement = "Image Placement"
+            case imagePadding = "Image Padding"
+            case titlePadding = "Title Padding"
             case showsActivityIndicator = "Shows Activity Indicator"
+            case automaticallyUpdateForSelection = "Auto-update For Selection"
         }
 
         var propertyBindings: [InspectorPropertyBinding] {
@@ -96,6 +101,19 @@ extension DefaultElementAttributesLibrary {
                         button.configuration = configuration
                     }
                 )
+            case .buttonSize:
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .options, value: .selection(.init(options: ButtonConfigurationSizeOption.all.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)), editability: .editable),
+                    read: {
+                        guard let configuration = button.configuration else { return .selection(nil) }
+                        return .selection(ButtonConfigurationSizeOption.all.firstIndex(where: { $0.value == configuration.buttonSize }))
+                    },
+                    write: { newValue in
+                        guard case let .selection(index) = newValue, let index, var configuration = button.configuration else { return }
+                        configuration.buttonSize = ButtonConfigurationSizeOption.all[index].value
+                        button.configuration = configuration
+                    }
+                )
             case .titleAlignment:
                 return .init(
                     descriptor: .init(id: id, title: property.rawValue, kind: .options, value: .selection(.init(options: ButtonConfigurationTitleAlignmentOption.all.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)), editability: .editable),
@@ -109,6 +127,39 @@ extension DefaultElementAttributesLibrary {
                         button.configuration = configuration
                     }
                 )
+            case .imagePlacement:
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .options, value: .selection(.init(options: ButtonConfigurationImagePlacementOption.all.enumerated().map { .init(id: "\($0.offset)", title: $0.element.description) }, allowsNil: true)), editability: .editable),
+                    read: {
+                        guard let configuration = button.configuration else { return .selection(nil) }
+                        return .selection(ButtonConfigurationImagePlacementOption.all.firstIndex(where: { $0.value == configuration.imagePlacement }))
+                    },
+                    write: { newValue in
+                        guard case let .selection(index) = newValue, let index, var configuration = button.configuration else { return }
+                        configuration.imagePlacement = ButtonConfigurationImagePlacementOption.all[index].value
+                        button.configuration = configuration
+                    }
+                )
+            case .imagePadding:
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, step: 1, isDecimal: true)), editability: .editable),
+                    read: { .number(Double(button.configuration?.imagePadding ?? 0)) },
+                    write: { newValue in
+                        guard case let .number(value) = newValue, var configuration = button.configuration else { return }
+                        configuration.imagePadding = CGFloat(value)
+                        button.configuration = configuration
+                    }
+                )
+            case .titlePadding:
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .stepper, value: .number(.init(min: 0, step: 1, isDecimal: true)), editability: .editable),
+                    read: { .number(Double(button.configuration?.titlePadding ?? 0)) },
+                    write: { newValue in
+                        guard case let .number(value) = newValue, var configuration = button.configuration else { return }
+                        configuration.titlePadding = CGFloat(value)
+                        button.configuration = configuration
+                    }
+                )
             case .showsActivityIndicator:
                 return .init(
                     descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
@@ -116,6 +167,16 @@ extension DefaultElementAttributesLibrary {
                     write: { newValue in
                         guard case let .bool(value) = newValue, var configuration = button.configuration else { return }
                         configuration.showsActivityIndicator = value
+                        button.configuration = configuration
+                    }
+                )
+            case .automaticallyUpdateForSelection:
+                return .init(
+                    descriptor: .init(id: id, title: property.rawValue, kind: .toggle, value: .bool, editability: .editable),
+                    read: { .bool(button.configuration?.automaticallyUpdateForSelection ?? false) },
+                    write: { newValue in
+                        guard case let .bool(value) = newValue, var configuration = button.configuration else { return }
+                        configuration.automaticallyUpdateForSelection = value
                         button.configuration = configuration
                     }
                 )
@@ -140,6 +201,19 @@ private struct ButtonConfigurationCornerStyleOption: CustomStringConvertible {
 }
 
 @available(iOS 26.0, *)
+private struct ButtonConfigurationSizeOption: CustomStringConvertible {
+    let value: UIButton.Configuration.Size
+    let description: String
+
+    static let all: [ButtonConfigurationSizeOption] = [
+        .init(value: .medium, description: "Medium"),
+        .init(value: .small, description: "Small"),
+        .init(value: .mini, description: "Mini"),
+        .init(value: .large, description: "Large")
+    ]
+}
+
+@available(iOS 26.0, *)
 private struct ButtonConfigurationTitleAlignmentOption: CustomStringConvertible {
     let value: UIButton.Configuration.TitleAlignment
     let description: String
@@ -149,5 +223,18 @@ private struct ButtonConfigurationTitleAlignmentOption: CustomStringConvertible 
         .init(value: .leading, description: "Leading"),
         .init(value: .center, description: "Center"),
         .init(value: .trailing, description: "Trailing")
+    ]
+}
+
+@available(iOS 26.0, *)
+private struct ButtonConfigurationImagePlacementOption: CustomStringConvertible {
+    let value: NSDirectionalRectEdge
+    let description: String
+
+    static let all: [ButtonConfigurationImagePlacementOption] = [
+        .init(value: .leading, description: "Leading"),
+        .init(value: .trailing, description: "Trailing"),
+        .init(value: .top, description: "Top"),
+        .init(value: .bottom, description: "Bottom")
     ]
 }

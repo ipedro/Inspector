@@ -1191,13 +1191,18 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         )
 
         let bindings = dataSource.propertyBindings
-        XCTAssertEqual(bindings.count, 6)
+        XCTAssertEqual(bindings.count, 11)
         XCTAssertEqual(bindings[0].descriptor.kind, .options)
         XCTAssertEqual(bindings[1].descriptor.kind, .color)
         XCTAssertEqual(bindings[2].descriptor.kind, .color)
         XCTAssertEqual(bindings[3].descriptor.kind, .options)
         XCTAssertEqual(bindings[4].descriptor.kind, .options)
-        XCTAssertEqual(bindings[5].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[5].descriptor.kind, .options)
+        XCTAssertEqual(bindings[6].descriptor.kind, .options)
+        XCTAssertEqual(bindings[7].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[8].descriptor.kind, .stepper)
+        XCTAssertEqual(bindings[9].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[10].descriptor.kind, .toggle)
 
         let effectOptions: [String]
         if case let .selection(constraints) = bindings[0].descriptor.value {
@@ -1210,7 +1215,11 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         bindings[1].apply(.color(.magenta))
         bindings[2].apply(.color(.yellow))
         bindings[3].apply(.selection(4))
-        bindings[5].apply(.bool(true))
+        bindings[6].apply(.selection(2))
+        bindings[7].apply(.number(8))
+        bindings[8].apply(.number(6))
+        bindings[9].apply(.bool(true))
+        bindings[10].apply(.bool(true))
 
         let configuration = try XCTUnwrap(button.configuration)
         XCTAssertTrue(configuration.background.visualEffect is UIGlassEffect)
@@ -1218,7 +1227,11 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(configuration.baseForegroundColor, .magenta)
         XCTAssertEqual(configuration.baseBackgroundColor, .yellow)
         XCTAssertEqual(configuration.cornerStyle, .large)
+        XCTAssertEqual(configuration.imagePlacement, .top)
+        XCTAssertEqual(configuration.imagePadding, 8, accuracy: 0.001)
+        XCTAssertEqual(configuration.titlePadding, 6, accuracy: 0.001)
         XCTAssertTrue(configuration.showsActivityIndicator)
+        XCTAssertTrue(configuration.automaticallyUpdateForSelection)
     }
 
     func testVisualEffectViewEffectBindingCanSwitchToGlassContainer() throws {
