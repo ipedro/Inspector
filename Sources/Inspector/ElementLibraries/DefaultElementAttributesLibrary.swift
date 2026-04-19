@@ -40,6 +40,7 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
     case `switch`
     case tabBar
     case tableView
+    case visualEffectView
     case textField
     case textView
     case view
@@ -68,6 +69,7 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
         case .switch: UISwitch.self
         case .tabBar: UITabBar.self
         case .tableView: UITableView.self
+        case .visualEffectView: UIVisualEffectView.self
         case .textField: UITextField.self
         case .textView: UITextView.self
         case .view: UIView.self
@@ -146,6 +148,8 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
         case .navigationController: return .init(with: NavigationControllerAttributesSectionDataSource(with: object))
 
         case .tableView: return .init(with: TableViewAttributesSectionDataSource(with: object))
+
+        case .visualEffectView: return .init(with: VisualEffectViewAttributesSectionDataSource(with: object))
 
         case .window: return .init(with: WindowAttributesSectionDataSource(with: object))
 

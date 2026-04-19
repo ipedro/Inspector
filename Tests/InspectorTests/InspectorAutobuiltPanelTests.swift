@@ -1153,6 +1153,50 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertTrue(textField.isSecureTextEntry)
     }
 
+    func testVisualEffectViewGlassSectionUsesBindingsAndMutatesBehavior() throws {
+        guard #available(iOS 26.0, *) else { return }
+
+        let effectView = UIVisualEffectView(effect: UIGlassEffect(style: .regular))
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.VisualEffectViewAttributesSectionDataSource(with: effectView)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 3)
+        XCTAssertEqual(bindings[0].descriptor.kind, .options)
+        XCTAssertEqual(bindings[1].descriptor.kind, .toggle)
+        XCTAssertEqual(bindings[2].descriptor.kind, .color)
+
+        let effectOptions: [String]
+        if case let .selection(constraints) = bindings[0].descriptor.value {
+            effectOptions = constraints.options.map { $0.title }
+        } else {
+            return XCTFail("expected selection descriptor for effect binding")
+        }
+        XCTAssertTrue(effectOptions.contains("Glass: Clear"))
+        bindings[1].apply(.bool(true))
+        bindings[2].apply(.color(.cyan))
+
+        let glassEffect = try XCTUnwrap(effectView.effect as? UIGlassEffect)
+        XCTAssertTrue(glassEffect.isInteractive)
+        XCTAssertEqual(glassEffect.tintColor, .cyan)
+    }
+
+    func testVisualEffectViewGlassContainerSectionUsesBindingsAndMutatesBehavior() throws {
+        guard #available(iOS 26.0, *) else { return }
+
+        let effectView = UIVisualEffectView(effect: UIGlassContainerEffect())
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.VisualEffectViewAttributesSectionDataSource(with: effectView)
+        )
+
+        let spacingBinding = try XCTUnwrap(dataSource.propertyBindings.first(where: { $0.descriptor.title == "Container Spacing" }))
+        spacingBinding.apply(.number(12))
+
+        let container = try XCTUnwrap(effectView.effect as? UIGlassContainerEffect)
+        XCTAssertEqual(container.spacing, 12, accuracy: 0.001)
+    }
+
     func testButtonAttributesSectionUsesBindingsAndMutatesBehavior() throws {
         let button = UIButton(type: .system)
         button.titleLabel?.font = .systemFont(ofSize: 14)
