@@ -20,6 +20,9 @@
 
 import UIKit
 
+@available(*, deprecated, renamed: "InspectorElementSectionDataSource")
+public typealias InspectorElementViewModelProtocol = InspectorElementSectionDataSource
+
 public protocol InspectorElementSectionLegacyDataSource: AnyObject {
     @available(*, deprecated, message: "Use propertyBindings or sectionBinding instead")
     var properties: [InspectorElementProperty] { get }

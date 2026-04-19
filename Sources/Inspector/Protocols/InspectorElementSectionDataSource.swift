@@ -20,9 +20,6 @@
 
 import UIKit
 
-@available(*, deprecated, renamed: "InspectorElementSectionDataSource")
-public typealias InspectorElementViewModelProtocol = InspectorElementSectionDataSource
-
 /// An object that provides the information necessary to represent an Element Inspector section.
 public protocol InspectorElementSectionDataSource: InspectorElementSectionLegacyDataSource, AnyObject {
     /// An optional subtitle that can be shown below the title.
