@@ -1199,12 +1199,24 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(bindings[4].descriptor.kind, .options)
         XCTAssertEqual(bindings[5].descriptor.kind, .toggle)
 
+        let effectOptions: [String]
+        if case let .selection(constraints) = bindings[0].descriptor.value {
+            effectOptions = constraints.options.map { $0.title }
+        } else {
+            return XCTFail("expected selection descriptor for button configuration effect binding")
+        }
+        let clearIndex = try XCTUnwrap(effectOptions.firstIndex(of: "Glass: Clear"))
+        bindings[0].apply(.selection(clearIndex))
         bindings[1].apply(.color(.magenta))
+        bindings[2].apply(.color(.yellow))
         bindings[3].apply(.selection(4))
         bindings[5].apply(.bool(true))
 
         let configuration = try XCTUnwrap(button.configuration)
+        XCTAssertTrue(configuration.background.visualEffect is UIGlassEffect)
+        XCTAssertEqual((configuration.background.visualEffect as? UIGlassEffect)?.resolvedStyle, .clear)
         XCTAssertEqual(configuration.baseForegroundColor, .magenta)
+        XCTAssertEqual(configuration.baseBackgroundColor, .yellow)
         XCTAssertEqual(configuration.cornerStyle, .large)
         XCTAssertTrue(configuration.showsActivityIndicator)
     }
