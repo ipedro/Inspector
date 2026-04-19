@@ -1182,6 +1182,33 @@ final class InspectorAutobuiltPanelTests: XCTestCase {
         XCTAssertEqual(glassEffect.tintColor, .cyan)
     }
 
+    func testButtonConfigurationSectionExposesGlassConfigurationBindings() throws {
+        guard #available(iOS 26.0, *) else { return }
+
+        let button = UIButton(configuration: .glass(), primaryAction: nil)
+        let dataSource = try XCTUnwrap(
+            DefaultElementAttributesLibrary.ButtonConfigurationAttributesSectionDataSource(with: button)
+        )
+
+        let bindings = dataSource.propertyBindings
+        XCTAssertEqual(bindings.count, 6)
+        XCTAssertEqual(bindings[0].descriptor.kind, .options)
+        XCTAssertEqual(bindings[1].descriptor.kind, .color)
+        XCTAssertEqual(bindings[2].descriptor.kind, .color)
+        XCTAssertEqual(bindings[3].descriptor.kind, .options)
+        XCTAssertEqual(bindings[4].descriptor.kind, .options)
+        XCTAssertEqual(bindings[5].descriptor.kind, .toggle)
+
+        bindings[1].apply(.color(.magenta))
+        bindings[3].apply(.selection(4))
+        bindings[5].apply(.bool(true))
+
+        let configuration = try XCTUnwrap(button.configuration)
+        XCTAssertEqual(configuration.baseForegroundColor, .magenta)
+        XCTAssertEqual(configuration.cornerStyle, .large)
+        XCTAssertTrue(configuration.showsActivityIndicator)
+    }
+
     func testVisualEffectViewEffectBindingCanSwitchToGlassContainer() throws {
         guard #available(iOS 26.0, *) else { return }
 

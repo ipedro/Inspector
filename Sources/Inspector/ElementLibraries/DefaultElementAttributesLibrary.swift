@@ -155,7 +155,11 @@ enum DefaultElementAttributesLibrary: Swift.CaseIterable, InspectorElementLibrar
 
         case .activityIndicator: return .init(with: ActivityIndicatorViewAttributesSectionDataSource(with: object))
 
-        case .button: return .init(with: ButtonAttributesSectionDataSource(with: object))
+        case .button:
+            if #available(iOS 26.0, *) {
+                return .init(with: ButtonAttributesSectionDataSource(with: object), ButtonConfigurationAttributesSectionDataSource(with: object))
+            }
+            return .init(with: ButtonAttributesSectionDataSource(with: object))
 
         case .control: return .init(with: ControlAttributesSectionDataSource(with: object))
 
